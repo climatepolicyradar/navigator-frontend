@@ -1,15 +1,16 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 import { Button } from "@base-ui/react/button";
 import { GetServerSideProps, InferGetServerSidePropsType } from "next";
-import { useState } from "react";
 
 import { ApiClient } from "@/api/http-common";
 import { SearchTypeahead } from "@/components/_experiment/searchTypeahead/SearchTypeahead";
+import { SuggestedFilters } from "@/components/_experiment/suggestedFilters/SuggestedFilters";
 import { withEnvConfig } from "@/context/EnvConfig";
 import { FeaturesContext } from "@/context/FeaturesContext";
 import { TopicsContext } from "@/context/TopicsContext";
 import { WikiBaseConceptsContext } from "@/context/WikiBaseConceptsContext";
 import useConfig from "@/hooks/useConfig";
+import useShadowSearch from "@/hooks/useShadowSearch";
 import { TTopic, TTopics } from "@/types";
 import { FamilyConcept, mapFamilyConceptsToConcepts } from "@/utils/familyConcepts";
 import { getFeatureFlags } from "@/utils/featureFlags";
@@ -23,133 +24,189 @@ const ShadowSearch = ({ theme, themeConfig, features, topicsData, familyConcepts
   const configQuery = useConfig();
   const { data: { regions = [], countries = [], corpus_types = {} } = {} } = configQuery;
 
-  const [searchTerm, setSearchTerm] = useState("");
-  const [rawSearchTerm, setRawSearchTerm] = useState("");
-  const [selectedTopics, setSelectedTopics] = useState<string[]>([]);
-  const [selectedGeos, setSelectedGeos] = useState<string[]>([]);
-  const [selectedYears, setSelectedYears] = useState<string[]>([]);
-  const [selectedDocumentTypes, setSelectedDocumentTypes] = useState<string[]>([]);
+  const {
+    searchTerm,
+    setSearchTerm,
+    rawSearchTerm,
+    rawMatches,
+    filters,
+    hasAnyFilters,
+    showStringOnlyResults,
+    clearAllFilters,
+    handleSelectConcept,
+    handleSelectGeo,
+    handleSelectYear,
+    handleSelectDocumentType,
+    handleApplyAll,
+    handleSearchOnly,
+    resetFiltersToOriginalSearch,
+    removeTopic,
+    removeGeo,
+    removeYear,
+    removeDocumentType,
+  } = useShadowSearch();
+
   return (
     <FeaturesContext.Provider value={features}>
       <TopicsContext.Provider value={topicsData}>
         <WikiBaseConceptsContext.Provider value={familyConceptsData || []}>
-          <section className="py-8">
+          <section className="bg-surface-light py-10 md:py-16">
             <div className="mx-auto max-w-5xl px-4">
-              <header className="mb-6">
-                <h1 className="text-2xl font-semibold text-text-primary">Shadow search</h1>
+              <header className="mb-4 space-y-3">
+                <p className="text-[11px] font-semibold uppercase tracking-[0.18em] text-text-tertiary">Experimental</p>
+                <h1 className="text-3xl md:text-4xl font-semibold tracking-tight text-text-primary">Search</h1>
               </header>
-
-              <div className="grid gap-6 md:grid-cols-3 items-start">
-                <aside className="space-y-4 border border-border-lighter p-4">
-                  <h2 className="text-sm font-semibold text-text-primary">Active filters</h2>
+              <div className="grid gap-8 md:grid-cols-12 items-start">
+                <aside className="md:col-span-4 space-y-4 border border-border-lighter bg-white p-4">
+                  <div>
+                    <p className="text-xs font-semibold uppercase tracking-[0.16em] text-text-tertiary">Active filters</p>
+                  </div>
 
                   <div className="space-y-3">
                     <div>
-                      <p className="mb-1 text-xs text-text-tertiary">Topics</p>
+                      <p className="mb-1 text-xs font-medium text-text-tertiary">Topics</p>
                       <div className="flex flex-wrap gap-2">
-                        {selectedTopics.length === 0 && <span className="text-xs text-text-tertiary">None</span>}
-                        {selectedTopics.map((topic) => (
-                          <Button key={topic} onClick={() => setSelectedTopics(selectedTopics.filter((topicToRemove) => topicToRemove !== topic))}>
-                            {topic}
+                        {filters.topics.length === 0 && <span className="text-xs text-text-tertiary">None</span>}
+                        {filters.topics.map((topic: string) => (
+                          <Button
+                            key={topic}
+                            onClick={() => removeTopic(topic)}
+                            className="group inline-flex items-center gap-1 rounded-full border border-border-lighter bg-surface-light px-3 py-1.5 text-[11px] font-medium text-text-primary hover:bg-surface-ui hover:text-text-brand transition"
+                          >
+                            <span>{topic}</span>
+                            <span className="text-xs text-text-tertiary group-hover:text-text-brand">×</span>
                           </Button>
                         ))}
                       </div>
                     </div>
 
                     <div>
-                      <p className="mb-1 text-xs text-text-tertiary">Geographies</p>
+                      <p className="mb-1 text-xs font-medium text-text-tertiary">Geographies</p>
                       <div className="flex flex-wrap gap-2">
-                        {selectedGeos.length === 0 && <span className="text-xs text-text-tertiary">None</span>}
-                        {selectedGeos.map((geo) => (
-                          <Button key={geo} onClick={() => setSelectedGeos(selectedGeos.filter((geoToRemove) => geoToRemove !== geo))}>
-                            {geo}
+                        {filters.geos.length === 0 && <span className="text-xs text-text-tertiary">None</span>}
+                        {filters.geos.map((geo: string) => (
+                          <Button
+                            key={geo}
+                            onClick={() => removeGeo(geo)}
+                            className="group inline-flex items-center gap-1 rounded-full border border-border-lighter bg-surface-light px-3 py-1.5 text-[11px] font-medium text-text-primary hover:bg-surface-ui hover:text-text-brand transition"
+                          >
+                            <span>{geo}</span>
+                            <span className="text-xs text-text-tertiary group-hover:text-text-brand">×</span>
                           </Button>
                         ))}
                       </div>
                     </div>
 
                     <div>
-                      <p className="mb-1 text-xs text-text-tertiary">Years</p>
+                      <p className="mb-1 text-xs font-medium text-text-tertiary">Years</p>
                       <div className="flex flex-wrap gap-2">
-                        {selectedYears.length === 0 && <span className="text-xs text-text-tertiary">None</span>}
-                        {selectedYears.map((year) => (
-                          <Button key={year} onClick={() => setSelectedYears(selectedYears.filter((yearToRemove) => yearToRemove !== year))}>
-                            {year}
+                        {filters.years.length === 0 && <span className="text-xs text-text-tertiary">None</span>}
+                        {filters.years.map((year: string) => (
+                          <Button
+                            key={year}
+                            onClick={() => removeYear(year)}
+                            className="group inline-flex items-center gap-1 rounded-full border border-border-lighter bg-surface-light px-3 py-1.5 text-[11px] font-medium text-text-primary hover:bg-surface-ui hover:text-text-brand transition"
+                          >
+                            <span>{year}</span>
+                            <span className="text-xs text-text-tertiary group-hover:text-text-brand">×</span>
+                          </Button>
+                        ))}
+                      </div>
+                    </div>
+
+                    <div>
+                      <p className="mb-1 text-xs font-medium text-text-tertiary">Document types</p>
+                      <div className="flex flex-wrap gap-2">
+                        {filters.documentTypes.length === 0 && <span className="text-xs text-text-tertiary">None</span>}
+                        {filters.documentTypes.map((documentType: string) => (
+                          <Button
+                            key={documentType}
+                            onClick={() => removeDocumentType(documentType)}
+                            className="group inline-flex items-center gap-1 rounded-full border border-border-lighter bg-surface-light px-3 py-1.5 text-[11px] font-medium text-text-primary hover:bg-surface-ui hover:text-text-brand transition"
+                          >
+                            <span>{documentType}</span>
+                            <span className="text-xs text-text-tertiary group-hover:text-text-brand">×</span>
                           </Button>
                         ))}
                       </div>
                     </div>
                   </div>
 
-                  {(searchTerm || selectedTopics.length > 0 || selectedGeos.length > 0 || selectedYears.length > 0) && (
+                  {hasAnyFilters && (
                     <Button
-                      onClick={() => {
-                        setSelectedTopics([]);
-                        setSelectedGeos([]);
-                        setSelectedYears([]);
-                      }}
-                      className="text-xs"
+                      onClick={clearAllFilters}
+                      className="mt-2 inline-flex items-center border border-border-lighter bg-surface-light px-3 py-2 text-xs font-medium text-text-secondary hover:bg-surface-ui"
                     >
                       Clear all filters
                     </Button>
                   )}
                 </aside>
 
-                <main className="space-y-4 md:col-span-2">
+                <main className="md:col-span-8 space-y-6">
                   <SearchTypeahead
                     searchTerm={searchTerm}
                     onSearchTermChange={setSearchTerm}
-                    selectedTopics={selectedTopics}
-                    selectedGeos={selectedGeos}
-                    selectedYears={selectedYears}
-                    selectedDocumentTypes={selectedDocumentTypes}
-                    onSelectDocumentType={(documentType) => {
-                      setSelectedDocumentTypes([...selectedDocumentTypes, documentType]);
-                      setSearchTerm("");
-                    }}
-                    onSelectConcept={(concept) => {
-                      setSelectedTopics([...selectedTopics, concept]);
-                      setSearchTerm("");
-                    }}
-                    onSelectGeo={(geo) => {
-                      setSelectedGeos([...selectedGeos, geo]);
-                      setSearchTerm("");
-                    }}
-                    onSelectYear={(year) => {
-                      setSelectedYears([...selectedYears, year]);
-                      setSearchTerm("");
-                    }}
-                    onApplyAll={({ concepts, geos, years, documentTypes }) => {
-                      setSelectedTopics(concepts);
-                      setSelectedGeos(geos);
-                      setSelectedYears(years);
-                      setSelectedDocumentTypes(documentTypes);
-                      setRawSearchTerm(searchTerm);
-                      setSearchTerm("");
-                    }}
-                    onSearchOnly={() => {
-                      setRawSearchTerm(searchTerm);
-                      setSearchTerm("");
-                    }}
+                    selectedTopics={filters.topics}
+                    selectedGeos={filters.geos}
+                    selectedYears={filters.years}
+                    selectedDocumentTypes={filters.documentTypes}
+                    onSelectConcept={handleSelectConcept}
+                    onSelectGeo={handleSelectGeo}
+                    onSelectYear={handleSelectYear}
+                    onSelectDocumentType={handleSelectDocumentType}
+                    onApplyAll={handleApplyAll}
+                    onSearchOnly={handleSearchOnly}
                   />
 
-                  <div className="space-y-2">
-                    <h2 className="text-sm font-semibold text-text-primary">Filtered view</h2>
-                    <p className="text-sm text-text-primary">Results for &ldquo;{rawSearchTerm}&rdquo;</p>
-                    {(selectedTopics.length > 0 || selectedGeos.length > 0 || selectedYears.length > 0) && (
-                      <p className="text-xs text-text-secondary">This query has been translated into the filters on the left.</p>
-                    )}
-                    <Button
-                      onClick={() => {
-                        setSearchTerm(rawSearchTerm);
-                        setSelectedTopics([]);
-                        setSelectedGeos([]);
-                        setSelectedYears([]);
-                      }}
-                    >
-                      Undo search
-                    </Button>
-                  </div>
+                  {rawSearchTerm && (
+                    <div className="space-y-3">
+                      {hasAnyFilters ? (
+                        <div className="border border-border-lighter bg-white p-4 space-y-3">
+                          <p className="text-xs font-semibold tracking-[0.14em] text-text-tertiary uppercase">Results</p>
+                          <div className="space-y-2 text-xs text-text-secondary">
+                            <p>Your search has been converted into the filters on the left. Adjust or clear the filters to change these results.</p>
+                            <Button
+                              onClick={resetFiltersToOriginalSearch}
+                              className="inline-flex items-center border border-border-lighter bg-white px-3 py-2 text-[11px] font-medium text-text-primary hover:bg-surface-light"
+                            >
+                              Reset filters to original search
+                            </Button>
+                          </div>
+                          <p className="text-xs text-text-tertiary">Search results will appear here.</p>
+                        </div>
+                      ) : showStringOnlyResults ? (
+                        <div className="border border-border-lighter bg-white p-4 space-y-3">
+                          <p className="text-xs font-semibold tracking-[0.14em] text-text-tertiary uppercase">Results</p>
+                          <p className="text-sm text-text-primary">
+                            Showing results for <span className="font-semibold">&ldquo;{rawSearchTerm}&rdquo;</span>
+                          </p>
+                          <p className="text-xs text-text-secondary">To get more precise results, try applying filters based on your search.</p>
+
+                          <div className="mt-3 bg-surface-light p-3">
+                            <SuggestedFilters
+                              searchTerm={rawSearchTerm}
+                              matches={rawMatches}
+                              selectedTopics={filters.topics}
+                              selectedGeos={filters.geos}
+                              selectedYears={filters.years}
+                              selectedDocumentTypes={filters.documentTypes}
+                              onSelectConcept={handleSelectConcept}
+                              onSelectGeo={handleSelectGeo}
+                              onSelectYear={handleSelectYear}
+                              onSelectDocumentType={handleSelectDocumentType}
+                              showHeader={false}
+                              showEmptyCopy={false}
+                            />
+                          </div>
+                        </div>
+                      ) : (
+                        <div className="border border-border-lighter bg-white p-4 space-y-3">
+                          <p className="text-xs font-semibold tracking-[0.14em] text-text-tertiary uppercase">Results</p>
+                          <p className="text-xs text-text-tertiary">Search results will appear here.</p>
+                        </div>
+                      )}
+                    </div>
+                  )}
                 </main>
               </div>
             </div>
