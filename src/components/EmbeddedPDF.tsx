@@ -25,7 +25,7 @@ const EmbeddedPDF = ({ document, documentPassageMatches = [], pageNumber = null,
 
   // Ensure the instance of the PDF client is not reset on re-render
   // otherwise we lose the ability to interact with the pdf
-  // eslint-disable-next-line react-hooks/exhaustive-deps
+
   const { changePage, registerPassages } = useMemo(() => pdfPreview, [document, adobeKey]);
 
   useEffect(() => {
