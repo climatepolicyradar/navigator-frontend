@@ -149,9 +149,9 @@ export const InteractiveTable = <ColumnKey extends string>({
 
   return (
     <div className="bg-white border border-gray-300 rounded-md overflow-x-auto">
-      <div className={allTableClasses} style={{ gridTemplateColumns }}>
+      <div className={allTableClasses} style={{ gridTemplateColumns }} role="table">
         {/* Heading */}
-        <div className="contents">
+        <div className="contents" role="row">
           {columns.map((column) => {
             const cellClasses = joinTailwindClasses(
               "bg-gray-100 text-gray-900 font-medium group",
@@ -161,7 +161,7 @@ export const InteractiveTable = <ColumnKey extends string>({
             );
 
             return (
-              <div key={`heading-${column.id}`} className={cellClasses}>
+              <div key={`heading-${column.id}`} className={cellClasses} role="columnheader">
                 <div className="flex items-center gap-1 min-h-6">
                   <span className="block">{column.name || firstCase(column.id)}</span>
                   {column.tooltip && (
@@ -207,7 +207,7 @@ export const InteractiveTable = <ColumnKey extends string>({
           }
 
           return (
-            <div key={rowKey} className="contents group" onClick={row.onClick ? () => row.onClick(row) : undefined}>
+            <div key={rowKey} role="row" className="contents group" onClick={row.onClick ? () => row.onClick(row) : undefined}>
               {columnContent}
             </div>
           );
