@@ -1,53 +1,45 @@
 import { expect, test } from "@playwright/test";
 
-import { FamilyPageModel } from "../pageObjectModels/familyPageModel";
+import { documentPageModel as documentPage } from "../pageObjectModels/documentPageModel";
+import { familyPageModel as familyPage } from "../pageObjectModels/familyPageModel";
 
-const EXEMPLARY_FAMILY_URL = "the-sixth-carbon-budget_179f?q=electric+vehicles";
+const EXEMPLARY_FAMILY_URL = "the-sixth-carbon-budget_179f?q=electric+vehicles&cfn=target";
 
 test.describe("CPR family page", () => {
-  test("should load a family page", async ({ page }) => {
-    const FamilyPage = new FamilyPageModel(page);
+  test("navigate to document passages for a different topic in the family", async ({ page }) => {
+    // Load the family page
 
-    await FamilyPage.goToFamilyPage(EXEMPLARY_FAMILY_URL);
-    await FamilyPage.waitForPageLoad();
+    await familyPage.goToFamily(page, EXEMPLARY_FAMILY_URL);
+    await familyPage.waitUntilLoaded(page);
 
-    const topicsSection = page.getByRole("region").filter({ has: page.getByRole("heading", { name: /^Topics mentioned most/i }) });
-    await expect(topicsSection).toBeVisible();
+    // Click on a topic not already part of the active filters
 
-    const differentTopic = topicsSection.getByRole("button").filter({ hasNotText: "Target" }).first();
-    await expect(differentTopic).toBeVisible();
+    const topicsSection = await familyPage.focusOnSection(page, /^Topics mentioned most/);
+    const differentTopic = await familyPage.getTopicButton(topicsSection, { hasNotText: "Target" });
     const differentTopicText = await differentTopic.innerText();
 
     differentTopic.click();
-    const topicsDrawer = page.getByRole("dialog");
-    await expect(topicsDrawer.filter({ has: page.getByRole("heading", { name: differentTopicText }) })).toBeVisible();
 
-    const documentsTable = topicsDrawer.getByRole("table");
-    const documentLink = documentsTable.getByRole("link").first();
+    // Click a document in the topics drawer to navigate to the document page
+
+    const topicsDrawer = await familyPage.focusOnDrawer(page, differentTopicText);
+    const tableOfDocuments = topicsDrawer.getByRole("table");
+    const documentLink = tableOfDocuments.getByRole("link").first();
+    await expect(documentLink).toBeVisible();
+
     const documentName = await documentLink.innerText();
     const documentHref = await documentLink.getAttribute("href");
-    console.log({ documentHref });
-    await expect(documentLink).toBeVisible();
 
     await documentLink.click();
 
+    // Verify the document page loads with the correct filters
+
     await page.waitForURL("**" + documentHref);
-    await expect(page.getByRole("heading", { name: documentName, level: 1 })).toBeVisible();
+    await documentPage.waitUntilLoaded(page, documentName);
   });
 });
 
 /**
  * TODO
  * - Open a family page that we don't know ahead of time (do a search - beforeAll)
- * - verify that the family page has loaded
- * - click on a topic not already filtered
- * - click a document in the tray
- * - wait for doc page to have loaded(?)
- * - verify URL is as expected after waiting
- */
-
-/**
- * - look for a block/section
- * - filter by title
- * - within that, get the topic button
  */
