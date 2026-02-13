@@ -29,13 +29,7 @@ import { IntelliSearchProps, TLabelsResponse, TConcept, TSuggestion } from "./In
  * <IntelliSearch placeholder="Search for concepts or labels..." />
  * ```
  */
-export default function IntelliSearch({
-  className,
-  placeholder = "Search for concepts or labels...",
-  debounceDelay = 300,
-  maxSuggestions,
-  topics,
-}: IntelliSearchProps) {
+export default function IntelliSearch({ className, placeholder = "Search...", debounceDelay = 300, maxSuggestions, topics }: IntelliSearchProps) {
   // State management
   const [searchTerm, setSearchTerm] = useState("");
   const [isInputFocused, setIsInputFocused] = useState(false);
@@ -323,13 +317,13 @@ export default function IntelliSearch({
                     <div className="text-sm">
                       <span className="font-medium text-gray-900">{suggestion.data.id}</span>
                       <span className="text-gray-500"> — </span>
-                      <span className="text-gray-700">Label: {suggestion.data.title}</span>
+                      <span className="text-gray-600 font-medium">Label: {suggestion.data.title}</span>
                     </div>
                   ) : (
                     // Concept format: "{preferred_label} - Concept (matched on {alt})"
                     <div className="text-sm">
                       <span className="font-medium text-gray-900">{suggestion.data.preferred_label}</span>
-                      <span className="text-gray-500"> - </span>
+                      <span className="text-gray-500"> — </span>
                       <span className="text-indigo-600 font-medium">Concept</span>
                       {suggestion.matchedLabel && <span className="text-gray-500 italic text-xs ml-2">(matched on "{suggestion.matchedLabel}")</span>}
                     </div>
@@ -360,12 +354,12 @@ export default function IntelliSearch({
                 </div>
               )}
 
-              {activeConcept.alternative_labels && activeConcept.alternative_labels.length > 0 && (
+              {/* {activeConcept.alternative_labels && activeConcept.alternative_labels.length > 0 && (
                 <div>
                   <h4 className="text-xs font-semibold text-gray-500 uppercase mb-1">Alternative Labels</h4>
                   <p className="text-sm text-gray-600">{activeConcept.alternative_labels.join(", ")}</p>
                 </div>
-              )}
+              )} */}
             </div>
           )}
         </div>
