@@ -3,6 +3,7 @@ import { Button } from "@base-ui/react/button";
 import { GetServerSideProps, InferGetServerSidePropsType } from "next";
 
 import { ApiClient } from "@/api/http-common";
+import IntelliSearch from "@/components/_experiment/intellisearch";
 import { SearchTypeahead } from "@/components/_experiment/searchTypeahead/SearchTypeahead";
 import { SuggestedFilters } from "@/components/_experiment/suggestedFilters/SuggestedFilters";
 import { withEnvConfig } from "@/context/EnvConfig";
@@ -50,7 +51,10 @@ const ShadowSearch = ({ theme, themeConfig, features, topicsData, familyConcepts
     <FeaturesContext.Provider value={features}>
       <TopicsContext.Provider value={topicsData}>
         <WikiBaseConceptsContext.Provider value={familyConceptsData || []}>
-          <section className="bg-surface-light py-10 md:py-16">
+          <div className="ml-40 mt-40">
+            <IntelliSearch topics={topicsData.topics} />
+          </div>
+          {/* <section className="bg-surface-light py-10 md:py-16">
             <div className="mx-auto max-w-5xl px-4">
               <header className="mb-4 space-y-3">
                 <p className="text-[11px] font-semibold uppercase tracking-[0.18em] text-text-tertiary">Experimental</p>
@@ -210,7 +214,7 @@ const ShadowSearch = ({ theme, themeConfig, features, topicsData, familyConcepts
                 </main>
               </div>
             </div>
-          </section>
+          </section> */}
         </WikiBaseConceptsContext.Provider>
       </TopicsContext.Provider>
     </FeaturesContext.Provider>

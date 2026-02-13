@@ -54,7 +54,7 @@ export const getLitigationCaseJSONLD = (familyCase: TFamilyPublic, countries: TG
   const geosOrdered = sortBy(familyCase.geographies, [(geo) => geo.length !== 3, (geo) => geo.toLowerCase()]);
 
   if (geosOrdered.length > 0) {
-    let spatialCoverage: any[] = []; // TODO: improve typing using schema-dts
+    const spatialCoverage: any[] = []; // TODO: improve typing using schema-dts
     geosOrdered.forEach((geo) => {
       const countryName = getCountryName(geo, countries);
       if (countryName) {
