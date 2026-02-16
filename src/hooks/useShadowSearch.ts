@@ -1,6 +1,8 @@
 import { useState, useCallback } from "react";
 
+import { clausesToActiveFilters } from "@/components/_experiment/typeahead/AdvancedFilterQueryBuilder";
 import { getSuggestedFilterMatches } from "@/components/_experiment/typeahead/SuggestedFilters";
+import { TFilterClause } from "@/types";
 import {
   EMPTY_FILTERS,
   hasAnyFilters as checkHasAnyFilters,
@@ -82,6 +84,7 @@ export function useShadowSearch() {
   const handleApplyAll = useCallback(
     (matches: { concepts: string[]; geos: string[]; years: string[]; documentTypes: string[] }) => {
       setFilters({
+        ...EMPTY_FILTERS,
         topics: matches.concepts,
         geos: matches.geos,
         years: matches.years,
@@ -93,6 +96,23 @@ export function useShadowSearch() {
     },
     [searchTerm]
   );
+
+  const applyAdvancedFilters = useCallback((clauses: TFilterClause[]) => {
+    const active = clausesToActiveFilters(clauses);
+    setFilters({
+      topics: active.includedConcepts,
+      geos: active.includedGeos,
+      years: active.includedYears,
+      documentTypes: active.includedDocumentTypes,
+      topicsExcluded: active.excludedConcepts,
+      geosExcluded: active.excludedGeos,
+      yearsExcluded: active.excludedYears,
+      documentTypesExcluded: active.excludedDocumentTypes,
+    });
+    setRawSearchTerm("");
+    setWasStringOnlySearch(false);
+    setSearchTerm("");
+  }, []);
 
   const handleSearchOnly = useCallback(() => {
     setRawSearchTerm(searchTerm);
@@ -124,6 +144,22 @@ export function useShadowSearch() {
     (documentType: string) => removeFilter({ documentTypes: filters.documentTypes.filter((d) => d !== documentType) }),
     [filters.documentTypes, removeFilter]
   );
+  const removeTopicExcluded = useCallback(
+    (topic: string) => removeFilter({ topicsExcluded: filters.topicsExcluded.filter((t) => t !== topic) }),
+    [filters.topicsExcluded, removeFilter]
+  );
+  const removeGeoExcluded = useCallback(
+    (geo: string) => removeFilter({ geosExcluded: filters.geosExcluded.filter((g) => g !== geo) }),
+    [filters.geosExcluded, removeFilter]
+  );
+  const removeYearExcluded = useCallback(
+    (year: string) => removeFilter({ yearsExcluded: filters.yearsExcluded.filter((y) => y !== year) }),
+    [filters.yearsExcluded, removeFilter]
+  );
+  const removeDocumentTypeExcluded = useCallback(
+    (documentType: string) => removeFilter({ documentTypesExcluded: filters.documentTypesExcluded.filter((d) => d !== documentType) }),
+    [filters.documentTypesExcluded, removeFilter]
+  );
 
   return {
     searchTerm,
@@ -140,11 +176,16 @@ export function useShadowSearch() {
     handleSelectDocumentType,
     handleApplyAll,
     handleSearchOnly,
+    applyAdvancedFilters,
     resetFiltersToOriginalSearch,
     removeTopic,
     removeGeo,
     removeYear,
     removeDocumentType,
+    removeTopicExcluded,
+    removeGeoExcluded,
+    removeYearExcluded,
+    removeDocumentTypeExcluded,
   };
 }
 
