@@ -29,7 +29,7 @@ import { IntelliSearchProps, TLabelsResponse, TConcept, TSuggestion } from "./In
  * <IntelliSearch placeholder="Search for concepts or labels..." />
  * ```
  */
-export default function IntelliSearch({ className, placeholder = "Search...", debounceDelay = 300, maxSuggestions, topics }: IntelliSearchProps) {
+export function IntelliSearch({ className, placeholder = "Search...", debounceDelay = 300, maxSuggestions, topics }: IntelliSearchProps) {
   // State management
   const [searchTerm, setSearchTerm] = useState("");
   const [isInputFocused, setIsInputFocused] = useState(false);
