@@ -1,37 +1,34 @@
 import { Button } from "@base-ui/react/button";
+import { useContext, useMemo } from "react";
 
+import { TopicsContext } from "@/context/TopicsContext";
+import useConfig from "@/hooks/useConfig";
 import useShadowSearch from "@/hooks/useShadowSearch";
+import { buildFilterFieldOptions } from "@/utils/_experiment/buildFilterFieldOptions";
 
 import { SearchTypeahead } from "./SearchTypeahead";
 import { SuggestedFilters } from "./SuggestedFilters";
 
 export function Typeahead() {
-  const {
-    searchTerm,
-    setSearchTerm,
-    rawSearchTerm,
-    rawMatches,
-    filters,
-    hasAnyFilters,
-    showStringOnlyResults,
-    clearAllFilters,
-    handleSelectConcept,
-    handleSelectGeo,
-    handleSelectYear,
-    handleSelectDocumentType,
-    handleApplyAll,
-    handleSearchOnly,
-    applyAdvancedFilters,
-    resetFiltersToOriginalSearch,
-    removeTopic,
-    removeGeo,
-    removeYear,
-    removeDocumentType,
-    removeTopicExcluded,
-    removeGeoExcluded,
-    removeYearExcluded,
-    removeDocumentTypeExcluded,
-  } = useShadowSearch();
+  const topicsData = useContext(TopicsContext);
+  const configQuery = useConfig();
+  const { data: configData } = configQuery;
+  const filterOptions = useMemo(
+    () =>
+      buildFilterFieldOptions({
+        topics: topicsData?.topics,
+        regions: configData?.regions,
+        countries: configData?.countries,
+        corpusTypes: configData?.corpus_types,
+      }),
+    [topicsData?.topics, configData?.regions, configData?.countries, configData?.corpus_types]
+  );
+
+  const { search, filters: filtersState, actions } = useShadowSearch({ filterOptions });
+  const { term: searchTerm, setTerm: setSearchTerm, rawTerm: rawSearchTerm, matches: rawMatches, showStringOnlyResults } = search;
+  const { value: filters, hasAny: hasAnyFilters } = filtersState;
+  const removeFilter = actions.remove;
+  const addFilter = actions.add;
 
   return (
     <section className="bg-surface-light py-10 md:py-16">
@@ -54,7 +51,7 @@ export function Typeahead() {
                   {filters.topics.map((topic: string) => (
                     <Button
                       key={topic}
-                      onClick={() => removeTopic(topic)}
+                      onClick={() => removeFilter("topics", topic)}
                       className="group inline-flex items-center gap-1 rounded-full border border-border-lighter bg-surface-light px-3 py-1.5 text-[11px] font-medium text-text-primary hover:bg-surface-ui hover:text-text-brand transition"
                     >
                       <span>{topic}</span>
@@ -71,7 +68,7 @@ export function Typeahead() {
                   {filters.geos.map((geo: string) => (
                     <Button
                       key={geo}
-                      onClick={() => removeGeo(geo)}
+                      onClick={() => removeFilter("geos", geo)}
                       className="group inline-flex items-center gap-1 rounded-full border border-border-lighter bg-surface-light px-3 py-1.5 text-[11px] font-medium text-text-primary hover:bg-surface-ui hover:text-text-brand transition"
                     >
                       <span>{geo}</span>
@@ -88,7 +85,7 @@ export function Typeahead() {
                   {filters.years.map((year: string) => (
                     <Button
                       key={year}
-                      onClick={() => removeYear(year)}
+                      onClick={() => removeFilter("years", year)}
                       className="group inline-flex items-center gap-1 rounded-full border border-border-lighter bg-surface-light px-3 py-1.5 text-[11px] font-medium text-text-primary hover:bg-surface-ui hover:text-text-brand transition"
                     >
                       <span>{year}</span>
@@ -105,7 +102,7 @@ export function Typeahead() {
                   {filters.documentTypes.map((documentType: string) => (
                     <Button
                       key={documentType}
-                      onClick={() => removeDocumentType(documentType)}
+                      onClick={() => removeFilter("documentTypes", documentType)}
                       className="group inline-flex items-center gap-1 rounded-full border border-border-lighter bg-surface-light px-3 py-1.5 text-[11px] font-medium text-text-primary hover:bg-surface-ui hover:text-text-brand transition"
                     >
                       <span>{documentType}</span>
@@ -129,7 +126,7 @@ export function Typeahead() {
                           {filters.topicsExcluded.map((topic: string) => (
                             <Button
                               key={topic}
-                              onClick={() => removeTopicExcluded(topic)}
+                              onClick={() => removeFilter("topicsExcluded", topic)}
                               className="group inline-flex items-center gap-1 rounded-full border border-dashed border-border-lighter bg-surface-light/70 px-3 py-1.5 text-[11px] font-medium text-text-secondary hover:bg-surface-ui hover:text-text-brand transition"
                             >
                               <span>{topic}</span>
@@ -146,7 +143,7 @@ export function Typeahead() {
                           {filters.geosExcluded.map((geo: string) => (
                             <Button
                               key={geo}
-                              onClick={() => removeGeoExcluded(geo)}
+                              onClick={() => removeFilter("geosExcluded", geo)}
                               className="group inline-flex items-center gap-1 rounded-full border border-dashed border-border-lighter bg-surface-light/70 px-3 py-1.5 text-[11px] font-medium text-text-secondary hover:bg-surface-ui hover:text-text-brand transition"
                             >
                               <span>{geo}</span>
@@ -163,7 +160,7 @@ export function Typeahead() {
                           {filters.yearsExcluded.map((year: string) => (
                             <Button
                               key={year}
-                              onClick={() => removeYearExcluded(year)}
+                              onClick={() => removeFilter("yearsExcluded", year)}
                               className="group inline-flex items-center gap-1 rounded-full border border-dashed border-border-lighter bg-surface-light/70 px-3 py-1.5 text-[11px] font-medium text-text-secondary hover:bg-surface-ui hover:text-text-brand transition"
                             >
                               <span>{year}</span>
@@ -180,7 +177,7 @@ export function Typeahead() {
                           {filters.documentTypesExcluded.map((documentType: string) => (
                             <Button
                               key={documentType}
-                              onClick={() => removeDocumentTypeExcluded(documentType)}
+                              onClick={() => removeFilter("documentTypesExcluded", documentType)}
                               className="group inline-flex items-center gap-1 rounded-full border border-dashed border-border-lighter bg-surface-light/70 px-3 py-1.5 text-[11px] font-medium text-text-secondary hover:bg-surface-ui hover:text-text-brand transition"
                             >
                               <span>{documentType}</span>
@@ -197,7 +194,7 @@ export function Typeahead() {
 
             {hasAnyFilters && (
               <Button
-                onClick={clearAllFilters}
+                onClick={filtersState.clearAll}
                 className="mt-2 inline-flex items-center border border-border-lighter bg-surface-light px-3 py-2 text-xs font-medium text-text-secondary hover:bg-surface-ui"
               >
                 Clear all filters
@@ -213,13 +210,14 @@ export function Typeahead() {
               selectedGeos={filters.geos}
               selectedYears={filters.years}
               selectedDocumentTypes={filters.documentTypes}
-              onSelectConcept={handleSelectConcept}
-              onSelectGeo={handleSelectGeo}
-              onSelectYear={handleSelectYear}
-              onSelectDocumentType={handleSelectDocumentType}
-              onApplyAll={handleApplyAll}
-              onSearchOnly={handleSearchOnly}
-              onApplyAdvancedFilters={applyAdvancedFilters}
+              onSelectConcept={(selectedConcept) => addFilter("topics", selectedConcept)}
+              onSelectGeo={(selectedGeo) => addFilter("geos", selectedGeo)}
+              onSelectYear={(selectedYear) => addFilter("years", selectedYear)}
+              onSelectDocumentType={(selectedDocumentType) => addFilter("documentTypes", selectedDocumentType)}
+              onApplyAll={actions.applyAll}
+              onSearchOnly={actions.searchOnly}
+              onApplyAdvancedFilters={actions.applyAdvanced}
+              filterOptions={filterOptions}
             />
 
             {(rawSearchTerm || hasAnyFilters) && (
@@ -230,7 +228,7 @@ export function Typeahead() {
                     <div className="space-y-2 text-xs text-text-secondary">
                       <p>Your search has been converted into the filters on the left. Adjust or clear the filters to change these results.</p>
                       <Button
-                        onClick={resetFiltersToOriginalSearch}
+                        onClick={actions.resetToOriginalSearch}
                         className="inline-flex items-center border border-border-lighter bg-white px-3 py-2 text-[11px] font-medium text-text-primary hover:bg-surface-light"
                       >
                         Reset filters to original search
@@ -254,10 +252,10 @@ export function Typeahead() {
                         selectedGeos={filters.geos}
                         selectedYears={filters.years}
                         selectedDocumentTypes={filters.documentTypes}
-                        onSelectConcept={handleSelectConcept}
-                        onSelectGeo={handleSelectGeo}
-                        onSelectYear={handleSelectYear}
-                        onSelectDocumentType={handleSelectDocumentType}
+                        onSelectConcept={(selectedConcept) => addFilter("topics", selectedConcept)}
+                        onSelectGeo={(selectedGeo) => addFilter("geos", selectedGeo)}
+                        onSelectYear={(selectedYear) => addFilter("years", selectedYear)}
+                        onSelectDocumentType={(selectedDocumentType) => addFilter("documentTypes", selectedDocumentType)}
                         showHeader={false}
                         showEmptyCopy={false}
                       />

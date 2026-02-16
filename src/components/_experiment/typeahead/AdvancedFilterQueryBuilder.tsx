@@ -1,7 +1,7 @@
 import { Button } from "@base-ui/react/button";
-import { useState } from "react";
+import { useRef, useState, useEffect } from "react";
 
-import { TActiveFilters, TFilterClause, TFilterOperator } from "@/types";
+import { TActiveFilters, TFilterClause, TFilterFieldOptions, TFilterOperator } from "@/types";
 import { joinTailwindClasses } from "@/utils/tailwind";
 
 const FILTER_FIELDS = [
@@ -11,7 +11,7 @@ const FILTER_FIELDS = [
   { value: "documentType", label: "Document type" },
 ] as const;
 
-const FIELD_OPTIONS: Record<string, readonly string[]> = {
+const DEFAULT_FIELD_OPTIONS: TFilterFieldOptions = {
   topic: ["flood defence", "targets"],
   geography: ["spain", "france", "germany"],
   year: ["2020", "2021", "2022", "2023", "2024"],
@@ -40,8 +40,8 @@ const selectInputClasses = joinTailwindClasses(
 // -----------------------------------------------------------------------------
 
 export interface IAdvancedFilterQueryBuilderProps {
-  // Called when the user clicks Apply with the current clauses.
   onApply?: (clauses: TFilterClause[]) => void;
+  fieldOptions?: TFilterFieldOptions;
   className?: string;
 }
 
@@ -49,8 +49,15 @@ export interface IAdvancedFilterQueryBuilderProps {
 // Helpers
 // -----------------------------------------------------------------------------
 
-function getValueOptionsForField(field: string): string[] {
-  return [...(FIELD_OPTIONS[field] ?? [])];
+function getValueOptionsForField(field: string, fieldOptions: TFilterFieldOptions): string[] {
+  const opts = fieldOptions[field as keyof TFilterFieldOptions];
+  return opts ? [...opts] : [];
+}
+
+function filterValueOptions(options: string[], query: string): string[] {
+  const q = query.trim().toLowerCase();
+  if (!q) return options;
+  return options.filter((opt) => opt.toLowerCase().includes(q));
 }
 
 function createEmptyClause(connector: TFilterClause["connector"] = null): TFilterClause {
@@ -136,8 +143,21 @@ function formatAsBooleanExpression(clauses: TFilterClause[]): string {
  * condition (field + is/is not + value). Apply converts clauses into active
  * filters and closes the panel.
  */
-export function AdvancedFilterQueryBuilder({ onApply, className }: IAdvancedFilterQueryBuilderProps) {
+export function AdvancedFilterQueryBuilder({ onApply, fieldOptions, className }: IAdvancedFilterQueryBuilderProps) {
+  const options = fieldOptions ?? DEFAULT_FIELD_OPTIONS;
   const [clauses, setClauses] = useState<TFilterClause[]>(() => [createEmptyClause(null)]);
+  const [openValueClauseId, setOpenValueClauseId] = useState<string | null>(null);
+  const valueDropdownRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    if (openValueClauseId === null) return;
+    const handleClickOutside = (e: MouseEvent) => {
+      if (valueDropdownRef.current?.contains(e.target as Node)) return;
+      setOpenValueClauseId(null);
+    };
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => document.removeEventListener("mousedown", handleClickOutside);
+  }, [openValueClauseId]);
 
   function addClause() {
     setClauses((currentClauses) => [...currentClauses, createEmptyClause("and")]);
@@ -179,7 +199,7 @@ export function AdvancedFilterQueryBuilder({ onApply, className }: IAdvancedFilt
       <div className="space-y-2">
         {clauses.map((clause, index) => {
           const isFirstClause = index === 0;
-          const valueOptions = getValueOptionsForField(clause.field);
+          const valueOptions = getValueOptionsForField(clause.field, options);
 
           return (
             <div key={clause.id} className="flex flex-wrap items-center gap-2 rounded-lg border border-gray-200 bg-gray-50/50 p-2">
@@ -228,19 +248,57 @@ export function AdvancedFilterQueryBuilder({ onApply, className }: IAdvancedFilt
                 ))}
               </select>
 
-              <select
-                aria-label="Value"
-                value={clause.value}
-                onChange={(e) => updateClause(clause.id, { value: e.target.value })}
-                className={joinTailwindClasses(selectInputClasses, "min-w-[100px]")}
-              >
-                <option value="">Select…</option>
-                {valueOptions.map((optionValue) => (
-                  <option key={optionValue} value={optionValue}>
-                    {optionValue}
-                  </option>
-                ))}
-              </select>
+              <div ref={openValueClauseId === clause.id ? valueDropdownRef : undefined} className="relative min-w-[120px]">
+                <input
+                  type="text"
+                  aria-label="Value"
+                  aria-expanded={openValueClauseId === clause.id}
+                  aria-controls={openValueClauseId === clause.id ? `value-listbox-${clause.id}` : undefined}
+                  aria-autocomplete="list"
+                  role="combobox"
+                  placeholder="Type to filter…"
+                  value={clause.value}
+                  onChange={(e) => updateClause(clause.id, { value: e.target.value })}
+                  onFocus={() => setOpenValueClauseId(clause.id)}
+                  onKeyDown={(e) => {
+                    if (e.key === "Escape") setOpenValueClauseId(null);
+                  }}
+                  className={joinTailwindClasses(selectInputClasses, "w-full")}
+                />
+                {openValueClauseId === clause.id && (
+                  <ul
+                    id={`value-listbox-${clause.id}`}
+                    className="absolute left-0 top-full z-10 mt-1 max-h-48 w-full overflow-auto rounded border border-gray-200 bg-white py-1 shadow-lg"
+                    role="listbox"
+                  >
+                    {(() => {
+                      const filtered = filterValueOptions(valueOptions, clause.value);
+                      if (filtered.length === 0) {
+                        return (
+                          <li className="px-3 py-2 text-sm text-gray-500" role="option" aria-selected="false">
+                            {clause.value.trim() ? "No matches" : "Type to narrow options"}
+                          </li>
+                        );
+                      }
+                      return filtered.map((optionValue) => (
+                        <li
+                          key={optionValue}
+                          role="option"
+                          aria-selected={clause.value === optionValue}
+                          className="cursor-pointer px-3 py-2 text-sm text-gray-800 hover:bg-gray-100 focus:bg-gray-100 focus:outline-none"
+                          onMouseDown={(e) => {
+                            e.preventDefault();
+                            updateClause(clause.id, { value: optionValue });
+                            setOpenValueClauseId(null);
+                          }}
+                        >
+                          {optionValue}
+                        </li>
+                      ));
+                    })()}
+                  </ul>
+                )}
+              </div>
 
               <Button
                 type="button"

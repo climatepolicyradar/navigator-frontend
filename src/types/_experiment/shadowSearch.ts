@@ -11,6 +11,14 @@ export type TFilterClause = {
   value: string;
 };
 
+// Options for each filter dimension (used by advanced builder and suggested filters).
+export type TFilterFieldOptions = {
+  topic: string[];
+  geography: string[];
+  year: string[];
+  documentType: string[];
+};
+
 // Shape produced by advanced filter builder (include + exclude per dimension).
 export type TActiveFilters = {
   includedConcepts: string[];

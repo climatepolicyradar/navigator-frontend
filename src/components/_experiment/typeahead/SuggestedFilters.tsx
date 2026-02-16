@@ -1,10 +1,19 @@
 import { Button } from "@base-ui/react/button";
 
+import { TFilterFieldOptions } from "@/types";
+
 export type TSuggestedFilterMatches = {
   matchedConcepts: string[];
   matchedGeos: string[];
   matchedYears: string[];
   matchedDocumentTypes: string[];
+};
+
+const DEFAULT_OPTIONS: TFilterFieldOptions = {
+  topic: ["flood defence", "targets"],
+  geography: ["spain", "france", "germany"],
+  year: ["2020", "2021", "2022", "2023", "2024"],
+  documentType: ["laws", "policies", "reports", "litigation"],
 };
 
 export interface ISuggestedFiltersProps {
@@ -22,11 +31,12 @@ export interface ISuggestedFiltersProps {
   showEmptyCopy?: boolean;
 }
 
-const TOPICS = ["flood defence", "targets"];
-const GEOS = ["spain", "france", "germany"];
-const DOCUMENT_TYPES = ["laws", "policies", "reports", "litigation"];
-
-export const getSuggestedFilterMatches = (searchTerm: string): TSuggestedFilterMatches => {
+/**
+ * Returns suggested filter matches for a search term. Uses options when
+ * provided (real data); otherwise falls back to default hardcoded lists.
+ */
+export const getSuggestedFilterMatches = (searchTerm: string, options?: TFilterFieldOptions): TSuggestedFilterMatches => {
+  const opts = options ?? DEFAULT_OPTIONS;
   if (!searchTerm) {
     return {
       matchedConcepts: [],
@@ -40,15 +50,15 @@ export const getSuggestedFilterMatches = (searchTerm: string): TSuggestedFilterM
   const rawSearchTermParts = searchTerm.trim().split(" ");
   for (let i = 0; i < rawSearchTermParts.length; i += 1) {
     const year = parseInt(rawSearchTermParts[i], 10);
-    if (!Number.isNaN(year) && year >= 1900 && year <= 2100) {
+    if (!Number.isNaN(year) && year >= 1900 && year <= 2100 && opts.year.includes(year.toString())) {
       matchedYears.push(year.toString());
     }
   }
 
   const lowerSearch = searchTerm.toLowerCase();
-  const matchedConcepts = TOPICS.filter((topic) => lowerSearch.includes(topic.toLowerCase()));
-  const matchedGeos = GEOS.filter((geo) => lowerSearch.includes(geo.toLowerCase()));
-  const matchedDocumentTypes = DOCUMENT_TYPES.filter((documentType) => lowerSearch.includes(documentType.toLowerCase()));
+  const matchedConcepts = opts.topic.filter((topic) => lowerSearch.includes(topic.toLowerCase()));
+  const matchedGeos = opts.geography.filter((geo) => lowerSearch.includes(geo.toLowerCase()));
+  const matchedDocumentTypes = opts.documentType.filter((documentType) => lowerSearch.includes(documentType.toLowerCase()));
   return { matchedConcepts, matchedGeos, matchedYears, matchedDocumentTypes };
 };
 
