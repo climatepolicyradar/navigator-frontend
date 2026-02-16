@@ -299,15 +299,6 @@ export default function IntelliSearch({ className, placeholder = "Search...", de
                   onMouseLeave={() => {
                     setHoveredConceptIndex(null);
                   }}
-                  // onFocus={() => {
-                  //   console.log("Focused suggestion:", suggestion);
-                  //   if (suggestion.type === "concept") {
-                  //     setFocusedConceptIndex(index);
-                  //   }
-                  // }}
-                  // onBlur={() => {
-                  //   setFocusedConceptIndex(null);
-                  // }}
                   onClick={() => {
                     // Read-only component - no action on click
                   }}
