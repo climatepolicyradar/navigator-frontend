@@ -63,6 +63,6 @@ export function hasRemainingSuggestions(search: string, filters: SelectedFilters
 
 export function addToFilterKey(filters: SelectedFilters, key: TIncludedFilterKey, value: string): SelectedFilters {
   const arr = filters[key];
-  // New filters with one value appended to the given included key.
+  if (arr.includes(value)) return filters;
   return { ...filters, [key]: [...arr, value] };
 }

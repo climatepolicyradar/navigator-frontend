@@ -57,6 +57,10 @@ export interface IntelliSearchProps {
   maxSuggestions?: number;
   /** List of concepts to search through */
   topics: TTopic[];
+  /** Concept labels already selected as filters; exclude these from suggestions */
+  selectedTopics?: string[];
+  /** Called when the user selects a concept suggestion (adds to Active filters) */
+  onSelectConcept?: (concept: TTopic) => void;
 }
 
 /**

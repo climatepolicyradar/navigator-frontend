@@ -3,17 +3,25 @@ import { useContext, useMemo } from "react";
 
 import { TopicsContext } from "@/context/TopicsContext";
 import useConfig from "@/hooks/useConfig";
-import useShadowSearch from "@/hooks/useShadowSearch";
+import useShadowSearch, { UseShadowSearchReturn } from "@/hooks/useShadowSearch";
+import { TFilterFieldOptions } from "@/types";
 import { buildFilterFieldOptions } from "@/utils/_experiment/buildFilterFieldOptions";
 
 import { SearchTypeahead } from "./SearchTypeahead";
 import { SuggestedFilters } from "./SuggestedFilters";
 
-export function Typeahead() {
+export interface TypeaheadProps {
+  // When provided, use this state instead of internal useShadowSearch (shared with IntelliSearch). */
+  shadowSearch?: UseShadowSearchReturn;
+  // Required when shadowSearch is provided. Filter options for the shared state.
+  filterOptions?: TFilterFieldOptions;
+}
+
+export function Typeahead({ shadowSearch: injectedShadowSearch, filterOptions: injectedFilterOptions }: TypeaheadProps = {}) {
   const topicsData = useContext(TopicsContext);
   const configQuery = useConfig();
   const { data: configData } = configQuery;
-  const filterOptions = useMemo(
+  const internalFilterOptions = useMemo(
     () =>
       buildFilterFieldOptions({
         topics: topicsData?.topics,
@@ -24,7 +32,11 @@ export function Typeahead() {
     [topicsData?.topics, configData?.regions, configData?.countries, configData?.corpus_types]
   );
 
-  const { search, filters: filtersState, actions } = useShadowSearch({ filterOptions });
+  const internalShadowSearch = useShadowSearch({ filterOptions: internalFilterOptions });
+  const shadowSearch = injectedShadowSearch ?? internalShadowSearch;
+  const filterOptions = injectedFilterOptions ?? internalFilterOptions;
+
+  const { search, filters: filtersState, actions } = shadowSearch;
   const { term: searchTerm, setTerm: setSearchTerm, rawTerm: rawSearchTerm, matches: rawMatches, showStringOnlyResults } = search;
   const { value: filters, hasAny: hasAnyFilters } = filtersState;
   const removeFilter = actions.remove;

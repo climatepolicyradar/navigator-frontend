@@ -29,7 +29,15 @@ import { IntelliSearchProps, TLabelsResponse, TConcept, TSuggestion } from "./In
  * <IntelliSearch placeholder="Search for concepts or labels..." />
  * ```
  */
-export function IntelliSearch({ className, placeholder = "Search...", debounceDelay = 300, maxSuggestions, topics }: IntelliSearchProps) {
+export function IntelliSearch({
+  className,
+  placeholder = "Search...",
+  debounceDelay = 300,
+  maxSuggestions,
+  topics,
+  selectedTopics = [],
+  onSelectConcept,
+}: IntelliSearchProps) {
   // State management
   const [searchTerm, setSearchTerm] = useState("");
   const [isInputFocused, setIsInputFocused] = useState(false);
@@ -136,8 +144,8 @@ export function IntelliSearch({ className, placeholder = "Search...", debounceDe
   }, [searchTerm, topics]);
 
   /**
-   * Unified suggestions list - labels first, then concepts
-   * This is the master list used for rendering and keyboard navigation
+   * Unified suggestions list - labels first, then concepts.
+   * Excludes concepts already in selectedTopics (Active filters).
    */
   const suggestions = useMemo(() => {
     const unified: TSuggestion[] = [];
@@ -147,8 +155,10 @@ export function IntelliSearch({ className, placeholder = "Search...", debounceDe
       unified.push({ type: "label", data: label });
     });
 
-    // Add concept suggestions
+    // Add concept suggestions, excluding already-selected topics
+    const selectedSet = new Set(selectedTopics.map((s) => s.toLowerCase()));
     matchedConcepts.forEach(({ concept, matchedLabel }) => {
+      if (concept?.preferred_label && selectedSet.has(concept.preferred_label.toLowerCase())) return;
       unified.push({
         type: "concept",
         data: concept,
@@ -158,7 +168,7 @@ export function IntelliSearch({ className, placeholder = "Search...", debounceDe
 
     // Apply max suggestions limit if specified
     return maxSuggestions ? unified.slice(0, maxSuggestions) : unified;
-  }, [labelsResults, matchedConcepts, maxSuggestions]);
+  }, [labelsResults, matchedConcepts, maxSuggestions, selectedTopics]);
 
   /**
    * Determine if suggestions should be visible
@@ -285,12 +295,13 @@ export function IntelliSearch({ className, placeholder = "Search...", debounceDe
                   role="option"
                   aria-selected={isActive}
                   className={joinTailwindClasses(
-                    "px-4 py-2.5 cursor-default",
+                    "px-4 py-2.5 cursor-pointer",
                     "transition-all duration-150",
                     "hover:bg-gray-100 hover:shadow-sm hover:scale-[1.01]",
                     isActive && "bg-blue-50 border-l-2 border-l-blue-500",
                     !isActive && "border-l-2 border-l-transparent"
                   )}
+                  onMouseDown={(e) => e.preventDefault()}
                   onMouseEnter={() => {
                     if (suggestion.type === "concept") {
                       setHoveredConceptIndex(index);
@@ -300,7 +311,9 @@ export function IntelliSearch({ className, placeholder = "Search...", debounceDe
                     setHoveredConceptIndex(null);
                   }}
                   onClick={() => {
-                    // Read-only component - no action on click
+                    if (suggestion.type === "concept") {
+                      onSelectConcept?.(suggestion.data);
+                    }
                   }}
                 >
                   {suggestion.type === "label" ? (
