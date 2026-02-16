@@ -5,7 +5,7 @@ import { useState } from "react";
 
 import { AdvancedFilterQueryBuilder } from "@/components/_experiment/typeahead/AdvancedFilterQueryBuilder";
 import { SuggestedFilters, getSuggestedFilterMatches } from "@/components/_experiment/typeahead/SuggestedFilters";
-import { TFilterClause } from "@/types";
+import { TFilterClause, TFilterFieldOptions } from "@/types";
 import { hasAnyMatches } from "@/utils/_experiment/suggestedFilterUtils";
 
 export interface ISearchTypeaheadProps {
@@ -22,6 +22,7 @@ export interface ISearchTypeaheadProps {
   onApplyAll: (matches: { concepts: string[]; geos: string[]; years: string[]; documentTypes: string[] }) => void;
   onSearchOnly: () => void;
   onApplyAdvancedFilters?: (clauses: TFilterClause[]) => void;
+  filterOptions?: TFilterFieldOptions;
   placeholder?: string;
 }
 
@@ -39,11 +40,12 @@ export const SearchTypeahead = ({
   onApplyAll,
   onSearchOnly,
   onApplyAdvancedFilters,
+  filterOptions,
   placeholder = "Search",
 }: ISearchTypeaheadProps) => {
   const [advancedOpen, setAdvancedOpen] = useState(false);
   const trimmedSearch = searchTerm.trim();
-  const matches = getSuggestedFilterMatches(trimmedSearch);
+  const matches = getSuggestedFilterMatches(trimmedSearch, filterOptions);
   const hasMatches = trimmedSearch.length > 0 && hasAnyMatches(matches);
 
   const handleApplyAdvanced = (clauses: TFilterClause[]) => {
@@ -80,7 +82,7 @@ export const SearchTypeahead = ({
           <Popover.Portal>
             <Popover.Positioner positionMethod="fixed" side="bottom" sideOffset={8} align="end" className="z-50">
               <Popover.Popup className="rounded-lg border border-gray-200 bg-white p-4 shadow-xl focus:outline-none">
-                <AdvancedFilterQueryBuilder onApply={handleApplyAdvanced} />
+                <AdvancedFilterQueryBuilder onApply={handleApplyAdvanced} fieldOptions={filterOptions} />
               </Popover.Popup>
             </Popover.Positioner>
           </Popover.Portal>

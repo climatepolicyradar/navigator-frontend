@@ -1,9 +1,10 @@
-import { useState, useCallback } from "react";
+import { useState } from "react";
 
 import { clausesToActiveFilters } from "@/components/_experiment/typeahead/AdvancedFilterQueryBuilder";
 import { getSuggestedFilterMatches } from "@/components/_experiment/typeahead/SuggestedFilters";
-import { TFilterClause } from "@/types";
+import { TFilterClause, TFilterFieldOptions } from "@/types";
 import {
+  addToFilterKey,
   EMPTY_FILTERS,
   hasAnyFilters as checkHasAnyFilters,
   hasAnyMatches,
@@ -11,93 +12,80 @@ import {
   SelectedFilters,
 } from "@/utils/_experiment/suggestedFilterUtils";
 
+export interface UseShadowSearchParams {
+  filterOptions?: TFilterFieldOptions;
+}
+
 /**
  * Encapsulates all state and behaviour for the shadow search (experimental search) page:
  * search input, raw query for results, string-only vs filter mode, and selected filters.
  */
-export function useShadowSearch() {
+export function useShadowSearch(params: UseShadowSearchParams = {}) {
+  const { filterOptions } = params;
   const [searchTerm, setSearchTerm] = useState("");
   const [rawSearchTerm, setRawSearchTerm] = useState("");
   const [wasStringOnlySearch, setWasStringOnlySearch] = useState(false);
   const [filters, setFilters] = useState<SelectedFilters>(EMPTY_FILTERS);
 
-  const rawMatches = getSuggestedFilterMatches(rawSearchTerm);
+  const rawMatches = getSuggestedFilterMatches(rawSearchTerm, filterOptions);
   const hasAnyFiltersFlag = checkHasAnyFilters(filters);
   const showStringOnlyResults = !!rawSearchTerm && wasStringOnlySearch && !hasAnyFiltersFlag && hasAnyMatches(rawMatches);
 
-  const clearAllFilters = useCallback(() => {
+  function clearAllFilters() {
     setFilters(EMPTY_FILTERS);
-  }, []);
+  }
 
-  const applyRawSearch = useCallback((trimmed: string) => {
+  function applyRawSearch(trimmed: string) {
     if (trimmed.length > 0) setRawSearchTerm(trimmed);
     setWasStringOnlySearch(false);
-  }, []);
+  }
 
-  const handleSelectConcept = useCallback(
-    (concept: string) => {
-      const trimmed = searchTerm.trim();
-      const nextFilters: SelectedFilters = { ...filters, topics: [...filters.topics, concept] };
-      setFilters(nextFilters);
-      applyRawSearch(trimmed);
-      if (!hasRemainingSuggestions(trimmed, nextFilters)) setSearchTerm("");
-    },
-    [searchTerm, filters, applyRawSearch]
-  );
+  function handleSelectConcept(concept: string) {
+    const trimmed = searchTerm.trim();
+    const nextFilters = addToFilterKey(filters, "topics", concept);
+    setFilters(nextFilters);
+    applyRawSearch(trimmed);
+    if (!hasRemainingSuggestions(trimmed, nextFilters, filterOptions)) setSearchTerm("");
+  }
 
-  const handleSelectGeo = useCallback(
-    (geo: string) => {
-      const trimmed = searchTerm.trim();
-      const nextFilters: SelectedFilters = { ...filters, geos: [...filters.geos, geo] };
-      setFilters(nextFilters);
-      applyRawSearch(trimmed);
-      if (!hasRemainingSuggestions(trimmed, nextFilters)) setSearchTerm("");
-    },
-    [searchTerm, filters, applyRawSearch]
-  );
+  function handleSelectGeo(geo: string) {
+    const trimmed = searchTerm.trim();
+    const nextFilters = addToFilterKey(filters, "geos", geo);
+    setFilters(nextFilters);
+    applyRawSearch(trimmed);
+    if (!hasRemainingSuggestions(trimmed, nextFilters, filterOptions)) setSearchTerm("");
+  }
 
-  const handleSelectYear = useCallback(
-    (year: string) => {
-      const trimmed = searchTerm.trim();
-      const nextFilters: SelectedFilters = { ...filters, years: [...filters.years, year] };
-      setFilters(nextFilters);
-      applyRawSearch(trimmed);
-      if (!hasRemainingSuggestions(trimmed, nextFilters)) setSearchTerm("");
-    },
-    [searchTerm, filters, applyRawSearch]
-  );
+  function handleSelectYear(year: string) {
+    const trimmed = searchTerm.trim();
+    const nextFilters = addToFilterKey(filters, "years", year);
+    setFilters(nextFilters);
+    applyRawSearch(trimmed);
+    if (!hasRemainingSuggestions(trimmed, nextFilters, filterOptions)) setSearchTerm("");
+  }
 
-  const handleSelectDocumentType = useCallback(
-    (documentType: string) => {
-      const trimmed = searchTerm.trim();
-      const nextFilters: SelectedFilters = {
-        ...filters,
-        documentTypes: [...filters.documentTypes, documentType],
-      };
-      setFilters(nextFilters);
-      applyRawSearch(trimmed);
-      if (!hasRemainingSuggestions(trimmed, nextFilters)) setSearchTerm("");
-    },
-    [searchTerm, filters, applyRawSearch]
-  );
+  function handleSelectDocumentType(documentType: string) {
+    const trimmed = searchTerm.trim();
+    const nextFilters = addToFilterKey(filters, "documentTypes", documentType);
+    setFilters(nextFilters);
+    applyRawSearch(trimmed);
+    if (!hasRemainingSuggestions(trimmed, nextFilters, filterOptions)) setSearchTerm("");
+  }
 
-  const handleApplyAll = useCallback(
-    (matches: { concepts: string[]; geos: string[]; years: string[]; documentTypes: string[] }) => {
-      setFilters({
-        ...EMPTY_FILTERS,
-        topics: matches.concepts,
-        geos: matches.geos,
-        years: matches.years,
-        documentTypes: matches.documentTypes,
-      });
-      setRawSearchTerm(searchTerm);
-      setWasStringOnlySearch(false);
-      setSearchTerm("");
-    },
-    [searchTerm]
-  );
+  function handleApplyAll(matches: { concepts: string[]; geos: string[]; years: string[]; documentTypes: string[] }) {
+    setFilters({
+      ...EMPTY_FILTERS,
+      topics: matches.concepts,
+      geos: matches.geos,
+      years: matches.years,
+      documentTypes: matches.documentTypes,
+    });
+    setRawSearchTerm(searchTerm);
+    setWasStringOnlySearch(false);
+    setSearchTerm("");
+  }
 
-  const applyAdvancedFilters = useCallback((clauses: TFilterClause[]) => {
+  function applyAdvancedFilters(clauses: TFilterClause[]) {
     const active = clausesToActiveFilters(clauses);
     setFilters({
       topics: active.includedConcepts,
@@ -112,54 +100,58 @@ export function useShadowSearch() {
     setRawSearchTerm("");
     setWasStringOnlySearch(false);
     setSearchTerm("");
-  }, []);
+  }
 
-  const handleSearchOnly = useCallback(() => {
+  function handleSearchOnly() {
     setRawSearchTerm(searchTerm);
     setWasStringOnlySearch(true);
     setSearchTerm("");
-  }, [searchTerm]);
+  }
 
-  const resetFiltersToOriginalSearch = useCallback(() => {
+  function resetFiltersToOriginalSearch() {
     setSearchTerm(rawSearchTerm);
     clearAllFilters();
     setRawSearchTerm("");
-  }, [rawSearchTerm, clearAllFilters]);
+  }
 
-  const removeFilter = useCallback((update: Partial<SelectedFilters>) => {
+  function removeFilter(update: Partial<SelectedFilters>) {
     setFilters((prev) => {
       const next = { ...prev, ...update };
       if (!checkHasAnyFilters(next)) setSearchTerm("");
       return next;
     });
-  }, []);
+  }
 
-  const removeTopic = useCallback(
-    (topic: string) => removeFilter({ topics: filters.topics.filter((t) => t !== topic) }),
-    [filters.topics, removeFilter]
-  );
-  const removeGeo = useCallback((geo: string) => removeFilter({ geos: filters.geos.filter((g) => g !== geo) }), [filters.geos, removeFilter]);
-  const removeYear = useCallback((year: string) => removeFilter({ years: filters.years.filter((y) => y !== year) }), [filters.years, removeFilter]);
-  const removeDocumentType = useCallback(
-    (documentType: string) => removeFilter({ documentTypes: filters.documentTypes.filter((d) => d !== documentType) }),
-    [filters.documentTypes, removeFilter]
-  );
-  const removeTopicExcluded = useCallback(
-    (topic: string) => removeFilter({ topicsExcluded: filters.topicsExcluded.filter((t) => t !== topic) }),
-    [filters.topicsExcluded, removeFilter]
-  );
-  const removeGeoExcluded = useCallback(
-    (geo: string) => removeFilter({ geosExcluded: filters.geosExcluded.filter((g) => g !== geo) }),
-    [filters.geosExcluded, removeFilter]
-  );
-  const removeYearExcluded = useCallback(
-    (year: string) => removeFilter({ yearsExcluded: filters.yearsExcluded.filter((y) => y !== year) }),
-    [filters.yearsExcluded, removeFilter]
-  );
-  const removeDocumentTypeExcluded = useCallback(
-    (documentType: string) => removeFilter({ documentTypesExcluded: filters.documentTypesExcluded.filter((d) => d !== documentType) }),
-    [filters.documentTypesExcluded, removeFilter]
-  );
+  function removeFromFilter(key: keyof SelectedFilters, value: string) {
+    const arr = filters[key];
+    if (!Array.isArray(arr)) return;
+    removeFilter({ [key]: arr.filter((x) => x !== value) } as Partial<SelectedFilters>);
+  }
+
+  function removeTopic(topic: string) {
+    removeFromFilter("topics", topic);
+  }
+  function removeGeo(geo: string) {
+    removeFromFilter("geos", geo);
+  }
+  function removeYear(year: string) {
+    removeFromFilter("years", year);
+  }
+  function removeDocumentType(documentType: string) {
+    removeFromFilter("documentTypes", documentType);
+  }
+  function removeTopicExcluded(topic: string) {
+    removeFromFilter("topicsExcluded", topic);
+  }
+  function removeGeoExcluded(geo: string) {
+    removeFromFilter("geosExcluded", geo);
+  }
+  function removeYearExcluded(year: string) {
+    removeFromFilter("yearsExcluded", year);
+  }
+  function removeDocumentTypeExcluded(documentType: string) {
+    removeFromFilter("documentTypesExcluded", documentType);
+  }
 
   return {
     searchTerm,

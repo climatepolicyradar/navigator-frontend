@@ -1,11 +1,29 @@
 import { Button } from "@base-ui/react/button";
+import { useContext, useMemo } from "react";
 
+import { TopicsContext } from "@/context/TopicsContext";
+import useConfig from "@/hooks/useConfig";
 import useShadowSearch from "@/hooks/useShadowSearch";
+import { buildFilterFieldOptions } from "@/utils/_experiment/buildFilterFieldOptions";
 
 import { SearchTypeahead } from "./SearchTypeahead";
 import { SuggestedFilters } from "./SuggestedFilters";
 
 export function Typeahead() {
+  const topicsData = useContext(TopicsContext);
+  const configQuery = useConfig();
+  const { data: configData } = configQuery;
+  const filterOptions = useMemo(
+    () =>
+      buildFilterFieldOptions({
+        topics: topicsData?.topics,
+        regions: configData?.regions,
+        countries: configData?.countries,
+        corpusTypes: configData?.corpus_types,
+      }),
+    [topicsData?.topics, configData?.regions, configData?.countries, configData?.corpus_types]
+  );
+
   const {
     searchTerm,
     setSearchTerm,
@@ -31,7 +49,7 @@ export function Typeahead() {
     removeGeoExcluded,
     removeYearExcluded,
     removeDocumentTypeExcluded,
-  } = useShadowSearch();
+  } = useShadowSearch({ filterOptions });
 
   return (
     <section className="bg-surface-light py-10 md:py-16">
@@ -220,6 +238,7 @@ export function Typeahead() {
               onApplyAll={handleApplyAll}
               onSearchOnly={handleSearchOnly}
               onApplyAdvancedFilters={applyAdvancedFilters}
+              filterOptions={filterOptions}
             />
 
             {(rawSearchTerm || hasAnyFilters) && (
