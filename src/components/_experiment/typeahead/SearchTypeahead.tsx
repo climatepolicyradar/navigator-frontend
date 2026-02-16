@@ -1,6 +1,9 @@
 import { Button } from "@base-ui/react/button";
 import { Input } from "@base-ui/react/input";
+import { Popover } from "@base-ui/react/popover";
+import { useState } from "react";
 
+import { AdvancedFilterQueryBuilder, type FilterClause } from "@/components/_experiment/typeahead/AdvancedFilterQueryBuilder";
 import { SuggestedFilters, getSuggestedFilterMatches } from "@/components/_experiment/typeahead/SuggestedFilters";
 import { hasAnyMatches } from "@/utils/_experiment/suggestedFilterUtils";
 
@@ -17,6 +20,8 @@ export interface ISearchTypeaheadProps {
   onSelectDocumentType: (documentType: string) => void;
   onApplyAll: (matches: { concepts: string[]; geos: string[]; years: string[]; documentTypes: string[] }) => void;
   onSearchOnly: () => void;
+  /** Apply advanced filter clauses as active filters and close the advanced panel. */
+  onApplyAdvancedFilters?: (clauses: FilterClause[]) => void;
   placeholder?: string;
 }
 
@@ -33,33 +38,53 @@ export const SearchTypeahead = ({
   onSelectDocumentType,
   onApplyAll,
   onSearchOnly,
+  onApplyAdvancedFilters,
   placeholder = "Search",
 }: ISearchTypeaheadProps) => {
+  const [advancedOpen, setAdvancedOpen] = useState(false);
   const trimmedSearch = searchTerm.trim();
   const matches = getSuggestedFilterMatches(trimmedSearch);
   const hasMatches = trimmedSearch.length > 0 && hasAnyMatches(matches);
 
+  const handleApplyAdvanced = (clauses: FilterClause[]) => {
+    onApplyAdvancedFilters?.(clauses);
+    setAdvancedOpen(false);
+  };
+
   return (
     <div className="border border-border-lighter bg-white p-4 space-y-4">
-      <div className="relative">
-        <Input
-          placeholder={placeholder}
-          onChange={(e) => {
-            onSearchTermChange(e.target.value);
-          }}
-          className="h-[44px] w-full border border-border-lighter bg-surface-light px-4 pr-10 text-sm text-text-primary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-text-brand"
-          value={searchTerm}
-        />
-
-        {searchTerm.length > 0 && (
-          <Button
-            onClick={() => onSearchTermChange("")}
-            aria-label="Clear search"
-            className="absolute right-2 top-1/2 -translate-y-1/2 inline-flex h-7 w-7 items-center justify-center border border-border-lighter bg-surface-light text-xs font-medium text-text-secondary hover:bg-surface-ui"
-          >
-            x
-          </Button>
-        )}
+      <div className="flex items-stretch gap-0 rounded border border-border-lighter bg-surface-light">
+        <div className="relative min-w-0 flex-1">
+          <Input
+            placeholder={placeholder}
+            onChange={(e) => {
+              onSearchTermChange(e.target.value);
+            }}
+            className="h-[44px] w-full rounded-l border-0 bg-transparent px-4 pr-10 text-sm text-text-primary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-text-brand focus-visible:ring-inset"
+            value={searchTerm}
+          />
+          {searchTerm.length > 0 && (
+            <Button
+              onClick={() => onSearchTermChange("")}
+              aria-label="Clear search"
+              className="absolute right-2 top-1/2 -translate-y-1/2 inline-flex h-7 w-7 items-center justify-center border border-border-lighter bg-surface-light text-xs font-medium text-text-secondary hover:bg-surface-ui"
+            >
+              x
+            </Button>
+          )}
+        </div>
+        <Popover.Root open={advancedOpen} onOpenChange={setAdvancedOpen}>
+          <Popover.Trigger className="shrink-0 rounded-r border-l border-border-lighter px-3 py-2 text-sm font-medium text-text-tertiary transition hover:bg-surface-ui hover:text-text-primary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-text-brand focus-visible:ring-inset">
+            Advanced
+          </Popover.Trigger>
+          <Popover.Portal>
+            <Popover.Positioner positionMethod="fixed" side="bottom" sideOffset={8} align="end" className="z-50">
+              <Popover.Popup className="rounded-lg border border-gray-200 bg-white p-4 shadow-xl focus:outline-none">
+                <AdvancedFilterQueryBuilder onApply={handleApplyAdvanced} />
+              </Popover.Popup>
+            </Popover.Positioner>
+          </Popover.Portal>
+        </Popover.Root>
       </div>
 
       {trimmedSearch.length > 0 && (

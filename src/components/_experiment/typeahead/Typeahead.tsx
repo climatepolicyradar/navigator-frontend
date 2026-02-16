@@ -21,6 +21,7 @@ export function Typeahead() {
     handleSelectDocumentType,
     handleApplyAll,
     handleSearchOnly,
+    applyAdvancedFilters,
     resetFiltersToOriginalSearch,
     removeTopic,
     removeGeo,
@@ -135,9 +136,10 @@ export function Typeahead() {
               onSelectDocumentType={handleSelectDocumentType}
               onApplyAll={handleApplyAll}
               onSearchOnly={handleSearchOnly}
+              onApplyAdvancedFilters={applyAdvancedFilters}
             />
 
-            {rawSearchTerm && (
+            {(rawSearchTerm || hasAnyFilters) && (
               <div className="space-y-3">
                 {hasAnyFilters ? (
                   <div className="border border-border-lighter bg-white p-4 space-y-3">
