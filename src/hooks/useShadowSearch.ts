@@ -96,7 +96,6 @@ export function useShadowSearch() {
     [searchTerm]
   );
 
-  /** Apply advanced filter clauses as active filters and show results. */
   const applyAdvancedFilters = useCallback((clauses: TFilterClause[]) => {
     const { concepts, geos, years, documentTypes } = clausesToActiveFilters(clauses);
     setFilters({ topics: concepts, geos, years, documentTypes });

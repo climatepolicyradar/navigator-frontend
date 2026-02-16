@@ -21,7 +21,6 @@ export interface ISearchTypeaheadProps {
   onSelectDocumentType: (documentType: string) => void;
   onApplyAll: (matches: { concepts: string[]; geos: string[]; years: string[]; documentTypes: string[] }) => void;
   onSearchOnly: () => void;
-  /** Apply advanced filter clauses as active filters and close the advanced panel. */
   onApplyAdvancedFilters?: (clauses: TFilterClause[]) => void;
   placeholder?: string;
 }
