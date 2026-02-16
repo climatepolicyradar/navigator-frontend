@@ -1,7 +1,8 @@
 import { useState, useCallback } from "react";
 
-import { clausesToActiveFilters, type FilterClause } from "@/components/_experiment/typeahead/AdvancedFilterQueryBuilder";
+import { clausesToActiveFilters } from "@/components/_experiment/typeahead/AdvancedFilterQueryBuilder";
 import { getSuggestedFilterMatches } from "@/components/_experiment/typeahead/SuggestedFilters";
+import { TFilterClause } from "@/types";
 import {
   EMPTY_FILTERS,
   hasAnyFilters as checkHasAnyFilters,
@@ -96,7 +97,7 @@ export function useShadowSearch() {
   );
 
   /** Apply advanced filter clauses as active filters and show results. */
-  const applyAdvancedFilters = useCallback((clauses: FilterClause[]) => {
+  const applyAdvancedFilters = useCallback((clauses: TFilterClause[]) => {
     const { concepts, geos, years, documentTypes } = clausesToActiveFilters(clauses);
     setFilters({ topics: concepts, geos, years, documentTypes });
     setRawSearchTerm("");

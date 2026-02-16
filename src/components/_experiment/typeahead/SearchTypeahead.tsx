@@ -3,8 +3,9 @@ import { Input } from "@base-ui/react/input";
 import { Popover } from "@base-ui/react/popover";
 import { useState } from "react";
 
-import { AdvancedFilterQueryBuilder, type FilterClause } from "@/components/_experiment/typeahead/AdvancedFilterQueryBuilder";
+import { AdvancedFilterQueryBuilder } from "@/components/_experiment/typeahead/AdvancedFilterQueryBuilder";
 import { SuggestedFilters, getSuggestedFilterMatches } from "@/components/_experiment/typeahead/SuggestedFilters";
+import { TFilterClause } from "@/types";
 import { hasAnyMatches } from "@/utils/_experiment/suggestedFilterUtils";
 
 export interface ISearchTypeaheadProps {
@@ -21,7 +22,7 @@ export interface ISearchTypeaheadProps {
   onApplyAll: (matches: { concepts: string[]; geos: string[]; years: string[]; documentTypes: string[] }) => void;
   onSearchOnly: () => void;
   /** Apply advanced filter clauses as active filters and close the advanced panel. */
-  onApplyAdvancedFilters?: (clauses: FilterClause[]) => void;
+  onApplyAdvancedFilters?: (clauses: TFilterClause[]) => void;
   placeholder?: string;
 }
 
@@ -46,7 +47,7 @@ export const SearchTypeahead = ({
   const matches = getSuggestedFilterMatches(trimmedSearch);
   const hasMatches = trimmedSearch.length > 0 && hasAnyMatches(matches);
 
-  const handleApplyAdvanced = (clauses: FilterClause[]) => {
+  const handleApplyAdvanced = (clauses: TFilterClause[]) => {
     onApplyAdvancedFilters?.(clauses);
     setAdvancedOpen(false);
   };

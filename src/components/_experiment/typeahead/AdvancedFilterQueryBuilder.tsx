@@ -1,8 +1,7 @@
-"use client";
-
 import { Button } from "@base-ui/react/button";
-import { useCallback, useMemo, useState } from "react";
+import { useState } from "react";
 
+import { TActiveFilters, TFilterClause, TFilterOperator } from "@/types";
 import { joinTailwindClasses } from "@/utils/tailwind";
 
 const FILTER_FIELDS = [
@@ -40,30 +39,9 @@ const selectInputClasses = joinTailwindClasses(
 // Types
 // -----------------------------------------------------------------------------
 
-// Operator for a single condition: equals or not-equals.
-export type FilterOperator = "eq" | "ne";
-
-// One condition in the query: field, operator, value, and how it connects to the previous.
-export type FilterClause = {
-  id: string;
-  // AND/OR before this clause; null for the first clause.
-  connector: "and" | "or" | null;
-  field: string;
-  operator: FilterOperator;
-  value: string;
-};
-
-// Shape used by active filters (Topics, Geographies, etc.) and handleApplyAll.
-export type ActiveFilters = {
-  concepts: string[];
-  geos: string[];
-  years: string[];
-  documentTypes: string[];
-};
-
-export interface AdvancedFilterQueryBuilderProps {
+export interface IAdvancedFilterQueryBuilderProps {
   // Called when the user clicks Apply with the current clauses.
-  onApply?: (clauses: FilterClause[]) => void;
+  onApply?: (clauses: TFilterClause[]) => void;
   className?: string;
 }
 
@@ -75,7 +53,7 @@ function getValueOptionsForField(field: string): string[] {
   return [...(FIELD_OPTIONS[field] ?? [])];
 }
 
-function createEmptyClause(connector: FilterClause["connector"] = null): FilterClause {
+function createEmptyClause(connector: TFilterClause["connector"] = null): TFilterClause {
   return {
     id: crypto.randomUUID(),
     connector,
@@ -89,7 +67,7 @@ function createEmptyClause(connector: FilterClause["connector"] = null): FilterC
  * Converts builder clauses into the active-filters shape. Only "is" (eq) clauses
  * with a value are included; "is not" (ne) is not yet supported by active filters.
  */
-export function clausesToActiveFilters(clauses: FilterClause[]): ActiveFilters {
+export function clausesToActiveFilters(clauses: TFilterClause[]): TActiveFilters {
   const concepts: string[] = [];
   const geos: string[] = [];
   const years: string[] = [];
@@ -118,7 +96,7 @@ export function clausesToActiveFilters(clauses: FilterClause[]): ActiveFilters {
 }
 
 /** Renders clauses as readable boolean expression, e.g. (Topic is "X") AND (Geography is not "Y"). */
-function formatAsBooleanExpression(clauses: FilterClause[]): string {
+function formatAsBooleanExpression(clauses: TFilterClause[]): string {
   if (clauses.length === 0) return "";
 
   const conditionParts = clauses.map((clause) => {
@@ -144,14 +122,14 @@ function formatAsBooleanExpression(clauses: FilterClause[]): string {
  * condition (field + is/is not + value). Apply converts clauses into active
  * filters and closes the panel.
  */
-export function AdvancedFilterQueryBuilder({ onApply, className }: AdvancedFilterQueryBuilderProps) {
-  const [clauses, setClauses] = useState<FilterClause[]>(() => [createEmptyClause(null)]);
+export function AdvancedFilterQueryBuilder({ onApply, className }: IAdvancedFilterQueryBuilderProps) {
+  const [clauses, setClauses] = useState<TFilterClause[]>(() => [createEmptyClause(null)]);
 
-  const addClause = useCallback(() => {
+  function addClause() {
     setClauses((currentClauses) => [...currentClauses, createEmptyClause("and")]);
-  }, []);
+  }
 
-  const removeClause = useCallback((id: string) => {
+  function removeClause(id: string) {
     setClauses((currentClauses) => {
       if (currentClauses.length <= 1) return currentClauses;
       const removedIndex = currentClauses.findIndex((clause) => clause.id === id);
@@ -162,22 +140,22 @@ export function AdvancedFilterQueryBuilder({ onApply, className }: AdvancedFilte
       }
       return clausesAfterRemoval;
     });
-  }, []);
+  }
 
-  const updateClause = useCallback((id: string, patch: Partial<Omit<FilterClause, "id">>) => {
+  function updateClause(id: string, patch: Partial<Omit<TFilterClause, "id">>) {
     setClauses((currentClauses) => currentClauses.map((clause) => (clause.id === id ? { ...clause, ...patch } : clause)));
-  }, []);
+  }
 
-  const clearAll = useCallback(() => {
+  function clearAll() {
     setClauses([createEmptyClause(null)]);
-  }, []);
+  }
 
-  const handleApply = useCallback(() => {
+  function handleApply() {
     onApply?.(clauses);
-  }, [onApply, clauses]);
+  }
 
-  const queryPreview = useMemo(() => formatAsBooleanExpression(clauses), [clauses]);
-  const hasAtLeastOneCompleteClause = useMemo(() => clauses.some((clause) => clause.value.trim() !== ""), [clauses]);
+  const queryPreview = formatAsBooleanExpression(clauses);
+  const hasAtLeastOneCompleteClause = clauses.some((clause) => clause.value.trim() !== "");
   const showApplyAndClearAll = hasAtLeastOneCompleteClause;
 
   return (
@@ -226,7 +204,7 @@ export function AdvancedFilterQueryBuilder({ onApply, className }: AdvancedFilte
               <select
                 aria-label="Is / Is not"
                 value={clause.operator}
-                onChange={(e) => updateClause(clause.id, { operator: e.target.value as FilterOperator })}
+                onChange={(e) => updateClause(clause.id, { operator: e.target.value as TFilterOperator })}
                 className={joinTailwindClasses(selectInputClasses, "w-20")}
               >
                 {CONDITION_OPERATORS.map((op) => (
