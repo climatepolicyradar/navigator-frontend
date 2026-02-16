@@ -1,6 +1,7 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 
 import { GetServerSideProps, InferGetServerSidePropsType } from "next";
+import { useMemo } from "react";
 
 import { ApiClient } from "@/api/http-common";
 import { IntelliSearch } from "@/components/_experiment/intellisearch";
@@ -10,7 +11,9 @@ import { FeaturesContext } from "@/context/FeaturesContext";
 import { TopicsContext } from "@/context/TopicsContext";
 import { WikiBaseConceptsContext } from "@/context/WikiBaseConceptsContext";
 import useConfig from "@/hooks/useConfig";
+import useShadowSearch from "@/hooks/useShadowSearch";
 import { TTopic, TTopics } from "@/types";
+import { buildFilterFieldOptions } from "@/utils/_experiment/buildFilterFieldOptions";
 import { FamilyConcept, mapFamilyConceptsToConcepts } from "@/utils/familyConcepts";
 import { getFeatureFlags } from "@/utils/featureFlags";
 import { getFeatures } from "@/utils/features";
@@ -21,16 +24,39 @@ type TProps = InferGetServerSidePropsType<typeof getServerSideProps>;
 
 const ShadowSearch = ({ theme, themeConfig, features, topicsData, familyConceptsData }: TProps) => {
   const configQuery = useConfig();
-  const { data: { regions = [], countries = [], corpus_types = {} } = {} } = configQuery;
+  const { data: configData } = configQuery;
+  const { regions = [], countries = [], corpus_types = {} } = configData ?? {};
+
+  const filterOptions = useMemo(
+    () =>
+      buildFilterFieldOptions({
+        topics: topicsData?.topics,
+        regions,
+        countries,
+        corpusTypes: corpus_types,
+      }),
+    [topicsData?.topics, regions, countries, corpus_types]
+  );
+
+  const shadowSearch = useShadowSearch({ filterOptions });
+  const addFilter = shadowSearch.actions.add;
 
   return (
     <FeaturesContext.Provider value={features}>
       <TopicsContext.Provider value={topicsData}>
         <WikiBaseConceptsContext.Provider value={familyConceptsData || []}>
           <div className="ml-40 mt-40">
-            <IntelliSearch topics={topicsData.topics} />
+            <IntelliSearch
+              topics={topicsData.topics}
+              selectedTopics={shadowSearch.filters.value.topics}
+              onSelectConcept={(concept) => {
+                if (concept?.preferred_label) {
+                  addFilter("topics", concept.preferred_label);
+                }
+              }}
+            />
           </div>
-          <Typeahead />
+          <Typeahead shadowSearch={shadowSearch} filterOptions={filterOptions} />
         </WikiBaseConceptsContext.Provider>
       </TopicsContext.Provider>
     </FeaturesContext.Provider>

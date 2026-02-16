@@ -67,6 +67,7 @@ export const SearchTypeahead = ({
           />
           {searchTerm.length > 0 && (
             <Button
+              type="button"
               onClick={() => onSearchTermChange("")}
               aria-label="Clear search"
               className="absolute right-2 top-1/2 -translate-y-1/2 inline-flex h-7 w-7 items-center justify-center border border-border-lighter bg-surface-light text-xs font-medium text-text-secondary hover:bg-surface-ui"
@@ -107,6 +108,8 @@ export const SearchTypeahead = ({
           {hasMatches && (
             <div className="mt-3 flex flex-wrap items-center gap-3">
               <Button
+                type="button"
+                onMouseDown={(e) => e.preventDefault()}
                 onClick={() =>
                   onApplyAll({
                     concepts: matches.matchedConcepts,
@@ -121,6 +124,8 @@ export const SearchTypeahead = ({
               </Button>
               <span className="text-xs text-text-tertiary">or</span>
               <Button
+                type="button"
+                onMouseDown={(e) => e.preventDefault()}
                 onClick={onSearchOnly}
                 className="inline-flex items-center border border-border-lighter bg-white px-4 py-2 text-xs font-medium text-text-primary hover:bg-surface-light"
               >

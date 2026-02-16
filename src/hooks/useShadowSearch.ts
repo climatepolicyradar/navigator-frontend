@@ -71,10 +71,14 @@ export function useShadowSearch(params: UseShadowSearchParams = {}): UseShadowSe
 
   function addToFilter(key: TIncludedFilterKey, value: string) {
     const trimmed = searchTerm.trim();
-    const nextFilters = addToFilterKey(filters, key, value);
-    setFilters(nextFilters);
+    setFilters((prev) => {
+      const nextFilters = addToFilterKey(prev, key, value);
+      if (!hasRemainingSuggestions(trimmed, nextFilters, filterOptions)) {
+        setTimeout(() => setSearchTerm(""), 0);
+      }
+      return nextFilters;
+    });
     applyRawSearch(trimmed);
-    if (!hasRemainingSuggestions(trimmed, nextFilters, filterOptions)) setSearchTerm("");
   }
 
   function handleApplyAll(matches: { concepts: string[]; geos: string[]; years: string[]; documentTypes: string[] }) {

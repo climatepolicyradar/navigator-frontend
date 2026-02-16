@@ -120,6 +120,8 @@ export const SuggestedFilters = ({
               {remainingConcepts.map((concept) => (
                 <Button
                   key={concept}
+                  type="button"
+                  onMouseDown={(e) => e.preventDefault()}
                   onClick={() => onSelectConcept(concept)}
                   className="inline-flex items-center rounded-full bg-surface-light px-3 py-1.5 text-[11px] font-medium text-text-primary hover:bg-surface-ui"
                 >
@@ -137,6 +139,8 @@ export const SuggestedFilters = ({
               {remainingGeos.map((geo) => (
                 <Button
                   key={geo}
+                  type="button"
+                  onMouseDown={(e) => e.preventDefault()}
                   onClick={() => onSelectGeo(geo)}
                   className="inline-flex items-center rounded-full bg-surface-light px-3 py-1.5 text-[11px] font-medium text-text-primary hover:bg-surface-ui"
                 >
@@ -154,6 +158,8 @@ export const SuggestedFilters = ({
               {remainingYears.map((year) => (
                 <Button
                   key={year}
+                  type="button"
+                  onMouseDown={(e) => e.preventDefault()}
                   onClick={() => onSelectYear(year)}
                   className="inline-flex items-center rounded-full bg-surface-light px-3 py-1.5 text-[11px] font-medium text-text-primary hover:bg-surface-ui"
                 >
@@ -171,6 +177,8 @@ export const SuggestedFilters = ({
               {remainingDocumentTypes.map((documentType) => (
                 <Button
                   key={documentType}
+                  type="button"
+                  onMouseDown={(e) => e.preventDefault()}
                   onClick={() => onSelectDocumentType(documentType)}
                   className="inline-flex items-center rounded-full bg-surface-light px-3 py-1.5 text-[11px] font-medium text-text-primary hover:bg-surface-ui"
                 >
