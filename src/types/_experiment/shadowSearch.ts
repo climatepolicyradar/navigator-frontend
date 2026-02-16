@@ -11,9 +11,14 @@ export type TFilterClause = {
   value: string;
 };
 
+// Shape produced by advanced filter builder (include + exclude per dimension).
 export type TActiveFilters = {
-  concepts: string[];
-  geos: string[];
-  years: string[];
-  documentTypes: string[];
+  includedConcepts: string[];
+  includedGeos: string[];
+  includedYears: string[];
+  includedDocumentTypes: string[];
+  excludedConcepts: string[];
+  excludedGeos: string[];
+  excludedYears: string[];
+  excludedDocumentTypes: string[];
 };

@@ -1,11 +1,15 @@
 import { getSuggestedFilterMatches, TSuggestedFilterMatches } from "@/components/_experiment/typeahead/SuggestedFilters";
 
-/** Single object holding all selected filter arrays. */
+// Single object holding all selected filter arrays (included and excluded).
 export type SelectedFilters = {
   topics: string[];
   geos: string[];
   years: string[];
   documentTypes: string[];
+  topicsExcluded: string[];
+  geosExcluded: string[];
+  yearsExcluded: string[];
+  documentTypesExcluded: string[];
 };
 
 export const EMPTY_FILTERS: SelectedFilters = {
@@ -13,14 +17,27 @@ export const EMPTY_FILTERS: SelectedFilters = {
   geos: [],
   years: [],
   documentTypes: [],
+  topicsExcluded: [],
+  geosExcluded: [],
+  yearsExcluded: [],
+  documentTypesExcluded: [],
 };
 
-/** True if any topic, geo, year or document type is selected. */
+// True if any included or excluded filter is set.
 export function hasAnyFilters(filters: SelectedFilters): boolean {
-  return filters.topics.length > 0 || filters.geos.length > 0 || filters.years.length > 0 || filters.documentTypes.length > 0;
+  return (
+    filters.topics.length > 0 ||
+    filters.geos.length > 0 ||
+    filters.years.length > 0 ||
+    filters.documentTypes.length > 0 ||
+    filters.topicsExcluded.length > 0 ||
+    filters.geosExcluded.length > 0 ||
+    filters.yearsExcluded.length > 0 ||
+    filters.documentTypesExcluded.length > 0
+  );
 }
 
-/** True if the search string has at least one match in any category. */
+// True if the search string has at least one match in any category.
 export function hasAnyMatches(matches: TSuggestedFilterMatches): boolean {
   return (
     matches.matchedConcepts.length > 0 || matches.matchedGeos.length > 0 || matches.matchedYears.length > 0 || matches.matchedDocumentTypes.length > 0

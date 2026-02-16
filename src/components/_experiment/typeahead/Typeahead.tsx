@@ -27,6 +27,10 @@ export function Typeahead() {
     removeGeo,
     removeYear,
     removeDocumentType,
+    removeTopicExcluded,
+    removeGeoExcluded,
+    removeYearExcluded,
+    removeDocumentTypeExcluded,
   } = useShadowSearch();
 
   return (
@@ -110,6 +114,85 @@ export function Typeahead() {
                   ))}
                 </div>
               </div>
+
+              {(filters.topicsExcluded.length > 0 ||
+                filters.geosExcluded.length > 0 ||
+                filters.yearsExcluded.length > 0 ||
+                filters.documentTypesExcluded.length > 0) && (
+                <div className="border-t border-border-lighter pt-3 mt-3">
+                  <p className="mb-2 text-xs font-semibold uppercase tracking-[0.16em] text-text-tertiary">Excluded</p>
+                  <div className="space-y-2">
+                    {filters.topicsExcluded.length > 0 && (
+                      <div>
+                        <p className="mb-1 text-[10px] font-medium text-text-tertiary">Topics</p>
+                        <div className="flex flex-wrap gap-2">
+                          {filters.topicsExcluded.map((topic: string) => (
+                            <Button
+                              key={topic}
+                              onClick={() => removeTopicExcluded(topic)}
+                              className="group inline-flex items-center gap-1 rounded-full border border-dashed border-border-lighter bg-surface-light/70 px-3 py-1.5 text-[11px] font-medium text-text-secondary hover:bg-surface-ui hover:text-text-brand transition"
+                            >
+                              <span>{topic}</span>
+                              <span className="text-xs text-text-tertiary group-hover:text-text-brand">×</span>
+                            </Button>
+                          ))}
+                        </div>
+                      </div>
+                    )}
+                    {filters.geosExcluded.length > 0 && (
+                      <div>
+                        <p className="mb-1 text-[10px] font-medium text-text-tertiary">Geographies</p>
+                        <div className="flex flex-wrap gap-2">
+                          {filters.geosExcluded.map((geo: string) => (
+                            <Button
+                              key={geo}
+                              onClick={() => removeGeoExcluded(geo)}
+                              className="group inline-flex items-center gap-1 rounded-full border border-dashed border-border-lighter bg-surface-light/70 px-3 py-1.5 text-[11px] font-medium text-text-secondary hover:bg-surface-ui hover:text-text-brand transition"
+                            >
+                              <span>{geo}</span>
+                              <span className="text-xs text-text-tertiary group-hover:text-text-brand">×</span>
+                            </Button>
+                          ))}
+                        </div>
+                      </div>
+                    )}
+                    {filters.yearsExcluded.length > 0 && (
+                      <div>
+                        <p className="mb-1 text-[10px] font-medium text-text-tertiary">Years</p>
+                        <div className="flex flex-wrap gap-2">
+                          {filters.yearsExcluded.map((year: string) => (
+                            <Button
+                              key={year}
+                              onClick={() => removeYearExcluded(year)}
+                              className="group inline-flex items-center gap-1 rounded-full border border-dashed border-border-lighter bg-surface-light/70 px-3 py-1.5 text-[11px] font-medium text-text-secondary hover:bg-surface-ui hover:text-text-brand transition"
+                            >
+                              <span>{year}</span>
+                              <span className="text-xs text-text-tertiary group-hover:text-text-brand">×</span>
+                            </Button>
+                          ))}
+                        </div>
+                      </div>
+                    )}
+                    {filters.documentTypesExcluded.length > 0 && (
+                      <div>
+                        <p className="mb-1 text-[10px] font-medium text-text-tertiary">Document types</p>
+                        <div className="flex flex-wrap gap-2">
+                          {filters.documentTypesExcluded.map((documentType: string) => (
+                            <Button
+                              key={documentType}
+                              onClick={() => removeDocumentTypeExcluded(documentType)}
+                              className="group inline-flex items-center gap-1 rounded-full border border-dashed border-border-lighter bg-surface-light/70 px-3 py-1.5 text-[11px] font-medium text-text-secondary hover:bg-surface-ui hover:text-text-brand transition"
+                            >
+                              <span>{documentType}</span>
+                              <span className="text-xs text-text-tertiary group-hover:text-text-brand">×</span>
+                            </Button>
+                          ))}
+                        </div>
+                      </div>
+                    )}
+                  </div>
+                </div>
+              )}
             </div>
 
             {hasAnyFilters && (

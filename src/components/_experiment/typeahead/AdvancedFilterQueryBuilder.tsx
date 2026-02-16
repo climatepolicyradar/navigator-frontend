@@ -64,35 +64,48 @@ function createEmptyClause(connector: TFilterClause["connector"] = null): TFilte
 }
 
 /**
- * Converts builder clauses into the active-filters shape. Only "is" (eq) clauses
- * with a value are included; "is not" (ne) is not yet supported by active filters.
+ * Converts builder clauses into the active-filters shape. "Is" (eq) clauses
+ * populate included arrays; "is not" (ne) clauses populate excluded arrays.
  */
 export function clausesToActiveFilters(clauses: TFilterClause[]): TActiveFilters {
-  const concepts: string[] = [];
-  const geos: string[] = [];
-  const years: string[] = [];
-  const documentTypes: string[] = [];
+  const includedConcepts: string[] = [];
+  const includedGeos: string[] = [];
+  const includedYears: string[] = [];
+  const includedDocumentTypes: string[] = [];
+  const excludedConcepts: string[] = [];
+  const excludedGeos: string[] = [];
+  const excludedDocumentTypes: string[] = [];
 
   for (const clause of clauses) {
-    if (clause.operator !== "eq" || !clause.value.trim()) continue;
     const value = clause.value.trim();
+    if (!value) continue;
+    const isExcluded = clause.operator === "ne";
     switch (clause.field) {
       case "topic":
-        concepts.push(value);
+        (isExcluded ? excludedConcepts : includedConcepts).push(value);
         break;
       case "geography":
-        geos.push(value);
+        (isExcluded ? excludedGeos : includedGeos).push(value);
         break;
       case "year":
-        years.push(value);
+        (isExcluded ? excludedYears : includedYears).push(value);
         break;
       case "documentType":
-        documentTypes.push(value);
+        (isExcluded ? excludedDocumentTypes : includedDocumentTypes).push(value);
         break;
     }
   }
 
-  return { concepts, geos, years, documentTypes };
+  return {
+    includedConcepts,
+    includedGeos,
+    includedYears,
+    includedDocumentTypes,
+    excludedConcepts,
+    excludedGeos,
+    excludedYears,
+    excludedDocumentTypes,
+  };
 }
 
 /** Renders clauses as readable boolean expression, e.g. (Topic is "X") AND (Geography is not "Y"). */

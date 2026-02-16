@@ -84,6 +84,7 @@ export function useShadowSearch() {
   const handleApplyAll = useCallback(
     (matches: { concepts: string[]; geos: string[]; years: string[]; documentTypes: string[] }) => {
       setFilters({
+        ...EMPTY_FILTERS,
         topics: matches.concepts,
         geos: matches.geos,
         years: matches.years,
@@ -97,8 +98,17 @@ export function useShadowSearch() {
   );
 
   const applyAdvancedFilters = useCallback((clauses: TFilterClause[]) => {
-    const { concepts, geos, years, documentTypes } = clausesToActiveFilters(clauses);
-    setFilters({ topics: concepts, geos, years, documentTypes });
+    const active = clausesToActiveFilters(clauses);
+    setFilters({
+      topics: active.includedConcepts,
+      geos: active.includedGeos,
+      years: active.includedYears,
+      documentTypes: active.includedDocumentTypes,
+      topicsExcluded: active.excludedConcepts,
+      geosExcluded: active.excludedGeos,
+      yearsExcluded: active.excludedYears,
+      documentTypesExcluded: active.excludedDocumentTypes,
+    });
     setRawSearchTerm("");
     setWasStringOnlySearch(false);
     setSearchTerm("");
@@ -134,6 +144,22 @@ export function useShadowSearch() {
     (documentType: string) => removeFilter({ documentTypes: filters.documentTypes.filter((d) => d !== documentType) }),
     [filters.documentTypes, removeFilter]
   );
+  const removeTopicExcluded = useCallback(
+    (topic: string) => removeFilter({ topicsExcluded: filters.topicsExcluded.filter((t) => t !== topic) }),
+    [filters.topicsExcluded, removeFilter]
+  );
+  const removeGeoExcluded = useCallback(
+    (geo: string) => removeFilter({ geosExcluded: filters.geosExcluded.filter((g) => g !== geo) }),
+    [filters.geosExcluded, removeFilter]
+  );
+  const removeYearExcluded = useCallback(
+    (year: string) => removeFilter({ yearsExcluded: filters.yearsExcluded.filter((y) => y !== year) }),
+    [filters.yearsExcluded, removeFilter]
+  );
+  const removeDocumentTypeExcluded = useCallback(
+    (documentType: string) => removeFilter({ documentTypesExcluded: filters.documentTypesExcluded.filter((d) => d !== documentType) }),
+    [filters.documentTypesExcluded, removeFilter]
+  );
 
   return {
     searchTerm,
@@ -156,6 +182,10 @@ export function useShadowSearch() {
     removeGeo,
     removeYear,
     removeDocumentType,
+    removeTopicExcluded,
+    removeGeoExcluded,
+    removeYearExcluded,
+    removeDocumentTypeExcluded,
   };
 }
 
