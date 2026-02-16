@@ -1,4 +1,4 @@
-import { getSuggestedFilterMatches, TSuggestedFilterMatches } from "@/components/_experiment/suggestedFilters/SuggestedFilters";
+import { getSuggestedFilterMatches, TSuggestedFilterMatches } from "@/components/_experiment/typeahead/SuggestedFilters";
 
 /** Single object holding all selected filter arrays. */
 export type SelectedFilters = {

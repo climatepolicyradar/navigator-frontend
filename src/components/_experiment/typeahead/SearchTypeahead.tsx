@@ -1,7 +1,7 @@
 import { Button } from "@base-ui/react/button";
 import { Input } from "@base-ui/react/input";
 
-import { SuggestedFilters, getSuggestedFilterMatches } from "@/components/_experiment/suggestedFilters/SuggestedFilters";
+import { SuggestedFilters, getSuggestedFilterMatches } from "@/components/_experiment/typeahead/SuggestedFilters";
 import { hasAnyMatches } from "@/utils/_experiment/suggestedFilterUtils";
 
 export interface ISearchTypeaheadProps {

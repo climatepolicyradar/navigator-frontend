@@ -16,7 +16,7 @@ export const Warning = ({ className, variant = "info", hideableId, children }: T
   const baseClasses = "mb-4 p-4 text-sm rounded-md flex flex-col gap-2 relative";
   let bgColor = "";
   let textColor = "";
-  let spacing = hideableId ? "pr-10" : "";
+  const spacing = hideableId ? "pr-10" : "";
 
   if (variant)
     switch (variant) {

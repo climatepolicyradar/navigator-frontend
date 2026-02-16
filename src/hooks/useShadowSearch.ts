@@ -1,6 +1,6 @@
 import { useState, useCallback } from "react";
 
-import { getSuggestedFilterMatches } from "@/components/_experiment/suggestedFilters/SuggestedFilters";
+import { getSuggestedFilterMatches } from "@/components/_experiment/typeahead/SuggestedFilters";
 import {
   EMPTY_FILTERS,
   hasAnyFilters as checkHasAnyFilters,
