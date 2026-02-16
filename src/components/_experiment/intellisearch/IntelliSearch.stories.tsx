@@ -1,7 +1,7 @@
 import { Meta, StoryObj } from "@storybook/nextjs-vite";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 
-import IntelliSearch from "./IntelliSearch";
+import { IntelliSearch } from "./IntelliSearch";
 
 /**
  * Create a new QueryClient instance for each story to avoid caching issues
