@@ -1,10 +1,8 @@
 import { getSuggestedFilterMatches, TSuggestedFilterMatches } from "@/components/_experiment/typeahead/SuggestedFilters";
 import { TFilterFieldOptions } from "@/types";
 
-/** Keys that are array-valued and support add-one. */
 type TIncludedFilterKey = "topics" | "geos" | "years" | "documentTypes";
 
-// Single object holding all selected filter arrays (included and excluded).
 export type SelectedFilters = {
   topics: string[];
   geos: string[];
@@ -27,8 +25,8 @@ export const EMPTY_FILTERS: SelectedFilters = {
   documentTypesExcluded: [],
 };
 
-// True if any included or excluded filter is set.
 export function hasAnyFilters(filters: SelectedFilters): boolean {
+  // True if any included or excluded filter is set.
   return (
     filters.topics.length > 0 ||
     filters.geos.length > 0 ||
@@ -41,7 +39,6 @@ export function hasAnyFilters(filters: SelectedFilters): boolean {
   );
 }
 
-// True if the search string has at least one match in any category.
 export function hasAnyMatches(matches: TSuggestedFilterMatches): boolean {
   return (
     matches.matchedConcepts.length > 0 || matches.matchedGeos.length > 0 || matches.matchedYears.length > 0 || matches.matchedDocumentTypes.length > 0
@@ -64,8 +61,8 @@ export function hasRemainingSuggestions(search: string, filters: SelectedFilters
   return remainingConcepts.length > 0 || remainingGeos.length > 0 || remainingYears.length > 0 || remainingDocumentTypes.length > 0;
 }
 
-/** New filters with one value appended to the given included key. Used by all four handleSelect* handlers. */
 export function addToFilterKey(filters: SelectedFilters, key: TIncludedFilterKey, value: string): SelectedFilters {
   const arr = filters[key];
+  // New filters with one value appended to the given included key.
   return { ...filters, [key]: [...arr, value] };
 }
