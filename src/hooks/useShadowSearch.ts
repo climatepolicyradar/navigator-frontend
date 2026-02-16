@@ -16,11 +16,40 @@ export interface UseShadowSearchParams {
   filterOptions?: TFilterFieldOptions;
 }
 
+// Keys that support "add one" from suggested filters.
+type TIncludedFilterKey = "topics" | "geos" | "years" | "documentTypes";
+
+// Grouped return shape for easier review and testing.
+export interface UseShadowSearchReturn {
+  search: {
+    term: string;
+    setTerm: (value: string) => void;
+    rawTerm: string;
+    matches: ReturnType<typeof getSuggestedFilterMatches>;
+    showStringOnlyResults: boolean;
+  };
+  filters: {
+    value: SelectedFilters;
+    hasAny: boolean;
+    clearAll: () => void;
+  };
+  actions: {
+    // Add one value to an included filter (e.g. from suggested filters).
+    add: (key: TIncludedFilterKey, value: string) => void;
+    // Remove one value from any filter key (included or excluded).
+    remove: (key: keyof SelectedFilters, value: string) => void;
+    applyAdvanced: (clauses: TFilterClause[]) => void;
+    applyAll: (matches: { concepts: string[]; geos: string[]; years: string[]; documentTypes: string[] }) => void;
+    searchOnly: () => void;
+    resetToOriginalSearch: () => void;
+  };
+}
+
 /**
  * Encapsulates all state and behaviour for the shadow search (experimental search) page:
  * search input, raw query for results, string-only vs filter mode, and selected filters.
  */
-export function useShadowSearch(params: UseShadowSearchParams = {}) {
+export function useShadowSearch(params: UseShadowSearchParams = {}): UseShadowSearchReturn {
   const { filterOptions } = params;
   const [searchTerm, setSearchTerm] = useState("");
   const [rawSearchTerm, setRawSearchTerm] = useState("");
@@ -40,33 +69,9 @@ export function useShadowSearch(params: UseShadowSearchParams = {}) {
     setWasStringOnlySearch(false);
   }
 
-  function handleSelectConcept(concept: string) {
+  function addToFilter(key: TIncludedFilterKey, value: string) {
     const trimmed = searchTerm.trim();
-    const nextFilters = addToFilterKey(filters, "topics", concept);
-    setFilters(nextFilters);
-    applyRawSearch(trimmed);
-    if (!hasRemainingSuggestions(trimmed, nextFilters, filterOptions)) setSearchTerm("");
-  }
-
-  function handleSelectGeo(geo: string) {
-    const trimmed = searchTerm.trim();
-    const nextFilters = addToFilterKey(filters, "geos", geo);
-    setFilters(nextFilters);
-    applyRawSearch(trimmed);
-    if (!hasRemainingSuggestions(trimmed, nextFilters, filterOptions)) setSearchTerm("");
-  }
-
-  function handleSelectYear(year: string) {
-    const trimmed = searchTerm.trim();
-    const nextFilters = addToFilterKey(filters, "years", year);
-    setFilters(nextFilters);
-    applyRawSearch(trimmed);
-    if (!hasRemainingSuggestions(trimmed, nextFilters, filterOptions)) setSearchTerm("");
-  }
-
-  function handleSelectDocumentType(documentType: string) {
-    const trimmed = searchTerm.trim();
-    const nextFilters = addToFilterKey(filters, "documentTypes", documentType);
+    const nextFilters = addToFilterKey(filters, key, value);
     setFilters(nextFilters);
     applyRawSearch(trimmed);
     if (!hasRemainingSuggestions(trimmed, nextFilters, filterOptions)) setSearchTerm("");
@@ -128,56 +133,27 @@ export function useShadowSearch(params: UseShadowSearchParams = {}) {
     removeFilter({ [key]: arr.filter((x) => x !== value) } as Partial<SelectedFilters>);
   }
 
-  function removeTopic(topic: string) {
-    removeFromFilter("topics", topic);
-  }
-  function removeGeo(geo: string) {
-    removeFromFilter("geos", geo);
-  }
-  function removeYear(year: string) {
-    removeFromFilter("years", year);
-  }
-  function removeDocumentType(documentType: string) {
-    removeFromFilter("documentTypes", documentType);
-  }
-  function removeTopicExcluded(topic: string) {
-    removeFromFilter("topicsExcluded", topic);
-  }
-  function removeGeoExcluded(geo: string) {
-    removeFromFilter("geosExcluded", geo);
-  }
-  function removeYearExcluded(year: string) {
-    removeFromFilter("yearsExcluded", year);
-  }
-  function removeDocumentTypeExcluded(documentType: string) {
-    removeFromFilter("documentTypesExcluded", documentType);
-  }
-
   return {
-    searchTerm,
-    setSearchTerm,
-    rawSearchTerm,
-    rawMatches,
-    filters,
-    hasAnyFilters: hasAnyFiltersFlag,
-    showStringOnlyResults,
-    clearAllFilters,
-    handleSelectConcept,
-    handleSelectGeo,
-    handleSelectYear,
-    handleSelectDocumentType,
-    handleApplyAll,
-    handleSearchOnly,
-    applyAdvancedFilters,
-    resetFiltersToOriginalSearch,
-    removeTopic,
-    removeGeo,
-    removeYear,
-    removeDocumentType,
-    removeTopicExcluded,
-    removeGeoExcluded,
-    removeYearExcluded,
-    removeDocumentTypeExcluded,
+    search: {
+      term: searchTerm,
+      setTerm: setSearchTerm,
+      rawTerm: rawSearchTerm,
+      matches: rawMatches,
+      showStringOnlyResults,
+    },
+    filters: {
+      value: filters,
+      hasAny: hasAnyFiltersFlag,
+      clearAll: clearAllFilters,
+    },
+    actions: {
+      add: addToFilter,
+      remove: removeFromFilter,
+      applyAdvanced: applyAdvancedFilters,
+      applyAll: handleApplyAll,
+      searchOnly: handleSearchOnly,
+      resetToOriginalSearch: resetFiltersToOriginalSearch,
+    },
   };
 }
 
