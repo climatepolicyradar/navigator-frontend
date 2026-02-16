@@ -74,6 +74,7 @@ export function clausesToActiveFilters(clauses: TFilterClause[]): TActiveFilters
   const includedDocumentTypes: string[] = [];
   const excludedConcepts: string[] = [];
   const excludedGeos: string[] = [];
+  const excludedYears: string[] = [];
   const excludedDocumentTypes: string[] = [];
 
   for (const clause of clauses) {
