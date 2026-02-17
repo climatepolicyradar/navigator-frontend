@@ -2,7 +2,7 @@ import { ParsedUrlQuery } from "querystring";
 
 import { AnimatePresence, motion } from "framer-motion";
 import { ChevronDown } from "lucide-react";
-import { GetServerSideProps, InferGetServerSidePropsType } from "next";
+import { GetServerSideProps } from "next";
 import { useRouter } from "next/router";
 import { useEffect, useRef, useState } from "react";
 
@@ -44,7 +44,7 @@ import { useDownloadCsv } from "@/hooks/useDownloadCsv";
 import { useHashNavigation } from "@/hooks/useHashNavigation";
 import useSearch from "@/hooks/useSearch";
 import { useText } from "@/hooks/useText";
-import { TTopic, TTheme, TTopics } from "@/types";
+import { TTopic, TTheme, TTopics, TApiTopic, TFeatures, TThemeConfig } from "@/types";
 import { FamilyConcept, mapFamilyConceptsToConcepts } from "@/utils/familyConcepts";
 import { getFeatureFlags } from "@/utils/featureFlags";
 import { getFeatures } from "@/utils/features";
@@ -123,7 +123,13 @@ const getSelectedFamilyConcepts = (selectedConcepts: string | string[], allConce
   );
 };
 
-export type TProps = InferGetServerSidePropsType<typeof getServerSideProps>;
+export type TProps = {
+  familyConceptsData: TTopic[] | null;
+  features: TFeatures;
+  theme: TTheme;
+  themeConfig: TThemeConfig;
+  topicsData: TTopics;
+};
 
 const Search = ({ familyConceptsData, features, theme, themeConfig, topicsData }: TProps) => {
   const router = useRouter();
@@ -824,10 +830,10 @@ export const getServerSideProps = (async (context) => {
   const client = new ApiClient(process.env.CONCEPTS_API_URL);
 
   let topicsData: TTopics = { rootTopics: [], topics: [] };
-  let familyConceptsData: TTopic[] | undefined;
+  let familyConceptsData: TApiTopic[] | undefined;
 
   try {
-    const { data: topicsResponse } = await client.get<TTopic[]>(`/concepts/search?limit=10000&has_classifier=true`);
+    const { data: topicsResponse } = await client.get<TApiTopic[]>(`/concepts/search?limit=10000&has_classifier=true`);
     topicsData = await fetchAndProcessTopics(topicsResponse.map((topic) => topic.wikibase_id));
 
     if (features.familyConceptsSearch) {

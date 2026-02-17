@@ -1,5 +1,5 @@
 import orderBy from "lodash/orderBy";
-import { GetServerSideProps, InferGetServerSidePropsType } from "next";
+import { GetServerSideProps } from "next";
 import Head from "next/head";
 import { useState } from "react";
 
@@ -16,7 +16,7 @@ import { ContentsSideBar, ISideBarItem } from "@/components/organisms/contentsSi
 import { PageHeader } from "@/components/organisms/pageHeader/PageHeader";
 import { withEnvConfig } from "@/context/EnvConfig";
 import { FeaturesContext } from "@/context/FeaturesContext";
-import { TCollectionPublicWithFamilies, TFeatures, TTheme, TThemeConfig } from "@/types";
+import { ApiItemResponse, TApiCollectionPublicWithFamilies, TCollectionPublicWithFamilies, TFeatures, TTheme, TThemeConfig } from "@/types";
 import { getCaseFirstDocumentDate, getCaseNumbers, getCourts } from "@/utils/eventTable";
 import { getFeatureFlags } from "@/utils/featureFlags";
 import { getFeatures } from "@/utils/features";
@@ -34,7 +34,7 @@ interface IProps {
 type TCollectionTabId = "about" | "cases" | "procedural history"; // Don't rename, add a label instead (else analytics break)
 const COLLECTION_TABS: TToggleGroupToggle<TCollectionTabId>[] = [{ id: "cases" }, { id: "procedural history" }, { id: "about" }];
 
-const CollectionPage = ({ collection, theme, themeConfig, features }: InferGetServerSidePropsType<typeof getServerSideProps>) => {
+const CollectionPage = ({ collection, theme, themeConfig, features }: IProps) => {
   const [currentTab, setCurrentTab] = useState<TCollectionTabId>("cases");
   const onTabChange = (tab: TCollectionTabId) => setCurrentTab(tab);
 
@@ -108,7 +108,7 @@ export const getServerSideProps = (async (context) => {
     return { notFound: true };
   }
 
-  let collectionData: TCollectionPublicWithFamilies;
+  let collectionData: TApiCollectionPublicWithFamilies;
 
   try {
     const apiClient = new ApiClient(process.env.CONCEPTS_API_URL);
@@ -116,9 +116,13 @@ export const getServerSideProps = (async (context) => {
     const { data: slugData } = await apiClient.get(`/families/slugs/${id}`);
     const collection_import_id = slugData.data.collection_import_id;
 
-    const { data: collectionResponse } = await apiClient.get(`/families/collections/${collection_import_id}`);
+    const { data: collectionResponse } = await apiClient.get<ApiItemResponse<TApiCollectionPublicWithFamilies>>(
+      `/families/collections/${collection_import_id}`
+    );
     collectionData = collectionResponse.data;
-  } catch (error) {}
+  } catch (error) {
+    // Do nothing
+  }
 
   if (!collectionData) {
     return { notFound: true };

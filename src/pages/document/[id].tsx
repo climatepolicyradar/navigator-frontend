@@ -7,15 +7,16 @@ import { DEFAULT_DOCUMENT_TITLE } from "@/constants/document";
 import { EXCLUDED_ISO_CODES } from "@/constants/geography";
 import { withEnvConfig } from "@/context/EnvConfig";
 import {
-  IFamilyDocumentTopics,
-  TCollectionPublicWithFamilies,
+  ApiItemResponse,
+  IApiFamilyDocumentTopics,
+  TApiCollectionPublicWithFamilies,
+  TApiFamilyPublic,
+  TApiGeography,
+  TApiGeographySubdivision,
+  TApiSearchResponse,
+  TApiSlugResponse,
+  TApiTarget,
   TCorpusTypeDictionary,
-  TFamilyPublic,
-  TGeography,
-  TGeographySubdivision,
-  TSearchResponse,
-  TSlugResponse,
-  TTarget,
   TTheme,
 } from "@/types";
 import { isCorpusIdAllowed } from "@/utils/checkCorpusAccess";
@@ -50,10 +51,10 @@ export const getServerSideProps = (async (context) => {
   const backendApiClient = new ApiClient(process.env.BACKEND_API_URL);
   const apiClient = new ApiClient(process.env.CONCEPTS_API_URL);
 
-  let slug: TSlugResponse;
+  let slug: TApiSlugResponse;
   try {
     /** As the families API cannot be queried by slugs, we need to get the slug */
-    const { data: slugData } = await apiClient.get(`/families/slugs/${id}`);
+    const { data: slugData } = await apiClient.get<ApiItemResponse<TApiSlugResponse>>(`/families/slugs/${id}`);
     slug = slugData.data;
   } catch (error) {
     // eslint-disable-next-line no-console
@@ -63,10 +64,10 @@ export const getServerSideProps = (async (context) => {
     };
   }
 
-  let familyData: TFamilyPublic;
+  let familyData: TApiFamilyPublic;
   try {
     /** and then query the families API by the returned family_import_id */
-    const { data: familyResponse } = await apiClient.get(`/families/${slug.family_import_id}`);
+    const { data: familyResponse } = await apiClient.get<ApiItemResponse<TApiFamilyPublic>>(`/families/${slug.family_import_id}`);
     familyData = familyResponse.data;
     familyData.documents.forEach((document) => {
       if (document.title === "") document.title = DEFAULT_DOCUMENT_TITLE;
@@ -80,9 +81,9 @@ export const getServerSideProps = (async (context) => {
   }
 
   /** The Vespa families data has the concepts data attached, which is why we need this */
-  let vespaFamilyData: TSearchResponse | null = null;
+  let vespaFamilyData: TApiSearchResponse | null = null;
   try {
-    const { data: vespaFamilyDataRaw } = await backendApiClient.get<TSearchResponse>(`/families/${familyData.import_id}`);
+    const { data: vespaFamilyDataRaw } = await backendApiClient.get<TApiSearchResponse>(`/families/${familyData.import_id}`);
     vespaFamilyData = vespaFamilyDataRaw;
   } catch (error) {
     if (axios.isAxiosError(error) && error.response?.status === 500) {
@@ -92,17 +93,17 @@ export const getServerSideProps = (async (context) => {
   }
 
   /* Package the family topics */
-  let familyTopics: IFamilyDocumentTopics | null = null;
+  let familyTopics: IApiFamilyDocumentTopics | null = null;
   if (vespaFamilyData) familyTopics = await processFamilyTopics(vespaFamilyData);
 
   /** TODO: see where we use this config data, and if we can get it from the families response */
   const configRaw = await backendApiClient.getConfig();
-  const response_geo = extractNestedData<TGeography>(configRaw.data.geographies);
+  const response_geo = extractNestedData<TApiGeography>(configRaw.data.geographies);
   const countriesData = response_geo[1];
   const corpus_types: TCorpusTypeDictionary = configRaw.data.corpus_types;
 
   /** This is because our family.geographies field isn't hydrated but rather a string[] */
-  const allSubdivisions = await Promise.all<TGeographySubdivision[]>(
+  const allSubdivisions = await Promise.all<TApiGeographySubdivision[]>(
     familyData.geographies
       .filter((country) => country.length === 3 && !EXCLUDED_ISO_CODES.includes(country))
       .map(async (country) => {
@@ -117,7 +118,7 @@ export const getServerSideProps = (async (context) => {
   );
   const subdivisionsData = allSubdivisions.flat().filter((subdivision) => subdivision !== undefined);
 
-  const allCollections = await Promise.all<TCollectionPublicWithFamilies[]>(
+  const allCollections = await Promise.all<TApiCollectionPublicWithFamilies[]>(
     familyData.collections.map(async (collection) => {
       try {
         const { data: collectionResponse } = await apiClient.get(`/families/collections/${collection.import_id}`);
@@ -130,9 +131,9 @@ export const getServerSideProps = (async (context) => {
   );
   const collectionsData = allCollections.flat();
 
-  let targetsData: TTarget[] = [];
+  let targetsData: TApiTarget[] = [];
   try {
-    const targetsRaw = await axios.get<TTarget[]>(`${process.env.TARGETS_URL}/families/${familyData.import_id}.json`);
+    const targetsRaw = await axios.get<TApiTarget[]>(`${process.env.TARGETS_URL}/families/${familyData.import_id}.json`);
     targetsData = targetsRaw.data;
   } catch (error) {
     // Targets store in S3 are not available for the majority of families, so we fail silently

@@ -1,6 +1,6 @@
 import { ParsedUrlQuery } from "querystring";
 
-import { GetServerSideProps, InferGetServerSidePropsType } from "next";
+import { GetServerSideProps } from "next";
 import Head from "next/head";
 import { useRouter } from "next/router";
 import { useMemo } from "react";
@@ -18,7 +18,19 @@ import { FeaturesContext } from "@/context/FeaturesContext";
 import { TopicsContext } from "@/context/TopicsContext";
 import useConfig from "@/hooks/useConfig";
 import useSearch from "@/hooks/useSearch";
-import { TDocumentPage, TTheme, TSearchResponse, TSlugResponse, TThemeConfig, TFamilyPublic, TFeatures, TTopics } from "@/types";
+import {
+  TDocumentPage,
+  TTheme,
+  TSearchResponse,
+  TFamilyPublic,
+  TFeatures,
+  TThemeConfig,
+  TTopics,
+  TApiSlugResponse,
+  TApiFamilyPublic,
+  TApiDocumentPage,
+  TApiSearchResponse,
+} from "@/types";
 import { CleanRouterQuery } from "@/utils/cleanRouterQuery";
 import { extractTopicIds } from "@/utils/extractTopicIds";
 import { getFeatureFlags } from "@/utils/featureFlags";
@@ -26,13 +38,6 @@ import { getFeatures } from "@/utils/features";
 import { fetchAndProcessTopics } from "@/utils/fetchAndProcessTopics";
 import { getLitigationDocumentJSONLD } from "@/utils/json-ld/getLitigationDocumentJSONLD";
 import { readConfigFile } from "@/utils/readConfigFile";
-
-const passageClasses = (canPreview: boolean) => {
-  if (canPreview) {
-    return "md:w-1/3";
-  }
-  return "md:w-2/3";
-};
 
 // If we don't have a query string or a concept selected, we do't have a search
 const isEmptySearch = (query: ParsedUrlQuery) => {
@@ -47,15 +52,17 @@ const isEmptySearch = (query: ParsedUrlQuery) => {
   - If the document is an HTML, the passages will be displayed in a list on the left side of the page but the document will not be displayed.
 */
 
-const DocumentPage = ({
-  document,
-  family,
-  features,
-  theme,
-  themeConfig,
-  topicsData,
-  vespaDocumentData,
-}: InferGetServerSidePropsType<typeof getServerSideProps>) => {
+interface IProps {
+  document: TDocumentPage;
+  family: TFamilyPublic;
+  features: TFeatures;
+  theme: TTheme;
+  themeConfig: TThemeConfig;
+  topicsData: TTopics;
+  vespaDocumentData: TSearchResponse;
+}
+
+const DocumentPage = ({ document, family, features, theme, themeConfig, topicsData, vespaDocumentData }: IProps) => {
   const router = useRouter();
   const qsSearchString = router.query[QUERY_PARAMS.query_string];
   // exact match is default, so only instances where it is explicitly set to false do we check against
@@ -179,18 +186,18 @@ export const getServerSideProps = (async (context) => {
 
   try {
     const { data: slugData } = await apiClient.get(`/families/slugs/${id}`);
-    const slug: TSlugResponse = slugData.data;
+    const slug: TApiSlugResponse = slugData.data;
 
     const { data: returnedDocumentData } = await apiClient.get(`/families/documents/${slug.family_document_import_id}`);
     const { family: familyData, ...otherDocumentData } = returnedDocumentData.data;
-    const family: TFamilyPublic = familyData;
-    const document: TDocumentPage = otherDocumentData;
+    const family: TApiFamilyPublic = familyData;
+    const document: TApiDocumentPage = otherDocumentData;
     if (document.title === "") document.title = DEFAULT_DOCUMENT_TITLE;
 
     if (!document || !family) return { notFound: true };
 
-    const { data: vespaDocumentData } = await backendApiClient.get<TSearchResponse>(`/document/${document.import_id}`);
-    const { data: vespaFamilyData } = await backendApiClient.get<TSearchResponse>(`/families/${family.import_id}`);
+    const { data: vespaDocumentData } = await backendApiClient.get<TApiSearchResponse>(`/document/${document.import_id}`);
+    const { data: vespaFamilyData } = await backendApiClient.get<TApiSearchResponse>(`/families/${family.import_id}`);
 
     const topicsData = await fetchAndProcessTopics(extractTopicIds(vespaFamilyData));
 
