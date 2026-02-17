@@ -3,7 +3,6 @@ import { expect, test } from "@playwright/test";
 import { TTheme } from "@/types";
 
 import { TEST_FAMILIES } from "./testFamilies";
-import { documentPageModel as documentPage } from "../pageObjectModels/documentPageModel";
 import { familyPageModel as familyPage } from "../pageObjectModels/familyPageModel";
 import { genericPageModel as genericPage } from "../pageObjectModels/genericPageModel";
 
@@ -16,7 +15,7 @@ export const runGenericFamilyTests = (theme: TTheme): void => {
       // Load the family page
 
       await familyPage.goToFamily(page, `${slug}?q=${withSearch}&cfn=${withTopic}`);
-      await familyPage.waitUntilLoaded(page);
+      await genericPage.waitUntilLoaded(page);
       await genericPage.dismissPopups(page);
 
       // Click on a topic not already part of the active filters
@@ -42,7 +41,7 @@ export const runGenericFamilyTests = (theme: TTheme): void => {
       // Verify the document page loads with the correct filters
 
       await page.waitForURL("**" + documentHref);
-      await documentPage.waitUntilLoaded(page, documentName);
+      await genericPage.waitUntilLoaded(page, documentName);
     });
   });
 };

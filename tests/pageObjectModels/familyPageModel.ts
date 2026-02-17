@@ -24,9 +24,4 @@ export const familyPageModel = {
   goToFamily: async (page: Page, slugAndParams: string): Promise<void> => {
     await page.goto("/document/" + slugAndParams);
   },
-
-  waitUntilLoaded: async (page: Page, title?: TTextMatch): Promise<void> => {
-    await page.waitForLoadState("networkidle");
-    await expect(page.getByRole("heading", { name: title, level: 1 })).toBeVisible();
-  },
 };
