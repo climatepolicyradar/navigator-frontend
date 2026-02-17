@@ -66,11 +66,11 @@ export const Modal = ({
         <div className={allContentClasses}>
           <div className="mb-3 flex flex-row-reverse justify-between items-center gap-3">
             {showCloseButton && (
-              <button role="button" onClick={onClose} className="text-icon-standard">
+              <button role="button" title="Dismiss modal" onClick={onClose} className="text-icon-standard">
                 <X size="18" />
               </button>
             )}
-            <Heading level={1} className="text-lg leading-tight font-semibold text-text-primary flex-1">
+            <Heading level={2} className="text-lg leading-tight font-semibold text-text-primary flex-1">
               {title}
             </Heading>
           </div>
