@@ -2,26 +2,10 @@ import { expect, test } from "@playwright/test";
 
 import { TTheme } from "@/types";
 
+import { TEST_FAMILIES } from "./testFamilies";
 import { documentPageModel as documentPage } from "../pageObjectModels/documentPageModel";
 import { familyPageModel as familyPage } from "../pageObjectModels/familyPageModel";
-
-type TTestFamily = {
-  titleForTests: string;
-  slug: string;
-  withSearch: string; // The URL param value of a search that has passage matches on a document in the family
-  withTopic: string; // The URL param value of a topic that exists on the family
-  availableOn: TTheme[];
-};
-
-const TEST_FAMILIES: TTestFamily[] = [
-  {
-    titleForTests: "example",
-    slug: "the-sixth-carbon-budget_179f",
-    withSearch: "electric-vehicles",
-    withTopic: "target",
-    availableOn: ["cpr"],
-  },
-];
+import { genericPageModel as genericPage } from "../pageObjectModels/genericPageModel";
 
 // Not all family tests are or should be generic - consider testing app-specific features explicitly
 export const runGenericFamilyTests = (theme: TTheme): void => {
@@ -33,6 +17,7 @@ export const runGenericFamilyTests = (theme: TTheme): void => {
 
       await familyPage.goToFamily(page, `${slug}?q=${withSearch}&cfn=${withTopic}`);
       await familyPage.waitUntilLoaded(page);
+      await genericPage.dismissPopups(page);
 
       // Click on a topic not already part of the active filters
 
