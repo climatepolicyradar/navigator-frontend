@@ -74,7 +74,7 @@ const showLitigationInformation = (query: ParsedUrlQuery) => {
 
 // We want to show the KG information under certain rules
 const showKnowledgeGraphInformation = (query: ParsedUrlQuery) => {
-  let show = false;
+  const show = false;
   // If we have multiple topics/concepts selected
   if (query[QUERY_PARAMS.concept_name]) return true;
   // If we have a query AND a concept selected

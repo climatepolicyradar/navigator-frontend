@@ -1,7 +1,10 @@
-import { useState, useCallback } from "react";
+import { useState } from "react";
 
-import { getSuggestedFilterMatches } from "@/components/_experiment/suggestedFilters/SuggestedFilters";
+import { clausesToActiveFilters } from "@/components/_experiment/typeahead/AdvancedFilterQueryBuilder";
+import { getSuggestedFilterMatches } from "@/components/_experiment/typeahead/SuggestedFilters";
+import { TFilterClause, TFilterFieldOptions } from "@/types";
 import {
+  addToFilterKey,
   EMPTY_FILTERS,
   hasAnyFilters as checkHasAnyFilters,
   hasAnyMatches,
@@ -9,142 +12,152 @@ import {
   SelectedFilters,
 } from "@/utils/_experiment/suggestedFilterUtils";
 
+export interface UseShadowSearchParams {
+  filterOptions?: TFilterFieldOptions;
+}
+
+// Keys that support "add one" from suggested filters.
+type TIncludedFilterKey = "topics" | "geos" | "years" | "documentTypes";
+
+// Grouped return shape for easier review and testing.
+export interface UseShadowSearchReturn {
+  search: {
+    term: string;
+    setTerm: (value: string) => void;
+    rawTerm: string;
+    matches: ReturnType<typeof getSuggestedFilterMatches>;
+    showStringOnlyResults: boolean;
+  };
+  filters: {
+    value: SelectedFilters;
+    hasAny: boolean;
+    clearAll: () => void;
+  };
+  actions: {
+    // Add one value to an included filter (e.g. from suggested filters).
+    add: (key: TIncludedFilterKey, value: string) => void;
+    // Remove one value from any filter key (included or excluded).
+    remove: (key: keyof SelectedFilters, value: string) => void;
+    applyAdvanced: (clauses: TFilterClause[]) => void;
+    applyAll: (matches: { concepts: string[]; geos: string[]; years: string[]; documentTypes: string[] }) => void;
+    searchOnly: () => void;
+    resetToOriginalSearch: () => void;
+  };
+}
+
 /**
  * Encapsulates all state and behaviour for the shadow search (experimental search) page:
  * search input, raw query for results, string-only vs filter mode, and selected filters.
  */
-export function useShadowSearch() {
+export function useShadowSearch(params: UseShadowSearchParams = {}): UseShadowSearchReturn {
+  const { filterOptions } = params;
   const [searchTerm, setSearchTerm] = useState("");
   const [rawSearchTerm, setRawSearchTerm] = useState("");
   const [wasStringOnlySearch, setWasStringOnlySearch] = useState(false);
   const [filters, setFilters] = useState<SelectedFilters>(EMPTY_FILTERS);
 
-  const rawMatches = getSuggestedFilterMatches(rawSearchTerm);
+  const rawMatches = getSuggestedFilterMatches(rawSearchTerm, filterOptions);
   const hasAnyFiltersFlag = checkHasAnyFilters(filters);
   const showStringOnlyResults = !!rawSearchTerm && wasStringOnlySearch && !hasAnyFiltersFlag && hasAnyMatches(rawMatches);
 
-  const clearAllFilters = useCallback(() => {
+  function clearAllFilters() {
     setFilters(EMPTY_FILTERS);
-  }, []);
+  }
 
-  const applyRawSearch = useCallback((trimmed: string) => {
+  function applyRawSearch(trimmed: string) {
     if (trimmed.length > 0) setRawSearchTerm(trimmed);
     setWasStringOnlySearch(false);
-  }, []);
+  }
 
-  const handleSelectConcept = useCallback(
-    (concept: string) => {
-      const trimmed = searchTerm.trim();
-      const nextFilters: SelectedFilters = { ...filters, topics: [...filters.topics, concept] };
-      setFilters(nextFilters);
-      applyRawSearch(trimmed);
-      if (!hasRemainingSuggestions(trimmed, nextFilters)) setSearchTerm("");
-    },
-    [searchTerm, filters, applyRawSearch]
-  );
+  function addToFilter(key: TIncludedFilterKey, value: string) {
+    const trimmed = searchTerm.trim();
+    setFilters((prev) => {
+      const nextFilters = addToFilterKey(prev, key, value);
+      if (!hasRemainingSuggestions(trimmed, nextFilters, filterOptions)) {
+        setTimeout(() => setSearchTerm(""), 0);
+      }
+      return nextFilters;
+    });
+    applyRawSearch(trimmed);
+  }
 
-  const handleSelectGeo = useCallback(
-    (geo: string) => {
-      const trimmed = searchTerm.trim();
-      const nextFilters: SelectedFilters = { ...filters, geos: [...filters.geos, geo] };
-      setFilters(nextFilters);
-      applyRawSearch(trimmed);
-      if (!hasRemainingSuggestions(trimmed, nextFilters)) setSearchTerm("");
-    },
-    [searchTerm, filters, applyRawSearch]
-  );
+  function handleApplyAll(matches: { concepts: string[]; geos: string[]; years: string[]; documentTypes: string[] }) {
+    setFilters({
+      ...EMPTY_FILTERS,
+      topics: matches.concepts,
+      geos: matches.geos,
+      years: matches.years,
+      documentTypes: matches.documentTypes,
+    });
+    setRawSearchTerm(searchTerm);
+    setWasStringOnlySearch(false);
+    setSearchTerm("");
+  }
 
-  const handleSelectYear = useCallback(
-    (year: string) => {
-      const trimmed = searchTerm.trim();
-      const nextFilters: SelectedFilters = { ...filters, years: [...filters.years, year] };
-      setFilters(nextFilters);
-      applyRawSearch(trimmed);
-      if (!hasRemainingSuggestions(trimmed, nextFilters)) setSearchTerm("");
-    },
-    [searchTerm, filters, applyRawSearch]
-  );
+  function applyAdvancedFilters(clauses: TFilterClause[]) {
+    const active = clausesToActiveFilters(clauses);
+    setFilters({
+      topics: active.includedConcepts,
+      geos: active.includedGeos,
+      years: active.includedYears,
+      documentTypes: active.includedDocumentTypes,
+      topicsExcluded: active.excludedConcepts,
+      geosExcluded: active.excludedGeos,
+      yearsExcluded: active.excludedYears,
+      documentTypesExcluded: active.excludedDocumentTypes,
+    });
+    setRawSearchTerm("");
+    setWasStringOnlySearch(false);
+    setSearchTerm("");
+  }
 
-  const handleSelectDocumentType = useCallback(
-    (documentType: string) => {
-      const trimmed = searchTerm.trim();
-      const nextFilters: SelectedFilters = {
-        ...filters,
-        documentTypes: [...filters.documentTypes, documentType],
-      };
-      setFilters(nextFilters);
-      applyRawSearch(trimmed);
-      if (!hasRemainingSuggestions(trimmed, nextFilters)) setSearchTerm("");
-    },
-    [searchTerm, filters, applyRawSearch]
-  );
-
-  const handleApplyAll = useCallback(
-    (matches: { concepts: string[]; geos: string[]; years: string[]; documentTypes: string[] }) => {
-      setFilters({
-        topics: matches.concepts,
-        geos: matches.geos,
-        years: matches.years,
-        documentTypes: matches.documentTypes,
-      });
-      setRawSearchTerm(searchTerm);
-      setWasStringOnlySearch(false);
-      setSearchTerm("");
-    },
-    [searchTerm]
-  );
-
-  const handleSearchOnly = useCallback(() => {
+  function handleSearchOnly() {
     setRawSearchTerm(searchTerm);
     setWasStringOnlySearch(true);
     setSearchTerm("");
-  }, [searchTerm]);
+  }
 
-  const resetFiltersToOriginalSearch = useCallback(() => {
+  function resetFiltersToOriginalSearch() {
     setSearchTerm(rawSearchTerm);
     clearAllFilters();
     setRawSearchTerm("");
-  }, [rawSearchTerm, clearAllFilters]);
+  }
 
-  const removeFilter = useCallback((update: Partial<SelectedFilters>) => {
+  function removeFilter(update: Partial<SelectedFilters>) {
     setFilters((prev) => {
       const next = { ...prev, ...update };
       if (!checkHasAnyFilters(next)) setSearchTerm("");
       return next;
     });
-  }, []);
+  }
 
-  const removeTopic = useCallback(
-    (topic: string) => removeFilter({ topics: filters.topics.filter((t) => t !== topic) }),
-    [filters.topics, removeFilter]
-  );
-  const removeGeo = useCallback((geo: string) => removeFilter({ geos: filters.geos.filter((g) => g !== geo) }), [filters.geos, removeFilter]);
-  const removeYear = useCallback((year: string) => removeFilter({ years: filters.years.filter((y) => y !== year) }), [filters.years, removeFilter]);
-  const removeDocumentType = useCallback(
-    (documentType: string) => removeFilter({ documentTypes: filters.documentTypes.filter((d) => d !== documentType) }),
-    [filters.documentTypes, removeFilter]
-  );
+  function removeFromFilter(key: keyof SelectedFilters, value: string) {
+    const arr = filters[key];
+    if (!Array.isArray(arr)) return;
+    removeFilter({ [key]: arr.filter((x) => x !== value) } as Partial<SelectedFilters>);
+  }
 
   return {
-    searchTerm,
-    setSearchTerm,
-    rawSearchTerm,
-    rawMatches,
-    filters,
-    hasAnyFilters: hasAnyFiltersFlag,
-    showStringOnlyResults,
-    clearAllFilters,
-    handleSelectConcept,
-    handleSelectGeo,
-    handleSelectYear,
-    handleSelectDocumentType,
-    handleApplyAll,
-    handleSearchOnly,
-    resetFiltersToOriginalSearch,
-    removeTopic,
-    removeGeo,
-    removeYear,
-    removeDocumentType,
+    search: {
+      term: searchTerm,
+      setTerm: setSearchTerm,
+      rawTerm: rawSearchTerm,
+      matches: rawMatches,
+      showStringOnlyResults,
+    },
+    filters: {
+      value: filters,
+      hasAny: hasAnyFiltersFlag,
+      clearAll: clearAllFilters,
+    },
+    actions: {
+      add: addToFilter,
+      remove: removeFromFilter,
+      applyAdvanced: applyAdvancedFilters,
+      applyAll: handleApplyAll,
+      searchOnly: handleSearchOnly,
+      resetToOriginalSearch: resetFiltersToOriginalSearch,
+    },
   };
 }
 
