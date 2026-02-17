@@ -87,7 +87,7 @@ export const SearchTypeahead = ({
       {isAdvancedFiltersOpen && (
         <div className="fixed inset-0 z-50 flex items-center justify-center" role="dialog" aria-modal="true">
           <div className="absolute inset-0 bg-black/40" aria-hidden="true" onClick={() => setIsAdvancedFiltersOpen(false)} />
-          <div className="relative max-h-[80vh] w-full max-w-3xl overflow-y-auto rounded-lg border border-gray-200 bg-white p-4 shadow-2xl">
+          <div className="relative max-h-[90vh] w-full max-w-4xl rounded-lg border border-gray-200 bg-white p-4 shadow-2xl">
             <button
               type="button"
               aria-label="Close advanced filters"
