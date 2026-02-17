@@ -34,7 +34,7 @@ import SearchResultList from "@/components/search/SearchResultList";
 import { QUERY_PARAMS } from "@/constants/queryParams";
 import { SEARCH_SETTINGS } from "@/constants/searchSettings";
 import { sortOptions } from "@/constants/sortOptions";
-import { withEnvConfig } from "@/context/EnvConfig";
+import { TPublicEnvConfig, withEnvConfig } from "@/context/EnvConfig";
 import { FeaturesContext } from "@/context/FeaturesContext";
 import { SlideOutContext } from "@/context/SlideOutContext";
 import { TopicsContext } from "@/context/TopicsContext";
@@ -124,6 +124,7 @@ const getSelectedFamilyConcepts = (selectedConcepts: string | string[], allConce
 };
 
 export type TProps = {
+  envConfig: TPublicEnvConfig;
   familyConceptsData: TTopic[] | null;
   features: TFeatures;
   theme: TTheme;
