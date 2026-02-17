@@ -37,10 +37,16 @@ export const TutorialCard = ({ className, name, card: { buttonPrimary, buttonSec
         <TutorialButton
           {...buttonPrimary}
           actions={buttonActions}
+          use="card"
           className="border-border-light/75 hover:border-border-light hover:bg-transparent! text-text-light"
         />
         {buttonSecondary && (
-          <TutorialButton {...buttonSecondary} actions={buttonActions} className="text-text-light/75 hover:text-text-light hover:bg-transparent!" />
+          <TutorialButton
+            {...buttonSecondary}
+            actions={buttonActions}
+            use="card"
+            className="text-text-light/75 hover:text-text-light hover:bg-transparent!"
+          />
         )}
       </div>
     </Card>
