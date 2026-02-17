@@ -2,7 +2,6 @@ import { useContext } from "react";
 
 import { Modal } from "@/components/molecules/modal/Modal";
 import { TutorialButton } from "@/components/molecules/tutorials/TutorialButton";
-import { ThemeContext } from "@/context/ThemeContext";
 import { TutorialContext } from "@/context/TutorialContext";
 import { TFeatures, TTutorialButtonAction, TTutorialModal, TTutorialName } from "@/types";
 
@@ -14,7 +13,6 @@ interface IProps {
 
 export const TutorialModal = ({ name, modal: { buttonPrimary, buttonSecondary, close, content, headerImage, title }, features }: IProps) => {
   const { addCompletedTutorial, displayTutorial, setDisplayTutorial } = useContext(TutorialContext);
-  const { themeConfig } = useContext(ThemeContext);
 
   if (displayTutorial !== name) return null; // The modal hasn't been opened yet
 
@@ -31,8 +29,8 @@ export const TutorialModal = ({ name, modal: { buttonPrimary, buttonSecondary, c
       {content(features)}
       {(buttonPrimary || buttonSecondary) && (
         <div className="flex gap-2">
-          {buttonPrimary && <TutorialButton {...buttonPrimary} actions={buttonActions} />}
-          {buttonSecondary && <TutorialButton {...buttonSecondary} actions={buttonActions} />}
+          {buttonPrimary && <TutorialButton {...buttonPrimary} actions={buttonActions} use="modal" />}
+          {buttonSecondary && <TutorialButton {...buttonSecondary} actions={buttonActions} use="modal" />}
         </div>
       )}
     </Modal>
