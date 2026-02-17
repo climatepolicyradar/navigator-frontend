@@ -274,24 +274,6 @@ export type TLanguages = {
   [key: string]: string;
 };
 
-type TCorpus = {
-  title: string;
-  description: string;
-  corpus_type: string;
-  corpus_type_description: string;
-  corpus_import_id: string;
-  image_url: string;
-  text: string;
-  // taxonomies
-  taxonomy: {
-    [key: string]: {
-      allow_any: boolean;
-      allow_blanks: boolean;
-      allowed_values: string[];
-    };
-  };
-};
-
 type TCorpusWithStats = {
   corpus_import_id: string;
   title: string;
@@ -300,14 +282,6 @@ type TCorpusWithStats = {
   text: string;
   organisation_name: string;
   organisation_id: number;
-  total: number;
-  count_by_category: {
-    [key: string]: number;
-  };
-};
-
-type TOrganisation = {
-  corpora: TCorpus[];
   total: number;
   count_by_category: {
     [key: string]: number;
@@ -445,14 +419,6 @@ export type TCollectionPublicWithFamilies = {
   metadata: TMetadata<"id">;
   slug: string;
   title: string;
-};
-
-export type TSlugResponse = {
-  name: string;
-  family_import_id: string | null;
-  family_document_import_id: string | null;
-  collection_import_id: string | null;
-  created: string;
 };
 
 export type TCategorySummary = {

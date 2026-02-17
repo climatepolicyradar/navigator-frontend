@@ -1,39 +1,3 @@
-import { TSingularAndPlural } from "./display";
-
-export type TApiSearchKeywordFilters = {
-  categories?: string[];
-  regions?: string[];
-  countries?: string[];
-  subdivisions?: string[];
-};
-
-export type TApiSearchCriteriaMeta = {
-  name: string;
-  value: string;
-};
-
-export type TApiSearchCriteria = {
-  concept_filters: { name: string; value: string }[];
-  continuation_tokens?: string[] | null;
-  corpus_import_ids: string[];
-  document_ids?: string[] | null;
-  exact_match: boolean;
-  family_ids?: string[] | null;
-  keyword_filters?: TApiSearchKeywordFilters;
-  limit: number;
-  max_passages_per_doc: number;
-  metadata: TApiSearchCriteriaMeta[];
-  offset: number;
-  page_size: number;
-  query_string: string;
-  sort_field: string | null;
-  sort_order: string;
-  sort_within_page: boolean;
-  year_range: [string, string];
-  // for internal use
-  runSearch?: boolean;
-};
-
 type TApiPassageBlockCoords = [number, number];
 
 export type TApiPassage = {
@@ -48,10 +12,6 @@ export type TApiPassage = {
 export type TApiDataNode<T> = {
   node: T;
   children: TApiDataNode<T>[];
-};
-
-export type TApiItemResponse<T> = {
-  data: T;
 };
 
 export type TApiGeographyTypeV2 = "region" | "country" | "subdivision";
@@ -230,33 +190,11 @@ export type TApiFamilyMetadata = TApiMetadata<
   | "result_area"
 >;
 
-export type TApiMCFFamilyMetadata = {
-  approval_date?: string;
-  category?: TApiCorpusTypeSubCategory | TApiCategory;
-  organisation?: string;
-  theme?: string[];
-  geographies?: string[];
-  sector?: string[];
-  implementing_agency?: string[];
-  project_value_fund_spend?: string[];
-  project_value_co_financing?: string[];
-  result_area?: string[];
-  status?: string[];
-  project_url?: string[];
-};
-
 export type TApiMatchedFamily = TApiFamily & {
   family_description_match: boolean;
   family_title_match: boolean;
   total_passage_hits: number;
   continuation_token?: string; // represents a token for requesting more passage matches
-};
-
-export type TApiLatestItem = {
-  title: string;
-  date: string;
-  slug: string;
-  url: string;
 };
 
 export type TApiSearch = {
@@ -303,7 +241,7 @@ interface IApiDictionary<T> {
   [Key: string]: T;
 }
 
-export type TCorpusTypeDictionary = IApiDictionary<TApiCorpusType>;
+export type TApiCorpusTypeDictionary = IApiDictionary<TApiCorpusType>;
 
 export type TApiFamilyConcept = {
   id: string;
@@ -427,14 +365,6 @@ export type TApiSlugResponse = {
   created: string;
 };
 
-export type TApiCategorySummary = {
-  id: string;
-  count: number;
-  families: TApiFamily[];
-  title: string;
-  singularAndPlural: TSingularAndPlural;
-};
-
 export interface IApiFamilyDocumentTopics {
   documents: {
     importId: string;
@@ -463,9 +393,4 @@ export type TApiTopic = {
   subconcept_of: string[];
   wikibase_id: string;
   type?: "principal_law" | "jurisdiction" | "category";
-};
-
-export type TApiTopics = {
-  rootTopics: TApiTopic[];
-  topics: TApiTopic[];
 };
