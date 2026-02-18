@@ -1,4 +1,4 @@
-import { Locator, type Page } from "@playwright/test";
+import { expect, Locator, type Page } from "@playwright/test";
 
 import { TTextMatch } from "./types";
 
