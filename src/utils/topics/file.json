@@ -1,0 +1,78 @@
+{
+  "family_name": "Held v. State",
+  "family_description": "Youth plaintiffs' action seeking relief from allegedly unconstitutional 2025 amendments to Montana environmental laws and also seeking to require the State's preparation of a plan for GHG emissions.",
+  "family_source": "Sabin",
+  "family_import_id": "Sabin.family.132096.0",
+  "family_slug": "held-v-state_6b7c",
+  "family_category": "Litigation",
+  "family_publication_ts": "2026-01-01T00:00:00Z",
+  "family_geography": "USA",
+  "family_geographies": ["USA", "US-MT"],
+  "document_import_id": "Sabin.document.132096.132097",
+  "document_slug": "youth-plaintiffs-challenged-2025-montana-laws-as-violating-right-to-a-clean-and-healthful-environment_0c99",
+  "document_languages": ["English"],
+  "document_content_type": "application/pdf",
+  "document_cdn_object": "USA/2026/held-v-state_7d9b11691b59e4fca48fa348e316d386.pdf",
+  "document_source_url": "https://climatecasechart.com/wp-content/uploads/case-documents/2026/20260116_docket-DV-4-2026-0000007-OC_complaint.pdf",
+  "document_title": "Youth Plaintiffs Challenged 2025 Montana Laws as Violating Right to a Clean and Healthful Environment",
+  "corpus_type_name": "Litigation",
+  "corpus_import_id": "Academic.corpus.Litigation.n0000",
+  "metadata": [
+    {
+      "name": "family.id",
+      "value": "132096"
+    },
+    {
+      "name": "family.status",
+      "value": "Complaint filed."
+    },
+    {
+      "name": "family.case_number",
+      "value": "DV-4-2026-0000007-OC"
+    },
+    {
+      "name": "family.concept_preferred_label",
+      "value": "category/Environmentalist Lawsuits (US)"
+    },
+    {
+      "name": "family.concept_preferred_label",
+      "value": "category/State Law Claims (US)"
+    },
+    {
+      "name": "family.concept_preferred_label",
+      "value": "jurisdiction/Montana District Court (Mont. Dist. Ct.)"
+    },
+    {
+      "name": "family.concept_preferred_label",
+      "value": "jurisdiction/State Courts"
+    },
+    {
+      "name": "family.concept_preferred_label",
+      "value": "jurisdiction/United States"
+    },
+    {
+      "name": "family.concept_preferred_label",
+      "value": "principal_law/Clean Air Act of Montana"
+    },
+    {
+      "name": "family.concept_preferred_label",
+      "value": "principal_law/Montana Constitution"
+    },
+    {
+      "name": "family.concept_preferred_label",
+      "value": "principal_law/Montana Environmental Policy Act"
+    },
+    {
+      "name": "family.concept_preferred_label",
+      "value": "principal_law/United States"
+    },
+    {
+      "name": "document.id",
+      "value": "132097"
+    }
+  ],
+  "concepts": null,
+  "relevance": 0.0017429193899782135,
+  "rank_features": null,
+  "concept_counts": null
+}
