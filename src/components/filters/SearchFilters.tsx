@@ -116,7 +116,7 @@ const SearchFilters = ({
         </Accordion>
       )}
 
-      {conceptsData && (
+      {features.knowledgeGraph && conceptsData && (
         <>
           <button
             className="items-center justify-between cursor-pointer group flex"

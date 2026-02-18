@@ -43,7 +43,7 @@ const config: TThemeConfig = {
   tutorials: ["climateLitigationDatabase", "knowledgeGraph"],
   features: {
     familyConceptsSearch: true,
-    knowledgeGraph: true,
+    knowledgeGraph: false,
     litigation: true,
     searchFamilySummary: true,
   },

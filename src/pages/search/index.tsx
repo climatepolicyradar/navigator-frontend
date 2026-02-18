@@ -827,8 +827,10 @@ export const getServerSideProps = (async (context) => {
   let familyConceptsData: TTopic[] | undefined;
 
   try {
-    const { data: topicsResponse } = await client.get<TTopic[]>(`/concepts/search?limit=10000&has_classifier=true`);
-    topicsData = await fetchAndProcessTopics(topicsResponse.map((topic) => topic.wikibase_id));
+    if (features.knowledgeGraph) {
+      const { data: topicsResponse } = await client.get<TTopic[]>(`/concepts/search?limit=10000&has_classifier=true`);
+      topicsData = await fetchAndProcessTopics(topicsResponse.map((topic) => topic.wikibase_id));
+    }
 
     if (features.familyConceptsSearch) {
       const familyConceptsResponse = await fetch(`${process.env.CONCEPTS_API_URL}/families/concepts`);
