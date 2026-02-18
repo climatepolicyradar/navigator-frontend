@@ -1,5 +1,5 @@
 import orderBy from "lodash/orderBy";
-import { GetServerSideProps } from "next";
+import { GetServerSideProps, InferGetServerSidePropsType } from "next";
 import Head from "next/head";
 import { useState } from "react";
 
@@ -16,7 +16,7 @@ import { ContentsSideBar, ISideBarItem } from "@/components/organisms/contentsSi
 import { PageHeader } from "@/components/organisms/pageHeader/PageHeader";
 import { withEnvConfig } from "@/context/EnvConfig";
 import { FeaturesContext } from "@/context/FeaturesContext";
-import { ApiItemResponse, TApiCollectionPublicWithFamilies, TCollectionPublicWithFamilies, TFeatures, TTheme, TThemeConfig } from "@/types";
+import { TApiItemResponse, TApiCollectionPublicWithFamilies, TCollectionPublicWithFamilies, TTheme } from "@/types";
 import { getCaseFirstDocumentDate, getCaseNumbers, getCourts } from "@/utils/eventTable";
 import { getFeatureFlags } from "@/utils/featureFlags";
 import { getFeatures } from "@/utils/features";
@@ -24,17 +24,10 @@ import { getCollectionMetadata } from "@/utils/getCollectionMetadata";
 import { getLitigationCollectionJSONLD } from "@/utils/json-ld/getLitigationCollectionJSONLD";
 import { readConfigFile } from "@/utils/readConfigFile";
 
-interface IProps {
-  collection: TCollectionPublicWithFamilies;
-  theme: TTheme;
-  themeConfig: TThemeConfig;
-  features: TFeatures;
-}
-
 type TCollectionTabId = "about" | "cases" | "procedural history"; // Don't rename, add a label instead (else analytics break)
 const COLLECTION_TABS: TToggleGroupToggle<TCollectionTabId>[] = [{ id: "cases" }, { id: "procedural history" }, { id: "about" }];
 
-const CollectionPage = ({ collection, theme, themeConfig, features }: IProps) => {
+const CollectionPage = ({ collection, theme, themeConfig, features }: InferGetServerSidePropsType<typeof getServerSideProps>) => {
   const [currentTab, setCurrentTab] = useState<TCollectionTabId>("cases");
   const onTabChange = (tab: TCollectionTabId) => setCurrentTab(tab);
 
@@ -99,7 +92,7 @@ export default CollectionPage;
 export const getServerSideProps = (async (context) => {
   context.res.setHeader("Cache-Control", "public, max-age=3600, immutable");
 
-  const theme = process.env.THEME;
+  const theme = process.env.THEME as TTheme;
   const themeConfig = await readConfigFile(theme);
   const featureFlags = getFeatureFlags(context.req.cookies);
   const features = getFeatures(themeConfig, featureFlags);
@@ -116,7 +109,7 @@ export const getServerSideProps = (async (context) => {
     const { data: slugData } = await apiClient.get(`/families/slugs/${id}`);
     const collection_import_id = slugData.data.collection_import_id;
 
-    const { data: collectionResponse } = await apiClient.get<ApiItemResponse<TApiCollectionPublicWithFamilies>>(
+    const { data: collectionResponse } = await apiClient.get<TApiItemResponse<TApiCollectionPublicWithFamilies>>(
       `/families/collections/${collection_import_id}`
     );
     collectionData = collectionResponse.data;
@@ -130,7 +123,7 @@ export const getServerSideProps = (async (context) => {
 
   return {
     props: withEnvConfig({
-      collection: collectionData,
+      collection: collectionData as TCollectionPublicWithFamilies,
       theme,
       themeConfig,
       features,

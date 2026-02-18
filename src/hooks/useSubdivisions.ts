@@ -2,7 +2,7 @@ import { useQuery } from "@tanstack/react-query";
 
 import { dayInMilliseconds } from "@/constants/dayInMilleseconds";
 import { useEnvConfig } from "@/context/EnvConfig";
-import { ApiItemResponse, TApiGeographyWithDocumentCounts, TGeographyWithDocumentCounts } from "@/types";
+import { TApiItemResponse, TApiGeographyWithDocumentCounts, TGeographyWithDocumentCounts } from "@/types";
 
 import useThemeConfig from "./useThemeConfig";
 import { ApiClient } from "../api/http-common";
@@ -18,7 +18,7 @@ export default function useSubdivisions() {
     queryKey: ["all-subdivisions-with-data"],
     queryFn: async () => {
       const client = new ApiClient();
-      const queryResponse = await client.get<ApiItemResponse<TApiGeographyWithDocumentCounts[]>>(
+      const queryResponse = await client.get<TApiItemResponse<TApiGeographyWithDocumentCounts[]>>(
         `${CONCEPTS_API_URL}/families/aggregations/by-geography?documents.document_status=published${corpusFilters}`,
         null
       );

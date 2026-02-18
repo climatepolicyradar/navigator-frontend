@@ -6,7 +6,7 @@ import { GeographyPage } from "@/components/pages/geographyPage";
 import { SYSTEM_GEO_NAMES } from "@/constants/systemGeos";
 import { withEnvConfig } from "@/context/EnvConfig";
 import { getCountryCode } from "@/helpers/getCountryFields";
-import { ApiItemResponse, GeographyV2, TSearch, TTarget, TGeography } from "@/types";
+import { TApiItemResponse, GeographyV2, TSearch, TTarget, TGeography } from "@/types";
 import buildSearchQuery from "@/utils/buildSearchQuery";
 import { extractNestedData } from "@/utils/extractNestedData";
 import { getFeatureFlags } from "@/utils/featureFlags";
@@ -60,11 +60,11 @@ export const getServerSideProps = (async (context) => {
 
   try {
     const slug = Array.isArray(id) ? id[0] : id;
-    const geographyV2Data = await apiClient.get<ApiItemResponse<GeographyV2>>(`/geographies/${slug}`);
+    const geographyV2Data = await apiClient.get<TApiItemResponse<GeographyV2>>(`/geographies/${slug}`);
     geographyV2 = geographyV2Data.data.data;
 
     if (geographyV2.subconcept_of[0]) {
-      const parentGeographyV2Data = await apiClient.get<ApiItemResponse<GeographyV2>>(`/geographies/${geographyV2.subconcept_of[0].slug}`);
+      const parentGeographyV2Data = await apiClient.get<TApiItemResponse<GeographyV2>>(`/geographies/${geographyV2.subconcept_of[0].slug}`);
       parentGeographyV2 = parentGeographyV2Data.data.data;
     }
   } catch {}

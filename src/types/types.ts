@@ -52,10 +52,6 @@ export type TDataNode<T> = {
   children: TDataNode<T>[];
 };
 
-export type ApiItemResponse<T> = {
-  data: T;
-};
-
 export type GeographyTypeV2 = "region" | "country" | "subdivision";
 
 export type GeographyV2 = {

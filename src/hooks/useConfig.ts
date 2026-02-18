@@ -1,7 +1,7 @@
 import { useQuery } from "@tanstack/react-query";
 
 import { dayInMilliseconds } from "@/constants/dayInMilleseconds";
-import { TGeography, TLanguages, TCorpusTypeDictionary, TDataNode, TApiGeography } from "@/types";
+import { TGeography, TLanguages, TCorpusTypeDictionary, TDataNode } from "@/types";
 import { extractNestedData } from "@/utils/extractNestedData";
 
 import { ApiClient, getEnvFromServer } from "../api/http-common";
@@ -23,7 +23,7 @@ export default function useConfig() {
       const client = new ApiClient(data?.env?.api_url, data?.env?.app_token);
       const query_response = await client.getConfig();
       const geographies = query_response.data.geographies;
-      const [regions, countries, subdivisions] = extractNestedData<TApiGeography>(geographies);
+      const [regions, countries, subdivisions] = extractNestedData<TGeography>(geographies);
       const corpus_types = query_response.data.corpus_types;
 
       const resp_end: TConfigQueryResponse = {

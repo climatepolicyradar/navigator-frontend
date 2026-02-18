@@ -14,6 +14,10 @@ export type TApiDataNode<T> = {
   children: TApiDataNode<T>[];
 };
 
+export type TApiItemResponse<T> = {
+  data: T;
+};
+
 export type TApiGeographyTypeV2 = "region" | "country" | "subdivision";
 
 export type TApiGeographyV2 = {

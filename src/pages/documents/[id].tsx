@@ -1,6 +1,6 @@
 import { ParsedUrlQuery } from "querystring";
 
-import { GetServerSideProps } from "next";
+import { GetServerSideProps, InferGetServerSidePropsType } from "next";
 import Head from "next/head";
 import { useRouter } from "next/router";
 import { useMemo } from "react";
@@ -23,9 +23,6 @@ import {
   TTheme,
   TSearchResponse,
   TFamilyPublic,
-  TFeatures,
-  TThemeConfig,
-  TTopics,
   TApiSlugResponse,
   TApiFamilyPublic,
   TApiDocumentPage,
@@ -52,17 +49,15 @@ const isEmptySearch = (query: ParsedUrlQuery) => {
   - If the document is an HTML, the passages will be displayed in a list on the left side of the page but the document will not be displayed.
 */
 
-interface IProps {
-  document: TDocumentPage;
-  family: TFamilyPublic;
-  features: TFeatures;
-  theme: TTheme;
-  themeConfig: TThemeConfig;
-  topicsData: TTopics;
-  vespaDocumentData: TSearchResponse;
-}
-
-const DocumentPage = ({ document, family, features, theme, themeConfig, topicsData, vespaDocumentData }: IProps) => {
+const DocumentPage = ({
+  document,
+  family,
+  features,
+  theme,
+  themeConfig,
+  topicsData,
+  vespaDocumentData,
+}: InferGetServerSidePropsType<typeof getServerSideProps>) => {
   const router = useRouter();
   const qsSearchString = router.query[QUERY_PARAMS.query_string];
   // exact match is default, so only instances where it is explicitly set to false do we check against
@@ -175,7 +170,7 @@ export default DocumentPage;
 export const getServerSideProps = (async (context) => {
   context.res.setHeader("Cache-Control", "public, max-age=3600, immutable");
 
-  const theme = process.env.THEME;
+  const theme = process.env.THEME as TTheme;
   const themeConfig = await readConfigFile(theme);
   const featureFlags = getFeatureFlags(context.req.cookies);
   const features = getFeatures(themeConfig, featureFlags);
@@ -203,13 +198,13 @@ export const getServerSideProps = (async (context) => {
 
     return {
       props: withEnvConfig({
-        document,
-        family,
+        document: document as TDocumentPage,
+        family: family as TFamilyPublic,
         features,
         theme: theme,
         themeConfig: themeConfig,
         topicsData,
-        vespaDocumentData,
+        vespaDocumentData: vespaDocumentData as TSearchResponse,
       }),
     };
   } catch (error) {

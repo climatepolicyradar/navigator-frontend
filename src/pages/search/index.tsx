@@ -2,7 +2,7 @@ import { ParsedUrlQuery } from "querystring";
 
 import { AnimatePresence, motion } from "framer-motion";
 import { ChevronDown } from "lucide-react";
-import { GetServerSideProps } from "next";
+import { GetServerSideProps, InferGetServerSidePropsType } from "next";
 import { useRouter } from "next/router";
 import { useEffect, useRef, useState } from "react";
 
@@ -34,7 +34,7 @@ import SearchResultList from "@/components/search/SearchResultList";
 import { QUERY_PARAMS } from "@/constants/queryParams";
 import { SEARCH_SETTINGS } from "@/constants/searchSettings";
 import { sortOptions } from "@/constants/sortOptions";
-import { TPublicEnvConfig, withEnvConfig } from "@/context/EnvConfig";
+import { withEnvConfig } from "@/context/EnvConfig";
 import { FeaturesContext } from "@/context/FeaturesContext";
 import { SlideOutContext } from "@/context/SlideOutContext";
 import { TopicsContext } from "@/context/TopicsContext";
@@ -44,7 +44,7 @@ import { useDownloadCsv } from "@/hooks/useDownloadCsv";
 import { useHashNavigation } from "@/hooks/useHashNavigation";
 import useSearch from "@/hooks/useSearch";
 import { useText } from "@/hooks/useText";
-import { TTopic, TTheme, TTopics, TApiTopic, TFeatures, TThemeConfig } from "@/types";
+import { TTopic, TTheme, TTopics, TApiTopic } from "@/types";
 import { FamilyConcept, mapFamilyConceptsToConcepts } from "@/utils/familyConcepts";
 import { getFeatureFlags } from "@/utils/featureFlags";
 import { getFeatures } from "@/utils/features";
@@ -123,14 +123,7 @@ const getSelectedFamilyConcepts = (selectedConcepts: string | string[], allConce
   );
 };
 
-export type TProps = {
-  envConfig: TPublicEnvConfig;
-  familyConceptsData: TTopic[] | null;
-  features: TFeatures;
-  theme: TTheme;
-  themeConfig: TThemeConfig;
-  topicsData: TTopics;
-};
+export type TProps = InferGetServerSidePropsType<typeof getServerSideProps>;
 
 const Search = ({ familyConceptsData, features, theme, themeConfig, topicsData }: TProps) => {
   const router = useRouter();
@@ -823,7 +816,7 @@ export default Search;
 export const getServerSideProps = (async (context) => {
   context.res.setHeader("Cache-Control", "public, max-age=3600, immutable");
 
-  const theme = process.env.THEME;
+  const theme = process.env.THEME as TTheme;
   const themeConfig = await readConfigFile(theme);
   const featureFlags = getFeatureFlags(context.req.cookies);
   const features = getFeatures(themeConfig, featureFlags);
@@ -848,7 +841,7 @@ export const getServerSideProps = (async (context) => {
 
   return {
     props: withEnvConfig({
-      familyConceptsData: familyConceptsData ?? null,
+      familyConceptsData: (familyConceptsData as TTopic[]) ?? null,
       features,
       theme,
       themeConfig,

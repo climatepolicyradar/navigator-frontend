@@ -7,8 +7,9 @@ import { DEFAULT_DOCUMENT_TITLE } from "@/constants/document";
 import { EXCLUDED_ISO_CODES } from "@/constants/geography";
 import { withEnvConfig } from "@/context/EnvConfig";
 import {
-  ApiItemResponse,
+  TApiItemResponse,
   IApiFamilyDocumentTopics,
+  IFamilyDocumentTopics,
   TApiCollectionPublicWithFamilies,
   TApiFamilyPublic,
   TApiGeography,
@@ -16,7 +17,13 @@ import {
   TApiSearchResponse,
   TApiSlugResponse,
   TApiTarget,
+  TCollectionPublicWithFamilies,
   TCorpusTypeDictionary,
+  TFamilyPublic,
+  TGeography,
+  TGeographySubdivision,
+  TSearchResponse,
+  TTarget,
   TTheme,
 } from "@/types";
 import { isCorpusIdAllowed } from "@/utils/checkCorpusAccess";
@@ -54,7 +61,7 @@ export const getServerSideProps = (async (context) => {
   let slug: TApiSlugResponse;
   try {
     /** As the families API cannot be queried by slugs, we need to get the slug */
-    const { data: slugData } = await apiClient.get<ApiItemResponse<TApiSlugResponse>>(`/families/slugs/${id}`);
+    const { data: slugData } = await apiClient.get<TApiItemResponse<TApiSlugResponse>>(`/families/slugs/${id}`);
     slug = slugData.data;
   } catch (error) {
     // eslint-disable-next-line no-console
@@ -67,7 +74,7 @@ export const getServerSideProps = (async (context) => {
   let familyData: TApiFamilyPublic;
   try {
     /** and then query the families API by the returned family_import_id */
-    const { data: familyResponse } = await apiClient.get<ApiItemResponse<TApiFamilyPublic>>(`/families/${slug.family_import_id}`);
+    const { data: familyResponse } = await apiClient.get<TApiItemResponse<TApiFamilyPublic>>(`/families/${slug.family_import_id}`);
     familyData = familyResponse.data;
     familyData.documents.forEach((document) => {
       if (document.title === "") document.title = DEFAULT_DOCUMENT_TITLE;
@@ -153,17 +160,17 @@ export const getServerSideProps = (async (context) => {
 
   return {
     props: withEnvConfig({
-      collections: collectionsData,
+      collections: collectionsData as TCollectionPublicWithFamilies[],
       corpus_types,
-      countries: countriesData,
-      family: familyData,
-      familyTopics: familyTopics,
+      countries: countriesData as TGeography[],
+      family: familyData as TFamilyPublic,
+      familyTopics: familyTopics as IFamilyDocumentTopics,
       features,
-      subdivisions: subdivisionsData,
-      targets: targetsData,
+      subdivisions: subdivisionsData as TGeographySubdivision[],
+      targets: targetsData as TTarget[],
       theme,
       themeConfig,
-      vespaFamilyData: vespaFamilyData,
+      vespaFamilyData: vespaFamilyData as TSearchResponse,
     }),
   };
 }) satisfies GetServerSideProps;
