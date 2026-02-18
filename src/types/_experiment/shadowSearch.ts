@@ -11,6 +11,13 @@ export type TFilterClause = {
   value: string;
 };
 
+// A group of clauses combined with AND/OR; groups are combined with AND/OR at the top level.
+export type TFilterGroup = {
+  id: string;
+  connector: "and" | "or" | null;
+  clauses: TFilterClause[];
+};
+
 // Options for each filter dimension (used by advanced builder and suggested filters).
 export type TFilterFieldOptions = {
   topic: string[];
