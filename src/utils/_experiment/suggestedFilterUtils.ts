@@ -1,5 +1,7 @@
-import { getSuggestedFilterMatches, TSuggestedFilterMatches } from "@/components/_experiment/typeahead/SuggestedFilters";
 import { TFilterFieldOptions } from "@/types";
+import { getSuggestedFilterMatches, TSuggestedFilterMatches } from "@/utils/_experiment/suggestedFilterMatching";
+
+export type { TSuggestedFilterMatches };
 
 type TIncludedFilterKey = "topics" | "geos" | "years" | "documentTypes";
 

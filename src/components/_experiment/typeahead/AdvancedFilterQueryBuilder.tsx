@@ -1,7 +1,7 @@
 import { Button } from "@base-ui/react/button";
 import { useRef, useState, useEffect } from "react";
 
-import { TActiveFilters, TFilterClause, TFilterFieldOptions, TFilterGroup, TFilterOperator } from "@/types";
+import { TFilterClause, TFilterFieldOptions, TFilterGroup, TFilterOperator } from "@/types";
 import { joinTailwindClasses } from "@/utils/tailwind";
 
 const FILTER_FIELDS = [
@@ -87,52 +87,6 @@ function createEmptyGroup(connector: TFilterGroup["connector"] = null): TFilterG
 /** Flatten groups to a single clause list for onApply / clausesToActiveFilters. */
 function flattenGroups(groups: TFilterGroup[]): TFilterClause[] {
   return groups.flatMap((g) => g.clauses);
-}
-
-/**
- * Converts builder clauses into the active-filters shape. "Is" (eq) clauses
- * populate included arrays; "is not" (ne) clauses populate excluded arrays.
- */
-export function clausesToActiveFilters(clauses: TFilterClause[]): TActiveFilters {
-  const includedConcepts: string[] = [];
-  const includedGeos: string[] = [];
-  const includedYears: string[] = [];
-  const includedDocumentTypes: string[] = [];
-  const excludedConcepts: string[] = [];
-  const excludedGeos: string[] = [];
-  const excludedYears: string[] = [];
-  const excludedDocumentTypes: string[] = [];
-
-  for (const clause of clauses) {
-    const value = clause.value.trim();
-    if (!value) continue;
-    const isExcluded = clause.operator === "ne";
-    switch (clause.field) {
-      case "topic":
-        (isExcluded ? excludedConcepts : includedConcepts).push(value);
-        break;
-      case "geography":
-        (isExcluded ? excludedGeos : includedGeos).push(value);
-        break;
-      case "year":
-        (isExcluded ? excludedYears : includedYears).push(value);
-        break;
-      case "documentType":
-        (isExcluded ? excludedDocumentTypes : includedDocumentTypes).push(value);
-        break;
-    }
-  }
-
-  return {
-    includedConcepts,
-    includedGeos,
-    includedYears,
-    includedDocumentTypes,
-    excludedConcepts,
-    excludedGeos,
-    excludedYears,
-    excludedDocumentTypes,
-  };
 }
 
 /** Renders clauses as readable boolean expression, e.g. (Topic is "X") AND (Geography is not "Y"). */

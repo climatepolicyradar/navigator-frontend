@@ -4,22 +4,20 @@ import { Popover as BasePopover } from "@base-ui/react/popover";
 import { useState } from "react";
 
 import { AdvancedFilterQueryBuilder } from "@/components/_experiment/typeahead/AdvancedFilterQueryBuilder";
-import { SuggestedFilters, getSuggestedFilterMatches } from "@/components/_experiment/typeahead/SuggestedFilters";
+import { SuggestedFilters } from "@/components/_experiment/typeahead/SuggestedFilters";
 import { SearchHistoryItem } from "@/hooks/useSearchHistory";
 import { TFilterClause, TFilterFieldOptions, TFilterGroup } from "@/types";
-import { hasAnyFilters as checkHasAnyFilters, hasAnyMatches } from "@/utils/_experiment/suggestedFilterUtils";
+import { TIncludedFilterKey } from "@/utils/_experiment/shadowSearchFilterConfig";
+import { getSuggestedFilterMatches } from "@/utils/_experiment/suggestedFilterMatching";
+import { SelectedFilters, hasAnyFilters as checkHasAnyFilters, hasAnyMatches } from "@/utils/_experiment/suggestedFilterUtils";
 
 export interface ISearchTypeaheadProps {
   searchTerm: string;
   onSearchTermChange: (value: string) => void;
-  selectedTopics: string[];
-  selectedGeos: string[];
-  selectedYears: string[];
-  selectedDocumentTypes: string[];
-  onSelectConcept: (concept: string) => void;
-  onSelectGeo: (geo: string) => void;
-  onSelectYear: (year: string) => void;
-  onSelectDocumentType: (documentType: string) => void;
+  /** Current selected filters (included dimensions only needed for suggestions). */
+  selectedFilters: SelectedFilters;
+  /** Add one value to an included filter key (topics, geos, years, documentTypes). */
+  onAddFilter: (key: TIncludedFilterKey, value: string) => void;
   onApplyAll: (matches: { concepts: string[]; geos: string[]; years: string[]; documentTypes: string[] }) => void;
   onSearchOnly: () => void;
   onApplyAdvancedFilters?: (clauses: TFilterClause[]) => void;
@@ -36,14 +34,8 @@ export interface ISearchTypeaheadProps {
 export const SearchTypeahead = ({
   searchTerm,
   onSearchTermChange,
-  selectedTopics,
-  selectedGeos,
-  selectedYears,
-  selectedDocumentTypes,
-  onSelectConcept,
-  onSelectGeo,
-  onSelectYear,
-  onSelectDocumentType,
+  selectedFilters,
+  onAddFilter,
   onApplyAll,
   onSearchOnly,
   onApplyAdvancedFilters,
@@ -210,14 +202,14 @@ export const SearchTypeahead = ({
           <SuggestedFilters
             searchTerm={trimmedSearch}
             matches={matches}
-            selectedTopics={selectedTopics}
-            selectedGeos={selectedGeos}
-            selectedYears={selectedYears}
-            selectedDocumentTypes={selectedDocumentTypes}
-            onSelectConcept={onSelectConcept}
-            onSelectGeo={onSelectGeo}
-            onSelectYear={onSelectYear}
-            onSelectDocumentType={onSelectDocumentType}
+            selectedTopics={selectedFilters.topics}
+            selectedGeos={selectedFilters.geos}
+            selectedYears={selectedFilters.years}
+            selectedDocumentTypes={selectedFilters.documentTypes}
+            onSelectConcept={(v) => onAddFilter("topics", v)}
+            onSelectGeo={(v) => onAddFilter("geos", v)}
+            onSelectYear={(v) => onAddFilter("years", v)}
+            onSelectDocumentType={(v) => onAddFilter("documentTypes", v)}
           />
 
           <div className="mt-3 flex flex-wrap items-center gap-3">
