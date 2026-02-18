@@ -1,4 +1,5 @@
-import { TActiveFilters, TFilterClause } from "@/types";
+import { TActiveFilters, TFilterClause, TFilterGroup } from "@/types";
+import type { SelectedFilters } from "@/utils/_experiment/suggestedFilterUtils";
 
 /**
  * Converts advanced-query builder clauses into the active-filters shape.
@@ -47,4 +48,62 @@ export function clausesToActiveFilters(clauses: TFilterClause[]): TActiveFilters
     excludedYears,
     excludedDocumentTypes,
   };
+}
+
+/**
+ * Converts current applied filters (e.g. from the sidebar) into the advanced
+ * builder's group shape so the modal shows the same state. Used so that
+ * removing a filter from the sidebar is reflected when the user opens Advanced.
+ *
+ * @param filters - Current selected filters (included + excluded)
+ * @returns One group containing a clause per filter value (or one empty clause if none)
+ */
+export function selectedFiltersToGroups(filters: SelectedFilters): TFilterGroup[] {
+  const clauses: TFilterClause[] = [];
+
+  function pushClause(field: "topic" | "geography" | "year" | "documentType", operator: "eq" | "ne", value: string) {
+    if (!value.trim()) return;
+    clauses.push({
+      id: crypto.randomUUID(),
+      connector: clauses.length === 0 ? null : "and",
+      field,
+      operator,
+      value: value.trim(),
+    });
+  }
+
+  filters.topics.forEach((v) => pushClause("topic", "eq", v));
+  filters.geos.forEach((v) => pushClause("geography", "eq", v));
+  filters.years.forEach((v) => pushClause("year", "eq", v));
+  filters.documentTypes.forEach((v) => pushClause("documentType", "eq", v));
+  filters.topicsExcluded.forEach((v) => pushClause("topic", "ne", v));
+  filters.geosExcluded.forEach((v) => pushClause("geography", "ne", v));
+  filters.yearsExcluded.forEach((v) => pushClause("year", "ne", v));
+  filters.documentTypesExcluded.forEach((v) => pushClause("documentType", "ne", v));
+
+  if (clauses.length === 0) {
+    return [
+      {
+        id: crypto.randomUUID(),
+        connector: null,
+        clauses: [
+          {
+            id: crypto.randomUUID(),
+            connector: null,
+            field: "topic",
+            operator: "eq",
+            value: "",
+          },
+        ],
+      },
+    ];
+  }
+
+  return [
+    {
+      id: crypto.randomUUID(),
+      connector: null,
+      clauses,
+    },
+  ];
 }

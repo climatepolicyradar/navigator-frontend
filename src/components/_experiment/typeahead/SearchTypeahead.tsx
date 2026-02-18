@@ -6,7 +6,8 @@ import { useState } from "react";
 import { AdvancedFilterQueryBuilder } from "@/components/_experiment/typeahead/AdvancedFilterQueryBuilder";
 import { SuggestedFilters } from "@/components/_experiment/typeahead/SuggestedFilters";
 import { SearchHistoryItem } from "@/hooks/useSearchHistory";
-import { TFilterClause, TFilterFieldOptions, TFilterGroup } from "@/types";
+import { TFilterClause, TFilterFieldOptions } from "@/types";
+import { selectedFiltersToGroups } from "@/utils/_experiment/filterQueryBuilderUtils";
 import { TIncludedFilterKey } from "@/utils/_experiment/shadowSearchFilterConfig";
 import { getSuggestedFilterMatches } from "@/utils/_experiment/suggestedFilterMatching";
 import { SelectedFilters, hasAnyFilters as checkHasAnyFilters, hasAnyMatches } from "@/utils/_experiment/suggestedFilterUtils";
@@ -44,19 +45,18 @@ export const SearchTypeahead = ({
   history: historyConfig,
 }: ISearchTypeaheadProps) => {
   const [isAdvancedFiltersOpen, setIsAdvancedFiltersOpen] = useState(false);
-  const [lastAppliedAdvancedGroups, setLastAppliedAdvancedGroups] = useState<TFilterGroup[]>([]);
   const [isHistoryPopoverOpen, setIsHistoryPopoverOpen] = useState(false);
   const trimmedSearchTerm = searchTerm.trim();
   const suggestedMatchesForInput = getSuggestedFilterMatches(trimmedSearchTerm, filterOptions);
   const hasSuggestedMatches = trimmedSearchTerm.length > 0 && hasAnyMatches(suggestedMatchesForInput);
 
+  // Initial state for the builder derived from current applied filters so that
+  // removing a filter from the sidebar is reflected when the user opens Advanced.
+  const initialGroupsFromCurrentFilters = selectedFiltersToGroups(selectedFilters);
+
   const closeAdvancedFiltersAndApply = (clauses: TFilterClause[]) => {
     onApplyAdvancedFilters?.(clauses);
     setIsAdvancedFiltersOpen(false);
-  };
-
-  const persistAppliedAdvancedGroups = (groups: TFilterGroup[]) => {
-    setLastAppliedAdvancedGroups(groups);
   };
 
   const closeAdvancedFiltersOnEscape = (e: React.KeyboardEvent) => {
@@ -185,10 +185,9 @@ export const SearchTypeahead = ({
             </div>
             <div className="min-h-0 flex-1 overflow-y-auto px-4 pb-4">
               <AdvancedFilterQueryBuilder
-                key={isAdvancedFiltersOpen ? `open-${lastAppliedAdvancedGroups.length}` : "closed"}
-                initialGroups={lastAppliedAdvancedGroups}
+                key={isAdvancedFiltersOpen ? `open-${JSON.stringify(selectedFilters)}` : "closed"}
+                initialGroups={initialGroupsFromCurrentFilters}
                 onApply={closeAdvancedFiltersAndApply}
-                onApplyWithGroups={persistAppliedAdvancedGroups}
                 fieldOptions={filterOptions}
                 className="max-w-none"
               />
