@@ -1,29 +1,12 @@
 import { test, expect } from "@playwright/test";
 
+import { runGenericGeographyTests } from "../generic/genericGeographyTests";
 import { genericPageModel as genericPage } from "../pageObjectModels/genericPageModel";
 import { geographyPageModel as geographyPage } from "../pageObjectModels/geographyPageModel";
 
 test.describe("CCC geography page", () => {
   test.describe("Generic geography tests", () => {
-    test("navigate to a family from the geography page", async ({ page }) => {
-      await geographyPage.goToGeography(page, "australia");
-      await genericPage.waitUntilLoaded(page);
-      await genericPage.dismissPopups(page);
-
-      const recentDocumentsSection = await geographyPage.focusOnSection(page, /^Recent cases/);
-
-      const familyLink = recentDocumentsSection.getByRole("link").first();
-      await expect(familyLink).toBeVisible();
-
-      const familyNameRaw = await familyLink.innerText();
-      const familyName = familyNameRaw.split("\n")[0].trim();
-      const familyHref = await familyLink.getAttribute("href");
-
-      await familyLink.click();
-
-      await page.waitForURL("**" + familyHref);
-      await genericPage.waitUntilLoaded(page, familyName);
-    });
+    runGenericGeographyTests("ccc");
   });
 
   test("should navigate to to family page from sub division page", async ({ page }) => {
