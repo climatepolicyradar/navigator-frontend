@@ -8,6 +8,7 @@ import { Badge } from "@/components/atoms/badge/Badge";
 import { Select } from "@/components/atoms/select/Select";
 import { InputCheck } from "@/components/forms/Checkbox";
 import { TutorialCard } from "@/components/molecules/tutorials/TutorialCard";
+import { Warning } from "@/components/molecules/warning/Warning";
 import { QUERY_PARAMS } from "@/constants/queryParams";
 import { TUTORIALS } from "@/constants/tutorials";
 import { FeaturesContext } from "@/context/FeaturesContext";
@@ -116,6 +117,11 @@ export const ConceptPicker = ({ containerClasses = "", startingSort = "Grouped",
   return (
     <div className={`relative flex flex-col gap-5 max-h-full pb-5 ${containerClasses}`} ref={ref}>
       {/* HEADER */}
+      {theme === "ccc" && (
+        <Warning className="mb-0!" variant="error">
+          We are currently experiencing technical difficulties with topics. We are working hard to fix this issue, please check back a little later.
+        </Warning>
+      )}
       {showKnowledgeGraphTutorial && <TutorialCard name="knowledgeGraph" card={TUTORIALS.knowledgeGraph.card} />}
       <span className="text-base font-semibold text-text-primary">
         <TextSearch size={20} className="inline mr-2 text-text-brand align-text-bottom" />
