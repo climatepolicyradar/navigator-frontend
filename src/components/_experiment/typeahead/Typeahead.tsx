@@ -6,7 +6,7 @@ import useConfig from "@/hooks/useConfig";
 import useShadowSearch, { UseShadowSearchReturn } from "@/hooks/useShadowSearch";
 import { TFilterFieldOptions } from "@/types";
 import { buildFilterFieldOptions } from "@/utils/_experiment/buildFilterFieldOptions";
-import { hasAnyFilters as checkHasAnyFilters } from "@/utils/_experiment/suggestedFilterUtils";
+import { hasAnyMatches } from "@/utils/_experiment/suggestedFilterUtils";
 
 import { SearchTypeahead } from "./SearchTypeahead";
 import { SuggestedFilters } from "./SuggestedFilters";
@@ -233,34 +233,12 @@ export function Typeahead({ shadowSearch: injectedShadowSearch, filterOptions: i
               onSearchOnly={actions.searchOnly}
               onApplyAdvancedFilters={actions.applyAdvanced}
               filterOptions={filterOptions}
+              history={{
+                items: recentSearches,
+                clearHistory,
+                onSelectItem: applyHistoryItem,
+              }}
             />
-
-            {recentSearches.length > 0 && (
-              <div className="border border-border-lighter bg-white p-4 space-y-2">
-                <div className="flex items-center justify-between">
-                  <p className="text-xs font-semibold uppercase tracking-[0.14em] text-text-tertiary">Recent searches</p>
-                  <button type="button" onClick={clearHistory} className="text-xs text-text-tertiary hover:text-text-secondary underline">
-                    Clear
-                  </button>
-                </div>
-                <ul className="flex flex-wrap gap-2">
-                  {recentSearches.slice(0, 5).map((item, index) => (
-                    <li key={`${item.term}-${index}`}>
-                      <button
-                        type="button"
-                        onClick={() => applyHistoryItem(item)}
-                        className="inline-flex items-center gap-1.5 rounded border border-border-lighter bg-surface-light px-2 py-1 text-xs text-text-primary hover:bg-surface-medium"
-                      >
-                        <span>{item.term}</span>
-                        {item.filters && checkHasAnyFilters(item.filters) && (
-                          <span className="rounded bg-surface-medium px-1 text-[10px] text-text-tertiary">filters</span>
-                        )}
-                      </button>
-                    </li>
-                  ))}
-                </ul>
-              </div>
-            )}
 
             {(rawSearchTerm || hasAnyFilters) && (
               <div className="space-y-3">
@@ -287,24 +265,27 @@ export function Typeahead({ shadowSearch: injectedShadowSearch, filterOptions: i
                     <p className="text-sm text-text-primary">
                       Showing results for <span className="font-semibold">&ldquo;{rawSearchTerm}&rdquo;</span>
                     </p>
-                    <p className="text-xs text-text-secondary">To get more precise results, try applying filters based on your search.</p>
-
-                    <div className="mt-3 bg-surface-light p-3">
-                      <SuggestedFilters
-                        searchTerm={rawSearchTerm}
-                        matches={rawMatches}
-                        selectedTopics={filters.topics}
-                        selectedGeos={filters.geos}
-                        selectedYears={filters.years}
-                        selectedDocumentTypes={filters.documentTypes}
-                        onSelectConcept={(selectedConcept) => addFilter("topics", selectedConcept)}
-                        onSelectGeo={(selectedGeo) => addFilter("geos", selectedGeo)}
-                        onSelectYear={(selectedYear) => addFilter("years", selectedYear)}
-                        onSelectDocumentType={(selectedDocumentType) => addFilter("documentTypes", selectedDocumentType)}
-                        showHeader={false}
-                        showEmptyCopy={false}
-                      />
-                    </div>
+                    {hasAnyMatches(rawMatches) && (
+                      <>
+                        <p className="text-xs text-text-secondary">To get more precise results, try applying filters based on your search.</p>
+                        <div className="mt-3 bg-surface-light p-3">
+                          <SuggestedFilters
+                            searchTerm={rawSearchTerm}
+                            matches={rawMatches}
+                            selectedTopics={filters.topics}
+                            selectedGeos={filters.geos}
+                            selectedYears={filters.years}
+                            selectedDocumentTypes={filters.documentTypes}
+                            onSelectConcept={(selectedConcept) => addFilter("topics", selectedConcept)}
+                            onSelectGeo={(selectedGeo) => addFilter("geos", selectedGeo)}
+                            onSelectYear={(selectedYear) => addFilter("years", selectedYear)}
+                            onSelectDocumentType={(selectedDocumentType) => addFilter("documentTypes", selectedDocumentType)}
+                            showHeader={false}
+                            showEmptyCopy={false}
+                          />
+                        </div>
+                      </>
+                    )}
                   </div>
                 ) : (
                   <div className="border border-border-lighter bg-white p-4 space-y-3">

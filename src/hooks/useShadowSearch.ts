@@ -8,7 +8,6 @@ import {
   addToFilterKey,
   EMPTY_FILTERS,
   hasAnyFilters as checkHasAnyFilters,
-  hasAnyMatches,
   hasRemainingSuggestions,
   SelectedFilters,
 } from "@/utils/_experiment/suggestedFilterUtils";
@@ -66,7 +65,7 @@ export function useShadowSearch(params: UseShadowSearchParams = {}): UseShadowSe
 
   const rawMatches = getSuggestedFilterMatches(rawSearchTerm, filterOptions);
   const hasAnyFiltersFlag = checkHasAnyFilters(filters);
-  const showStringOnlyResults = !!rawSearchTerm && wasStringOnlySearch && !hasAnyFiltersFlag && hasAnyMatches(rawMatches);
+  const showStringOnlyResults = !!rawSearchTerm && wasStringOnlySearch && !hasAnyFiltersFlag;
 
   function clearAllFilters() {
     setFilters(EMPTY_FILTERS);
