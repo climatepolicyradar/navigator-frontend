@@ -2,6 +2,7 @@ import { useState } from "react";
 
 import { clausesToActiveFilters } from "@/components/_experiment/typeahead/AdvancedFilterQueryBuilder";
 import { getSuggestedFilterMatches } from "@/components/_experiment/typeahead/SuggestedFilters";
+import { useSearchHistory, SearchHistoryItem } from "@/hooks/useSearchHistory";
 import { TFilterClause, TFilterFieldOptions } from "@/types";
 import {
   addToFilterKey,
@@ -28,6 +29,10 @@ export interface UseShadowSearchReturn {
     matches: ReturnType<typeof getSuggestedFilterMatches>;
     showStringOnlyResults: boolean;
   };
+  searchHistory: {
+    history: SearchHistoryItem[];
+    clearHistory: () => void;
+  };
   filters: {
     value: SelectedFilters;
     hasAny: boolean;
@@ -42,6 +47,8 @@ export interface UseShadowSearchReturn {
     applyAll: (matches: { concepts: string[]; geos: string[]; years: string[]; documentTypes: string[] }) => void;
     searchOnly: () => void;
     resetToOriginalSearch: () => void;
+    // Restore search term and filters from a history item.
+    applyHistoryItem: (item: SearchHistoryItem) => void;
   };
 }
 
@@ -51,6 +58,7 @@ export interface UseShadowSearchReturn {
  */
 export function useShadowSearch(params: UseShadowSearchParams = {}): UseShadowSearchReturn {
   const { filterOptions } = params;
+  const { history: searchHistoryList, addToHistory, clearHistory } = useSearchHistory();
   const [searchTerm, setSearchTerm] = useState("");
   const [rawSearchTerm, setRawSearchTerm] = useState("");
   const [wasStringOnlySearch, setWasStringOnlySearch] = useState(false);
@@ -64,39 +72,40 @@ export function useShadowSearch(params: UseShadowSearchParams = {}): UseShadowSe
     setFilters(EMPTY_FILTERS);
   }
 
-  function applyRawSearch(trimmed: string) {
-    if (trimmed.length > 0) setRawSearchTerm(trimmed);
+  function addToFilter(key: TIncludedFilterKey, value: string) {
+    const trimmed = searchTerm.trim();
+    const nextFilters = addToFilterKey(filters, key, value);
+    addToHistory(trimmed, { filters: nextFilters });
+    setFilters((prev) => {
+      const next = addToFilterKey(prev, key, value);
+      if (!hasRemainingSuggestions(trimmed, next, filterOptions)) {
+        setTimeout(() => setSearchTerm(""), 0);
+      }
+      return next;
+    });
+    setRawSearchTerm("");
     setWasStringOnlySearch(false);
   }
 
-  function addToFilter(key: TIncludedFilterKey, value: string) {
-    const trimmed = searchTerm.trim();
-    setFilters((prev) => {
-      const nextFilters = addToFilterKey(prev, key, value);
-      if (!hasRemainingSuggestions(trimmed, nextFilters, filterOptions)) {
-        setTimeout(() => setSearchTerm(""), 0);
-      }
-      return nextFilters;
-    });
-    applyRawSearch(trimmed);
-  }
-
   function handleApplyAll(matches: { concepts: string[]; geos: string[]; years: string[]; documentTypes: string[] }) {
-    setFilters({
+    const trimmed = searchTerm.trim();
+    const nextFilters: SelectedFilters = {
       ...EMPTY_FILTERS,
       topics: matches.concepts,
       geos: matches.geos,
       years: matches.years,
       documentTypes: matches.documentTypes,
-    });
-    setRawSearchTerm(searchTerm);
+    };
+    if (trimmed.length > 0) addToHistory(trimmed, { filters: nextFilters });
+    setFilters(nextFilters);
+    setRawSearchTerm("");
     setWasStringOnlySearch(false);
     setSearchTerm("");
   }
 
   function applyAdvancedFilters(clauses: TFilterClause[]) {
     const active = clausesToActiveFilters(clauses);
-    setFilters({
+    const nextFilters: SelectedFilters = {
       topics: active.includedConcepts,
       geos: active.includedGeos,
       years: active.includedYears,
@@ -105,13 +114,18 @@ export function useShadowSearch(params: UseShadowSearchParams = {}): UseShadowSe
       geosExcluded: active.excludedGeos,
       yearsExcluded: active.excludedYears,
       documentTypesExcluded: active.excludedDocumentTypes,
-    });
+    };
+    const label = rawSearchTerm.trim() || "Advanced filters";
+    addToHistory(label, { filters: nextFilters });
+    setFilters(nextFilters);
     setRawSearchTerm("");
     setWasStringOnlySearch(false);
     setSearchTerm("");
   }
 
   function handleSearchOnly() {
+    const trimmed = searchTerm.trim();
+    if (trimmed.length > 0) addToHistory(trimmed, { wasStringOnly: true });
     setRawSearchTerm(searchTerm);
     setWasStringOnlySearch(true);
     setSearchTerm("");
@@ -126,7 +140,12 @@ export function useShadowSearch(params: UseShadowSearchParams = {}): UseShadowSe
   function removeFilter(update: Partial<SelectedFilters>) {
     setFilters((prev) => {
       const next = { ...prev, ...update };
-      if (!checkHasAnyFilters(next)) setSearchTerm("");
+      if (!checkHasAnyFilters(next)) {
+        // No filters left: clear both the search input and any previous results.
+        setSearchTerm("");
+        setRawSearchTerm("");
+        setWasStringOnlySearch(false);
+      }
       return next;
     });
   }
@@ -137,6 +156,13 @@ export function useShadowSearch(params: UseShadowSearchParams = {}): UseShadowSe
     removeFilter({ [key]: arr.filter((x) => x !== value) } as Partial<SelectedFilters>);
   }
 
+  function applyHistoryItem(item: SearchHistoryItem) {
+    setSearchTerm(item.term);
+    setRawSearchTerm(item.term);
+    setFilters(item.filters ?? EMPTY_FILTERS);
+    setWasStringOnlySearch(item.wasStringOnly ?? false);
+  }
+
   return {
     search: {
       term: searchTerm,
@@ -144,6 +170,10 @@ export function useShadowSearch(params: UseShadowSearchParams = {}): UseShadowSe
       rawTerm: rawSearchTerm,
       matches: rawMatches,
       showStringOnlyResults,
+    },
+    searchHistory: {
+      history: searchHistoryList,
+      clearHistory,
     },
     filters: {
       value: filters,
@@ -157,6 +187,7 @@ export function useShadowSearch(params: UseShadowSearchParams = {}): UseShadowSe
       applyAll: handleApplyAll,
       searchOnly: handleSearchOnly,
       resetToOriginalSearch: resetFiltersToOriginalSearch,
+      applyHistoryItem,
     },
   };
 }

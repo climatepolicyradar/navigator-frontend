@@ -6,6 +6,7 @@ import useConfig from "@/hooks/useConfig";
 import useShadowSearch, { UseShadowSearchReturn } from "@/hooks/useShadowSearch";
 import { TFilterFieldOptions } from "@/types";
 import { buildFilterFieldOptions } from "@/utils/_experiment/buildFilterFieldOptions";
+import { hasAnyFilters as checkHasAnyFilters } from "@/utils/_experiment/suggestedFilterUtils";
 
 import { SearchTypeahead } from "./SearchTypeahead";
 import { SuggestedFilters } from "./SuggestedFilters";
@@ -36,11 +37,13 @@ export function Typeahead({ shadowSearch: injectedShadowSearch, filterOptions: i
   const shadowSearch = injectedShadowSearch ?? internalShadowSearch;
   const filterOptions = injectedFilterOptions ?? internalFilterOptions;
 
-  const { search, filters: filtersState, actions } = shadowSearch;
+  const { search, searchHistory, filters: filtersState, actions } = shadowSearch;
   const { term: searchTerm, setTerm: setSearchTerm, rawTerm: rawSearchTerm, matches: rawMatches, showStringOnlyResults } = search;
+  const { history: recentSearches, clearHistory } = searchHistory;
   const { value: filters, hasAny: hasAnyFilters } = filtersState;
   const removeFilter = actions.remove;
   const addFilter = actions.add;
+  const applyHistoryItem = actions.applyHistoryItem;
 
   return (
     <section className="bg-surface-light py-10 md:py-16">
@@ -232,19 +235,49 @@ export function Typeahead({ shadowSearch: injectedShadowSearch, filterOptions: i
               filterOptions={filterOptions}
             />
 
+            {recentSearches.length > 0 && (
+              <div className="border border-border-lighter bg-white p-4 space-y-2">
+                <div className="flex items-center justify-between">
+                  <p className="text-xs font-semibold uppercase tracking-[0.14em] text-text-tertiary">Recent searches</p>
+                  <button type="button" onClick={clearHistory} className="text-xs text-text-tertiary hover:text-text-secondary underline">
+                    Clear
+                  </button>
+                </div>
+                <ul className="flex flex-wrap gap-2">
+                  {recentSearches.slice(0, 5).map((item, index) => (
+                    <li key={`${item.term}-${index}`}>
+                      <button
+                        type="button"
+                        onClick={() => applyHistoryItem(item)}
+                        className="inline-flex items-center gap-1.5 rounded border border-border-lighter bg-surface-light px-2 py-1 text-xs text-text-primary hover:bg-surface-medium"
+                      >
+                        <span>{item.term}</span>
+                        {item.filters && checkHasAnyFilters(item.filters) && (
+                          <span className="rounded bg-surface-medium px-1 text-[10px] text-text-tertiary">filters</span>
+                        )}
+                      </button>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            )}
+
             {(rawSearchTerm || hasAnyFilters) && (
               <div className="space-y-3">
                 {hasAnyFilters ? (
                   <div className="border border-border-lighter bg-white p-4 space-y-3">
                     <p className="text-xs font-semibold tracking-[0.14em] text-text-tertiary uppercase">Results</p>
                     <div className="space-y-2 text-xs text-text-secondary">
-                      <p>Your search has been converted into the filters on the left. Adjust or clear the filters to change these results.</p>
-                      <Button
-                        onClick={actions.resetToOriginalSearch}
-                        className="inline-flex items-center border border-border-lighter bg-white px-3 py-2 text-[11px] font-medium text-text-primary hover:bg-surface-light"
-                      >
-                        Reset filters to original search
-                      </Button>
+                      {rawSearchTerm ? (
+                        <>
+                          <p>
+                            Showing results for <span className="font-semibold">&ldquo;{rawSearchTerm}&rdquo;</span> within your applied filters.
+                          </p>
+                          <p>Adjust or clear the filters on the left to change these results.</p>
+                        </>
+                      ) : (
+                        <p>Your search has been converted into the filters on the left. Adjust or clear the filters to change these results.</p>
+                      )}
                     </div>
                     <p className="text-xs text-text-tertiary">Search results will appear here.</p>
                   </div>
