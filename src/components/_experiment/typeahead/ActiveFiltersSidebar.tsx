@@ -14,9 +14,10 @@ export interface ActiveFiltersSidebarProps {
   hasAnyFilters: boolean;
 }
 
-const chipBase = "group inline-flex items-center gap-1 rounded-full px-3 py-1.5 text-[11px] font-medium transition";
-const chipIncluded = "border border-border-lighter bg-surface-light text-text-primary hover:bg-surface-ui hover:text-text-brand";
-const chipExcluded = "border border-dashed border-border-lighter bg-surface-light/70 text-text-secondary hover:bg-surface-ui hover:text-text-brand";
+const filterChipBaseClasses = "group inline-flex items-center gap-1 rounded-full px-3 py-1.5 text-[11px] font-medium transition";
+const includedFilterChipClasses = "border border-border-lighter bg-surface-light text-text-primary hover:bg-surface-ui hover:text-text-brand";
+const excludedFilterChipClasses =
+  "border border-dashed border-border-lighter bg-surface-light/70 text-text-secondary hover:bg-surface-ui hover:text-text-brand";
 
 /**
  * Renders the active filters sidebar: one section per dimension (topics, geos, years, document types),
@@ -31,15 +32,19 @@ export function ActiveFiltersSidebar({ filters, onRemove, onClearAll, hasAnyFilt
 
       <div className="space-y-3">
         {SHADOW_SEARCH_FILTER_DIMENSIONS.included.map(({ key, label }) => {
-          const values = filters[key];
+          const selectedValuesForDimension = filters[key];
           return (
             <div key={key}>
               <p className="mb-1 text-xs font-medium text-text-tertiary">{label}</p>
               <div className="flex flex-wrap gap-2">
-                {values.length === 0 && <span className="text-xs text-text-tertiary">None</span>}
-                {values.map((value: string) => (
-                  <Button key={value} onClick={() => onRemove(key, value)} className={`${chipBase} ${chipIncluded}`}>
-                    <span>{value}</span>
+                {selectedValuesForDimension.length === 0 && <span className="text-xs text-text-tertiary">None</span>}
+                {selectedValuesForDimension.map((filterValue: string) => (
+                  <Button
+                    key={filterValue}
+                    onClick={() => onRemove(key, filterValue)}
+                    className={`${filterChipBaseClasses} ${includedFilterChipClasses}`}
+                  >
+                    <span>{filterValue}</span>
                     <span className="text-xs text-text-tertiary group-hover:text-text-brand">×</span>
                   </Button>
                 ))}
@@ -53,15 +58,19 @@ export function ActiveFiltersSidebar({ filters, onRemove, onClearAll, hasAnyFilt
             <p className="mb-2 text-xs font-semibold uppercase tracking-[0.16em] text-text-tertiary">Excluded</p>
             <div className="space-y-2">
               {SHADOW_SEARCH_FILTER_DIMENSIONS.excluded.map(({ key, label }) => {
-                const values = filters[key];
-                if (values.length === 0) return null;
+                const excludedValuesForDimension = filters[key];
+                if (excludedValuesForDimension.length === 0) return null;
                 return (
                   <div key={key}>
                     <p className="mb-1 text-[10px] font-medium text-text-tertiary">{label}</p>
                     <div className="flex flex-wrap gap-2">
-                      {values.map((value: string) => (
-                        <Button key={value} onClick={() => onRemove(key, value)} className={`${chipBase} ${chipExcluded}`}>
-                          <span>{value}</span>
+                      {excludedValuesForDimension.map((filterValue: string) => (
+                        <Button
+                          key={filterValue}
+                          onClick={() => onRemove(key, filterValue)}
+                          className={`${filterChipBaseClasses} ${excludedFilterChipClasses}`}
+                        >
+                          <span>{filterValue}</span>
                           <span className="text-xs text-text-tertiary group-hover:text-text-brand">×</span>
                         </Button>
                       ))}

@@ -75,10 +75,10 @@ export function ShadowSearchResults({
                   selectedGeos={filters.geos}
                   selectedYears={filters.years}
                   selectedDocumentTypes={filters.documentTypes}
-                  onSelectConcept={(v) => onAddFilter("topics", v)}
-                  onSelectGeo={(v) => onAddFilter("geos", v)}
-                  onSelectYear={(v) => onAddFilter("years", v)}
-                  onSelectDocumentType={(v) => onAddFilter("documentTypes", v)}
+                  onSelectConcept={(selectedValue) => onAddFilter("topics", selectedValue)}
+                  onSelectGeo={(selectedValue) => onAddFilter("geos", selectedValue)}
+                  onSelectYear={(selectedValue) => onAddFilter("years", selectedValue)}
+                  onSelectDocumentType={(selectedValue) => onAddFilter("documentTypes", selectedValue)}
                   showHeader={false}
                   showEmptyCopy={false}
                 />

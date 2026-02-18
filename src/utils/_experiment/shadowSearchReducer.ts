@@ -30,15 +30,25 @@ export const initialShadowSearchState: ShadowSearchState = {
 };
 
 export type ShadowSearchAction =
+  // User edits the search input (not yet committed).
   | { type: "SET_SEARCH_TERM"; payload: string }
+  // Add a single included filter value (e.g. from suggestions or IntelliSearch).
   | { type: "ADD_FILTER"; payload: { key: TIncludedFilterKey; value: string } }
+  // Remove a single value from any filter array; may also clear results when last filter goes.
   | { type: "REMOVE_FILTER"; payload: { key: keyof SelectedFilters; value: string } }
+  // Replace all filters wholesale.
   | { type: "SET_FILTERS"; payload: SelectedFilters }
+  // Convert current string matches into included filters only (no exclusions).
   | { type: "APPLY_ALL"; payload: { concepts: string[]; geos: string[]; years: string[]; documentTypes: string[] } }
+  // Apply advanced builder output (includes include + exclude filters).
   | { type: "APPLY_ADVANCED"; payload: SelectedFilters }
+  // Commit current input as a string-only query (no filters).
   | { type: "SEARCH_ONLY" }
+  // Restore the original raw query, dropping filters built from it.
   | { type: "RESET_TO_ORIGINAL" }
+  // Drop all filters but leave search terms untouched.
   | { type: "CLEAR_FILTERS" }
+  // Restore a previous search (term, raw term, filters, mode) from history.
   | { type: "APPLY_HISTORY_ITEM"; payload: SearchHistoryItem };
 
 export function shadowSearchReducer(state: ShadowSearchState, action: ShadowSearchAction): ShadowSearchState {
@@ -47,10 +57,10 @@ export function shadowSearchReducer(state: ShadowSearchState, action: ShadowSear
       return { ...state, searchTerm: action.payload };
 
     case "ADD_FILTER": {
-      const next = addToFilterKey(state.filters, action.payload.key, action.payload.value);
+      const filtersWithAddedValue = addToFilterKey(state.filters, action.payload.key, action.payload.value);
       return {
         ...state,
-        filters: next,
+        filters: filtersWithAddedValue,
         rawSearchTerm: "",
         wasStringOnlySearch: false,
       };
@@ -58,23 +68,23 @@ export function shadowSearchReducer(state: ShadowSearchState, action: ShadowSear
 
     case "REMOVE_FILTER": {
       const { key, value } = action.payload;
-      const arr = state.filters[key];
-      if (!Array.isArray(arr)) return state;
-      const nextArr = arr.filter((x) => x !== value);
-      const nextFilters = { ...state.filters, [key]: nextArr };
-      const clearSearch =
-        !nextFilters.topics.length &&
-        !nextFilters.geos.length &&
-        !nextFilters.years.length &&
-        !nextFilters.documentTypes.length &&
-        !nextFilters.topicsExcluded.length &&
-        !nextFilters.geosExcluded.length &&
-        !nextFilters.yearsExcluded.length &&
-        !nextFilters.documentTypesExcluded.length;
+      const currentValuesForFilterKey = state.filters[key];
+      if (!Array.isArray(currentValuesForFilterKey)) return state;
+      const valuesAfterRemoval = currentValuesForFilterKey.filter((v) => v !== value);
+      const nextFilters = { ...state.filters, [key]: valuesAfterRemoval };
+      const hasNoFiltersLeft =
+        nextFilters.topics.length === 0 &&
+        nextFilters.geos.length === 0 &&
+        nextFilters.years.length === 0 &&
+        nextFilters.documentTypes.length === 0 &&
+        nextFilters.topicsExcluded.length === 0 &&
+        nextFilters.geosExcluded.length === 0 &&
+        nextFilters.yearsExcluded.length === 0 &&
+        nextFilters.documentTypesExcluded.length === 0;
       return {
         ...state,
         filters: nextFilters,
-        ...(clearSearch ? { searchTerm: "", rawSearchTerm: "", wasStringOnlySearch: false } : {}),
+        ...(hasNoFiltersLeft ? { searchTerm: "", rawSearchTerm: "", wasStringOnlySearch: false } : {}),
       };
     }
 
@@ -125,13 +135,13 @@ export function shadowSearchReducer(state: ShadowSearchState, action: ShadowSear
       return { ...state, filters: EMPTY_FILTERS };
 
     case "APPLY_HISTORY_ITEM": {
-      const item = action.payload;
+      const historyItem = action.payload;
       return {
         ...state,
-        searchTerm: item.term,
-        rawSearchTerm: item.term,
-        filters: item.filters ?? EMPTY_FILTERS,
-        wasStringOnlySearch: item.wasStringOnly ?? false,
+        searchTerm: historyItem.term,
+        rawSearchTerm: historyItem.term,
+        filters: historyItem.filters ?? EMPTY_FILTERS,
+        wasStringOnlySearch: historyItem.wasStringOnly ?? false,
       };
     }
 

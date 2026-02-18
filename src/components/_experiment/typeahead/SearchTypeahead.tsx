@@ -41,25 +41,25 @@ export const SearchTypeahead = ({
   onApplyAdvancedFilters,
   filterOptions,
   placeholder = "Search",
-  history: historyProp,
+  history: historyConfig,
 }: ISearchTypeaheadProps) => {
   const [isAdvancedFiltersOpen, setIsAdvancedFiltersOpen] = useState(false);
-  const [lastAppliedGroups, setLastAppliedGroups] = useState<TFilterGroup[]>([]);
-  const [isHistoryOpen, setIsHistoryOpen] = useState(false);
-  const trimmedSearch = searchTerm.trim();
-  const matches = getSuggestedFilterMatches(trimmedSearch, filterOptions);
-  const hasMatches = trimmedSearch.length > 0 && hasAnyMatches(matches);
+  const [lastAppliedAdvancedGroups, setLastAppliedAdvancedGroups] = useState<TFilterGroup[]>([]);
+  const [isHistoryPopoverOpen, setIsHistoryPopoverOpen] = useState(false);
+  const trimmedSearchTerm = searchTerm.trim();
+  const suggestedMatchesForInput = getSuggestedFilterMatches(trimmedSearchTerm, filterOptions);
+  const hasSuggestedMatches = trimmedSearchTerm.length > 0 && hasAnyMatches(suggestedMatchesForInput);
 
-  const handleApplyAdvanced = (clauses: TFilterClause[]) => {
+  const closeAdvancedFiltersAndApply = (clauses: TFilterClause[]) => {
     onApplyAdvancedFilters?.(clauses);
     setIsAdvancedFiltersOpen(false);
   };
 
-  const handleApplyWithGroups = (groups: TFilterGroup[]) => {
-    setLastAppliedGroups(groups);
+  const persistAppliedAdvancedGroups = (groups: TFilterGroup[]) => {
+    setLastAppliedAdvancedGroups(groups);
   };
 
-  const handleModalKeyDown = (e: React.KeyboardEvent) => {
+  const closeAdvancedFiltersOnEscape = (e: React.KeyboardEvent) => {
     if (e.key === "Escape") {
       e.preventDefault();
       setIsAdvancedFiltersOpen(false);
@@ -90,8 +90,8 @@ export const SearchTypeahead = ({
               </Button>
             )}
           </div>
-          {historyProp !== undefined && (
-            <BasePopover.Root open={isHistoryOpen} onOpenChange={(open) => setIsHistoryOpen(open)}>
+          {historyConfig !== undefined && (
+            <BasePopover.Root open={isHistoryPopoverOpen} onOpenChange={(open) => setIsHistoryPopoverOpen(open)}>
               <BasePopover.Trigger
                 render={(props) => (
                   <Button
@@ -108,32 +108,32 @@ export const SearchTypeahead = ({
                   <BasePopover.Popup className="min-w-[220px] max-w-[360px] rounded border border-border-lighter bg-white p-4 shadow-md focus-visible:outline-0">
                     <div className="flex items-center justify-between gap-2 mb-2">
                       <p className="text-xs font-semibold uppercase tracking-[0.14em] text-text-tertiary">Recent searches</p>
-                      {historyProp.items.length > 0 && (
+                      {historyConfig.items.length > 0 && (
                         <button
                           type="button"
-                          onClick={historyProp.clearHistory}
+                          onClick={historyConfig.clearHistory}
                           className="text-xs text-text-tertiary hover:text-text-secondary underline"
                         >
                           Clear
                         </button>
                       )}
                     </div>
-                    {historyProp.items.length === 0 ? (
+                    {historyConfig.items.length === 0 ? (
                       <p className="text-xs text-text-tertiary">No recent searches.</p>
                     ) : (
                       <>
                         <p className="text-[10px] text-text-tertiary mb-2">Newest at top</p>
                         <ul className="space-y-1.5 max-h-[280px] overflow-y-auto">
-                          {historyProp.items.map((item, index) => {
-                            const isNewest = index === 0 && historyProp.items.length > 1;
-                            const isOldest = index === historyProp.items.length - 1 && historyProp.items.length > 1;
+                          {historyConfig.items.map((historyItem, index) => {
+                            const isNewest = index === 0 && historyConfig.items.length > 1;
+                            const isOldest = index === historyConfig.items.length - 1 && historyConfig.items.length > 1;
                             return (
-                              <li key={`${item.term}-${index}`}>
+                              <li key={`${historyItem.term}-${index}`}>
                                 <button
                                   type="button"
                                   onClick={() => {
-                                    historyProp.onSelectItem(item);
-                                    setIsHistoryOpen(false);
+                                    historyConfig.onSelectItem(historyItem);
+                                    setIsHistoryPopoverOpen(false);
                                   }}
                                   className="w-full text-left inline-flex items-center gap-1.5 rounded border border-border-lighter bg-surface-light px-2 py-1.5 text-xs text-text-primary hover:bg-surface-medium"
                                 >
@@ -143,8 +143,8 @@ export const SearchTypeahead = ({
                                   {isOldest && !isNewest && (
                                     <span className="shrink-0 rounded bg-surface-medium px-1 text-[10px] text-text-tertiary">Oldest</span>
                                   )}
-                                  <span className="truncate">{item.term}</span>
-                                  {item.filters && checkHasAnyFilters(item.filters) && (
+                                  <span className="truncate">{historyItem.term}</span>
+                                  {historyItem.filters && checkHasAnyFilters(historyItem.filters) && (
                                     <span className="shrink-0 rounded bg-surface-medium px-1 text-[10px] text-text-tertiary">filters</span>
                                   )}
                                 </button>
@@ -170,7 +170,7 @@ export const SearchTypeahead = ({
       </div>
 
       {isAdvancedFiltersOpen && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center" role="dialog" aria-modal="true" onKeyDown={handleModalKeyDown}>
+        <div className="fixed inset-0 z-50 flex items-center justify-center" role="dialog" aria-modal="true" onKeyDown={closeAdvancedFiltersOnEscape}>
           <div className="absolute inset-0 bg-black/40" aria-hidden="true" onClick={() => setIsAdvancedFiltersOpen(false)} />
           <div className="relative flex max-h-[90vh] min-h-0 w-full max-w-4xl flex-col overflow-hidden rounded-lg border border-gray-200 bg-white shadow-2xl">
             <div className="flex shrink-0 items-start justify-end p-2 pr-10">
@@ -185,10 +185,10 @@ export const SearchTypeahead = ({
             </div>
             <div className="min-h-0 flex-1 overflow-y-auto px-4 pb-4">
               <AdvancedFilterQueryBuilder
-                key={isAdvancedFiltersOpen ? `open-${lastAppliedGroups.length}` : "closed"}
-                initialGroups={lastAppliedGroups}
-                onApply={handleApplyAdvanced}
-                onApplyWithGroups={handleApplyWithGroups}
+                key={isAdvancedFiltersOpen ? `open-${lastAppliedAdvancedGroups.length}` : "closed"}
+                initialGroups={lastAppliedAdvancedGroups}
+                onApply={closeAdvancedFiltersAndApply}
+                onApplyWithGroups={persistAppliedAdvancedGroups}
                 fieldOptions={filterOptions}
                 className="max-w-none"
               />
@@ -197,33 +197,33 @@ export const SearchTypeahead = ({
         </div>
       )}
 
-      {trimmedSearch.length > 0 && (
+      {trimmedSearchTerm.length > 0 && (
         <>
           <SuggestedFilters
-            searchTerm={trimmedSearch}
-            matches={matches}
+            searchTerm={trimmedSearchTerm}
+            matches={suggestedMatchesForInput}
             selectedTopics={selectedFilters.topics}
             selectedGeos={selectedFilters.geos}
             selectedYears={selectedFilters.years}
             selectedDocumentTypes={selectedFilters.documentTypes}
-            onSelectConcept={(v) => onAddFilter("topics", v)}
-            onSelectGeo={(v) => onAddFilter("geos", v)}
-            onSelectYear={(v) => onAddFilter("years", v)}
-            onSelectDocumentType={(v) => onAddFilter("documentTypes", v)}
+            onSelectConcept={(selectedValue) => onAddFilter("topics", selectedValue)}
+            onSelectGeo={(selectedValue) => onAddFilter("geos", selectedValue)}
+            onSelectYear={(selectedValue) => onAddFilter("years", selectedValue)}
+            onSelectDocumentType={(selectedValue) => onAddFilter("documentTypes", selectedValue)}
           />
 
           <div className="mt-3 flex flex-wrap items-center gap-3">
-            {hasMatches && (
+            {hasSuggestedMatches && (
               <>
                 <Button
                   type="button"
                   onMouseDown={(e) => e.preventDefault()}
                   onClick={() =>
                     onApplyAll({
-                      concepts: matches.matchedConcepts,
-                      geos: matches.matchedGeos,
-                      years: matches.matchedYears,
-                      documentTypes: matches.matchedDocumentTypes,
+                      concepts: suggestedMatchesForInput.matchedConcepts,
+                      geos: suggestedMatchesForInput.matchedGeos,
+                      years: suggestedMatchesForInput.matchedYears,
+                      documentTypes: suggestedMatchesForInput.matchedDocumentTypes,
                     })
                   }
                   className="inline-flex items-center border border-border-lighter bg-text-brand px-4 py-2 text-xs font-semibold text-white hover:bg-text-brand/90"

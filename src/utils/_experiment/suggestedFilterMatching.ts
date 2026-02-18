@@ -27,7 +27,7 @@ const DEFAULT_OPTIONS: TFilterFieldOptions = {
  * @returns Matched values per dimension
  */
 export function getSuggestedFilterMatches(searchTerm: string, options?: TFilterFieldOptions): TSuggestedFilterMatches {
-  const opts = options ?? DEFAULT_OPTIONS;
+  const fieldOptions = options ?? DEFAULT_OPTIONS;
   if (!searchTerm) {
     return {
       matchedConcepts: [],
@@ -38,17 +38,17 @@ export function getSuggestedFilterMatches(searchTerm: string, options?: TFilterF
   }
 
   const matchedYears: string[] = [];
-  const rawSearchTermParts = searchTerm.trim().split(" ");
-  for (let i = 0; i < rawSearchTermParts.length; i += 1) {
-    const year = parseInt(rawSearchTermParts[i], 10);
-    if (!Number.isNaN(year) && year >= 1900 && year <= 2100 && opts.year.includes(year.toString())) {
+  const searchTermWords = searchTerm.trim().split(" ");
+  for (let i = 0; i < searchTermWords.length; i++) {
+    const year = parseInt(searchTermWords[i], 10);
+    if (!Number.isNaN(year) && year >= 1900 && year <= 2100 && fieldOptions.year.includes(year.toString())) {
       matchedYears.push(year.toString());
     }
   }
 
-  const lowerSearch = searchTerm.toLowerCase();
-  const matchedConcepts = opts.topic.filter((topic) => lowerSearch.includes(topic.toLowerCase()));
-  const matchedGeos = opts.geography.filter((geo) => lowerSearch.includes(geo.toLowerCase()));
-  const matchedDocumentTypes = opts.documentType.filter((dt) => lowerSearch.includes(dt.toLowerCase()));
+  const lowerSearchTerm = searchTerm.toLowerCase();
+  const matchedConcepts = fieldOptions.topic.filter((topic) => lowerSearchTerm.includes(topic.toLowerCase()));
+  const matchedGeos = fieldOptions.geography.filter((geo) => lowerSearchTerm.includes(geo.toLowerCase()));
+  const matchedDocumentTypes = fieldOptions.documentType.filter((documentType) => lowerSearchTerm.includes(documentType.toLowerCase()));
   return { matchedConcepts, matchedGeos, matchedYears, matchedDocumentTypes };
 }

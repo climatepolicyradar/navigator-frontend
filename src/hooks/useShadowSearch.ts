@@ -56,26 +56,26 @@ export interface UseShadowSearchReturn {
 export function useShadowSearch(params: UseShadowSearchParams = {}): UseShadowSearchReturn {
   const { filterOptions } = params;
   const [state, dispatch] = useReducer(shadowSearchReducer, initialShadowSearchState);
-  const { history: searchHistoryList, addToHistory, clearHistory } = useSearchHistory();
+  const { history: recentSearchHistory, addToHistory, clearHistory } = useSearchHistory();
 
-  const rawMatches = getSuggestedFilterMatches(state.rawSearchTerm, filterOptions);
-  const hasAnyFiltersFlag = checkHasAnyFilters(state.filters);
-  const showStringOnlyResults = !!state.rawSearchTerm && state.wasStringOnlySearch && !hasAnyFiltersFlag;
+  const suggestedMatchesForRawTerm = getSuggestedFilterMatches(state.rawSearchTerm, filterOptions);
+  const hasAnyFilters = checkHasAnyFilters(state.filters);
+  const showStringOnlyResults = !!state.rawSearchTerm && state.wasStringOnlySearch && !hasAnyFilters;
 
   function addToFilter(key: TIncludedFilterKey, value: string) {
-    const trimmed = state.searchTerm.trim();
-    const nextFilters = addToFilterKey(state.filters, key, value);
-    addToHistory(trimmed, { filters: nextFilters });
+    const trimmedSearchTerm = state.searchTerm.trim();
+    const filtersWithAddedValue = addToFilterKey(state.filters, key, value);
+    addToHistory(trimmedSearchTerm, { filters: filtersWithAddedValue });
     dispatch({ type: "ADD_FILTER", payload: { key, value } });
-    if (!hasRemainingSuggestions(trimmed, nextFilters, filterOptions)) {
+    if (!hasRemainingSuggestions(trimmedSearchTerm, filtersWithAddedValue, filterOptions)) {
       setTimeout(() => dispatch({ type: "SET_SEARCH_TERM", payload: "" }), 0);
     }
   }
 
-  function handleApplyAll(matches: { concepts: string[]; geos: string[]; years: string[]; documentTypes: string[] }) {
-    const trimmed = state.searchTerm.trim();
-    if (trimmed.length > 0) {
-      addToHistory(trimmed, {
+  function applyAllSuggestedFilters(matches: { concepts: string[]; geos: string[]; years: string[]; documentTypes: string[] }) {
+    const trimmedSearchTerm = state.searchTerm.trim();
+    if (trimmedSearchTerm.length > 0) {
+      addToHistory(trimmedSearchTerm, {
         filters: {
           topics: matches.concepts,
           geos: matches.geos,
@@ -92,35 +92,37 @@ export function useShadowSearch(params: UseShadowSearchParams = {}): UseShadowSe
   }
 
   function applyAdvancedFilters(clauses: TFilterClause[]) {
-    const active = clausesToActiveFilters(clauses);
-    const nextFilters: SelectedFilters = {
-      topics: active.includedConcepts,
-      geos: active.includedGeos,
-      years: active.includedYears,
-      documentTypes: active.includedDocumentTypes,
-      topicsExcluded: active.excludedConcepts,
-      geosExcluded: active.excludedGeos,
-      yearsExcluded: active.excludedYears,
-      documentTypesExcluded: active.excludedDocumentTypes,
+    const activeFiltersFromBuilder = clausesToActiveFilters(clauses);
+    const selectedFiltersFromAdvanced: SelectedFilters = {
+      topics: activeFiltersFromBuilder.includedConcepts,
+      geos: activeFiltersFromBuilder.includedGeos,
+      years: activeFiltersFromBuilder.includedYears,
+      documentTypes: activeFiltersFromBuilder.includedDocumentTypes,
+      topicsExcluded: activeFiltersFromBuilder.excludedConcepts,
+      geosExcluded: activeFiltersFromBuilder.excludedGeos,
+      yearsExcluded: activeFiltersFromBuilder.excludedYears,
+      documentTypesExcluded: activeFiltersFromBuilder.excludedDocumentTypes,
     };
-    const label = state.rawSearchTerm.trim() || "Advanced filters";
-    addToHistory(label, { filters: nextFilters });
-    dispatch({ type: "APPLY_ADVANCED", payload: nextFilters });
+    const historyLabel = state.rawSearchTerm.trim() || "Advanced filters";
+    addToHistory(historyLabel, { filters: selectedFiltersFromAdvanced });
+    dispatch({ type: "APPLY_ADVANCED", payload: selectedFiltersFromAdvanced });
   }
 
-  function handleSearchOnly() {
-    const trimmed = state.searchTerm.trim();
-    if (trimmed.length > 0) addToHistory(trimmed, { wasStringOnly: true });
+  function commitSearchAsStringOnly() {
+    const trimmedSearchTerm = state.searchTerm.trim();
+    if (trimmedSearchTerm.length > 0) {
+      addToHistory(trimmedSearchTerm, { wasStringOnly: true });
+    }
     dispatch({ type: "SEARCH_ONLY" });
   }
 
-  function resetFiltersToOriginalSearch() {
+  function resetToOriginalSearch() {
     dispatch({ type: "RESET_TO_ORIGINAL" });
   }
 
-  function removeFromFilter(key: keyof SelectedFilters, value: string) {
-    const arr = state.filters[key];
-    if (!Array.isArray(arr)) return;
+  function removeFilterValue(key: keyof SelectedFilters, value: string) {
+    const currentValues = state.filters[key];
+    if (!Array.isArray(currentValues)) return;
     dispatch({ type: "REMOVE_FILTER", payload: { key, value } });
   }
 
@@ -133,25 +135,25 @@ export function useShadowSearch(params: UseShadowSearchParams = {}): UseShadowSe
       term: state.searchTerm,
       setTerm: (value: string) => dispatch({ type: "SET_SEARCH_TERM", payload: value }),
       rawTerm: state.rawSearchTerm,
-      matches: rawMatches,
+      matches: suggestedMatchesForRawTerm,
       showStringOnlyResults,
     },
     searchHistory: {
-      history: searchHistoryList,
+      history: recentSearchHistory,
       clearHistory,
     },
     filters: {
       value: state.filters,
-      hasAny: hasAnyFiltersFlag,
+      hasAny: hasAnyFilters,
       clearAll: () => dispatch({ type: "CLEAR_FILTERS" }),
     },
     actions: {
       add: addToFilter,
-      remove: removeFromFilter,
+      remove: removeFilterValue,
       applyAdvanced: applyAdvancedFilters,
-      applyAll: handleApplyAll,
-      searchOnly: handleSearchOnly,
-      resetToOriginalSearch: resetFiltersToOriginalSearch,
+      applyAll: applyAllSuggestedFilters,
+      searchOnly: commitSearchAsStringOnly,
+      resetToOriginalSearch,
       applyHistoryItem,
     },
   };
