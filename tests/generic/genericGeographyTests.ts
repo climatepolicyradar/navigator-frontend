@@ -52,7 +52,8 @@ export const runGenericGeographyTests = (theme: TTheme) => {
       const familyLink = recentDocumentsSection.getByRole("link").first();
       await expect(familyLink).toBeVisible();
 
-      const familyName = await familyLink.innerText();
+      const familyNameRaw = await familyLink.innerText();
+      const familyName = familyNameRaw.split("\n")[0].trim();
       const familyHref = await familyLink.getAttribute("href");
 
       await familyLink.click();
