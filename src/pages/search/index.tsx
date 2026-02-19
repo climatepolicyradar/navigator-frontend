@@ -44,7 +44,7 @@ import { useDownloadCsv } from "@/hooks/useDownloadCsv";
 import { useHashNavigation } from "@/hooks/useHashNavigation";
 import useSearch from "@/hooks/useSearch";
 import { useText } from "@/hooks/useText";
-import { TTopic, TTheme, TTopics } from "@/types";
+import { TTopic, TTheme, TTopics, TApiTopic } from "@/types";
 import { FamilyConcept, mapFamilyConceptsToConcepts } from "@/utils/familyConcepts";
 import { getFeatureFlags } from "@/utils/featureFlags";
 import { getFeatures } from "@/utils/features";
@@ -816,7 +816,7 @@ export default Search;
 export const getServerSideProps = (async (context) => {
   context.res.setHeader("Cache-Control", "public, max-age=3600, immutable");
 
-  const theme = process.env.THEME;
+  const theme = process.env.THEME as TTheme;
   const themeConfig = await readConfigFile(theme);
   const featureFlags = getFeatureFlags(context.req.cookies);
   const features = getFeatures(themeConfig, featureFlags);
@@ -824,10 +824,10 @@ export const getServerSideProps = (async (context) => {
   const client = new ApiClient(process.env.CONCEPTS_API_URL);
 
   let topicsData: TTopics = { rootTopics: [], topics: [] };
-  let familyConceptsData: TTopic[] | undefined;
+  let familyConceptsData: TApiTopic[] | undefined;
 
   try {
-    const { data: topicsResponse } = await client.get<TTopic[]>(`/concepts/search?limit=10000&has_classifier=true`);
+    const { data: topicsResponse } = await client.get<TApiTopic[]>(`/concepts/search?limit=10000&has_classifier=true`);
     topicsData = await fetchAndProcessTopics(topicsResponse.map((topic) => topic.wikibase_id));
 
     if (features.familyConceptsSearch) {
@@ -841,7 +841,7 @@ export const getServerSideProps = (async (context) => {
 
   return {
     props: withEnvConfig({
-      familyConceptsData: familyConceptsData ?? null,
+      familyConceptsData: (familyConceptsData as TTopic[]) ?? null,
       features,
       theme,
       themeConfig,

@@ -2,7 +2,7 @@ import { useQueries } from "@tanstack/react-query";
 
 import { dayInMilliseconds } from "@/constants/dayInMilleseconds";
 import { useEnvConfig } from "@/context/EnvConfig";
-import { TGeographySubdivision } from "@/types";
+import { TApiGeographySubdivision, TGeographySubdivision } from "@/types";
 
 import { ApiClient } from "../api/http-common";
 
@@ -13,7 +13,7 @@ export default function useGeographySubdivisions(parentAlpha3Code: string[]) {
       queryKey: ["subdivisions", code],
       queryFn: async () => {
         const client = new ApiClient();
-        const response = await client.get(`${CONCEPTS_API_URL}/geographies/subdivisions/${code}`, null);
+        const response = await client.get<TApiGeographySubdivision[]>(`${CONCEPTS_API_URL}/geographies/subdivisions/${code}`, null);
         return response.data as TGeographySubdivision[];
       },
       refetchOnWindowFocus: false,

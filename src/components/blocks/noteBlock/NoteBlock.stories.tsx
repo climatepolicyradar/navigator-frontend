@@ -1,7 +1,7 @@
 import { Meta, StoryObj } from "@storybook/nextjs-vite";
 
 import { FiveColumns } from "@/components/atoms/columns/FiveColumns";
-import { TCorpusTypeDictionary } from "@/types";
+import { TApiCorpusTypeDictionary } from "@/types";
 
 import { NoteBlock } from "./NoteBlock";
 
@@ -40,7 +40,7 @@ const CORPUS_TYPES = {
       },
     ],
   },
-} as unknown as TCorpusTypeDictionary;
+} as unknown as TApiCorpusTypeDictionary;
 
 export const WithImage: TStory = {
   args: {
