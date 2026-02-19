@@ -32,9 +32,9 @@ RUN chown -R nextjs:nodejs .
 USER nextjs
 # Bind to all interfaces so the container is reachable from the host; PORT is runtime (e.g. AWS).
 ENV HOSTNAME=0.0.0.0
-ENV PORT=8080
-EXPOSE 8080
+ENV PORT=3000
+EXPOSE 3000
 CMD ["node", "server.js"]
 
 HEALTHCHECK --interval=30s --timeout=3s --start-period=5s --retries=3 \
-  CMD node -e "const p=process.env.PORT||8080; require('http').get('http://127.0.0.1:'+p,(r)=>process.exit(r.statusCode===200?0:1)).on('error',()=>process.exit(1))"
+  CMD node -e "require('http').get('http://localhost:${PORT}', (r) => {process.exit(r.statusCode === 200 ? 0 : 1)})"
