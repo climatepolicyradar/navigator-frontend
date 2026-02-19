@@ -183,6 +183,7 @@ const getDocumentCell = (
   isMainDocument: boolean,
   languages: TLanguages,
   hasMatches: boolean,
+  overrideViewMore: boolean,
   event?: TFamilyEventPublic
 ): ReactNode => {
   return (
@@ -192,7 +193,7 @@ const getDocumentCell = (
           <div>{getDocumentLink(document, hasMatches, isMainDocument, isLitigation)}</div>
           {event?.metadata.action_taken?.[0] && <div className="italic">{event.metadata.action_taken[0]}</div>}
           {event?.metadata.description?.[0] && (
-            <ViewMore maxLines={4} onButtonClick={() => {}}>
+            <ViewMore maxLines={4} onButtonClick={overrideViewMore ? () => {} : undefined}>
               {event.metadata.description[0]}
             </ViewMore>
           )}
@@ -343,7 +344,7 @@ export const getEventTableRows = ({
             : null,
         document: document
           ? {
-              label: getDocumentCell(isLitigation, document, isMainDocument, languages, matches > 0, event),
+              label: getDocumentCell(isLitigation, document, isMainDocument, languages, matches > 0, Boolean(documentRowClick), event),
               value: isMainDocument,
             }
           : null,

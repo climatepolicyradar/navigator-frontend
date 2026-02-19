@@ -18,7 +18,16 @@ import { FeaturesContext } from "@/context/FeaturesContext";
 import { TopicsContext } from "@/context/TopicsContext";
 import useConfig from "@/hooks/useConfig";
 import useSearch from "@/hooks/useSearch";
-import { TDocumentPage, TTheme, TSearchResponse, TSlugResponse, TThemeConfig, TFamilyPublic, TFeatures, TTopics } from "@/types";
+import {
+  TDocumentPage,
+  TTheme,
+  TSearchResponse,
+  TFamilyPublic,
+  TApiSlugResponse,
+  TApiFamilyPublic,
+  TApiDocumentPage,
+  TApiSearchResponse,
+} from "@/types";
 import { CleanRouterQuery } from "@/utils/cleanRouterQuery";
 import { extractTopicIds } from "@/utils/extractTopicIds";
 import { getFeatureFlags } from "@/utils/featureFlags";
@@ -26,13 +35,6 @@ import { getFeatures } from "@/utils/features";
 import { fetchAndProcessTopics } from "@/utils/fetchAndProcessTopics";
 import { getLitigationDocumentJSONLD } from "@/utils/json-ld/getLitigationDocumentJSONLD";
 import { readConfigFile } from "@/utils/readConfigFile";
-
-const passageClasses = (canPreview: boolean) => {
-  if (canPreview) {
-    return "md:w-1/3";
-  }
-  return "md:w-2/3";
-};
 
 // If we don't have a query string or a concept selected, we do't have a search
 const isEmptySearch = (query: ParsedUrlQuery) => {
@@ -168,7 +170,7 @@ export default DocumentPage;
 export const getServerSideProps = (async (context) => {
   context.res.setHeader("Cache-Control", "public, max-age=3600, immutable");
 
-  const theme = process.env.THEME;
+  const theme = process.env.THEME as TTheme;
   const themeConfig = await readConfigFile(theme);
   const featureFlags = getFeatureFlags(context.req.cookies);
   const features = getFeatures(themeConfig, featureFlags);
@@ -179,30 +181,29 @@ export const getServerSideProps = (async (context) => {
 
   try {
     const { data: slugData } = await apiClient.get(`/families/slugs/${id}`);
-    const slug: TSlugResponse = slugData.data;
+    const slug: TApiSlugResponse = slugData.data;
 
     const { data: returnedDocumentData } = await apiClient.get(`/families/documents/${slug.family_document_import_id}`);
     const { family: familyData, ...otherDocumentData } = returnedDocumentData.data;
-    const family: TFamilyPublic = familyData;
-    const document: TDocumentPage = otherDocumentData;
+    const family: TApiFamilyPublic = familyData;
+    const document: TApiDocumentPage = otherDocumentData;
     if (document.title === "") document.title = DEFAULT_DOCUMENT_TITLE;
 
     if (!document || !family) return { notFound: true };
 
-    const { data: vespaDocumentData } = await backendApiClient.get<TSearchResponse>(`/document/${document.import_id}`);
-    const { data: vespaFamilyData } = await backendApiClient.get<TSearchResponse>(`/families/${family.import_id}`);
+    const { data: vespaDocumentData } = await backendApiClient.get<TApiSearchResponse>(`/document/${document.import_id}`);
 
-    const topicsData = await fetchAndProcessTopics(extractTopicIds(vespaFamilyData));
+    const topicsData = await fetchAndProcessTopics(extractTopicIds(vespaDocumentData));
 
     return {
       props: withEnvConfig({
-        document,
-        family,
+        document: document as TDocumentPage,
+        family: family as TFamilyPublic,
         features,
         theme: theme,
         themeConfig: themeConfig,
         topicsData,
-        vespaDocumentData,
+        vespaDocumentData: vespaDocumentData as TSearchResponse,
       }),
     };
   } catch (error) {

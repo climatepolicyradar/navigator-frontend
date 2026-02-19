@@ -1,20 +1,8 @@
 import { Button } from "@base-ui/react/button";
 
-import { TFilterFieldOptions } from "@/types";
+import { TSuggestedFilterMatches } from "@/utils/_experiment/suggestedFilterMatching";
 
-export type TSuggestedFilterMatches = {
-  matchedConcepts: string[];
-  matchedGeos: string[];
-  matchedYears: string[];
-  matchedDocumentTypes: string[];
-};
-
-const DEFAULT_OPTIONS: TFilterFieldOptions = {
-  topic: ["flood defence", "targets"],
-  geography: ["spain", "france", "germany"],
-  year: ["2020", "2021", "2022", "2023", "2024"],
-  documentType: ["laws", "policies", "reports", "litigation"],
-};
+export type { TSuggestedFilterMatches };
 
 export interface ISuggestedFiltersProps {
   searchTerm: string;
@@ -30,37 +18,6 @@ export interface ISuggestedFiltersProps {
   showHeader?: boolean;
   showEmptyCopy?: boolean;
 }
-
-/**
- * Returns suggested filter matches for a search term. Uses options when
- * provided (real data); otherwise falls back to default hardcoded lists.
- */
-export const getSuggestedFilterMatches = (searchTerm: string, options?: TFilterFieldOptions): TSuggestedFilterMatches => {
-  const opts = options ?? DEFAULT_OPTIONS;
-  if (!searchTerm) {
-    return {
-      matchedConcepts: [],
-      matchedGeos: [],
-      matchedYears: [],
-      matchedDocumentTypes: [],
-    };
-  }
-
-  const matchedYears: string[] = [];
-  const rawSearchTermParts = searchTerm.trim().split(" ");
-  for (let i = 0; i < rawSearchTermParts.length; i += 1) {
-    const year = parseInt(rawSearchTermParts[i], 10);
-    if (!Number.isNaN(year) && year >= 1900 && year <= 2100 && opts.year.includes(year.toString())) {
-      matchedYears.push(year.toString());
-    }
-  }
-
-  const lowerSearch = searchTerm.toLowerCase();
-  const matchedConcepts = opts.topic.filter((topic) => lowerSearch.includes(topic.toLowerCase()));
-  const matchedGeos = opts.geography.filter((geo) => lowerSearch.includes(geo.toLowerCase()));
-  const matchedDocumentTypes = opts.documentType.filter((documentType) => lowerSearch.includes(documentType.toLowerCase()));
-  return { matchedConcepts, matchedGeos, matchedYears, matchedDocumentTypes };
-};
 
 export const SuggestedFilters = ({
   searchTerm,
