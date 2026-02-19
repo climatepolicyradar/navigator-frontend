@@ -17,11 +17,8 @@ ARG GITHUB_SHA
 ENV GITHUB_SHA=${GITHUB_SHA}
 
 # Generate tsconfig.json from template with the selected THEME
-RUN node -e "\
-const fs=require('fs');\
-const tpl=fs.readFileSync('tsconfig.base.json','utf8');\
-fs.writeFileSync('tsconfig.json', tpl.replace(/__THEME__/g, process.env.THEME));\
-"
+RUN sed "s/__THEME__/${THEME}/g" tsconfig.base.json > tsconfig.json
+
 # Build Next.js
 RUN npm run build
 
@@ -37,4 +34,4 @@ EXPOSE 8080
 CMD ["sh", "-c", "HOSTNAME=0.0.0.0 PORT=8080 node .next/standalone/server.js"]
 
 HEALTHCHECK --interval=30s --timeout=3s --start-period=5s --retries=3 \
-  CMD node -e "require('http').get('http://localhost:8080', (r) => {process.exit(r.statusCode === 200 ? 0 : 1)})"
+  CMD wget -qO- http://localhost:8080 >/dev/null 2>&1 || exit 1
