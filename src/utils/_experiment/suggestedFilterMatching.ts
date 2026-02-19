@@ -1,0 +1,54 @@
+import { TFilterFieldOptions } from "@/types";
+
+/**
+ * Matches for a search term against each filter dimension (concepts, geos, years, document types).
+ * Used by suggested filters UI and shadow search state.
+ */
+export type TSuggestedFilterMatches = {
+  matchedConcepts: string[];
+  matchedGeos: string[];
+  matchedYears: string[];
+  matchedDocumentTypes: string[];
+};
+
+const DEFAULT_OPTIONS: TFilterFieldOptions = {
+  topic: ["flood defence", "targets"],
+  geography: ["spain", "france", "germany"],
+  year: ["2020", "2021", "2022", "2023", "2024"],
+  documentType: ["laws", "policies", "reports", "litigation"],
+};
+
+/**
+ * Returns suggested filter matches for a search term. Uses options when
+ * provided (real data); otherwise falls back to default hardcoded lists.
+ *
+ * @param searchTerm - User input to match against filter options
+ * @param options - Optional field options (topics, geographies, years, document types)
+ * @returns Matched values per dimension
+ */
+export function getSuggestedFilterMatches(searchTerm: string, options?: TFilterFieldOptions): TSuggestedFilterMatches {
+  const fieldOptions = options ?? DEFAULT_OPTIONS;
+  if (!searchTerm) {
+    return {
+      matchedConcepts: [],
+      matchedGeos: [],
+      matchedYears: [],
+      matchedDocumentTypes: [],
+    };
+  }
+
+  const matchedYears: string[] = [];
+  const searchTermWords = searchTerm.trim().split(" ");
+  for (let i = 0; i < searchTermWords.length; i++) {
+    const year = parseInt(searchTermWords[i], 10);
+    if (!Number.isNaN(year) && year >= 1900 && year <= 2100 && fieldOptions.year.includes(year.toString())) {
+      matchedYears.push(year.toString());
+    }
+  }
+
+  const lowerSearchTerm = searchTerm.toLowerCase();
+  const matchedConcepts = fieldOptions.topic.filter((topic) => lowerSearchTerm.includes(topic.toLowerCase()));
+  const matchedGeos = fieldOptions.geography.filter((geo) => lowerSearchTerm.includes(geo.toLowerCase()));
+  const matchedDocumentTypes = fieldOptions.documentType.filter((documentType) => lowerSearchTerm.includes(documentType.toLowerCase()));
+  return { matchedConcepts, matchedGeos, matchedYears, matchedDocumentTypes };
+}

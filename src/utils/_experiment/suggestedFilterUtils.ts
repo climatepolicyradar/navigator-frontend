@@ -1,5 +1,7 @@
-import { getSuggestedFilterMatches, TSuggestedFilterMatches } from "@/components/_experiment/typeahead/SuggestedFilters";
 import { TFilterFieldOptions } from "@/types";
+import { getSuggestedFilterMatches, TSuggestedFilterMatches } from "@/utils/_experiment/suggestedFilterMatching";
+
+export type { TSuggestedFilterMatches };
 
 type TIncludedFilterKey = "topics" | "geos" | "years" | "documentTypes";
 
@@ -51,9 +53,9 @@ export function hasAnyMatches(matches: TSuggestedFilterMatches): boolean {
  * Pass filterOptions when using real data so matching uses the same lists.
  */
 export function hasRemainingSuggestions(search: string, filters: SelectedFilters, filterOptions?: TFilterFieldOptions): boolean {
-  const trimmed = search.trim();
-  if (!trimmed) return false;
-  const matches = getSuggestedFilterMatches(trimmed, filterOptions);
+  const trimmedSearch = search.trim();
+  if (!trimmedSearch) return false;
+  const matches = getSuggestedFilterMatches(trimmedSearch, filterOptions);
   const remainingConcepts = matches.matchedConcepts.filter((c) => !filters.topics.includes(c));
   const remainingGeos = matches.matchedGeos.filter((g) => !filters.geos.includes(g));
   const remainingYears = matches.matchedYears.filter((y) => !filters.years.includes(y));
@@ -62,7 +64,7 @@ export function hasRemainingSuggestions(search: string, filters: SelectedFilters
 }
 
 export function addToFilterKey(filters: SelectedFilters, key: TIncludedFilterKey, value: string): SelectedFilters {
-  const arr = filters[key];
-  if (arr.includes(value)) return filters;
-  return { ...filters, [key]: [...arr, value] };
+  const currentValuesForKey = filters[key];
+  if (currentValuesForKey.includes(value)) return filters;
+  return { ...filters, [key]: [...currentValuesForKey, value] };
 }
