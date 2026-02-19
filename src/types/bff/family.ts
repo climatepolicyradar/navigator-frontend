@@ -35,7 +35,7 @@ export type TFamilyApiNewData = null;
 
 export type TFamilyApiData = TFamilyApiOldData | TFamilyApiNewData | null;
 
-export const isOldFamilyApiData = (data: TFamilyApiData): data is TFamilyApiOldData => "corpus_types" in data;
+export const isOldFamilyApiData = (data: TFamilyApiData): data is TFamilyApiOldData => "corpus_types" in data; // TODO: make sure this is a good check once TFamilyApiNewData is populated
 
 export type TFamilyPresentationalData = {
   collections: TCollectionPublicWithFamilies[];
@@ -46,7 +46,7 @@ export type TFamilyPresentationalData = {
   subdivisions: TGeographySubdivision[];
   targets: TTarget[];
   vespaFamilyData: TSearchResponse | null;
-} | null;
+};
 
 export type TFamilyPresentationalResponse = {
   data: TFamilyPresentationalData | null;

@@ -25,8 +25,6 @@ import { processFamilyTopics } from "@/utils/topics/processFamilyTopics";
 // TODO: remove this ESLint disable when the features object is used for data source switching
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 export const getFamilyData = async (slug: string, features: TFeatures): Promise<TFamilyPresentationalResponse> => {
-  /* Get param(s) and features */
-
   /* Make API requests */
 
   const errors: Error[] = [];
@@ -64,7 +62,7 @@ export const getFamilyData = async (slug: string, features: TFeatures): Promise<
    */
 
   // The Vespa families data has the concepts data attached, which is why we need this
-  let vespaFamilyData: TApiSearchResponse | null = null;
+  let vespaFamilyData: TApiSearchResponse;
   try {
     const { data: vespaFamilyDataRaw } = await backendApiClient.get<TApiSearchResponse>(`/families/${family.import_id}`);
     vespaFamilyData = vespaFamilyDataRaw;
@@ -75,7 +73,7 @@ export const getFamilyData = async (slug: string, features: TFeatures): Promise<
   }
 
   // Package the family topics
-  let familyTopics: IApiFamilyDocumentTopics | null = null;
+  let familyTopics: IApiFamilyDocumentTopics;
   if (vespaFamilyData) familyTopics = await processFamilyTopics(vespaFamilyData);
 
   const configRaw = await backendApiClient.getConfig();
@@ -136,10 +134,10 @@ export const getFamilyData = async (slug: string, features: TFeatures): Promise<
       corpus_types,
       countries,
       family,
-      familyTopics,
+      familyTopics: familyTopics || null,
       subdivisions,
       targets,
-      vespaFamilyData,
+      vespaFamilyData: vespaFamilyData || null,
     },
     errors
   );
