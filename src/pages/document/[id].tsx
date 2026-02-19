@@ -90,7 +90,9 @@ export const getServerSideProps = (async (context) => {
   /** The Vespa families data has the concepts data attached, which is why we need this */
   let vespaFamilyData: TApiSearchResponse | null = null;
   try {
-    const { data: vespaFamilyDataRaw } = await backendApiClient.get<TApiSearchResponse>(`/families/${familyData.import_id}`);
+    // max_hits_per_family=100 is set ensure we get all documents for a family
+    // this should probably be done in the `backend-api`, but it currently does not work
+    const { data: vespaFamilyDataRaw } = await backendApiClient.get<TApiSearchResponse>(`/families/${familyData.import_id}?max_hits_per_family=100`);
     vespaFamilyData = vespaFamilyDataRaw;
   } catch (error) {
     if (axios.isAxiosError(error) && error.response?.status === 500) {
