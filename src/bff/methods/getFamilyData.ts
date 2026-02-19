@@ -1,5 +1,4 @@
 import axios from "axios";
-import { NextApiRequest, NextApiResponse } from "next";
 
 import { ApiClient } from "@/api/http-common";
 import { familyTransformer } from "@/bff/transformers/familyTransformer";
@@ -17,23 +16,16 @@ import {
   TApiTarget,
   TCorpusTypeDictionary,
   TFamilyPresentationalResponse,
-  TTheme,
+  TFeatures,
 } from "@/types";
 import { isCorpusIdAllowed } from "@/utils/checkCorpusAccess";
 import { extractNestedData } from "@/utils/extractNestedData";
-import { getFeatureFlags } from "@/utils/featureFlags";
-import { getFeatures } from "@/utils/features";
-import { readConfigFile } from "@/utils/readConfigFile";
 import { processFamilyTopics } from "@/utils/topics/processFamilyTopics";
 
-export default async function handler(req: NextApiRequest, res: NextApiResponse): Promise<TFamilyPresentationalResponse> {
+// TODO: remove this ESLint disable when the features object is used to data source switching
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+export const getFamilyData = async (slug: string, features: TFeatures): Promise<TFamilyPresentationalResponse> => {
   /* Get param(s) and features */
-
-  const { slug } = req.query;
-  const theme = process.env.THEME as TTheme;
-  const themeConfig = await readConfigFile(theme);
-  const featureFlags = getFeatureFlags(req.cookies);
-  const features = getFeatures(themeConfig, featureFlags); // eslint-disable-line
 
   /* Make API requests */
   // TODO: use features and initial family data to potentially query new data model API instead
@@ -139,7 +131,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
 
   /* Transform API data for presentation */
 
-  const response = familyTransformer(
+  return familyTransformer(
     {
       collections,
       corpus_types,
@@ -152,6 +144,4 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     },
     errors
   );
-
-  res.status(200).json(response);
-}
+};
