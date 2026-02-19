@@ -190,9 +190,8 @@ export const getServerSideProps = (async (context) => {
     if (!document || !family) return { notFound: true };
 
     const { data: vespaDocumentData } = await backendApiClient.get<TSearchResponse>(`/document/${document.import_id}`);
-    const { data: vespaFamilyData } = await backendApiClient.get<TSearchResponse>(`/families/${family.import_id}`);
 
-    const topicsData = await fetchAndProcessTopics(extractTopicIds(vespaFamilyData));
+    const topicsData = await fetchAndProcessTopics(extractTopicIds(vespaDocumentData));
 
     return {
       props: withEnvConfig({
