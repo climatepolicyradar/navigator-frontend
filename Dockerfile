@@ -1,14 +1,10 @@
-FROM node:24-alpine
+FROM node:24-alpine AS builder
 WORKDIR /app
-
-# Create a non-root user
-RUN addgroup -g 1001 -S nodejs && adduser -S nextjs -u 1001
 
 COPY . .
 RUN npm ci
 
 ARG THEME
-
 ENV THEME=${THEME}
 ENV NODE_ENV=production
 
@@ -19,19 +15,26 @@ ENV GITHUB_SHA=${GITHUB_SHA}
 # Generate tsconfig.json from template with the selected THEME
 RUN sed "s/__THEME__/${THEME}/g" tsconfig.base.json > tsconfig.json
 
-# Build Next.js
 RUN npm run build
-
-# Copy static files into standalone directory
 RUN cp -r public .next/standalone/public
 RUN cp -r .next/static .next/standalone/.next/static
 
-# Set ownership and switch to non-root user
-RUN chown -R nextjs:nodejs .next/standalone
-USER nextjs
+# Slim runner: Alpine + Node from apk (no npm; smaller than node:24-alpine).
+# For Node 24 use edge; stable (e.g. 3.20) may ship Node 20.
+FROM alpine:3.20
+RUN apk add --no-cache nodejs
+WORKDIR /app
 
+RUN addgroup -g 1001 -S nodejs && adduser -S nextjs -u 1001
+COPY --from=builder /app/.next/standalone ./
+RUN chown -R nextjs:nodejs .
+
+USER nextjs
+# Bind to all interfaces so the container is reachable from the host; PORT is runtime (e.g. AWS).
+ENV HOSTNAME=0.0.0.0
+ENV PORT=8080
 EXPOSE 8080
-CMD ["sh", "-c", "HOSTNAME=0.0.0.0 PORT=8080 node .next/standalone/server.js"]
+CMD ["node", "server.js"]
 
 HEALTHCHECK --interval=30s --timeout=3s --start-period=5s --retries=3 \
-  CMD wget -qO- http://localhost:8080 >/dev/null 2>&1 || exit 1
+  CMD node -e "const p=process.env.PORT||8080; require('http').get('http://127.0.0.1:'+p,(r)=>process.exit(r.statusCode===200?0:1)).on('error',()=>process.exit(1))"
