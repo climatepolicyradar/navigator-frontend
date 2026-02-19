@@ -100,6 +100,9 @@ export const getServerSideProps = (async (context) => {
       theme,
       themeConfig,
       topicsData,
+      posthogPageViewProps: {
+        search_version: "v2",
+      },
     }),
   };
 }) satisfies GetServerSideProps;
