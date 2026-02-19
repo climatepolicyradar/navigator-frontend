@@ -1,13 +1,14 @@
-import { useState } from "react";
+import { useReducer } from "react";
 
-import { clausesToActiveFilters } from "@/components/_experiment/typeahead/AdvancedFilterQueryBuilder";
-import { getSuggestedFilterMatches } from "@/components/_experiment/typeahead/SuggestedFilters";
+import { useSearchHistory, SearchHistoryItem } from "@/hooks/useSearchHistory";
 import { TFilterClause, TFilterFieldOptions } from "@/types";
+import { clausesToActiveFilters } from "@/utils/_experiment/filterQueryBuilderUtils";
+import { TIncludedFilterKey } from "@/utils/_experiment/shadowSearchFilterConfig";
+import { initialShadowSearchState, shadowSearchReducer } from "@/utils/_experiment/shadowSearchReducer";
+import { getSuggestedFilterMatches } from "@/utils/_experiment/suggestedFilterMatching";
 import {
   addToFilterKey,
-  EMPTY_FILTERS,
   hasAnyFilters as checkHasAnyFilters,
-  hasAnyMatches,
   hasRemainingSuggestions,
   SelectedFilters,
 } from "@/utils/_experiment/suggestedFilterUtils";
@@ -16,10 +17,9 @@ export interface UseShadowSearchParams {
   filterOptions?: TFilterFieldOptions;
 }
 
-// Keys that support "add one" from suggested filters.
-type TIncludedFilterKey = "topics" | "geos" | "years" | "documentTypes";
-
-// Grouped return shape for easier review and testing.
+/**
+ * Grouped return shape for easier review and testing.
+ */
 export interface UseShadowSearchReturn {
   search: {
     term: string;
@@ -28,135 +28,133 @@ export interface UseShadowSearchReturn {
     matches: ReturnType<typeof getSuggestedFilterMatches>;
     showStringOnlyResults: boolean;
   };
+  searchHistory: {
+    history: SearchHistoryItem[];
+    clearHistory: () => void;
+  };
   filters: {
     value: SelectedFilters;
     hasAny: boolean;
     clearAll: () => void;
   };
   actions: {
-    // Add one value to an included filter (e.g. from suggested filters).
     add: (key: TIncludedFilterKey, value: string) => void;
-    // Remove one value from any filter key (included or excluded).
     remove: (key: keyof SelectedFilters, value: string) => void;
     applyAdvanced: (clauses: TFilterClause[]) => void;
     applyAll: (matches: { concepts: string[]; geos: string[]; years: string[]; documentTypes: string[] }) => void;
     searchOnly: () => void;
     resetToOriginalSearch: () => void;
+    applyHistoryItem: (item: SearchHistoryItem) => void;
   };
 }
 
 /**
- * Encapsulates all state and behaviour for the shadow search (experimental search) page:
- * search input, raw query for results, string-only vs filter mode, and selected filters.
+ * Encapsulates all state and behaviour for the shadow search (experimental search) page.
+ * State is handled by shadowSearchReducer; see initialShadowSearchState for the
+ * "search modes" (current input vs raw term vs string-only).
  */
 export function useShadowSearch(params: UseShadowSearchParams = {}): UseShadowSearchReturn {
   const { filterOptions } = params;
-  const [searchTerm, setSearchTerm] = useState("");
-  const [rawSearchTerm, setRawSearchTerm] = useState("");
-  const [wasStringOnlySearch, setWasStringOnlySearch] = useState(false);
-  const [filters, setFilters] = useState<SelectedFilters>(EMPTY_FILTERS);
+  const [state, dispatch] = useReducer(shadowSearchReducer, initialShadowSearchState);
+  const { history: recentSearchHistory, addToHistory, clearHistory } = useSearchHistory();
 
-  const rawMatches = getSuggestedFilterMatches(rawSearchTerm, filterOptions);
-  const hasAnyFiltersFlag = checkHasAnyFilters(filters);
-  const showStringOnlyResults = !!rawSearchTerm && wasStringOnlySearch && !hasAnyFiltersFlag && hasAnyMatches(rawMatches);
-
-  function clearAllFilters() {
-    setFilters(EMPTY_FILTERS);
-  }
-
-  function applyRawSearch(trimmed: string) {
-    if (trimmed.length > 0) setRawSearchTerm(trimmed);
-    setWasStringOnlySearch(false);
-  }
+  const suggestedMatchesForRawTerm = getSuggestedFilterMatches(state.rawSearchTerm, filterOptions);
+  const hasAnyFilters = checkHasAnyFilters(state.filters);
+  const showStringOnlyResults = !!state.rawSearchTerm && state.wasStringOnlySearch && !hasAnyFilters;
 
   function addToFilter(key: TIncludedFilterKey, value: string) {
-    const trimmed = searchTerm.trim();
-    setFilters((prev) => {
-      const nextFilters = addToFilterKey(prev, key, value);
-      if (!hasRemainingSuggestions(trimmed, nextFilters, filterOptions)) {
-        setTimeout(() => setSearchTerm(""), 0);
-      }
-      return nextFilters;
-    });
-    applyRawSearch(trimmed);
+    const trimmedSearchTerm = state.searchTerm.trim();
+    const filtersWithAddedValue = addToFilterKey(state.filters, key, value);
+    addToHistory(trimmedSearchTerm, { filters: filtersWithAddedValue });
+    dispatch({ type: "ADD_FILTER", payload: { key, value } });
+    if (!hasRemainingSuggestions(trimmedSearchTerm, filtersWithAddedValue, filterOptions)) {
+      setTimeout(() => dispatch({ type: "SET_SEARCH_TERM", payload: "" }), 0);
+    }
   }
 
-  function handleApplyAll(matches: { concepts: string[]; geos: string[]; years: string[]; documentTypes: string[] }) {
-    setFilters({
-      ...EMPTY_FILTERS,
-      topics: matches.concepts,
-      geos: matches.geos,
-      years: matches.years,
-      documentTypes: matches.documentTypes,
-    });
-    setRawSearchTerm(searchTerm);
-    setWasStringOnlySearch(false);
-    setSearchTerm("");
+  function applyAllSuggestedFilters(matches: { concepts: string[]; geos: string[]; years: string[]; documentTypes: string[] }) {
+    const trimmedSearchTerm = state.searchTerm.trim();
+    if (trimmedSearchTerm.length > 0) {
+      addToHistory(trimmedSearchTerm, {
+        filters: {
+          topics: matches.concepts,
+          geos: matches.geos,
+          years: matches.years,
+          documentTypes: matches.documentTypes,
+          topicsExcluded: [],
+          geosExcluded: [],
+          yearsExcluded: [],
+          documentTypesExcluded: [],
+        },
+      });
+    }
+    dispatch({ type: "APPLY_ALL", payload: matches });
   }
 
   function applyAdvancedFilters(clauses: TFilterClause[]) {
-    const active = clausesToActiveFilters(clauses);
-    setFilters({
-      topics: active.includedConcepts,
-      geos: active.includedGeos,
-      years: active.includedYears,
-      documentTypes: active.includedDocumentTypes,
-      topicsExcluded: active.excludedConcepts,
-      geosExcluded: active.excludedGeos,
-      yearsExcluded: active.excludedYears,
-      documentTypesExcluded: active.excludedDocumentTypes,
-    });
-    setRawSearchTerm("");
-    setWasStringOnlySearch(false);
-    setSearchTerm("");
+    const activeFiltersFromBuilder = clausesToActiveFilters(clauses);
+    const selectedFiltersFromAdvanced: SelectedFilters = {
+      topics: activeFiltersFromBuilder.includedConcepts,
+      geos: activeFiltersFromBuilder.includedGeos,
+      years: activeFiltersFromBuilder.includedYears,
+      documentTypes: activeFiltersFromBuilder.includedDocumentTypes,
+      topicsExcluded: activeFiltersFromBuilder.excludedConcepts,
+      geosExcluded: activeFiltersFromBuilder.excludedGeos,
+      yearsExcluded: activeFiltersFromBuilder.excludedYears,
+      documentTypesExcluded: activeFiltersFromBuilder.excludedDocumentTypes,
+    };
+    const historyLabel = state.rawSearchTerm.trim() || "Advanced filters";
+    addToHistory(historyLabel, { filters: selectedFiltersFromAdvanced });
+    dispatch({ type: "APPLY_ADVANCED", payload: selectedFiltersFromAdvanced });
   }
 
-  function handleSearchOnly() {
-    setRawSearchTerm(searchTerm);
-    setWasStringOnlySearch(true);
-    setSearchTerm("");
+  function commitSearchAsStringOnly() {
+    const trimmedSearchTerm = state.searchTerm.trim();
+    if (trimmedSearchTerm.length > 0) {
+      addToHistory(trimmedSearchTerm, { wasStringOnly: true });
+    }
+    dispatch({ type: "SEARCH_ONLY" });
   }
 
-  function resetFiltersToOriginalSearch() {
-    setSearchTerm(rawSearchTerm);
-    clearAllFilters();
-    setRawSearchTerm("");
+  function resetToOriginalSearch() {
+    dispatch({ type: "RESET_TO_ORIGINAL" });
   }
 
-  function removeFilter(update: Partial<SelectedFilters>) {
-    setFilters((prev) => {
-      const next = { ...prev, ...update };
-      if (!checkHasAnyFilters(next)) setSearchTerm("");
-      return next;
-    });
+  function removeFilterValue(key: keyof SelectedFilters, value: string) {
+    const currentValues = state.filters[key];
+    if (!Array.isArray(currentValues)) return;
+    dispatch({ type: "REMOVE_FILTER", payload: { key, value } });
   }
 
-  function removeFromFilter(key: keyof SelectedFilters, value: string) {
-    const arr = filters[key];
-    if (!Array.isArray(arr)) return;
-    removeFilter({ [key]: arr.filter((x) => x !== value) } as Partial<SelectedFilters>);
+  function applyHistoryItem(item: SearchHistoryItem) {
+    dispatch({ type: "APPLY_HISTORY_ITEM", payload: item });
   }
 
   return {
     search: {
-      term: searchTerm,
-      setTerm: setSearchTerm,
-      rawTerm: rawSearchTerm,
-      matches: rawMatches,
+      term: state.searchTerm,
+      setTerm: (value: string) => dispatch({ type: "SET_SEARCH_TERM", payload: value }),
+      rawTerm: state.rawSearchTerm,
+      matches: suggestedMatchesForRawTerm,
       showStringOnlyResults,
     },
+    searchHistory: {
+      history: recentSearchHistory,
+      clearHistory,
+    },
     filters: {
-      value: filters,
-      hasAny: hasAnyFiltersFlag,
-      clearAll: clearAllFilters,
+      value: state.filters,
+      hasAny: hasAnyFilters,
+      clearAll: () => dispatch({ type: "CLEAR_FILTERS" }),
     },
     actions: {
       add: addToFilter,
-      remove: removeFromFilter,
+      remove: removeFilterValue,
       applyAdvanced: applyAdvancedFilters,
-      applyAll: handleApplyAll,
-      searchOnly: handleSearchOnly,
-      resetToOriginalSearch: resetFiltersToOriginalSearch,
+      applyAll: applyAllSuggestedFilters,
+      searchOnly: commitSearchAsStringOnly,
+      resetToOriginalSearch,
+      applyHistoryItem,
     },
   };
 }

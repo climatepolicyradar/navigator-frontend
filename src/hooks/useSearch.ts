@@ -1,14 +1,14 @@
 import { usePostHog } from "posthog-js/react";
 import { useEffect, useState, useMemo } from "react";
 
+import { initialSearchCriteria } from "@/constants/searchCriteria";
 import { posthogEventName } from "@/context/PostHogProvider";
+import { TMatchedFamily, TLoadingStatus, TApiSearch } from "@/types";
 import buildSearchQuery, { TRouterQuery } from "@/utils/buildSearchQuery";
 import { getCachedSearch, updateCacheSearch, TCacheResult } from "@/utils/searchCache";
 
 import useGetThemeConfig from "./useThemeConfig";
 import { ApiClient, getEnvFromServer } from "../api/http-common";
-import { initialSearchCriteria } from "../constants/searchCriteria";
-import { TMatchedFamily, TSearch, TLoadingStatus } from "../types";
 
 const CACHE_ENABLED = false;
 
@@ -32,7 +32,7 @@ async function getSearch(query = initialSearchCriteria, signal: AbortSignal) {
   const url = "/searches";
   const { data } = await getEnvFromServer();
   const client = new ApiClient(data?.env?.api_url, data?.env?.app_token);
-  const results = await client.post<TSearch>(url, query, config);
+  const results = await client.post<TApiSearch>(url, query, config);
   return results;
 }
 
