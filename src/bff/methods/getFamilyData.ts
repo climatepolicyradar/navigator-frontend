@@ -22,13 +22,12 @@ import { isCorpusIdAllowed } from "@/utils/checkCorpusAccess";
 import { extractNestedData } from "@/utils/extractNestedData";
 import { processFamilyTopics } from "@/utils/topics/processFamilyTopics";
 
-// TODO: remove this ESLint disable when the features object is used to data source switching
+// TODO: remove this ESLint disable when the features object is used for data source switching
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 export const getFamilyData = async (slug: string, features: TFeatures): Promise<TFamilyPresentationalResponse> => {
   /* Get param(s) and features */
 
   /* Make API requests */
-  // TODO: use features and initial family data to potentially query new data model API instead
 
   const errors: Error[] = [];
   const backendApiClient = new ApiClient(process.env.BACKEND_API_URL);

@@ -24,7 +24,7 @@ export default FamilyPage;
 export const getServerSideProps = (async (context) => {
   context.res.setHeader("Cache-Control", "public, max-age=3600, immutable");
 
-  const slug = typeof context.params.id as string;
+  const slug = context.params.id as string;
 
   const theme = process.env.THEME as TTheme;
   const themeConfig = await readConfigFile(theme);
