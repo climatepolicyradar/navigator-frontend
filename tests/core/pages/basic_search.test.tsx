@@ -25,6 +25,7 @@ const baseSearchProps: TSearchPageProps = {
     ...cprConfig,
   },
   topicsData: { rootTopics: [], topics: [] },
+  posthogPageViewProps: { search_version: "v1" },
 };
 
 describe("SearchPage", async () => {
