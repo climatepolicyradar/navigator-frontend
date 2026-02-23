@@ -30,8 +30,7 @@ COPY --from=builder /app/.next/standalone ./
 RUN chown -R nextjs:nodejs .
 
 USER nextjs
-# Bind to all interfaces; PORT defaults to 8080 (matches AWS). Override at runtime if needed.
-ENV HOSTNAME=0.0.0.0
+# Do not set HOSTNAME here; Next.js uses it as bind address. If set to a URL at runtime the server fails.
 ARG PORT=8080
 ENV PORT=${PORT}
 EXPOSE ${PORT}
