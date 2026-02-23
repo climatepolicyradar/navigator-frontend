@@ -1,8 +1,8 @@
 import { ORDERED_ROOT_TOPIC_IDS, ROOT_TOPICS } from "@/constants/topics";
-import { TTopic, TTopics } from "@/types";
+import { TApiTopic, TTopic, TTopics } from "@/types";
 import { sortRootTopics } from "@/utils/sorting";
 
-const fetchTopic = async (topicId: string): Promise<TTopic> => {
+const fetchTopic = async (topicId: string): Promise<TApiTopic> => {
   return fetch(`https://cdn.climatepolicyradar.org/concepts/${topicId}.json`).then((response) => response.json());
 };
 
