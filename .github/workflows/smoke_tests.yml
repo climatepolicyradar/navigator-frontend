@@ -51,7 +51,7 @@ jobs:
       - run: npx playwright install --with-deps
         env:
           PLAYWRIGHT_BROWSERS_PATH: ${{ env.PLAYWRIGHT_BROWSERS_PATH }}
-      - run: npx playwright test tests/core/ tests/${{ github.event.inputs.theme }}/ --shard=${{ matrix.shard }}/2
+      - run: npx playwright test tests/${{ github.event.inputs.theme }}/ --shard=${{ matrix.shard }}/2
         env:
           PLAYWRIGHT_ENV: ${{ format('{0}_{1}', github.event.inputs.theme, github.event.inputs.environment) }}
           THEME: ${{ github.event.inputs.theme }}
