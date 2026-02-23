@@ -2,7 +2,7 @@ import { Legislation, WithContext } from "schema-dts";
 
 import { TCollectionPublicWithFamilies } from "@/types";
 
-import { getHostnameForJSONLD } from "./helpers";
+import { getAppUrlForJSONLD } from "./helpers";
 
 /**
  * Generates JSON-LD structured data for a litigation collection.
@@ -23,14 +23,14 @@ export const getLitigationCollectionJSONLD = (collection: TCollectionPublicWithF
   // There should be at least one family. Some data needs to be inferred from one of the families
   if (families.length === 0) return {};
 
-  const hostname = getHostnameForJSONLD();
+  const appUrl = getAppUrlForJSONLD();
 
   // Default JSON-LD legislation structure
   const jsonLd: WithContext<Legislation> = {
     "@context": "https://schema.org",
     "@type": "Legislation",
-    "@id": `${hostname}/collections/${collection.slug}`,
-    url: `${hostname}/collections/${collection.slug}`,
+    "@id": `${appUrl}/collections/${collection.slug}`,
+    url: `${appUrl}/collections/${collection.slug}`,
     isAccessibleForFree: true,
     name: `${collection.title}`,
     description: `${collection.description}`,
@@ -52,8 +52,8 @@ export const getLitigationCollectionJSONLD = (collection: TCollectionPublicWithF
   // Cases as work examples
   jsonLd.workExample = families.map((family) => ({
     "@type": "Legislation",
-    "@id": `${hostname}/document/${family.slug}`,
-    url: `${hostname}/document/${family.slug}`,
+    "@id": `${appUrl}/document/${family.slug}`,
+    url: `${appUrl}/document/${family.slug}`,
     isAccessibleForFree: true,
     name: family.title,
     description: `${family.summary}`,

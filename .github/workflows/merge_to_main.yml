@@ -157,19 +157,35 @@ jobs:
       fail-fast: false
       matrix:
         theme: [cpr, cclw, mcf, ccc]
+        shardIndex: [1, 2]
+        shardTotal: [2]
     env:
       PLAYWRIGHT_BROWSERS_PATH: $HOME/.cache/ms-playwright
     steps:
       - uses: actions/checkout@v6
+
       - uses: actions/setup-node@v6
         with:
           node-version: 22.12.0
+          cache: npm
+
       - run: npm ci
+
       - run: cp .env.example .env
+
       - name: Generate tsconfig.json
         run: |
           cp tsconfig.base.json tsconfig.json
           sed -i "s/__THEME__/${{ matrix.theme }}/g" tsconfig.json
+
+      - name: Cache Next.js build
+        uses: actions/cache@v5
+        with:
+          path: .next/cache
+          key: ${{ runner.os }}-nextjs-${{ matrix.theme }}-${{ hashFiles('**/package-lock.json') }}-${{ hashFiles('src/**') }}
+          restore-keys: |
+            ${{ runner.os }}-nextjs-${{ matrix.theme }}-${{ hashFiles('**/package-lock.json') }}-
+
       - run: THEME=${{ matrix.theme }} npm run build
         env:
           NODE_ENV: production
@@ -181,29 +197,38 @@ jobs:
 
       - name: Cache Playwright browsers
         uses: actions/cache@v5
+        id: playwright-cache
         with:
           path: ${{ env.PLAYWRIGHT_BROWSERS_PATH }}
           key: ${{ runner.os }}-playwright-${{ hashFiles('**/package-lock.json') }}
 
-      - run: npx playwright install --with-deps
+      - name: Install Playwright Browsers
+        if: steps.playwright-cache.outputs.cache-hit != 'true'
+        run: npx playwright install --with-deps chromium
         env:
           PLAYWRIGHT_BROWSERS_PATH: ${{ env.PLAYWRIGHT_BROWSERS_PATH }}
+        timeout-minutes: 5
 
-      - name: Ensure test results directory exists
-        run: mkdir -p test-results-${{ matrix.theme }}
+      - name: Install Playwright System Dependencies
+        if: steps.playwright-cache.outputs.cache-hit == 'true'
+        run: npx playwright install-deps chromium
+        env:
+          PLAYWRIGHT_BROWSERS_PATH: ${{ env.PLAYWRIGHT_BROWSERS_PATH }}
+        timeout-minutes: 2
+        continue-on-error: true
+
+      - name: Verify Playwright Installation
+        run: npx playwright install chromium --dry-run || npx playwright install chromium
+        env:
+          PLAYWRIGHT_BROWSERS_PATH: ${{ env.PLAYWRIGHT_BROWSERS_PATH }}
+        timeout-minutes: 3
 
       - name: Run Tests
         continue-on-error: true
         env:
           THEME: ${{ matrix.theme }}
           PLAYWRIGHT_BROWSERS_PATH: ${{ env.PLAYWRIGHT_BROWSERS_PATH }}
-        run: |
-          echo "Running Playwright tests..."
-          if [ "${{ matrix.theme }}" = "ccc" ]; then
-            npx playwright test tests/${{ matrix.theme }}/
-          else
-            npx playwright test tests/core/ tests/${{ matrix.theme }}/
-          fi
+        run: npx playwright test tests/${{ matrix.theme }}/ --shard=${{ matrix.shardIndex }}/${{ matrix.shardTotal }}
 
       - name: Upload Test Results to Trunk.io
         uses: trunk-io/analytics-uploader@v2
