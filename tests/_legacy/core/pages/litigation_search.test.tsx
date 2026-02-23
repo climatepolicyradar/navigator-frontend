@@ -100,6 +100,7 @@ const basicLegalConcepts: TTopic[] = [
   },
 ];
 
+/* trunk-ignore(eslint/@typescript-eslint/no-explicit-any) */
 const baseSearchProps: any = {
   conceptsData: null,
   envConfig: {
@@ -118,7 +119,6 @@ const baseSearchProps: any = {
 
 describe("SearchPage", async () => {
   it("filters search results by subdivision", async () => {
-    // @ts-ignore
     renderWithAppContext(Search, { pageProps: baseSearchProps });
 
     await screen.findByRole("heading", { level: 2, name: "Search results" });
@@ -148,7 +148,6 @@ describe("SearchPage", async () => {
   });
 
   it("removes country and subdivision filters when a region filter is removed ", async () => {
-    // @ts-ignore
     renderWithAppContext(Search, { pageProps: baseSearchProps });
 
     await screen.findByRole("heading", { level: 2, name: "Search results" });
@@ -186,7 +185,6 @@ describe("SearchPage", async () => {
   });
 
   it("removes subdivision filters when a country filter is removed", async () => {
-    // @ts-ignore
     renderWithAppContext(Search, { pageProps: baseSearchProps });
 
     await screen.findByRole("heading", { level: 2, name: "Search results" });
@@ -219,7 +217,6 @@ describe("SearchPage", async () => {
   });
 
   it("filters search results by case category", async () => {
-    // @ts-ignore
     renderWithAppContext(Search, {
       pageProps: {
         ...baseSearchProps,
@@ -250,7 +247,6 @@ describe("SearchPage", async () => {
   });
 
   it("removing a case category filter updates search results", async () => {
-    // @ts-ignore
     renderWithAppContext(Search, {
       pageProps: {
         ...baseSearchProps,
@@ -333,7 +329,6 @@ describe("SearchPage", async () => {
   });
 
   it("removing a principal law filter updates search results", async () => {
-    // @ts-ignore
     renderWithAppContext(Search, {
       pageProps: {
         ...baseSearchProps,
@@ -409,7 +404,6 @@ describe("SearchPage", async () => {
   });
 
   it("removing a jurisdiction filter updates search results", async () => {
-    // @ts-ignore
     renderWithAppContext(Search, {
       pageProps: {
         ...baseSearchProps,

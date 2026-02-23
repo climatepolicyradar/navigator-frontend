@@ -199,11 +199,7 @@ jobs:
           PLAYWRIGHT_BROWSERS_PATH: ${{ env.PLAYWRIGHT_BROWSERS_PATH }}
         run: |
           echo "Running Playwright tests..."
-          if [ "${{ matrix.theme }}" = "ccc" ]; then
-            npx playwright test tests/${{ matrix.theme }}/
-          else
-            npx playwright test tests/core/ tests/${{ matrix.theme }}/
-          fi
+          npx playwright test tests/${{ matrix.theme }}/
 
       - name: Upload Test Results to Trunk.io
         uses: trunk-io/analytics-uploader@v2
