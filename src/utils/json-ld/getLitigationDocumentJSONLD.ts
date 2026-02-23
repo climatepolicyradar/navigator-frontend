@@ -4,7 +4,7 @@ import { Legislation, WithContext } from "schema-dts";
 import { getCountryName, getCountrySlug } from "@/helpers/getCountryFields";
 import { TDocumentPage, TFamilyPublic, TGeography } from "@/types";
 
-import { getHostnameForJSONLD } from "./helpers";
+import { getAppUrlForJSONLD } from "./helpers";
 
 /**
  * Generates JSON-LD structured data for a litigation collection.
@@ -20,21 +20,21 @@ import { getHostnameForJSONLD } from "./helpers";
  */
 
 export const getLitigationDocumentJSONLD = (document: TDocumentPage, family: TFamilyPublic, countries: TGeography[]) => {
-  const hostname = getHostnameForJSONLD();
+  const appUrl = getAppUrlForJSONLD();
 
   // Default JSON-LD legislation structure
   const jsonLd: WithContext<Legislation> = {
     "@context": "https://schema.org",
     "@type": "Legislation",
-    "@id": `${hostname}/documents/${document.slug}`,
-    url: `${hostname}/documents/${document.slug}`,
+    "@id": `${appUrl}/documents/${document.slug}`,
+    url: `${appUrl}/documents/${document.slug}`,
     isAccessibleForFree: true,
     name: `${document.title}`,
     // Work example of parent case
     exampleOfWork: {
       "@type": "Legislation",
-      "@id": `${hostname}/document/${family.slug}`,
-      url: `${hostname}/document/${family.slug}`,
+      "@id": `${appUrl}/document/${family.slug}`,
+      url: `${appUrl}/document/${family.slug}`,
       isAccessibleForFree: true,
       name: `${family.title}`,
       description: `${family.summary}`,
@@ -67,7 +67,7 @@ export const getLitigationDocumentJSONLD = (document: TDocumentPage, family: TFa
         spatialCoverage.push({
           "@type": "Place",
           name: countryName,
-          url: `${hostname}/geographies/${getCountrySlug(geo, countries)}`,
+          url: `${appUrl}/geographies/${getCountrySlug(geo, countries)}`,
         });
       }
       // TODO add subdivisions once document page references them

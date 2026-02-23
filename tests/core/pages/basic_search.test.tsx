@@ -16,7 +16,7 @@ const baseSearchProps: TSearchPageProps = {
     CONCEPTS_API_URL: "",
     ADOBE_API_KEY: "",
     REDIRECT_FILE: "",
-    HOSTNAME: "",
+    APP_URL: "",
   },
   familyConceptsData: null,
   features: DEFAULT_FEATURES,
