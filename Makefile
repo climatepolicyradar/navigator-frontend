@@ -30,6 +30,4 @@ run: build
 	docker run --rm -it \
 		-p 8080:8080 \
 		--env-file ./.env.example \
-		-e HOSTNAME=0.0.0.0 \
-		-e PORT=8080 \
 		${TAG}-${THEME}
