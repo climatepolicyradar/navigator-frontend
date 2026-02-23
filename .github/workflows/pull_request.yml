@@ -249,12 +249,21 @@ jobs:
         run: npx playwright install --with-deps chromium
         env:
           PLAYWRIGHT_BROWSERS_PATH: ${{ env.PLAYWRIGHT_BROWSERS_PATH }}
+        timeout-minutes: 5
 
-      - name: Install Playwright System Dependencies Only
+      - name: Install Playwright System Dependencies
         if: steps.playwright-cache.outputs.cache-hit == 'true'
         run: npx playwright install-deps chromium
         env:
           PLAYWRIGHT_BROWSERS_PATH: ${{ env.PLAYWRIGHT_BROWSERS_PATH }}
+        timeout-minutes: 2
+        continue-on-error: true
+
+      - name: Verify Playwright Installation
+        run: npx playwright install chromium --dry-run || npx playwright install chromium
+        env:
+          PLAYWRIGHT_BROWSERS_PATH: ${{ env.PLAYWRIGHT_BROWSERS_PATH }}
+        timeout-minutes: 3
 
       - name: Run Tests
         continue-on-error: true
