@@ -201,17 +201,33 @@ jobs:
       fail-fast: false
       matrix:
         theme: [cpr, cclw, mcf, ccc]
+        shardIndex: [1, 2]
+        shardTotal: [2]
     steps:
       - uses: actions/checkout@v6
+
       - uses: actions/setup-node@v6
         with:
-          node-version: 22.12.0
+          node-version: 24.0.0
+          cache: npm
+
       - run: npm ci
+
       - run: cp .env.example .env
+
       - name: Generate tsconfig.json
         run: |
           cp tsconfig.base.json tsconfig.json
           sed -i "s/__THEME__/${{ matrix.theme }}/g" tsconfig.json
+
+      - name: Cache Next.js build
+        uses: actions/cache@v5
+        with:
+          path: .next/cache
+          key: ${{ runner.os }}-nextjs-${{ matrix.theme }}-${{ hashFiles('**/package-lock.json') }}-${{ hashFiles('src/**') }}
+          restore-keys: |
+            ${{ runner.os }}-nextjs-${{ matrix.theme }}-${{ hashFiles('**/package-lock.json') }}-
+
       - run: THEME=${{ matrix.theme }} npm run build
         env:
           NODE_ENV: production
@@ -230,27 +246,22 @@ jobs:
 
       - name: Install Playwright Browsers
         if: steps.playwright-cache.outputs.cache-hit != 'true'
-        run: npx playwright install --with-deps
+        run: npx playwright install --with-deps chromium
         env:
           PLAYWRIGHT_BROWSERS_PATH: ${{ env.PLAYWRIGHT_BROWSERS_PATH }}
 
       - name: Install Playwright System Dependencies Only
         if: steps.playwright-cache.outputs.cache-hit == 'true'
-        run: npx playwright install-deps
+        run: npx playwright install-deps chromium
         env:
           PLAYWRIGHT_BROWSERS_PATH: ${{ env.PLAYWRIGHT_BROWSERS_PATH }}
-
-      - name: Create test results directory
-        run: mkdir -p test-results-${{ matrix.theme }}
 
       - name: Run Tests
         continue-on-error: true
         env:
           THEME: ${{ matrix.theme }}
           PLAYWRIGHT_BROWSERS_PATH: ${{ env.PLAYWRIGHT_BROWSERS_PATH }}
-        run: |
-          echo "Running Playwright tests..."
-          npx playwright test tests/${{ matrix.theme }}/
+        run: npx playwright test tests/${{ matrix.theme }}/ --shard=${{ matrix.shardIndex }}/${{ matrix.shardTotal }}
 
       - name: Upload Test Results to Trunk.io
         uses: trunk-io/analytics-uploader@v2
