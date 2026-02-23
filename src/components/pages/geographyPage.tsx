@@ -19,7 +19,7 @@ import { TPublicEnvConfig } from "@/context/EnvConfig";
 import { FeaturesContext } from "@/context/FeaturesContext";
 import { GeographiesContext } from "@/context/GeographiesContext";
 import { useText } from "@/hooks/useText";
-import { TSearch, TGeographyPageBlock, IMetadata, GeographyV2, TTheme, TThemeConfig, TTarget, TFeatures } from "@/types";
+import { TSearch, TGeographyPageBlock, IMetadata, GeographyV2, TTheme, TThemeConfig, TTarget, TFeatures, TApiSearch } from "@/types";
 import buildSearchQuery from "@/utils/buildSearchQuery";
 import { getGeographyMetaData } from "@/utils/getGeographyMetadata";
 import { sortFilterTargets } from "@/utils/sortFilterTargets";
@@ -107,7 +107,7 @@ export const GeographyPage = ({ geographyV2, parentGeographyV2, targets, theme, 
 
         const fetchFamiliesByCategory = async (category: string) => {
           const searchQuery = buildSearchQuery({ l: geographyV2.slug, c: category, page_size: "4" }, themeConfig);
-          const search: TSearch = await backendApiClient
+          const search: TApiSearch = await backendApiClient
             .post("/searches", searchQuery, {
               headers: {
                 accept: "application/json",

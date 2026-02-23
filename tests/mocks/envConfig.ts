@@ -9,5 +9,5 @@ export const envConfig: TPublicEnvConfig = {
   CONCEPTS_API_URL: "https://api.climatepolicyradar.org",
   ADOBE_API_KEY: "dca9187b65294374a6367824df902fdf",
   REDIRECT_FILE: "redirects.json",
-  HOSTNAME: "http://localhost:3000",
+  APP_URL: "http://localhost:3000",
 };

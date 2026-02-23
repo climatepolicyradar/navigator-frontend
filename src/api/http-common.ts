@@ -1,7 +1,7 @@
 /* eslint-disable no-console */
 import axios, { AxiosInstance, AxiosResponse } from "axios";
 
-import { TCorpusTypeDictionary, TDataNode, TGeography, TLanguages } from "@/types";
+import { TApiCorpusTypeDictionary, TApiDataNode, TApiGeography, TApiLanguages } from "@/types";
 
 export async function getEnvFromServer() {
   return await axios.get("/api/env").then((res: any) => res);
@@ -80,9 +80,9 @@ class ApiClient {
 
   getConfig() {
     return this.get<{
-      geographies: TDataNode<TGeography>[];
-      corpus_types: TCorpusTypeDictionary;
-      languages: TLanguages;
+      geographies: TApiDataNode<TApiGeography>[];
+      corpus_types: TApiCorpusTypeDictionary;
+      languages: TApiLanguages;
     }>("/config");
   }
 }

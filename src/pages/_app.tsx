@@ -98,7 +98,7 @@ function MyApp({ Component, pageProps, theme, adobeApiKey }: IProps) {
       <ThemeContext.Provider value={themeContext}>
         <TutorialContext.Provider value={tutorialContextProviderValue}>
           <AdobeContext.Provider value={dynamicAdobeKey}>
-            <PostHogProvider consent={consent}>
+            <PostHogProvider consent={consent} pageViewProps={pageProps?.posthogPageViewProps}>
               <EnvConfigContext.Provider value={pageProps?.envConfig}>
                 <ErrorBoundary level="top">
                   <Head>
