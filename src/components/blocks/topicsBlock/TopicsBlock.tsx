@@ -4,7 +4,6 @@ import { useState } from "react";
 import { PageLink } from "@/components/atoms/pageLink/PageLink";
 import { TopicDrawer } from "@/components/drawers/topicDrawer/TopicDrawer";
 import { Section } from "@/components/molecules/section/Section";
-import { Warning } from "@/components/molecules/warning/Warning";
 import { InteractiveTable } from "@/components/organisms/interactiveTable/InteractiveTable";
 import { TCategoryDictionaryKey } from "@/constants/text";
 import { IFamilyDocumentTopics, TFamilyPublic } from "@/types";
@@ -35,11 +34,6 @@ export const TopicsBlock = ({ family, familyTopics, getCategoryText }: TProps) =
   return (
     <Section block="topics" Icon={LucideTextSearch} title={"Topics mentioned most in this " + getCategoryText("familySingular")} badge="Beta">
       <div className="col-start-1 -col-end-1">
-        {process.env.THEME === "ccc" && (
-          <Warning variant="error">
-            We are currently experiencing technical difficulties with topics. We are working hard to fix this issue, please check back a little later.
-          </Warning>
-        )}
         <p className="mb-3">
           See how often topics get mentioned in this {getCategoryText("familySingular")} and view specific passages of text highlighted in each
           document. Accuracy is not 100%.{" "}
