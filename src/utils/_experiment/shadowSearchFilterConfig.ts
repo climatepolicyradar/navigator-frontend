@@ -1,4 +1,4 @@
-import type { SelectedFilters } from "@/utils/_experiment/suggestedFilterUtils";
+import type { TSelectedFilters } from "@/utils/_experiment/suggestedFilterUtils";
 
 /**
  * Single source of truth for shadow search filter dimensions: keys, labels, and grouping.
@@ -21,4 +21,4 @@ export const SHADOW_SEARCH_FILTER_DIMENSIONS = {
 
 export type TIncludedFilterKey = (typeof SHADOW_SEARCH_FILTER_DIMENSIONS.included)[number]["key"];
 export type TExcludedFilterKey = (typeof SHADOW_SEARCH_FILTER_DIMENSIONS.excluded)[number]["key"];
-export type TFilterKey = keyof SelectedFilters;
+export type TFilterKey = keyof TSelectedFilters;

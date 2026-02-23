@@ -1,6 +1,6 @@
 import { SearchHistoryItem } from "@/hooks/useSearchHistory";
 import { TIncludedFilterKey } from "@/utils/_experiment/shadowSearchFilterConfig";
-import { addToFilterKey, EMPTY_FILTERS, SelectedFilters } from "@/utils/_experiment/suggestedFilterUtils";
+import { addToFilterKey, EMPTY_FILTERS, TSelectedFilters } from "@/utils/_experiment/suggestedFilterUtils";
 
 /**
  * Shadow search state: current input, committed "raw" term for results,
@@ -19,7 +19,7 @@ export interface ShadowSearchState {
   searchTerm: string;
   rawSearchTerm: string;
   wasStringOnlySearch: boolean;
-  filters: SelectedFilters;
+  filters: TSelectedFilters;
 }
 
 export const initialShadowSearchState: ShadowSearchState = {
@@ -35,13 +35,13 @@ export type ShadowSearchAction =
   // Add a single included filter value (e.g. from suggestions or IntelliSearch).
   | { type: "ADD_FILTER"; payload: { key: TIncludedFilterKey; value: string } }
   // Remove a single value from any filter array; may also clear results when last filter goes.
-  | { type: "REMOVE_FILTER"; payload: { key: keyof SelectedFilters; value: string } }
+  | { type: "REMOVE_FILTER"; payload: { key: keyof TSelectedFilters; value: string } }
   // Replace all filters wholesale.
-  | { type: "SET_FILTERS"; payload: SelectedFilters }
+  | { type: "SET_FILTERS"; payload: TSelectedFilters }
   // Convert current string matches into included filters only (no exclusions).
   | { type: "APPLY_ALL"; payload: { concepts: string[]; geos: string[]; years: string[]; documentTypes: string[] } }
   // Apply advanced builder output (includes include + exclude filters).
-  | { type: "APPLY_ADVANCED"; payload: SelectedFilters }
+  | { type: "APPLY_ADVANCED"; payload: TSelectedFilters }
   // Commit current input as a string-only query (no filters).
   | { type: "SEARCH_ONLY" }
   // Restore the original raw query, dropping filters built from it.

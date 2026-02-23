@@ -10,13 +10,13 @@ import { TFilterClause, TFilterFieldOptions } from "@/types";
 import { selectedFiltersToGroups } from "@/utils/_experiment/filterQueryBuilderUtils";
 import { TIncludedFilterKey } from "@/utils/_experiment/shadowSearchFilterConfig";
 import { getSuggestedFilterMatches } from "@/utils/_experiment/suggestedFilterMatching";
-import { SelectedFilters, hasAnyFilters as checkHasAnyFilters, hasAnyMatches } from "@/utils/_experiment/suggestedFilterUtils";
+import { TSelectedFilters, hasAnyFilters as checkHasAnyFilters, hasAnyMatches } from "@/utils/_experiment/suggestedFilterUtils";
 
 export interface ISearchTypeaheadProps {
   searchTerm: string;
   onSearchTermChange: (value: string) => void;
   /** Current selected filters (included dimensions only needed for suggestions). */
-  selectedFilters: SelectedFilters;
+  selectedFilters: TSelectedFilters;
   /** Add one value to an included filter key (topics, geos, years, documentTypes). */
   onAddFilter: (key: TIncludedFilterKey, value: string) => void;
   onApplyAll: (matches: { concepts: string[]; geos: string[]; years: string[]; documentTypes: string[] }) => void;

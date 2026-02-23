@@ -1,5 +1,5 @@
 import { TActiveFilters, TFilterClause, TFilterGroup } from "@/types";
-import type { SelectedFilters } from "@/utils/_experiment/suggestedFilterUtils";
+import type { TSelectedFilters } from "@/utils/_experiment/suggestedFilterUtils";
 
 /**
  * Converts advanced-query builder clauses into the active-filters shape.
@@ -58,7 +58,7 @@ export function clausesToActiveFilters(clauses: TFilterClause[]): TActiveFilters
  * @param filters - Current selected filters (included + excluded)
  * @returns One group containing a clause per filter value (or one empty clause if none)
  */
-export function selectedFiltersToGroups(filters: SelectedFilters): TFilterGroup[] {
+export function selectedFiltersToGroups(filters: TSelectedFilters): TFilterGroup[] {
   const clauses: TFilterClause[] = [];
 
   function pushClause(field: "topic" | "geography" | "year" | "documentType", operator: "eq" | "ne", value: string) {

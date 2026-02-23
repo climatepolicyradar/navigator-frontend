@@ -10,7 +10,7 @@ import {
   addToFilterKey,
   hasAnyFilters as checkHasAnyFilters,
   hasRemainingSuggestions,
-  SelectedFilters,
+  TSelectedFilters,
 } from "@/utils/_experiment/suggestedFilterUtils";
 
 export interface UseShadowSearchParams {
@@ -33,13 +33,13 @@ export interface UseShadowSearchReturn {
     clearHistory: () => void;
   };
   filters: {
-    value: SelectedFilters;
+    value: TSelectedFilters;
     hasAny: boolean;
     clearAll: () => void;
   };
   actions: {
     add: (key: TIncludedFilterKey, value: string) => void;
-    remove: (key: keyof SelectedFilters, value: string) => void;
+    remove: (key: keyof TSelectedFilters, value: string) => void;
     applyAdvanced: (clauses: TFilterClause[]) => void;
     applyAll: (matches: { concepts: string[]; geos: string[]; years: string[]; documentTypes: string[] }) => void;
     searchOnly: () => void;
@@ -93,7 +93,7 @@ export function useShadowSearch(params: UseShadowSearchParams = {}): UseShadowSe
 
   function applyAdvancedFilters(clauses: TFilterClause[]) {
     const activeFiltersFromBuilder = clausesToActiveFilters(clauses);
-    const selectedFiltersFromAdvanced: SelectedFilters = {
+    const selectedFiltersFromAdvanced: TSelectedFilters = {
       topics: activeFiltersFromBuilder.includedConcepts,
       geos: activeFiltersFromBuilder.includedGeos,
       years: activeFiltersFromBuilder.includedYears,
@@ -120,7 +120,7 @@ export function useShadowSearch(params: UseShadowSearchParams = {}): UseShadowSe
     dispatch({ type: "RESET_TO_ORIGINAL" });
   }
 
-  function removeFilterValue(key: keyof SelectedFilters, value: string) {
+  function removeFilterValue(key: keyof TSelectedFilters, value: string) {
     const currentValues = state.filters[key];
     if (!Array.isArray(currentValues)) return;
     dispatch({ type: "REMOVE_FILTER", payload: { key, value } });

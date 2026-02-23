@@ -1,7 +1,7 @@
 import { useCallback, useEffect, useState } from "react";
 
 import { COOKIE_CONSENT_NAME, SEARCH_HISTORY_COOKIE_NAME } from "@/constants/cookies";
-import { SelectedFilters } from "@/utils/_experiment/suggestedFilterUtils";
+import { TSelectedFilters } from "@/utils/_experiment/suggestedFilterUtils";
 import { getCookie, setCookie, deleteCookie } from "@/utils/cookies";
 import getDomain from "@/utils/getDomain";
 
@@ -14,7 +14,7 @@ const COOKIE_MAX_CHARS_PER_TERM = 80;
 // One entry in search history: term plus optional filters and string-only flag.
 export interface SearchHistoryItem {
   term: string;
-  filters?: SelectedFilters;
+  filters?: TSelectedFilters;
   wasStringOnly?: boolean;
 }
 

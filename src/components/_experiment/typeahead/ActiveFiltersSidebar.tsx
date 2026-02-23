@@ -1,11 +1,11 @@
 import { Button } from "@base-ui/react/button";
 
 import { SHADOW_SEARCH_FILTER_DIMENSIONS, TFilterKey } from "@/utils/_experiment/shadowSearchFilterConfig";
-import { SelectedFilters } from "@/utils/_experiment/suggestedFilterUtils";
+import { TSelectedFilters } from "@/utils/_experiment/suggestedFilterUtils";
 
 export interface ActiveFiltersSidebarProps {
   /** Current selected filters (included + excluded). */
-  filters: SelectedFilters;
+  filters: TSelectedFilters;
   /** Called when user removes a single filter value. */
   onRemove: (key: TFilterKey, value: string) => void;
   /** Called when user clears all filters. */

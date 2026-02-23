@@ -1,11 +1,9 @@
 import { TFilterFieldOptions } from "@/types";
 import { getSuggestedFilterMatches, TSuggestedFilterMatches } from "@/utils/_experiment/suggestedFilterMatching";
 
-export type { TSuggestedFilterMatches };
-
 type TIncludedFilterKey = "topics" | "geos" | "years" | "documentTypes";
 
-export type SelectedFilters = {
+export type TSelectedFilters = {
   topics: string[];
   geos: string[];
   years: string[];
@@ -16,7 +14,7 @@ export type SelectedFilters = {
   documentTypesExcluded: string[];
 };
 
-export const EMPTY_FILTERS: SelectedFilters = {
+export const EMPTY_FILTERS: TSelectedFilters = {
   topics: [],
   geos: [],
   years: [],
@@ -27,7 +25,7 @@ export const EMPTY_FILTERS: SelectedFilters = {
   documentTypesExcluded: [],
 };
 
-export function hasAnyFilters(filters: SelectedFilters): boolean {
+export function hasAnyFilters(filters: TSelectedFilters): boolean {
   // True if any included or excluded filter is set.
   return (
     filters.topics.length > 0 ||
@@ -52,7 +50,7 @@ export function hasAnyMatches(matches: TSuggestedFilterMatches): boolean {
  * that are not yet in the selected filters (i.e. user can add more).
  * Pass filterOptions when using real data so matching uses the same lists.
  */
-export function hasRemainingSuggestions(search: string, filters: SelectedFilters, filterOptions?: TFilterFieldOptions): boolean {
+export function hasRemainingSuggestions(search: string, filters: TSelectedFilters, filterOptions?: TFilterFieldOptions): boolean {
   const trimmedSearch = search.trim();
   if (!trimmedSearch) return false;
   const matches = getSuggestedFilterMatches(trimmedSearch, filterOptions);
@@ -63,7 +61,7 @@ export function hasRemainingSuggestions(search: string, filters: SelectedFilters
   return remainingConcepts.length > 0 || remainingGeos.length > 0 || remainingYears.length > 0 || remainingDocumentTypes.length > 0;
 }
 
-export function addToFilterKey(filters: SelectedFilters, key: TIncludedFilterKey, value: string): SelectedFilters {
+export function addToFilterKey(filters: TSelectedFilters, key: TIncludedFilterKey, value: string): TSelectedFilters {
   const currentValuesForKey = filters[key];
   if (currentValuesForKey.includes(value)) return filters;
   return { ...filters, [key]: [...currentValuesForKey, value] };
