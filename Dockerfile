@@ -30,10 +30,11 @@ COPY --from=builder /app/.next/standalone ./
 RUN chown -R nextjs:nodejs .
 
 USER nextjs
-# Bind to all interfaces so the container is reachable from the host; PORT is runtime (e.g. AWS).
+# Bind to all interfaces; PORT defaults to 8080 (matches AWS). Override at runtime if needed.
 ENV HOSTNAME=0.0.0.0
-ENV PORT=3000
-EXPOSE 3000
+ARG PORT=8080
+ENV PORT=${PORT}
+EXPOSE ${PORT}
 CMD ["node", "server.js"]
 
 HEALTHCHECK --interval=30s --timeout=3s --start-period=5s --retries=3 \
