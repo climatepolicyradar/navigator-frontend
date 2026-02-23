@@ -1,19 +1,21 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 
 import { GetServerSideProps, InferGetServerSidePropsType } from "next";
-import { useMemo } from "react";
+import { startTransition, useEffect, useMemo, useState } from "react";
 
 import { ApiClient } from "@/api/http-common";
 import { IntelliSearch } from "@/components/_experiment/intellisearch";
 import { Typeahead } from "@/components/_experiment/typeahead/Typeahead";
-import { withEnvConfig } from "@/context/EnvConfig";
+import { withEnvConfig, useEnvConfig } from "@/context/EnvConfig";
 import { FeaturesContext } from "@/context/FeaturesContext";
 import { TopicsContext } from "@/context/TopicsContext";
 import { WikiBaseConceptsContext } from "@/context/WikiBaseConceptsContext";
 import useConfig from "@/hooks/useConfig";
+import { useSearchLabels } from "@/hooks/useSearchLabels";
 import useShadowSearch from "@/hooks/useShadowSearch";
 import { TTopic, TTopics } from "@/types";
 import { buildFilterFieldOptions } from "@/utils/_experiment/buildFilterFieldOptions";
+import { partitionLabelsByConfig } from "@/utils/_experiment/partitionLabelsByConfig";
 import { FamilyConcept, mapFamilyConceptsToConcepts } from "@/utils/familyConcepts";
 import { getFeatureFlags } from "@/utils/featureFlags";
 import { getFeatures } from "@/utils/features";
@@ -22,23 +24,43 @@ import { readConfigFile } from "@/utils/readConfigFile";
 
 type TProps = InferGetServerSidePropsType<typeof getServerSideProps>;
 
+const LABEL_SEED_FALLBACK = "a";
+
 const ShadowSearch = ({ theme, themeConfig, features, topicsData, familyConceptsData }: TProps) => {
+  const { CONCEPTS_API_URL } = useEnvConfig();
   const configQuery = useConfig();
   const { data: configData } = configQuery;
   const { regions = [], countries = [], corpus_types = {} } = configData ?? {};
 
-  const filterOptions = useMemo(
-    () =>
-      buildFilterFieldOptions({
-        topics: topicsData?.topics,
+  const [labelSeed, setLabelSeed] = useState(LABEL_SEED_FALLBACK);
+  const labelsQuery = useSearchLabels(labelSeed, { enabled: Boolean(CONCEPTS_API_URL?.trim()) });
+
+  const filterOptions = useMemo(() => {
+    if (CONCEPTS_API_URL?.trim() && labelsQuery.data?.results?.length) {
+      return partitionLabelsByConfig(labelsQuery.data.results, {
         regions,
         countries,
         corpusTypes: corpus_types,
-      }),
-    [topicsData?.topics, regions, countries, corpus_types]
-  );
+        topicLabels: topicsData?.topics?.map((t) => t.preferred_label).filter(Boolean) ?? [],
+      });
+    }
+    return buildFilterFieldOptions({
+      topics: topicsData?.topics,
+      regions,
+      countries,
+      corpusTypes: corpus_types,
+    });
+  }, [CONCEPTS_API_URL, labelsQuery.data, regions, countries, corpus_types, topicsData]);
 
   const shadowSearch = useShadowSearch({ filterOptions });
+
+  // Sync label search seed from search term so filter options narrow as user types.
+  // (labelSeed cannot be derived during render: it drives useSearchLabels, which feeds filterOptions, which useShadowSearch needs; term only exists after shadowSearch.)
+  useEffect(() => {
+    const term = shadowSearch.search.term.trim() || LABEL_SEED_FALLBACK;
+    startTransition(() => setLabelSeed((prev) => (term === prev ? prev : term)));
+  }, [shadowSearch.search.term]);
+
   const addFilter = shadowSearch.actions.add;
 
   return (

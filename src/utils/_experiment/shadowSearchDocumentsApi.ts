@@ -118,6 +118,19 @@ export async function fetchSearchDocuments(
   searchParams.set("offset", String(offset));
 
   const url = `${baseUrl.replace(/\/$/, "")}/search/documents?${searchParams.toString()}`;
+  if (typeof process !== "undefined" && process.env.NODE_ENV === "development") {
+    // eslint-disable-next-line no-console
+    console.log("[shadow search] GET", url);
+    if (filters) {
+      try {
+        const parsed = JSON.parse(filters) as ISearchApiFilterGroup[];
+        // eslint-disable-next-line no-console
+        console.log("[shadow search] filters payload", parsed);
+      } catch {
+        // ignore
+      }
+    }
+  }
   const res = await fetch(url, { method: "GET", headers: { Accept: "application/json" } });
   if (!res.ok) {
     throw new Error(`Search API error: ${res.status} ${res.statusText}`);

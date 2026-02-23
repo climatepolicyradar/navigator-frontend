@@ -49,7 +49,23 @@ function DocumentResultsList({
     return <p className="text-xs text-red-600">Unable to load results. Check CONCEPTS_API_URL.</p>;
   }
   if (documents.length === 0) {
-    return <p className="text-xs text-text-tertiary">No documents match your search.</p>;
+    return (
+      <div className="space-y-1 text-xs text-text-tertiary">
+        <p>No documents match your search.</p>
+        <p>
+          The API matches on labels. Check the browser console for the request URL and filters sent; try the same in the{" "}
+          <a
+            href="https://api.climatepolicyradar.org/search/docs#/default/read_documents_search_documents_get"
+            target="_blank"
+            rel="noreferrer"
+            className="text-text-brand underline"
+          >
+            API docs
+          </a>{" "}
+          to confirm values.
+        </p>
+      </div>
+    );
   }
   return (
     <ul className="mt-3 list-none space-y-2 text-sm">
