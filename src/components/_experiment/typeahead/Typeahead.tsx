@@ -7,6 +7,7 @@ import { TFilterFieldOptions } from "@/types";
 import { buildFilterFieldOptions } from "@/utils/_experiment/buildFilterFieldOptions";
 
 import { ActiveFiltersSidebar } from "./ActiveFiltersSidebar";
+import { RecentlyViewedDocuments } from "./RecentlyViewedDocuments";
 import { SearchTypeahead } from "./SearchTypeahead";
 import { ShadowSearchResults } from "./ShadowSearchResults";
 
@@ -79,6 +80,7 @@ export function Typeahead({ shadowSearch: injectedShadowSearch, filterOptions: i
               filters={filters}
               onAddFilter={addFilter}
             />
+            <RecentlyViewedDocuments maxItems={10} className="border border-border-lighter bg-white p-4" />
           </main>
         </div>
       </div>

@@ -1,10 +1,11 @@
-import { useReducer } from "react";
+import { useEffect, useReducer } from "react";
 
 import { useSearchHistory, SearchHistoryItem } from "@/hooks/useSearchHistory";
 import { TFilterClause, TFilterFieldOptions } from "@/types";
 import { clausesToActiveFilters } from "@/utils/_experiment/filterQueryBuilderUtils";
 import { TIncludedFilterKey } from "@/utils/_experiment/shadowSearchFilterConfig";
 import { initialShadowSearchState, shadowSearchReducer } from "@/utils/_experiment/shadowSearchReducer";
+import { getRestoredShadowSearchState, saveShadowSearchStateForRestore } from "@/utils/_experiment/shadowSearchRestore";
 import { getSuggestedFilterMatches } from "@/utils/_experiment/suggestedFilterMatching";
 import {
   addToFilterKey,
@@ -57,6 +58,15 @@ export function useShadowSearch(params: UseShadowSearchParams = {}): UseShadowSe
   const { filterOptions } = params;
   const [state, dispatch] = useReducer(shadowSearchReducer, initialShadowSearchState);
   const { history: recentSearchHistory, addToHistory, clearHistory } = useSearchHistory();
+
+  useEffect(() => {
+    const restored = getRestoredShadowSearchState();
+    if (restored) dispatch({ type: "RESTORE", payload: restored });
+  }, []);
+
+  useEffect(() => {
+    saveShadowSearchStateForRestore(state);
+  }, [state]);
 
   const suggestedMatchesForRawTerm = getSuggestedFilterMatches(state.rawSearchTerm, filterOptions);
   const hasAnyFilters = checkHasAnyFilters(state.filters);

@@ -4,6 +4,7 @@ import App, { AppProps } from "next/app";
 import Head from "next/head";
 import { useEffect, useState } from "react";
 
+import { ShadowSearchInbox } from "@/components/_experiment/typeahead/ShadowSearchInbox";
 import ErrorBoundary from "@/components/error/ErrorBoundary";
 import { Overlays } from "@/components/organisms/overlays/Overlays";
 import { COOKIE_TUTORIALS_NAME } from "@/constants/cookies";
@@ -107,6 +108,7 @@ function MyApp({ Component, pageProps, theme, adobeApiKey }: IProps) {
                   <div id={theme} className="root">
                     <Component {...pageProps} />
                   </div>
+                  <ShadowSearchInbox />
                   <Overlays onConsentChange={onConsentChange} />
                 </ErrorBoundary>
               </EnvConfigContext.Provider>

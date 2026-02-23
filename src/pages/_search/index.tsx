@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 
 import { GetServerSideProps, InferGetServerSidePropsType } from "next";
-import { useMemo } from "react";
+import { useEffect, useMemo } from "react";
 
 import { ApiClient } from "@/api/http-common";
 import { IntelliSearch } from "@/components/_experiment/intellisearch";
@@ -14,6 +14,8 @@ import useConfig from "@/hooks/useConfig";
 import useShadowSearch from "@/hooks/useShadowSearch";
 import { TTopic, TTopics } from "@/types";
 import { buildFilterFieldOptions } from "@/utils/_experiment/buildFilterFieldOptions";
+import { addChangedDocument } from "@/utils/_experiment/changedDocumentsCookie";
+import { addContentUpdatedDocument, getContentUpdatedIds, SHADOW_SEARCH_RETURNED_SLUG_KEY } from "@/utils/_experiment/contentUpdatedCookie";
 import { FamilyConcept, mapFamilyConceptsToConcepts } from "@/utils/familyConcepts";
 import { getFeatureFlags } from "@/utils/featureFlags";
 import { getFeatures } from "@/utils/features";
@@ -26,6 +28,24 @@ const ShadowSearch = ({ theme, themeConfig, features, topicsData, familyConcepts
   const configQuery = useConfig();
   const { data: configData } = configQuery;
   const { regions = [], countries = [], corpus_types = {} } = configData ?? {};
+
+  useEffect(() => {
+    try {
+      const returnedSlug = window.sessionStorage.getItem(SHADOW_SEARCH_RETURNED_SLUG_KEY);
+      if (returnedSlug && returnedSlug.trim()) {
+        const slug = returnedSlug.trim();
+        const alreadyUpdated = getContentUpdatedIds().includes(slug);
+        // Only raise a notification the first time content actually changes.
+        if (!alreadyUpdated) {
+          addChangedDocument(slug);
+          addContentUpdatedDocument(slug);
+        }
+        window.sessionStorage.removeItem(SHADOW_SEARCH_RETURNED_SLUG_KEY);
+      }
+    } catch {
+      // Ignore.
+    }
+  }, []);
 
   const filterOptions = useMemo(
     () =>

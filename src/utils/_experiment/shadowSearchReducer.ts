@@ -49,7 +49,9 @@ export type ShadowSearchAction =
   // Drop all filters but leave search terms untouched.
   | { type: "CLEAR_FILTERS" }
   // Restore a previous search (term, raw term, filters, mode) from history.
-  | { type: "APPLY_HISTORY_ITEM"; payload: SearchHistoryItem };
+  | { type: "APPLY_HISTORY_ITEM"; payload: SearchHistoryItem }
+  // Restore full state from sessionStorage (client-only, after mount).
+  | { type: "RESTORE"; payload: ShadowSearchState };
 
 export function shadowSearchReducer(state: ShadowSearchState, action: ShadowSearchAction): ShadowSearchState {
   switch (action.type) {
@@ -144,6 +146,9 @@ export function shadowSearchReducer(state: ShadowSearchState, action: ShadowSear
         wasStringOnlySearch: historyItem.wasStringOnly ?? false,
       };
     }
+
+    case "RESTORE":
+      return { ...action.payload };
 
     default:
       return state;
