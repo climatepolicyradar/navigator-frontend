@@ -4,7 +4,7 @@ import { Legislation, WithContext } from "schema-dts";
 import { getCountryName, getCountrySlug } from "@/helpers/getCountryFields";
 import { TFamilyPublic, TGeography, TGeographySubdivision } from "@/types";
 
-import { getHostnameForJSONLD } from "./helpers";
+import { getAppUrlForJSONLD } from "./helpers";
 
 /**
  * Generates JSON-LD structured data for a litigation case.
@@ -22,14 +22,14 @@ import { getHostnameForJSONLD } from "./helpers";
  */
 
 export const getLitigationCaseJSONLD = (familyCase: TFamilyPublic, countries: TGeography[], subdivisions: TGeographySubdivision[]) => {
-  const hostname = getHostnameForJSONLD();
+  const appUrl = getAppUrlForJSONLD();
 
   // Default JSON-LD legislation structure
   const jsonLd: WithContext<Legislation> = {
     "@context": "https://schema.org",
     "@type": "Legislation",
-    "@id": `${hostname}/document/${familyCase.slug}`,
-    url: `${hostname}/document/${familyCase.slug}`,
+    "@id": `${appUrl}/document/${familyCase.slug}`,
+    url: `${appUrl}/document/${familyCase.slug}`,
     isAccessibleForFree: true,
     name: `${familyCase.title}`,
     description: `${familyCase.summary}`,
@@ -61,7 +61,7 @@ export const getLitigationCaseJSONLD = (familyCase: TFamilyPublic, countries: TG
         spatialCoverage.push({
           "@type": "Place",
           name: countryName,
-          url: `${hostname}/geographies/${getCountrySlug(geo, countries)}`,
+          url: `${appUrl}/geographies/${getCountrySlug(geo, countries)}`,
         });
       } else {
         const subdivision = subdivisions.find((sub) => sub.code === geo);
@@ -69,7 +69,7 @@ export const getLitigationCaseJSONLD = (familyCase: TFamilyPublic, countries: TG
           spatialCoverage.push({
             "@type": "Place",
             name: subdivision.name,
-            url: `${hostname}/geographies/${subdivision.code}`,
+            url: `${appUrl}/geographies/${subdivision.code}`,
           });
         }
       }
@@ -108,8 +108,8 @@ export const getLitigationCaseJSONLD = (familyCase: TFamilyPublic, countries: TG
   if (familyCase.documents && familyCase.documents.length > 0) {
     jsonLd.workExample = familyCase.documents.map((doc) => ({
       "@type": "Legislation",
-      "@id": `${hostname}/documents/${doc.slug}`,
-      url: `${hostname}/documents/${doc.slug}`,
+      "@id": `${appUrl}/documents/${doc.slug}`,
+      url: `${appUrl}/documents/${doc.slug}`,
       isAccessibleForFree: true,
       name: doc.title,
       description: doc.events[0]?.metadata?.description || "",
