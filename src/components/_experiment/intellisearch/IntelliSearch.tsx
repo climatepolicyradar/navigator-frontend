@@ -198,8 +198,8 @@ export function IntelliSearch({
             setActiveSuggestionIndex(-1);
           } else if (searchTerm.trim()) {
             setQuery?.(searchTerm.trim());
+            inputRef.current?.blur();
           }
-          inputRef.current?.blur();
           break;
 
         case "Escape":
