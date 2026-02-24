@@ -1,4 +1,4 @@
-import { Suspense, use, useState } from "react";
+import { Suspense, use, useMemo } from "react";
 
 interface DocumentLabel {
   id: string;
@@ -136,44 +136,20 @@ export function SearchResults({ promise }: { promise: Promise<SearchDocumentsRes
   );
 }
 
-export function SearchContainer({ selectedLabels }: { selectedLabels?: string[] }) {
-  // Store a promise that `use` will unwrap inside a Suspense boundary
-  const [searchPromise, setSearchPromise] = useState<Promise<SearchDocumentsResponse> | null>(null);
+export function SearchContainer({ selectedLabels, query }: { selectedLabels?: string[]; query?: string }) {
+  const searchPromise = useMemo(() => {
+    if (!query && (!selectedLabels || selectedLabels.length === 0)) return null;
 
-  const handleSearch = (query: string) => {
-    setSearchPromise(
-      fetchSearchDocuments({
-        query,
-        limit: 10,
-        offset: 0,
-        filters: selectedLabels ? generateSearchFilters(selectedLabels) : undefined,
-      })
-    );
-  };
+    return fetchSearchDocuments({
+      query,
+      limit: 10,
+      offset: 0,
+      filters: selectedLabels?.length ? generateSearchFilters(selectedLabels) : undefined,
+    });
+  }, [query, selectedLabels]);
 
   return (
     <>
-      <div className="mx-40 mt-8">
-        <div className="flex gap-2 mb-6">
-          <input
-            type="text"
-            placeholder="Search documents..."
-            className="border border-gray-300 rounded-md px-3 py-2 flex-1"
-            onKeyDown={(e) => {
-              if (e.key === "Enter") handleSearch(e.currentTarget.value);
-            }}
-          />
-          <button
-            className="bg-blue-600 text-white px-4 py-2 rounded-md hover:bg-blue-700"
-            onClick={(e) => {
-              const input = e.currentTarget.previousElementSibling as HTMLInputElement;
-              handleSearch(input.value);
-            }}
-          >
-            Search
-          </button>
-        </div>
-      </div>
       {searchPromise && (
         <div className="w-3/4 m-auto">
           <Suspense fallback={<p className="text-sm text-text-secondary">Loading results…</p>}>

@@ -36,6 +36,7 @@ export function IntelliSearch({
   topics,
   selectedLabels = [],
   onSelectConcept,
+  setQuery,
 }: IntelliSearchProps) {
   // State management
   const [searchTerm, setSearchTerm] = useState("");
@@ -165,12 +166,12 @@ export function IntelliSearch({
   /**
    * Handle keyboard navigation
    * Arrow Up/Down: Navigate through suggestions
-   * Enter: No action (read-only component)
+   * Enter: Select active suggestion or trigger search with query
    * Escape: Clear input and blur
    */
-  const handleKeyDown = useCallback(
+  const handleKeyDownInput = useCallback(
     (e: React.KeyboardEvent<HTMLInputElement>) => {
-      if (!shouldShowSuggestions) return;
+      // if (!shouldShowSuggestions) return;
 
       switch (e.key) {
         case "ArrowDown":
@@ -185,12 +186,19 @@ export function IntelliSearch({
 
         case "Enter":
           e.preventDefault();
-          onSelectConcept?.(
-            suggestions[activeSuggestionIndex]?.type === "concept"
-              ? suggestions[activeSuggestionIndex].data.preferred_label
-              : suggestions[activeSuggestionIndex]?.data.id
-          );
-          // Read-only component - no action on Enter
+          // If a suggestion is active, trigger selection callback, otherwise search for string
+          if (activeSuggestionIndex >= 0) {
+            onSelectConcept?.(
+              suggestions[activeSuggestionIndex]?.type === "concept"
+                ? suggestions[activeSuggestionIndex].data.preferred_label
+                : suggestions[activeSuggestionIndex]?.data.id
+            );
+            setSearchTerm("");
+            setQuery?.("");
+            setActiveSuggestionIndex(-1);
+          } else if (searchTerm.trim()) {
+            setQuery?.(searchTerm.trim());
+          }
           break;
 
         case "Escape":
@@ -201,7 +209,7 @@ export function IntelliSearch({
           break;
       }
     },
-    [shouldShowSuggestions, activeSuggestionIndex, onSelectConcept, suggestions]
+    [activeSuggestionIndex, onSelectConcept, suggestions, setQuery, searchTerm]
   );
 
   /**
@@ -239,7 +247,7 @@ export function IntelliSearch({
           onChange={handleInputChange}
           onFocus={() => setIsInputFocused(true)}
           onBlur={() => setIsInputFocused(false)}
-          onKeyDown={handleKeyDown}
+          onKeyDown={handleKeyDownInput}
           placeholder={placeholder}
           aria-label="Intelligent search input"
           aria-autocomplete="list"

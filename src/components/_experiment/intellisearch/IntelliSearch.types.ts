@@ -61,6 +61,8 @@ export interface IntelliSearchProps {
   selectedLabels?: string[];
   /** Called when the user selects a concept suggestion (adds to Active filters) */
   onSelectConcept?: (concept: string) => void;
+  /** Optional callback to set the search query */
+  setQuery?: (query: string) => void;
 }
 
 /**

@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 
 import { GetServerSideProps, InferGetServerSidePropsType } from "next";
-import { Suspense, use, useMemo, useState } from "react";
+import { Suspense, use, useMemo, useState, useEffect } from "react";
 
 import { ApiClient } from "@/api/http-common";
 import { IntelliSearch } from "@/components/_experiment/intellisearch";
@@ -29,20 +29,21 @@ const ShadowSearch = ({ theme, themeConfig, features, topicsData, familyConcepts
   const { regions = [], countries = [], corpus_types = {} } = configData ?? {};
 
   const [selectedLabels, setSelectedLabels] = useState<string[]>([]);
+  const [query, setQuery] = useState("");
 
-  const filterOptions = useMemo(
-    () =>
-      buildFilterFieldOptions({
-        topics: topicsData?.topics,
-        regions,
-        countries,
-        corpusTypes: corpus_types,
-      }),
-    [topicsData?.topics, regions, countries, corpus_types]
-  );
+  // const filterOptions = useMemo(
+  //   () =>
+  //     buildFilterFieldOptions({
+  //       topics: topicsData?.topics,
+  //       regions,
+  //       countries,
+  //       corpusTypes: corpus_types,
+  //     }),
+  //   [topicsData?.topics, regions, countries, corpus_types]
+  // );
 
-  const shadowSearch = useShadowSearch({ filterOptions });
-  const addFilter = shadowSearch.actions.add;
+  // const shadowSearch = useShadowSearch({ filterOptions });
+  // const addFilter = shadowSearch.actions.add;
 
   return (
     <FeaturesContext.Provider value={features}>
@@ -57,6 +58,7 @@ const ShadowSearch = ({ theme, themeConfig, features, topicsData, familyConcepts
                   setSelectedLabels((prev) => [...prev, concept]);
                 }
               }}
+              setQuery={setQuery}
             />
           </div>
           <div className="w-3/4 m-auto mt-4 mb-8">
@@ -78,8 +80,8 @@ const ShadowSearch = ({ theme, themeConfig, features, topicsData, familyConcepts
               </div>
             )}
           </div>
-          <Typeahead shadowSearch={shadowSearch} filterOptions={filterOptions} />
-          <SearchContainer selectedLabels={selectedLabels} />
+          {/* <Typeahead shadowSearch={shadowSearch} filterOptions={filterOptions} /> */}
+          <SearchContainer selectedLabels={selectedLabels} query={query} />
         </WikiBaseConceptsContext.Provider>
       </TopicsContext.Provider>
     </FeaturesContext.Provider>
