@@ -1,10 +1,11 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 
 import { GetServerSideProps, InferGetServerSidePropsType } from "next";
-import { useMemo } from "react";
+import { Suspense, use, useMemo, useState } from "react";
 
 import { ApiClient } from "@/api/http-common";
 import { IntelliSearch } from "@/components/_experiment/intellisearch";
+import { fetchSearchDocuments, SearchContainer, SearchDocumentsResponse, SearchResults } from "@/components/_experiment/searchResults/SearchResults";
 import { Typeahead } from "@/components/_experiment/typeahead/Typeahead";
 import { withEnvConfig } from "@/context/EnvConfig";
 import { FeaturesContext } from "@/context/FeaturesContext";
@@ -27,6 +28,8 @@ const ShadowSearch = ({ theme, themeConfig, features, topicsData, familyConcepts
   const { data: configData } = configQuery;
   const { regions = [], countries = [], corpus_types = {} } = configData ?? {};
 
+  const [selectedLabels, setSelectedLabels] = useState<string[]>([]);
+
   const filterOptions = useMemo(
     () =>
       buildFilterFieldOptions({
@@ -45,18 +48,38 @@ const ShadowSearch = ({ theme, themeConfig, features, topicsData, familyConcepts
     <FeaturesContext.Provider value={features}>
       <TopicsContext.Provider value={topicsData}>
         <WikiBaseConceptsContext.Provider value={familyConceptsData || []}>
-          <div className="ml-40 mt-40">
+          <div className="w-3/4 m-auto mt-8">
             <IntelliSearch
               topics={topicsData.topics}
-              selectedTopics={shadowSearch.filters.value.topics}
+              selectedLabels={selectedLabels}
               onSelectConcept={(concept) => {
-                if (concept?.preferred_label) {
-                  addFilter("topics", concept.preferred_label);
+                if (concept) {
+                  setSelectedLabels((prev) => [...prev, concept]);
                 }
               }}
             />
           </div>
+          <div className="w-3/4 m-auto mt-4 mb-8">
+            {selectedLabels.length > 0 && (
+              <div className="flex flex-wrap gap-1">
+                {selectedLabels.map((label, i) => (
+                  <button
+                    key={i}
+                    className="text-xs bg-gray-100 rounded p-2 flex items-center gap-1 hover:bg-gray-200"
+                    onClick={() => setSelectedLabels((prev) => prev.filter((l) => l !== label))}
+                  >
+                    <span key={i} className="">
+                      {selectedLabels.length > 1 ? `or: ` : ""}
+                      {label}
+                    </span>
+                    <span>&times;</span>
+                  </button>
+                ))}
+              </div>
+            )}
+          </div>
           <Typeahead shadowSearch={shadowSearch} filterOptions={filterOptions} />
+          <SearchContainer selectedLabels={selectedLabels} />
         </WikiBaseConceptsContext.Provider>
       </TopicsContext.Provider>
     </FeaturesContext.Provider>

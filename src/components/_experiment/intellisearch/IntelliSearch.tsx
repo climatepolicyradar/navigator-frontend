@@ -1,7 +1,6 @@
 "use client";
 
 import { Input } from "@base-ui/react/input";
-// import { useQuery } from "@tanstack/react-query";
 import debounce from "lodash/debounce";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 
@@ -35,7 +34,7 @@ export function IntelliSearch({
   debounceDelay = 300,
   maxSuggestions,
   topics,
-  selectedTopics = [],
+  selectedLabels = [],
   onSelectConcept,
 }: IntelliSearchProps) {
   // State management
@@ -50,28 +49,6 @@ export function IntelliSearch({
   // Refs
   const inputRef = useRef<HTMLInputElement>(null);
   const containerRef = useRef<HTMLDivElement>(null);
-
-  /**
-   * Fetch concepts data on mount using React Query
-   * This data is memoized and persisted across re-renders
-   */
-  // const { data: conceptsData = [], isLoading: isLoadingConcepts } = useQuery({
-  //   queryKey: ["concepts-intellisearch"],
-  //   queryFn: async () => {
-  //     const conceptsApiUrl =
-  //       process.env.CONCEPTS_API_URL ||
-  //       "https://api.climatepolicyradar.org";
-  //     const client = new ApiClient(conceptsApiUrl);
-  //     const response = await client.get<{ concepts: TConcept[] }>(
-  //       "/concepts/search?limit=10000&has_classifier=true",
-  //       null
-  //     );
-  //     return response.data.concepts || [];
-  //   },
-  //   refetchOnWindowFocus: false,
-  //   refetchOnMount: false,
-  //   gcTime: 1000 * 60 * 60 * 24, // Cache for 24 hours
-  // });
 
   /**
    * Debounced function to search labels API
@@ -145,18 +122,19 @@ export function IntelliSearch({
 
   /**
    * Unified suggestions list - labels first, then concepts.
-   * Excludes concepts already in selectedTopics (Active filters).
+   * Excludes concepts already in selectedLabels (Active filters).
    */
   const suggestions = useMemo(() => {
+    const selectedSet = new Set(selectedLabels.map((s) => s.toLowerCase()));
     const unified: TSuggestion[] = [];
 
     // Add label suggestions first
     labelsResults.forEach((label) => {
+      if (selectedSet.has(label.id.toLowerCase())) return; // Exclude if already selected as filter
       unified.push({ type: "label", data: label });
     });
 
     // Add concept suggestions, excluding already-selected topics
-    const selectedSet = new Set(selectedTopics.map((s) => s.toLowerCase()));
     matchedConcepts.forEach(({ concept, matchedLabel }) => {
       if (concept?.preferred_label && selectedSet.has(concept.preferred_label.toLowerCase())) return;
       unified.push({
@@ -168,7 +146,7 @@ export function IntelliSearch({
 
     // Apply max suggestions limit if specified
     return maxSuggestions ? unified.slice(0, maxSuggestions) : unified;
-  }, [labelsResults, matchedConcepts, maxSuggestions, selectedTopics]);
+  }, [labelsResults, matchedConcepts, maxSuggestions, selectedLabels]);
 
   /**
    * Determine if suggestions should be visible
@@ -207,6 +185,11 @@ export function IntelliSearch({
 
         case "Enter":
           e.preventDefault();
+          onSelectConcept?.(
+            suggestions[activeSuggestionIndex]?.type === "concept"
+              ? suggestions[activeSuggestionIndex].data.preferred_label
+              : suggestions[activeSuggestionIndex]?.data.id
+          );
           // Read-only component - no action on Enter
           break;
 
@@ -218,7 +201,7 @@ export function IntelliSearch({
           break;
       }
     },
-    [shouldShowSuggestions, suggestions.length]
+    [shouldShowSuggestions, activeSuggestionIndex, onSelectConcept, suggestions]
   );
 
   /**
@@ -312,7 +295,9 @@ export function IntelliSearch({
                   }}
                   onClick={() => {
                     if (suggestion.type === "concept") {
-                      onSelectConcept?.(suggestion.data);
+                      onSelectConcept?.(suggestion.data.preferred_label);
+                    } else {
+                      onSelectConcept?.(suggestion.data.id);
                     }
                   }}
                 >
