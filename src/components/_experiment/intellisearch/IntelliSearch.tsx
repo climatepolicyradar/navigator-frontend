@@ -199,6 +199,7 @@ export function IntelliSearch({
           } else if (searchTerm.trim()) {
             setQuery?.(searchTerm.trim());
           }
+          inputRef.current?.blur();
           break;
 
         case "Escape":
