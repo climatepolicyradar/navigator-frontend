@@ -700,7 +700,7 @@ const Search = ({ familyConceptsData, features, theme, themeConfig, topicsData }
                                 </div>
                               </div>
                             </div>
-                            <section data-cy="search-results">
+                            <section role="region">
                               <h2 className="sr-only">Search results</h2>
                               {showLitigationInformation(router.query) && (
                                 <Warning variant="info">

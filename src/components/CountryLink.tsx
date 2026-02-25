@@ -29,7 +29,7 @@ export const CountryLink: FC<TCountryLink> = ({ countryCode, className = "", emp
       href={`/geographies/${slug}`}
       className={`flex items-center gap-1 hover:underline hover:text-blue-800 ${className}`}
       passHref
-      cypress="country-link"
+      aria-label="Country link"
     >
       {showFlag && <span className={`rounded-xs border border-black flag-icon-background flag-icon-${countryCode.toLowerCase()}`} />}
       {children}

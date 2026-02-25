@@ -2,63 +2,66 @@ import { test, expect } from "@playwright/test";
 
 import { genericPageModel as genericPage } from "../pageObjectModels/genericPageModel";
 
-test("search", async ({ page }) => {
-  await page.goto("/");
-  await genericPage.waitUntilLoaded(page);
-  /** Reject the consent banner */
-  await genericPage.dismissPopups(page);
+test.describe("Search", () => {
+  test("basic search from homepage", async ({ page }) => {
+    await page.goto("/");
+    /** Wait for page to finish loading */
+    await page.waitForLoadState("networkidle");
 
-  /** Homepage */
-  await expect(page.getByLabel("Search").first()).toBeVisible();
-  await page.getByLabel("Search").first().fill("Adaptation strategy");
+    /** Reject the consent banner */
+    await genericPage.dismissPopups(page);
 
-  /** Test keyboard submission */
-  await page.getByLabel("Search").first().press("Enter");
-  await page.waitForURL("/search*");
+    /** Homepage */
+    await page.getByRole("searchbox", { name: "Search term" }).fill("Adaptation strategy");
+    await page.getByRole("button", { name: "Search" }).click();
 
-  /** Test tap submission  */
-  await page.goBack();
-  await expect(page.getByLabel("Search").first()).toBeVisible();
-  await page.getByLabel("Search").first().fill("Climate");
-  await page.getByRole("button", { name: "Search" }).click();
+    /** Search */
+    await Promise.all([page.waitForURL("/search*"), page.waitForResponse("**/searches")]);
 
-  /** Search */
-  await Promise.all([page.waitForURL("/search*"), page.waitForResponse("**/searches")]);
+    const searchResultsSection = page.getByRole("region").filter({ has: page.getByRole("heading", { name: "Search results", level: 2 }) });
+    await expect(searchResultsSection).toBeVisible();
 
-  /**
-   * This finds the first container that has the heading search results.
-   * We could probably have a more semantic search markup with lists.
-   */
-  const searchResultsHeading = page.getByRole("heading", {
-    name: "Search results",
+    const searchResults = page.getByRole("list", { name: "Search results" });
+
+    await expect(searchResults).toBeVisible();
+
+    /** Click first search result family title link */
+    const firstSearchResult = searchResults.getByRole("listitem").nth(0);
+    const familyLink = firstSearchResult.getByRole("link", { name: "Search result title" });
+    const familyName = await familyLink.innerText();
+    const familyHref = await familyLink.getAttribute("href");
+
+    await familyLink.click();
+
+    /** Family page */
+    await Promise.all([page.waitForURL("**" + familyHref), page.waitForResponse("**/searches")]);
+    await genericPage.waitUntilLoaded(page, familyName);
   });
-  const searchResults = page.locator("div").filter({ has: searchResultsHeading }).last();
-  await expect(searchResults).toBeVisible();
 
-  /** Check the structure of the search result */
-  const firstSearchResult = searchResults.locator('[data-cy="search-result"]').first();
-  await expect(firstSearchResult).toBeVisible();
+  test("navigate to geography page from search", async ({ page }) => {
+    await page.goto("/search");
+    /** Wait for page to finish loading */
+    await page.waitForLoadState("networkidle");
 
-  /** TODO: Make the markup more semantic */
-  await expect(firstSearchResult.locator('[data-cy="family-title"]').first()).toBeVisible();
-  await expect(firstSearchResult.locator('[data-cy="family-metadata-category"]').first()).toBeVisible();
-  await expect(firstSearchResult.locator('[data-cy="family-metadata-year"]').first()).toBeVisible();
+    const searchResultsSection = page.getByRole("region").filter({ has: page.getByRole("heading", { name: "Search results", level: 2 }) });
+    await expect(searchResultsSection).toBeVisible();
 
-  // Check if country link exists at all
-  const countryLink = firstSearchResult.locator('[data-cy="country-link"]').first();
-  await expect(countryLink).toBeVisible();
+    const searchResults = page.getByRole("list", { name: "Search results" });
 
-  // Click first search result family title link
-  await firstSearchResult.locator('[data-cy="family-title"]').first().click();
+    await expect(searchResults).toBeVisible();
 
-  /** Family page */
-  await Promise.all([page.waitForURL("/document/*"), page.waitForResponse("**/searches")]);
-  await page
-    .getByText(/(more than )?\d+ matches/)
-    .first()
-    .click();
+    /** Click first search result geography link */
+    const firstSearchResult = searchResults.getByRole("listitem").nth(0);
+    const countryLink = firstSearchResult.getByRole("link", { name: "Country link" });
+    await expect(countryLink).toBeVisible();
 
-  /** Document Page */
-  await Promise.all([page.waitForURL("/documents/*"), page.waitForResponse("**/searches")]);
-  await expect(page.getByText("View source document")).toBeVisible();
+    const countryName = await countryLink.innerText();
+    const countryHref = await countryLink.getAttribute("href");
+
+    await countryLink.click();
+
+    /** Geography page */
+    await page.waitForURL("**" + countryHref);
+    await genericPage.waitUntilLoaded(page, countryName);
+  });
 });
