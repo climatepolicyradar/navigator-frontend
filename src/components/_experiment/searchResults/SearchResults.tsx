@@ -150,13 +150,14 @@ export function SearchContainer({ selectedLabels, query }: { selectedLabels?: st
 
   return (
     <>
-      {searchPromise && (
-        <div className="w-3/4 m-auto">
+      <div className="w-3/4 m-auto">
+        {!query && (!selectedLabels || selectedLabels.length === 0) && <p className="text-sm text-text-secondary">Enter a search to see results.</p>}
+        {searchPromise && (
           <Suspense fallback={<p className="text-sm text-text-secondary">Loading results…</p>}>
             <SearchResults promise={searchPromise} />
           </Suspense>
-        </div>
-      )}
+        )}
+      </div>
     </>
   );
 }

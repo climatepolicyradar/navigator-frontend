@@ -9,6 +9,11 @@ import { joinTailwindClasses } from "@/utils/tailwind";
 
 import { IntelliSearchProps, TLabelsResponse, TConcept, TSuggestion } from "./IntelliSearch.types";
 
+const UnderlineFirstInstanceOfQuery = (text: string, query: string) => {
+  const regex = new RegExp(`(${query})`, "i");
+  return text.replace(regex, "<u>$1</u>");
+};
+
 /**
  * IntelliSearch Component
  *
@@ -313,7 +318,10 @@ export function IntelliSearch({
                   {suggestion.type === "label" ? (
                     // Label format: "{id} — {title}"
                     <div className="text-sm">
-                      <span className="font-medium text-gray-900">{suggestion.data.id}</span>
+                      <span
+                        className="font-medium text-gray-900"
+                        dangerouslySetInnerHTML={{ __html: UnderlineFirstInstanceOfQuery(suggestion.data.id, searchTerm) }}
+                      />
                       <span className="text-gray-500"> — </span>
                       <span className="text-gray-600 font-medium">Label: {suggestion.data.title}</span>
                     </div>

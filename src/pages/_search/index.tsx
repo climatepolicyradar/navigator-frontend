@@ -51,7 +51,8 @@ const ShadowSearch = ({ theme, themeConfig, features, topicsData, familyConcepts
         <WikiBaseConceptsContext.Provider value={familyConceptsData || []}>
           <div className="w-3/4 m-auto mt-8">
             <IntelliSearch
-              topics={topicsData.topics}
+              // topics={topicsData.topics}
+              topics={[]}
               selectedLabels={selectedLabels}
               onSelectConcept={(concept) => {
                 if (concept) {
