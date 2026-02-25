@@ -107,7 +107,7 @@ export function fetchSearchDocuments(params: SearchDocumentsParams = {}): Promis
   });
 }
 
-export function SearchResults({ promise }: { promise: Promise<SearchDocumentsResponse> }) {
+export function SearchResults({ promise, onSelectLabel }: { promise: Promise<SearchDocumentsResponse>; onSelectLabel?: (label: string) => void }) {
   const data = use(promise);
 
   return (
@@ -123,7 +123,11 @@ export function SearchResults({ promise }: { promise: Promise<SearchDocumentsRes
             {doc.labels.length > 0 && (
               <div className="flex flex-wrap gap-1 mt-2">
                 {doc.labels.map((rel, i) => (
-                  <span key={i} className="text-xs bg-gray-100 rounded px-2 py-0.5">
+                  <span
+                    key={i}
+                    className="text-xs bg-gray-100 rounded px-2 py-0.5 cursor-pointer hover:bg-gray-200"
+                    onClick={() => onSelectLabel?.(rel.label.title)}
+                  >
                     {rel.label.title}
                   </span>
                 ))}
@@ -136,7 +140,15 @@ export function SearchResults({ promise }: { promise: Promise<SearchDocumentsRes
   );
 }
 
-export function SearchContainer({ selectedLabels, query }: { selectedLabels?: string[]; query?: string }) {
+export function SearchContainer({
+  selectedLabels,
+  query,
+  onSelectLabel,
+}: {
+  selectedLabels?: string[];
+  query?: string;
+  onSelectLabel?: (label: string) => void;
+}) {
   const searchPromise = useMemo(() => {
     if (!query && (!selectedLabels || selectedLabels.length === 0)) return null;
 
@@ -154,7 +166,7 @@ export function SearchContainer({ selectedLabels, query }: { selectedLabels?: st
         {!query && (!selectedLabels || selectedLabels.length === 0) && <p className="text-sm text-text-secondary">Enter a search to see results.</p>}
         {searchPromise && (
           <Suspense fallback={<p className="text-sm text-text-secondary">Loading results…</p>}>
-            <SearchResults promise={searchPromise} />
+            <SearchResults promise={searchPromise} onSelectLabel={onSelectLabel} />
           </Suspense>
         )}
       </div>

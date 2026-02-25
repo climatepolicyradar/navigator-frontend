@@ -70,7 +70,7 @@ const displaySuggestion = (suggestion: TSuggestion, searchTerm: string) => {
  */
 export function IntelliSearch({
   className,
-  placeholder = "Search...",
+  placeholder = "Search for anything",
   debounceDelay = 300,
   maxSuggestions,
   topics,
@@ -308,6 +308,7 @@ export function IntelliSearch({
           aria-controls="suggestions-list"
           aria-expanded={shouldShowSuggestions}
           className="w-full bg-transparent text-base text-gray-900 placeholder-gray-400 outline-none"
+          autoComplete="off"
         />
       </div>
 
