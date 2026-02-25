@@ -63,23 +63,27 @@ const ShadowSearch = ({ theme, themeConfig, features, topicsData, familyConcepts
             />
           </div>
           <div className="w-3/4 m-auto mt-4 mb-8">
-            {selectedLabels.length > 0 && (
-              <div className="flex flex-wrap gap-1">
-                {selectedLabels.map((label, i) => (
-                  <button
-                    key={i}
-                    className="text-xs bg-gray-100 rounded p-2 flex items-center gap-1 hover:bg-gray-200"
-                    onClick={() => setSelectedLabels((prev) => prev.filter((l) => l !== label))}
-                  >
-                    <span key={i} className="">
-                      {selectedLabels.length > 1 ? `or: ` : ""}
-                      {label}
-                    </span>
-                    <span>&times;</span>
-                  </button>
-                ))}
-              </div>
-            )}
+            <div className="flex flex-wrap gap-1">
+              {query && (
+                <button className="text-xs bg-gray-100 rounded p-2 flex items-center gap-1 hover:bg-gray-200" onClick={() => setQuery("")}>
+                  <span>Anything matching "{query}"</span>
+                  <span>&times;</span>
+                </button>
+              )}
+              {selectedLabels.map((label, i) => (
+                <button
+                  key={i}
+                  className="text-xs bg-gray-100 rounded p-2 flex items-center gap-1 hover:bg-gray-200"
+                  onClick={() => setSelectedLabels((prev) => prev.filter((l) => l !== label))}
+                >
+                  <span key={i} className="">
+                    {selectedLabels.length > 1 ? `or: ` : ""}
+                    {label}
+                  </span>
+                  <span>&times;</span>
+                </button>
+              ))}
+            </div>
           </div>
           {/* <Typeahead shadowSearch={shadowSearch} filterOptions={filterOptions} /> */}
           <SearchContainer selectedLabels={selectedLabels} query={query} />

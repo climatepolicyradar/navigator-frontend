@@ -41,6 +41,10 @@ export type TSuggestion =
       type: "concept";
       data: TTopic;
       matchedLabel?: string; // If matched on alternative label, store it here
+    }
+  | {
+      type: "search";
+      data: string;
     };
 
 /**
