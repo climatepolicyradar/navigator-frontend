@@ -56,6 +56,12 @@ export function IntelliSearch({
   const inputRef = useRef<HTMLInputElement>(null);
   const containerRef = useRef<HTMLDivElement>(null);
 
+  const resetSearchState = () => {
+    setSearchTerm("");
+    setActiveSuggestionIndex(-1);
+    setHoveredConceptIndex(null);
+  };
+
   /**
    * Debounced function to search labels API
    * Uses lodash debounce to wait for user to stop typing
@@ -198,9 +204,7 @@ export function IntelliSearch({
                 ? suggestions[activeSuggestionIndex].data.preferred_label
                 : suggestions[activeSuggestionIndex]?.data.id
             );
-            setSearchTerm("");
-            setQuery?.("");
-            setActiveSuggestionIndex(-1);
+            resetSearchState();
           } else if (searchTerm.trim()) {
             setQuery?.(searchTerm.trim());
             inputRef.current?.blur();
@@ -313,6 +317,7 @@ export function IntelliSearch({
                     } else {
                       onSelectConcept?.(suggestion.data.id);
                     }
+                    resetSearchState();
                   }}
                 >
                   {suggestion.type === "label" ? (
