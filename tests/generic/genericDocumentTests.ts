@@ -15,14 +15,14 @@ export const runGenericDocumentTests = (theme: TTheme): void => {
 
       await documentPage.goToDocument(page, `${slug}?q=${withSearch}&cfn=${withTopic}`);
       await genericPage.waitUntilLoaded(page);
-      await genericPage.dismissPopups(page);
 
       // Enter a different search query
 
-      await page.getByRole("textbox", { name: "Search" }).fill("emissions");
+      const searchInput = page.getByRole("textbox", { name: "Search" });
+      await searchInput.fill("benchmark");
+      await searchInput.press("Enter");
 
       // Check that Passage matches section is updated with the new search query
-
       await expect(page.getByRole("region", { name: "Passage matches" })).toHaveText(/matches for 'emissions'/);
     });
   });
