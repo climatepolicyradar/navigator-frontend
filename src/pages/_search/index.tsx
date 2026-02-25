@@ -6,6 +6,7 @@ import { Suspense, use, useMemo, useState, useEffect } from "react";
 import { ApiClient } from "@/api/http-common";
 import { AppliedLabels } from "@/components/_experiment/appliedLabels/AppliedLabels";
 import { IntelliSearch } from "@/components/_experiment/intellisearch";
+import { QueryBuilder } from "@/components/_experiment/queryBuilder/QueryBuilder";
 import { SearchContainer } from "@/components/_experiment/searchResults/SearchResults";
 import { Typeahead } from "@/components/_experiment/typeahead/Typeahead";
 import { withEnvConfig } from "@/context/EnvConfig";
@@ -64,12 +65,15 @@ const ShadowSearch = ({ theme, themeConfig, features, topicsData, familyConcepts
             />
           </div>
           <div className="w-3/4 m-auto mt-4 mb-8">
-            <AppliedLabels
-              query={query}
-              labels={selectedLabels}
-              onSelectLabel={(label) => setSelectedLabels((prev) => prev.filter((l) => l !== label))}
-              setQuery={setQuery}
-            />
+            <div className="mb-4">
+              <AppliedLabels
+                query={query}
+                labels={selectedLabels}
+                onSelectLabel={(label) => setSelectedLabels((prev) => prev.filter((l) => l !== label))}
+                setQuery={setQuery}
+              />
+            </div>
+            <QueryBuilder />
           </div>
           {/* <Typeahead shadowSearch={shadowSearch} filterOptions={filterOptions} /> */}
           <SearchContainer

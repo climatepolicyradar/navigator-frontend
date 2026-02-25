@@ -172,11 +172,11 @@ hr {
 select {
   appearance: none;
   position: relative;
-  background-image: url(/images/down-arrow.svg);
+  /* background-image: url(/images/down-arrow.svg);
   background-repeat: no-repeat;
   background-position-y: 16px;
   background-position-x: calc(100% - 12px);
-  background-size: 16px 16px;
+  background-size: 16px 16px; */
   @apply pr-6;
 }
 select.small {

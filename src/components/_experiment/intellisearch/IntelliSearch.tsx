@@ -1,13 +1,12 @@
 "use client";
 
 import { Input } from "@base-ui/react/input";
-import debounce from "lodash/debounce";
-import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import { useCallback, useMemo, useRef, useState } from "react";
 
-import { ApiClient } from "@/api/http-common";
+import { useLabelSearch } from "@/hooks/useLabelSearch";
 import { joinTailwindClasses } from "@/utils/tailwind";
 
-import { IntelliSearchProps, TLabelsResponse, TConcept, TSuggestion } from "./IntelliSearch.types";
+import { IntelliSearchProps, TConcept, TSuggestion } from "./IntelliSearch.types";
 
 const underlineFirstInstanceOfQuery = (text: string, query: string) => {
   const regex = new RegExp(`(${query})`, "i");
@@ -84,8 +83,7 @@ export function IntelliSearch({
   const [isMouseInComponent, setIsMouseInComponent] = useState(false);
   const [activeSuggestionIndex, setActiveSuggestionIndex] = useState(0);
   const [hoveredConceptIndex, setHoveredConceptIndex] = useState<number | null>(null);
-  const [labelsResults, setLabelsResults] = useState<TLabelsResponse["results"]>([]);
-  const [isLoadingLabels, setIsLoadingLabels] = useState(false);
+  const { results: labelsResults, isLoading: isLoadingLabels } = useLabelSearch(searchTerm, { debounceDelay });
 
   // Refs
   const inputRef = useRef<HTMLInputElement>(null);
@@ -96,45 +94,6 @@ export function IntelliSearch({
     setActiveSuggestionIndex(-1);
     setHoveredConceptIndex(null);
   };
-
-  /**
-   * Debounced function to search labels API
-   * Uses lodash debounce to wait for user to stop typing
-   */
-  const searchLabelsAPI = useMemo(
-    () =>
-      debounce(async (query: string) => {
-        if (!query.trim()) {
-          setLabelsResults([]);
-          return;
-        }
-
-        setIsLoadingLabels(true);
-        try {
-          const apiUrl = process.env.NEXT_PUBLIC_API_URL || "https://api.climatepolicyradar.org";
-          const client = new ApiClient(apiUrl);
-          const response = await client.get<TLabelsResponse>(`/search/labels?query=${encodeURIComponent(query)}`, null);
-          setLabelsResults(response.data.results || []);
-        } catch {
-          // Silently handle error and show empty results
-          setLabelsResults([]);
-        } finally {
-          setIsLoadingLabels(false);
-        }
-      }, debounceDelay),
-    [debounceDelay]
-  );
-
-  /**
-   * Effect to trigger debounced label search when searchTerm changes
-   */
-  useEffect(() => {
-    searchLabelsAPI(searchTerm);
-    // Cleanup function to cancel pending debounced calls
-    return () => {
-      searchLabelsAPI.cancel();
-    };
-  }, [searchTerm, searchLabelsAPI]);
 
   /**
    * Match concepts based on search term
