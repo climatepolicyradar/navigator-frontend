@@ -1,12 +1,12 @@
 import { test, expect } from "@playwright/test";
 
+import { genericPageModel as genericPage } from "../pageObjectModels/genericPageModel";
+
 test("search", async ({ page }) => {
   await page.goto("/");
-
+  await genericPage.waitUntilLoaded(page);
   /** Reject the consent banner */
-  const consentHeading = page.getByText("Cookies and your privacy");
-  const consentBanner = page.locator("div").filter({ has: consentHeading });
-  await consentBanner.getByRole("button", { name: "Reject" }).click();
+  await genericPage.dismissPopups(page);
 
   /** Homepage */
   await expect(page.getByLabel("Search").first()).toBeVisible();
