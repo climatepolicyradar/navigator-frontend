@@ -4,8 +4,9 @@ import { GetServerSideProps, InferGetServerSidePropsType } from "next";
 import { Suspense, use, useMemo, useState, useEffect } from "react";
 
 import { ApiClient } from "@/api/http-common";
+import { AppliedLabels } from "@/components/_experiment/appliedLabels/AppliedLabels";
 import { IntelliSearch } from "@/components/_experiment/intellisearch";
-import { fetchSearchDocuments, SearchContainer, SearchDocumentsResponse, SearchResults } from "@/components/_experiment/searchResults/SearchResults";
+import { SearchContainer } from "@/components/_experiment/searchResults/SearchResults";
 import { Typeahead } from "@/components/_experiment/typeahead/Typeahead";
 import { withEnvConfig } from "@/context/EnvConfig";
 import { FeaturesContext } from "@/context/FeaturesContext";
@@ -63,27 +64,12 @@ const ShadowSearch = ({ theme, themeConfig, features, topicsData, familyConcepts
             />
           </div>
           <div className="w-3/4 m-auto mt-4 mb-8">
-            <div className="flex flex-wrap gap-1">
-              {query && (
-                <button className="text-sm bg-gray-100 rounded p-2 flex items-center gap-1 hover:bg-gray-200" onClick={() => setQuery("")}>
-                  <span>Anything matching "{query}"</span>
-                  <span>&times;</span>
-                </button>
-              )}
-              {selectedLabels.map((label, i) => (
-                <button
-                  key={i}
-                  className="text-sm bg-gray-100 rounded p-2 flex items-center gap-1 hover:bg-gray-200"
-                  onClick={() => setSelectedLabels((prev) => prev.filter((l) => l !== label))}
-                >
-                  <span key={i} className="">
-                    {selectedLabels.length > 1 ? `or: ` : ""}
-                    {label}
-                  </span>
-                  <span>&times;</span>
-                </button>
-              ))}
-            </div>
+            <AppliedLabels
+              query={query}
+              labels={selectedLabels}
+              onSelectLabel={(label) => setSelectedLabels((prev) => prev.filter((l) => l !== label))}
+              setQuery={setQuery}
+            />
           </div>
           {/* <Typeahead shadowSearch={shadowSearch} filterOptions={filterOptions} /> */}
           <SearchContainer

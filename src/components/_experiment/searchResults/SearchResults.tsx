@@ -1,3 +1,4 @@
+import { LucideCog } from "lucide-react";
 import { Suspense, use, useMemo } from "react";
 
 interface DocumentLabel {
@@ -165,7 +166,13 @@ export function SearchContainer({
       <div className="w-3/4 m-auto">
         {!query && (!selectedLabels || selectedLabels.length === 0) && <p className="text-sm text-text-secondary">Enter a search to see results.</p>}
         {searchPromise && (
-          <Suspense fallback={<p className="text-sm text-text-secondary">Loading results…</p>}>
+          <Suspense
+            fallback={
+              <p className="text-sm text-text-secondary flex gap-2 items-center">
+                <LucideCog className="animate-spin" /> Loading results…
+              </p>
+            }
+          >
             <SearchResults promise={searchPromise} onSelectLabel={onSelectLabel} />
           </Suspense>
         )}
