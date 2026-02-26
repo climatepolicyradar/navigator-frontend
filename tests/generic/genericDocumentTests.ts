@@ -14,7 +14,7 @@ export const runGenericDocumentTests = (theme: TTheme): void => {
       // Load the document page
 
       await documentPage.goToDocument(page, slug);
-      await genericPage.waitUntilLoaded(page);
+      await documentPage.waitUntilLoaded(page);
       await genericPage.dismissPopups(page);
 
       // Ensure the passage matches list is empty to start

@@ -16,7 +16,7 @@ export const TEST_DOCUMENTS: TTestDocument[] = [
     withSearch: "biodiversity",
     withTopic: "Target",
     withParentTopic: "Target",
-    availableOn: ["cpr", "cclw"],
+    availableOn: ["cpr"],
   },
   {
     titleForTests: "Law",
