@@ -18,6 +18,7 @@ export const runGenericDocumentTests = (theme: TTheme): void => {
       await genericPage.dismissPopups(page);
 
       // Ensure the passage matches list is empty to start
+      await expect(page.getByRole("list", { name: "Passage matches" })).not.toBeVisible();
 
       // Enter a search query
 
@@ -26,6 +27,9 @@ export const runGenericDocumentTests = (theme: TTheme): void => {
       await searchInput.press("Enter");
 
       // Check that passage matches appear
+      const passageMatches = page.getByRole("list", { name: "Passage matches" });
+      await expect(passageMatches).toBeVisible();
+      expect((await passageMatches.all()).length).toBeGreaterThan(0);
     });
 
     test(`selecting a topic generates passage matches - ${titleForTests}`, async ({ page }) => {
