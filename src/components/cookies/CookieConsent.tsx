@@ -57,7 +57,7 @@ export const CookieConsent = ({ onConsentChange, themeConfig }: IProps) => {
 
   return (
     <>
-      <div className={`flex justify-end ${hide ? "hidden" : ""}`} data-cy="cookie-consent">
+      <div className={`flex justify-end ${hide ? "hidden" : ""}`}>
         <Card color="mono" variant="outlined" className="m-3 sm:m-4 max-w-[550px] bg-surface-ui pointer-events-auto select-none">
           <p className="text-base leading-normal font-semibold text-text-primary">Cookies and your privacy</p>
           <p className="mt-2 mb-4 text-sm leading-normal font-normal text-text-primary">

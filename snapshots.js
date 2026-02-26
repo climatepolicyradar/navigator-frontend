@@ -1,29 +1,16 @@
-/**
- * TODO: don't use data-cy selectors which couples this to cypress
- */
 module.exports = [
   {
     name: "Home page - with cookie banner",
     url: "http://localhost:3000",
-    waitForSelector: "[data-cy='world-map']",
-  },
-  {
-    name: "Home page - without cookie banner",
-    url: "http://localhost:3000",
-    waitForSelector: "[data-cy='world-map']",
-    execute: {
-      beforeSnapshot() {
-        document.querySelector("[data-cy='cookie-consent-accept']").click();
-      },
-    },
+    waitForSelector: "[aria-label='Search term']",
   },
   {
     name: "Search page",
     url: "http://localhost:3000/search?q=Adaptation+strategy",
-    waitForSelector: "[data-cy='search-results']",
+    waitForSelector: "[aria-label='Search results']",
     execute: {
       beforeSnapshot() {
-        document.querySelector("[data-cy='cookie-consent-accept']").click();
+        [...document.querySelectorAll("button")].find((btn) => btn.textContent.trim() === "Accept cookies")?.click();
       },
     },
   },
@@ -32,7 +19,7 @@ module.exports = [
     url: "http://localhost:3000/document/farming-forest-and-alimentation-framework-law-no-2014-1170_deba",
     execute: {
       beforeSnapshot() {
-        document.querySelector("[data-cy='cookie-consent-accept']").click();
+        [...document.querySelectorAll("button")].find((btn) => btn.textContent.trim() === "Accept cookies")?.click();
       },
     },
   },
@@ -42,7 +29,7 @@ module.exports = [
     waitForSelector: "[id='iframe-pdf-div']",
     execute: {
       beforeSnapshot() {
-        document.querySelector("[data-cy='cookie-consent-accept']").click();
+        [...document.querySelectorAll("button")].find((btn) => btn.textContent.trim() === "Accept cookies")?.click();
       },
     },
   },
@@ -51,7 +38,7 @@ module.exports = [
     url: "http://localhost:3000/geographies/united-kingdom",
     execute: {
       beforeSnapshot() {
-        document.querySelector("[data-cy='cookie-consent-accept']").click();
+        [...document.querySelectorAll("button")].find((btn) => btn.textContent.trim() === "Accept cookies")?.click();
       },
     },
   },
@@ -60,12 +47,17 @@ module.exports = [
     url: "http://localhost:3000/terms-of-use",
     execute: {
       beforeSnapshot() {
-        document.querySelector("[data-cy='cookie-consent-accept']").click();
+        [...document.querySelectorAll("button")].find((btn) => btn.textContent.trim() === "Accept cookies")?.click();
       },
     },
   },
   {
-    name: "Feature flags page",
-    url: "http://localhost:3000/_feature-flags",
+    name: "FAQ page",
+    url: "http://localhost:3000/faq",
+    execute: {
+      beforeSnapshot() {
+        [...document.querySelectorAll("button")].find((btn) => btn.textContent.trim() === "Accept cookies")?.click();
+      },
+    },
   },
 ];
