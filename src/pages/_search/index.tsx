@@ -113,7 +113,7 @@ export const getServerSideProps = (async (context) => {
     topicsData = await fetchAndProcessTopics(topicsResponse.map((topic) => topic.wikibase_id));
 
     if (features.familyConceptsSearch) {
-      const familyConceptsResponse = await fetch(`${process.env.CONCEPTS_API_URL}/families/concepts`);
+      const familyConceptsResponse = await fetch(`${process.env.CONCEPTS_API_URL}/families/concepts?exclude_deleted=true`);
       const familyConceptsJson: { data: FamilyConcept[] } = await familyConceptsResponse.json();
       familyConceptsData = mapFamilyConceptsToConcepts(familyConceptsJson.data);
     }
