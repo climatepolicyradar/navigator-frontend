@@ -52,7 +52,7 @@ test.describe("Search", () => {
 
     /** Click first search result geography link */
     const firstSearchResult = searchResults.getByRole("listitem").nth(0);
-    const countryLink = firstSearchResult.getByRole("link", { name: "Country link" });
+    const countryLink = firstSearchResult.getByRole("region", { name: "Country links" }).getByRole("link").first();
     await expect(countryLink).toBeVisible();
 
     const countryName = await countryLink.innerText();

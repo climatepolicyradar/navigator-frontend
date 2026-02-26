@@ -59,32 +59,12 @@ export const FamilyMeta = ({ category, corpus_id, date, geographies, topics, aut
     <>
       <CountryLinkComponent geographies={geographies} countries={countries} subdivisions={subdivisions} />
       {/* TODO: we need to revisit this once we have updated the config, so that we can determine this output based on the corpora */}
-      {!isNaN(year) && <span data-cy="family-metadata-year">{`${category === "MCF" ? "Approval FY: " + year : year}`}</span>}
-      {mostSpecificCourtName && (
-        <span className="capitalize" data-cy="family-metadata-court">
-          {mostSpecificCourtName}
-        </span>
-      )}
-      {topics && topics.length > 0 && (
-        <span className="capitalize" data-cy="family-metadata-topics">
-          {topics.join(", ")}
-        </span>
-      )}
-      {author && author.length > 0 && (
-        <span className="capitalize" data-cy="family-metadata-author">
-          {author.join(", ")}
-        </span>
-      )}
-      {category && (
-        <span className="capitalize" data-cy="family-metadata-category">
-          {getCategoryName(category, corpus_type_name, source, corpus_id)}
-        </span>
-      )}
-      {document_type && (
-        <span className="capitalize" data-cy="family-metadata-document_type">
-          {document_type}
-        </span>
-      )}
+      {!isNaN(year) && <span>{`${category === "MCF" ? "Approval FY: " + year : year}`}</span>}
+      {mostSpecificCourtName && <span className="capitalize">{mostSpecificCourtName}</span>}
+      {topics && topics.length > 0 && <span className="capitalize">{topics.join(", ")}</span>}
+      {author && author.length > 0 && <span className="capitalize">{author.join(", ")}</span>}
+      {category && <span className="capitalize">{getCategoryName(category, corpus_type_name, source, corpus_id)}</span>}
+      {document_type && <span className="capitalize">{document_type}</span>}
     </>
   );
 };

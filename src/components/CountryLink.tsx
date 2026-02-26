@@ -25,12 +25,7 @@ export const CountryLink: FC<TCountryLink> = ({ countryCode, className = "", emp
   if (SYSTEM_GEO_CODES.includes(slug)) return <>{children}</>;
 
   return (
-    <LinkWithQuery
-      href={`/geographies/${slug}`}
-      className={`flex items-center gap-1 hover:underline hover:text-blue-800 ${className}`}
-      passHref
-      aria-label="Country link"
-    >
+    <LinkWithQuery href={`/geographies/${slug}`} className={`flex items-center gap-1 hover:underline hover:text-blue-800 ${className}`} passHref>
       {showFlag && <span className={`rounded-xs border border-black flag-icon-background flag-icon-${countryCode.toLowerCase()}`} />}
       {children}
     </LinkWithQuery>

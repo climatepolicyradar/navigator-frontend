@@ -12,7 +12,7 @@ type TCountriesLink = {
 };
 
 export const CountryLinks = ({ geographies, countries, showFlag = true }: TCountriesLink) => (
-  <>
+  <div role="region" aria-label="Country links">
     {geographies?.map((geography) => {
       const countryName = getCountryName(geography, countries);
       if (!countryName) return null;
@@ -34,7 +34,7 @@ export const CountryLinks = ({ geographies, countries, showFlag = true }: TCount
         </Fragment>
       );
     })}
-  </>
+  </div>
 );
 
 export const CountryLinksAsList = ({ geographies, countries, showFlag = true }: TCountriesLink) => (
