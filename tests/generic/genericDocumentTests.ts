@@ -40,6 +40,7 @@ export const runGenericDocumentTests = (theme: TTheme): void => {
       await genericPage.dismissPopups(page);
 
       // Ensure the passage matches list is empty to start
+      await expect(page.getByRole("list", { name: "Passage matches" })).not.toBeVisible();
 
       // Expand Accordion???
       // Select a topic
@@ -48,6 +49,9 @@ export const runGenericDocumentTests = (theme: TTheme): void => {
       await expect(topic).toBeChecked();
 
       // Check that passage matches appear
+      const passageMatches = page.getByRole("list", { name: "Passage matches" });
+      await expect(passageMatches).toBeVisible();
+      expect((await passageMatches.all()).length).toBeGreaterThan(0);
     });
   });
 };
