@@ -218,7 +218,7 @@ function LabelPicker({ value, onChange, placeholder = "Search...", autoFocus = f
         </div>
       )}
       {isOpen && results.length > 0 && (
-        <ul className="absolute z-50 mt-1 max-h-48 w-full overflow-y-auto rounded-md border border-gray-200 bg-white shadow-lg">
+        <ul className="absolute z-50 mt-1 max-h-48 w-[200%] overflow-y-auto rounded-md border border-gray-200 bg-white shadow-lg">
           {results.map((label, idx) => (
             <li
               key={label.id}
@@ -335,7 +335,7 @@ interface GroupRendererProps {
 }
 
 function GroupRenderer({ group, path, root, onChange, depth, onDeleteGroup }: GroupRendererProps) {
-  const borderColors = ["border-l-blue-400", "border-l-violet-400", "border-l-amber-400", "border-l-emerald-400", "border-l-rose-400"];
+  const borderColors = ["border-l-blue-200", "border-l-violet-200", "border-l-amber-200", "border-l-emerald-200", "border-l-rose-200"];
   const bgColors = ["bg-blue-50/30", "bg-violet-50/30", "bg-amber-50/30", "bg-emerald-50/30", "bg-rose-50/30"];
   const borderColor = borderColors[depth % borderColors.length];
   const bgColor = bgColors[depth % bgColors.length];
@@ -499,7 +499,7 @@ export function QueryBuilder() {
             </div>
 
             {/* Body */}
-            <div className="max-h-[60vh] overflow-y-auto p-4">
+            <div className="max-h-[60vh] p-4">
               <GroupRenderer group={query} path={[]} root={query} onChange={setQuery} depth={0} />
             </div>
 
