@@ -6,7 +6,7 @@ import { Suspense, use, useMemo, useState, useEffect } from "react";
 import { ApiClient } from "@/api/http-common";
 import { AppliedLabels } from "@/components/_experiment/appliedLabels/AppliedLabels";
 import { IntelliSearch } from "@/components/_experiment/intellisearch";
-import { QueryBuilder } from "@/components/_experiment/queryBuilder/QueryBuilder";
+import { QueryBuilder, TQueryGroup } from "@/components/_experiment/queryBuilder/QueryBuilder";
 import { SearchContainer } from "@/components/_experiment/searchResults/SearchResults";
 import { Typeahead } from "@/components/_experiment/typeahead/Typeahead";
 import { withEnvConfig } from "@/context/EnvConfig";
@@ -32,6 +32,7 @@ const ShadowSearch = ({ theme, themeConfig, features, topicsData, familyConcepts
 
   const [selectedLabels, setSelectedLabels] = useState<string[]>([]);
   const [query, setQuery] = useState("");
+  const [filters, setFilters] = useState<TQueryGroup | null>(null);
 
   // const filterOptions = useMemo(
   //   () =>
@@ -46,6 +47,8 @@ const ShadowSearch = ({ theme, themeConfig, features, topicsData, familyConcepts
 
   // const shadowSearch = useShadowSearch({ filterOptions });
   // const addFilter = shadowSearch.actions.add;
+
+  // console.log("QueryBuilder output:", JSON.stringify(filters, null, 2));
 
   return (
     <FeaturesContext.Provider value={features}>
@@ -73,15 +76,16 @@ const ShadowSearch = ({ theme, themeConfig, features, topicsData, familyConcepts
                 setQuery={setQuery}
               />
             </div>
-            <QueryBuilder />
+            <QueryBuilder filters={filters} setFilters={setFilters} />
+            {/* <pre className="text-xs">{filters ? JSON.stringify(filters, null, 2) : "No filters"}</pre> */}
           </div>
           {/* <Typeahead shadowSearch={shadowSearch} filterOptions={filterOptions} /> */}
           <SearchContainer
-            selectedLabels={selectedLabels}
             query={query}
             onSelectLabel={(label) => {
               if (!selectedLabels.includes(label)) setSelectedLabels((prev) => [...prev, label]);
             }}
+            filters={filters}
           />
         </WikiBaseConceptsContext.Provider>
       </TopicsContext.Provider>

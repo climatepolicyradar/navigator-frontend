@@ -1,34 +1,22 @@
 import { LucideCog } from "lucide-react";
 import { Suspense, use, useMemo } from "react";
 
+import { TQueryGroup } from "../queryBuilder/QueryBuilder";
+
 interface DocumentLabel {
   id: string;
-  title: string;
+  value: string;
   type: string;
 }
 
 interface DocumentLabelRelationship {
   type: string;
-  label: DocumentLabel;
+  value: DocumentLabel;
   timestamp: string | null;
 }
 
 interface DocumentItem {
   url: string | null;
-}
-
-interface DocumentWithoutRelationships {
-  id: string;
-  title: string;
-  description: string | null;
-  labels: DocumentLabelRelationship[];
-  items: DocumentItem[];
-}
-
-interface DocumentDocumentRelationship {
-  type: string;
-  document: DocumentWithoutRelationships;
-  timestamp: string | null;
 }
 
 interface SearchDocument {
@@ -37,7 +25,6 @@ interface SearchDocument {
   description: string | null;
   labels: DocumentLabelRelationship[];
   items: DocumentItem[];
-  relationships: DocumentDocumentRelationship[];
 }
 
 export interface SearchDocumentsResponse {
@@ -50,55 +37,20 @@ export interface SearchDocumentsResponse {
   results: SearchDocument[];
 }
 
-interface SearchFilterGroup {
-  operator: "and" | "or";
-  conditions: {
-    field: string;
-    operator: "contains" | "not_contains";
-    value: string[];
-  }[];
-}
-
 interface SearchDocumentsParams {
   query?: string;
-  filters?: SearchFilterGroup[];
+  filters?: string;
   limit?: number;
   offset?: number;
 }
 
 const SEARCH_DOCUMENTS_BASE_URL = "https://api.climatepolicyradar.org/search/documents";
 
-/*
-  filters param uses the following structure:
-  [{ operator: and, conditions: [{ labels.label.id, operator: contains, value: [Romania] }] }]
-  where operator: and/or
-  field: labels.label.id
-  condition operator: contains/not_contain
-  value: array of label ids
-*/
-
-function generateSearchFilters(selectedLabels: string[]): SearchFilterGroup[] {
-  if (selectedLabels.length === 0) return [];
-
-  return [
-    {
-      operator: "or",
-      conditions: [
-        {
-          field: "labels.label.id",
-          operator: "contains",
-          value: selectedLabels,
-        },
-      ],
-    },
-  ];
-}
-
 export function fetchSearchDocuments(params: SearchDocumentsParams = {}): Promise<SearchDocumentsResponse> {
   const url = new URL(SEARCH_DOCUMENTS_BASE_URL);
 
   if (params.query) url.searchParams.set("query", params.query);
-  if (params.filters) url.searchParams.set("filters", JSON.stringify(params.filters));
+  if (params.filters) url.searchParams.set("filters", params.filters);
   if (params.limit !== undefined) url.searchParams.set("limit", String(params.limit));
   if (params.offset !== undefined) url.searchParams.set("offset", String(params.offset));
 
@@ -123,13 +75,13 @@ export function SearchResults({ promise, onSelectLabel }: { promise: Promise<Sea
             {doc.description && <p className="text-sm text-text-secondary mt-1">{doc.description}</p>}
             {doc.labels.length > 0 && (
               <div className="flex flex-wrap gap-1 mt-2">
-                {doc.labels.map((rel, i) => (
+                {doc.labels.map((label, i) => (
                   <span
                     key={i}
                     className="text-xs bg-gray-100 rounded px-2 py-0.5 cursor-pointer hover:bg-gray-200"
-                    onClick={() => onSelectLabel?.(rel.label.title)}
+                    onClick={() => onSelectLabel?.(label.value.value)}
                   >
-                    {rel.label.title}
+                    {label.value.value}
                   </span>
                 ))}
               </div>
@@ -141,30 +93,43 @@ export function SearchResults({ promise, onSelectLabel }: { promise: Promise<Sea
   );
 }
 
+// If any of the values are empty strings, the filters are considered invalid and will not be sent to the API
+const filtersDoesNotContainEmptyRule = (filters: TQueryGroup): boolean => {
+  if (!filters || !filters.filters || filters.filters.length === 0) return false;
+
+  for (const filter of filters.filters) {
+    if ("value" in filter && filter.value.trim() === "") {
+      return false;
+    }
+  }
+  return true;
+};
+
 export function SearchContainer({
-  selectedLabels,
   query,
+  filters,
   onSelectLabel,
 }: {
   selectedLabels?: string[];
   query?: string;
+  filters?: TQueryGroup;
   onSelectLabel?: (label: string) => void;
 }) {
   const searchPromise = useMemo(() => {
-    if (!query && (!selectedLabels || selectedLabels.length === 0)) return null;
+    if (!query && (!filters || !filtersDoesNotContainEmptyRule(filters))) return null;
 
     return fetchSearchDocuments({
       query,
-      limit: 10,
-      offset: 0,
-      filters: selectedLabels?.length ? generateSearchFilters(selectedLabels) : undefined,
+      // limit: 10,
+      // offset: 0,
+      filters: filtersDoesNotContainEmptyRule(filters) ? JSON.stringify(filters) : undefined,
     });
-  }, [query, selectedLabels]);
+  }, [query, filters]);
 
   return (
     <>
       <div className="w-3/4 m-auto">
-        {!query && (!selectedLabels || selectedLabels.length === 0) && <p className="text-sm text-text-secondary">Enter a search to see results.</p>}
+        {/* {!query && (!selectedLabels || selectedLabels.length === 0) && <p className="text-sm text-text-secondary">Enter a search to see results.</p>} */}
         {searchPromise && (
           <Suspense
             fallback={

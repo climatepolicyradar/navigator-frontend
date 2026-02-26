@@ -463,14 +463,13 @@ function GroupRenderer({ group, path, root, onChange, depth, onDeleteGroup }: Gr
 // Main QueryBuilder component
 // ---------------------------------------------------------------------------
 
-export function QueryBuilder() {
-  const [query, setQuery] = useState<TQueryGroup>(createGroup());
+export function QueryBuilder({ filters, setFilters }: { filters?: TQueryGroup | null; setFilters?: (filters: TQueryGroup | null) => void }) {
+  const [query, setQuery] = useState<TQueryGroup>(filters ?? createGroup());
 
   // Log query to console whenever it changes
   useEffect(() => {
-    // eslint-disable-next-line no-console
-    console.log("QueryBuilder output:", JSON.stringify(query, null, 2));
-  }, [query]);
+    setFilters?.(query);
+  }, [query, setFilters]);
 
   return (
     <BasePopover.Root>
