@@ -9,7 +9,7 @@ import { genericPageModel as genericPage } from "../pageObjectModels/genericPage
 export const runGenericDocumentTests = (theme: TTheme): void => {
   const documentsToTest = TEST_DOCUMENTS.filter((testDocument) => testDocument.availableOn.includes(theme));
 
-  documentsToTest.forEach(({ titleForTests, slug, withSearch, withTopic }) => {
+  documentsToTest.forEach(({ titleForTests, slug, withSearch, withTopic, withParentTopic }) => {
     test(`adding a search query generates passage matches - ${titleForTests}`, async ({ page }) => {
       // Load the document page
 
@@ -42,8 +42,8 @@ export const runGenericDocumentTests = (theme: TTheme): void => {
       // Ensure the passage matches list is empty to start
       await expect(page.getByRole("list", { name: "Passage matches" })).not.toBeVisible();
 
-      // Expand Accordion???
-      // Select a topic
+      // Select a topic (some accordions can be open by default and some need to be manually expanded)
+      documentPage.ensureAccordionOpen(page, withParentTopic);
       const topic = page.getByRole("checkbox", { name: withTopic });
       await topic.click();
       await expect(topic).toBeChecked();
