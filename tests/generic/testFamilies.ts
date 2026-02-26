@@ -8,7 +8,6 @@ type TTestFamily = {
   availableOn: TTheme[];
 };
 
-// TODO: update topics!!!
 export const TEST_FAMILIES: TTestFamily[] = [
   {
     titleForTests: "UN Submission",
