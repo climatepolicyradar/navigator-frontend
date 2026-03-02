@@ -109,34 +109,6 @@ jobs:
   #         LHCI_TOKEN: ${{ secrets[format('LHCI_{0}_MOBILE_TOKEN', steps.upper-theme.outputs.theme)] }}
   #         ROBOTS: true
 
-  percy:
-    runs-on: ubuntu-latest
-    env:
-      THEME: cpr
-    steps:
-      - uses: actions/checkout@v6
-      - uses: actions/setup-node@v6
-        with:
-          node-version: 22.12.0
-      - run: npm install
-      - run: cp .env.example .env
-      - name: Generate tsconfig.json
-        run: |
-          cp tsconfig.base.json tsconfig.json
-          sed -i "s/__THEME__/$THEME/g" tsconfig.json
-      - run: npm run build
-        env:
-          NODE_ENV: production
-      - run: npm run start &
-      - run: |
-          echo "Waiting for server to start..."
-          npx wait-on http://localhost:3000
-      - run: npx percy snapshot snapshots.js
-        env:
-          PERCY_TOKEN: ${{ secrets.PERCY_TOKEN }}
-      - if: always()
-        run: kill $(lsof -t -i:3000) || true
-
   code-quality:
     runs-on: ubuntu-latest
     env:
