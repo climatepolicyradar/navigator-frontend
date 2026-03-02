@@ -1,4 +1,4 @@
-FROM node:24-alpine AS builder
+FROM --platform=linux/amd64 node:24-alpine AS builder
 WORKDIR /app
 
 COPY . .
@@ -19,10 +19,9 @@ RUN npm run build
 RUN cp -r public .next/standalone/public
 RUN cp -r .next/static .next/standalone/.next/static
 
-# Slim runner: Alpine + Node from apk (no npm; smaller than node:24-alpine).
-# For Node 24 use edge; stable (e.g. 3.20) may ship Node 20.
-FROM alpine:3.20
-RUN apk add --no-cache nodejs
+# Runner must match builder Node major version; Next.js standalone built on Node 24
+# can crash on Node 20 (Alpine 3.20 apk nodejs). Pin platform for App Runner (x86_64).
+FROM --platform=linux/amd64 node:24-alpine
 WORKDIR /app
 
 RUN addgroup -g 1001 -S nodejs && adduser -S nextjs -u 1001
@@ -30,7 +29,10 @@ COPY --from=builder /app/.next/standalone ./
 RUN chown -R nextjs:nodejs .
 
 USER nextjs
-# Do not set HOSTNAME here; Next.js uses it as bind address. If set to a URL at runtime the server fails.
+
+# Bind to all interfaces so platform health checks (e.g. App Runner) can reach the server.
+# Do not set HOSTNAME to a URL at runtime — Next.js uses it as the bind address.
+ENV HOSTNAME=0.0.0.0
 ARG PORT=8080
 ENV PORT=${PORT}
 EXPOSE ${PORT}
