@@ -281,3 +281,11 @@ jobs:
           junit-paths: test-results-${{ matrix.theme }}/playwright.xml
           token: ${{ secrets.TRUNK_TOKEN }}
           org-slug: ${{ secrets.TRUNK_ORG_SLUG }}
+
+  dependabot:
+    name: Dependabot Auto-pilot
+    needs: [code-quality, test, test-e2e]
+    permissions:
+      pull-requests: write
+      contents: write
+    uses: climatepolicyradar/reusable-workflows/.github/workflows/dependabot-autopilot.yml@v22
