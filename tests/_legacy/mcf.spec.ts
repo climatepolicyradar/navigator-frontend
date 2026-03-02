@@ -1,11 +1,5 @@
 import { test, expect } from "@playwright/test";
 
-// Helper to match app's URL encoding behavior
-function urlify(str: string) {
-  // The app uses encodeURIComponent but replaces %20 with + for spaces
-  return encodeURIComponent(str).replace(/%20/g, "+");
-}
-
 /**
  * MCF Hero Search E2E Tests
  *
