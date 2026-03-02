@@ -63,8 +63,8 @@ const LandingSearchForm = ({ placeholder, input, handleSearchInput }: IProps) =>
         <input
           id="landingPage-searchInput"
           data-analytics="landingPage-searchInput"
-          type="search"
           data-cy="search-input"
+          type="search"
           className={`text-white placeholder:text-transparent py-4 pr-16 text-2xl bg-transparent border-t-0 border-l-0 border-r-0 border-white border-b-2 rounded-none focus:border-white focus:ring-0 w-full ${
             !showAnimation ? "placeholder:text-white" : ""
           }`}
