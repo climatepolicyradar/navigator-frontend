@@ -5,11 +5,10 @@ import Head from "next/head";
 import { useRouter } from "next/router";
 import { useMemo } from "react";
 
-import { ApiClient } from "@/api/http-common";
+import { getDocumentData } from "@/bff/methods/getDocumentData";
 import { ConceptsDocumentViewer } from "@/components/documents/ConceptsDocumentViewer";
 import { DocumentHead } from "@/components/documents/DocumentHead";
 import Layout from "@/components/layouts/Main";
-import { DEFAULT_DOCUMENT_TITLE } from "@/constants/document";
 import { getDocumentDescription } from "@/constants/metaDescriptions";
 import { MAX_PASSAGES } from "@/constants/paging";
 import { QUERY_PARAMS } from "@/constants/queryParams";
@@ -18,21 +17,10 @@ import { FeaturesContext } from "@/context/FeaturesContext";
 import { TopicsContext } from "@/context/TopicsContext";
 import useConfig from "@/hooks/useConfig";
 import useSearch from "@/hooks/useSearch";
-import {
-  TDocumentPage,
-  TTheme,
-  TSearchResponse,
-  TFamilyPublic,
-  TApiSlugResponse,
-  TApiFamilyPublic,
-  TApiDocumentPage,
-  TApiSearchResponse,
-} from "@/types";
+import { TTheme } from "@/types";
 import { CleanRouterQuery } from "@/utils/cleanRouterQuery";
-import { extractTopicIds } from "@/utils/extractTopicIds";
 import { getFeatureFlags } from "@/utils/featureFlags";
 import { getFeatures } from "@/utils/features";
-import { fetchAndProcessTopics } from "@/utils/fetchAndProcessTopics";
 import { getLitigationDocumentJSONLD } from "@/utils/json-ld/getLitigationDocumentJSONLD";
 import { readConfigFile } from "@/utils/readConfigFile";
 
@@ -170,43 +158,23 @@ export default DocumentPage;
 export const getServerSideProps = (async (context) => {
   context.res.setHeader("Cache-Control", "public, max-age=3600, immutable");
 
+  const slug = context.params.id as string;
+
   const theme = process.env.THEME as TTheme;
   const themeConfig = await readConfigFile(theme);
   const featureFlags = getFeatureFlags(context.req.cookies);
   const features = getFeatures(themeConfig, featureFlags);
 
-  const id = context.params.id;
-  const backendApiClient = new ApiClient(process.env.BACKEND_API_URL);
-  const apiClient = new ApiClient(process.env.CONCEPTS_API_URL);
+  const { data: documentData, errors } = await getDocumentData(slug, features);
+  errors.forEach(console.error); // eslint-disable-line no-console
+  if (documentData === null) return { notFound: true };
 
-  try {
-    const { data: slugData } = await apiClient.get(`/families/slugs/${id}`);
-    const slug: TApiSlugResponse = slugData.data;
-
-    const { data: returnedDocumentData } = await apiClient.get(`/families/documents/${slug.family_document_import_id}`);
-    const { family: familyData, ...otherDocumentData } = returnedDocumentData.data;
-    const family: TApiFamilyPublic = familyData;
-    const document: TApiDocumentPage = otherDocumentData;
-    if (document.title === "") document.title = DEFAULT_DOCUMENT_TITLE;
-
-    if (!document || !family) return { notFound: true };
-
-    const { data: vespaDocumentData } = await backendApiClient.get<TApiSearchResponse>(`/document/${document.import_id}`);
-
-    const topicsData = await fetchAndProcessTopics(extractTopicIds(vespaDocumentData));
-
-    return {
-      props: withEnvConfig({
-        document: document as TDocumentPage,
-        family: family as TFamilyPublic,
-        features,
-        theme: theme,
-        themeConfig: themeConfig,
-        topicsData,
-        vespaDocumentData: vespaDocumentData as TSearchResponse,
-      }),
-    };
-  } catch (error) {
-    return { notFound: true };
-  }
+  return {
+    props: withEnvConfig({
+      ...documentData,
+      features,
+      theme,
+      themeConfig,
+    }),
+  };
 }) satisfies GetServerSideProps;
