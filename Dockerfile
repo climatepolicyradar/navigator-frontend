@@ -30,13 +30,14 @@ RUN chown -R nextjs:nodejs .
 
 USER nextjs
 
-# Bind to all interfaces so platform health checks (e.g. App Runner) can reach the server.
-# Do not set HOSTNAME to a URL at runtime — Next.js uses it as the bind address.
-ENV HOSTNAME=0.0.0.0
+# Force Next.js standalone to bind to 0.0.0.0 inside the container, regardless of
+# any HOSTNAME the platform sets. Some platforms (including App Runner) set
+# HOSTNAME to an internal host name, which Next uses as its bind address,
+# breaking TCP health checks that probe 127.0.0.1:PORT.
 ARG PORT=8080
 ENV PORT=${PORT}
 EXPOSE ${PORT}
-CMD ["node", "server.js"]
+CMD ["sh", "-c", "HOSTNAME=0.0.0.0 node server.js"]
 
 HEALTHCHECK --interval=30s --timeout=3s --start-period=5s --retries=3 \
   CMD node -e "require('http').get('http://localhost:${PORT}', (r) => {process.exit(r.statusCode === 200 ? 0 : 1)})"
