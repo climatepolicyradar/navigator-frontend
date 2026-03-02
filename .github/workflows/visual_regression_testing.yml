@@ -2,10 +2,8 @@ name: Visual Regression Testing
 
 on:
   pull_request:
-    branches:
-      - main
     types:
-      - ready_for_review
+      - labeled
 
 permissions:
   contents: read
@@ -13,6 +11,7 @@ permissions:
 
 jobs:
   percy:
+    if: contains(github.event.pull_request.labels.*.name, 'run-percy')
     runs-on: ubuntu-latest
     env:
       THEME: cpr
