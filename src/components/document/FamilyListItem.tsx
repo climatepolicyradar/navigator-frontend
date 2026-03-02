@@ -65,7 +65,7 @@ export const FamilyListItem: FC<IProps> = ({
         href={`/document/${family_slug}`}
         passHref
         className={allTitleClasses}
-        data-cy="family-title"
+        aria-label="Search result title"
         data-ph-capture-attribute-link-purpose="search-result-family"
         data-ph-capture-attribute-position-page={position}
         data-ph-capture-attribute-position-total={positionOffset + position}

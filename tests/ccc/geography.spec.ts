@@ -9,7 +9,7 @@ test.describe("CCC geography page", () => {
     runGenericGeographyTests("ccc");
   });
 
-  test("should navigate to to family page from sub division page", async ({ page }) => {
+  test("navigate to family page from sub division page", async ({ page }) => {
     await geographyPage.goToGeography(page, "united-states-of-america");
 
     await genericPage.waitUntilLoaded(page);
@@ -41,7 +41,7 @@ test.describe("CCC geography page", () => {
     await genericPage.waitUntilLoaded(page, familyName);
   });
 
-  test("should navigate to sub division geography page", async ({ page }) => {
+  test("navigate to sub division geography page from parent geography page", async ({ page }) => {
     await geographyPage.goToGeography(page, "united-states-of-america");
 
     await genericPage.waitUntilLoaded(page);
@@ -59,7 +59,7 @@ test.describe("CCC geography page", () => {
     await genericPage.waitUntilLoaded(page, subDivisionName);
   });
 
-  test("should navigate to related sub division geography page", async ({ page }) => {
+  test("navigate to related sub division geography page directly", async ({ page }) => {
     await geographyPage.goToGeography(page, "br-rj");
 
     await genericPage.waitUntilLoaded(page);

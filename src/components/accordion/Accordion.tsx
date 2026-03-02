@@ -36,13 +36,19 @@ export const Accordion = ({
 
   return (
     <div {...props}>
-      <div className={`flex items-center justify-between cursor-pointer group`} onClick={() => setIsOpen(!isOpen)} data-cy="accordion-control">
+      <button
+        type="button"
+        className={`w-full flex items-center justify-between cursor-pointer group`}
+        onClick={() => setIsOpen(!isOpen)}
+        aria-label={title}
+        aria-expanded={isOpen}
+      >
         <div className="flex items-center gap-2">
           <Heading>{title}</Heading>
           {headContent}
         </div>
         <span className="text-textDark opacity-40 group-hover:opacity-100">{isOpen ? <ChevronUp /> : <ChevronDown />}</span>
-      </div>
+      </button>
       <AnimatePresence initial={false}>
         {isOpen && (
           <motion.div
