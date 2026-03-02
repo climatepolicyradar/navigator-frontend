@@ -1,14 +1,52 @@
 "use client";
 
 import { Input } from "@base-ui/react/input";
-// import { useQuery } from "@tanstack/react-query";
-import debounce from "lodash/debounce";
-import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import { useCallback, useMemo, useRef, useState } from "react";
 
-import { ApiClient } from "@/api/http-common";
+import { useLabelSearch } from "@/hooks/useLabelSearch";
 import { joinTailwindClasses } from "@/utils/tailwind";
 
-import { IntelliSearchProps, TLabelsResponse, TConcept, TSuggestion } from "./IntelliSearch.types";
+import { IntelliSearchProps, TConcept, TSuggestion } from "./IntelliSearch.types";
+
+const underlineFirstInstanceOfQuery = (text: string, query: string) => {
+  const regex = new RegExp(`(${query})`, "i");
+  return text.replace(regex, "<u>$1</u>");
+};
+
+const displaySuggestion = (suggestion: TSuggestion, searchTerm: string) => {
+  switch (suggestion.type) {
+    case "label":
+      return (
+        <>
+          <span
+            className="font-medium text-gray-900"
+            dangerouslySetInnerHTML={{ __html: underlineFirstInstanceOfQuery(suggestion.data.id, searchTerm) }}
+          />
+          <span className="text-gray-500"> — </span>
+          <span className="text-gray-600 font-medium">Label: {suggestion.data.title}</span>
+        </>
+      );
+    case "concept":
+      return (
+        <>
+          <span className="font-medium text-gray-900">{suggestion.data.preferred_label}</span>
+          <span className="text-gray-500"> — </span>
+          <span className="text-indigo-600 font-medium">Concept</span>
+          {suggestion.matchedLabel && <span className="text-gray-500 italic text-xs ml-2">(matched on "{suggestion.matchedLabel}")</span>}
+        </>
+      );
+    case "search":
+      return (
+        <>
+          <span>
+            Search for "<b>{suggestion.data}</b>"
+          </span>
+        </>
+      );
+    default:
+      return "";
+  }
+};
 
 /**
  * IntelliSearch Component
@@ -31,86 +69,31 @@ import { IntelliSearchProps, TLabelsResponse, TConcept, TSuggestion } from "./In
  */
 export function IntelliSearch({
   className,
-  placeholder = "Search...",
+  placeholder = "Search for anything",
   debounceDelay = 300,
   maxSuggestions,
   topics,
-  selectedTopics = [],
+  selectedLabels = [],
   onSelectConcept,
+  setQuery,
 }: IntelliSearchProps) {
   // State management
   const [searchTerm, setSearchTerm] = useState("");
   const [isInputFocused, setIsInputFocused] = useState(false);
   const [isMouseInComponent, setIsMouseInComponent] = useState(false);
-  const [activeSuggestionIndex, setActiveSuggestionIndex] = useState(-1);
+  const [activeSuggestionIndex, setActiveSuggestionIndex] = useState(0);
   const [hoveredConceptIndex, setHoveredConceptIndex] = useState<number | null>(null);
-  const [labelsResults, setLabelsResults] = useState<TLabelsResponse["results"]>([]);
-  const [isLoadingLabels, setIsLoadingLabels] = useState(false);
+  const { results: labelsResults, isLoading: isLoadingLabels } = useLabelSearch(searchTerm, { debounceDelay });
 
   // Refs
   const inputRef = useRef<HTMLInputElement>(null);
   const containerRef = useRef<HTMLDivElement>(null);
 
-  /**
-   * Fetch concepts data on mount using React Query
-   * This data is memoized and persisted across re-renders
-   */
-  // const { data: conceptsData = [], isLoading: isLoadingConcepts } = useQuery({
-  //   queryKey: ["concepts-intellisearch"],
-  //   queryFn: async () => {
-  //     const conceptsApiUrl =
-  //       process.env.CONCEPTS_API_URL ||
-  //       "https://api.climatepolicyradar.org";
-  //     const client = new ApiClient(conceptsApiUrl);
-  //     const response = await client.get<{ concepts: TConcept[] }>(
-  //       "/concepts/search?limit=10000&has_classifier=true",
-  //       null
-  //     );
-  //     return response.data.concepts || [];
-  //   },
-  //   refetchOnWindowFocus: false,
-  //   refetchOnMount: false,
-  //   gcTime: 1000 * 60 * 60 * 24, // Cache for 24 hours
-  // });
-
-  /**
-   * Debounced function to search labels API
-   * Uses lodash debounce to wait for user to stop typing
-   */
-  const searchLabelsAPI = useMemo(
-    () =>
-      debounce(async (query: string) => {
-        if (!query.trim()) {
-          setLabelsResults([]);
-          return;
-        }
-
-        setIsLoadingLabels(true);
-        try {
-          const apiUrl = process.env.NEXT_PUBLIC_API_URL || "https://api.climatepolicyradar.org";
-          const client = new ApiClient(apiUrl);
-          const response = await client.get<TLabelsResponse>(`/search/labels?query=${encodeURIComponent(query)}`, null);
-          setLabelsResults(response.data.results || []);
-        } catch {
-          // Silently handle error and show empty results
-          setLabelsResults([]);
-        } finally {
-          setIsLoadingLabels(false);
-        }
-      }, debounceDelay),
-    [debounceDelay]
-  );
-
-  /**
-   * Effect to trigger debounced label search when searchTerm changes
-   */
-  useEffect(() => {
-    searchLabelsAPI(searchTerm);
-    // Cleanup function to cancel pending debounced calls
-    return () => {
-      searchLabelsAPI.cancel();
-    };
-  }, [searchTerm, searchLabelsAPI]);
+  const resetSearchState = () => {
+    setSearchTerm("");
+    setActiveSuggestionIndex(-1);
+    setHoveredConceptIndex(null);
+  };
 
   /**
    * Match concepts based on search term
@@ -145,18 +128,19 @@ export function IntelliSearch({
 
   /**
    * Unified suggestions list - labels first, then concepts.
-   * Excludes concepts already in selectedTopics (Active filters).
+   * Excludes concepts already in selectedLabels (Active filters).
    */
   const suggestions = useMemo(() => {
+    const selectedSet = new Set(selectedLabels.map((s) => s.toLowerCase()));
     const unified: TSuggestion[] = [];
 
     // Add label suggestions first
     labelsResults.forEach((label) => {
+      if (selectedSet.has(label.id.toLowerCase())) return; // Exclude if already selected as filter
       unified.push({ type: "label", data: label });
     });
 
     // Add concept suggestions, excluding already-selected topics
-    const selectedSet = new Set(selectedTopics.map((s) => s.toLowerCase()));
     matchedConcepts.forEach(({ concept, matchedLabel }) => {
       if (concept?.preferred_label && selectedSet.has(concept.preferred_label.toLowerCase())) return;
       unified.push({
@@ -166,15 +150,23 @@ export function IntelliSearch({
       });
     });
 
+    // Add search suggestion
+    if (searchTerm.trim()) {
+      unified.unshift({
+        type: "search",
+        data: searchTerm.trim(),
+      });
+    }
+
     // Apply max suggestions limit if specified
     return maxSuggestions ? unified.slice(0, maxSuggestions) : unified;
-  }, [labelsResults, matchedConcepts, maxSuggestions, selectedTopics]);
+  }, [labelsResults, matchedConcepts, maxSuggestions, selectedLabels, searchTerm]);
 
   /**
    * Determine if suggestions should be visible
    * Show when: input has value AND (input focused OR mouse in component)
    */
-  const shouldShowSuggestions = searchTerm.trim() && (isInputFocused || isMouseInComponent) && suggestions.length > 0;
+  const shouldShowSuggestions = (isInputFocused || isMouseInComponent) && suggestions.length > 0;
 
   /**
    * Handle input change
@@ -187,13 +179,11 @@ export function IntelliSearch({
   /**
    * Handle keyboard navigation
    * Arrow Up/Down: Navigate through suggestions
-   * Enter: No action (read-only component)
+   * Enter: Select active suggestion or trigger search with query
    * Escape: Clear input and blur
    */
-  const handleKeyDown = useCallback(
+  const handleKeyDownInput = useCallback(
     (e: React.KeyboardEvent<HTMLInputElement>) => {
-      if (!shouldShowSuggestions) return;
-
       switch (e.key) {
         case "ArrowDown":
           e.preventDefault();
@@ -207,18 +197,32 @@ export function IntelliSearch({
 
         case "Enter":
           e.preventDefault();
-          // Read-only component - no action on Enter
+          // If a suggestion is active, trigger selection callback, otherwise search for string
+          if (activeSuggestionIndex >= 0) {
+            if (suggestions[activeSuggestionIndex].type === "concept") {
+              onSelectConcept?.(suggestions[activeSuggestionIndex].data.preferred_label);
+            } else if (suggestions[activeSuggestionIndex].type === "label") {
+              onSelectConcept?.(suggestions[activeSuggestionIndex].data.id);
+            } else if (suggestions[activeSuggestionIndex].type === "search") {
+              setQuery?.(suggestions[activeSuggestionIndex].data);
+            }
+            resetSearchState();
+          } else {
+            setQuery?.(searchTerm.trim());
+            inputRef.current?.blur();
+            resetSearchState();
+          }
+
           break;
 
         case "Escape":
           e.preventDefault();
-          setSearchTerm("");
-          setActiveSuggestionIndex(-1);
+          resetSearchState();
           inputRef.current?.blur();
           break;
       }
     },
-    [shouldShowSuggestions, suggestions.length]
+    [activeSuggestionIndex, onSelectConcept, suggestions, setQuery, searchTerm]
   );
 
   /**
@@ -256,13 +260,14 @@ export function IntelliSearch({
           onChange={handleInputChange}
           onFocus={() => setIsInputFocused(true)}
           onBlur={() => setIsInputFocused(false)}
-          onKeyDown={handleKeyDown}
+          onKeyDown={handleKeyDownInput}
           placeholder={placeholder}
           aria-label="Intelligent search input"
           aria-autocomplete="list"
           aria-controls="suggestions-list"
           aria-expanded={shouldShowSuggestions}
           className="w-full bg-transparent text-base text-gray-900 placeholder-gray-400 outline-none"
+          autoComplete="off"
         />
       </div>
 
@@ -291,7 +296,7 @@ export function IntelliSearch({
 
               return (
                 <div
-                  key={suggestion.type === "label" ? `label-${suggestion.data.id}` : `concept-${suggestion.data.wikibase_id}`}
+                  key={`${suggestion.type}-${index}`}
                   role="option"
                   aria-selected={isActive}
                   className={joinTailwindClasses(
@@ -311,27 +316,20 @@ export function IntelliSearch({
                     setHoveredConceptIndex(null);
                   }}
                   onClick={() => {
+                    resetSearchState();
                     if (suggestion.type === "concept") {
-                      onSelectConcept?.(suggestion.data);
+                      onSelectConcept?.(suggestion.data.preferred_label);
+                    } else if (suggestion.type === "label") {
+                      onSelectConcept?.(suggestion.data.id);
+                    } else if (suggestion.type === "search") {
+                      setQuery?.(suggestion.data);
                     }
                   }}
                 >
-                  {suggestion.type === "label" ? (
-                    // Label format: "{id} — {title}"
-                    <div className="text-sm">
-                      <span className="font-medium text-gray-900">{suggestion.data.id}</span>
-                      <span className="text-gray-500"> — </span>
-                      <span className="text-gray-600 font-medium">Label: {suggestion.data.title}</span>
-                    </div>
-                  ) : (
-                    // Concept format: "{preferred_label} - Concept (matched on {alt})"
-                    <div className="text-sm">
-                      <span className="font-medium text-gray-900">{suggestion.data.preferred_label}</span>
-                      <span className="text-gray-500"> — </span>
-                      <span className="text-indigo-600 font-medium">Concept</span>
-                      {suggestion.matchedLabel && <span className="text-gray-500 italic text-xs ml-2">(matched on "{suggestion.matchedLabel}")</span>}
-                    </div>
-                  )}
+                  <div className="text-sm relative">
+                    {displaySuggestion(suggestion, searchTerm)}
+                    {isActive && <span className="absolute right-0 bg-white p-1 text-xs border border-gray-200">Enter</span>}
+                  </div>
                 </div>
               );
             })}
@@ -357,13 +355,6 @@ export function IntelliSearch({
                   <p className="text-sm text-gray-700 leading-relaxed">{activeConcept.definition}</p>
                 </div>
               )}
-
-              {/* {activeConcept.alternative_labels && activeConcept.alternative_labels.length > 0 && (
-                <div>
-                  <h4 className="text-xs font-semibold text-gray-500 uppercase mb-1">Alternative Labels</h4>
-                  <p className="text-sm text-gray-600">{activeConcept.alternative_labels.join(", ")}</p>
-                </div>
-              )} */}
             </div>
           )}
         </div>

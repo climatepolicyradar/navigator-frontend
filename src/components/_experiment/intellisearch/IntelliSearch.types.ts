@@ -41,6 +41,10 @@ export type TSuggestion =
       type: "concept";
       data: TTopic;
       matchedLabel?: string; // If matched on alternative label, store it here
+    }
+  | {
+      type: "search";
+      data: string;
     };
 
 /**
@@ -58,9 +62,11 @@ export interface IntelliSearchProps {
   /** List of concepts to search through */
   topics: TTopic[];
   /** Concept labels already selected as filters; exclude these from suggestions */
-  selectedTopics?: string[];
+  selectedLabels?: string[];
   /** Called when the user selects a concept suggestion (adds to Active filters) */
-  onSelectConcept?: (concept: TTopic) => void;
+  onSelectConcept?: (concept: string) => void;
+  /** Optional callback to set the search query */
+  setQuery?: (query: string) => void;
 }
 
 /**
