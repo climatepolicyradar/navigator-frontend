@@ -73,6 +73,7 @@ const LandingSearchForm = ({ placeholder, input, handleSearchInput }: IProps) =>
           onBlur={showPlaceholderAnimation}
           placeholder={displayPlaceholder}
           aria-label="Search term"
+          data-cy="search-input"
         />
         {showAnimation && term.length === 0 && <div className="search-animated-placeholder">{displayPlaceholder}</div>}
         {term.length > 0 && (
