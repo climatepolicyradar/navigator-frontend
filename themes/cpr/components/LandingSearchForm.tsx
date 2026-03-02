@@ -64,6 +64,7 @@ const LandingSearchForm = ({ placeholder, input, handleSearchInput }: IProps) =>
           id="landingPage-searchInput"
           data-analytics="landingPage-searchInput"
           type="search"
+          data-cy="search-input"
           className={`text-white placeholder:text-transparent py-4 pr-16 text-2xl bg-transparent border-t-0 border-l-0 border-r-0 border-white border-b-2 rounded-none focus:border-white focus:ring-0 w-full ${
             !showAnimation ? "placeholder:text-white" : ""
           }`}
@@ -73,7 +74,6 @@ const LandingSearchForm = ({ placeholder, input, handleSearchInput }: IProps) =>
           onBlur={showPlaceholderAnimation}
           placeholder={displayPlaceholder}
           aria-label="Search term"
-          data-cy="search-input"
         />
         {showAnimation && term.length === 0 && <div className="search-animated-placeholder">{displayPlaceholder}</div>}
         {term.length > 0 && (
