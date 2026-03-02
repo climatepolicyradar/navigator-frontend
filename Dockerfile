@@ -1,14 +1,10 @@
-FROM node:24-alpine
+FROM node:24-alpine AS builder
 WORKDIR /app
-
-# Create a non-root user
-RUN addgroup -g 1001 -S nodejs && adduser -S nextjs -u 1001
 
 COPY . .
 RUN npm ci
 
 ARG THEME
-
 ENV THEME=${THEME}
 ENV NODE_ENV=production
 
@@ -17,24 +13,28 @@ ARG GITHUB_SHA
 ENV GITHUB_SHA=${GITHUB_SHA}
 
 # Generate tsconfig.json from template with the selected THEME
-RUN node -e "\
-const fs=require('fs');\
-const tpl=fs.readFileSync('tsconfig.base.json','utf8');\
-fs.writeFileSync('tsconfig.json', tpl.replace(/__THEME__/g, process.env.THEME));\
-"
-# Build Next.js
-RUN npm run build
+RUN sed "s/__THEME__/${THEME}/g" tsconfig.base.json > tsconfig.json
 
-# Copy static files into standalone directory
+RUN npm run build
 RUN cp -r public .next/standalone/public
 RUN cp -r .next/static .next/standalone/.next/static
 
-# Set ownership and switch to non-root user
-RUN chown -R nextjs:nodejs .next/standalone
-USER nextjs
+# Slim runner: Alpine + Node from apk (no npm; smaller than node:24-alpine).
+# For Node 24 use edge; stable (e.g. 3.20) may ship Node 20.
+FROM alpine:3.20
+RUN apk add --no-cache nodejs
+WORKDIR /app
 
-EXPOSE 8080
-CMD ["sh", "-c", "HOSTNAME=0.0.0.0 PORT=8080 node .next/standalone/server.js"]
+RUN addgroup -g 1001 -S nodejs && adduser -S nextjs -u 1001
+COPY --from=builder /app/.next/standalone ./
+RUN chown -R nextjs:nodejs .
+
+USER nextjs
+# Do not set HOSTNAME here; Next.js uses it as bind address. If set to a URL at runtime the server fails.
+ARG PORT=8080
+ENV PORT=${PORT}
+EXPOSE ${PORT}
+CMD ["node", "server.js"]
 
 HEALTHCHECK --interval=30s --timeout=3s --start-period=5s --retries=3 \
-  CMD node -e "require('http').get('http://localhost:8080', (r) => {process.exit(r.statusCode === 200 ? 0 : 1)})"
+  CMD node -e "require('http').get('http://localhost:${PORT}', (r) => {process.exit(r.statusCode === 200 ? 0 : 1)})"
