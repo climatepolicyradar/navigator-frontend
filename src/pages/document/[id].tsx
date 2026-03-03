@@ -1,12 +1,14 @@
 import { GetServerSideProps, InferGetServerSidePropsType } from "next";
 
-import { getFamilyData } from "@/bff/methods/getFamilyData";
 import { FamilyPage as FamilyPageUI } from "@/components/pages/familyPage";
+import { ROBOTS_BLOCKED_SLUGS, X_ROBOTS_TAG_NOINDEX_VALUE } from "@/constants/robots";
 import { withEnvConfig } from "@/context/EnvConfig";
 import { TTheme } from "@/types";
 import { getFeatureFlags } from "@/utils/featureFlags";
 import { getFeatures } from "@/utils/features";
 import { readConfigFile } from "@/utils/readConfigFile";
+
+import { getFamilyData } from "../../bff/methods/getFamilyData";
 
 /*
   # DEV NOTES
@@ -25,6 +27,9 @@ export const getServerSideProps = (async (context) => {
   context.res.setHeader("Cache-Control", "public, max-age=3600, immutable");
 
   const slug = context.params.id as string;
+  if ((ROBOTS_BLOCKED_SLUGS as readonly string[]).includes(slug)) {
+    context.res.setHeader("X-Robots-Tag", X_ROBOTS_TAG_NOINDEX_VALUE);
+  }
 
   const theme = process.env.THEME as TTheme;
   const themeConfig = await readConfigFile(theme);
@@ -32,7 +37,7 @@ export const getServerSideProps = (async (context) => {
   const features = getFeatures(themeConfig, featureFlags);
 
   const { data: familyData, errors } = await getFamilyData(slug, features);
-  errors.forEach(console.error); // eslint-disable-line no-console
+  errors.forEach((err) => console.error(err));
   if (familyData === null) return { notFound: true };
 
   return {

@@ -5,13 +5,13 @@ import Head from "next/head";
 import { useRouter } from "next/router";
 import { useMemo } from "react";
 
-import { getDocumentData } from "@/bff/methods/getDocumentData";
 import { ConceptsDocumentViewer } from "@/components/documents/ConceptsDocumentViewer";
 import { DocumentHead } from "@/components/documents/DocumentHead";
 import Layout from "@/components/layouts/Main";
 import { getDocumentDescription } from "@/constants/metaDescriptions";
 import { MAX_PASSAGES } from "@/constants/paging";
 import { QUERY_PARAMS } from "@/constants/queryParams";
+import { ROBOTS_BLOCKED_SLUGS, X_ROBOTS_TAG_NOINDEX_VALUE } from "@/constants/robots";
 import { withEnvConfig } from "@/context/EnvConfig";
 import { FeaturesContext } from "@/context/FeaturesContext";
 import { TopicsContext } from "@/context/TopicsContext";
@@ -23,6 +23,8 @@ import { getFeatureFlags } from "@/utils/featureFlags";
 import { getFeatures } from "@/utils/features";
 import { getLitigationDocumentJSONLD } from "@/utils/json-ld/getLitigationDocumentJSONLD";
 import { readConfigFile } from "@/utils/readConfigFile";
+
+import { getDocumentData } from "../../bff/methods/getDocumentData";
 
 // If we don't have a query string or a concept selected, we do't have a search
 const isEmptySearch = (query: ParsedUrlQuery) => {
@@ -159,6 +161,9 @@ export const getServerSideProps = (async (context) => {
   context.res.setHeader("Cache-Control", "public, max-age=3600, immutable");
 
   const slug = context.params.id as string;
+  if ((ROBOTS_BLOCKED_SLUGS as readonly string[]).includes(slug)) {
+    context.res.setHeader("X-Robots-Tag", X_ROBOTS_TAG_NOINDEX_VALUE);
+  }
 
   const theme = process.env.THEME as TTheme;
   const themeConfig = await readConfigFile(theme);
@@ -166,7 +171,7 @@ export const getServerSideProps = (async (context) => {
   const features = getFeatures(themeConfig, featureFlags);
 
   const { data: documentData, errors } = await getDocumentData(slug, features);
-  errors.forEach(console.error); // eslint-disable-line no-console
+  errors.forEach((err) => console.error(err));
   if (documentData === null) return { notFound: true };
 
   return {
