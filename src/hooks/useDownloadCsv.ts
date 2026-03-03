@@ -1,6 +1,6 @@
 import { useState } from "react";
 
-import { TLoadingStatus, TSearch } from "@/types";
+import { TApiLoadingStatus, TApiSearch } from "@/types";
 import buildSearchQuery, { TRouterQuery } from "@/utils/buildSearchQuery";
 
 import { ApiClient, getEnvFromServer, getFilters } from "../api/http-common";
@@ -50,7 +50,7 @@ async function getDownloadCsv(query: TRouterQuery) {
   searchQuery.page_size = 500;
   searchQuery.limit = 500;
 
-  const results = await client.post<TSearch>("/searches/download-csv", searchQuery, config);
+  const results = await client.post<TApiSearch>("/searches/download-csv", searchQuery, config);
   if (results.status !== 200) {
     return false;
   }
@@ -65,7 +65,7 @@ async function getDownloadCsv(query: TRouterQuery) {
 }
 
 export function useDownloadCsv() {
-  const [status, setStatus] = useState<TLoadingStatus>("idle");
+  const [status, setStatus] = useState<TApiLoadingStatus>("idle");
 
   const download = async (query: TRouterQuery) => {
     setStatus("loading");

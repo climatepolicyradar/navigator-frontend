@@ -10,12 +10,12 @@ import posthog from "posthog-js";
 import { PostHogProvider as PHProvider, usePostHog } from "posthog-js/react";
 import { Suspense, useEffect } from "react";
 
-interface IProps {
-  children: React.ReactNode;
+type TPostHogPageViewProps = {
   consent?: boolean;
-}
+  pageViewProps?: Record<string, unknown>;
+};
 
-function PostHogPageView({ consent }: { consent: boolean }): null {
+function PostHogPageView({ consent, pageViewProps }: TPostHogPageViewProps): null {
   const pathname = usePathname();
   const searchParams = useSearchParams();
   const posthog = usePostHog();
@@ -48,9 +48,9 @@ function PostHogPageView({ consent }: { consent: boolean }): null {
         geographyType = subdivisionMatcher.test(pathParts[2]) ? "subdivision" : "country";
       }
 
-      posthog.capture("$pageview", { $current_url: url, consent, geographyType, pageType, pageTypeSlug });
+      posthog.capture("$pageview", { $current_url: url, consent, geographyType, pageType, pageTypeSlug, ...pageViewProps });
     }
-  }, [pathname, searchParams, posthog, consent]);
+  }, [pathname, searchParams, posthog, consent, pageViewProps]);
 
   return null;
 }
@@ -68,7 +68,13 @@ export function SuspendedPostHogPageView() {
   );
 }
 
-export function PostHogProvider({ children, consent = false }: IProps) {
+type TPostHogProviderProps = {
+  children: React.ReactNode;
+  consent?: boolean;
+  pageViewProps?: Record<string, unknown>;
+};
+
+export function PostHogProvider({ children, consent = false, pageViewProps = {} }: TPostHogProviderProps) {
   /**
    * The sessionStorage is read by tag manager to not re-init posthog
    * We don't use something like posthog.__loaded as posthog isn't available on the window
@@ -98,7 +104,7 @@ export function PostHogProvider({ children, consent = false }: IProps) {
 
   return (
     <PHProvider client={posthog}>
-      <PostHogPageView consent={consent} />
+      <PostHogPageView consent={consent} pageViewProps={pageViewProps} />
       {children}
     </PHProvider>
   );

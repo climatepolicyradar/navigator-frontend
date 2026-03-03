@@ -1,2 +1,5 @@
-// Ensure no trailing slash on hostname - no guarantee that it will be present. Better to not assume either way.
-export const getHostnameForJSONLD = () => process.env.HOSTNAME?.replace(/\/$/, "") || "";
+/**
+ * Public app origin for JSON-LD canonical URLs (e.g. https://cpr.staging.climatepolicyradar.org).
+ * Uses APP_URL only — do not use HOSTNAME here; Next.js reserves HOSTNAME for the server bind address.
+ */
+export const getAppUrlForJSONLD = (): string => (process.env.APP_URL ?? "").replace(/\/$/, "") || "";

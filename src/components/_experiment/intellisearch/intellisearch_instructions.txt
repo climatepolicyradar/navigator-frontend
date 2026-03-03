@@ -1,0 +1,27 @@
+I want you to create an intelligent search component.
+
+The component should load data for concepts that we can then use within the component for suggestions base upon the user's search string. The data should be loaded from this endpoint and stored in state momoized: https://api.climatepolicyradar.org/concepts/search?limit=10000&has_classifier=true
+
+The requirements of the intelligent search are:
+
+- the component should include an input box that accepts user type input
+- under the input box, but still part of the search component there needs to be a list of suggested options for the user to hover over
+- there should be a debounce that waits for the user to stop typing in order to call a lookup to this API to find any matching labels: https://api.climatepolicyradar.org/search/labels?query=
+- any matching labels should display the ID under the input box as a suggestion, with the formatting of "{ID} — Label"
+- we should also lookup any matches from the concepts data we have loaded, we should check for relevant matches within both the "preferred_label" field, as well as any of the "alternative_labels" values within the concept
+- any concept matches should display the following formatting "{preferred_label} - Concept" if the match is on any of the alternative labels we should include the formatting "(matched on {alternative label})"
+- when the user hovers their mouse over the concept I want to display the baseUI preview card, this should display the following data from the concept object: preferred_label, definition, alternative_labels
+- the preview should be styled to appear over the top and to the right of the suggested list, the preview should always display in the same location regardless of which option is hovered over in the list of suggestions
+- the list of suggestions should stay visible whilst the user is either has focus in the input box, or their mouse stays within the overall search component. When the user unfocuses from the input and their mouse leaves the search component - the suggestions should hide
+- if the user refocuses on the input box the suggestions should re-appear
+- if the user has not typed anything the suggestions should not appear (be sure to check using .trim())
+
+I want the component to be a react component, use base-ui and tailwind for styling and use modern hover and shadow effects to give a sense of verticality from the web page. the interaction should be smooth and slick but not too much, use Apple's interactivity as a source of inspiration.
+
+The code should be modular and easy for a developer to maintain and to add functionality to later, as well as include comments for any sections of the code that is complex.
+
+Keep all the code within a single file as part of the first pass - the component should be created within the folder: "components/\_experiement/intellisearch"
+
+The code should be written in typescript with associated types defined for the data used.
+
+I also want a corresponding storybook story to be created alongside the component so that we may review the component in isolation.

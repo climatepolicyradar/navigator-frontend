@@ -3,7 +3,7 @@ import { GetServerSideProps, InferGetServerSidePropsType } from "next";
 import Head from "next/head";
 import { useState } from "react";
 
-import { ApiClient } from "@/api/http-common";
+import { getCollectionData } from "@/bff/methods/getCollectionData";
 import { FiveColumns } from "@/components/atoms/columns/FiveColumns";
 import { EventsBlock } from "@/components/blocks/eventsBlock/EventsBlock";
 import { FamilyBlock } from "@/components/blocks/familyBlock/FamilyBlock";
@@ -16,20 +16,13 @@ import { ContentsSideBar, ISideBarItem } from "@/components/organisms/contentsSi
 import { PageHeader } from "@/components/organisms/pageHeader/PageHeader";
 import { withEnvConfig } from "@/context/EnvConfig";
 import { FeaturesContext } from "@/context/FeaturesContext";
-import { TCollectionPublicWithFamilies, TFeatures, TTheme, TThemeConfig } from "@/types";
+import { TTheme } from "@/types";
 import { getCaseFirstDocumentDate, getCaseNumbers, getCourts } from "@/utils/eventTable";
 import { getFeatureFlags } from "@/utils/featureFlags";
 import { getFeatures } from "@/utils/features";
 import { getCollectionMetadata } from "@/utils/getCollectionMetadata";
 import { getLitigationCollectionJSONLD } from "@/utils/json-ld/getLitigationCollectionJSONLD";
 import { readConfigFile } from "@/utils/readConfigFile";
-
-interface IProps {
-  collection: TCollectionPublicWithFamilies;
-  theme: TTheme;
-  themeConfig: TThemeConfig;
-  features: TFeatures;
-}
 
 type TCollectionTabId = "about" | "cases" | "procedural history"; // Don't rename, add a label instead (else analytics break)
 const COLLECTION_TABS: TToggleGroupToggle<TCollectionTabId>[] = [{ id: "cases" }, { id: "procedural history" }, { id: "about" }];
@@ -69,7 +62,7 @@ const CollectionPage = ({ collection, theme, themeConfig, features }: InferGetSe
             <>
               <div className="col-start-1 cols-4:col-end-3 -col-end-1" />
               <main className="pb-8 grid grid-cols-subgrid gap-y-8 col-start-1 -col-end-1 cols-4:col-start-3">
-                <TextBlock block="summary" title="Summary">
+                <TextBlock context="summary-block" block="summary" title="Summary">
                   <div className="text-content" dangerouslySetInnerHTML={{ __html: collection.description }} />
                 </TextBlock>
                 <MetadataBlock block="metadata" metadata={getCollectionMetadata(collection)} />
@@ -99,7 +92,9 @@ export default CollectionPage;
 export const getServerSideProps = (async (context) => {
   context.res.setHeader("Cache-Control", "public, max-age=3600, immutable");
 
-  const theme = process.env.THEME;
+  const slug = context.params.id as string;
+
+  const theme = process.env.THEME as TTheme;
   const themeConfig = await readConfigFile(theme);
   const featureFlags = getFeatureFlags(context.req.cookies);
   const features = getFeatures(themeConfig, featureFlags);
@@ -108,25 +103,13 @@ export const getServerSideProps = (async (context) => {
     return { notFound: true };
   }
 
-  let collectionData: TCollectionPublicWithFamilies;
-
-  try {
-    const apiClient = new ApiClient(process.env.CONCEPTS_API_URL);
-    const id = context.params.id;
-    const { data: slugData } = await apiClient.get(`/families/slugs/${id}`);
-    const collection_import_id = slugData.data.collection_import_id;
-
-    const { data: collectionResponse } = await apiClient.get(`/families/collections/${collection_import_id}`);
-    collectionData = collectionResponse.data;
-  } catch (error) {}
-
-  if (!collectionData) {
-    return { notFound: true };
-  }
+  const { data: collectionData, errors } = await getCollectionData(slug, features);
+  errors.forEach(console.error); // eslint-disable-line no-console
+  if (collectionData === null) return { notFound: true };
 
   return {
     props: withEnvConfig({
-      collection: collectionData,
+      ...collectionData,
       theme,
       themeConfig,
       features,

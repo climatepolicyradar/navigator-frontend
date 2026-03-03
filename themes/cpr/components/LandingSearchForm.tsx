@@ -4,6 +4,8 @@ import { Button } from "@/components/atoms/button/Button";
 import { Icon } from "@/components/atoms/icon/Icon";
 import { SearchDropdown } from "@/components/forms/SearchDropdown";
 
+export const CPR_DOCUMENT_COUNT = 30_000;
+
 interface IProps {
   placeholder?: string;
   handleSearchInput(term: string, filter?: string, filterValue?: string): void;
@@ -49,11 +51,10 @@ const LandingSearchForm = ({ placeholder, input, handleSearchInput }: IProps) =>
     };
   }, [formRef]);
 
-  const displayPlaceholder = placeholder ?? "Search the full text of over 12,000 climate documents";
+  const displayPlaceholder = placeholder ?? `Search the full text of over ${CPR_DOCUMENT_COUNT.toLocaleString()} climate documents`;
 
   return (
     <form
-      data-cy="search-form"
       ref={formRef}
       onSubmit={(e) => {
         e.preventDefault();
@@ -78,7 +79,7 @@ const LandingSearchForm = ({ placeholder, input, handleSearchInput }: IProps) =>
         />
         {showAnimation && term.length === 0 && <div className="search-animated-placeholder">{displayPlaceholder}</div>}
         {term.length > 0 && (
-          <div data-cy="search-clear-button" className="flex mx-2 shrink-0 absolute top-0 right-0 mr-11.5 z-20 h-full items-center">
+          <div className="flex mx-2 shrink-0 absolute top-0 right-0 mr-11.5 z-20 h-full items-center">
             <Button
               content="icon"
               color="mono"

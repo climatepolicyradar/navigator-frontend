@@ -57,7 +57,7 @@ export const CookieConsent = ({ onConsentChange, themeConfig }: IProps) => {
 
   return (
     <>
-      <div className={`flex justify-end ${hide ? "hidden" : ""}`} data-cy="cookie-consent">
+      <div className={`flex justify-end ${hide ? "hidden" : ""}`}>
         <Card color="mono" variant="outlined" className="m-3 sm:m-4 max-w-[550px] bg-surface-ui pointer-events-auto select-none">
           <p className="text-base leading-normal font-semibold text-text-primary">Cookies and your privacy</p>
           <p className="mt-2 mb-4 text-sm leading-normal font-normal text-text-primary">
@@ -73,13 +73,7 @@ export const CookieConsent = ({ onConsentChange, themeConfig }: IProps) => {
             to learn more. By accepting cookies you will help us make our site better, but you can reject them if you wish.
           </p>
           <div className="flex gap-2">
-            <Button
-              color="mono"
-              size="small"
-              onClick={cookiesAcceptHandler}
-              data-cy="cookie-consent-accept"
-              data-ph-capture-attribute-cookie-consent="accept"
-            >
+            <Button color="mono" size="small" onClick={cookiesAcceptHandler} title="Accept cookies" data-ph-capture-attribute-cookie-consent="accept">
               Accept
             </Button>
             <Button
@@ -88,7 +82,7 @@ export const CookieConsent = ({ onConsentChange, themeConfig }: IProps) => {
               variant="ghost"
               className="text-text-secondary hover:text-text-primary"
               onClick={cookiesRejectHandler}
-              data-cy="cookie-consent-reject"
+              title="Reject cookies"
               data-ph-capture-attribute-cookie-consent="reject"
             >
               Reject

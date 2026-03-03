@@ -44,7 +44,7 @@ import { useDownloadCsv } from "@/hooks/useDownloadCsv";
 import { useHashNavigation } from "@/hooks/useHashNavigation";
 import useSearch from "@/hooks/useSearch";
 import { useText } from "@/hooks/useText";
-import { TTopic, TTheme, TTopics } from "@/types";
+import { TTopic, TTheme, TTopics, TApiTopic } from "@/types";
 import { FamilyConcept, mapFamilyConceptsToConcepts } from "@/utils/familyConcepts";
 import { getFeatureFlags } from "@/utils/featureFlags";
 import { getFeatures } from "@/utils/features";
@@ -74,7 +74,7 @@ const showLitigationInformation = (query: ParsedUrlQuery) => {
 
 // We want to show the KG information under certain rules
 const showKnowledgeGraphInformation = (query: ParsedUrlQuery) => {
-  let show = false;
+  const show = false;
   // If we have multiple topics/concepts selected
   if (query[QUERY_PARAMS.concept_name]) return true;
   // If we have a query AND a concept selected
@@ -467,7 +467,6 @@ const Search = ({ familyConceptsData, features, theme, themeConfig, topicsData }
                           e.preventDefault();
                           setShowCSVDownloadPopup(true);
                         }}
-                        data-ph-capture-attribute-link-purpose="download-search"
                         aria-label="Download search results as CSV"
                       >
                         {downloadCSVStatus === "loading" ? <Icon name="loading" /> : "this search"}
@@ -800,7 +799,11 @@ const Search = ({ familyConceptsData, features, theme, themeConfig, topicsData }
                 </MultiCol>
               </section>
               <Slideout show={drawerFamily !== false} setShow={setDrawerFamily}>
-                <FamilyMatchesDrawer family={drawerFamily !== false && families[drawerFamily as number]} />
+                <FamilyMatchesDrawer
+                  family={drawerFamily !== false && families[drawerFamily as number]}
+                  position={(drawerFamily as number) + 1}
+                  positionOffset={offset}
+                />
               </Slideout>
               <DownloadCsvPopup isOpen={showCSVDownloadPopup} onClose={() => setShowCSVDownloadPopup(false)} onDownload={handleDownloadCsvClick} />
             </WikiBaseConceptsContext.Provider>
@@ -816,7 +819,7 @@ export default Search;
 export const getServerSideProps = (async (context) => {
   context.res.setHeader("Cache-Control", "public, max-age=3600, immutable");
 
-  const theme = process.env.THEME;
+  const theme = process.env.THEME as TTheme;
   const themeConfig = await readConfigFile(theme);
   const featureFlags = getFeatureFlags(context.req.cookies);
   const features = getFeatures(themeConfig, featureFlags);
@@ -824,14 +827,14 @@ export const getServerSideProps = (async (context) => {
   const client = new ApiClient(process.env.CONCEPTS_API_URL);
 
   let topicsData: TTopics = { rootTopics: [], topics: [] };
-  let familyConceptsData: TTopic[] | undefined;
+  let familyConceptsData: TApiTopic[] | undefined;
 
   try {
-    const { data: topicsResponse } = await client.get<TTopic[]>(`/concepts/search?limit=10000&has_classifier=true`);
+    const { data: topicsResponse } = await client.get<TApiTopic[]>(`/concepts/search?limit=10000&has_classifier=true`);
     topicsData = await fetchAndProcessTopics(topicsResponse.map((topic) => topic.wikibase_id));
 
     if (features.familyConceptsSearch) {
-      const familyConceptsResponse = await fetch(`${process.env.CONCEPTS_API_URL}/families/concepts`);
+      const familyConceptsResponse = await fetch(`${process.env.CONCEPTS_API_URL}/families/concepts?exclude_deleted=true`);
       const familyConceptsJson: { data: FamilyConcept[] } = await familyConceptsResponse.json();
       familyConceptsData = mapFamilyConceptsToConcepts(familyConceptsJson.data);
     }
@@ -841,11 +844,14 @@ export const getServerSideProps = (async (context) => {
 
   return {
     props: withEnvConfig({
-      familyConceptsData: familyConceptsData ?? null,
+      familyConceptsData: (familyConceptsData as TTopic[]) ?? null,
       features,
       theme,
       themeConfig,
       topicsData,
+      posthogPageViewProps: {
+        search_version: "v1",
+      },
     }),
   };
 }) satisfies GetServerSideProps;

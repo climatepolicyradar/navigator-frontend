@@ -4,18 +4,16 @@ import { fileURLToPath } from "url";
 import globals from "globals";
 
 import js from "@eslint/js";
-import nextPackage from "@next/eslint-plugin-next";
-
-const __dirname = path.dirname(fileURLToPath(import.meta.url));
-const { flatConfig: nextFlatConfig } = nextPackage;
 import tsParser from "@typescript-eslint/parser";
 import importPlugin from "eslint-plugin-import";
-import jsxA11yPlugin from "eslint-plugin-jsx-a11y";
 import reactPlugin from "eslint-plugin-react";
 import reactHooksPlugin from "eslint-plugin-react-hooks";
 import storybookPlugin from "eslint-plugin-storybook";
 import tseslint from "typescript-eslint";
 import eslintConfigPrettier from "eslint-config-prettier/flat";
+import nextCoreWebVitals from "eslint-config-next/core-web-vitals";
+
+const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
 const tseslintConfigs = tseslint.configs;
 
@@ -47,9 +45,7 @@ const eslintConfig = [
   ...(Array.isArray(tseslintConfigs.recommended) ? tseslintConfigs.recommended : [tseslintConfigs.recommended]),
   reactPlugin.configs.flat.recommended,
   reactPlugin.configs.flat["jsx-runtime"],
-  jsxA11yPlugin.flatConfigs.recommended,
-  nextFlatConfig.recommended,
-  nextFlatConfig.coreWebVitals,
+  ...nextCoreWebVitals,
   {
     files: ["**/*.{js,mjs,cjs,ts,jsx,tsx}"],
     languageOptions: {

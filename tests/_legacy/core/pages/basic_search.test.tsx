@@ -16,7 +16,7 @@ const baseSearchProps: TSearchPageProps = {
     CONCEPTS_API_URL: "",
     ADOBE_API_KEY: "",
     REDIRECT_FILE: "",
-    HOSTNAME: "",
+    APP_URL: "",
   },
   familyConceptsData: null,
   features: DEFAULT_FEATURES,
@@ -25,6 +25,7 @@ const baseSearchProps: TSearchPageProps = {
     ...cprConfig,
   },
   topicsData: { rootTopics: [], topics: [] },
+  posthogPageViewProps: { search_version: "v1" },
 };
 
 describe("SearchPage", async () => {

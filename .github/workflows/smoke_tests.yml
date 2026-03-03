@@ -33,25 +33,62 @@ jobs:
       PLAYWRIGHT_BROWSERS_PATH: $HOME/.cache/ms-playwright
     steps:
       - uses: actions/checkout@v6
+
       - uses: actions/setup-node@v6
         with:
           node-version: 22.12.0
+          cache: npm
+
       - run: npm ci
+
       - run: cp .env.example .env
+
+      - name: Generate tsconfig.json
+        run: |
+          cp tsconfig.base.json tsconfig.json
+          sed -i "s/__THEME__/${{ github.event.inputs.theme }}/g" tsconfig.json
+
+      - name: Cache Next.js build
+        uses: actions/cache@v5
+        with:
+          path: .next/cache
+          key: ${{ runner.os }}-nextjs-${{ github.event.inputs.theme }}-${{ hashFiles('**/package-lock.json') }}-${{ hashFiles('src/**') }}
+          restore-keys: |
+            ${{ runner.os }}-nextjs-${{ github.event.inputs.theme }}-${{ hashFiles('**/package-lock.json') }}-
+
       - run: THEME=${{ github.event.inputs.theme }} npm run build
         env:
           NODE_ENV: production
 
       - name: Cache Playwright browsers
         uses: actions/cache@v5
+        id: playwright-cache
         with:
           path: ${{ env.PLAYWRIGHT_BROWSERS_PATH }}
           key: ${{ runner.os }}-playwright-${{ hashFiles('**/package-lock.json') }}
 
-      - run: npx playwright install --with-deps
+      - name: Install Playwright Browsers
+        if: steps.playwright-cache.outputs.cache-hit != 'true'
+        run: npx playwright install --with-deps chromium
         env:
           PLAYWRIGHT_BROWSERS_PATH: ${{ env.PLAYWRIGHT_BROWSERS_PATH }}
-      - run: npx playwright test tests/core/ tests/${{ github.event.inputs.theme }}/ --shard=${{ matrix.shard }}/2
+        timeout-minutes: 5
+
+      - name: Install Playwright System Dependencies
+        if: steps.playwright-cache.outputs.cache-hit == 'true'
+        run: npx playwright install-deps chromium
+        env:
+          PLAYWRIGHT_BROWSERS_PATH: ${{ env.PLAYWRIGHT_BROWSERS_PATH }}
+        timeout-minutes: 2
+        continue-on-error: true
+
+      - name: Verify Playwright Installation
+        run: npx playwright install chromium --dry-run || npx playwright install chromium
+        env:
+          PLAYWRIGHT_BROWSERS_PATH: ${{ env.PLAYWRIGHT_BROWSERS_PATH }}
+        timeout-minutes: 3
+
+      - run: npx playwright test tests/${{ github.event.inputs.theme }}/ --shard=${{ matrix.shard }}/2
         env:
           PLAYWRIGHT_ENV: ${{ format('{0}_{1}', github.event.inputs.theme, github.event.inputs.environment) }}
           THEME: ${{ github.event.inputs.theme }}
