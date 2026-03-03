@@ -78,7 +78,7 @@ const LandingSearchForm = ({ placeholder, input, handleSearchInput }: IProps) =>
         />
         {showAnimation && term.length === 0 && <div className="search-animated-placeholder">{displayPlaceholder}</div>}
         {term.length > 0 && (
-          <div data-cy="search-clear-button" className="flex mx-2 shrink-0 absolute top-0 right-0 mr-11.5 z-20 h-full items-center">
+          <div className="flex mx-2 shrink-0 absolute top-0 right-0 mr-11.5 z-20 h-full items-center">
             <Button
               content="icon"
               color="mono"
