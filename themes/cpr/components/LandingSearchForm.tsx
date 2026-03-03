@@ -4,6 +4,8 @@ import { Button } from "@/components/atoms/button/Button";
 import { Icon } from "@/components/atoms/icon/Icon";
 import { SearchDropdown } from "@/components/forms/SearchDropdown";
 
+export const CPR_DOCUMENT_COUNT = 30_000;
+
 interface IProps {
   placeholder?: string;
   handleSearchInput(term: string, filter?: string, filterValue?: string): void;
@@ -49,7 +51,7 @@ const LandingSearchForm = ({ placeholder, input, handleSearchInput }: IProps) =>
     };
   }, [formRef]);
 
-  const displayPlaceholder = placeholder ?? "Search the full text of over 12,000 climate documents";
+  const displayPlaceholder = placeholder ?? `Search the full text of over ${CPR_DOCUMENT_COUNT.toLocaleString()} climate documents`;
 
   return (
     <form

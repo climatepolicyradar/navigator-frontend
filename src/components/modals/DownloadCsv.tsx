@@ -22,7 +22,9 @@ export const DownloadCsvPopup = ({ isOpen, onClose, onDownload }: IProps) => {
         with any questions. Note that the actual number of entries returned may be 1 or 2 below the total indicated on the search results page.
       </p>
       <div className="flex gap-2">
-        <Button onClick={onDownload}>Download</Button>
+        <Button onClick={onDownload} data-ph-capture-attribute-link-purpose="download-search">
+          Download
+        </Button>
         <Button onClick={onClose} variant="ghost">
           Cancel
         </Button>

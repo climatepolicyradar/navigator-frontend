@@ -467,7 +467,6 @@ const Search = ({ familyConceptsData, features, theme, themeConfig, topicsData }
                           e.preventDefault();
                           setShowCSVDownloadPopup(true);
                         }}
-                        data-ph-capture-attribute-link-purpose="download-search"
                         aria-label="Download search results as CSV"
                       >
                         {downloadCSVStatus === "loading" ? <Icon name="loading" /> : "this search"}
@@ -800,7 +799,11 @@ const Search = ({ familyConceptsData, features, theme, themeConfig, topicsData }
                 </MultiCol>
               </section>
               <Slideout show={drawerFamily !== false} setShow={setDrawerFamily}>
-                <FamilyMatchesDrawer family={drawerFamily !== false && families[drawerFamily as number]} />
+                <FamilyMatchesDrawer
+                  family={drawerFamily !== false && families[drawerFamily as number]}
+                  position={(drawerFamily as number) + 1}
+                  positionOffset={offset}
+                />
               </Slideout>
               <DownloadCsvPopup isOpen={showCSVDownloadPopup} onClose={() => setShowCSVDownloadPopup(false)} onDownload={handleDownloadCsvClick} />
             </WikiBaseConceptsContext.Provider>

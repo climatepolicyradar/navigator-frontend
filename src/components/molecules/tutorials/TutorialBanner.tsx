@@ -24,6 +24,7 @@ export const TutorialBanner = ({ name, banner: { buttonPrimary, buttonSecondary,
         <TutorialButton
           {...buttonPrimary}
           actions={buttonActions}
+          name={name}
           use="banner"
           className="border-border-light/75 hover:border-border-light hover:bg-transparent! text-text-light"
         />
@@ -31,6 +32,7 @@ export const TutorialBanner = ({ name, banner: { buttonPrimary, buttonSecondary,
           <TutorialButton
             {...buttonSecondary}
             actions={buttonActions}
+            name={name}
             use="banner"
             className="text-text-light/75 hover:text-text-light hover:bg-transparent!"
           />

@@ -15,9 +15,11 @@ import { truncateString } from "@/utils/truncateString";
 
 interface IProps {
   family?: TMatchedFamily;
+  position: number;
+  positionOffset: number;
 }
 
-export const FamilyMatchesDrawer = ({ family }: IProps) => {
+export const FamilyMatchesDrawer = ({ family, position, positionOffset }: IProps) => {
   const router = useRouter();
   const features = useContext(FeaturesContext);
 
@@ -98,7 +100,12 @@ export const FamilyMatchesDrawer = ({ family }: IProps) => {
                   </span>
                   {document.document_title}
                 </LinkWithQuery>
-                <PassageMatches passages={document.document_passage_matches.slice(0, 5)} onClick={(index) => onPassageClick(index, docIndex)} />
+                <PassageMatches
+                  passages={document.document_passage_matches.slice(0, 5)}
+                  onClick={(index) => onPassageClick(index, docIndex)}
+                  position={position}
+                  positionOffset={positionOffset}
+                />
                 <Button
                   rounded
                   variant="outlined"
