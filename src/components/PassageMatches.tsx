@@ -49,7 +49,7 @@ const PassageMatches = ({ passages, onClick, pageColour = "textDark", position, 
               key={item.text_block_id}
               data-analytics="document-passage-result"
               id={`passage-${index}`}
-              className="mb-2"
+              className="mb-2 hide-in-percy"
               onClick={() => posthog.capture("Passage matches click", { index })}
               data-ph-capture-attribute-position-page={hasPosition ? position : undefined}
               data-ph-capture-attribute-position-total={hasPosition ? positionOffset + position : undefined}

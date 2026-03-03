@@ -33,3 +33,9 @@
     font-family: InterVariable, sans-serif;
   }
 }
+
+@media only percy {
+  .hide-in-percy {
+    visibility: hidden;
+  }
+}

@@ -54,7 +54,7 @@ const SearchResultList = ({ category, families, activeFamilyIndex, onClick, offs
   }
   return (
     <>
-      <ol className="divide-y flex flex-col gap-6" data-cy="search-result">
+      <ol className="divide-y flex flex-col gap-6" aria-label="Search results">
         {families?.map((family, index: number) => (
           <SearchResult
             active={activeFamilyIndex === index}
