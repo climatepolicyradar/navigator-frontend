@@ -193,7 +193,7 @@ const getDocumentCell = (
           <div>{getDocumentLink(document, hasMatches, isMainDocument, isLitigation)}</div>
           {event?.metadata.action_taken?.[0] && <div className="italic">{event.metadata.action_taken[0]}</div>}
           {event?.metadata.description?.[0] && (
-            <ViewMore maxLines={4} onButtonClick={overrideViewMore ? () => {} : undefined}>
+            <ViewMore context="event-table-document-cell" maxLines={4} onButtonClick={overrideViewMore ? () => {} : undefined}>
               {event.metadata.description[0]}
             </ViewMore>
           )}

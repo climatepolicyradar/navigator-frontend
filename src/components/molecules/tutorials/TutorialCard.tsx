@@ -7,9 +7,9 @@ import { TutorialContext } from "@/context/TutorialContext";
 import { TTutorialButtonAction, TTutorialCard, TTutorialName } from "@/types";
 
 interface IProps {
-  className?: string;
   name: TTutorialName;
   card: TTutorialCard;
+  className?: string;
 }
 
 export const TutorialCard = ({ className, name, card: { buttonPrimary, buttonSecondary, close, text, title } }: IProps) => {
@@ -37,6 +37,7 @@ export const TutorialCard = ({ className, name, card: { buttonPrimary, buttonSec
         <TutorialButton
           {...buttonPrimary}
           actions={buttonActions}
+          name={name}
           use="card"
           className="border-border-light/75 hover:border-border-light hover:bg-transparent! text-text-light"
         />
@@ -44,6 +45,7 @@ export const TutorialCard = ({ className, name, card: { buttonPrimary, buttonSec
           <TutorialButton
             {...buttonSecondary}
             actions={buttonActions}
+            name={name}
             use="card"
             className="text-text-light/75 hover:text-text-light hover:bg-transparent!"
           />

@@ -10,11 +10,13 @@ interface IProps {
   passages: TPassage[];
   onClick: (index: number) => void;
   pageColour?: string;
+  position?: number;
+  positionOffset?: number;
 }
 
 const COPY_TIMEOUT = 1000;
 
-const PassageMatches = ({ passages, onClick, pageColour = "textDark" }: IProps) => {
+const PassageMatches = ({ passages, onClick, pageColour = "textDark", position, positionOffset }: IProps) => {
   const [hasCopied, setHasCopied] = useState<number | null>(null);
 
   const copyOnClick = (e: React.MouseEvent<HTMLDivElement>, index: number, text: string) => {
@@ -32,6 +34,7 @@ const PassageMatches = ({ passages, onClick, pageColour = "textDark" }: IProps) 
   }, [hasCopied]);
 
   const posthog = usePostHog();
+  const hasPosition = typeof position === "number" && typeof positionOffset === "number";
 
   return (
     <>
@@ -48,6 +51,8 @@ const PassageMatches = ({ passages, onClick, pageColour = "textDark" }: IProps) 
               id={`passage-${index}`}
               className="mb-2 hide-in-percy"
               onClick={() => posthog.capture("Passage matches click", { index })}
+              data-ph-capture-attribute-position-page={hasPosition ? position : undefined}
+              data-ph-capture-attribute-position-total={hasPosition ? positionOffset + position : undefined}
             >
               <div
                 className={`p-4 cursor-pointer border border-gray-300 rounded-md bg-white hover:border-gray-500`}
