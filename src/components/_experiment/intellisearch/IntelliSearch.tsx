@@ -247,7 +247,7 @@ export function IntelliSearch({
       {/* Input Field */}
       <div
         className={joinTailwindClasses(
-          "w-full rounded-lg border border-gray-300 bg-white px-4 py-3",
+          "w-full rounded-lg border border-gray-300 bg-white px-4 py-3 relative",
           "shadow-sm transition-all duration-200",
           "hover:border-gray-400",
           "focus-within:border-blue-500 focus-within:ring-2 focus-within:ring-blue-100 focus-within:shadow-md"
@@ -273,7 +273,7 @@ export function IntelliSearch({
 
       {/* Loading Indicator */}
       {isLoadingLabels && (
-        <div className="absolute right-4 top-3.5">
+        <div className="absolute right-6 top-6">
           <div className="h-5 w-5 animate-spin rounded-full border-2 border-gray-300 border-t-blue-500" />
         </div>
       )}
