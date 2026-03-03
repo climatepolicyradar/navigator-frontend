@@ -94,7 +94,13 @@ export const GeographyPage = ({ geographyV2, parentGeographyV2, targets, theme, 
         if (legislativeProcess.length === 0) return null;
 
         return (
-          <TextBlock key="legislative-process" block="legislativeProcess" title="Legislative process" maxHeight={168}>
+          <TextBlock
+            key="legislative-process"
+            context="legislative-process-block"
+            block="legislativeProcess"
+            title="Legislative process"
+            maxHeight={168}
+          >
             <div className="text-content" dangerouslySetInnerHTML={{ __html: legislativeProcess }} />
           </TextBlock>
         );

@@ -25,7 +25,7 @@ export const NoteBlock = ({ corpusId, corpusTypes }: IProps) => {
             <img className="col-span-2 max-w-40 mt-2" src={`${corpusImage}`} alt={corpusAltImage} />
           </>
         )}
-        <ViewMore containerClasses={viewMoreClasses}>
+        <ViewMore context="note-block" containerClasses={viewMoreClasses}>
           <div className="text-content" dangerouslySetInnerHTML={{ __html: corpusNote }}></div>
         </ViewMore>
       </div>

@@ -62,7 +62,7 @@ export const DocumentDrawer = ({ documentImportId, family, familyTopics, languag
       metadata.push({
         label: "Summary",
         value: (
-          <ViewMore maxLines={5} buttonText={["Read more", "Read less"]}>
+          <ViewMore context="document-drawer" maxLines={5} buttonText={["Read more", "Read less"]}>
             {event.metadata.description?.[0]}
           </ViewMore>
         ),
