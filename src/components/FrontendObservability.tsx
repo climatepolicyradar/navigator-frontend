@@ -8,7 +8,7 @@ export const FrontendObservability = (): null => {
   if (faro.api) return null;
 
   try {
-    const faro = initializeFaro({
+    initializeFaro({
       url: "https://faro-collector-prod-gb-south-0.grafana.net/collect/74f6d4bd78b7bb2cc270036193aaa3a6",
       app: {
         name: "cpr-frontend",
@@ -25,7 +25,7 @@ export const FrontendObservability = (): null => {
         new TracingInstrumentation(),
       ],
     });
-  } catch (e) {
+  } catch (error) {
     return null;
   }
   return null;
