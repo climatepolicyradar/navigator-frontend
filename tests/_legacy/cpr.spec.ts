@@ -1,10 +1,14 @@
 import { test, expect } from "@playwright/test";
 
+import { CPR_DOCUMENT_COUNT } from "@/cpr/components/LandingSearchForm";
+
 // Helper to match app's URL encoding behavior
 function urlify(str: string) {
   // The app uses encodeURIComponent but replaces %20 with + for spaces
   return encodeURIComponent(str).replace(/%20/g, "+");
 }
+
+const searchPlaceholder = `Search the full text of over ${CPR_DOCUMENT_COUNT} climate documents`;
 
 /**
  * CPR Hero Search E2E Tests
@@ -30,7 +34,7 @@ test.describe("CPR Hero Search", () => {
 
     // Verify we're on the CPR homepage by checking the Alpha logo
     await expect(page.locator('[data-cy="cpr-logo"]')).toBeVisible();
-    await expect(page.locator('[data-cy="search-input"]')).toHaveAttribute("placeholder", "Search the full text of over 12,000 climate documents");
+    await expect(page.locator('[data-cy="search-input"]')).toHaveAttribute("placeholder", searchPlaceholder);
   });
 
   test("should display CPR Hero page with search functionality", async ({ page }) => {
@@ -40,7 +44,7 @@ test.describe("CPR Hero Search", () => {
     // Search input
     const searchInput = page.locator('[data-cy="search-input"]');
     await expect(searchInput).toBeVisible();
-    await expect(searchInput).toHaveAttribute("placeholder", "Search the full text of over 12,000 climate documents");
+    await expect(searchInput).toHaveAttribute("placeholder", searchPlaceholder);
 
     // Search button
     const searchButton = page.locator('button[aria-label="Search"]');
@@ -63,7 +67,7 @@ test.describe("CPR Hero Search", () => {
     // Should not crash - should redirect to /search
     await expect(page).not.toHaveURL(/e=true/);
     await expect(page).toHaveURL(/search/);
-    await expect(page.getByText("Search the full text of over 12,000 climate documents")).not.toBeVisible();
+    await expect(page.getByText(searchPlaceholder)).not.toBeVisible();
   });
 
   test("should perform search with user input via search button", async ({ page }) => {
