@@ -1,8 +1,7 @@
 import { trace } from "@opentelemetry/api";
 import { NextRequest, NextResponse } from "next/server";
 
-export function middleware(request: NextRequest) {
-  console.log("middleware");
+export default function middleware(request: NextRequest) {
   const response = NextResponse.next();
   const current = trace.getActiveSpan();
 

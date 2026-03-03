@@ -4,11 +4,8 @@ import { faro, getWebInstrumentations, initializeFaro } from "@grafana/faro-web-
 import { TracingInstrumentation } from "@grafana/faro-web-tracing";
 
 export const FrontendObservability = (): null => {
-  console.log("FrontendObservability");
   // skip if already initialized
-  if (faro.api) {
-    return null;
-  }
+  if (faro.api) return null;
 
   try {
     const faro = initializeFaro({

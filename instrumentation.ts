@@ -2,17 +2,12 @@ import { Context } from "@opentelemetry/api";
 import { ReadableSpan, Span, SpanProcessor } from "@opentelemetry/sdk-trace-node";
 import { registerOTel } from "@vercel/otel";
 
-/**
- * Span processor to reduce cardinality of span names.
- *
- * Customize with care!
- */
+// Span processor to reduce cardinality of span names. Customize with care!
 class SpanNameProcessor implements SpanProcessor {
   forceFlush(): Promise<void> {
     return Promise.resolve();
   }
   onStart(span: Span, parentContext: Context): void {
-    console.log("SpanNameProcessor", "onStart");
     if (span.name.startsWith("GET /_next/static")) {
       span.updateName("GET /_next/static");
     } else if (span.name.startsWith("GET /_next/data")) {
