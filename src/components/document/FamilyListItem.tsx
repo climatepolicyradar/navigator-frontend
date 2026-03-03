@@ -61,17 +61,18 @@ export const FamilyListItem: FC<IProps> = ({
           {...(corpus_type_name === "Reports" ? { author: (family_metadata as { author: string[] }).author } : {})}
         />
       </div>
-      <LinkWithQuery
-        href={`/document/${family_slug}`}
-        passHref
-        className={allTitleClasses}
-        data-cy="family-title"
-        data-ph-capture-attribute-link-purpose="search-result-family"
-        data-ph-capture-attribute-position-page={position}
-        data-ph-capture-attribute-position-total={positionOffset + position}
-      >
-        {family_name}
-      </LinkWithQuery>
+      <h3>
+        <LinkWithQuery
+          href={`/document/${family_slug}`}
+          passHref
+          className={allTitleClasses}
+          data-ph-capture-attribute-link-purpose="search-result-family"
+          data-ph-capture-attribute-position-page={position}
+          data-ph-capture-attribute-position-total={positionOffset + position}
+        >
+          {family_name}
+        </LinkWithQuery>
+      </h3>
       {showSummary && (
         <p
           className="text-content text-sm"

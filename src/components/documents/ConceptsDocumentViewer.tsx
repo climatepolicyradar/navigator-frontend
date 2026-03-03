@@ -233,7 +233,12 @@ export const ConceptsDocumentViewer = ({
               </div>
             ) : (
               <>
-                <div id="document-search" className="flex flex-col gap-2 md:pl-4 pb-4 border-b border-gray-300">
+                <div
+                  id="document-search"
+                  role="region"
+                  aria-label="Passage matches"
+                  className="flex flex-col gap-2 md:pl-4 pb-4 border-b border-gray-300"
+                >
                   <p className="text-text-primary">Passage matches</p>
                   <div className="relative z-10 flex gap-4">
                     <div className="relative">

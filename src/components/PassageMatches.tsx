@@ -43,9 +43,9 @@ const PassageMatches = ({ passages, onClick, pageColour = "textDark", position, 
           <Loader />
         </div>
       ) : (
-        <div className="my-5" id="passage-matches">
+        <ul className="my-5" id="passage-matches" aria-label="Passage matches">
           {passages.map((item, index: number) => (
-            <div
+            <li
               key={item.text_block_id}
               data-analytics="document-passage-result"
               id={`passage-${index}`}
@@ -68,9 +68,9 @@ const PassageMatches = ({ passages, onClick, pageColour = "textDark", position, 
                 </div>
                 <p className="mt-2 break-words">{item.text}</p>
               </div>
-            </div>
+            </li>
           ))}
-        </div>
+        </ul>
       )}
     </>
   );
