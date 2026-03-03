@@ -19,6 +19,7 @@
     "types": ["node", "vitest/globals"],
     "paths": {
       "@/api/*": ["src/api/*"],
+      "@/bff/*": ["src/bff/*"],
       "@/components/*": ["src/components/*"],
       "@/constants/*": ["src/constants/*"],
       "@/context/*": ["src/context/*"],
