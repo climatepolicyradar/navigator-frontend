@@ -26,6 +26,7 @@ export const FrontendObservability = (): null => {
       ],
     });
   } catch (error) {
+    console.error(error);
     return null;
   }
   return null;
