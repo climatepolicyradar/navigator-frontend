@@ -20,10 +20,10 @@ const displaySuggestion = (suggestion: TSuggestion, searchTerm: string) => {
         <>
           <span
             className="font-medium text-gray-900"
-            dangerouslySetInnerHTML={{ __html: underlineFirstInstanceOfQuery(suggestion.data.id, searchTerm) }}
+            dangerouslySetInnerHTML={{ __html: underlineFirstInstanceOfQuery(suggestion.data.value, searchTerm) }}
           />
           <span className="text-gray-500"> — </span>
-          <span className="text-gray-600 font-medium">Label: {suggestion.data.title}</span>
+          <span className="text-gray-600 font-medium">Label: {suggestion.data.type}</span>
         </>
       );
     case "concept":

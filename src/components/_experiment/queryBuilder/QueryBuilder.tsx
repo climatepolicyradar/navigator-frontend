@@ -137,7 +137,7 @@ function LabelPicker({ value, onChange, placeholder = "Search...", autoFocus = f
 
   const handleSelect = useCallback(
     (label: TLabelResult) => {
-      onChange(label.id);
+      onChange(label.value);
       setInputValue("");
       setIsOpen(false);
       setActiveIndex(-1);
@@ -230,8 +230,8 @@ function LabelPicker({ value, onChange, placeholder = "Search...", autoFocus = f
                 idx === activeIndex ? "bg-blue-50 text-blue-800" : "text-gray-700 hover:bg-gray-50"
               )}
             >
-              <span className="font-medium">{label.id}</span>
-              <span className="ml-2 text-gray-400 text-xs">{label.type}</span>
+              <span className="font-medium">{label.value}</span>
+              <span className="ml-2 text-gray-400 text-xs">Type: {label.type}</span>
             </li>
           ))}
         </ul>

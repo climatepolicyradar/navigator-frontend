@@ -5,8 +5,8 @@ import { ApiClient } from "@/api/http-common";
 
 export type TLabelResult = {
   id: string;
-  title: string;
   type: string;
+  value: string;
 };
 
 type TLabelsResponse = {

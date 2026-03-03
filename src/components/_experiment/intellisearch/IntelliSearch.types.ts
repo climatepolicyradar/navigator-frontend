@@ -5,16 +5,8 @@
  * 2. Concepts - local data with definitions and alternative labels
  */
 
-import { TTopic } from "../../../types/topics";
-
-/**
- * Label result from the /search/labels API endpoint
- */
-export type TLabelResult = {
-  id: string;
-  title: string;
-  type: string;
-};
+import { TLabelResult } from "@/hooks/useLabelSearch";
+import { TTopic } from "@/types";
 
 /**
  * Response structure from /search/labels API
