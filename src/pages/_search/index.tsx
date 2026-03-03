@@ -1,10 +1,13 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 
 import { GetServerSideProps, InferGetServerSidePropsType } from "next";
-import { useMemo } from "react";
+import { Suspense, use, useMemo, useState, useEffect } from "react";
 
 import { ApiClient } from "@/api/http-common";
+import { AppliedLabels } from "@/components/_experiment/appliedLabels/AppliedLabels";
 import { IntelliSearch } from "@/components/_experiment/intellisearch";
+import { QueryBuilder, TQueryGroup } from "@/components/_experiment/queryBuilder/QueryBuilder";
+import { SearchContainer } from "@/components/_experiment/searchResults/SearchResults";
 import { Typeahead } from "@/components/_experiment/typeahead/Typeahead";
 import { withEnvConfig } from "@/context/EnvConfig";
 import { FeaturesContext } from "@/context/FeaturesContext";
@@ -27,36 +30,63 @@ const ShadowSearch = ({ theme, themeConfig, features, topicsData, familyConcepts
   const { data: configData } = configQuery;
   const { regions = [], countries = [], corpus_types = {} } = configData ?? {};
 
-  const filterOptions = useMemo(
-    () =>
-      buildFilterFieldOptions({
-        topics: topicsData?.topics,
-        regions,
-        countries,
-        corpusTypes: corpus_types,
-      }),
-    [topicsData?.topics, regions, countries, corpus_types]
-  );
+  const [selectedLabels, setSelectedLabels] = useState<string[]>([]);
+  const [query, setQuery] = useState("");
+  const [filters, setFilters] = useState<TQueryGroup | null>(null);
 
-  const shadowSearch = useShadowSearch({ filterOptions });
-  const addFilter = shadowSearch.actions.add;
+  // const filterOptions = useMemo(
+  //   () =>
+  //     buildFilterFieldOptions({
+  //       topics: topicsData?.topics,
+  //       regions,
+  //       countries,
+  //       corpusTypes: corpus_types,
+  //     }),
+  //   [topicsData?.topics, regions, countries, corpus_types]
+  // );
+
+  // const shadowSearch = useShadowSearch({ filterOptions });
+  // const addFilter = shadowSearch.actions.add;
+
+  // console.log("QueryBuilder output:", JSON.stringify(filters, null, 2));
 
   return (
     <FeaturesContext.Provider value={features}>
       <TopicsContext.Provider value={topicsData}>
         <WikiBaseConceptsContext.Provider value={familyConceptsData || []}>
-          <div className="ml-40 mt-40">
+          <div className="w-3/4 m-auto mt-8">
             <IntelliSearch
-              topics={topicsData.topics}
-              selectedTopics={shadowSearch.filters.value.topics}
+              // topics={topicsData.topics}
+              topics={[]}
+              selectedLabels={selectedLabels}
               onSelectConcept={(concept) => {
-                if (concept?.preferred_label) {
-                  addFilter("topics", concept.preferred_label);
+                if (concept) {
+                  setSelectedLabels((prev) => [...prev, concept]);
                 }
               }}
+              setQuery={setQuery}
             />
           </div>
-          <Typeahead shadowSearch={shadowSearch} filterOptions={filterOptions} />
+          <div className="w-3/4 m-auto mt-4 mb-8">
+            <div className="mb-4">
+              <AppliedLabels
+                query={query}
+                labels={selectedLabels}
+                onSelectLabel={(label) => setSelectedLabels((prev) => prev.filter((l) => l !== label))}
+                setQuery={setQuery}
+              />
+            </div>
+            <QueryBuilder filters={filters} setFilters={setFilters} />
+            {/* <pre className="text-xs">{filters ? JSON.stringify(filters, null, 2) : "No filters"}</pre> */}
+          </div>
+          {/* <Typeahead shadowSearch={shadowSearch} filterOptions={filterOptions} /> */}
+          <SearchContainer
+            query={query}
+            onSelectLabel={(label) => {
+              if (!selectedLabels.includes(label)) setSelectedLabels((prev) => [...prev, label]);
+            }}
+            filters={filters}
+          />
         </WikiBaseConceptsContext.Provider>
       </TopicsContext.Provider>
     </FeaturesContext.Provider>
