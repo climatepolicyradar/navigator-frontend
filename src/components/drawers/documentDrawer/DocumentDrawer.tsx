@@ -106,11 +106,11 @@ export const DocumentDrawer = ({ documentImportId, family, familyTopics, languag
       }
     >
       {metadata.length > 0 && (
-        <div className="grid grid-cols-[120px_auto] gap-x-3 gap-y-2 mb-6 text-sm text-gray-700 leading-5">
+        <div className="grid grid-cols-[120px_auto] gap-x-3 gap-y-2 mb-6 text-sm text-gray-700 leading-5" data-vaul-no-drag={true}>
           {metadata.map((item, itemIndex) => (
             <Fragment key={itemIndex}>
               <div className="font-medium">{item.label}</div>
-              <div>{item.value}</div>
+              <div className="select-text">{item.value}</div>
             </Fragment>
           ))}
         </div>
