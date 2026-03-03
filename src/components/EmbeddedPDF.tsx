@@ -1,6 +1,5 @@
-import { motion, AnimatePresence } from "framer-motion";
 import Script from "next/script";
-import { useRef, useState, useMemo, useEffect, useContext } from "react";
+import { useRef, useMemo, useEffect, useContext } from "react";
 
 import { AdobeContext } from "@/context/AdobeContext";
 import usePDFPreview from "@/hooks/usePDFPreview";
@@ -16,8 +15,7 @@ interface IProps {
   searchStatus?: TLoadingStatus;
 }
 
-const EmbeddedPDF = ({ document, documentPassageMatches = [], pageNumber = null, startingPageNumber, searchStatus }: IProps) => {
-  const [isLoading, setIsLoading] = useState(true);
+const EmbeddedPDF = ({ document, documentPassageMatches = [], pageNumber = null, startingPageNumber }: IProps) => {
   const containerRef = useRef(null);
   const adobeKey = useContext(AdobeContext);
 
@@ -26,17 +24,14 @@ const EmbeddedPDF = ({ document, documentPassageMatches = [], pageNumber = null,
   // Ensure the instance of the PDF client is not reset on re-render
   // otherwise we lose the ability to interact with the pdf
 
-  const { changePage, registerPassages } = useMemo(() => pdfPreview, [document, adobeKey]);
+  const { changePage, registerPassages } = useMemo(() => pdfPreview, [pdfPreview]);
 
   useEffect(() => {
-    pageNumber && changePage(pageNumber);
+    if (pageNumber) changePage(pageNumber);
   }, [changePage, pageNumber]);
 
   useEffect(() => {
-    setIsLoading(true);
-    registerPassages(documentPassageMatches, startingPageNumber).finally(() => {
-      setIsLoading(false);
-    });
+    registerPassages(documentPassageMatches, startingPageNumber).finally(() => {});
   }, [registerPassages, documentPassageMatches, startingPageNumber]);
 
   return (
