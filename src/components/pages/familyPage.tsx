@@ -148,7 +148,7 @@ export const FamilyPage = ({
         if (!family.summary) return null;
 
         return (
-          <TextBlock key="summary" block="summary" title="Summary">
+          <TextBlock key="summary" context="summary-block" block="summary" title="Summary">
             <div className="text-content" dangerouslySetInnerHTML={{ __html: family.summary }} />
           </TextBlock>
         );

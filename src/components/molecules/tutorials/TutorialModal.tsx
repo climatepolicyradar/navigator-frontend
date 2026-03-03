@@ -29,8 +29,8 @@ export const TutorialModal = ({ name, modal: { buttonPrimary, buttonSecondary, c
       {content(features)}
       {(buttonPrimary || buttonSecondary) && (
         <div className="flex gap-2">
-          {buttonPrimary && <TutorialButton {...buttonPrimary} actions={buttonActions} use="modal" />}
-          {buttonSecondary && <TutorialButton {...buttonSecondary} actions={buttonActions} use="modal" />}
+          {buttonPrimary && <TutorialButton {...buttonPrimary} actions={buttonActions} name={name} use="modal" />}
+          {buttonSecondary && <TutorialButton {...buttonSecondary} actions={buttonActions} name={name} use="modal" />}
         </div>
       )}
     </Modal>

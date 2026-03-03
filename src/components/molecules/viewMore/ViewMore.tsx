@@ -1,10 +1,11 @@
-import { ChangeEvent, MouseEventHandler, ReactNode, useEffect, useRef, useState } from "react";
+import { MouseEventHandler, ReactNode, useEffect, useRef, useState } from "react";
 
 import { joinTailwindClasses } from "@/utils/tailwind";
 
 interface IViewMoreGenericProps {
   buttonText?: [string, string];
   containerClasses?: string;
+  context: string; // An unique string to help analytics identity which ViewMore on the page this is
   debug?: boolean;
   onButtonClick?: () => void;
 }
@@ -29,6 +30,7 @@ export const ViewMore = ({
   buttonText = ["View more", "View less"],
   children,
   containerClasses = "",
+  context,
   debug = false,
   maxHeight = 150,
   maxLines,
@@ -80,6 +82,7 @@ export const ViewMore = ({
           onClick={onViewMore}
           className="p-2 mt-3 hover:bg-gray-50 active:bg-gray-100 border border-gray-300 rounded-md text-sm text-gray-700 leading-4 font-medium"
           data-ph-capture-attribute-button-purpose="view-more"
+          data-ph-capture-attribute-view-more-context={context}
           data-ph-capture-attribute-view-more-intent={onButtonClick || !isOpen ? "more" : "less"}
         >
           {isOpen ? buttonText[1] : buttonText[0]}
