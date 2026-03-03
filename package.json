@@ -22,9 +22,12 @@
   },
   "dependencies": {
     "@base-ui/react": "^1.2.0",
+    "@grafana/faro-web-sdk": "^2.2.4",
+    "@grafana/faro-web-tracing": "^2.2.4",
     "@opentelemetry/api-logs": "^0.212.0",
     "@opentelemetry/instrumentation": "^0.212.0",
     "@opentelemetry/sdk-logs": "^0.212.0",
+    "@opentelemetry/sdk-trace-node": "^2.5.1",
     "@tanstack/react-query": "^5.90.21",
     "@tanstack/react-query-devtools": "^5.91.3",
     "@vercel/otel": "^2.1.1",
