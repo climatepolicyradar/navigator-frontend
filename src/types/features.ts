@@ -7,7 +7,7 @@
 /* Features */
 
 // PostHog feature flags with 0% rollout. Must be manually enabled at /_feature-flags to be enabled
-export const featureFlagKeys = ["concepts-v1", "litigation"] as const;
+export const featureFlagKeys = ["concepts-v1", "litigation", "new-data-model"] as const;
 
 // PostHog feature flags with 1-100% rollout. Automatically rolled to each consenting user. Can also be present on /_feature-flags if configured in PostHog as an early access feature
 export const abTestKeys = ["ab-family-topic-block"] as const;

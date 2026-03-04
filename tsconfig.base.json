@@ -28,6 +28,7 @@
       "@/interfaces/*": ["src/interfaces/*"],
       "@/types": ["src/types/index"],
       "@/pages/*": ["src/pages/*"],
+      "@/schemas": ["src/schemas/index"],
       "@/stubs/*": ["src/stubs/*"],
       "@/utils/*": ["src/utils/*"],
       "@/ccc/*": ["themes/ccc/*"],

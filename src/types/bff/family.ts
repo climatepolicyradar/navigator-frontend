@@ -1,3 +1,5 @@
+import { TDataInDocument } from "src/schemas";
+
 import {
   IApiFamilyDocumentTopics,
   TApiCollectionPublicWithFamilies,
@@ -31,7 +33,7 @@ export type TFamilyApiOldData = {
 };
 
 // TODO: fill this out when we are making new data model API calls
-export type TFamilyApiNewData = null;
+export type TFamilyApiNewData = TDataInDocument | null;
 
 export type TFamilyPresentationalData = {
   collections: TCollectionPublicWithFamilies[];

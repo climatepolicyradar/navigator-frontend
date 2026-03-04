@@ -8,8 +8,18 @@ export const familyTransformer = (
   if (familyApiOldData === null) return { data: null, errors };
 
   if (familyApiNewData) {
-    // TODO: introduce transformations for new data model API data
-    return { data: null, errors };
+    return {
+      data: {
+        ...familyApiOldData,
+        family: {
+          ...familyApiOldData.family,
+          import_id: familyApiNewData.id,
+          title: familyApiNewData.title,
+          summary: familyApiNewData.description,
+        },
+      },
+      errors,
+    };
   } else {
     // Because the old API data type satisfies the presentational data type, no changes are needed
     return { data: familyApiOldData, errors };
