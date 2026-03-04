@@ -33,10 +33,6 @@ export type TFamilyApiOldData = {
 // TODO: fill this out when we are making new data model API calls
 export type TFamilyApiNewData = null;
 
-export type TFamilyApiData = TFamilyApiOldData | TFamilyApiNewData | null;
-
-export const isOldFamilyApiData = (data: TFamilyApiData): data is TFamilyApiOldData => "corpus_types" in data; // TODO: make sure this is a good check once TFamilyApiNewData is populated
-
 export type TFamilyPresentationalData = {
   collections: TCollectionPublicWithFamilies[];
   corpus_types: TCorpusTypeDictionary;

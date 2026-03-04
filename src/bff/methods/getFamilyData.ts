@@ -141,6 +141,7 @@ export const getFamilyData = async (slug: string, features: TFeatures): Promise<
       targets,
       vespaFamilyData: vespaFamilyData || null,
     },
+    null,
     errors
   );
 };

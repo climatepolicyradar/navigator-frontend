@@ -36,14 +36,7 @@ export const getCollectionData = async (slug: string, features: TFeatures): Prom
     return { data: null, errors };
   }
 
-  /**
-   * TODO:
-   * - Check collection data + features to determine if new data model API calls are needed
-   * - Branch the API calls from this point onwards
-   * - Reconverge before the transformer
-   */
-
   /* Transform API data for presentation */
 
-  return collectionTransformer({ collection }, errors);
+  return collectionTransformer({ collection }, null, errors);
 };

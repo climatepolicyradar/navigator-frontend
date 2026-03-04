@@ -1,15 +1,17 @@
-import { isOldCollectionApiData, TCollectionApiData, TCollectionPresentationalResponse } from "@/types";
+import { TCollectionApiNewData, TCollectionApiOldData, TCollectionPresentationalResponse } from "@/types";
 
-export const collectionTransformer = (collectionApiData: TCollectionApiData, errors: Error[]): TCollectionPresentationalResponse => {
-  if (collectionApiData === null) return { data: null, errors };
+export const collectionTransformer = (
+  collectionApiOldData: TCollectionApiOldData,
+  collectionApiNewData: TCollectionApiNewData,
+  errors: Error[]
+): TCollectionPresentationalResponse => {
+  if (collectionApiOldData === null) return { data: null, errors };
 
-  const isOldData = isOldCollectionApiData(collectionApiData);
-
-  if (isOldData) {
-    // Because the old API data type satisfies the presentational data type, no changes are needed
-    return { data: collectionApiData, errors };
-  } else {
+  if (collectionApiNewData) {
     // TODO: introduce transformations for new data model API data
     return { data: null, errors };
+  } else {
+    // Because the old API data type satisfies the presentational data type, no changes are needed
+    return { data: collectionApiOldData, errors };
   }
 };

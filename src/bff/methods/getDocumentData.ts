@@ -70,5 +70,5 @@ export const getDocumentData = async (slug: string, features: TFeatures): Promis
 
   /* Transform API data for presentation */
 
-  return documentTransformer({ document, family, topicsData, vespaDocumentData }, errors);
+  return documentTransformer({ document, family, topicsData, vespaDocumentData }, null, errors);
 };
