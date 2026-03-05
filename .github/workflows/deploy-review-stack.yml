@@ -1,0 +1,90 @@
+# trunk-ignore-all(checkov/CKV2_GHA_1)
+name: frontend-review-stack
+
+on:
+  pull_request:
+    types: [labeled, unlabeled, synchronize, closed]
+    branches: [main] # or your default branch
+
+jobs:
+  review-stack:
+    runs-on: ubuntu-latest
+
+    env:
+      PULUMI_ACCESS_TOKEN: ${{ secrets.PULUMI_ACCESS_TOKEN }}
+      ORG: climatepolicyradar
+      PROJECT: frontend
+
+    outputs:
+      has_label: ${{ steps.label_check.outputs.has_label }}
+
+    steps:
+      - name: Check if deploy:dev label is present
+        id: label_check
+        run: |
+          "echo "has_label=true" >> $GITHUB_OUTPUT"
+
+      - name: Determine action
+        id: decide
+        run: |
+          pr_number=${{ github.event.pull_request.number }}
+          action="none"
+
+          if [ "${{ github.event.action }}" = "closed" ]; then
+            action="destroy"
+          elif [ "${{ steps.label_check.outputs.has_label }}" = "true" ]; then
+            if [ "${{ github.event.action }}" = "labeled" ] || \
+               [ "${{ github.event.action }}" = "synchronize" ]; then
+              action="update"
+            fi
+          elif [ "${{ github.event.action }}" = "unlabeled" ]; then
+            action="destroy"
+          fi
+
+          echo "action=$action" >> "$GITHUB_OUTPUT"
+          echo "stack_name=navigator-frontend-pr-${pr_number}" >> "$GITHUB_OUTPUT"
+
+      - name: Exit if no action
+        if: steps.decide.outputs.action == 'none'
+        run: echo "Nothing to do"
+
+      - name: Create/Update review stack
+        if: steps.decide.outputs.action == 'update'
+        run: |
+          pr_number=${{ github.event.pull_request.number }}
+          stack_name=${{ steps.decide.outputs.stack_name }}
+
+          # set prNumber + environment via stack config overrides
+          curl -X POST \
+            -H "Authorization: token ${PULUMI_ACCESS_TOKEN}" \
+            -H "Content-Type: application/json" \
+            "https://api.pulumi.com/api/preview/organizations/${ORG}/projects/${PROJECT}/stacks/${stack_name}/deployments" \
+            -d "{
+              \"operation\": \"update\",
+              \"inheritSettings\": true,
+              \"deploymentSettings\": {
+                \"sourceContext\": {
+                  \"git\": {
+                    \"branch\": \"refs/heads/main\"
+                  }
+                }
+              },
+              \"config\": {
+                \"${PROJECT}:prNumber\": \"${pr_number}\",
+                \"${PROJECT}:environment\": \"review\"
+              }
+            }"
+
+      - name: Destroy review stack
+        if: steps.decide.outputs.action == 'destroy'
+        run: |
+          stack_name=${{ steps.decide.outputs.stack_name }}
+
+          curl -X POST \
+            -H "Authorization: token ${PULUMI_ACCESS_TOKEN}" \
+            -H "Content-Type: application/json" \
+            "https://api.pulumi.com/api/preview/organizations/${ORG}/projects/${PROJECT}/stacks/${stack_name}/deployments" \
+            -d "{
+              \"operation\": \"destroy\",
+              \"inheritSettings\": true
+            }"
