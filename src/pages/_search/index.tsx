@@ -26,29 +26,19 @@ import { readConfigFile } from "@/utils/readConfigFile";
 type TProps = InferGetServerSidePropsType<typeof getServerSideProps>;
 
 const ShadowSearch = ({ theme, themeConfig, features, topicsData, familyConceptsData }: TProps) => {
-  const configQuery = useConfig();
-  const { data: configData } = configQuery;
-  const { regions = [], countries = [], corpus_types = {} } = configData ?? {};
+  /* we have access to the page's SSR data if we want it
 
+  // const configQuery = useConfig();
+  // const { data: configData } = configQuery;
+  // const { regions = [], countries = [], corpus_types = {} } = configData ?? {};
+  */
+
+  // strings selected by typeahead
   const [selectedLabels, setSelectedLabels] = useState<string[]>([]);
+  // search query that is typed into the search box
   const [query, setQuery] = useState("");
+  // structured filters built in QueryBuilder
   const [filters, setFilters] = useState<TQueryGroup | null>(null);
-
-  // const filterOptions = useMemo(
-  //   () =>
-  //     buildFilterFieldOptions({
-  //       topics: topicsData?.topics,
-  //       regions,
-  //       countries,
-  //       corpusTypes: corpus_types,
-  //     }),
-  //   [topicsData?.topics, regions, countries, corpus_types]
-  // );
-
-  // const shadowSearch = useShadowSearch({ filterOptions });
-  // const addFilter = shadowSearch.actions.add;
-
-  // console.log("QueryBuilder output:", JSON.stringify(filters, null, 2));
 
   return (
     <FeaturesContext.Provider value={features}>
@@ -77,9 +67,8 @@ const ShadowSearch = ({ theme, themeConfig, features, topicsData, familyConcepts
               />
             </div>
             <QueryBuilder filters={filters} setFilters={setFilters} />
-            {/* <pre className="text-xs">{filters ? JSON.stringify(filters, null, 2) : "No filters"}</pre> */}
+            <pre className="text-xs">{filters ? JSON.stringify(filters, null, 2) : "No filters"}</pre>
           </div>
-          {/* <Typeahead shadowSearch={shadowSearch} filterOptions={filterOptions} /> */}
           <SearchContainer
             query={query}
             onSelectLabel={(label) => {
