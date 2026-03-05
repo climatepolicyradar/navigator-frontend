@@ -15,7 +15,7 @@ type TQueryGroup = {
 };
 
 type TQueryRule = {
-  field: "labels.label.id";
+  field: "labels.value.id";
   op: "contains" | "not_contains";
   value: string;
 };
@@ -44,7 +44,7 @@ function nodeId(node: TQueryGroup | TQueryRule): number {
 // ---------------------------------------------------------------------------
 
 function createRule(): TQueryRule {
-  return { field: "labels.label.id", op: "contains", value: "" };
+  return { field: "labels.value.id", op: "contains", value: "" };
 }
 
 function createGroup(): TQueryGroup {
