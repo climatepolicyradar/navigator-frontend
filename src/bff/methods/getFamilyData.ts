@@ -2,8 +2,10 @@ import axios from "axios";
 
 import { ApiClient } from "@/api/http-common";
 import { familyTransformer } from "@/bff/transformers/familyTransformer";
+import { BFF_TRANSFORMED_CORPORA } from "@/constants/bff";
 import { DEFAULT_DOCUMENT_TITLE } from "@/constants/document";
 import { EXCLUDED_ISO_CODES } from "@/constants/geography";
+import { TDataInDocument, validateDataInDocument } from "@/schemas";
 import {
   IApiFamilyDocumentTopics,
   TApiCollectionPublicWithFamilies,
@@ -22,8 +24,6 @@ import { isCorpusIdAllowed } from "@/utils/checkCorpusAccess";
 import { extractNestedData } from "@/utils/extractNestedData";
 import { processFamilyTopics } from "@/utils/topics/processFamilyTopics";
 
-// TODO: remove this ESLint disable when the features object is used for data source switching
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
 export const getFamilyData = async (slug: string, features: TFeatures): Promise<TFamilyPresentationalResponse> => {
   /* Make API requests */
 
@@ -54,12 +54,16 @@ export const getFamilyData = async (slug: string, features: TFeatures): Promise<
     return { data: null, errors };
   }
 
-  /**
-   * TODO:
-   * - Check family data + features to determine if new data model API calls are needed
-   * - Branch the API calls from this point onwards
-   * - Reconverge before the transformer
-   */
+  // Get the new data-in document for this family or fall back to the older data
+  let dataInDocument: TDataInDocument | null = null;
+  if (family && features["new-data-model"] && BFF_TRANSFORMED_CORPORA.includes(family.corpus_id)) {
+    try {
+      const { data: dataInDocumentResponse } = await apiClient.get<TApiItemResponse>(`/data-in/documents/${family.import_id}`);
+      dataInDocument = validateDataInDocument(dataInDocumentResponse.data);
+    } catch (error) {
+      errors.push(error as Error);
+    }
+  }
 
   // The Vespa families data has the concepts data attached, which is why we need this
   let vespaFamilyData: TApiSearchResponse;
@@ -141,6 +145,7 @@ export const getFamilyData = async (slug: string, features: TFeatures): Promise<
       targets,
       vespaFamilyData: vespaFamilyData || null,
     },
+    dataInDocument,
     errors
   );
 };

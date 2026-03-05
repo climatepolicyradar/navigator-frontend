@@ -14,7 +14,7 @@ export type TApiDataNode<T> = {
   children: TApiDataNode<T>[];
 };
 
-export type TApiItemResponse<T> = {
+export type TApiItemResponse<T = unknown> = {
   data: T;
 };
 

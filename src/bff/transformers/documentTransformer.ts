@@ -1,15 +1,17 @@
-import { isOldDocumentApiData, TDocumentApiData, TDocumentPresentationalResponse } from "@/types";
+import { TDocumentApiNewData, TDocumentApiOldData, TDocumentPresentationalResponse } from "@/types";
 
-export const documentTransformer = (documentApiData: TDocumentApiData, errors: Error[]): TDocumentPresentationalResponse => {
-  if (documentApiData === null) return { data: null, errors };
+export const documentTransformer = (
+  documentApiOldData: TDocumentApiOldData,
+  documentApiNewData: TDocumentApiNewData,
+  errors: Error[]
+): TDocumentPresentationalResponse => {
+  if (documentApiOldData === null) return { data: null, errors };
 
-  const isOldData = isOldDocumentApiData(documentApiData);
-
-  if (isOldData) {
-    // Because the old API data type satisfies the presentational data type, no changes are needed
-    return { data: documentApiData, errors };
-  } else {
+  if (documentApiNewData) {
     // TODO: introduce transformations for new data model API data
     return { data: null, errors };
+  } else {
+    // Because the old API data type satisfies the presentational data type, no changes are needed
+    return { data: documentApiOldData, errors };
   }
 };

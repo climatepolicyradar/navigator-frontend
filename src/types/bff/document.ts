@@ -12,10 +12,6 @@ export type TDocumentApiOldData = {
 // TODO: fill this out when we are making new data model API calls
 export type TDocumentApiNewData = null;
 
-export type TDocumentApiData = TDocumentApiOldData | TDocumentApiNewData | null;
-
-export const isOldDocumentApiData = (data: TDocumentApiData): data is TDocumentApiOldData => "vespaDocumentData" in data; // TODO: make sure this is a good check once TDocumentApiNewData is populated
-
 export type TDocumentPresentationalData = {
   document: TDocumentPage;
   family: TFamilyPublic;
