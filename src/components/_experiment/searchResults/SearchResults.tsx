@@ -10,6 +10,7 @@ interface DocumentLabel {
 }
 
 interface DocumentLabelRelationship {
+  count: number | null;
   type: string;
   value: DocumentLabel;
   timestamp: string | null;
@@ -81,7 +82,7 @@ export function SearchResults({ promise, onSelectLabel }: { promise: Promise<Sea
                     className="text-xs bg-gray-100 rounded px-2 py-0.5 cursor-pointer hover:bg-gray-200"
                     onClick={() => onSelectLabel?.(label.value.value)}
                   >
-                    {label.value.value}
+                    {label.value.value} {label.count !== null && `(${label.count})`}
                   </span>
                 ))}
               </div>

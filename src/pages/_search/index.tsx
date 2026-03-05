@@ -67,7 +67,7 @@ const ShadowSearch = ({ theme, themeConfig, features, topicsData, familyConcepts
               />
             </div>
             <QueryBuilder filters={filters} setFilters={setFilters} />
-            <pre className="text-xs">{filters ? JSON.stringify(filters, null, 2) : "No filters"}</pre>
+            {/* <pre className="text-xs">{filters ? JSON.stringify(filters, null, 2) : "No filters"}</pre> */}
           </div>
           <SearchContainer
             query={query}
