@@ -166,7 +166,8 @@ jobs:
 
   test-e2e:
     timeout-minutes: 15
-    runs-on: ubuntu-latest
+    # trunk-ignore(actionlint/runner-label)
+    runs-on: Ubuntu-large-runner
     env:
       PLAYWRIGHT_BROWSERS_PATH: $HOME/.cache/ms-playwright
     strategy:
