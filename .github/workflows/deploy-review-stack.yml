@@ -13,7 +13,7 @@ jobs:
     env:
       PULUMI_ACCESS_TOKEN: ${{ secrets.PULUMI_ACCESS_TOKEN }}
       ORG: climatepolicyradar
-      PROJECT: frontend-review
+      PROJECT: frontend
 
     outputs:
       has_label: ${{ steps.label_check.outputs.has_label }}
