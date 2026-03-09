@@ -17,11 +17,12 @@ export const familyTransformer = (
           title: familyApiNewData.title,
           summary: familyApiNewData.description,
         },
+        usesDataIn: true,
       },
       errors,
     };
   } else {
     // Because the old API data type satisfies the presentational data type, no changes are needed
-    return { data: familyApiOldData, errors };
+    return { data: { ...familyApiOldData, usesDataIn: false }, errors };
   }
 };
