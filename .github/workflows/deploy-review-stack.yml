@@ -22,7 +22,7 @@ jobs:
       - name: Check if deploy:dev label is present
         id: label_check
         run: |
-          "echo "has_label=true" >> $GITHUB_OUTPUT"
+          echo "has_label=true" >> "$GITHUB_OUTPUT"
 
       - name: Determine action
         id: decide
