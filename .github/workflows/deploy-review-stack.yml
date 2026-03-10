@@ -54,6 +54,8 @@ jobs:
           pr_number=${{ github.event.pull_request.number }}
           stack_name=${{ steps.decide.outputs.stack_name }}
 
+          pulumi stack select "${ORG}/${PROJECT}/${stack_name}" --create
+
           # set prNumber + environment via stack config overrides
           curl -X POST \
           -H "Authorization: token ${PULUMI_ACCESS_TOKEN}" \
@@ -61,7 +63,6 @@ jobs:
           "https://api.pulumi.com/api/stacks/${ORG}/${PROJECT}/${stack_name}/deployments" \
           -d "{
             \"operation\": \"update\",
-            \"createStack\": true,
             \"inheritSettings\": false,
             \"deploymentSettings\": {
               \"sourceContext\": {
@@ -98,7 +99,6 @@ jobs:
             "https://api.pulumi.com/api/stacks/${ORG}/${PROJECT}/${stack_name}/deployments" \
             -d "{
               \"operation\": \"destroy\",
-              \"createStack\": false,
               \"inheritSettings\": false,
               \"deploymentSettings\": {
                 \"sourceContext\": {
