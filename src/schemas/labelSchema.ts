@@ -1,11 +1,16 @@
 import * as v from "valibot";
 
+// Strictly validate label types so they reliably grouped and found later
+export const LABEL_TYPES = ["activity_status", "category", "entity_type", "geography", "provider", "role", "status"] as const;
+const LabelTypeSchema = v.union(LABEL_TYPES.map((type) => v.literal(type)));
+export type TDataInLabelType = v.InferOutput<typeof LabelTypeSchema>;
+
 // TODO type these out as they become necessary for transformations
 export const LabelLabelSchema = v.unknown();
 export const LabelDocumentSchema = v.unknown();
 
 export const LabelSchema = v.object({
-  type: v.string(),
+  type: LabelTypeSchema,
   value: v.object({
     id: v.string(),
     type: v.string(),
@@ -15,3 +20,5 @@ export const LabelSchema = v.object({
   }),
   timestamp: v.nullable(v.string()),
 });
+
+export type TDataInLabel = v.InferOutput<typeof LabelSchema>;

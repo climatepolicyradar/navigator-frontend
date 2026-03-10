@@ -1,4 +1,7 @@
+import { transformCountries } from "@/bff/transformers/partials/transformCountries";
+import { transformFamilyDocuments } from "@/bff/transformers/partials/transformFamilyDocuments";
 import { TFamilyApiNewData, TFamilyApiOldData, TFamilyPresentationalResponse } from "@/types";
+import { groupLabelsByType } from "@/utils/labels/groupLabelsByType";
 
 export const familyTransformer = (
   familyApiOldData: TFamilyApiOldData,
@@ -8,29 +11,19 @@ export const familyTransformer = (
   if (familyApiOldData === null) return { data: null, errors };
 
   if (familyApiNewData) {
-    const geographyLabels = familyApiNewData.labels.filter((label) => label.type === "geography");
+    const { documents, labels } = familyApiNewData;
+    const { geography: geographyLabels } = groupLabelsByType(labels);
 
     return {
       data: {
         ...familyApiOldData,
-        countries: geographyLabels
-          .map((label) => {
-            // TODO stop using old data when country/subdivision diff + slug are provided by new api
-            const oldCountry = familyApiOldData.countries.find((country) => country.value === label.value.id);
-            if (!oldCountry) return null;
-
-            return {
-              ...oldCountry,
-              display_value: label.value.value,
-              value: label.value.id,
-            };
-          })
-          .filter((label) => label),
+        countries: transformCountries(familyApiOldData.countries, geographyLabels),
         family: {
           ...familyApiOldData.family,
           import_id: familyApiNewData.id,
           title: familyApiNewData.title,
           summary: familyApiNewData.description,
+          documents: transformFamilyDocuments(familyApiOldData.family.documents, documents),
           geographies: geographyLabels.map((label) => label.value.id),
         },
         usesDataIn: true,
