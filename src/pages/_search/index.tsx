@@ -30,10 +30,15 @@ function extractLabels(group: TQueryGroup | null): string[] {
   return labels;
 }
 
+const groupIsEmpty = (group: TQueryGroup | null): boolean => {
+  if (!group) return true;
+  return group.filters.length === 0 || group.filters.every((f) => "field" in f && f.op === "contains" && !f.value);
+};
+
 /** Add a label as a new "contains" rule to the root filter group. */
 function addLabelRule(group: TQueryGroup | null, label: string): TQueryGroup {
   const rule: TQueryRule = { field: "labels.value.id", op: "contains", value: label };
-  if (!group) return { op: "and", filters: [rule] };
+  if (groupIsEmpty(group)) return { op: "and", filters: [rule] };
   return { ...group, filters: [...group.filters, rule] };
 }
 
