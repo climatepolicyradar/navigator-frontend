@@ -56,12 +56,12 @@ jobs:
 
           echo "Declaring PR stack ${stack_name}..."
           curl -fS -X POST \
-          -H "Authorization: token ${PULUMI_ACCESS_TOKEN}" \
-          -H "Content-Type: application/json" \
-          "https://api.pulumi.com/api/stacks/${ORG}/${PROJECT}/${stack_name}.json" \
-          -d "{
-            \"stackName\": \"${ORG}/${PROJECT}/${stack_name}\"
-          }"
+            -H "Authorization: token ${PULUMI_ACCESS_TOKEN}" \
+            -H "Content-Type: application/json" \
+            "https://api.pulumi.com/api/stacks/${ORG}/${PROJECT}" \
+            -d "{
+              \"stackName\": \"${stack_name}\"
+            }"
 
           # set prNumber + environment via stack config overrides
           echo "Creating PR stack ${stack_name}..."
