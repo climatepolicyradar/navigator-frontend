@@ -67,7 +67,7 @@ jobs:
           echo "create-stack status: $status"
           echo "create-stack body: $body"
 
-          if [ "$status" -ne 200 ] && [ "$status" -ne 201 ]; then
+          if [ "$status" -ne 200 ] && [ "$status" -ne 201 ] && [ "$status" -ne 409 ]; then
             echo "failing job: stack create returned $status"
             exit 1
           fi
