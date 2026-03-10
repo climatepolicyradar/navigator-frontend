@@ -56,24 +56,24 @@ jobs:
 
           # set prNumber + environment via stack config overrides
           curl -X POST \
-            -H "Authorization: token ${PULUMI_ACCESS_TOKEN}" \
-            -H "Content-Type: application/json" \
-            "https://api.pulumi.com/api/preview/organizations/${ORG}/projects/${PROJECT}/stacks/${stack_name}/deployments" \
-            -d "{
-              \"operation\": \"update\",
-              \"inheritSettings\": true,
-              \"deploymentSettings\": {
-                \"sourceContext\": {
-                  \"git\": {
-                    \"branch\": \"refs/heads/main\"
-                  }
+          -H "Authorization: token ${PULUMI_ACCESS_TOKEN}" \
+          -H "Content-Type: application/json" \
+          "https://api.pulumi.com/api/stacks/${ORG}/${PROJECT}/${stack_name}/deployments" \
+          -d "{
+            \"operation\": \"update\",
+            \"inheritSettings\": true,
+            \"deploymentSettings\": {
+              \"sourceContext\": {
+                \"git\": {
+                  \"branch\": \"refs/heads/main\"
                 }
-              },
-              \"config\": {
-                \"${PROJECT}:prNumber\": \"${pr_number}\",
-                \"${PROJECT}:environment\": \"review\"
               }
-            }"
+            },
+            \"config\": {
+              \"CPR-PR-Number\": \"${pr_number}\",
+              \"Environment\": \"review\"
+            }
+          }"
 
       - name: Destroy review stack
         if: steps.decide.outputs.action == 'destroy'
