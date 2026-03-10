@@ -54,10 +54,16 @@ jobs:
           pr_number=${{ github.event.pull_request.number }}
           stack_name=${{ steps.decide.outputs.stack_name }}
 
-          pulumi stack select "${ORG}/${PROJECT}/${stack_name}" --create
+          curl -fS -X POST \
+          -H "Authorization: token ${PULUMI_ACCESS_TOKEN}" \
+          -H "Content-Type: application/json" \
+          "https://api.pulumi.com/api/stacks/${ORG}/${PROJECT}/${stack_name}" \
+          -d "{
+            \"stackName\": \"${ORG}/${PROJECT}/${stack_name}\"
+          }"
 
           # set prNumber + environment via stack config overrides
-          curl -X POST \
+          curl -fS -X POST \
           -H "Authorization: token ${PULUMI_ACCESS_TOKEN}" \
           -H "Content-Type: application/json" \
           "https://api.pulumi.com/api/stacks/${ORG}/${PROJECT}/${stack_name}/deployments" \
