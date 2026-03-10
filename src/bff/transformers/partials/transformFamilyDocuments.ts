@@ -1,15 +1,15 @@
-import { TDataInMedia } from "src/schemas/mediaSchema";
+import { TDataInFile } from "src/schemas/fileSchema";
 
 import { TApiFamilyDocumentPublic, TFamilyDocumentPublic } from "@/types";
 
-export const transformFamilyDocuments = (oldDocuments: TApiFamilyDocumentPublic[], newDocuments: TDataInMedia[]): TFamilyDocumentPublic[] =>
+export const transformFamilyDocuments = (oldDocuments: TApiFamilyDocumentPublic[], newFiles: TDataInFile[]): TFamilyDocumentPublic[] =>
   oldDocuments.map((oldDocument) => {
-    const newDocument = newDocuments.find((doc) => doc.value.id === oldDocument.import_id);
-    if (!newDocument) return oldDocument;
+    const newFile = newFiles.find((file) => file.value.id === oldDocument.import_id);
+    if (!newFile) return oldDocument;
 
     return {
       ...oldDocument,
-      import_id: newDocument.value.id,
-      title: newDocument.value.title,
+      import_id: newFile.value.id,
+      title: newFile.value.title,
     };
   });
