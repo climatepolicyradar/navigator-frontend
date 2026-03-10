@@ -6,7 +6,7 @@ import { useMemo, useState } from "react";
 import { ApiClient } from "@/api/http-common";
 import { AppliedLabels } from "@/components/_experiment/appliedLabels/AppliedLabels";
 import { IntelliSearch } from "@/components/_experiment/intellisearch";
-import { QueryBuilder, TQueryGroup, TQueryRule } from "@/components/_experiment/queryBuilder/QueryBuilder";
+import { createGroup, QueryBuilder, TQueryGroup, TQueryRule } from "@/components/_experiment/queryBuilder/QueryBuilder";
 import { SearchContainer } from "@/components/_experiment/searchResults/SearchResults";
 import { withEnvConfig } from "@/context/EnvConfig";
 import { FeaturesContext } from "@/context/FeaturesContext";
@@ -61,7 +61,7 @@ function removeLabelRule(group: TQueryGroup, label: string): TQueryGroup | null 
     }
   }
 
-  if (newFilters.length === 0) return null;
+  if (newFilters.length === 0) return createGroup();
   return { ...group, filters: newFilters };
 }
 
@@ -69,7 +69,7 @@ const ShadowSearch = ({ theme, themeConfig, features }: TProps) => {
   // search query that is typed into the search box
   const [query, setQuery] = useState("");
   // structured filters built in QueryBuilder
-  const [filters, setFilters] = useState<TQueryGroup | null>(null);
+  const [filters, setFilters] = useState<TQueryGroup>(createGroup());
 
   // Derive selectedLabels from the filter tree
   const selectedLabels = useMemo(() => extractLabels(filters), [filters]);
@@ -95,12 +95,12 @@ const ShadowSearch = ({ theme, themeConfig, features }: TProps) => {
           <AppliedLabels
             query={query}
             labels={selectedLabels}
-            onSelectLabel={(label) => setFilters((prev) => (prev ? removeLabelRule(prev, label) : null))}
+            onSelectLabel={(label) => setFilters((prev) => (prev ? removeLabelRule(prev, label) : createGroup()))}
             setQuery={setQuery}
           />
         </div>
         <QueryBuilder filters={filters} setFilters={setFilters} />
-        {/* <pre className="text-xs">{filters ? JSON.stringify(filters, null, 2) : "No filters"}</pre> */}
+        <pre className="text-xs">{filters ? JSON.stringify(filters, null, 2) : "No filters"}</pre>
       </div>
       <SearchContainer
         query={query}
