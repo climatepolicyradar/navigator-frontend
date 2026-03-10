@@ -20,7 +20,6 @@ export function AppliedLabels({
       {labels.map((label, i) => (
         <button key={i} className="text-sm bg-gray-100 rounded p-2 flex items-center gap-1 hover:bg-gray-200" onClick={() => onSelectLabel?.(label)}>
           <span key={i} className="">
-            {labels.length > 1 ? `or: ` : ""}
             {label}
           </span>
           <span>&times;</span>

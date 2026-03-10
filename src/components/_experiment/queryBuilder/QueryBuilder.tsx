@@ -471,6 +471,10 @@ export function QueryBuilder({ filters, setFilters }: { filters?: TQueryGroup | 
     setFilters?.(query);
   }, [query, setFilters]);
 
+  useEffect(() => {
+    if (filters) setQuery(filters);
+  }, [filters]);
+
   return (
     <BasePopover.Root>
       <BasePopover.Trigger

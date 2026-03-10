@@ -47,7 +47,7 @@ interface SearchDocumentsParams {
 
 const SEARCH_DOCUMENTS_BASE_URL = "https://api.climatepolicyradar.org/search/documents";
 
-export function fetchSearchDocuments(params: SearchDocumentsParams = {}): Promise<SearchDocumentsResponse> {
+export async function fetchSearchDocuments(params: SearchDocumentsParams = {}): Promise<SearchDocumentsResponse> {
   const url = new URL(SEARCH_DOCUMENTS_BASE_URL);
 
   if (params.query) url.searchParams.set("query", params.query);
@@ -55,10 +55,9 @@ export function fetchSearchDocuments(params: SearchDocumentsParams = {}): Promis
   if (params.limit !== undefined) url.searchParams.set("limit", String(params.limit));
   if (params.offset !== undefined) url.searchParams.set("offset", String(params.offset));
 
-  return fetch(url).then((res) => {
-    if (!res.ok) throw new Error(`Search API error: ${res.status}`);
-    return res.json() as Promise<SearchDocumentsResponse>;
-  });
+  const res = await fetch(url);
+  if (!res.ok) throw new Error(`Search API error: ${res.status}`);
+  return res.json() as Promise<SearchDocumentsResponse>;
 }
 
 export function SearchResults({ promise, onSelectLabel }: { promise: Promise<SearchDocumentsResponse>; onSelectLabel?: (label: string) => void }) {
