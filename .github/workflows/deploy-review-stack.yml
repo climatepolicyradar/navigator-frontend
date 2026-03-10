@@ -62,12 +62,23 @@ jobs:
           -d "{
             \"operation\": \"update\",
             \"createStack\": true,
-            \"inheritSettings\": true,
+            \"inheritSettings\": false,
             \"deploymentSettings\": {
               \"sourceContext\": {
                 \"git\": {
-                  \"branch\": \"refs/heads/main\"
+                  \"repoUrl\": \"https://github.com/climatepolicyradar/navigator-infra.git\",
+                  \"branch\": \"refs/heads/main\",
+                  \"repoDir\": \"frontend\"
                 }
+              },
+              \"operationContext\": {
+                \"environmentVariables\": {
+                  \"AWS_REGION\": \"eu-west-2\"
+                }
+              },
+              \"vcs\": {
+                \"provider\": \"github\",
+                \"repository\": \"climatepolicyradar/navigator-infra\"
               }
             },
             \"config\": {
@@ -84,8 +95,27 @@ jobs:
           curl -X POST \
             -H "Authorization: token ${PULUMI_ACCESS_TOKEN}" \
             -H "Content-Type: application/json" \
-            "https://api.pulumi.com/api/preview/organizations/${ORG}/projects/${PROJECT}/stacks/${stack_name}/deployments" \
+            "https://api.pulumi.com/api/stacks/${ORG}/${PROJECT}/${stack_name}/deployments" \
             -d "{
               \"operation\": \"destroy\",
-              \"inheritSettings\": true
+              \"createStack\": false,
+              \"inheritSettings\": false,
+              \"deploymentSettings\": {
+                \"sourceContext\": {
+                  \"git\": {
+                    \"repoUrl\": \"https://github.com/climatepolicyradar/navigator-infra.git\",
+                    \"branch\": \"refs/heads/main\",
+                    \"repoDir\": \"frontend\"
+                  }
+                },
+                \"operationContext\": {
+                  \"environmentVariables\": {
+                    \"AWS_REGION\": \"eu-west-2\"
+                  }
+                },
+                \"vcs\": {
+                  \"provider\": \"github\",
+                  \"repository\": \"climatepolicyradar/navigator-infra\"
+                }
+              }
             }"
