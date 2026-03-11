@@ -2,6 +2,7 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
 import App, { AppProps } from "next/app";
 import Head from "next/head";
+import { NuqsAdapter } from "nuqs/adapters/next/pages";
 import { useEffect, useState } from "react";
 
 import { FrontendObservability } from "@/components/FrontendObservability";
@@ -96,26 +97,28 @@ function MyApp({ Component, pageProps, theme, adobeApiKey }: IProps) {
 
   return (
     <QueryClientProvider client={queryClient}>
-      <ThemeContext.Provider value={themeContext}>
-        <TutorialContext.Provider value={tutorialContextProviderValue}>
-          <AdobeContext.Provider value={dynamicAdobeKey}>
-            <PostHogProvider consent={consent} pageViewProps={pageProps?.posthogPageViewProps}>
-              <EnvConfigContext.Provider value={pageProps?.envConfig}>
-                <ErrorBoundary level="top">
-                  <Head>
-                    <link rel="icon" href={favicon} />
-                  </Head>
-                  <div id={theme} className="root">
-                    <FrontendObservability />
-                    <Component {...pageProps} />
-                  </div>
-                  <Overlays onConsentChange={onConsentChange} />
-                </ErrorBoundary>
-              </EnvConfigContext.Provider>
-            </PostHogProvider>
-          </AdobeContext.Provider>
-        </TutorialContext.Provider>
-      </ThemeContext.Provider>
+      <NuqsAdapter>
+        <ThemeContext.Provider value={themeContext}>
+          <TutorialContext.Provider value={tutorialContextProviderValue}>
+            <AdobeContext.Provider value={dynamicAdobeKey}>
+              <PostHogProvider consent={consent} pageViewProps={pageProps?.posthogPageViewProps}>
+                <EnvConfigContext.Provider value={pageProps?.envConfig}>
+                  <ErrorBoundary level="top">
+                    <Head>
+                      <link rel="icon" href={favicon} />
+                    </Head>
+                    <div id={theme} className="root">
+                      <FrontendObservability />
+                      <Component {...pageProps} />
+                    </div>
+                    <Overlays onConsentChange={onConsentChange} />
+                  </ErrorBoundary>
+                </EnvConfigContext.Provider>
+              </PostHogProvider>
+            </AdobeContext.Provider>
+          </TutorialContext.Provider>
+        </ThemeContext.Provider>
+      </NuqsAdapter>
       {/* <ReactQueryDevtools initialIsOpen={false} /> */}
     </QueryClientProvider>
   );
