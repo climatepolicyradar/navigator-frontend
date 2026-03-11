@@ -1,6 +1,7 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 
 import { GetServerSideProps, InferGetServerSidePropsType } from "next";
+import { useQueryState, useQueryStates, parseAsString, parseAsJson } from "nuqs";
 import { useMemo, useState } from "react";
 
 import { ApiClient } from "@/api/http-common";
@@ -10,6 +11,7 @@ import { createGroup, QueryBuilder, TQueryGroup, TQueryRule } from "@/components
 import { SearchContainer } from "@/components/_experiment/searchResults/SearchResults";
 import { withEnvConfig } from "@/context/EnvConfig";
 import { FeaturesContext } from "@/context/FeaturesContext";
+import { FilterGroupSchema, FilterSchema } from "@/schemas";
 import { getFeatureFlags } from "@/utils/featureFlags";
 import { getFeatures } from "@/utils/features";
 import { readConfigFile } from "@/utils/readConfigFile";
@@ -67,9 +69,9 @@ function removeLabelRule(group: TQueryGroup, label: string): TQueryGroup | null 
 
 const ShadowSearch = ({ theme, themeConfig, features }: TProps) => {
   // search query that is typed into the search box
-  const [query, setQuery] = useState("");
+  const [query, setQuery] = useQueryState("q", parseAsString.withDefault(""));
   // structured filters built in QueryBuilder
-  const [filters, setFilters] = useState<TQueryGroup>(createGroup());
+  const [filters, setFilters] = useQueryState("filters", parseAsJson<TQueryGroup>(FilterGroupSchema).withDefault(createGroup()));
 
   // Derive selectedLabels from the filter tree
   const selectedLabels = useMemo(() => extractLabels(filters), [filters]);
