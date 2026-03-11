@@ -202,7 +202,7 @@ export function IntelliSearch({
             if (suggestions[activeSuggestionIndex].type === "concept") {
               onSelectConcept?.(suggestions[activeSuggestionIndex].data.preferred_label);
             } else if (suggestions[activeSuggestionIndex].type === "label") {
-              onSelectConcept?.(suggestions[activeSuggestionIndex].data.id);
+              onSelectConcept?.(suggestions[activeSuggestionIndex].data.value);
             } else if (suggestions[activeSuggestionIndex].type === "search") {
               setQuery?.(suggestions[activeSuggestionIndex].data);
             }
@@ -320,7 +320,7 @@ export function IntelliSearch({
                     if (suggestion.type === "concept") {
                       onSelectConcept?.(suggestion.data.preferred_label);
                     } else if (suggestion.type === "label") {
-                      onSelectConcept?.(suggestion.data.id);
+                      onSelectConcept?.(suggestion.data.value);
                     } else if (suggestion.type === "search") {
                       setQuery?.(suggestion.data);
                     }

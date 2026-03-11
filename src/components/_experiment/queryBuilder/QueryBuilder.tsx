@@ -47,7 +47,7 @@ function createRule(): TQueryRule {
   return { field: "labels.value.id", op: "contains", value: "" };
 }
 
-function createGroup(): TQueryGroup {
+export function createGroup(): TQueryGroup {
   return { op: "and", filters: [createRule()] };
 }
 
@@ -464,13 +464,6 @@ function GroupRenderer({ group, path, root, onChange, depth, onDeleteGroup }: Gr
 // ---------------------------------------------------------------------------
 
 export function QueryBuilder({ filters, setFilters }: { filters?: TQueryGroup | null; setFilters?: (filters: TQueryGroup | null) => void }) {
-  const [query, setQuery] = useState<TQueryGroup>(filters ?? createGroup());
-
-  // Log query to console whenever it changes
-  useEffect(() => {
-    setFilters?.(query);
-  }, [query, setFilters]);
-
   return (
     <BasePopover.Root>
       <BasePopover.Trigger
@@ -499,16 +492,16 @@ export function QueryBuilder({ filters, setFilters }: { filters?: TQueryGroup | 
 
             {/* Body */}
             <div className="max-h-[60vh] p-4">
-              <GroupRenderer group={query} path={[]} root={query} onChange={setQuery} depth={0} />
+              <GroupRenderer group={filters} path={[]} root={filters} onChange={setFilters} depth={0} />
             </div>
 
             {/* Footer */}
             <div className="flex items-center justify-between border-t border-gray-100 px-4 py-3">
-              <button type="button" onClick={() => setQuery(createGroup())} className="text-xs text-gray-500 hover:text-gray-700 transition-colors">
+              <button type="button" onClick={() => setFilters(createGroup())} className="text-xs text-gray-500 hover:text-gray-700 transition-colors">
                 Reset all
               </button>
               <div className="text-[10px] text-gray-400">
-                {countRules(query)} rule{countRules(query) !== 1 && "s"}
+                {countRules(filters)} rule{countRules(filters) !== 1 && "s"}
               </div>
             </div>
           </BasePopover.Popup>
