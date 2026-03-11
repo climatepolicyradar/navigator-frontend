@@ -35,6 +35,7 @@ const LandingSearchForm = ({ placeholder, input, handleSearchInput }: IProps) =>
   };
 
   useEffect(() => {
+    // eslint-disable-next-line react-hooks/set-state-in-effect
     if (input) setTerm(input);
   }, [input]);
 
