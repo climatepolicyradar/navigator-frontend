@@ -5,7 +5,7 @@ import { ApiClient } from "@/api/http-common";
 import { GeographyPage } from "@/components/pages/geographyPage";
 import { SYSTEM_GEO_NAMES } from "@/constants/systemGeos";
 import { withEnvConfig } from "@/context/EnvConfig";
-import { getCountryCode, getCountryName } from "@/helpers/getCountryFields";
+import { getCountryCode } from "@/helpers/getCountryFields";
 import { TApiItemResponse, GeographyV2, TSearch, TTarget, TGeography } from "@/types";
 import buildSearchQuery from "@/utils/buildSearchQuery";
 import { extractNestedData } from "@/utils/extractNestedData";
@@ -40,7 +40,6 @@ export const getServerSideProps = (async (context) => {
 
   let targetsData: TTarget[] = [];
 
-  let countryNameFromConfig;
   try {
     let geographies: TGeography[] = [];
     const configData = await backendApiClient.getConfig();
@@ -51,7 +50,6 @@ export const getServerSideProps = (async (context) => {
     if (geography) {
       const targetsRaw = await axios.get<TTarget[]>(`${process.env.TARGETS_URL}/geographies/${geography.toLowerCase()}.json`);
       targetsData = targetsRaw.data;
-      countryNameFromConfig = getCountryName(id as string, geographies);
     }
   } catch {
     // TODO: handle error more elegantly
@@ -70,10 +68,6 @@ export const getServerSideProps = (async (context) => {
       parentGeographyV2 = parentGeographyV2Data.data.data;
     }
   } catch {}
-
-  if (countryNameFromConfig) {
-    geographyV2.name = countryNameFromConfig;
-  }
 
   // If we don't have a geography - 404
   if (!geographyV2) {
