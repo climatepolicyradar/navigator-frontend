@@ -491,7 +491,7 @@ export function QueryBuilder({ filters, setFilters }: { filters?: TQueryGroup | 
             </div>
 
             {/* Body */}
-            <div className="max-h-[60vh] p-4">
+            <div className="max-h-[60vh] overflow-y-auto p-4">
               <GroupRenderer group={filters} path={[]} root={filters} onChange={setFilters} depth={0} />
             </div>
 
