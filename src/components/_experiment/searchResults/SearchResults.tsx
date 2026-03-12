@@ -1,4 +1,5 @@
 import { LucideCog } from "lucide-react";
+import Link from "next/link";
 import { Suspense, use, useMemo } from "react";
 
 import { TQueryGroup } from "../queryBuilder/QueryBuilder";
@@ -26,6 +27,7 @@ interface SearchDocument {
   description: string | null;
   labels: DocumentLabelRelationship[];
   items: DocumentItem[];
+  attributes: Record<string, string | number | boolean>;
 }
 
 export interface SearchDocumentsResponse {
@@ -60,6 +62,15 @@ export async function fetchSearchDocuments(params: SearchDocumentsParams = {}): 
   return res.json() as Promise<SearchDocumentsResponse>;
 }
 
+function linkHref(doc: SearchDocument): string | undefined {
+  if (doc.attributes.deprecated_slug)
+    if (doc.labels.find((label) => label.value.value === "Principal")) {
+      return `https://app.climatepolicyradar.org/document/${doc.attributes.deprecated_slug}`;
+    } else {
+      return `https://app.climatepolicyradar.org/documents/${doc.attributes.deprecated_slug}`;
+    }
+}
+
 export function SearchResults({ promise, onSelectLabel }: { promise: Promise<SearchDocumentsResponse>; onSelectLabel?: (label: string) => void }) {
   const data = use(promise);
 
@@ -71,7 +82,7 @@ export function SearchResults({ promise, onSelectLabel }: { promise: Promise<Sea
       <ul className="space-y-4">
         {data.results.map((doc) => (
           <li key={doc.id} className="border border-gray-200 rounded-md p-4">
-            <h3 className="font-semibold">{doc.title}</h3>
+            <h3 className="font-semibold">{linkHref(doc) ? <Link href={linkHref(doc)}>{doc.title}</Link> : doc.title}</h3>
             {doc.description && <p className="text-sm text-text-secondary mt-1">{doc.description}</p>}
             {doc.labels.length > 0 && (
               <div className="flex flex-wrap gap-1 mt-2">
