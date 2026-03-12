@@ -1,6 +1,7 @@
 import { useRouter } from "next/router";
 
-import { SUGGESTED_SEARCHES } from "@/cpr/constants/suggestedSearches";
+import { SUGGESTED_SEARCHES } from "@/ccc/constants/suggestedSearches";
+import { ARROW_RIGHT } from "@/constants/chars";
 
 const LandingPageLinks = () => {
   const router = useRouter();
@@ -16,13 +17,13 @@ const LandingPageLinks = () => {
   };
 
   return (
-    <section className="mt-18 text-white">
-      <div className="font-medium text-2xl">Try these searches</div>
-      <ul className="text-lg mt-4">
+    <section className="mt-10 text-textDark">
+      <div className="text-textDark font-medium text-2xl mb-5">Try these searches</div>
+      <ul className="flex flex-col gap-2">
         {SUGGESTED_SEARCHES.map((suggestedSearch, searchIndex) => (
-          <li className="my-2" key={searchIndex}>
+          <li key={searchIndex}>
             <a
-              className="text-white hover:text-blue-200 hover:underline"
+              className="hover:underline"
               href="#"
               onClick={(e) => {
                 e.preventDefault();
@@ -30,7 +31,7 @@ const LandingPageLinks = () => {
               }}
               data-cy={`quick-search-${searchIndex}`}
             >
-              {suggestedSearch.label}
+              {suggestedSearch.label} {ARROW_RIGHT}
             </a>
           </li>
         ))}
