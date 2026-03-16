@@ -81,7 +81,7 @@ jobs:
           "https://api.pulumi.com/api/stacks/${ORG}/${PROJECT}/${stack_name}/deployments" \
           -d "{
             \"operation\": \"update\",
-            \"inheritSettings\": true,
+            \"inheritSettings\": false,
             \"deploymentSettings\": {
               \"sourceContext\": {
                 \"git\": {
