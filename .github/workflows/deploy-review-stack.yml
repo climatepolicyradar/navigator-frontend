@@ -91,8 +91,9 @@ jobs:
                 }
               },
               \"operationContext\": {
+                \"workDir\": \"/deployment/frontend\",
                 \"environmentVariables\": {
-                  \"AWS_REGION\": \"eu-west-2\"
+                  \"AWS_REGION\": \"eu-west-1\"
                 }
               },
               \"vcs\": {
