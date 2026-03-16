@@ -1,12 +1,10 @@
-"use client";
-
 import { Input } from "@base-ui/react/input";
 import { useCallback, useMemo, useRef, useState } from "react";
 
 import { useLabelSearch } from "@/hooks/useLabelSearch";
 import { joinTailwindClasses } from "@/utils/tailwind";
 
-import { IntelliSearchProps, TConcept, TSuggestion } from "./IntelliSearch.types";
+import { IntelliSearchProps, TSuggestion } from "./IntelliSearch.types";
 
 const underlineFirstInstanceOfQuery = (text: string, query: string) => {
   const regex = new RegExp(`(${query})`, "i");
@@ -23,16 +21,7 @@ const displaySuggestion = (suggestion: TSuggestion, searchTerm: string) => {
             dangerouslySetInnerHTML={{ __html: underlineFirstInstanceOfQuery(suggestion.data.value, searchTerm) }}
           />
           <span className="text-gray-500"> — </span>
-          <span className="text-gray-600 font-medium">Label: {suggestion.data.type}</span>
-        </>
-      );
-    case "concept":
-      return (
-        <>
-          <span className="font-medium text-gray-900">{suggestion.data.preferred_label}</span>
-          <span className="text-gray-500"> — </span>
-          <span className="text-indigo-600 font-medium">Concept</span>
-          {suggestion.matchedLabel && <span className="text-gray-500 italic text-xs ml-2">(matched on "{suggestion.matchedLabel}")</span>}
+          <span className="text-gray-600 font-medium">{suggestion.data.type}</span>
         </>
       );
     case "search":
@@ -72,9 +61,8 @@ export function IntelliSearch({
   placeholder = "Search for anything",
   debounceDelay = 300,
   maxSuggestions,
-  topics,
   selectedLabels = [],
-  onSelectConcept,
+  onSelectSuggestion,
   setQuery,
 }: IntelliSearchProps) {
   // State management
@@ -82,7 +70,7 @@ export function IntelliSearch({
   const [isInputFocused, setIsInputFocused] = useState(false);
   const [isMouseInComponent, setIsMouseInComponent] = useState(false);
   const [activeSuggestionIndex, setActiveSuggestionIndex] = useState(0);
-  const [hoveredConceptIndex, setHoveredConceptIndex] = useState<number | null>(null);
+  const [hoveredSuggestionIndex, setHoveredSuggestionIndex] = useState<number | null>(null);
   const { results: labelsResults, isLoading: isLoadingLabels } = useLabelSearch(searchTerm, { debounceDelay });
 
   // Refs
@@ -92,39 +80,8 @@ export function IntelliSearch({
   const resetSearchState = () => {
     setSearchTerm("");
     setActiveSuggestionIndex(-1);
-    setHoveredConceptIndex(null);
+    setHoveredSuggestionIndex(null);
   };
-
-  /**
-   * Match concepts based on search term
-   * Checks both preferred_label and all alternative_labels
-   * Returns concept with matched label if alternative label matched
-   */
-  const matchedConcepts = useMemo(() => {
-    if (!searchTerm.trim() || !topics.length) {
-      return [];
-    }
-
-    const lowerQuery = searchTerm.toLowerCase();
-    const matches: Array<{ concept: TConcept; matchedLabel?: string }> = [];
-
-    for (const concept of topics) {
-      // Check preferred label
-      if (concept.preferred_label?.toLowerCase().includes(lowerQuery)) {
-        matches.push({ concept });
-        continue;
-      }
-
-      // Check alternative labels
-      const matchedAlt = concept.alternative_labels?.find((alt: string) => alt.toLowerCase().includes(lowerQuery));
-
-      if (matchedAlt) {
-        matches.push({ concept, matchedLabel: matchedAlt });
-      }
-    }
-
-    return matches;
-  }, [searchTerm, topics]);
 
   /**
    * Unified suggestions list - labels first, then concepts.
@@ -140,16 +97,6 @@ export function IntelliSearch({
       unified.push({ type: "label", data: label });
     });
 
-    // Add concept suggestions, excluding already-selected topics
-    matchedConcepts.forEach(({ concept, matchedLabel }) => {
-      if (concept?.preferred_label && selectedSet.has(concept.preferred_label.toLowerCase())) return;
-      unified.push({
-        type: "concept",
-        data: concept,
-        matchedLabel,
-      });
-    });
-
     // Add search suggestion
     if (searchTerm.trim()) {
       unified.unshift({
@@ -160,7 +107,7 @@ export function IntelliSearch({
 
     // Apply max suggestions limit if specified
     return maxSuggestions ? unified.slice(0, maxSuggestions) : unified;
-  }, [labelsResults, matchedConcepts, maxSuggestions, selectedLabels, searchTerm]);
+  }, [labelsResults, maxSuggestions, selectedLabels, searchTerm]);
 
   /**
    * Determine if suggestions should be visible
@@ -199,10 +146,8 @@ export function IntelliSearch({
           e.preventDefault();
           // If a suggestion is active, trigger selection callback, otherwise search for string
           if (activeSuggestionIndex >= 0) {
-            if (suggestions[activeSuggestionIndex].type === "concept") {
-              onSelectConcept?.(suggestions[activeSuggestionIndex].data.preferred_label);
-            } else if (suggestions[activeSuggestionIndex].type === "label") {
-              onSelectConcept?.(suggestions[activeSuggestionIndex].data.value);
+            if (suggestions[activeSuggestionIndex].type === "label") {
+              onSelectSuggestion?.(suggestions[activeSuggestionIndex].data.value);
             } else if (suggestions[activeSuggestionIndex].type === "search") {
               setQuery?.(suggestions[activeSuggestionIndex].data);
             }
@@ -222,17 +167,17 @@ export function IntelliSearch({
           break;
       }
     },
-    [activeSuggestionIndex, onSelectConcept, suggestions, setQuery, searchTerm]
+    [activeSuggestionIndex, onSelectSuggestion, suggestions, setQuery, searchTerm]
   );
 
   /**
    * Get the currently hovered concept for preview card
    */
-  const activeConcept = useMemo(() => {
-    if (hoveredConceptIndex === null && activeSuggestionIndex === null) return null;
-    const suggestion = suggestions[hoveredConceptIndex ?? activeSuggestionIndex ?? -1];
-    return suggestion?.type === "concept" ? suggestion.data : null;
-  }, [hoveredConceptIndex, activeSuggestionIndex, suggestions]);
+  // const activeConcept = useMemo(() => {
+  //   if (hoveredSuggestionIndex === null && activeSuggestionIndex === null) return null;
+  //   const suggestion = suggestions[hoveredSuggestionIndex ?? activeSuggestionIndex ?? -1];
+  //   return null;
+  // }, [hoveredSuggestionIndex, activeSuggestionIndex, suggestions]);
 
   return (
     <div
@@ -241,7 +186,7 @@ export function IntelliSearch({
       onMouseEnter={() => setIsMouseInComponent(true)}
       onMouseLeave={() => {
         setIsMouseInComponent(false);
-        setHoveredConceptIndex(null);
+        setHoveredSuggestionIndex(null);
       }}
     >
       {/* Input Field */}
@@ -292,7 +237,7 @@ export function IntelliSearch({
             )}
           >
             {suggestions.map((suggestion, index) => {
-              const isActive = index === activeSuggestionIndex;
+              const isActive = activeSuggestionIndex === -1 ? index === 0 : index === activeSuggestionIndex;
 
               return (
                 <div
@@ -300,7 +245,7 @@ export function IntelliSearch({
                   role="option"
                   aria-selected={isActive}
                   className={joinTailwindClasses(
-                    "px-4 py-2.5 cursor-pointer",
+                    "relative px-4 py-2.5 cursor-pointer",
                     "transition-all duration-150",
                     "hover:bg-gray-100 hover:shadow-sm hover:scale-[1.01]",
                     isActive && "bg-blue-50 border-l-2 border-l-blue-500",
@@ -308,35 +253,31 @@ export function IntelliSearch({
                   )}
                   onMouseDown={(e) => e.preventDefault()}
                   onMouseEnter={() => {
-                    if (suggestion.type === "concept") {
-                      setHoveredConceptIndex(index);
+                    if (suggestion) {
+                      setHoveredSuggestionIndex(index);
                     }
                   }}
                   onMouseLeave={() => {
-                    setHoveredConceptIndex(null);
+                    setHoveredSuggestionIndex(null);
                   }}
                   onClick={() => {
                     resetSearchState();
-                    if (suggestion.type === "concept") {
-                      onSelectConcept?.(suggestion.data.preferred_label);
-                    } else if (suggestion.type === "label") {
-                      onSelectConcept?.(suggestion.data.value);
+                    if (suggestion.type === "label") {
+                      onSelectSuggestion?.(suggestion.data.value);
                     } else if (suggestion.type === "search") {
                       setQuery?.(suggestion.data);
                     }
                   }}
                 >
-                  <div className="text-sm relative">
-                    {displaySuggestion(suggestion, searchTerm)}
-                    {isActive && <span className="absolute right-0 bg-white p-1 text-xs border border-gray-200">Enter</span>}
-                  </div>
+                  <div className="text-sm">{displaySuggestion(suggestion, searchTerm)}</div>
+                  {isActive && <span className="absolute top-2 right-2 bg-white p-1 text-xs border border-gray-200">Enter</span>}
                 </div>
               );
             })}
           </div>
 
           {/* Concept Preview Card */}
-          {activeConcept && (
+          {/* {activeConcept && (
             <div
               className={joinTailwindClasses(
                 "absolute left-full top-0 ml-4 z-20",
@@ -356,7 +297,7 @@ export function IntelliSearch({
                 </div>
               )}
             </div>
-          )}
+          )} */}
         </div>
       )}
     </div>

@@ -474,7 +474,7 @@ export function QueryBuilder({ filters, setFilters }: { filters?: TQueryGroup | 
         )}
       >
         <ListFilter className="h-4 w-4" />
-        Filters
+        Advanced Filters
       </BasePopover.Trigger>
 
       <BasePopover.Portal>
@@ -484,7 +484,7 @@ export function QueryBuilder({ filters, setFilters }: { filters?: TQueryGroup | 
           >
             {/* Header */}
             <div className="flex items-center justify-between border-b border-gray-100 px-4 py-3">
-              <h3 className="text-sm font-semibold text-gray-900">Advanced filters</h3>
+              <h3 className="text-sm font-semibold text-gray-900">Advanced Filters</h3>
               <BasePopover.Close className="rounded p-1 text-gray-400 hover:text-gray-600 hover:bg-gray-100 transition-colors" aria-label="Close">
                 <X className="h-4 w-4" />
               </BasePopover.Close>

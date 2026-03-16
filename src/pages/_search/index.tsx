@@ -1,8 +1,8 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 
 import { GetServerSideProps, InferGetServerSidePropsType } from "next";
-import { useQueryState, useQueryStates, parseAsString, parseAsJson } from "nuqs";
-import { useMemo, useState } from "react";
+import { useQueryState, parseAsString, parseAsJson } from "nuqs";
+import { useMemo } from "react";
 
 import { ApiClient } from "@/api/http-common";
 import { AppliedLabels } from "@/components/_experiment/appliedLabels/AppliedLabels";
@@ -11,7 +11,7 @@ import { createGroup, QueryBuilder, TQueryGroup, TQueryRule } from "@/components
 import { SearchContainer } from "@/components/_experiment/searchResults/SearchResults";
 import { withEnvConfig } from "@/context/EnvConfig";
 import { FeaturesContext } from "@/context/FeaturesContext";
-import { FilterGroupSchema, FilterSchema } from "@/schemas";
+import { FilterGroupSchema } from "@/schemas";
 import { getFeatureFlags } from "@/utils/featureFlags";
 import { getFeatures } from "@/utils/features";
 import { readConfigFile } from "@/utils/readConfigFile";
@@ -80,12 +80,11 @@ const ShadowSearch = ({ theme, themeConfig, features }: TProps) => {
     <FeaturesContext.Provider value={features}>
       <div className="w-3/4 m-auto mt-8">
         <IntelliSearch
-          topics={[]}
           selectedLabels={selectedLabels}
-          onSelectConcept={(concept) => {
-            if (concept) {
-              if (concept && !selectedLabels.includes(concept)) {
-                setFilters((prev) => addLabelRule(prev, concept));
+          onSelectSuggestion={(suggestion) => {
+            if (suggestion) {
+              if (suggestion && !selectedLabels.includes(suggestion)) {
+                setFilters((prev) => addLabelRule(prev, suggestion));
               }
             }
           }}

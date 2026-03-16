@@ -30,11 +30,6 @@ export type TSuggestion =
       data: TLabelResult;
     }
   | {
-      type: "concept";
-      data: TTopic;
-      matchedLabel?: string; // If matched on alternative label, store it here
-    }
-  | {
       type: "search";
       data: string;
     };
@@ -51,12 +46,10 @@ export interface IntelliSearchProps {
   debounceDelay?: number;
   /** Maximum number of suggestions to display */
   maxSuggestions?: number;
-  /** List of concepts to search through */
-  topics: TTopic[];
   /** Concept labels already selected as filters; exclude these from suggestions */
   selectedLabels?: string[];
-  /** Called when the user selects a concept suggestion (adds to Active filters) */
-  onSelectConcept?: (concept: string) => void;
+  /** Called when the user selects a suggestion (adds to Active filters) */
+  onSelectSuggestion?: (suggestion: string) => void;
   /** Optional callback to set the search query */
   setQuery?: (query: string) => void;
 }
