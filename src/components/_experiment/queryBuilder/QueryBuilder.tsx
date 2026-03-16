@@ -1,5 +1,5 @@
 import { Popover as BasePopover } from "@base-ui/react/popover";
-import { ListFilter, Plus, Trash2, X } from "lucide-react";
+import { SlidersHorizontal, Plus, Trash2, X } from "lucide-react";
 import { useCallback, useEffect, useRef, useState } from "react";
 
 import { useLabelSearch, TLabelResult } from "@/hooks/useLabelSearch";
@@ -463,7 +463,12 @@ function GroupRenderer({ group, path, root, onChange, depth, onDeleteGroup }: Gr
 // Main QueryBuilder component
 // ---------------------------------------------------------------------------
 
-export function QueryBuilder({ filters, setFilters }: { filters?: TQueryGroup | null; setFilters?: (filters: TQueryGroup | null) => void }) {
+type TProps = {
+  filters?: TQueryGroup | null;
+  setFilters?: (filters: TQueryGroup | null) => void;
+};
+
+export function QueryBuilder({ filters, setFilters }: TProps) {
   return (
     <BasePopover.Root>
       <BasePopover.Trigger
@@ -473,7 +478,7 @@ export function QueryBuilder({ filters, setFilters }: { filters?: TQueryGroup | 
           "focus:outline-none focus:ring-2 focus:ring-blue-200 focus:border-blue-500"
         )}
       >
-        <ListFilter className="h-4 w-4" />
+        <SlidersHorizontal className="h-4 w-4" />
         Advanced Filters
       </BasePopover.Trigger>
 

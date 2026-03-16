@@ -8,6 +8,7 @@ import { ApiClient } from "@/api/http-common";
 import { AppliedLabels } from "@/components/_experiment/appliedLabels/AppliedLabels";
 import { IntelliSearch } from "@/components/_experiment/intellisearch";
 import { createGroup, QueryBuilder, TQueryGroup, TQueryRule } from "@/components/_experiment/queryBuilder/QueryBuilder";
+import { SearchFilters } from "@/components/_experiment/searchFilters/SearchFilters";
 import { SearchContainer } from "@/components/_experiment/searchResults/SearchResults";
 import { withEnvConfig } from "@/context/EnvConfig";
 import { FeaturesContext } from "@/context/FeaturesContext";
@@ -100,6 +101,16 @@ const ShadowSearch = ({ theme, themeConfig, features }: TProps) => {
             setQuery={setQuery}
           />
         </div>
+        <SearchFilters
+          filters={filters}
+          onChange={(checked, label) => {
+            if (checked) {
+              setFilters((prev) => addLabelRule(prev, label));
+            } else {
+              setFilters((prev) => (prev ? removeLabelRule(prev, label) : createGroup()));
+            }
+          }}
+        />
         <QueryBuilder filters={filters} setFilters={setFilters} />
         {/* <pre className="text-xs">{filters ? JSON.stringify(filters, null, 2) : "No filters"}</pre> */}
       </div>
