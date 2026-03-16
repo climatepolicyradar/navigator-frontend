@@ -1,10 +1,10 @@
 import Image from "next/image";
 
+import LandingPageLinks from "@/ccc/components/LandingPageLinks";
+import LandingSearchForm from "@/ccc/components/LandingSearchForm";
 import { LatestItemsBlock } from "@/components/blocks/latestItemsBlock/LatestItemsBlock";
 import { Heading } from "@/components/typography/Heading";
 import useGetLatest from "@/hooks/useGetLatest";
-
-import LandingSearchForm from "./LandingSearchForm";
 
 interface IProps {
   handleSearchInput: (term: string, filter?: string, filterValue?: string) => void;
@@ -24,6 +24,7 @@ export const Hero = ({ handleSearchInput, searchInput }: IProps) => {
             The Climate Litigation Database
           </Heading>
           <LandingSearchForm handleSearchInput={handleSearchInput} input={searchInput} />
+          <LandingPageLinks />
         </div>
       </div>
       <div className="basis-[320px]">
