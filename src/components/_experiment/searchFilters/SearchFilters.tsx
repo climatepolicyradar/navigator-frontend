@@ -3,7 +3,7 @@ import { ListFilter } from "lucide-react";
 import { useEffect, useState } from "react";
 
 import { Checkbox } from "@/components/checkbox/Checkbox";
-import { TLabelResult, useLabelSearch, loadLabels } from "@/hooks/useLabelSearch";
+import { TLabelResult, loadLabels } from "@/hooks/useLabelSearch";
 
 import { TQueryGroup } from "../queryBuilder/QueryBuilder";
 
