@@ -1,4 +1,3 @@
-// TODO: Add this to CI/CD pipeline
 import { describe, test, vi, expect } from "vitest";
 
 import { handler } from "./redirection";
