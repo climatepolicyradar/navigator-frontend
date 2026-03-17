@@ -1,0 +1,7 @@
+[project]
+name = "resources"
+authors = ["Katy Baulch <katy@climatepolicyradar.org>"]
+version = "1.0.0"
+description = "Common resources for Pulumi infra"
+requires-python = ">=3.13,<3.14"
+dependencies = ["pulumi", "pulumi-aws"]
