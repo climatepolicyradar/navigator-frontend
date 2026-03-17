@@ -182,7 +182,7 @@ export function IntelliSearch({
   return (
     <div
       ref={containerRef}
-      className={joinTailwindClasses("relative w-full max-w-2xl", className)}
+      className={joinTailwindClasses("relative w-full", className)}
       onMouseEnter={() => setIsMouseInComponent(true)}
       onMouseLeave={() => {
         setIsMouseInComponent(false);

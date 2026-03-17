@@ -79,7 +79,7 @@ const ShadowSearch = ({ theme, themeConfig, features }: TProps) => {
 
   return (
     <FeaturesContext.Provider value={features}>
-      <div className="w-3/4 m-auto mt-8">
+      <div className="w-3/4 m-auto mt-8 flex flex-col gap-4">
         <IntelliSearch
           selectedLabels={selectedLabels}
           onSelectSuggestion={(suggestion) => {
@@ -91,38 +91,36 @@ const ShadowSearch = ({ theme, themeConfig, features }: TProps) => {
           }}
           setQuery={setQuery}
         />
-      </div>
-      <div className="w-3/4 m-auto mt-4 mb-8">
-        <div className="mb-4">
-          <AppliedLabels
-            query={query}
-            labels={selectedLabels}
-            onSelectLabel={(label) => setFilters((prev) => (prev ? removeLabelRule(prev, label) : createGroup()))}
-            setQuery={setQuery}
+        <AppliedLabels
+          query={query}
+          labels={selectedLabels}
+          onSelectLabel={(label) => setFilters((prev) => (prev ? removeLabelRule(prev, label) : createGroup()))}
+          setQuery={setQuery}
+        />
+        <div className="flex justify-between items-center">
+          <SearchFilters
+            filters={filters}
+            onChange={(checked, label) => {
+              if (checked) {
+                setFilters((prev) => addLabelRule(prev, label));
+              } else {
+                setFilters((prev) => (prev ? removeLabelRule(prev, label) : createGroup()));
+              }
+            }}
           />
+          <QueryBuilder filters={filters} setFilters={setFilters} />
+          {/* <pre className="text-xs">{filters ? JSON.stringify(filters, null, 2) : "No filters"}</pre> */}
         </div>
-        <SearchFilters
-          filters={filters}
-          onChange={(checked, label) => {
-            if (checked) {
+        <SearchContainer
+          query={query}
+          onSelectLabel={(label) => {
+            if (!selectedLabels.includes(label)) {
               setFilters((prev) => addLabelRule(prev, label));
-            } else {
-              setFilters((prev) => (prev ? removeLabelRule(prev, label) : createGroup()));
             }
           }}
+          filters={filters}
         />
-        <QueryBuilder filters={filters} setFilters={setFilters} />
-        {/* <pre className="text-xs">{filters ? JSON.stringify(filters, null, 2) : "No filters"}</pre> */}
       </div>
-      <SearchContainer
-        query={query}
-        onSelectLabel={(label) => {
-          if (!selectedLabels.includes(label)) {
-            setFilters((prev) => addLabelRule(prev, label));
-          }
-        }}
-        filters={filters}
-      />
     </FeaturesContext.Provider>
   );
 };

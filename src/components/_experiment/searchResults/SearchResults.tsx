@@ -76,9 +76,9 @@ export function SearchResults({ promise, onSelectLabel }: { promise: Promise<Sea
 
   return (
     <div>
-      <p className="text-sm text-text-secondary mb-4">
+      {/* <p className="text-sm text-text-secondary mb-4">
         {data.total_results ?? 0} results — page {data.page} of {data.total_pages ?? 1}
-      </p>
+      </p> */}
       <ul className="space-y-4">
         {data.results.map((doc) => (
           <li key={doc.id} className="border border-gray-200 rounded-md p-4">
@@ -147,20 +147,17 @@ export function SearchContainer({
 
   return (
     <>
-      <div className="w-3/4 m-auto">
-        {/* {!query && (!selectedLabels || selectedLabels.length === 0) && <p className="text-sm text-text-secondary">Enter a search to see results.</p>} */}
-        {searchPromise && (
-          <Suspense
-            fallback={
-              <p className="text-sm text-text-secondary flex gap-2 items-center">
-                <LucideCog className="animate-spin" /> Loading results…
-              </p>
-            }
-          >
-            <SearchResults promise={searchPromise} onSelectLabel={onSelectLabel} />
-          </Suspense>
-        )}
-      </div>
+      {searchPromise && (
+        <Suspense
+          fallback={
+            <p className="text-sm text-text-secondary flex gap-2 items-center">
+              <LucideCog className="animate-spin" /> Loading results…
+            </p>
+          }
+        >
+          <SearchResults promise={searchPromise} onSelectLabel={onSelectLabel} />
+        </Suspense>
+      )}
     </>
   );
 }

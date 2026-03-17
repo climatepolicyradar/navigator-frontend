@@ -87,6 +87,11 @@ export function SearchFilters({ filters, openFilter, onChange }: TProps) {
                     </ul>
                   </div>
                   <div className="max-h-[60vh] basis-2/3 p-4 overflow-y-auto text-sm">
+                    {activeFilter === "category" && (
+                      <p className="text-xs text-gray-500 mb-4">
+                        These categories are hardcoded based upon the existing providers on the CPR themed app.
+                      </p>
+                    )}
                     <ul className="flex flex-col gap-2">
                       {availableFilters
                         .filter((filter) => filter.type === activeFilter)
