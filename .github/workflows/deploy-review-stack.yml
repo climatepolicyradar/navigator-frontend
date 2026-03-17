@@ -54,25 +54,6 @@ jobs:
           pr_number=${{ github.event.pull_request.number }}
           stack_name=${{ steps.decide.outputs.stack_name }}
 
-          echo "Declaring PR stack ${stack_name}..."
-          response=$(curl -sS -w "\n%{http_code}" -X POST \
-            -H "Authorization: token ${PULUMI_ACCESS_TOKEN}" \
-            -H "Content-Type: application/json" \
-            "https://api.pulumi.com/api/stacks/${ORG}/${PROJECT}" \
-            -d "{\"stackName\": \"${stack_name}\"}")
-
-          body=$(printf "%s" "$response" | head -n -1)
-          status=$(printf "%s" "$response" | tail -n1)
-
-          echo "create-stack status: $status"
-          echo "create-stack body: $body"
-
-          if [ "$status" -ne 200 ] && [ "$status" -ne 201 ] && [ "$status" -ne 409 ]; then
-            echo "failing job: stack create returned $status"
-            exit 1
-          fi
-
-
           # set prNumber + environment via stack config overrides
           echo "Creating PR stack ${stack_name}..."
           curl -fS -X POST \
@@ -81,7 +62,7 @@ jobs:
           "https://api.pulumi.com/api/stacks/${ORG}/${PROJECT}/${stack_name}/deployments" \
           -d "{
             \"operation\": \"update\",
-            \"inheritSettings\": false,
+            \"inheritSettings\": true,
             \"deploymentSettings\": {
               \"sourceContext\": {
                 \"git\": {
