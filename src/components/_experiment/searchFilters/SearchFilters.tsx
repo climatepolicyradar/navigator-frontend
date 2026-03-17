@@ -25,16 +25,15 @@ const FILTER_AGGREGATIONS: TFILTER_AGGREGATIONS[] = ["concept", "entity_type", "
 
 type TProps = {
   filters?: TQueryGroup | null;
-  openFilter?: TFILTER_AGGREGATIONS;
+  openFilter?: TFILTER_AGGREGATIONS | "category";
   onChange?: (checked: boolean, label: string) => void;
 };
 
 export function SearchFilters({ filters, openFilter, onChange }: TProps) {
   const [availableFilters, setAvailableFilters] = useState<TLabelResult[]>([]);
-  const [activeFilter, setActiveFilter] = useState<TFILTER_AGGREGATIONS | "category">(openFilter || "concept");
+  const [activeFilter, setActiveFilter] = useState<TFILTER_AGGREGATIONS | "category">(openFilter || "category");
 
   useEffect(() => {
-    // Load some initial filter options on mount (e.g. top labels)
     loadLabels("").then(setAvailableFilters);
   }, []);
 

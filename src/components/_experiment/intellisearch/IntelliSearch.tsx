@@ -211,7 +211,7 @@ export function IntelliSearch({
           aria-autocomplete="list"
           aria-controls="suggestions-list"
           aria-expanded={shouldShowSuggestions}
-          className="w-full bg-transparent text-base text-gray-900 placeholder-gray-400 outline-none"
+          className="w-full bg-transparent text-base text-gray-900 placeholder-gray-400 outline-none border-0"
           autoComplete="off"
         />
       </div>
@@ -225,7 +225,7 @@ export function IntelliSearch({
 
       {/* Suggestions List */}
       {shouldShowSuggestions && (
-        <div className="relative mt-2">
+        <div className="relative mt-1">
           <div
             id="suggestions-list"
             role="listbox"
