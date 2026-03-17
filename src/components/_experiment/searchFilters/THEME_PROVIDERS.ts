@@ -1,3 +1,5 @@
+// These are derived from the existing configurations for each theme (see the config.ts)
+// The corpus IDs map to the new providers
 export const THEME_PROVIDERS = {
   cpr: [
     "Adaptation Fund",
