@@ -56,13 +56,13 @@ jobs:
 
           # set prNumber + environment via stack config overrides
           echo "Creating PR stack ${stack_name}..."
-          curl -fS -X POST \
+          response=$(curl -fS -X POST \
           -H "Authorization: token ${PULUMI_ACCESS_TOKEN}" \
           -H "Content-Type: application/json" \
           "https://api.pulumi.com/api/stacks/${ORG}/${PROJECT}/${stack_name}/deployments" \
           -d "{
             \"operation\": \"update\",
-            \"inheritSettings\": true,
+            \"inheritSettings\": false,
             \"deploymentSettings\": {
               \"sourceContext\": {
                 \"git\": {
@@ -86,7 +86,18 @@ jobs:
               \"CPR-PR-Number\": \"${pr_number}\",
               \"Environment\": \"review\"
             }
-          }"
+          }")
+
+          body=$(printf "%s" "$response" | head -n -1)
+          status=$(printf "%s" "$response" | tail -n1)
+
+          echo "create-stack status: $status"
+          echo "create-stack body: $body"
+
+          if [ "$status" -ne 200 ] && [ "$status" -ne 201 ] && [ "$status" -ne 409 ]; then
+            echo "failing job: stack create returned $status"
+            exit 1
+          fi
 
       - name: Destroy review stack
         if: steps.decide.outputs.action == 'destroy'
