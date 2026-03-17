@@ -91,8 +91,8 @@ jobs:
           body=$(printf "%s" "$response" | head -n -1)
           status=$(printf "%s" "$response" | tail -n1)
 
-          echo "create-stack status: $status"
-          echo "create-stack body: $body"
+          echo "create-review-stack status: $status"
+          echo "create-review-stack body: $body"
 
           if [ "$status" -ne 200 ] && [ "$status" -ne 201 ] && [ "$status" -ne 409 ]; then
             echo "failing job: stack create returned $status"
