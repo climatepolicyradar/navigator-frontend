@@ -1,9 +1,0 @@
-{
-  "scripts": {
-    "test": "vitest"
-  },
-  "devDependencies": {
-    "cloudfront": "^0.4.1",
-    "vitest": "^3.2.4"
-  }
-}
