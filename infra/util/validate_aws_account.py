@@ -3,8 +3,8 @@
 import os
 import subprocess  # nosec: B603, B607, B404
 
-import pulumi  # type: ignore
-import pulumi_aws as aws  # type: ignore
+import pulumi
+import pulumi_aws as aws
 
 
 def convert_str_to_bool(s: str) -> bool:

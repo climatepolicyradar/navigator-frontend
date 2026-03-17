@@ -3,8 +3,8 @@
 from dataclasses import dataclass
 from typing import Dict, Optional
 
-import pulumi  # type: ignore
-import pulumi_aws as aws  # type: ignore
+import pulumi
+import pulumi_aws as aws
 
 from resources.util import tag_name
 

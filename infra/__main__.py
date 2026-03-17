@@ -5,8 +5,8 @@ from enum import Enum
 from pathlib import Path
 from typing import cast
 
-import pulumi  # type: ignore
-import pulumi_aws as aws  # type: ignore
+import pulumi
+import pulumi_aws as aws 
 from resources.app_runner_service import AppRunnerConfig, AppRunnerService
 from resources.cache_policy import CachePolicyConfig, CloudFrontCachePolicy
 from resources.cloudfront_distribution import (

@@ -5,8 +5,8 @@ from enum import Enum
 from typing import Any, Dict, List, Optional, Tuple, TypedDict
 from urllib.parse import urlparse
 
-import pulumi  # type: ignore
-import pulumi_aws as aws  # type: ignore
+import pulumi
+import pulumi_aws as aws
 
 
 def parse_hostname(hostname_url: str) -> Tuple[str, str]:

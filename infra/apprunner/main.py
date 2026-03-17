@@ -1,8 +1,8 @@
 import json
 from typing import Mapping, Optional
 
-import pulumi  # type: ignore
-import pulumi_aws as aws  # type: ignore
+import pulumi
+import pulumi_aws as aws
 from util.naming import DEFAULT_TAGS, NAME_PREFIX, SCALING_NAME
 
 CONFIG = pulumi.config.Config()

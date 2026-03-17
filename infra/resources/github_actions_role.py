@@ -3,8 +3,8 @@
 import json
 from typing import Optional
 
-import pulumi  # type: ignore
-import pulumi_aws as aws  # type: ignore
+import pulumi
+import pulumi_aws as aws
 
 
 class GitHubActionsRole(pulumi.ComponentResource):

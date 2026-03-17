@@ -1,6 +1,6 @@
 """Utility functions for naming things."""
 
-import pulumi  # type: ignore
+import pulumi
 
 
 def tag_name():

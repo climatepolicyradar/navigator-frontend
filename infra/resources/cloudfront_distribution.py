@@ -2,8 +2,8 @@ from dataclasses import dataclass
 from enum import Enum
 from typing import Any, Dict, List, Optional, cast
 
-import pulumi  # type: ignore
-import pulumi_aws as aws  # type: ignore
+import pulumi
+import pulumi_aws as aws
 
 from resources.util import tag_name
 
