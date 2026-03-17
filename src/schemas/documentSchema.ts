@@ -7,8 +7,11 @@ export const DocumentSchema = v.object({
   id: v.string(),
   title: v.string(),
   description: v.nullable(v.string()),
-  labels: v.array(LabelSchema),
   documents: v.array(FileSchema),
+  labels: v.array(LabelSchema),
+  attributes: v.object({
+    deprecated_slug: v.string(),
+  }),
 });
 
 export type TDataInDocument = v.InferOutput<typeof DocumentSchema>;
