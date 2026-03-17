@@ -1,0 +1,33 @@
+config:
+  aws:region: eu-west-1
+  frontend:adobe_api_key:
+    secure: AAABAAey8VJrwFYAkMiu1VTNJ/rFYunRk5Jc3wsefCUOkXp+s/KLvz9L725/J6uxreTdiSEEHm97p+VquxMV2Q==
+  frontend:auto_scaling_config_arn:
+    secure: AAABAMT28I3OpaqOypqp8FqPmic31roOnJArraYOG23zk/55GTakK5DCRNzWbCS9VhGsZrjb1/mRB/vBpmC+QMsH1uGApcv1c4+sfpywVwpLIK7sepNgjERu5SUAoLVv2me0rCQyjlqV6g1cl/nurvvocvkBRp4A/kDNyrJCoD7OJ0tlJz0TZe73XprBhVuplo1fzkpHXqdZah8=
+  frontend:backend_api_token:
+    secure: AAABAIyEO1UAQJY7WCdFTZMzyyC5IRkD4XrWlyxSNBS6y6TG2Nq4EMEBk4ifxk2zMdkzYy3IaPp/Izq9QzBNNB62hAX++TKM09tTeiiXD3AUQgsZxSTiUTTSRxQb/PU9dAtHhxTUInjlYebBn2ePHkyTjlwZgzIcQVUj15LaepePYRmOFAae4Qepdjnx+qBXxM0wIL6Vg3iZBEhjDql7XYtx6EIN+enlWnAjYgDJoXSyUZ+00GFnaMZA2dagTFJK/F8oKE4aZohxURmAiziT+nPb3F8jCbPyg4eilHHcUB8g7idKUBnacHe73vkkismw1+zUY2ncA03eIeGnrYNnFtq2FVMhhqDZ+yweqj+CRUh+HkeXqhDpe+cNtoxZsnNw4+06YtAE5MJKjamz7UMkULDUXH1Z4ETOAoweg45LHz/VROEmJ3daGhgjs/HOZZg63tBNoA==
+  frontend:backend_api_url: https://app.climatepolicyradar.org/api/v1
+  frontend:cdn_url: https://cdn.climatepolicyradar.org
+  frontend:ecr_uri:
+    secure: AAABAIW6u1rXuC90jUyBRY+VMTbHGjZKFFM57sTB0gQ3J9/0jyQbQKOyHpoksUK0OUKEJXOUc6tPNf/Jdvbb7wn24CwbWKDmC43uOdzipCFXbbSarPqHuoTPKxcIvu7EklqF
+  frontend:app_url: https://www.climatecasechart.com
+  # we do not have a `frontend:cname` as this cache is managed separately due to some migration work we needed to do
+  # TODO: move this cache into line with other caches
+  frontend:redirect_file: default.json
+  frontend:robots: "true"
+  frontend:s3-path:
+    secure: AAABAEE/05B9ZKRGX5w4epgS7d8D8Fyh2oDQUUBqN1UaDGKsv5L/DsEfsFM4u/jmtOP6P9hdgbmMylpnxw+LHHqyiohWF6AnO77yb0FbC4f8QRErfCUEYxIy8tr2LZ7Aw4xLag==
+  frontend:targets_url: https://cpr-production-targets-json-store.s3.eu-west-1.amazonaws.com
+  frontend:theme: ccc
+  frontend:validation_account_id:
+    secure: AAABAJA3aIErw8POJaasaF8VlgVkbg4hThMCgqg4GqXpjfucM+4NUFS26lw=
+  frontend:concepts_api_url: https://api.climatepolicyradar.org
+  frontend:next_public_faro_url: https://faro-collector-prod-gb-south-0.grafana.net/collect/74f6d4bd78b7bb2cc270036193aaa3a6
+  frontend:next_public_faro_app_name: cpr-frontend
+  frontend:next_public_faro_app_namespace: frontend
+  frontend:otel_exporter_otlp_endpoint: https://otel.staging.climatepolicyradar.org/
+  frontend:otel_exporter_otlp_protocol: http/protobuf
+  frontend:otel_service_name: frontend-server
+  frontend:otel_resource_attributes: service.namespace=frontend
+environment:
+  - frontend/ccc-production
