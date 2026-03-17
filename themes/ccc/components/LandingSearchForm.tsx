@@ -1,9 +1,7 @@
 import { Search } from "lucide-react";
-import router from "next/router";
 import { useState, useEffect, useRef, ChangeEvent } from "react";
 
 import { SearchDropdown } from "@/components/forms/SearchDropdown";
-import { QUERY_PARAMS } from "@/constants/queryParams";
 
 interface IProps {
   placeholder?: string;
@@ -21,6 +19,7 @@ const LandingSearchForm = ({ placeholder, input, handleSearchInput }: IProps) =>
   };
 
   useEffect(() => {
+    // eslint-disable-next-line react-hooks/set-state-in-effect
     if (input) setTerm(input);
   }, [input]);
 
@@ -38,16 +37,6 @@ const LandingSearchForm = ({ placeholder, input, handleSearchInput }: IProps) =>
   }, [formRef]);
 
   const displayPlaceholder = placeholder ?? "Search the full text of cases";
-
-  const handleQuickSearch = (params: Record<string, string>) => {
-    // Push directly to search page with all parameters
-    router.push({
-      pathname: "/search",
-      query: {
-        ...params,
-      },
-    });
-  };
 
   return (
     <>

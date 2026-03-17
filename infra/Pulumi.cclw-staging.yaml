@@ -1,0 +1,31 @@
+config:
+  aws:region: eu-west-1
+  frontend:adobe_api_key:
+    secure: AAABAJ1j43K5imTt9VBHUKfdry4wf97/LhRQOI7owB+I1vdoRtqOzcRc09WsVN2f5Q8khBDdi6YLSniJfTikhw==
+  frontend:auto_scaling_config_arn:
+    secure: AAABAB9uTfOJSnOsp19+yem1+OQwYX1PumnFUvblQdbbZQxLpqp1bkme4avsya4oGoTnhl3IBPi1boeX5AtvkMDr3rZmnCzFK6hLI88OeVVhCaJbTTX67xLx15rTBAhfBF3WmeeawuAhjvF3tED14EBGbxNoUWRrbQoj7prB2d8rOtQkG1Knht+KM8dzjbgddf2ysZ0Z0CM=
+  frontend:backend_api_token:
+    secure: AAABAP+d+FSJvXU0zA1NEGu41lkvXFPi6AfAX1UbdDKoHqTNcJ608cyQGe8BNyALEyLlzi70TkNXDGMXZZRT4EV3OWL0r+40q1lioNAmQyEhsdSxBXQvm9klX3KU517Rke7xy0xiR9jE55tHWUZMyQwRB8lMWP5rF3sLT3+j+wr3IQ95AiOCQ9hsyfV+iFFwAX2KO0K88cipLNoe68kw4DPnFR1ZI5VyZNDet1Fo2nGLsHlN6KEravJm+eeixxuanRK+2kE77KAUOIFQTpcTKk8rl4EC4G3TuoDIjE+TvtciPVOzxJ2EZu0my3/PKzpIWf1R+GI9n457bBJuF3AKqnUHND9imHpOaiT7AWlLgS7Wt/+1mya4MK6N+rfZw+IeWAmt8PwjS7VB5InOfl8l5KUr5r+p4wqTRVJY3Ziru5fmo1bTnYXGWKFuRrNzkM8iyCXj72lJejrO6ztaJfMDDlNwSxcU2a919CkvFEw77Bt1B220M2tkZbGprKSeGxtQoKj+eaJjc6E8FSLRPBR5A4GqaLG7oRWzzQlInEzfeOjtPw/fbPXzniYPj9IF98VhRTRA/aVBystA09uWpq1agIyoiHJvoibE6kfseYFnYG8eXXvr18k9T81Cd30o6ei+Ta4CykGK8QExVWbe+pFVJFkHlO78xBwsKVrFVrv45pnzNFR2BFCuvrtIdda8b9j+CdUDZJ9TynZJBQrJ9OVCI9lh+Utw0P2kwpE+txWq6lUt4r/7GBYilhmROPh2lhy79QvujFE5vuEUESS6QnddPIFZdPnNcfuiL+JgBhoc8hyecxdYu6Zx
+  frontend:backend_api_url: https://cpr.staging.climatepolicyradar.org/api/v1
+  frontend:cdn_url: https://cdn.dev.climatepolicyradar.org
+  frontend:ecr_uri:
+    secure: AAABAHe8P466fcxKUgYmlBlqGPr2aQPIo5daUqjYskLLph1+ga858g/vAwkzvEnpmhvH5D8xwuN4VZAdOHHR95wHS1q3xD3QYRqoZCUlImaTF5Y9Jk6colGmTvhULXYyT1Q1Bw==
+  frontend:app_url: https://cclw.staging.climatepolicyradar.org
+  frontend:redirect_file: default.json
+  frontend:robots: "false"
+  frontend:s3-path:
+    secure: AAABAAIym+rLWVMS9MTLbBEPi1T1NIczra8ARphNtG5CrsnR0psf0jvgvqYlQqvoQnVvMzaDPrcGyERGgDqWdWpBU2tcHcCFee1W4Gqg2En+Cs6uT9s2Oc+fYoue2FHN+Q==
+  frontend:targets_url: https://cpr-staging-targets-json-store.s3.eu-west-1.amazonaws.com
+  frontend:theme: cclw
+  frontend:validation_account_id:
+    secure: AAABAATc2POR1JGQgNMxlmfgpqCThBrWG1GU7XxYJdVoo2JOd+sMjG6IiCQ=
+  frontend:concepts_api_url: https://api.staging.climatepolicyradar.org
+  frontend:next_public_faro_url: https://faro-collector-prod-gb-south-0.grafana.net/collect/74f6d4bd78b7bb2cc270036193aaa3a6
+  frontend:next_public_faro_app_name: cpr-frontend
+  frontend:next_public_faro_app_namespace: frontend
+  frontend:otel_exporter_otlp_endpoint: https://otel.staging.climatepolicyradar.org/
+  frontend:otel_exporter_otlp_protocol: http/protobuf
+  frontend:otel_service_name: frontend-server
+  frontend:otel_resource_attributes: service.namespace=frontend
+environment:
+  - frontend/cclw-staging

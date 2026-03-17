@@ -1,83 +1,118 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 
 import { GetServerSideProps, InferGetServerSidePropsType } from "next";
-import { Suspense, use, useMemo, useState, useEffect } from "react";
+import { useQueryState, useQueryStates, parseAsString, parseAsJson } from "nuqs";
+import { useMemo, useState } from "react";
 
 import { ApiClient } from "@/api/http-common";
 import { AppliedLabels } from "@/components/_experiment/appliedLabels/AppliedLabels";
 import { IntelliSearch } from "@/components/_experiment/intellisearch";
-import { QueryBuilder, TQueryGroup } from "@/components/_experiment/queryBuilder/QueryBuilder";
+import { createGroup, QueryBuilder, TQueryGroup, TQueryRule } from "@/components/_experiment/queryBuilder/QueryBuilder";
 import { SearchContainer } from "@/components/_experiment/searchResults/SearchResults";
-import { Typeahead } from "@/components/_experiment/typeahead/Typeahead";
 import { withEnvConfig } from "@/context/EnvConfig";
 import { FeaturesContext } from "@/context/FeaturesContext";
-import { TopicsContext } from "@/context/TopicsContext";
-import { WikiBaseConceptsContext } from "@/context/WikiBaseConceptsContext";
-import useConfig from "@/hooks/useConfig";
-import useShadowSearch from "@/hooks/useShadowSearch";
-import { TTopic, TTopics } from "@/types";
-import { buildFilterFieldOptions } from "@/utils/_experiment/buildFilterFieldOptions";
-import { FamilyConcept, mapFamilyConceptsToConcepts } from "@/utils/familyConcepts";
+import { FilterGroupSchema, FilterSchema } from "@/schemas";
 import { getFeatureFlags } from "@/utils/featureFlags";
 import { getFeatures } from "@/utils/features";
-import { fetchAndProcessTopics } from "@/utils/fetchAndProcessTopics";
 import { readConfigFile } from "@/utils/readConfigFile";
 
 type TProps = InferGetServerSidePropsType<typeof getServerSideProps>;
 
-const ShadowSearch = ({ theme, themeConfig, features, topicsData, familyConceptsData }: TProps) => {
-  /* we have access to the page's SSR data if we want it
+/** Extract all label values from "contains" rules in the filter tree. */
+function extractLabels(group: TQueryGroup | null): string[] {
+  if (!group) return [];
+  const labels: string[] = [];
+  for (const filter of group.filters) {
+    if ("field" in filter) {
+      if (filter.op === "contains" && filter.value) labels.push(filter.value);
+    } else {
+      labels.push(...extractLabels(filter));
+    }
+  }
+  return labels;
+}
 
-  // const configQuery = useConfig();
-  // const { data: configData } = configQuery;
-  // const { regions = [], countries = [], corpus_types = {} } = configData ?? {};
-  */
+const groupIsEmpty = (group: TQueryGroup | null): boolean => {
+  if (!group) return true;
+  return group.filters.length === 0 || group.filters.every((f) => "field" in f && f.op === "contains" && !f.value);
+};
 
-  // strings selected by typeahead
-  const [selectedLabels, setSelectedLabels] = useState<string[]>([]);
+/** Add a label as a new "contains" rule to the root filter group. */
+function addLabelRule(group: TQueryGroup | null, label: string): TQueryGroup {
+  const rule: TQueryRule = { field: "labels.value.id", op: "contains", value: label };
+  if (groupIsEmpty(group)) return { op: "and", filters: [rule] };
+  return { ...group, filters: [...group.filters, rule] };
+}
+
+/** Remove the first "contains" rule matching a label value from the filter tree. */
+function removeLabelRule(group: TQueryGroup, label: string): TQueryGroup | null {
+  const newFilters: (TQueryGroup | TQueryRule)[] = [];
+  let removed = false;
+
+  for (const filter of group.filters) {
+    if (!removed && "field" in filter && filter.op === "contains" && filter.value === label) {
+      removed = true; // skip this rule
+      continue;
+    }
+    if (!("field" in filter)) {
+      const updated = removeLabelRule(filter, label);
+      if (updated) newFilters.push(updated);
+      else removed = true; // nested group became empty
+    } else {
+      newFilters.push(filter);
+    }
+  }
+
+  if (newFilters.length === 0) return createGroup();
+  return { ...group, filters: newFilters };
+}
+
+const ShadowSearch = ({ theme, themeConfig, features }: TProps) => {
   // search query that is typed into the search box
-  const [query, setQuery] = useState("");
+  const [query, setQuery] = useQueryState("q", parseAsString.withDefault(""));
   // structured filters built in QueryBuilder
-  const [filters, setFilters] = useState<TQueryGroup | null>(null);
+  const [filters, setFilters] = useQueryState("filters", parseAsJson<TQueryGroup>(FilterGroupSchema).withDefault(createGroup()));
+
+  // Derive selectedLabels from the filter tree
+  const selectedLabels = useMemo(() => extractLabels(filters), [filters]);
 
   return (
     <FeaturesContext.Provider value={features}>
-      <TopicsContext.Provider value={topicsData}>
-        <WikiBaseConceptsContext.Provider value={familyConceptsData || []}>
-          <div className="w-3/4 m-auto mt-8">
-            <IntelliSearch
-              // topics={topicsData.topics}
-              topics={[]}
-              selectedLabels={selectedLabels}
-              onSelectConcept={(concept) => {
-                if (concept) {
-                  setSelectedLabels((prev) => [...prev, concept]);
-                }
-              }}
-              setQuery={setQuery}
-            />
-          </div>
-          <div className="w-3/4 m-auto mt-4 mb-8">
-            <div className="mb-4">
-              <AppliedLabels
-                query={query}
-                labels={selectedLabels}
-                onSelectLabel={(label) => setSelectedLabels((prev) => prev.filter((l) => l !== label))}
-                setQuery={setQuery}
-              />
-            </div>
-            <QueryBuilder filters={filters} setFilters={setFilters} />
-            <pre className="text-xs">{filters ? JSON.stringify(filters, null, 2) : "No filters"}</pre>
-          </div>
-          <SearchContainer
+      <div className="w-3/4 m-auto mt-8">
+        <IntelliSearch
+          topics={[]}
+          selectedLabels={selectedLabels}
+          onSelectConcept={(concept) => {
+            if (concept) {
+              if (concept && !selectedLabels.includes(concept)) {
+                setFilters((prev) => addLabelRule(prev, concept));
+              }
+            }
+          }}
+          setQuery={setQuery}
+        />
+      </div>
+      <div className="w-3/4 m-auto mt-4 mb-8">
+        <div className="mb-4">
+          <AppliedLabels
             query={query}
-            onSelectLabel={(label) => {
-              if (!selectedLabels.includes(label)) setSelectedLabels((prev) => [...prev, label]);
-            }}
-            filters={filters}
+            labels={selectedLabels}
+            onSelectLabel={(label) => setFilters((prev) => (prev ? removeLabelRule(prev, label) : createGroup()))}
+            setQuery={setQuery}
           />
-        </WikiBaseConceptsContext.Provider>
-      </TopicsContext.Provider>
+        </div>
+        <QueryBuilder filters={filters} setFilters={setFilters} />
+        <pre className="text-xs">{filters ? JSON.stringify(filters, null, 2) : "No filters"}</pre>
+      </div>
+      <SearchContainer
+        query={query}
+        onSelectLabel={(label) => {
+          if (!selectedLabels.includes(label)) {
+            setFilters((prev) => addLabelRule(prev, label));
+          }
+        }}
+        filters={filters}
+      />
     </FeaturesContext.Provider>
   );
 };
@@ -94,31 +129,11 @@ export const getServerSideProps = (async (context) => {
 
   const client = new ApiClient(process.env.CONCEPTS_API_URL);
 
-  let topicsData: TTopics = { rootTopics: [], topics: [] };
-  let familyConceptsData: TTopic[] | undefined;
-
-  try {
-    const { data: topicsResponse } = await client.get<TTopic[]>(`/concepts/search?limit=10000&has_classifier=true`);
-    topicsData = await fetchAndProcessTopics(topicsResponse.map((topic) => topic.wikibase_id));
-
-    if (features.familyConceptsSearch) {
-      const familyConceptsResponse = await fetch(`${process.env.CONCEPTS_API_URL}/families/concepts?exclude_deleted=true`);
-      const familyConceptsJson: { data: FamilyConcept[] } = await familyConceptsResponse.json();
-      familyConceptsData = mapFamilyConceptsToConcepts(familyConceptsJson.data);
-    }
-  } catch (error) {
-    // TODO handle error more elegantly
-    // eslint-disable-next-line no-console
-    console.warn("Error fetching concepts data for Shadow Search page:", error);
-  }
-
   return {
     props: withEnvConfig({
-      familyConceptsData: familyConceptsData ?? null,
       features,
       theme,
       themeConfig,
-      topicsData,
       posthogPageViewProps: {
         search_version: "v2",
       },
