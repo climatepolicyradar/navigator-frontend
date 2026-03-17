@@ -74,6 +74,14 @@ export function SearchFilters({ filters, openFilter, onChange }: TProps) {
                   <ul className="flex flex-col gap-1 max-h-[60vh] basis-2/3 p-4 overflow-y-auto text-sm">
                     {availableFilters
                       .filter((filter) => filter.type === activeFilter)
+                      .sort((a, b) => a.value.localeCompare(b.value))
+                      .sort((a, b) => {
+                        const aActive = hasValue(filters, a.value);
+                        const bActive = hasValue(filters, b.value);
+                        if (aActive && !bActive) return -1;
+                        if (!aActive && bActive) return 1;
+                        return 0;
+                      })
                       .map((filter) => {
                         const isChecked = hasValue(filters, filter.value);
 
