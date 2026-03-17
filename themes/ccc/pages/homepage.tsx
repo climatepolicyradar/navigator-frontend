@@ -30,7 +30,7 @@ const LandingPage = ({ handleSearchInput, searchInput, theme, themeConfig, exact
   return (
     <Layout theme={theme} themeConfig={themeConfig} metadataKey="homepage">
       <Header />
-      <main id="main" className="md:h-screen">
+      <main id="main" className="lg:h-[max(100vh,800px)]">
         <SiteWidth extraClasses="md:flex justify-between p-10 pt-0 pb-14 h-full md:gap-10 lg:gap-16 md:h-[calc(100%-220px)] lg:h-[calc(100%-280px)] xl:h-[calc(100%-344px)]">
           <Hero handleSearchInput={handleSearchInput} searchInput={searchInput} exactMatch={exactMatch} />
         </SiteWidth>
