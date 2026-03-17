@@ -79,7 +79,7 @@ const ShadowSearch = ({ theme, themeConfig, features }: TProps) => {
 
   return (
     <FeaturesContext.Provider value={features}>
-      <div className="w-3/4 m-auto mt-8 flex flex-col gap-4">
+      <div className="w-3/4 m-auto mt-8 pb-12 flex flex-col gap-4">
         <IntelliSearch
           selectedLabels={selectedLabels}
           onSelectSuggestion={(suggestion) => {

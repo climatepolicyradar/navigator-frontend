@@ -82,16 +82,16 @@ export function SearchResults({ promise, onSelectLabel }: { promise: Promise<Sea
       <ul className="space-y-4">
         {data.results.map((doc) => (
           <li key={doc.id} className="border border-gray-200 rounded-md p-4">
-            <h3 className="font-semibold">
+            <h3 className="font-semibold text-lg">
               {linkHref(doc) ? (
-                <Link href={linkHref(doc)} className="hover:underline">
+                <Link href={linkHref(doc)} className="text-brand hover:underline">
                   {doc.title}
                 </Link>
               ) : (
                 doc.title
               )}
             </h3>
-            {doc.description && <p className="text-sm text-text-secondary mt-1">{doc.description}</p>}
+            {doc.description && <p className="text-sm text-text-secondary mt-1" dangerouslySetInnerHTML={{ __html: doc.description }} />}
             {doc.labels.length > 0 && (
               <div className="flex flex-wrap gap-1 mt-2">
                 {doc.labels.map((label, i) => (
