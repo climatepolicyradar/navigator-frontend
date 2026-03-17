@@ -1,11 +1,23 @@
 import { Popover as BasePopover } from "@base-ui/react/popover";
-import { ChevronRight, ListFilter } from "lucide-react";
+import { ChevronRight, Circle, ListFilter } from "lucide-react";
 import { useEffect, useState } from "react";
 
 import { Checkbox } from "@/components/checkbox/Checkbox";
 import { TLabelResult, loadLabels } from "@/hooks/useLabelSearch";
 
 import { TQueryGroup } from "../queryBuilder/QueryBuilder";
+
+function hasValue(group: TQueryGroup | null | undefined, value: string): boolean {
+  if (!group) return false;
+  return group.filters.some((f) => ("value" in f ? f.value === value : hasValue(f, value)));
+}
+
+function hasActiveFilterOfType(filters: TLabelResult[], group: TQueryGroup | null | undefined, type: TFILTER_AGGREGATIONS): boolean {
+  if (!group) return false;
+  return group.filters.some((f) =>
+    "value" in f ? filters.some((label) => label.value === f.value && label.type === type) : hasActiveFilterOfType(filters, f, type)
+  );
+}
 
 type TFILTER_AGGREGATIONS = "concept" | "entity_type" | "geography" | "agent" | "activity_status" | "status";
 const FILTER_AGGREGATIONS: TFILTER_AGGREGATIONS[] = ["concept", "entity_type", "geography", "agent", "activity_status", "status"];
@@ -47,13 +59,12 @@ export function SearchFilters({ filters, openFilter, onChange }: TProps) {
                             className={`relative w-full text-left px-6 py-1 text-sm text-gray-700 hover:bg-gray-300 ${activeFilter === agg ? "bg-brand! text-white!" : ""}`}
                             onClick={() => setActiveFilter(agg)}
                           >
-                            {agg.replace("_", " ")}
+                            {agg.slice(0, 1).toUpperCase() + agg.replace("_", " ").slice(1)}
                             {activeFilter === agg && (
-                              <ChevronRight
-                                width={20}
-                                height={20}
-                                className="text-white absolute right-2 top-1/2 transform -translate-y-1/2"
-                              ></ChevronRight>
+                              <ChevronRight width={20} height={20} className="absolute right-2 top-1/2 transform -translate-y-1/2"></ChevronRight>
+                            )}
+                            {hasActiveFilterOfType(availableFilters, filters, agg) && (
+                              <Circle width={8} height={8} fill="currentColor" className="absolute left-2 top-1/2 transform -translate-y-1/2" />
                             )}
                           </button>
                         </li>
@@ -64,7 +75,7 @@ export function SearchFilters({ filters, openFilter, onChange }: TProps) {
                     {availableFilters
                       .filter((filter) => filter.type === activeFilter)
                       .map((filter) => {
-                        const isChecked = filters?.filters.some((f) => "value" in f && f.value === filter.value);
+                        const isChecked = hasValue(filters, filter.value);
 
                         return (
                           <li key={filter.id}>
