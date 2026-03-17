@@ -1,6 +1,7 @@
 // TODO: Add this to CI/CD pipeline
-import { handler } from "./redirection";
 import { describe, test, vi, expect } from "vitest";
+
+import { handler } from "./redirection";
 import redirects from "./redirects.json";
 
 vi.mock("cloudfront", () => {
