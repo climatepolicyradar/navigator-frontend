@@ -5,6 +5,7 @@ import { useEffect, useState } from "react";
 import { Checkbox } from "@/components/checkbox/Checkbox";
 import { TLabelResult, loadLabels } from "@/hooks/useLabelSearch";
 
+import { THEME_PROVIDERS } from "./THEME_PROVIDERS";
 import { TQueryGroup } from "../queryBuilder/QueryBuilder";
 
 function hasValue(group: TQueryGroup | null | undefined, value: string): boolean {
@@ -30,7 +31,7 @@ type TProps = {
 
 export function SearchFilters({ filters, openFilter, onChange }: TProps) {
   const [availableFilters, setAvailableFilters] = useState<TLabelResult[]>([]);
-  const [activeFilter, setActiveFilter] = useState<TFILTER_AGGREGATIONS>(openFilter || "concept");
+  const [activeFilter, setActiveFilter] = useState<TFILTER_AGGREGATIONS | "category">(openFilter || "concept");
 
   useEffect(() => {
     // Load some initial filter options on mount (e.g. top labels)
@@ -53,6 +54,20 @@ export function SearchFilters({ filters, openFilter, onChange }: TProps) {
                 <div className="flex gap-2">
                   <div className="basis-1/3 pt-2 border-r border-gray-300">
                     <ul className="flex flex-col gap-2">
+                      <li className="text-sm text-gray-700 mb-1">
+                        <button
+                          className={`relative w-full text-left px-6 py-1 text-sm text-gray-700 hover:bg-gray-300 ${activeFilter === "category" ? "bg-brand! text-white!" : ""}`}
+                          onClick={() => setActiveFilter("category")}
+                        >
+                          Category
+                          {activeFilter === "category" && (
+                            <ChevronRight width={20} height={20} className="absolute right-2 top-1/2 transform -translate-y-1/2"></ChevronRight>
+                          )}
+                          {THEME_PROVIDERS.cpr.some((provider) => hasValue(filters, provider)) && (
+                            <Circle width={8} height={8} fill="currentColor" className="absolute left-2 top-1/2 transform -translate-y-1/2" />
+                          )}
+                        </button>
+                      </li>
                       {FILTER_AGGREGATIONS.map((agg) => (
                         <li key={agg} className="text-sm text-gray-700 mb-1">
                           <button
@@ -71,27 +86,39 @@ export function SearchFilters({ filters, openFilter, onChange }: TProps) {
                       ))}
                     </ul>
                   </div>
-                  <ul className="flex flex-col gap-1 max-h-[60vh] basis-2/3 p-4 overflow-y-auto text-sm">
-                    {availableFilters
-                      .filter((filter) => filter.type === activeFilter)
-                      .sort((a, b) => a.value.localeCompare(b.value))
-                      .sort((a, b) => {
-                        const aActive = hasValue(filters, a.value);
-                        const bActive = hasValue(filters, b.value);
-                        if (aActive && !bActive) return -1;
-                        if (!aActive && bActive) return 1;
-                        return 0;
-                      })
-                      .map((filter) => {
-                        const isChecked = hasValue(filters, filter.value);
+                  <div className="max-h-[60vh] basis-2/3 p-4 overflow-y-auto text-sm">
+                    <ul className="flex flex-col gap-2">
+                      {availableFilters
+                        .filter((filter) => filter.type === activeFilter)
+                        .sort((a, b) => a.value.localeCompare(b.value))
+                        .sort((a, b) => {
+                          const aActive = hasValue(filters, a.value);
+                          const bActive = hasValue(filters, b.value);
+                          if (aActive && !bActive) return -1;
+                          if (!aActive && bActive) return 1;
+                          return 0;
+                        })
+                        .map((filter) => {
+                          const isChecked = hasValue(filters, filter.value);
 
-                        return (
-                          <li key={filter.id}>
-                            <Checkbox label={filter.value} checked={isChecked} onChange={(checked) => onChange?.(checked, filter.value)} />
-                          </li>
-                        );
-                      })}
-                  </ul>
+                          return (
+                            <li key={filter.id}>
+                              <Checkbox label={filter.value} checked={isChecked} onChange={(checked) => onChange?.(checked, filter.value)} />
+                            </li>
+                          );
+                        })}
+                      {activeFilter === "category" &&
+                        THEME_PROVIDERS.cpr.map((provider) => {
+                          const isChecked = hasValue(filters, provider);
+
+                          return (
+                            <li key={provider}>
+                              <Checkbox label={provider} checked={isChecked} onChange={(checked) => onChange?.(checked, provider)} />
+                            </li>
+                          );
+                        })}
+                    </ul>
+                  </div>
                 </div>
               )}
             </div>
