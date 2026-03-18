@@ -45,6 +45,7 @@ export function PDFViewer({ document: doc, documentPassageMatches = [], pageNumb
   const [loading, setLoading] = useState(true);
   const [numPages, setNumPages] = useState(0);
   const [currentPageDisplay, setCurrentPageDisplay] = useState(stateRef.current.currentPage);
+  const [pageInput, setPageInput] = useState(String(stateRef.current.currentPage));
 
   // Keep a ref of the latest passage matches so callbacks always see the current value
   const passagesRef = useRef(documentPassageMatches);
@@ -73,6 +74,7 @@ export function PDFViewer({ document: doc, documentPassageMatches = [], pageNumb
     drawHighlights(highlightCanvas, state, pagePassages);
 
     setCurrentPageDisplay(pageNum);
+    setPageInput(String(pageNum));
   }, []);
 
   // ------------------------------------------
@@ -184,8 +186,35 @@ export function PDFViewer({ document: doc, documentPassageMatches = [], pageNumb
           >
             ‹ Prev
           </button>
-          <span>
-            Page {currentPageDisplay} of {numPages}
+          <span className="flex items-center gap-1">
+            Page{" "}
+            <input
+              type="text"
+              inputMode="numeric"
+              className="w-12 rounded border border-gray-300 px-1 py-0.5 text-center text-sm"
+              value={pageInput}
+              onChange={(e) => {
+                // Only allow digits
+                const raw = e.target.value.replace(/\D/g, "");
+                setPageInput(raw);
+              }}
+              onBlur={() => {
+                const parsed = parseInt(pageInput, 10);
+                if (!isNaN(parsed) && parsed >= 1 && parsed <= numPages) {
+                  goToPage(parsed);
+                } else {
+                  // Revert to current page on invalid input
+                  setPageInput(String(currentPageDisplay));
+                }
+              }}
+              onKeyDown={(e) => {
+                if (e.key === "Enter") {
+                  (e.target as HTMLInputElement).blur();
+                }
+              }}
+              aria-label="Go to page"
+            />{" "}
+            of {numPages}
           </span>
           <button
             className="rounded px-2 py-1 hover:bg-gray-200 disabled:opacity-40"
