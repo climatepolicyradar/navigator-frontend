@@ -1,9 +1,9 @@
 import { Popover as BasePopover } from "@base-ui/react/popover";
 import { ChevronRight, Circle, ListFilter } from "lucide-react";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 
 import { Checkbox } from "@/components/checkbox/Checkbox";
-import { TLabelResult, loadLabels } from "@/hooks/useLabelSearch";
+import { TLabelResult } from "@/hooks/useLabelSearch";
 
 import { THEME_PROVIDERS } from "./THEME_PROVIDERS";
 import { TQueryGroup } from "../queryBuilder/QueryBuilder";
@@ -24,18 +24,14 @@ type TFILTER_AGGREGATIONS = "concept" | "entity_type" | "geography" | "agent" | 
 const FILTER_AGGREGATIONS: TFILTER_AGGREGATIONS[] = ["concept", "entity_type", "geography", "agent", "activity_status", "status"];
 
 type TProps = {
+  availableFilters: TLabelResult[];
   filters?: TQueryGroup | null;
   openFilter?: TFILTER_AGGREGATIONS | "category";
   onChange?: (checked: boolean, label: string) => void;
 };
 
-export function SearchFilters({ filters, openFilter, onChange }: TProps) {
-  const [availableFilters, setAvailableFilters] = useState<TLabelResult[]>([]);
+export function SearchFilters({ availableFilters, filters, openFilter, onChange }: TProps) {
   const [activeFilter, setActiveFilter] = useState<TFILTER_AGGREGATIONS | "category">(openFilter || "category");
-
-  useEffect(() => {
-    loadLabels("").then(setAvailableFilters);
-  }, []);
 
   return (
     <BasePopover.Root>
