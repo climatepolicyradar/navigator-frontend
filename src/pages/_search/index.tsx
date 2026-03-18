@@ -98,9 +98,14 @@ const ShadowSearch = ({ theme, themeConfig, features }: TProps) => {
           setQuery={setQuery}
         />
         <AppliedLabels
+          availableFilters={availableFilters}
           query={query}
           labels={selectedLabels}
-          onSelectLabel={(label) => setFilters((prev) => (prev ? removeLabelRule(prev, label) : createGroup()))}
+          onSelectLabel={(label, type) => {
+            // eslint-disable-next-line no-console
+            console.log("Selected label:", label, ", Type:", type);
+          }}
+          onRemoveLabel={(label) => setFilters((prev) => (prev ? removeLabelRule(prev, label) : createGroup()))}
           setQuery={setQuery}
         />
         <div className="flex justify-between items-center">
