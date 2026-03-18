@@ -21,6 +21,7 @@ export const familyTransformer = (
         family: {
           ...familyApiOldData.family,
           import_id: familyApiNewData.id,
+          slug: familyApiNewData.attributes.deprecated_slug,
           title: familyApiNewData.title,
           summary: familyApiNewData.description,
           documents: transformFamilyDocuments(familyApiOldData.family.documents, documents),

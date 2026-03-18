@@ -34,6 +34,7 @@ const eslintConfig = [
       ".size-limit.js",
       "lighthouserc.*.js",
       "snapshots.js",
+      "infra/lambda_code/*.js",
     ],
   },
   {
