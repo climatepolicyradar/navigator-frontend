@@ -1,12 +1,14 @@
-import { FC, ReactNode } from "react";
+import { FC, ReactNode, useContext } from "react";
 
 import { LinkWithQuery } from "@/components/LinkWithQuery";
+import { FeaturesContext } from "@/context/FeaturesContext";
 import { TFamily } from "@/types";
 import { joinTailwindClasses } from "@/utils/tailwind";
 import { truncateString } from "@/utils/truncateString";
 import { transformVespaMetadataToFamilyMetadata } from "@/utils/vespa";
 
 import { FamilyMeta } from "./FamilyMeta";
+import { DataInDebug } from "../debug/dataInDebug";
 
 interface IProps {
   children?: ReactNode;
@@ -27,6 +29,7 @@ export const FamilyListItem: FC<IProps> = ({
   showSummary = true,
   titleClasses = "hover:underline",
 }) => {
+  const features = useContext(FeaturesContext);
   const {
     corpus_import_id,
     corpus_type_name,
@@ -84,6 +87,7 @@ export const FamilyListItem: FC<IProps> = ({
       )}
       {family_metadata?.status?.length > 0 && <p className="text-sm">Status: {family_metadata?.status.join(", ")}</p>}
       {children}
+      {features["new-data-model"] && <DataInDebug corpusId={corpus_import_id} />}
     </li>
   );
 };
