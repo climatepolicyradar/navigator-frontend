@@ -1,5 +1,6 @@
 import { transformCountries } from "@/bff/transformers/partials/transformCountries";
 import { transformFamilyDocuments } from "@/bff/transformers/partials/transformFamilyDocuments";
+import { transformFamilyMetadata } from "@/bff/transformers/partials/transformFamilyMetadata";
 import { TFamilyApiNewData, TFamilyApiOldData, TFamilyPresentationalResponse } from "@/types";
 import { groupLabelsByType } from "@/utils/labels/groupLabelsByType";
 
@@ -12,12 +13,12 @@ export const familyTransformer = (
 
   if (familyApiNewData) {
     const { documents, labels } = familyApiNewData;
-    const { geography: geographyLabels } = groupLabelsByType(labels);
+    const groupedLabels = groupLabelsByType(labels);
 
     return {
       data: {
         ...familyApiOldData,
-        countries: transformCountries(familyApiOldData.countries, geographyLabels),
+        countries: transformCountries(familyApiOldData.countries, groupedLabels.geography),
         family: {
           ...familyApiOldData.family,
           import_id: familyApiNewData.id,
@@ -25,7 +26,8 @@ export const familyTransformer = (
           title: familyApiNewData.title,
           summary: familyApiNewData.description,
           documents: transformFamilyDocuments(familyApiOldData.family.documents, documents),
-          geographies: geographyLabels.map((label) => label.value.id),
+          geographies: groupedLabels.geography.map((label) => label.value.id),
+          metadata: transformFamilyMetadata(groupedLabels),
         },
         usesDataIn: true,
       },
