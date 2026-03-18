@@ -38,6 +38,7 @@
     "lucide-react": "^0.577.0",
     "next": "^16.1.7",
     "nuqs": "^2.8.9",
+    "pdfjs-dist": "^5.5.207",
     "posthog-js": "^1.360.2",
     "react": "^19.2.3",
     "react-dom": "^19.2.3",

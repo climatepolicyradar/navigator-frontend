@@ -1,11 +1,19 @@
-import Script from "next/script";
-import { useRef, useMemo, useEffect, useContext } from "react";
+import dynamic from "next/dynamic";
 
-import { AdobeContext } from "@/context/AdobeContext";
-import usePDFPreview from "@/hooks/usePDFPreview";
 import { TDocumentPage, TLoadingStatus, TPassage } from "@/types";
 
 import Loader from "./Loader";
+
+// pdf.js requires browser-only APIs (DOMMatrix, canvas, etc.) so we must
+// prevent Next.js from importing it during SSR.
+const PDFViewer = dynamic(() => import("../pdf/PDFViewer").then((mod) => mod.PDFViewer), {
+  ssr: false,
+  loading: () => (
+    <div className="flex-1 flex justify-center">
+      <Loader />
+    </div>
+  ),
+});
 
 interface IProps {
   document: TDocumentPage;
@@ -16,36 +24,16 @@ interface IProps {
 }
 
 const EmbeddedPDF = ({ document, documentPassageMatches = [], pageNumber = null, startingPageNumber }: IProps) => {
-  const containerRef = useRef(null);
-  const adobeKey = useContext(AdobeContext);
-
-  const pdfPreview = usePDFPreview(document, adobeKey);
-
-  // Ensure the instance of the PDF client is not reset on re-render
-  // otherwise we lose the ability to interact with the pdf
-
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  const { changePage, registerPassages } = useMemo(() => pdfPreview, [document, adobeKey]);
-
-  useEffect(() => {
-    if (pageNumber) changePage(pageNumber);
-  }, [changePage, pageNumber]);
-
-  useEffect(() => {
-    registerPassages(documentPassageMatches, startingPageNumber).finally(() => {});
-  }, [registerPassages, documentPassageMatches, startingPageNumber]);
+  if (!document) {
+    return (
+      <div className="flex-1 flex justify-center">
+        <Loader />
+      </div>
+    );
+  }
 
   return (
-    <>
-      <Script src="https://acrobatservices.adobe.com/view-sdk/viewer.js" />
-      {!document ? (
-        <div className="flex-1 flex justify-center">
-          <Loader />
-        </div>
-      ) : (
-        <div ref={containerRef} id="pdf-div" className="h-full" data-analytics-document={document.content_type}></div>
-      )}
-    </>
+    <PDFViewer document={document} documentPassageMatches={documentPassageMatches} pageNumber={pageNumber} startingPageNumber={startingPageNumber} />
   );
 };
 
