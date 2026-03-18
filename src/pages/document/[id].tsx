@@ -43,6 +43,7 @@ export const getServerSideProps = (async (context) => {
   return {
     props: withEnvConfig({
       ...familyData,
+      errors,
       features,
       theme,
       themeConfig,

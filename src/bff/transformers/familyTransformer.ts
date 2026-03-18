@@ -12,35 +12,39 @@ export const familyTransformer = (
   if (familyApiOldData === null) return { data: null, errors };
 
   if (familyApiNewData) {
-    const { documents, labels } = familyApiNewData;
-    const groupedLabels = groupLabelsByType(labels);
+    try {
+      const { documents, labels } = familyApiNewData;
+      const groupedLabels = groupLabelsByType(labels);
 
-    return {
-      data: {
-        ...familyApiOldData,
-        countries: transformCountries(familyApiOldData.countries, groupedLabels.geography),
-        family: {
-          corpus_id: null, // unused
-          documents: transformFamilyDocuments(familyApiOldData.family.documents, documents),
-          geographies: groupedLabels.geography.map((label) => label.value.id),
-          import_id: familyApiNewData.id,
-          metadata: transformFamilyMetadata(groupedLabels),
-          slug: familyApiNewData.attributes.deprecated_slug,
-          summary: familyApiNewData.description,
-          title: familyApiNewData.title,
-          // TODO apply transformations to remaining fields:
-          category: familyApiOldData.family.category,
-          collections: familyApiOldData.family.collections,
-          concepts: familyApiOldData.family.concepts, // currently out of scope
-          events: familyApiOldData.family.events,
-          last_updated_date: familyApiOldData.family.last_updated_date,
-          organisation: familyApiOldData.family.organisation,
-          published_date: familyApiOldData.family.published_date,
+      return {
+        data: {
+          ...familyApiOldData,
+          countries: transformCountries(familyApiOldData.countries, groupedLabels.geography),
+          family: {
+            corpus_id: familyApiOldData.family.corpus_id, // unused except for debugging
+            documents: transformFamilyDocuments(familyApiOldData.family.documents, documents),
+            geographies: groupedLabels.geography.map((label) => label.value.id),
+            import_id: familyApiNewData.id,
+            metadata: transformFamilyMetadata(groupedLabels),
+            slug: familyApiNewData.attributes.deprecated_slug,
+            summary: familyApiNewData.description,
+            title: familyApiNewData.title,
+            // TODO apply transformations to remaining fields:
+            category: familyApiOldData.family.category,
+            collections: familyApiOldData.family.collections,
+            concepts: familyApiOldData.family.concepts, // currently out of scope
+            events: familyApiOldData.family.events,
+            last_updated_date: familyApiOldData.family.last_updated_date,
+            organisation: familyApiOldData.family.organisation,
+            published_date: familyApiOldData.family.published_date,
+          },
+          usesDataIn: true,
         },
-        usesDataIn: true,
-      },
-      errors,
-    };
+        errors,
+      };
+    } catch (error) {
+      return { data: { ...familyApiOldData, usesDataIn: false }, errors: [...errors, error as Error] };
+    }
   } else {
     // Because the old API data type satisfies the presentational data type, no changes are needed
     return { data: { ...familyApiOldData, usesDataIn: false }, errors };

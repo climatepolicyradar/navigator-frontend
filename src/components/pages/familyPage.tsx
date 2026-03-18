@@ -50,6 +50,7 @@ export interface IProps {
   collections: TCollectionPublicWithFamilies[];
   corpus_types: TCorpusTypeDictionary;
   countries: TGeography[];
+  errors: Error[];
   family: TFamilyPublic;
   familyTopics: IFamilyDocumentTopics | null;
   features: TFeatures;
@@ -65,6 +66,7 @@ export const FamilyPage = ({
   collections,
   corpus_types,
   countries,
+  errors,
   family,
   familyTopics,
   features,
@@ -110,6 +112,7 @@ export const FamilyPage = ({
       render: () => (
         <Section key="debug" block="debug" title="Debug">
           <div className="col-start-1 -col-end-1">
+            <Debug data={errors} title="Transformation errors" />
             <Debug data={family} title="Family" />
             <Debug data={collections} title="Collections" />
             <Debug data={countries} title="Countries" />
