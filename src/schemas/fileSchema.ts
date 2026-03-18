@@ -16,6 +16,9 @@ export const FileSchema = v.object({
     description: v.nullable(v.string()),
     items: v.array(ItemSchema),
     labels: v.array(LabelSchema),
+    attributes: v.object({
+      deprecated_slug: v.string(),
+    }),
   }),
   timestamp: v.nullable(v.string()),
 });

@@ -10,6 +10,7 @@ export const transformFamilyDocuments = (oldDocuments: TApiFamilyDocumentPublic[
     return {
       ...oldDocument,
       import_id: newFile.value.id,
+      slug: newFile.value.attributes.deprecated_slug,
       title: newFile.value.title,
     };
   });

@@ -1,0 +1,31 @@
+config:
+  aws:region: eu-west-1
+  frontend:adobe_api_key:
+    secure: AAABAJvs8NjUHkRQDwWOj5n09/5TmtRgOxA06/fYPlve59n7VTHlQXxVVyu0CSow8/tMwVDRroync3Su08/zaA==
+  frontend:backend_api_url: https://cpr.staging.climatepolicyradar.org/api/v1
+  frontend:backend_api_token:
+    secure: AAABAK0MID1rGm7CQg8GVllzUqtXiWV3aGV+URJO/lKOREE44zL9/AQIDXz90wkdlwRSTjl0OgBBof/9nX/C/OWiKuUxlecANDjL/jHlu+6t+RGfNRJfLjtjSnM4wTAf/Fa5G5UALGXD/PrUjSu8vkWyFTOCKDusPP3MjS/Oqi+CAqMZPCdfdIn6HbSRQRtnoY/C30/tkxSUrxR7jfgRx33h7YT/6fhCEPBhCKNi6ks3AWKJRyMwk2Xw9rPncITQw652fpCmN+WGVgscL1qlNZApcpo+oTkqmDRT9FojU5Backdzq8GZ8mkdSwnbOpMpyW5RpL7tYvMIc4i58L5lwd8OfPwMOgkbHAuwHeLEjExNe35hfILiI0JRZ7fiLj8nZP/oaoRKDUJO9JiwJuyYkJDJ+7Il4E4uYFxCxz/VQBLHZWyDW+yU9+jQwzD0Pyeyx8EWxQV+7FJEti7MESW/aH0nBHPCkqFoyuzoBC/lVtBWFwlH+cJsS/LUhlvqeKZ7xRl+uq5A027BonRzcy/I1NoDa8tcrRrsxclg7+zqYl0+69XB2mXP1pqI7sPh7JHKMtxI4ug=
+  frontend:apprunner_frontend_max_concurrency: "50"
+  frontend:apprunner_frontend_max_instance_count: "10"
+  frontend:apprunner_frontend_min_instance_count: "1"
+  frontend:docker_tag: 1.0.5-beta
+  frontend:ecr_uri:
+    secure: AAABAAsyrEUal4aaHLroRq3LwOn7ozzcz/2hmBJ3ErVyeCDb0SIG9CuVvy86xDuR7Esx8bGf9OTIY8sNFvFbSYcFhonVg3DPnT+XoL8Z61cFuBsWHMD1Vcu/Fbgh5PU=
+  frontend:app_url:
+    secure: AAABAPaTtiZZQZrrKk6MOjDmC53cyLM0zy2ZT1p+U5OEi/PR2gkgogdAE9vrAlO3VB/f/jpwyFXBsMGqik/O5Ibex60ULFNdioc=
+  frontend:redirect_file: default.json
+  frontend:robots: "false"
+  frontend:s3-path:
+    secure: AAABAFSU2Mfkr5Cy8v1EQc4Svx0NuRlLYAUHrheDeD4wNGyADSN170L1iV0ff1Q5Qrwu+0cbmAdMHjQ4aoL+42FW1cYgprsGtphKm3Y9z2hhdjJxK5sK2PXmd13hhasHRw==
+  frontend:targets_url: https://cpr-staging-targets-json-store.s3.eu-west-1.amazonaws.com
+  frontend:cdn_url: https://cdn.dev.climatepolicyradar.org
+  frontend:theme: cpr
+  frontend:validation_account_id:
+    secure: AAABAAFG2k/W8GNUQlSarlVkgf3y3r5j5LY+3k9fSODx9Y/yUUOJOv9fs/4=
+  frontend:next_public_faro_url: https://faro-collector-prod-gb-south-0.grafana.net/collect/74f6d4bd78b7bb2cc270036193aaa3a6
+  frontend:next_public_faro_app_name: cpr-frontend
+  frontend:next_public_faro_app_namespace: frontend
+  frontend:otel_exporter_otlp_endpoint: https://otel.staging.climatepolicyradar.org/
+  frontend:otel_exporter_otlp_protocol: http/protobuf
+  frontend:otel_service_name: frontend-server
+  frontend:otel_resource_attributes: service.namespace=frontend

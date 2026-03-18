@@ -1,0 +1,33 @@
+config:
+  aws:region: eu-west-1
+  frontend:adobe_api_key:
+    secure: AAABAAi2JxgoL69p29mS81jMeN9HW8NXtNzey9tLc04J50MxvZVY5maA1urn5/xPP7+ItbbfO9uSkYnvZnA4hw==
+  frontend:backend_api_url: https://app.climatepolicyradar.org/api/v1
+  frontend:backend_api_token:
+    secure: AAABAFzuLu30umcJyU8Bd3dsV4He8KC/TpGMqPvN38S7Tri46+JeGZ6tTDl+YgB3mrqS1RrlJ2MEc734hR8zJ8LYGCwXBUj1bwcYcimtxI9k8mII02fk6MUyz5lhEWJnwnFzxQrUFk7cErA10Hn47pMAQIl5ts84KDBRcUXm0tjsfkNY+XKF1gZ7UFH/2RvHqtFqD7QdFW7/JL3m8nz9JO/pWIPgxRL/mZcvktInwF9iKn5rt7HQ/u5ksBg2RFypJDlEAYLjwJ2NrlhbbRMX5SNwi4NLXtWgZpaP1UVAwNYAA7CsWW1m8AOlZpWS2Z6yAPV+sY9Y9JeA6AaS8TJfRMK7I0ba1CnpOZ5gyZOw6SHzcziit12OqjagXfETqVv0cXkXmpI4JHmnvnXjy0GR0SmgwhV7e0oBQkPIC4JhOLoyBOzzdBT0ReoHH8xp+cbxQZZ7s5zhPuPTEysBmg1sKjKeAg5WPnAPpDGV+Uft5MrZzhuuJL9EDjPmuykd6c0ZA694blOC6k8FSI0GG1cs4v7RjfYMCReIElYGI2VpT2SQkaeNvKrp5Q7gFjpm/473Jwms/7ps0GdUhupCnfADKtAhPC7eod7dVtRDZFOJ1EzTYLiQSVDefDc9Zyp9eG3n01AWiKqrWjwDzJ+WifylpYFazluYW2eTvOPYOWzXhd6B8YkTzJdoSDIs73Z2pcfF9Q/Jkoljy2gDsAxACf6G7YilQyQQXDIRMkb6eqDobd9dX68TakLK9o0F/kVKz5wyhp/2XYS/4f54cW4HqtrWlsGtFUIA0eUAQoWhjqfh2+OuyQAEczkUX7E1IB5NASK/A/efslkbc2H+q3xxcySC6ySzdcsulN1YKEX+jSDfwYlOSz2cl7YMOzyjYDkAv6e4L522kv7/wxBd+Jj2ZcWr4rGPfwD5+kUfyornei7E6YK48eEcQaUSNzQULa185gMMZc0/viLG1qfYY96MDO2NAR9IervQ9hMU+z2EJjQCNS0LJmPAdwUKrFxQyFN5g5cTnXBnVpGIhokfavwpcLkMz/YK7klXSKbogHIFy12OQQpPVhswjkk5QVDMzBJRI+kZj8grhswQVwIp7yLwuqDB0yotqdyACqL0aEpBr3ZfApOiVBqzIwdD10meYCeOHNGo04lTAFWZlsWhErSpZ0urpWIswJ0VENeYDzQPlSfK8Nl74A5/UqzmSKXXm5rDAc5Ahc6NvFSScaZkLESJ+oUuiDJfvN9/NMotdnZFDzlZXG28k2b0uqvAahDbYcPARf7i5F95OHiR3GN6b+S1Ks+chA==
+  frontend:apprunner_frontend_max_concurrency: "50"
+  frontend:apprunner_frontend_max_instance_count: "10"
+  frontend:apprunner_frontend_min_instance_count: "3"
+  frontend:ecr_uri:
+    secure: AAABAN+5OXYAifqQ9hO6Ko/qNNbnIs3k2FEqSwAB7ZDcdRR15bs9TfVloAOilaTHKOKOUcmwl57hKcwPCRO1tBkpI6Ewsckn+hOBICmsYAmO3kAVjkWct/bHvpQUUz55PBKs
+  frontend:app_url: https://app.climatepolicyradar.org
+  frontend:cname: app.climatepolicyradar.org
+  frontend:redirect_file: default.json
+  frontend:robots: "true"
+  frontend:s3-path:
+    secure: AAABAAadDO3OJ51xGJ0MANP3gS9gULW3n+s0AwQKBhgyi6NltbfHtI+0mPI2m4GehCqMCW//FohsUh8cT1VtcwFqgV+/ivHKcOGgKhVPSCnTExK4QKLtz39oox/gEtH/8KumHQ==
+  frontend:targets_url: https://cpr-production-targets-json-store.s3.eu-west-1.amazonaws.com
+  frontend:cdn_url: https://cdn.climatepolicyradar.org
+  frontend:theme: cpr
+  frontend:validation_account_id:
+    secure: AAABAKctmQ28pLTMUXWpOn7O6diir8MHUrdkArq6l3+QXpNP671XHBBTnVs=
+  frontend:concepts_api_url: https://api.climatepolicyradar.org
+  frontend:next_public_faro_url: https://faro-collector-prod-gb-south-0.grafana.net/collect/74f6d4bd78b7bb2cc270036193aaa3a6
+  frontend:next_public_faro_app_name: cpr-frontend
+  frontend:next_public_faro_app_namespace: frontend
+  frontend:otel_exporter_otlp_endpoint: https://otel.staging.climatepolicyradar.org/
+  frontend:otel_exporter_otlp_protocol: http/protobuf
+  frontend:otel_service_name: frontend-server
+  frontend:otel_resource_attributes: service.namespace=frontend
+environment:
+  - frontend/cpr-production
