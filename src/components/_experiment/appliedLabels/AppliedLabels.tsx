@@ -7,6 +7,19 @@ function getTypeOfLabel(label: string, availableFilters: TLabelResult[]): string
   return found ? found.type : null;
 }
 
+function AppliedLabel({ label, onSelect, onRemove }: { label: string; onSelect: () => void; onRemove: () => void }) {
+  return (
+    <span className="bg-gray-50 rounded inline-flex items-center gap-1 border border-gray-100 hover:bg-gray-100">
+      <button className="py-2 pl-3" onClick={onSelect}>
+        <span>{label}</span>
+      </button>
+      <button className="rounded p-1.5 mr-1 hover:bg-gray-200" onClick={onRemove}>
+        <LucideX width={14} height={14} />
+      </button>
+    </span>
+  );
+}
+
 export function AppliedLabels({
   availableFilters,
   query,
@@ -24,27 +37,14 @@ export function AppliedLabels({
 }) {
   return (
     <div className="flex flex-wrap gap-1 text-sm">
-      {query && (
-        <span className="bg-gray-100 rounded inline-flex items-center gap-1 hover:bg-gray-200">
-          <button className="py-2 pl-3" onClick={() => setQuery("")}>
-            <span>Anything matching "{query}"</span>
-          </button>
-          <button className="rounded p-1.5 mr-1 hover:bg-gray-300" onClick={() => setQuery("")}>
-            <LucideX width={14} height={14} />
-          </button>
-        </span>
-      )}
+      {query && <AppliedLabel label={`Anything matching "${query}"`} onSelect={() => setQuery?.("")} onRemove={() => setQuery?.("")} />}
       {labels.map((label, i) => (
-        <span key={i} className="bg-gray-100 rounded inline-flex items-center gap-1 hover:bg-gray-200">
-          <button className="py-2 pl-3" onClick={() => onSelectLabel?.(label, getTypeOfLabel(label, availableFilters) || "")}>
-            <span key={i} className="">
-              {label}
-            </span>
-          </button>
-          <button className="rounded p-1.5 mr-1 hover:bg-gray-300" onClick={() => onRemoveLabel?.(label)}>
-            <LucideX width={14} height={14} />
-          </button>
-        </span>
+        <AppliedLabel
+          key={i}
+          label={label}
+          onSelect={() => onSelectLabel?.(label, getTypeOfLabel(label, availableFilters) || "")}
+          onRemove={() => onRemoveLabel?.(label)}
+        />
       ))}
     </div>
   );
