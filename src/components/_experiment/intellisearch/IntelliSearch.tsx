@@ -70,7 +70,6 @@ export function IntelliSearch({
   const [isInputFocused, setIsInputFocused] = useState(false);
   const [isMouseInComponent, setIsMouseInComponent] = useState(false);
   const [activeSuggestionIndex, setActiveSuggestionIndex] = useState(0);
-  const [hoveredSuggestionIndex, setHoveredSuggestionIndex] = useState<number | null>(null);
   const { results: labelsResults, isLoading: isLoadingLabels } = useLabelSearch(searchTerm, { debounceDelay });
 
   // Refs
@@ -80,7 +79,6 @@ export function IntelliSearch({
   const resetSearchState = () => {
     setSearchTerm("");
     setActiveSuggestionIndex(-1);
-    setHoveredSuggestionIndex(null);
   };
 
   /**
@@ -170,15 +168,6 @@ export function IntelliSearch({
     [activeSuggestionIndex, onSelectSuggestion, suggestions, setQuery, searchTerm]
   );
 
-  /**
-   * Get the currently hovered concept for preview card
-   */
-  // const activeConcept = useMemo(() => {
-  //   if (hoveredSuggestionIndex === null && activeSuggestionIndex === null) return null;
-  //   const suggestion = suggestions[hoveredSuggestionIndex ?? activeSuggestionIndex ?? -1];
-  //   return null;
-  // }, [hoveredSuggestionIndex, activeSuggestionIndex, suggestions]);
-
   return (
     <div
       ref={containerRef}
@@ -186,7 +175,6 @@ export function IntelliSearch({
       onMouseEnter={() => setIsMouseInComponent(true)}
       onMouseLeave={() => {
         setIsMouseInComponent(false);
-        setHoveredSuggestionIndex(null);
       }}
     >
       {/* Input Field */}
@@ -252,14 +240,6 @@ export function IntelliSearch({
                     !isActive && "border-l-2 border-l-transparent"
                   )}
                   onMouseDown={(e) => e.preventDefault()}
-                  onMouseEnter={() => {
-                    if (suggestion) {
-                      setHoveredSuggestionIndex(index);
-                    }
-                  }}
-                  onMouseLeave={() => {
-                    setHoveredSuggestionIndex(null);
-                  }}
                   onClick={() => {
                     resetSearchState();
                     if (suggestion.type === "label") {
@@ -275,29 +255,6 @@ export function IntelliSearch({
               );
             })}
           </div>
-
-          {/* Concept Preview Card */}
-          {/* {activeConcept && (
-            <div
-              className={joinTailwindClasses(
-                "absolute left-full top-0 ml-4 z-20",
-                "w-80 p-4 rounded-lg bg-white shadow-lg border border-gray-200",
-                "transition-opacity duration-150"
-              )}
-              style={{
-                // Fixed position relative to suggestions list
-                marginTop: "0",
-              }}
-            >
-              <h3 className="text-lg font-semibold text-gray-900 mb-2">{activeConcept.preferred_label}</h3>
-
-              {activeConcept.definition && (
-                <div className="mb-3">
-                  <p className="text-sm text-gray-700 leading-relaxed">{activeConcept.definition}</p>
-                </div>
-              )}
-            </div>
-          )} */}
         </div>
       )}
     </div>
