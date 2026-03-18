@@ -25,17 +25,17 @@ export function AppliedLabels({
   return (
     <div className="flex flex-wrap gap-1 text-sm">
       {query && (
-        <span>
-          <button className="text-sm bg-gray-100 rounded p-2 flex items-center gap-1 hover:bg-gray-200" onClick={() => setQuery("")}>
+        <span className="bg-gray-100 rounded inline-flex items-center gap-1 hover:bg-gray-200">
+          <button className="py-2 pl-3" onClick={() => setQuery("")}>
             <span>Anything matching "{query}"</span>
           </button>
-          <button className="hover:bg-gray-300" onClick={() => setQuery("")}>
-            <LucideX />
+          <button className="rounded p-1.5 mr-1 hover:bg-gray-300" onClick={() => setQuery("")}>
+            <LucideX width={14} height={14} />
           </button>
         </span>
       )}
       {labels.map((label, i) => (
-        <span key={i} className="group bg-gray-100 rounded inline-flex items-center gap-1 hover:bg-gray-200">
+        <span key={i} className="bg-gray-100 rounded inline-flex items-center gap-1 hover:bg-gray-200">
           <button className="py-2 pl-3" onClick={() => onSelectLabel?.(label, getTypeOfLabel(label, availableFilters) || "")}>
             <span key={i} className="">
               {label}
