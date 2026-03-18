@@ -18,6 +18,13 @@ interface UseLabelSearchOptions {
   debounceDelay?: number;
 }
 
+export const loadLabels = async (query: string): Promise<TLabelResult[]> => {
+  const apiUrl = process.env.NEXT_PUBLIC_API_URL || "https://api.climatepolicyradar.org";
+  const client = new ApiClient(apiUrl);
+  const response = await client.get<TLabelsResponse>(`/search/labels?query=${encodeURIComponent(query)}`, null);
+  return response.data.results || [];
+};
+
 /**
  * Hook that searches the /search/labels API with debouncing.
  *
@@ -45,10 +52,8 @@ export function useLabelSearch(query: string, options: UseLabelSearchOptions = {
 
         setIsLoading(true);
         try {
-          const apiUrl = process.env.NEXT_PUBLIC_API_URL || "https://api.climatepolicyradar.org";
-          const client = new ApiClient(apiUrl);
-          const response = await client.get<TLabelsResponse>(`/search/labels?query=${encodeURIComponent(q)}`, null);
-          setResults(response.data.results || []);
+          const response = await loadLabels(q);
+          setResults(response || []);
         } catch {
           setResults([]);
         } finally {
