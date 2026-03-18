@@ -2,7 +2,7 @@
 
 import { GetServerSideProps, InferGetServerSidePropsType } from "next";
 import { useQueryState, parseAsString, parseAsJson } from "nuqs";
-import { useMemo } from "react";
+import { useMemo, useState, useEffect } from "react";
 
 import { ApiClient } from "@/api/http-common";
 import { AppliedLabels } from "@/components/_experiment/appliedLabels/AppliedLabels";
@@ -12,6 +12,7 @@ import { SearchFilters } from "@/components/_experiment/searchFilters/SearchFilt
 import { SearchContainer } from "@/components/_experiment/searchResults/SearchResults";
 import { withEnvConfig } from "@/context/EnvConfig";
 import { FeaturesContext } from "@/context/FeaturesContext";
+import { TLabelResult, loadLabels } from "@/hooks/useLabelSearch";
 import { FilterGroupSchema } from "@/schemas";
 import { getFeatureFlags } from "@/utils/featureFlags";
 import { getFeatures } from "@/utils/features";
@@ -69,6 +70,7 @@ function removeLabelRule(group: TQueryGroup, label: string): TQueryGroup | null 
 }
 
 const ShadowSearch = ({ theme, themeConfig, features }: TProps) => {
+  const [availableFilters, setAvailableFilters] = useState<TLabelResult[]>([]);
   // search query that is typed into the search box
   const [query, setQuery] = useQueryState("q", parseAsString.withDefault(""));
   // structured filters built in QueryBuilder
@@ -76,6 +78,10 @@ const ShadowSearch = ({ theme, themeConfig, features }: TProps) => {
 
   // Derive selectedLabels from the filter tree
   const selectedLabels = useMemo(() => extractLabels(filters), [filters]);
+
+  useEffect(() => {
+    loadLabels("").then(setAvailableFilters);
+  }, []);
 
   return (
     <FeaturesContext.Provider value={features}>
@@ -99,6 +105,7 @@ const ShadowSearch = ({ theme, themeConfig, features }: TProps) => {
         />
         <div className="flex justify-between items-center">
           <SearchFilters
+            availableFilters={availableFilters}
             filters={filters}
             onChange={(checked, label) => {
               if (checked) {
