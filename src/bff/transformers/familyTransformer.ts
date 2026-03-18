@@ -20,14 +20,22 @@ export const familyTransformer = (
         ...familyApiOldData,
         countries: transformCountries(familyApiOldData.countries, groupedLabels.geography),
         family: {
-          ...familyApiOldData.family,
-          import_id: familyApiNewData.id,
-          slug: familyApiNewData.attributes.deprecated_slug,
-          title: familyApiNewData.title,
-          summary: familyApiNewData.description,
+          corpus_id: null, // unused
           documents: transformFamilyDocuments(familyApiOldData.family.documents, documents),
           geographies: groupedLabels.geography.map((label) => label.value.id),
+          import_id: familyApiNewData.id,
           metadata: transformFamilyMetadata(groupedLabels),
+          slug: familyApiNewData.attributes.deprecated_slug,
+          summary: familyApiNewData.description,
+          title: familyApiNewData.title,
+          // TODO apply transformations to remaining fields:
+          category: familyApiOldData.family.category,
+          collections: familyApiOldData.family.collections,
+          concepts: familyApiOldData.family.concepts, // currently out of scope
+          events: familyApiOldData.family.events,
+          last_updated_date: familyApiOldData.family.last_updated_date,
+          organisation: familyApiOldData.family.organisation,
+          published_date: familyApiOldData.family.published_date,
         },
         usesDataIn: true,
       },
