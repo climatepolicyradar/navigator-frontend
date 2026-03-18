@@ -8,23 +8,25 @@ export const FrontendObservability = (): null => {
   if (faro.api) return null;
 
   try {
-    initializeFaro({
-      url: "https://faro-collector-prod-gb-south-0.grafana.net/collect/74f6d4bd78b7bb2cc270036193aaa3a6",
-      app: {
-        name: "cpr-frontend",
-        namespace: "frontend",
-        version: "1",
-        environment: "local",
-      },
+    if (typeof window !== "undefined") {
+      initializeFaro({
+        url: "https://faro-collector-prod-gb-south-0.grafana.net/collect/74f6d4bd78b7bb2cc270036193aaa3a6",
+        app: {
+          name: "cpr-frontend",
+          namespace: "frontend",
+          version: "1",
+          environment: "local",
+        },
 
-      instrumentations: [
-        // Mandatory, omits default instrumentations otherwise.
-        ...getWebInstrumentations(),
+        instrumentations: [
+          // Mandatory, omits default instrumentations otherwise.
+          ...getWebInstrumentations(),
 
-        // Tracing package to get end-to-end visibility for HTTP requests.
-        new TracingInstrumentation(),
-      ],
-    });
+          // Tracing package to get end-to-end visibility for HTTP requests.
+          new TracingInstrumentation(),
+        ],
+      });
+    }
   } catch (error) {
     console.error(error);
     return null;

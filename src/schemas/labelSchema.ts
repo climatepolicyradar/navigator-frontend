@@ -1,7 +1,22 @@
 import * as v from "valibot";
 
 // Strictly validate label types so they reliably grouped and found later
-export const LABEL_TYPES = ["activity_status", "category", "entity_type", "geography", "provider", "role", "status"] as const;
+export const LABEL_TYPES = [
+  "activity_status",
+  "category",
+  "entity_type",
+  "external_id",
+  "framework",
+  "geography",
+  "hazard",
+  "instrument",
+  "keyword",
+  "provider",
+  "role",
+  "sector",
+  "status",
+  "topic",
+] as const;
 const LabelTypeSchema = v.union(LABEL_TYPES.map((type) => v.literal(type)));
 export type TDataInLabelType = v.InferOutput<typeof LabelTypeSchema>;
 

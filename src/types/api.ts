@@ -167,32 +167,34 @@ type TApiMetadata<Key extends string> = {
   [K in Key]?: string[];
 };
 
-export type TApiFamilyMetadata = TApiMetadata<
-  | "author_type"
-  | "author"
-  | "document_type"
-  | "framework"
-  | "hazard"
-  | "id"
-  | "instrument"
-  | "keyword"
-  | "sector"
-  | "topic"
+export const API_FAMILY_METADATA_KEY = [
+  "author_type",
+  "author",
+  "document_type",
+  "framework",
+  "hazard",
+  "id",
+  "instrument",
+  "keyword",
+  "sector",
+  "topic",
   // Litigation specific
-  | "case_number"
-  | "concept_preferred_label"
-  | "core_object"
-  | "original_case_name"
-  | "status"
+  "case_number",
+  "concept_preferred_label",
+  "core_object",
+  "original_case_name",
+  "status",
   // MCF specific
-  | "focal_area"
-  | "implementing_agency"
-  | "project_value_fund_spend"
-  | "project_value_co_financing"
-  | "project_url"
-  | "theme"
-  | "result_area"
->;
+  "focal_area",
+  "implementing_agency",
+  "project_value_fund_spend",
+  "project_value_co_financing",
+  "project_url",
+  "theme",
+  "result_area",
+] as const;
+export type TApiFamilyMetadataKey = (typeof API_FAMILY_METADATA_KEY)[number];
+export type TApiFamilyMetadata = TApiMetadata<TApiFamilyMetadataKey>;
 
 export type TApiMatchedFamily = TApiFamily & {
   family_description_match: boolean;
