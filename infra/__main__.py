@@ -122,7 +122,7 @@ frontend = AppRunnerService(
     env_vars=FRONTEND_ENV,
     auto_scaling_config_arn=(
         config.require("auto_scaling_config_arn")
-        if not is_cpr_stack and not is_review_stack
+        if not is_cpr_stack
         else None
     ),
     opts=pulumi.ResourceOptions(depends_on=[ecr_repo.repository]),
