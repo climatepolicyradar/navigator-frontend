@@ -113,6 +113,10 @@ apprunner_config = AppRunnerConfig(
     auto_deploy=True,
 )
 
+# For review stacks, use the shared ECR access role created in frontend-platform
+# to avoid the 64-character IAM role name limit on ephemeral PR stacks.
+shared_access_role_arn = config.get("apprunner_ecr_access_role_arn") if is_review_stack else None
+
 # Create the frontend AppRunner service in current account
 name_prefix = tag_name()
 frontend = AppRunnerService(
@@ -125,6 +129,7 @@ frontend = AppRunnerService(
         if not is_cpr_stack
         else None
     ),
+    access_role_arn=shared_access_role_arn,
     opts=pulumi.ResourceOptions(depends_on=[ecr_repo.repository]),
 )
 
