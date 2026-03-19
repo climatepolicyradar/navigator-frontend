@@ -154,6 +154,7 @@ class AppRunnerService(pulumi.ComponentResource):
         opts: Optional[pulumi.ResourceOptions] = None,
         auto_scaling_config_arn: Optional[str] = None,
         runtime_environment_secrets: Optional[Dict[str, pulumi.Output]] = None,
+        access_role_arn: Optional[pulumi.Input[str]] = None,
     ):
         super().__init__("pkg:index:AppRunnerService", name, None, opts)
 
@@ -177,8 +178,15 @@ class AppRunnerService(pulumi.ComponentResource):
             config, auto_scaling_config_arn
         )
 
-        # Create IAM role for AppRunner
-        self.access_role = self._create_access_role()
+        # Use a shared ECR access role if provided, otherwise create one per stack.
+        # Shared roles avoid the 64-character IAM name limit that ephemeral PR
+        # stacks can hit when names are auto-generated.
+        if access_role_arn is not None:
+            self.access_role_arn: pulumi.Input[str] = access_role_arn
+            self.access_role: Optional[aws.iam.Role] = None
+        else:
+            self.access_role = self._create_access_role()
+            self.access_role_arn = self.access_role.arn
 
         self.instance_role = self._create_instance_role(config)
 
@@ -538,7 +546,7 @@ class AppRunnerService(pulumi.ComponentResource):
                     ),
                 ),
                 authentication_configuration=aws.apprunner.ServiceSourceConfigurationAuthenticationConfigurationArgs(
-                    access_role_arn=self.access_role.arn
+                    access_role_arn=self.access_role_arn
                 ),
             ),
             tags=self.tags,
