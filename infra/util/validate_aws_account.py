@@ -105,5 +105,10 @@ def validate_stack_and_branch() -> None:
     elif stack in ["sandbox"]:
         pass
 
+    elif "review" in stack or stack.startswith("pr-"):
+        # Review stacks (e.g. cpr-review, pr-climatepolicyradar-navigator-frontend-1139)
+        # are ephemeral and can be deployed from any branch.
+        pass
+
     else:
         raise RuntimeError(f"The stack '{stack}' is not a valid stack.\n\n")
