@@ -8,6 +8,3 @@ dependencies = [
     "pulumi-command",
     "pulumi-docker-build",
 ]
-
-[tool.uv.sources]
-pulumi-docker-build = { path = "sdks/docker-build" }
