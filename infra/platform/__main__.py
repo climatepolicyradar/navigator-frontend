@@ -6,7 +6,6 @@ is version-controlled and PR-reviewed.
 """
 
 import json
-from pathlib import Path
 
 import pulumi
 import pulumi_aws as aws
@@ -92,28 +91,56 @@ staging_deployment_role_policy = aws.iam.RolePolicyAttachment(
 # ---------------------------------------------------------------------------
 # ESC Environments
 # ---------------------------------------------------------------------------
-# Environment definitions are stored as YAML files in the esc/ directory
-# so they are version-controlled and changes require PR review.
-esc_dir = Path(__file__).parent / "esc"
+# Environment YAML is generated dynamically so that sensitive values (like
+# the AWS account ID in the role ARN) never appear in committed source files.
 
 # Shared AWS credentials environment - provides dynamic OIDC credentials
 # for all frontend staging deployments (including review stacks).
+# The role ARN is interpolated at deploy time from the IAM role output.
+aws_creds_staging_yaml = staging_deployment_role.arn.apply(
+    lambda role_arn: (
+        "values:\n"
+        "  aws:\n"
+        "    login:\n"
+        "      fn::open::aws-login:\n"
+        "        oidc:\n"
+        f"          roleArn: {role_arn}\n"
+        "          sessionName: pulumi-frontend-deployments\n"
+        "          duration: 1h\n"
+        "  environmentVariables:\n"
+        "    AWS_ACCESS_KEY_ID: ${aws.login.accessKeyId}\n"
+        "    AWS_SECRET_ACCESS_KEY: ${aws.login.secretAccessKey}\n"
+        "    AWS_SESSION_TOKEN: ${aws.login.sessionToken}\n"
+        "    AWS_REGION: eu-west-1\n"
+    )
+)
+
 aws_creds_staging_env = pulumiservice.Environment(
     "aws-creds-staging",
     organization=org_name,
     project=project_name,
     name="aws-creds-staging",
-    yaml=pulumi.FileAsset(str(esc_dir / "aws-creds-staging.yaml")),
+    yaml=aws_creds_staging_yaml.apply(lambda y: pulumi.StringAsset(y)),
 )
 
 # Review stack environment - imports aws-creds-staging and provides
 # stack-specific config for the cpr-review stack and its PR stacks.
+CPR_REVIEW_YAML = (
+    "imports:\n"
+    f"  - {project_name}/aws-creds-staging\n"
+    "\n"
+    "values:\n"
+    "  pulumiConfig:\n"
+    "    docker_tag: ${docker_tag}\n"
+    "  docker_tag: latest\n"
+)
+
 cpr_review_env = pulumiservice.Environment(
     "cpr-review",
     organization=org_name,
     project=project_name,
     name="cpr-review",
-    yaml=pulumi.FileAsset(str(esc_dir / "cpr-review.yaml")),
+    yaml=pulumi.StringAsset(CPR_REVIEW_YAML),
     opts=pulumi.ResourceOptions(depends_on=[aws_creds_staging_env]),
 )
 
