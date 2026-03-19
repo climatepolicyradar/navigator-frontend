@@ -117,6 +117,9 @@ aws_creds_staging_env = pulumiservice.Environment(
 
 # Review stack environment - imports aws-creds-staging and provides
 # stack-specific config for the cpr-review stack and its PR stacks.
+# The DEPLOY_* environment variables are set here (rather than in
+# DeploymentSettings) so that PR review stacks automatically inherit them
+# via the shared ESC environment.
 CPR_REVIEW_YAML = (
     "imports:\n"
     f"  - {project_name}/aws-creds-staging\n"
@@ -125,6 +128,9 @@ CPR_REVIEW_YAML = (
     "  pulumiConfig:\n"
     "    docker_tag: ${docker_tag}\n"
     "  docker_tag: latest\n"
+    "  environmentVariables:\n"
+    "    DEPLOY_FROM_MAIN_BRANCH_ONLY: 'false'\n"
+    "    DEPLOY_TO_PROD_STACK_ALLOWED: 'false'\n"
 )
 
 cpr_review_env = pulumiservice.Environment(
@@ -161,10 +167,9 @@ cpr_review_deployment_settings = pulumiservice.DeploymentSettings(
         preview_pull_requests=True,
     ),
     operation_context=pulumiservice.DeploymentSettingsOperationContextArgs(
-        environment_variables={
-            "DEPLOY_FROM_MAIN_BRANCH_ONLY": "false",
-            "DEPLOY_TO_PROD_STACK_ALLOWED": "false",
-        },
+        # DEPLOY_FROM_MAIN_BRANCH_ONLY and DEPLOY_TO_PROD_STACK_ALLOWED are
+        # now provided via the cpr-review ESC environment so that PR review
+        # stacks inherit them automatically.
         options=pulumiservice.OperationContextOptionsArgs(
             skip_intermediate_deployments=True,
         ),
