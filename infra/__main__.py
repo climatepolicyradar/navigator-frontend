@@ -6,7 +6,8 @@ from pathlib import Path
 from typing import cast
 
 import pulumi
-import pulumi_aws as aws 
+import pulumi_aws as aws
+import pulumi_docker_build as docker_build
 from resources.app_runner_service import AppRunnerConfig, AppRunnerService
 from resources.cache_policy import CachePolicyConfig, CloudFrontCachePolicy
 from resources.cloudfront_distribution import (
@@ -68,26 +69,68 @@ if "staging" in stack or is_review_stack:
 if "production" in stack:
     env = "production"
 
-# Create ECR repo — review stacks get a "review-" prefix for easy identification
-ecr_name = f"review-navigator-frontend-{theme}" if is_review_stack else f"navigator-frontend-{theme}"
-ecr_repo = ECRRepository(
-    ecr_name,
-    config=ECRRepositoryConfig(image_scan_on_push=False),
-)
-
-# Get the concrete repository URL value
-repository_url = ecr_repo.repository.repository_url.apply(lambda url: url)
-repository_url.apply(lambda url: pulumi.info(f"Repository URL: {url}"))
+# ECR repository setup.
+# Review stacks use a shared ECR repo managed by frontend-platform to avoid
+# creating/destroying repos per PR and hitting RepositoryAlreadyExistsException.
+# Non-review stacks create their own dedicated ECR repo as before.
 docker_tag = config.require("docker_tag")
 pulumi.info(f"Docker tag: {docker_tag}")
-image_identifier = ecr_repo.repository.repository_url.apply(
-    lambda url: f"{url}:{docker_tag}"
-)
-image_identifier.apply(lambda id: pulumi.info(f"Final image identifier: {id}"))
+
+review_ecr_url = config.get("review_ecr_repository_url") if is_review_stack else None
+frontend_image: docker_build.Image | None = None
+
+if review_ecr_url:
+    # Review stack: use the shared ECR repo from frontend-platform.
+    # Build and push the Docker image as part of the Pulumi deployment so that
+    # the App Runner service has a valid image to pull.
+    ecr_repo = None
+
+    ecr_auth = aws.ecr.get_authorization_token_output()
+    frontend_image = docker_build.Image(
+        "frontend-image",
+        tags=[f"{review_ecr_url}:{docker_tag}"],
+        context=docker_build.BuildContextArgs(
+            location="..",
+        ),
+        dockerfile=docker_build.DockerfileArgs(
+            location="../Dockerfile",
+        ),
+        platforms=[docker_build.Platform.LINUX_AMD64],
+        build_args={"THEME": theme},
+        push=True,
+        registries=[
+            docker_build.RegistryArgs(
+                address=review_ecr_url,
+                username=ecr_auth.user_name,
+                password=ecr_auth.password,
+            ),
+        ],
+        # Skip building during preview to speed up PR feedback loops.
+        build_on_preview=False,
+    )
+
+    repository_url: pulumi.Input[str] = review_ecr_url
+    # Use the tag-based identifier for App Runner (it doesn't support @digest refs).
+    image_identifier: pulumi.Input[str] = f"{review_ecr_url}:{docker_tag}"
+    pulumi.info(f"Repository URL: {review_ecr_url}")
+else:
+    # Non-review stack: create a dedicated ECR repo.
+    ecr_name = f"navigator-frontend-{theme}"
+    ecr_repo = ECRRepository(
+        ecr_name,
+        config=ECRRepositoryConfig(image_scan_on_push=False),
+    )
+    repository_url = ecr_repo.repository.repository_url
+    repository_url.apply(lambda url: pulumi.info(f"Repository URL: {url}"))
+    image_identifier = ecr_repo.repository.repository_url.apply(
+        lambda url: f"{url}:{docker_tag}"
+    )
+    image_identifier.apply(lambda id: pulumi.info(f"Final image identifier: {id}"))
 
 # Export the repository URL for use in CI/CD pipelines
-pulumi.export("ecr_repository_url", ecr_repo.repository.repository_url)
-pulumi.export("ecr_repository_name", ecr_repo.repository.name)
+pulumi.export("ecr_repository_url", repository_url)
+if ecr_repo:
+    pulumi.export("ecr_repository_name", ecr_repo.repository.name)
 
 # Configure AppRunner settings (using current account)
 is_cpr_stack = stack in ["cpr-production", "cpr-staging"]
@@ -113,6 +156,10 @@ apprunner_config = AppRunnerConfig(
     auto_deploy=True,
 )
 
+# For review stacks, use the shared ECR access role created in frontend-platform
+# to avoid the 64-character IAM role name limit on ephemeral PR stacks.
+shared_access_role_arn = config.get("apprunner_ecr_access_role_arn") if is_review_stack else None
+
 # Create the frontend AppRunner service in current account
 name_prefix = tag_name()
 frontend = AppRunnerService(
@@ -125,7 +172,14 @@ frontend = AppRunnerService(
         if not is_cpr_stack
         else None
     ),
-    opts=pulumi.ResourceOptions(depends_on=[ecr_repo.repository]),
+    access_role_arn=shared_access_role_arn,
+    opts=pulumi.ResourceOptions(
+        depends_on=(
+            [frontend_image] if frontend_image is not None
+            else [ecr_repo.repository] if ecr_repo
+            else []
+        ),
+    ),
 )
 
 # Export outputs

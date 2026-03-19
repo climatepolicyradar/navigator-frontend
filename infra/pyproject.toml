@@ -2,4 +2,12 @@
 name = "frontend"
 version = "1.0.0"
 requires-python = ">=3.13,<3.14"
-dependencies = ["pulumi", "pulumi-aws", "pulumi-command"]
+dependencies = [
+    "pulumi",
+    "pulumi-aws",
+    "pulumi-command",
+    "pulumi-docker-build",
+]
+
+[tool.uv.sources]
+pulumi-docker-build = { path = "sdks/docker-build" }
