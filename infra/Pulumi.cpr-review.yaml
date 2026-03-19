@@ -28,5 +28,6 @@ config:
   frontend:theme: cpr
   frontend:validation_account_id:
     secure: AAABAAdvxmEKMe/vt4YkB0vy7/99YxgHXxgPELCVZkQHXdNiwbMFhXAmsPI=
+  frontend:auto_scaling_config_arn: arn:aws:apprunner:eu-west-1:073457443605:autoscalingconfiguration/staging-frontend-sc/1/132ae46f4b8942118a15c5b3ee3c3ba9
 environment:
   - frontend/cpr-review
