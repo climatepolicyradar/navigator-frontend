@@ -1,17 +1,19 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 
 import { GetServerSideProps, InferGetServerSidePropsType } from "next";
-import { useQueryState, useQueryStates, parseAsString, parseAsJson } from "nuqs";
-import { useMemo, useState } from "react";
+import { useQueryState, parseAsString, parseAsJson } from "nuqs";
+import { useMemo, useState, useEffect } from "react";
 
 import { ApiClient } from "@/api/http-common";
 import { AppliedLabels } from "@/components/_experiment/appliedLabels/AppliedLabels";
 import { IntelliSearch } from "@/components/_experiment/intellisearch";
 import { createGroup, QueryBuilder, TQueryGroup, TQueryRule } from "@/components/_experiment/queryBuilder/QueryBuilder";
+import { SearchFilters } from "@/components/_experiment/searchFilters/SearchFilters";
 import { SearchContainer } from "@/components/_experiment/searchResults/SearchResults";
 import { withEnvConfig } from "@/context/EnvConfig";
 import { FeaturesContext } from "@/context/FeaturesContext";
-import { FilterGroupSchema, FilterSchema } from "@/schemas";
+import { TLabelResult, loadLabels } from "@/hooks/useLabelSearch";
+import { FilterGroupSchema } from "@/schemas";
 import { getFeatureFlags } from "@/utils/featureFlags";
 import { getFeatures } from "@/utils/features";
 import { readConfigFile } from "@/utils/readConfigFile";
@@ -68,6 +70,7 @@ function removeLabelRule(group: TQueryGroup, label: string): TQueryGroup | null 
 }
 
 const ShadowSearch = ({ theme, themeConfig, features }: TProps) => {
+  const [availableFilters, setAvailableFilters] = useState<TLabelResult[]>([]);
   // search query that is typed into the search box
   const [query, setQuery] = useQueryState("q", parseAsString.withDefault(""));
   // structured filters built in QueryBuilder
@@ -76,43 +79,60 @@ const ShadowSearch = ({ theme, themeConfig, features }: TProps) => {
   // Derive selectedLabels from the filter tree
   const selectedLabels = useMemo(() => extractLabels(filters), [filters]);
 
+  useEffect(() => {
+    loadLabels("").then(setAvailableFilters);
+  }, []);
+
   return (
     <FeaturesContext.Provider value={features}>
-      <div className="w-3/4 m-auto mt-8">
+      <div className="w-3/4 m-auto mt-8 pb-12 flex flex-col gap-4">
         <IntelliSearch
-          topics={[]}
           selectedLabels={selectedLabels}
-          onSelectConcept={(concept) => {
-            if (concept) {
-              if (concept && !selectedLabels.includes(concept)) {
-                setFilters((prev) => addLabelRule(prev, concept));
+          onSelectSuggestion={(suggestion) => {
+            if (suggestion) {
+              if (suggestion && !selectedLabels.includes(suggestion)) {
+                setFilters((prev) => addLabelRule(prev, suggestion));
               }
             }
           }}
           setQuery={setQuery}
         />
-      </div>
-      <div className="w-3/4 m-auto mt-4 mb-8">
-        <div className="mb-4">
-          <AppliedLabels
-            query={query}
-            labels={selectedLabels}
-            onSelectLabel={(label) => setFilters((prev) => (prev ? removeLabelRule(prev, label) : createGroup()))}
-            setQuery={setQuery}
+        <AppliedLabels
+          availableFilters={availableFilters}
+          query={query}
+          labels={selectedLabels}
+          onSelectLabel={(label, type) => {
+            // eslint-disable-next-line no-console
+            console.log("Selected label:", label, ", Type:", type);
+          }}
+          onRemoveLabel={(label) => setFilters((prev) => (prev ? removeLabelRule(prev, label) : createGroup()))}
+          setQuery={setQuery}
+        />
+        <div className="flex justify-between items-center">
+          <SearchFilters
+            availableFilters={availableFilters}
+            filters={filters}
+            onChange={(checked, label) => {
+              if (checked) {
+                setFilters((prev) => addLabelRule(prev, label));
+              } else {
+                setFilters((prev) => (prev ? removeLabelRule(prev, label) : createGroup()));
+              }
+            }}
           />
+          <QueryBuilder filters={filters} setFilters={setFilters} />
+          {/* <pre className="text-xs">{filters ? JSON.stringify(filters, null, 2) : "No filters"}</pre> */}
         </div>
-        <QueryBuilder filters={filters} setFilters={setFilters} />
-        <pre className="text-xs">{filters ? JSON.stringify(filters, null, 2) : "No filters"}</pre>
+        <SearchContainer
+          query={query}
+          onSelectLabel={(label) => {
+            if (!selectedLabels.includes(label)) {
+              setFilters((prev) => addLabelRule(prev, label));
+            }
+          }}
+          filters={filters}
+        />
       </div>
-      <SearchContainer
-        query={query}
-        onSelectLabel={(label) => {
-          if (!selectedLabels.includes(label)) {
-            setFilters((prev) => addLabelRule(prev, label));
-          }
-        }}
-        filters={filters}
-      />
     </FeaturesContext.Provider>
   );
 };

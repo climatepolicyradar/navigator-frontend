@@ -65,9 +65,9 @@ export async function fetchSearchDocuments(params: SearchDocumentsParams = {}): 
 function linkHref(doc: SearchDocument): string | undefined {
   if (doc.attributes.deprecated_slug)
     if (doc.labels.find((label) => label.value.value === "Principal")) {
-      return `https://app.climatepolicyradar.org/document/${doc.attributes.deprecated_slug}`;
+      return `/document/${doc.attributes.deprecated_slug}`;
     } else {
-      return `https://app.climatepolicyradar.org/documents/${doc.attributes.deprecated_slug}`;
+      return `/documents/${doc.attributes.deprecated_slug}`;
     }
 }
 
@@ -76,14 +76,22 @@ export function SearchResults({ promise, onSelectLabel }: { promise: Promise<Sea
 
   return (
     <div>
-      <p className="text-sm text-text-secondary mb-4">
+      {/* <p className="text-sm text-text-secondary mb-4">
         {data.total_results ?? 0} results — page {data.page} of {data.total_pages ?? 1}
-      </p>
+      </p> */}
       <ul className="space-y-4">
         {data.results.map((doc) => (
           <li key={doc.id} className="border border-gray-200 rounded-md p-4">
-            <h3 className="font-semibold">{linkHref(doc) ? <Link href={linkHref(doc)}>{doc.title}</Link> : doc.title}</h3>
-            {doc.description && <p className="text-sm text-text-secondary mt-1">{doc.description}</p>}
+            <h3 className="font-semibold text-lg">
+              {linkHref(doc) ? (
+                <Link href={linkHref(doc)} className="text-brand hover:underline">
+                  {doc.title}
+                </Link>
+              ) : (
+                doc.title
+              )}
+            </h3>
+            {doc.description && <p className="text-sm text-text-secondary mt-1" dangerouslySetInnerHTML={{ __html: doc.description }} />}
             {doc.labels.length > 0 && (
               <div className="flex flex-wrap gap-1 mt-2">
                 {doc.labels.map((label, i) => (
@@ -139,20 +147,17 @@ export function SearchContainer({
 
   return (
     <>
-      <div className="w-3/4 m-auto">
-        {/* {!query && (!selectedLabels || selectedLabels.length === 0) && <p className="text-sm text-text-secondary">Enter a search to see results.</p>} */}
-        {searchPromise && (
-          <Suspense
-            fallback={
-              <p className="text-sm text-text-secondary flex gap-2 items-center">
-                <LucideCog className="animate-spin" /> Loading results…
-              </p>
-            }
-          >
-            <SearchResults promise={searchPromise} onSelectLabel={onSelectLabel} />
-          </Suspense>
-        )}
-      </div>
+      {searchPromise && (
+        <Suspense
+          fallback={
+            <p className="text-sm text-text-secondary flex gap-2 items-center">
+              <LucideCog className="animate-spin" /> Loading results…
+            </p>
+          }
+        >
+          <SearchResults promise={searchPromise} onSelectLabel={onSelectLabel} />
+        </Suspense>
+      )}
     </>
   );
 }

@@ -1,5 +1,5 @@
 import { Popover as BasePopover } from "@base-ui/react/popover";
-import { ListFilter, Plus, Trash2, X } from "lucide-react";
+import { SlidersHorizontal, Plus, Trash2, X } from "lucide-react";
 import { useCallback, useEffect, useRef, useState } from "react";
 
 import { useLabelSearch, TLabelResult } from "@/hooks/useLabelSearch";
@@ -463,7 +463,12 @@ function GroupRenderer({ group, path, root, onChange, depth, onDeleteGroup }: Gr
 // Main QueryBuilder component
 // ---------------------------------------------------------------------------
 
-export function QueryBuilder({ filters, setFilters }: { filters?: TQueryGroup | null; setFilters?: (filters: TQueryGroup | null) => void }) {
+type TProps = {
+  filters?: TQueryGroup | null;
+  setFilters?: (filters: TQueryGroup | null) => void;
+};
+
+export function QueryBuilder({ filters, setFilters }: TProps) {
   return (
     <BasePopover.Root>
       <BasePopover.Trigger
@@ -473,8 +478,8 @@ export function QueryBuilder({ filters, setFilters }: { filters?: TQueryGroup | 
           "focus:outline-none focus:ring-2 focus:ring-blue-200 focus:border-blue-500"
         )}
       >
-        <ListFilter className="h-4 w-4" />
-        Filters
+        <SlidersHorizontal className="h-4 w-4" />
+        Advanced Filters
       </BasePopover.Trigger>
 
       <BasePopover.Portal>
@@ -484,14 +489,14 @@ export function QueryBuilder({ filters, setFilters }: { filters?: TQueryGroup | 
           >
             {/* Header */}
             <div className="flex items-center justify-between border-b border-gray-100 px-4 py-3">
-              <h3 className="text-sm font-semibold text-gray-900">Advanced filters</h3>
+              <h3 className="text-sm font-semibold text-gray-900">Advanced Filters</h3>
               <BasePopover.Close className="rounded p-1 text-gray-400 hover:text-gray-600 hover:bg-gray-100 transition-colors" aria-label="Close">
                 <X className="h-4 w-4" />
               </BasePopover.Close>
             </div>
 
             {/* Body */}
-            <div className="max-h-[60vh] p-4">
+            <div className="max-h-[60vh] overflow-y-auto p-4">
               <GroupRenderer group={filters} path={[]} root={filters} onChange={setFilters} depth={0} />
             </div>
 
