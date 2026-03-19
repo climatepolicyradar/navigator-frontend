@@ -5,5 +5,3 @@ runtime:
   options:
     toolchain: uv
     virtualenv: ../.venv
-packages:
-  docker-build: pulumi/pulumi/docker-build@0.0.15
