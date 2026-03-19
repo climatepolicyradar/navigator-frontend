@@ -1,11 +1,15 @@
-"""Manages OIDC identity provider, IAM deployment roles, ESC environments,
-and deployment settings for the frontend project.
+"""Manages IAM deployment roles, ESC environments, and deployment settings
+for the frontend project.
 
 These resources are managed as IaC to ensure all credential configuration
 is version-controlled and PR-reviewed.
+
+The OIDC Identity Provider (api.pulumi.com/oidc) is managed in the aws_env
+project in navigator-infra. Its ARN is referenced via a StackReference.
 """
 
 import json
+from typing import cast
 
 import pulumi
 import pulumi_aws as aws
@@ -20,22 +24,10 @@ project_name = "frontend"
 aws_account = aws.get_caller_identity()
 
 # ---------------------------------------------------------------------------
-# OIDC Identity Provider for Pulumi Cloud
+# OIDC Identity Provider (managed in aws_env, referenced here)
 # ---------------------------------------------------------------------------
-# This allows Pulumi Cloud (Deployments and ESC) to authenticate with AWS
-# via OIDC. The provider is an account-level resource shared across projects.
-pulumi_oidc_provider = aws.iam.OpenIdConnectProvider(
-    "pulumi-cloud-oidc-provider",
-    url="https://api.pulumi.com/oidc",
-    client_id_lists=[
-        # Used by Pulumi Deployments (inline OIDC in deployment settings)
-        org_name,
-        # Used by Pulumi ESC (aws-login provider)
-        f"aws:{org_name}",
-    ],
-    thumbprint_lists=["06b25927c42a721631c1efd9431e648fa62e1e39"],
-    opts=pulumi.ResourceOptions(protect=True),
-)
+aws_env_stack = pulumi.StackReference(f"{org_name}/aws_env/staging")
+oidc_provider_arn = cast(str, aws_env_stack.get_output("staging-oidc-provider-arn"))
 
 # ---------------------------------------------------------------------------
 # IAM Role for Pulumi Deployments (staging frontend)
@@ -51,7 +43,7 @@ staging_deployment_role = aws.iam.Role(
         "Role for Pulumi Deployments and ESC to manage frontend staging "
         "infrastructure via OIDC."
     ),
-    assume_role_policy=pulumi_oidc_provider.arn.apply(
+    assume_role_policy=pulumi.Output.from_input(oidc_provider_arn).apply(
         lambda provider_arn: json.dumps(
             {
                 "Version": "2012-10-17",
@@ -78,7 +70,10 @@ staging_deployment_role = aws.iam.Role(
         )
     ),
     max_session_duration=3600,
-    opts=pulumi.ResourceOptions(protect=True),
+    opts=pulumi.ResourceOptions(
+        protect=True,
+        import_="staging-frontend-pulumi-oidc-deployment-role",
+    ),
 )
 
 # Attach AdministratorAccess (matches current configuration)
@@ -86,6 +81,12 @@ staging_deployment_role_policy = aws.iam.RolePolicyAttachment(
     "staging-deployment-role-admin-policy",
     role=staging_deployment_role.name,
     policy_arn="arn:aws:iam::aws:policy/AdministratorAccess",
+    opts=pulumi.ResourceOptions(
+        import_=(
+            "staging-frontend-pulumi-oidc-deployment-role/"
+            "arn:aws:iam::aws:policy/AdministratorAccess"
+        ),
+    ),
 )
 
 # ---------------------------------------------------------------------------
@@ -121,6 +122,9 @@ aws_creds_staging_env = pulumiservice.Environment(
     project=project_name,
     name="aws-creds-staging",
     yaml=aws_creds_staging_yaml.apply(lambda y: pulumi.StringAsset(y)),
+    opts=pulumi.ResourceOptions(
+        import_=f"{org_name}/{project_name}/aws-creds-staging",
+    ),
 )
 
 # Review stack environment - imports aws-creds-staging and provides
@@ -141,7 +145,10 @@ cpr_review_env = pulumiservice.Environment(
     project=project_name,
     name="cpr-review",
     yaml=pulumi.StringAsset(CPR_REVIEW_YAML),
-    opts=pulumi.ResourceOptions(depends_on=[aws_creds_staging_env]),
+    opts=pulumi.ResourceOptions(
+        import_=f"{org_name}/{project_name}/cpr-review",
+        depends_on=[aws_creds_staging_env],
+    ),
 )
 
 # ---------------------------------------------------------------------------
@@ -166,7 +173,7 @@ cpr_review_deployment_settings = pulumiservice.DeploymentSettings(
         repository="climatepolicyradar/navigator-frontend",
         pull_request_template=True,
         deploy_commits=False,
-        preview_pull_requests=False,
+        preview_pull_requests=True,
     ),
     operation_context=pulumiservice.DeploymentSettingsOperationContextArgs(
         options=pulumiservice.OperationContextOptionsArgs(
@@ -178,5 +185,4 @@ cpr_review_deployment_settings = pulumiservice.DeploymentSettings(
 # ---------------------------------------------------------------------------
 # Exports
 # ---------------------------------------------------------------------------
-pulumi.export("oidc_provider_arn", pulumi_oidc_provider.arn)
 pulumi.export("staging_deployment_role_arn", staging_deployment_role.arn)
