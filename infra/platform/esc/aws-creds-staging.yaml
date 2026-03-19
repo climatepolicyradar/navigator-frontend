@@ -1,0 +1,17 @@
+# ESC environment: frontend/aws-creds-staging
+# Provides dynamic AWS credentials via OIDC for staging frontend deployments.
+# Imported by other ESC environments (e.g. frontend/cpr-review) to provide
+# AWS credentials to Pulumi Deployments and review stacks.
+values:
+  aws:
+    login:
+      fn::open::aws-login:
+        oidc:
+          roleArn: arn:aws:iam::xxxxx:role/staging-frontend-pulumi-oidc-deployment-role
+          sessionName: pulumi-frontend-deployments
+          duration: 1h
+  environmentVariables:
+    AWS_ACCESS_KEY_ID: ${aws.login.accessKeyId}
+    AWS_SECRET_ACCESS_KEY: ${aws.login.secretAccessKey}
+    AWS_SESSION_TOKEN: ${aws.login.sessionToken}
+    AWS_REGION: eu-west-1
