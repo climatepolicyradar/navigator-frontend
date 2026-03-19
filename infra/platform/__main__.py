@@ -81,6 +81,68 @@ staging_deployment_role_policy = aws.iam.RolePolicyAttachment(
 )
 
 # ---------------------------------------------------------------------------
+# Shared App Runner ECR Access Role
+# ---------------------------------------------------------------------------
+# A single IAM role that grants App Runner permission to pull images from ECR.
+# This is shared across all frontend stacks (especially ephemeral PR review
+# stacks) to avoid per-stack role creation and the 64-character IAM name limit.
+apprunner_ecr_access_role = aws.iam.Role(
+    "shared-apprunner-ecr-access-role",
+    description=(
+        "Shared role for App Runner services to pull images from ECR. "
+        "Used by all frontend stacks including ephemeral PR review stacks."
+    ),
+    assume_role_policy=json.dumps(
+        {
+            "Version": "2012-10-17",
+            "Statement": [
+                {
+                    "Action": "sts:AssumeRole",
+                    "Effect": "Allow",
+                    "Sid": "",
+                    "Principal": {"Service": "build.apprunner.amazonaws.com"},
+                },
+                {
+                    "Effect": "Allow",
+                    "Principal": {"Service": "tasks.apprunner.amazonaws.com"},
+                    "Action": "sts:AssumeRole",
+                },
+            ],
+        }
+    ),
+    max_session_duration=3600,
+)
+
+apprunner_ecr_access_policy = aws.iam.Policy(
+    "shared-apprunner-ecr-access-policy",
+    description="Grants ECR read access for App Runner services.",
+    policy=json.dumps(
+        {
+            "Version": "2012-10-17",
+            "Statement": [
+                {
+                    "Effect": "Allow",
+                    "Action": [
+                        "ecr:GetDownloadUrlForLayer",
+                        "ecr:BatchGetImage",
+                        "ecr:DescribeImages",
+                        "ecr:GetAuthorizationToken",
+                        "ecr:BatchCheckLayerAvailability",
+                    ],
+                    "Resource": "*",
+                }
+            ],
+        }
+    ),
+)
+
+aws.iam.RolePolicyAttachment(
+    "shared-apprunner-ecr-role-policy-attachment",
+    role=apprunner_ecr_access_role.name,
+    policy_arn=apprunner_ecr_access_policy.arn,
+)
+
+# ---------------------------------------------------------------------------
 # ESC Environments
 # ---------------------------------------------------------------------------
 # Environment YAML is generated dynamically so that sensitive values (like
@@ -120,17 +182,20 @@ aws_creds_staging_env = pulumiservice.Environment(
 # The DEPLOY_* environment variables are set here (rather than in
 # DeploymentSettings) so that PR review stacks automatically inherit them
 # via the shared ESC environment.
-CPR_REVIEW_YAML = (
-    "imports:\n"
-    f"  - {project_name}/aws-creds-staging\n"
-    "\n"
-    "values:\n"
-    "  pulumiConfig:\n"
-    "    docker_tag: ${docker_tag}\n"
-    "  docker_tag: latest\n"
-    "  environmentVariables:\n"
-    "    DEPLOY_FROM_MAIN_BRANCH_ONLY: 'false'\n"
-    "    DEPLOY_TO_PROD_STACK_ALLOWED: 'false'\n"
+cpr_review_yaml = apprunner_ecr_access_role.arn.apply(
+    lambda role_arn: (
+        "imports:\n"
+        f"  - {project_name}/aws-creds-staging\n"
+        "\n"
+        "values:\n"
+        "  pulumiConfig:\n"
+        "    docker_tag: ${docker_tag}\n"
+        f"    frontend:apprunner_ecr_access_role_arn: {role_arn}\n"
+        "  docker_tag: latest\n"
+        "  environmentVariables:\n"
+        "    DEPLOY_FROM_MAIN_BRANCH_ONLY: 'false'\n"
+        "    DEPLOY_TO_PROD_STACK_ALLOWED: 'false'\n"
+    )
 )
 
 cpr_review_env = pulumiservice.Environment(
@@ -138,7 +203,7 @@ cpr_review_env = pulumiservice.Environment(
     organization=org_name,
     project=project_name,
     name="cpr-review",
-    yaml=pulumi.StringAsset(CPR_REVIEW_YAML),
+    yaml=cpr_review_yaml.apply(lambda y: pulumi.StringAsset(y)),
     opts=pulumi.ResourceOptions(depends_on=[aws_creds_staging_env]),
 )
 
@@ -180,3 +245,4 @@ cpr_review_deployment_settings = pulumiservice.DeploymentSettings(
 # Exports
 # ---------------------------------------------------------------------------
 pulumi.export("staging_deployment_role_arn", staging_deployment_role.arn)
+pulumi.export("apprunner_ecr_access_role_arn", apprunner_ecr_access_role.arn)
