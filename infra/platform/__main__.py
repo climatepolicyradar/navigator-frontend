@@ -161,6 +161,10 @@ cpr_review_deployment_settings = pulumiservice.DeploymentSettings(
         preview_pull_requests=True,
     ),
     operation_context=pulumiservice.DeploymentSettingsOperationContextArgs(
+        environment_variables={
+            "DEPLOY_FROM_MAIN_BRANCH_ONLY": "false",
+            "DEPLOY_TO_PROD_STACK_ALLOWED": "false",
+        },
         options=pulumiservice.OperationContextOptionsArgs(
             skip_intermediate_deployments=True,
         ),
