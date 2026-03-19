@@ -60,16 +60,18 @@ FRONTEND_ENV = {
 ########################################################################
 
 stack = pulumi.get_stack()
+is_review_stack = "review" in stack or stack.startswith("pr-")
 env = "sandbox"
-if "staging" in stack:
+if "staging" in stack or is_review_stack:
     env = "staging"
 
 if "production" in stack:
     env = "production"
 
-# Create ECR repo
+# Create ECR repo — review stacks get a "review-" prefix for easy identification
+ecr_name = f"review-navigator-frontend-{theme}" if is_review_stack else f"navigator-frontend-{theme}"
 ecr_repo = ECRRepository(
-    f"navigator-frontend-{theme}",
+    ecr_name,
     config=ECRRepositoryConfig(image_scan_on_push=False),
 )
 
@@ -210,124 +212,23 @@ if stack == "staging" or stack == "production":
 # ########################################################################
 # # Create CloudFront policies & distribution
 # ########################################################################
-CLOUDFRONT_ZONE_ID = "Z2FDTNDATAQYW2"  # CloudFront's fixed zone ID
-# See here https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-properties-route53-recordset-aliastarget.html#aws-properties-route53-recordset-aliastarget-properties
-# Create CORS policy
-cors_policy = CloudFrontCORSPolicy(
-    CORSPolicyConfig(
-        name=f"Navigator{theme.upper()}Frontend",
-        comment=f"{theme.upper()} Frontend Origin Request Policy (no use of x-forwarded-host header)",
-        headers=HeaderConfig(
-            behaviour=BehaviourOptions.WHITELIST,
-            items=[
-                "Origin",
-                "Accept",
-                "Access-Control-Request-Method",
-                "Access-Control-Request-Headers",
-            ],
-        ),
-        cookies=CookieConfig(
-            behaviour=BehaviourOptions.WHITELIST, items=["feature_flags"]
-        ),
-        query_strings=QueryStringConfig(behaviour=BehaviourOptions.ALL),
-    ),
-)
-
-# Create cache policy
-cache_policy = CloudFrontCachePolicy(
-    CachePolicyConfig(
-        name=f"Navigator{theme.upper()}Frontend",
-        comment=f"{theme.upper()} Frontend Cache Policy (no use of host header)",
-        headers=HeaderConfig(
-            behaviour=BehaviourOptions.WHITELIST, items=["Authorization", "Accept"]
-        ),
-        cookies=CookieConfig(
-            behaviour=BehaviourOptions.WHITELIST, items=["feature_flags"]
-        ),
-        query_strings=QueryStringConfig(behaviour=BehaviourOptions.ALL),
-    ),
-)
-
-
-########################################################################
-# Create Route 53 records & certificate
-########################################################################
-
-# TODO: we're only doing this on staging as it's an example of how we might use the aws_env stack
-# to get the zone id for the root domain
-#
-# we want to switch on the theme for the final domain names - but we're not doing
-# that yet.
-# if is_cpr_stack:
-#     domain_name = "climatepolicyradar.org"
-# elif theme == "cclw":
-#     domain_name = "climate-laws.org"
-# elif theme == "mcf":
-#     domain_name = "climateprojectexplorer.org"
-
-aws_env_stack = pulumi.StackReference(f"climatepolicyradar/aws_env/{env}")
-hosted_zone_id = aws_env_stack.get_output("root_zone_id")
-
-# First create the CloudFront distribution with the correct domain
-frontend_domain = f"{theme}.{env}.climatepolicyradar.org"
-
-dns_config = DNSConfig(
-    domain=frontend_domain,
-    zone_id=cast(str, hosted_zone_id),
-    environment=env,
-    certificate_type="CLOUDFRONT",
-    subject_alternative_names=[],
-)
-
-dns = DNS(
-    name=name_prefix,
-    config=dns_config,
-)
-
-
-########################################################################
-# Create CloudFront distribution
-########################################################################
-
-# Get backend stack reference
-backend_stack = pulumi.StackReference(f"climatepolicyradar/backend/{env}")
-backend_service_url = backend_stack.get_output("new_apprunner_service_url")
-
-frontend.service.service_url.apply(
-    lambda url: pulumi.info(f"Frontend app runner URL: {url}")
-)
-backend_service_url.apply(lambda url: pulumi.info(f"Backend app runner URL: {url}"))
-
-# Create origins for both frontend and API
-origins = [
-    OriginConfig(
-        origin_id="frontend",
-        domain_name=cast(
-            str,
-            frontend.service.service_url.apply(
-                lambda url: cast(str, url).replace("https://", "")
-            ),
-        ),
-    )
-]
-
-ordered_cache_behaviors = None
-if is_cpr_stack:
-    api_cache_policy = CloudFrontCachePolicy(
-        CachePolicyConfig(
-            name=f"Navigator{theme.upper()}FrontendAPI",
-            comment=f"{theme.upper()} Frontend API Cache Policy",
+# Review stacks only need ECR + App Runner — skip CloudFront, DNS, and
+# all downstream resources to keep ephemeral environments lightweight.
+if not is_review_stack:
+    CLOUDFRONT_ZONE_ID = "Z2FDTNDATAQYW2"  # CloudFront's fixed zone ID
+    # See here https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-properties-route53-recordset-aliastarget.html#aws-properties-route53-recordset-aliastarget-properties
+    # Create CORS policy
+    cors_policy = CloudFrontCORSPolicy(
+        CORSPolicyConfig(
+            name=f"Navigator{theme.upper()}Frontend",
+            comment=f"{theme.upper()} Frontend Origin Request Policy (no use of x-forwarded-host header)",
             headers=HeaderConfig(
                 behaviour=BehaviourOptions.WHITELIST,
                 items=[
-                    "Authorization",
-                    "Accept",
-                    # CORS headers
                     "Origin",
+                    "Accept",
                     "Access-Control-Request-Method",
                     "Access-Control-Request-Headers",
-                    # CPR access Headers
-                    "app-token",
                 ],
             ),
             cookies=CookieConfig(
@@ -336,277 +237,381 @@ if is_cpr_stack:
             query_strings=QueryStringConfig(behaviour=BehaviourOptions.ALL),
         ),
     )
-    # Define ordered cache behaviors for API routes
-    ordered_cache_behaviors = [
-        {
-            "allowed_methods": [
-                "GET",
-                "HEAD",
-                "OPTIONS",
-                "PUT",
-                "POST",
-                "PATCH",
-                "DELETE",
-            ],
-            "cached_methods": ["GET", "HEAD", "OPTIONS"],
-            "cache_policy_id": api_cache_policy.policy.id,
-            "compress": True,
-            "path_pattern": "/api/tokens",
-            "target_origin_id": "api",
-            "viewer_protocol_policy": "redirect-to-https",
-        },
-        {
-            "allowed_methods": [
-                "GET",
-                "HEAD",
-                "OPTIONS",
-                "PUT",
-                "POST",
-                "PATCH",
-                "DELETE",
-            ],
-            "cached_methods": ["GET", "HEAD", "OPTIONS"],
-            "cache_policy_id": api_cache_policy.policy.id,
-            "compress": True,
-            "path_pattern": "/api/v1/*",
-            "target_origin_id": "api",
-            "viewer_protocol_policy": "redirect-to-https",
-        },
-    ]
 
-    origins.append(
-        OriginConfig(
-            origin_id="api",
-            domain_name=cast(
-                str,
-                backend_service_url.apply(
-                    lambda url: cast(str, url).replace("https://", "")
-                ),
+    # Create cache policy
+    cache_policy = CloudFrontCachePolicy(
+        CachePolicyConfig(
+            name=f"Navigator{theme.upper()}Frontend",
+            comment=f"{theme.upper()} Frontend Cache Policy (no use of host header)",
+            headers=HeaderConfig(
+                behaviour=BehaviourOptions.WHITELIST, items=["Authorization", "Accept"]
             ),
-        )
+            cookies=CookieConfig(
+                behaviour=BehaviourOptions.WHITELIST, items=["feature_flags"]
+            ),
+            query_strings=QueryStringConfig(behaviour=BehaviourOptions.ALL),
+        ),
     )
 
 
-# Create the CloudFront distribution
-class DomainVisibility(Enum):
-    INTERNAL = "internal"
-    EXTERNAL = "public facing"
+    ########################################################################
+    # Create Route 53 records & certificate
+    ########################################################################
 
+    # TODO: we're only doing this on staging as it's an example of how we might use the aws_env stack
+    # to get the zone id for the root domain
+    #
+    # we want to switch on the theme for the final domain names - but we're not doing
+    # that yet.
+    # if is_cpr_stack:
+    #     domain_name = "climatepolicyradar.org"
+    # elif theme == "cclw":
+    #     domain_name = "climate-laws.org"
+    # elif theme == "mcf":
+    #     domain_name = "climateprojectexplorer.org"
 
-cf = CloudFrontDistribution(
-    f"{theme.upper()}FrontendDistribution",
-    DistributionType.FRONTEND,
-    description=frontend_domain,
-    aliases=[frontend_domain],
-    origins=origins,
-    cache_policy_id=cast(str, cache_policy.policy.id),
-    acm_certificate=dns.certificate,
-    origin_request_policy_id=cast(str, cors_policy.policy.id),
-    ordered_cache_behaviors=ordered_cache_behaviors,
-    # Needed for auto-invalidations to work, @related: CUSTOM_APP_THEME
-    tags={
-        "CUSTOM_APP_THEME": theme,
-        "Environment": env,
-        "Domain_Visibility": DomainVisibility.INTERNAL.value,
-    },
-)
+    aws_env_stack = pulumi.StackReference(f"climatepolicyradar/aws_env/{env}")
+    hosted_zone_id = aws_env_stack.get_output("root_zone_id")
 
-# Create A record for apex domain
-dns.create_alias_record(
-    name=frontend_domain,  # Changed: Use full domain name
-    target_zone_id=CLOUDFRONT_ZONE_ID,
-    target_dns_name=cast(str, cf.distribution.domain_name),
-    record_type="A",
-    evaluate_target_health=False,
-)
+    # First create the CloudFront distribution with the correct domain
+    frontend_domain = f"{theme}.{env}.climatepolicyradar.org"
 
-cname = config.get("cname")
-if cname:
-    # create a hosted zone
-    cname_hosted_zone = aws.route53.Zone(
-        cname,
-        name=cname,
-    )
-    cname_dns_config = DNSConfig(
-        domain=cname,
-        zone_id=cast(str, cname_hosted_zone.id),
+    dns_config = DNSConfig(
+        domain=frontend_domain,
+        zone_id=cast(str, hosted_zone_id),
         environment=env,
         certificate_type="CLOUDFRONT",
         subject_alternative_names=[],
     )
-    cname_dns = DNS(
-        name=cname,
-        config=cname_dns_config,
+
+    dns = DNS(
+        name=name_prefix,
+        config=dns_config,
     )
-    cname_cf = CloudFrontDistribution(
-        cname,
+
+
+    ########################################################################
+    # Create CloudFront distribution
+    ########################################################################
+
+    # Get backend stack reference
+    backend_stack = pulumi.StackReference(f"climatepolicyradar/backend/{env}")
+    backend_service_url = backend_stack.get_output("new_apprunner_service_url")
+
+    frontend.service.service_url.apply(
+        lambda url: pulumi.info(f"Frontend app runner URL: {url}")
+    )
+    backend_service_url.apply(lambda url: pulumi.info(f"Backend app runner URL: {url}"))
+
+    # Create origins for both frontend and API
+    origins = [
+        OriginConfig(
+            origin_id="frontend",
+            domain_name=cast(
+                str,
+                frontend.service.service_url.apply(
+                    lambda url: cast(str, url).replace("https://", "")
+                ),
+            ),
+        )
+    ]
+
+    ordered_cache_behaviors = None
+    if is_cpr_stack:
+        api_cache_policy = CloudFrontCachePolicy(
+            CachePolicyConfig(
+                name=f"Navigator{theme.upper()}FrontendAPI",
+                comment=f"{theme.upper()} Frontend API Cache Policy",
+                headers=HeaderConfig(
+                    behaviour=BehaviourOptions.WHITELIST,
+                    items=[
+                        "Authorization",
+                        "Accept",
+                        # CORS headers
+                        "Origin",
+                        "Access-Control-Request-Method",
+                        "Access-Control-Request-Headers",
+                        # CPR access Headers
+                        "app-token",
+                    ],
+                ),
+                cookies=CookieConfig(
+                    behaviour=BehaviourOptions.WHITELIST, items=["feature_flags"]
+                ),
+                query_strings=QueryStringConfig(behaviour=BehaviourOptions.ALL),
+            ),
+        )
+        # Define ordered cache behaviors for API routes
+        ordered_cache_behaviors = [
+            {
+                "allowed_methods": [
+                    "GET",
+                    "HEAD",
+                    "OPTIONS",
+                    "PUT",
+                    "POST",
+                    "PATCH",
+                    "DELETE",
+                ],
+                "cached_methods": ["GET", "HEAD", "OPTIONS"],
+                "cache_policy_id": api_cache_policy.policy.id,
+                "compress": True,
+                "path_pattern": "/api/tokens",
+                "target_origin_id": "api",
+                "viewer_protocol_policy": "redirect-to-https",
+            },
+            {
+                "allowed_methods": [
+                    "GET",
+                    "HEAD",
+                    "OPTIONS",
+                    "PUT",
+                    "POST",
+                    "PATCH",
+                    "DELETE",
+                ],
+                "cached_methods": ["GET", "HEAD", "OPTIONS"],
+                "cache_policy_id": api_cache_policy.policy.id,
+                "compress": True,
+                "path_pattern": "/api/v1/*",
+                "target_origin_id": "api",
+                "viewer_protocol_policy": "redirect-to-https",
+            },
+        ]
+
+        origins.append(
+            OriginConfig(
+                origin_id="api",
+                domain_name=cast(
+                    str,
+                    backend_service_url.apply(
+                        lambda url: cast(str, url).replace("https://", "")
+                    ),
+                ),
+            )
+        )
+
+
+    # Create the CloudFront distribution
+    class DomainVisibility(Enum):
+        INTERNAL = "internal"
+        EXTERNAL = "public facing"
+
+
+    cf = CloudFrontDistribution(
+        f"{theme.upper()}FrontendDistribution",
         DistributionType.FRONTEND,
-        description=cname,
-        aliases=[cname],
+        description=frontend_domain,
+        aliases=[frontend_domain],
         origins=origins,
         cache_policy_id=cast(str, cache_policy.policy.id),
-        acm_certificate=cname_dns.certificate,
+        acm_certificate=dns.certificate,
         origin_request_policy_id=cast(str, cors_policy.policy.id),
         ordered_cache_behaviors=ordered_cache_behaviors,
         # Needed for auto-invalidations to work, @related: CUSTOM_APP_THEME
         tags={
             "CUSTOM_APP_THEME": theme,
             "Environment": env,
-            "Domain_Visibility": DomainVisibility.EXTERNAL.value,
+            "Domain_Visibility": DomainVisibility.INTERNAL.value,
         },
     )
-    cname_route53_record = aws.route53.Record(
-        f"{cname}-alias",
-        zone_id=cast(str, cname_hosted_zone.id),
-        name=cname,
-        type="A",
-        aliases=[
-            aws.route53.RecordAliasArgs(
-                name=cast(str, cname_cf.distribution.domain_name),
-                zone_id=CLOUDFRONT_ZONE_ID,
-                evaluate_target_health=False,
-            )
-        ],
+
+    # Create A record for apex domain
+    dns.create_alias_record(
+        name=frontend_domain,  # Changed: Use full domain name
+        target_zone_id=CLOUDFRONT_ZONE_ID,
+        target_dns_name=cast(str, cf.distribution.domain_name),
+        record_type="A",
+        evaluate_target_health=False,
     )
 
-
-#######################################################################################
-# Create CCC redirects?
-#######################################################################################
-
-is_ccc_stack = stack in ["ccc-production"]
-if is_ccc_stack:
-    # This certificate was imported, and the DNS validation was setup by our tech contact at Climate Case Chart
-    east_provider = aws.Provider("east", region="us-east-1")
-    climatecasechart_com_cert = aws.acm.Certificate(
-        "climatecasechart.com",
-        domain_name="climatecasechart.com",
-        subject_alternative_names=[
-            "cpr.climatecasechart.com",
-            "*.climatecasechart.com",
-        ],
-        validation_method="DNS",
-        opts=pulumi.ResourceOptions(
-            provider=east_provider,
-        ),
-    )
-
-    # We're going to create a KeyValueStore in CloudFront to store values of redirects
-    # from the current CCC website to the new CPR frontend we are building for them.
-    # We're going with this solution as it's meant to be incredibly low latency and
-    # therefore should scale well. We catch the redirect rules right at the edge this
-    # way, so changes are near-instant & we can update the redirects without having to
-    # update code.
-    redirection_cloudfront_key_value_store = aws.cloudfront.KeyValueStore(
-        "ccc-redirection-kvs",
-        name="ccc-redirection-kvs",
-        comment="Redirects for CCC",
-    )
-
-    infra_dir = Path(__file__).parent.parent
-    with open(infra_dir / "redirects.json", "r") as f:
-        redirects: list[dict[str, str]] = json.load(f)["redirects"]
-
-    # Get the code as a string for the CloudFront Function
-    with open(infra_dir / "redirection.js", "r") as f:
-        lambda_code = f.read()
-
-    for redirect in redirects:
-        aws.cloudfront.KeyvaluestoreKey(
-            f"ccc-redirection-kvs-key-{redirect['Key']}",
-            key_value_store_arn=redirection_cloudfront_key_value_store.arn,
-            key=redirect["Key"],
-            value=redirect["Value"],
+    cname = config.get("cname")
+    if cname:
+        # create a hosted zone
+        cname_hosted_zone = aws.route53.Zone(
+            cname,
+            name=cname,
+        )
+        cname_dns_config = DNSConfig(
+            domain=cname,
+            zone_id=cast(str, cname_hosted_zone.id),
+            environment=env,
+            certificate_type="CLOUDFRONT",
+            subject_alternative_names=[],
+        )
+        cname_dns = DNS(
+            name=cname,
+            config=cname_dns_config,
+        )
+        cname_cf = CloudFrontDistribution(
+            cname,
+            DistributionType.FRONTEND,
+            description=cname,
+            aliases=[cname],
+            origins=origins,
+            cache_policy_id=cast(str, cache_policy.policy.id),
+            acm_certificate=cname_dns.certificate,
+            origin_request_policy_id=cast(str, cors_policy.policy.id),
+            ordered_cache_behaviors=ordered_cache_behaviors,
+            # Needed for auto-invalidations to work, @related: CUSTOM_APP_THEME
+            tags={
+                "CUSTOM_APP_THEME": theme,
+                "Environment": env,
+                "Domain_Visibility": DomainVisibility.EXTERNAL.value,
+            },
+        )
+        cname_route53_record = aws.route53.Record(
+            f"{cname}-alias",
+            zone_id=cast(str, cname_hosted_zone.id),
+            name=cname,
+            type="A",
+            aliases=[
+                aws.route53.RecordAliasArgs(
+                    name=cast(str, cname_cf.distribution.domain_name),
+                    zone_id=CLOUDFRONT_ZONE_ID,
+                    evaluate_target_health=False,
+                )
+            ],
         )
 
-    redirection_lambda = aws.cloudfront.Function(
-        "ccc-redirection",
-        name="ccc-redirection",
-        runtime="cloudfront-js-2.0",
-        comment="climatecasechart.com redirection function",
-        key_value_store_associations=[
-            redirection_cloudfront_key_value_store.arn,
-        ],
-        code=lambda_code,
-        opts=pulumi.ResourceOptions(
-            provider=east_provider,
-            depends_on=[redirection_cloudfront_key_value_store],
-        ),
-        publish=True,  # Make the function available to CloudFront.
-    )
 
-    redirection_cors_policy = CloudFrontCORSPolicy(
-        CORSPolicyConfig(
-            name="wordpress-redirection-cors-policy",
-            comment="Wordpress redirection CORS policy",
-            headers=HeaderConfig(
-                behaviour=BehaviourOptions.WHITELIST,
-                items=[
-                    "Origin",
-                    "Accept",
-                    "Access-Control-Request-Method",
-                    "Access-Control-Request-Headers",
-                ],
-            ),
-            cookies=CookieConfig(
-                behaviour=BehaviourOptions.WHITELIST, items=["feature_flags"]
-            ),
-            query_strings=QueryStringConfig(behaviour=BehaviourOptions.ALL),
-        ),
-    )
+    #######################################################################################
+    # Create CCC redirects?
+    #######################################################################################
 
-    redirection_cache_policy = CloudFrontCachePolicy(
-        CachePolicyConfig(
-            name="wordpress-redirection-cache-policy",
-            comment="Wordpress redirection cache policy",
-            headers=HeaderConfig(
-                behaviour=BehaviourOptions.WHITELIST,
-                items=["Authorization", "Accept", "Origin"],
+    is_ccc_stack = stack in ["ccc-production"]
+    if is_ccc_stack:
+        # This certificate was imported, and the DNS validation was setup by our tech contact at Climate Case Chart
+        east_provider = aws.Provider("east", region="us-east-1")
+        climatecasechart_com_cert = aws.acm.Certificate(
+            "climatecasechart.com",
+            domain_name="climatecasechart.com",
+            subject_alternative_names=[
+                "cpr.climatecasechart.com",
+                "*.climatecasechart.com",
+            ],
+            validation_method="DNS",
+            opts=pulumi.ResourceOptions(
+                provider=east_provider,
             ),
-            cookies=CookieConfig(
-                behaviour=BehaviourOptions.WHITELIST, items=["feature_flags"]
-            ),
-            query_strings=QueryStringConfig(behaviour=BehaviourOptions.ALL),
-        ),
-    )
+        )
 
-    redirection_cloudfront_distribution = CloudFrontDistribution(
-        name="www.climatecasechart.com",
-        dist_type=DistributionType.FRONTEND,
-        description="www.climatecasechart.com",
-        aliases=[
-            "preview.climatecasechart.com",
-            "www.climatecasechart.com",
-        ],
-        cache_policy_id=cast(str, redirection_cache_policy.policy.id),
-        acm_certificate=climatecasechart_com_cert,
-        origin_request_policy_id=cast(str, redirection_cors_policy.policy.id),
-        origins=[
-            OriginConfig(
-                origin_id="cpr-frontend",
-                domain_name=cast(
-                    str,
-                    frontend.service.service_url.apply(
-                        lambda url: cast(str, url).replace("https://", "")
+        # We're going to create a KeyValueStore in CloudFront to store values of redirects
+        # from the current CCC website to the new CPR frontend we are building for them.
+        # We're going with this solution as it's meant to be incredibly low latency and
+        # therefore should scale well. We catch the redirect rules right at the edge this
+        # way, so changes are near-instant & we can update the redirects without having to
+        # update code.
+        redirection_cloudfront_key_value_store = aws.cloudfront.KeyValueStore(
+            "ccc-redirection-kvs",
+            name="ccc-redirection-kvs",
+            comment="Redirects for CCC",
+        )
+
+        infra_dir = Path(__file__).parent.parent
+        with open(infra_dir / "redirects.json", "r") as f:
+            redirects: list[dict[str, str]] = json.load(f)["redirects"]
+
+        # Get the code as a string for the CloudFront Function
+        with open(infra_dir / "redirection.js", "r") as f:
+            lambda_code = f.read()
+
+        for redirect in redirects:
+            aws.cloudfront.KeyvaluestoreKey(
+                f"ccc-redirection-kvs-key-{redirect['Key']}",
+                key_value_store_arn=redirection_cloudfront_key_value_store.arn,
+                key=redirect["Key"],
+                value=redirect["Value"],
+            )
+
+        redirection_lambda = aws.cloudfront.Function(
+            "ccc-redirection",
+            name="ccc-redirection",
+            runtime="cloudfront-js-2.0",
+            comment="climatecasechart.com redirection function",
+            key_value_store_associations=[
+                redirection_cloudfront_key_value_store.arn,
+            ],
+            code=lambda_code,
+            opts=pulumi.ResourceOptions(
+                provider=east_provider,
+                depends_on=[redirection_cloudfront_key_value_store],
+            ),
+            publish=True,  # Make the function available to CloudFront.
+        )
+
+        redirection_cors_policy = CloudFrontCORSPolicy(
+            CORSPolicyConfig(
+                name="wordpress-redirection-cors-policy",
+                comment="Wordpress redirection CORS policy",
+                headers=HeaderConfig(
+                    behaviour=BehaviourOptions.WHITELIST,
+                    items=[
+                        "Origin",
+                        "Accept",
+                        "Access-Control-Request-Method",
+                        "Access-Control-Request-Headers",
+                    ],
+                ),
+                cookies=CookieConfig(
+                    behaviour=BehaviourOptions.WHITELIST, items=["feature_flags"]
+                ),
+                query_strings=QueryStringConfig(behaviour=BehaviourOptions.ALL),
+            ),
+        )
+
+        redirection_cache_policy = CloudFrontCachePolicy(
+            CachePolicyConfig(
+                name="wordpress-redirection-cache-policy",
+                comment="Wordpress redirection cache policy",
+                headers=HeaderConfig(
+                    behaviour=BehaviourOptions.WHITELIST,
+                    items=["Authorization", "Accept", "Origin"],
+                ),
+                cookies=CookieConfig(
+                    behaviour=BehaviourOptions.WHITELIST, items=["feature_flags"]
+                ),
+                query_strings=QueryStringConfig(behaviour=BehaviourOptions.ALL),
+            ),
+        )
+
+        redirection_cloudfront_distribution = CloudFrontDistribution(
+            name="www.climatecasechart.com",
+            dist_type=DistributionType.FRONTEND,
+            description="www.climatecasechart.com",
+            aliases=[
+                "preview.climatecasechart.com",
+                "www.climatecasechart.com",
+            ],
+            cache_policy_id=cast(str, redirection_cache_policy.policy.id),
+            acm_certificate=climatecasechart_com_cert,
+            origin_request_policy_id=cast(str, redirection_cors_policy.policy.id),
+            origins=[
+                OriginConfig(
+                    origin_id="cpr-frontend",
+                    domain_name=cast(
+                        str,
+                        frontend.service.service_url.apply(
+                            lambda url: cast(str, url).replace("https://", "")
+                        ),
                     ),
                 ),
-            ),
-        ],
-        ordered_cache_behaviors=[],
-        default_cache_behavior=aws.cloudfront.DistributionDefaultCacheBehaviorArgs(
-            target_origin_id="cpr-frontend",
-            viewer_protocol_policy="redirect-to-https",
-            allowed_methods=["GET", "HEAD"],
-            cached_methods=["GET", "HEAD"],
-            origin_request_policy_id=cast(str, redirection_cors_policy.policy.id),
-            cache_policy_id=cast(str, redirection_cache_policy.policy.id),
-            function_associations=[
-                aws.cloudfront.DistributionDefaultCacheBehaviorFunctionAssociationArgs(
-                    event_type="viewer-request",
-                    function_arn=redirection_lambda.arn,
-                ),
             ],
-        ),
-        # These are used for cache invalidations
-        tags={"CUSTOM_APP_THEME": "ccc", "Environment": "production"},
-    )
+            ordered_cache_behaviors=[],
+            default_cache_behavior=aws.cloudfront.DistributionDefaultCacheBehaviorArgs(
+                target_origin_id="cpr-frontend",
+                viewer_protocol_policy="redirect-to-https",
+                allowed_methods=["GET", "HEAD"],
+                cached_methods=["GET", "HEAD"],
+                origin_request_policy_id=cast(str, redirection_cors_policy.policy.id),
+                cache_policy_id=cast(str, redirection_cache_policy.policy.id),
+                function_associations=[
+                    aws.cloudfront.DistributionDefaultCacheBehaviorFunctionAssociationArgs(
+                        event_type="viewer-request",
+                        function_arn=redirection_lambda.arn,
+                    ),
+                ],
+            ),
+            # These are used for cache invalidations
+            tags={"CUSTOM_APP_THEME": "ccc", "Environment": "production"},
+        )
