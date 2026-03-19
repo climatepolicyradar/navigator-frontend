@@ -41,6 +41,7 @@ export type TFamilyPresentationalData = {
   countries: TGeography[];
   family: TFamilyPublic;
   familyTopics: IFamilyDocumentTopics | null;
+  originalFamily?: TFamilyPublic; // Set when family is sourced from the new data-in API as a point of comparison for debugging
   subdivisions: TGeographySubdivision[];
   targets: TTarget[];
   vespaFamilyData: TSearchResponse | null;

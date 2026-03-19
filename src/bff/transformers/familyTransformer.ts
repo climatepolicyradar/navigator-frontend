@@ -38,6 +38,7 @@ export const familyTransformer = (
             organisation: familyApiOldData.family.organisation,
             published_date: familyApiOldData.family.published_date,
           },
+          originalFamily: familyApiOldData.family,
           usesDataIn: true,
         },
         errors,
