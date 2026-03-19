@@ -1,0 +1,7 @@
+name: frontend-platform
+description: Manages OIDC identity provider, IAM deployment roles, ESC environments, and deployment settings for the frontend project
+runtime:
+  name: python
+  options:
+    toolchain: pip
+    virtualenv: venv
