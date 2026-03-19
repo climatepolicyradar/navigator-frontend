@@ -143,6 +143,26 @@ aws.iam.RolePolicyAttachment(
 )
 
 # ---------------------------------------------------------------------------
+# Shared ECR Repository for Review Stacks
+# ---------------------------------------------------------------------------
+# A single ECR repository shared by all ephemeral PR review stacks. Each PR
+# pushes its image with a branch-specific tag (e.g. the PR number or branch
+# name) so images don't collide. This avoids creating/destroying ECR repos
+# per PR stack and prevents RepositoryAlreadyExistsException errors.
+review_ecr_repo = aws.ecr.Repository(
+    "review-navigator-frontend-cpr",
+    name="review-navigator-frontend-cpr",
+    image_scanning_configuration=aws.ecr.RepositoryImageScanningConfigurationArgs(
+        scan_on_push=False,
+    ),
+    image_tag_mutability="MUTABLE",
+    opts=pulumi.ResourceOptions(
+        import_="review-navigator-frontend-cpr",
+        protect=True,
+    ),
+)
+
+# ---------------------------------------------------------------------------
 # ESC Environments
 # ---------------------------------------------------------------------------
 # Environment YAML is generated dynamically so that sensitive values (like
@@ -182,15 +202,19 @@ aws_creds_staging_env = pulumiservice.Environment(
 # The DEPLOY_* environment variables are set here (rather than in
 # DeploymentSettings) so that PR review stacks automatically inherit them
 # via the shared ESC environment.
-cpr_review_yaml = apprunner_ecr_access_role.arn.apply(
-    lambda role_arn: (
+cpr_review_yaml = pulumi.Output.all(
+    apprunner_ecr_access_role.arn,
+    review_ecr_repo.repository_url,
+).apply(
+    lambda args: (
         "imports:\n"
         f"  - {project_name}/aws-creds-staging\n"
         "\n"
         "values:\n"
         "  pulumiConfig:\n"
         "    docker_tag: ${docker_tag}\n"
-        f"    frontend:apprunner_ecr_access_role_arn: {role_arn}\n"
+        f"    frontend:apprunner_ecr_access_role_arn: {args[0]}\n"
+        f"    frontend:review_ecr_repository_url: {args[1]}\n"
         "  docker_tag: latest\n"
         "  environmentVariables:\n"
         "    DEPLOY_FROM_MAIN_BRANCH_ONLY: 'false'\n"
@@ -246,3 +270,4 @@ cpr_review_deployment_settings = pulumiservice.DeploymentSettings(
 # ---------------------------------------------------------------------------
 pulumi.export("staging_deployment_role_arn", staging_deployment_role.arn)
 pulumi.export("apprunner_ecr_access_role_arn", apprunner_ecr_access_role.arn)
+pulumi.export("review_ecr_repository_url", review_ecr_repo.repository_url)
