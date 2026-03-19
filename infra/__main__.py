@@ -6,7 +6,8 @@ from pathlib import Path
 from typing import cast
 
 import pulumi
-import pulumi_aws as aws 
+import pulumi_aws as aws
+import pulumi_docker_build as docker_build
 from resources.app_runner_service import AppRunnerConfig, AppRunnerService
 from resources.cache_policy import CachePolicyConfig, CloudFrontCachePolicy
 from resources.cloudfront_distribution import (
@@ -76,14 +77,42 @@ docker_tag = config.require("docker_tag")
 pulumi.info(f"Docker tag: {docker_tag}")
 
 review_ecr_url = config.get("review_ecr_repository_url") if is_review_stack else None
+frontend_image: docker_build.Image | None = None
 
 if review_ecr_url:
     # Review stack: use the shared ECR repo from frontend-platform.
-    repository_url: pulumi.Input[str] = review_ecr_url
-    image_identifier: pulumi.Input[str] = f"{review_ecr_url}:{docker_tag}"
+    # Build and push the Docker image as part of the Pulumi deployment so that
+    # the App Runner service has a valid image to pull.
     ecr_repo = None
+
+    ecr_auth = aws.ecr.get_authorization_token_output()
+    frontend_image = docker_build.Image(
+        "frontend-image",
+        tags=[f"{review_ecr_url}:{docker_tag}"],
+        context=docker_build.BuildContextArgs(
+            location="..",
+        ),
+        dockerfile=docker_build.DockerfileArgs(
+            location="../Dockerfile",
+        ),
+        platforms=[docker_build.Platform.LINUX_AMD64],
+        build_args={"THEME": theme},
+        push=True,
+        registries=[
+            docker_build.RegistryArgs(
+                address=review_ecr_url,
+                username=ecr_auth.user_name,
+                password=ecr_auth.password,
+            ),
+        ],
+        # Skip building during preview to speed up PR feedback loops.
+        build_on_preview=False,
+    )
+
+    repository_url: pulumi.Input[str] = review_ecr_url
+    # Use the tag-based identifier for App Runner (it doesn't support @digest refs).
+    image_identifier: pulumi.Input[str] = f"{review_ecr_url}:{docker_tag}"
     pulumi.info(f"Repository URL: {review_ecr_url}")
-    pulumi.info(f"Final image identifier: {review_ecr_url}:{docker_tag}")
 else:
     # Non-review stack: create a dedicated ECR repo.
     ecr_name = f"navigator-frontend-{theme}"
@@ -145,7 +174,11 @@ frontend = AppRunnerService(
     ),
     access_role_arn=shared_access_role_arn,
     opts=pulumi.ResourceOptions(
-        depends_on=[ecr_repo.repository] if ecr_repo else [],
+        depends_on=(
+            [frontend_image] if frontend_image is not None
+            else [ecr_repo.repository] if ecr_repo
+            else []
+        ),
     ),
 )
 
