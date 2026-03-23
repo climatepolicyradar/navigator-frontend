@@ -8,7 +8,7 @@ import { ApiClient } from "@/api/http-common";
 import { AppliedLabels } from "@/components/_experiment/appliedLabels/AppliedLabels";
 import { IntelliSearch } from "@/components/_experiment/intellisearch";
 import { createGroup, QueryBuilder, TQueryGroup, TQueryRule } from "@/components/_experiment/queryBuilder/QueryBuilder";
-import { SearchFilters } from "@/components/_experiment/searchFilters/SearchFilters";
+import { SearchFilters, TFilterCategory } from "@/components/_experiment/searchFilters/SearchFilters";
 import { SearchContainer } from "@/components/_experiment/searchResults/SearchResults";
 import { withEnvConfig } from "@/context/EnvConfig";
 import { FeaturesContext } from "@/context/FeaturesContext";
@@ -79,6 +79,15 @@ const ShadowSearch = ({ theme, themeConfig, features }: TProps) => {
   // Derive selectedLabels from the filter tree
   const selectedLabels = useMemo(() => extractLabels(filters), [filters]);
 
+  // Control SearchFilters popover from outside
+  const [filtersOpen, setFiltersOpen] = useState(false);
+  const [filtersOpenFilter, setFiltersOpenFilter] = useState<TFilterCategory | "category" | undefined>(undefined);
+
+  const handleSelectLabel = (label: string, type: string) => {
+    setFiltersOpenFilter((type as TFilterCategory) || undefined);
+    setFiltersOpen(true);
+  };
+
   useEffect(() => {
     loadLabels("").then(setAvailableFilters);
   }, []);
@@ -101,10 +110,7 @@ const ShadowSearch = ({ theme, themeConfig, features }: TProps) => {
           availableFilters={availableFilters}
           query={query}
           labels={selectedLabels}
-          onSelectLabel={(label, type) => {
-            // eslint-disable-next-line no-console
-            console.log("Selected label:", label, ", Type:", type);
-          }}
+          onSelectLabel={handleSelectLabel}
           onRemoveLabel={(label) => setFilters((prev) => (prev ? removeLabelRule(prev, label) : createGroup()))}
           setQuery={setQuery}
         />
@@ -112,6 +118,9 @@ const ShadowSearch = ({ theme, themeConfig, features }: TProps) => {
           <SearchFilters
             availableFilters={availableFilters}
             filters={filters}
+            open={filtersOpen}
+            onOpenChange={setFiltersOpen}
+            openFilter={filtersOpenFilter}
             onChange={(checked, label) => {
               if (checked) {
                 setFilters((prev) => addLabelRule(prev, label));

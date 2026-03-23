@@ -13,28 +13,35 @@ function hasValue(group: TQueryGroup | null | undefined, value: string): boolean
   return group.filters.some((f) => ("value" in f ? f.value === value : hasValue(f, value)));
 }
 
-function hasActiveFilterOfType(filters: TLabelResult[], group: TQueryGroup | null | undefined, type: TFILTER_AGGREGATIONS): boolean {
+function hasActiveFilterOfType(filters: TLabelResult[], group: TQueryGroup | null | undefined, type: TFilterCategory): boolean {
   if (!group) return false;
   return group.filters.some((f) =>
     "value" in f ? filters.some((label) => label.value === f.value && label.type === type) : hasActiveFilterOfType(filters, f, type)
   );
 }
 
-type TFILTER_AGGREGATIONS = "concept" | "entity_type" | "geography" | "agent" | "activity_status" | "status";
-const FILTER_AGGREGATIONS: TFILTER_AGGREGATIONS[] = ["concept", "entity_type", "geography", "agent", "activity_status", "status"];
+export type TFilterCategory = "concept" | "entity_type" | "geography" | "agent" | "activity_status" | "status";
+const FILTER_AGGREGATIONS: TFilterCategory[] = ["concept", "entity_type", "geography", "agent", "activity_status", "status"];
 
 type TProps = {
   availableFilters: TLabelResult[];
   filters?: TQueryGroup | null;
-  openFilter?: TFILTER_AGGREGATIONS | "category";
+  openFilter?: TFilterCategory | "category";
+  open?: boolean;
+  onOpenChange?: (open: boolean) => void;
   onChange?: (checked: boolean, label: string) => void;
 };
 
-export function SearchFilters({ availableFilters, filters, openFilter, onChange }: TProps) {
-  const [activeFilter, setActiveFilter] = useState<TFILTER_AGGREGATIONS | "category">(openFilter || "category");
+export function SearchFilters({ availableFilters, filters, openFilter, open, onOpenChange, onChange }: TProps) {
+  const [activeFilter, setActiveFilter] = useState<TFilterCategory | "category">(openFilter || "category");
+  const [prevOpenFilter, setPrevOpenFilter] = useState(openFilter);
+  if (openFilter !== prevOpenFilter) {
+    setPrevOpenFilter(openFilter);
+    if (openFilter) setActiveFilter(openFilter);
+  }
 
   return (
-    <BasePopover.Root>
+    <BasePopover.Root open={open} onOpenChange={(value) => onOpenChange?.(value)}>
       <BasePopover.Trigger className="inline-flex items-center gap-2 rounded-md border border-gray-300 bg-white px-3 py-2 text-sm font-medium text-gray-700 shadow-sm hover:bg-gray-50 hover:border-gray-400 transition-colors focus:outline-none focus:ring-2 focus:ring-blue-200 focus:border-blue-500">
         <ListFilter className="h-4 w-4" />
         Filters
