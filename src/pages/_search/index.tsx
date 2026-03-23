@@ -81,7 +81,7 @@ const ShadowSearch = ({ theme, themeConfig, features }: TProps) => {
 
   // Control SearchFilters popover from outside
   const [filtersOpen, setFiltersOpen] = useState(false);
-  const [filtersOpenFilter, setFiltersOpenFilter] = useState<TFilterCategory | "category" | undefined>(undefined);
+  const [filtersOpenFilter, setFiltersOpenFilter] = useState<TFilterCategory | undefined>(undefined);
 
   const handleSelectLabel = (label: string, type: string) => {
     setFiltersOpenFilter((type as TFilterCategory) || undefined);
