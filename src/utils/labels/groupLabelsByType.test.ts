@@ -1,8 +1,8 @@
-import { TDataInLabel, TDataInLabelType } from "@/schemas";
+import { MANDATORY_LABEL_TYPES, TDataInLabel, TDataInLabelType } from "@/schemas";
 
 import { groupLabelsByType } from "./groupLabelsByType";
 
-const LABELS: TDataInLabel[] = [
+const TESTING_LABELS: TDataInLabel[] = [
   {
     type: "status",
     value: {
@@ -49,6 +49,25 @@ const LABELS: TDataInLabel[] = [
   },
 ];
 
+// Prevents unwanted Valibot errors when testing the above labels
+const LABELS = [
+  ...TESTING_LABELS,
+  ...MANDATORY_LABEL_TYPES.map(
+    (labelType) =>
+      ({
+        type: labelType,
+        value: {
+          labels: [],
+          documents: [],
+          id: labelType,
+          type: labelType,
+          value: labelType,
+        },
+        timestamp: null,
+      }) as TDataInLabel
+  ),
+];
+
 describe("groupLabelsByType", () => {
   const groupedLabels = groupLabelsByType(LABELS);
 
@@ -69,5 +88,9 @@ describe("groupLabelsByType", () => {
 
   it("ignores labels not explicitly listed", () => {
     expect(groupedLabels).not.toHaveProperty("UNKNOWN");
+  });
+
+  it("throws an error when a mandatory label type is not present", () => {
+    expect(() => groupLabelsByType(TESTING_LABELS)).toThrow(/Expected document to have at least 1 label of type '[^']+'/);
   });
 });
