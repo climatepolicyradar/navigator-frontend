@@ -39,15 +39,16 @@ export const familyTransformer = (
             events: familyApiOldData.family.events,
           },
           originalFamily: familyApiOldData.family,
+          newApiData: familyApiNewData,
           usesDataIn: true,
         },
         errors,
       };
     } catch (error) {
-      return { data: { ...familyApiOldData, usesDataIn: false }, errors: [...errors, error as Error] };
+      return { data: { ...familyApiOldData, newApiData: familyApiNewData, usesDataIn: false }, errors: [...errors, error as Error] };
     }
   } else {
     // Because the old API data type satisfies the presentational data type, no changes are needed
-    return { data: { ...familyApiOldData, usesDataIn: false }, errors };
+    return { data: { ...familyApiOldData, newApiData: familyApiNewData, usesDataIn: false }, errors };
   }
 };
