@@ -17,7 +17,10 @@ export const LABEL_TYPES = [
   "status",
   "topic",
 ] as const;
-const LabelTypeSchema = v.union(LABEL_TYPES.map((type) => v.literal(type)));
+
+// Allows Valibot to approve any string but type it as a string union for DX
+// This prevents Valibot failing when new label types are introduced to the API and not yet listed above
+const LabelTypeSchema = v.custom<(typeof LABEL_TYPES)[number]>((value) => typeof value === "string");
 export type TDataInLabelType = v.InferOutput<typeof LabelTypeSchema>;
 
 // TODO type these out as they become necessary for transformations

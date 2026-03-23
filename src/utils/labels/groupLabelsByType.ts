@@ -3,7 +3,8 @@ import { LABEL_TYPES, TDataInLabel, TDataInLabelType } from "@/schemas";
 export type TLabelsByType = Record<TDataInLabelType, TDataInLabel[]>;
 
 export const groupLabelsByType = (labels: TDataInLabel[]): TLabelsByType => {
-  // Always have a key/array pair regardless of which labels are present
+  // Always have a key/array pair for known label types regardless of which labels are present
+  // Not seeing a label type in the return object? Add it to LABEL_TYPES
   const groupedLabels = {} as TLabelsByType;
   LABEL_TYPES.forEach((type) => (groupedLabels[type] = []));
 
