@@ -11,6 +11,8 @@ export const DocumentSchema = v.object({
   labels: v.array(LabelSchema),
   attributes: v.object({
     deprecated_slug: v.string(),
+    last_updated_date: v.string(),
+    published_date: v.string(),
   }),
 });
 

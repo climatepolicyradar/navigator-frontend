@@ -1,4 +1,4 @@
-import { TDataInLabel } from "@/schemas";
+import { TDataInLabel, TDataInLabelType } from "@/schemas";
 
 import { groupLabelsByType } from "./groupLabelsByType";
 
@@ -36,6 +36,17 @@ const LABELS: TDataInLabel[] = [
     },
     timestamp: null,
   },
+  {
+    type: "UNKNOWN" as TDataInLabelType,
+    value: {
+      labels: [],
+      documents: [],
+      id: "UNKNOWN",
+      type: "UNKNOWN",
+      value: "UNKNOWN",
+    },
+    timestamp: null,
+  },
 ];
 
 describe("groupLabelsByType", () => {
@@ -54,5 +65,9 @@ describe("groupLabelsByType", () => {
   it("creates keys for labels that don't exist", () => {
     expect(groupedLabels).toHaveProperty("entity_type");
     expect(groupedLabels.entity_type).toEqual([]);
+  });
+
+  it("ignores labels not explicitly listed", () => {
+    expect(groupedLabels).not.toHaveProperty("UNKNOWN");
   });
 });

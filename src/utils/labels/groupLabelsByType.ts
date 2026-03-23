@@ -1,4 +1,6 @@
-import { LABEL_TYPES, TDataInLabel, TDataInLabelType } from "@/schemas";
+import * as v from "valibot";
+
+import { LABEL_TYPES, MandatoryLabelsSchema, TDataInLabel, TDataInLabelType } from "@/schemas";
 
 export type TLabelsByType = Record<TDataInLabelType, TDataInLabel[]>;
 
@@ -11,5 +13,8 @@ export const groupLabelsByType = (labels: TDataInLabel[]): TLabelsByType => {
   labels.forEach((label) => {
     if (label.type in groupedLabels) groupedLabels[label.type].push(label);
   });
+
+  // Validate that there is at least one label per mandatory label type
+  v.parse(MandatoryLabelsSchema, groupedLabels);
   return groupedLabels;
 };

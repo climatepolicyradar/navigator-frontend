@@ -11,6 +11,7 @@ export const LABEL_TYPES = [
   "hazard",
   "instrument",
   "keyword",
+  "organisation",
   "provider",
   "role",
   "sector",
@@ -40,3 +41,13 @@ export const LabelSchema = v.object({
 });
 
 export type TDataInLabel = v.InferOutput<typeof LabelSchema>;
+
+export const MANDATORY_LABEL_TYPES: TDataInLabelType[] = ["category", "organisation"];
+export const MandatoryLabelsSchema = v.object(
+  Object.fromEntries(
+    MANDATORY_LABEL_TYPES.map((labelType) => [
+      labelType,
+      v.pipe(v.array(LabelSchema), v.minLength(1, `Expected document to have at least 1 label of type '${labelType}'`)),
+    ])
+  )
+);
