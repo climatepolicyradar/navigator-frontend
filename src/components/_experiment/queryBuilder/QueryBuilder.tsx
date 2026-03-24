@@ -493,6 +493,7 @@ export function QueryBuilder({ filters, setFilters }: TProps) {
       />
 
       <BasePopover.Portal>
+        {/* <BasePopover.Backdrop className="fixed inset-0 bg-inky-black opacity-20 transition-opacity duration-150 ease-[cubic-bezier(0.45,1.005,0,1.005)] data-[ending-style]:opacity-0 data-[starting-style]:opacity-0 supports-[-webkit-touch-callout:none]:absolute" /> */}
         <BasePopover.Positioner positionMethod="fixed" sideOffset={8} side="bottom" align="start" className="z-50">
           <BasePopover.Popup
             className={joinTailwindClasses("w-130 rounded-xl border border-gray-200 bg-white shadow-2xl", "focus-visible:outline-none")}

@@ -1,4 +1,5 @@
 import { Input } from "@base-ui/react/input";
+import { LucideSearch } from "lucide-react";
 import { useCallback, useMemo, useRef, useState } from "react";
 
 import { useLabelSearch } from "@/hooks/useLabelSearch";
@@ -46,10 +47,8 @@ const displaySuggestion = (suggestion: TSuggestion, searchTerm: string) => {
  *
  * Features:
  * - Debounced search to minimize API calls
- * - Hover preview cards for concepts showing detailed information
  * - Full keyboard navigation (Arrow keys, Enter, Escape)
  * - Focus and mouse-aware suggestion visibility
- * - Case-insensitive matching across multiple fields
  *
  * @example
  * ```tsx
@@ -58,7 +57,7 @@ const displaySuggestion = (suggestion: TSuggestion, searchTerm: string) => {
  */
 export function IntelliSearch({
   className,
-  placeholder = "Search for anything",
+  placeholder = "Search",
   debounceDelay = 300,
   maxSuggestions,
   selectedLabels = [],
@@ -178,12 +177,12 @@ export function IntelliSearch({
       {/* Input Field */}
       <div
         className={joinTailwindClasses(
-          "w-full rounded-lg border border-gray-300 bg-white px-4 py-3 relative",
-          "shadow-sm transition-all duration-200",
+          "w-full rounded-lg border border-transparent-regular bg-white p-4 relative flex flex-nowrap items-center gap-2 transition-all duration-200",
           "hover:border-gray-400",
           "focus-within:border-blue-500 focus-within:ring-2 focus-within:ring-blue-100 focus-within:shadow-md"
         )}
       >
+        <LucideSearch width={16} height={16} className="text-neutral-500" />
         <Input
           ref={inputRef}
           type="text"
@@ -197,7 +196,7 @@ export function IntelliSearch({
           aria-autocomplete="list"
           aria-controls="suggestions-list"
           aria-expanded={shouldShowSuggestions}
-          className="w-full bg-transparent text-base text-gray-900 placeholder-gray-400 outline-none border-0"
+          className="w-full bg-transparent text-base leading-5 text-inky-black placeholder-neutral-500 outline-none border-0 p-0"
           autoComplete="off"
         />
       </div>
