@@ -24,6 +24,12 @@ function isRule(node: TQueryGroup | TQueryRule): node is TQueryRule {
   return "field" in node;
 }
 
+export function isFilterGroupEmpty(filters: TQueryGroup | null): boolean {
+  if (!filters) return true;
+  if (filters.filters.length === 0) return true;
+  return filters.filters.some((f) => isRule(f) && f.value === "");
+}
+
 // ---------------------------------------------------------------------------
 // ID helpers (stable keys for React lists)
 // ---------------------------------------------------------------------------

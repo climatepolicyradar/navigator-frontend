@@ -147,13 +147,11 @@ export function IntelliSearch({
             if (suggestions[activeSuggestionIndex].type === "label") {
               onSelectSuggestion?.(suggestions[activeSuggestionIndex].data.value);
             } else if (suggestions[activeSuggestionIndex].type === "search") {
-              setQuery?.(suggestions[activeSuggestionIndex].data);
+              setQuery?.(suggestions[activeSuggestionIndex].data.trim());
             }
-            resetSearchState();
           } else {
             setQuery?.(searchTerm.trim());
             inputRef.current?.blur();
-            resetSearchState();
           }
 
           break;
@@ -241,11 +239,11 @@ export function IntelliSearch({
                   )}
                   onMouseDown={(e) => e.preventDefault()}
                   onClick={() => {
-                    resetSearchState();
                     if (suggestion.type === "label") {
                       onSelectSuggestion?.(suggestion.data.value);
+                      resetSearchState();
                     } else if (suggestion.type === "search") {
-                      setQuery?.(suggestion.data);
+                      setQuery?.(suggestion.data.trim());
                     }
                   }}
                 >
