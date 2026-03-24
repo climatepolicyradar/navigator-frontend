@@ -37,6 +37,7 @@ import {
   TTheme,
   TThemeConfig,
   TFeatures,
+  TFamilyApiNewData,
 } from "@/types";
 import { getFamilyBlocks } from "@/utils/blocks/getFamilyBlocks";
 import { getFamilyMetadata } from "@/utils/family-metadata/getFamilyMetadata";
@@ -54,6 +55,8 @@ export interface IProps {
   family: TFamilyPublic;
   familyTopics: IFamilyDocumentTopics | null;
   features: TFeatures;
+  newApiData?: TFamilyApiNewData;
+  originalFamily?: TFamilyPublic;
   subdivisions: TGeographySubdivision[];
   targets: TTarget[];
   theme: TTheme;
@@ -71,6 +74,8 @@ export const FamilyPage = ({
   familyTopics,
   features,
   targets,
+  newApiData,
+  originalFamily,
   subdivisions,
   theme,
   themeConfig,
@@ -111,9 +116,11 @@ export const FamilyPage = ({
     debug: {
       render: () => (
         <Section key="debug" block="debug" title="Debug">
-          <div className="col-start-1 -col-end-1">
+          <div className="col-start-1 -col-end-1 flex flex-col gap-2">
             <Debug data={errors.map((error) => JSON.parse(error))} title="Transformation errors" />
-            <Debug data={family} title="Family" />
+            <Debug data={family} title={usesDataIn ? "Family (Data-in API)" : "Family (V2 API)"} />
+            {originalFamily && <Debug data={originalFamily} title="Family (V2 API)" />}
+            {newApiData && <Debug data={newApiData} title="Data-in API document response" />}
             <Debug data={collections} title="Collections" />
             <Debug data={countries} title="Countries" />
             <Debug data={subdivisions} title="Subdivisions" />

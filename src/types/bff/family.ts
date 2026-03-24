@@ -45,6 +45,9 @@ export type TFamilyPresentationalData = {
   targets: TTarget[];
   vespaFamilyData: TSearchResponse | null;
   usesDataIn: boolean;
+  // When the family is sourced from the new data-in API, both of these are set for debugging/testing comparisons
+  newApiData?: TFamilyApiNewData;
+  originalFamily?: TFamilyPublic;
 };
 
 export type TFamilyPresentationalResponse = {
