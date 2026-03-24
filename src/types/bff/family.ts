@@ -44,7 +44,11 @@ export type TFamilyPresentationalData = {
   subdivisions: TGeographySubdivision[];
   targets: TTarget[];
   vespaFamilyData: TSearchResponse | null;
-  usesDataIn: boolean;
+  debug?: {
+    usesDataIn: boolean;
+    newApiData?: TFamilyApiNewData;
+    originalFamily?: TFamilyPublic;
+  };
 };
 
 export type TFamilyPresentationalResponse = {
