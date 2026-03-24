@@ -7,7 +7,7 @@ import { useMemo, useState, useEffect } from "react";
 import { ApiClient } from "@/api/http-common";
 import { AppliedLabels } from "@/components/_experiment/appliedLabels/AppliedLabels";
 import { IntelliSearch } from "@/components/_experiment/intellisearch";
-import { createGroup, QueryBuilder, TQueryGroup, TQueryRule } from "@/components/_experiment/queryBuilder/QueryBuilder";
+import { createGroup, isFilterGroupEmpty, QueryBuilder, TQueryGroup, TQueryRule } from "@/components/_experiment/queryBuilder/QueryBuilder";
 import { SearchFilters, TFilterCategory } from "@/components/_experiment/searchFilters/SearchFilters";
 import { SearchContainer } from "@/components/_experiment/searchResults/SearchResults";
 import { withEnvConfig } from "@/context/EnvConfig";
@@ -16,58 +16,10 @@ import { TLabelResult, loadLabels } from "@/hooks/useLabelSearch";
 import { FilterGroupSchema } from "@/schemas";
 import { getFeatureFlags } from "@/utils/featureFlags";
 import { getFeatures } from "@/utils/features";
+import { addLabelRule, extractLabels, removeLabelRule } from "@/utils/filters/advancedFilters";
 import { readConfigFile } from "@/utils/readConfigFile";
 
 type TProps = InferGetServerSidePropsType<typeof getServerSideProps>;
-
-/** Extract all label values from "contains" rules in the filter tree. */
-function extractLabels(group: TQueryGroup | null): string[] {
-  if (!group) return [];
-  const labels: string[] = [];
-  for (const filter of group.filters) {
-    if ("field" in filter) {
-      if (filter.op === "contains" && filter.value) labels.push(filter.value);
-    } else {
-      labels.push(...extractLabels(filter));
-    }
-  }
-  return labels;
-}
-
-const groupIsEmpty = (group: TQueryGroup | null): boolean => {
-  if (!group) return true;
-  return group.filters.length === 0 || group.filters.every((f) => "field" in f && f.op === "contains" && !f.value);
-};
-
-/** Add a label as a new "contains" rule to the root filter group. */
-function addLabelRule(group: TQueryGroup | null, label: string): TQueryGroup {
-  const rule: TQueryRule = { field: "labels.value.id", op: "contains", value: label };
-  if (groupIsEmpty(group)) return { op: "and", filters: [rule] };
-  return { ...group, filters: [...group.filters, rule] };
-}
-
-/** Remove the first "contains" rule matching a label value from the filter tree. */
-function removeLabelRule(group: TQueryGroup, label: string): TQueryGroup | null {
-  const newFilters: (TQueryGroup | TQueryRule)[] = [];
-  let removed = false;
-
-  for (const filter of group.filters) {
-    if (!removed && "field" in filter && filter.op === "contains" && filter.value === label) {
-      removed = true; // skip this rule
-      continue;
-    }
-    if (!("field" in filter)) {
-      const updated = removeLabelRule(filter, label);
-      if (updated) newFilters.push(updated);
-      else removed = true; // nested group became empty
-    } else {
-      newFilters.push(filter);
-    }
-  }
-
-  if (newFilters.length === 0) return createGroup();
-  return { ...group, filters: newFilters };
-}
 
 const ShadowSearch = ({ theme, themeConfig, features }: TProps) => {
   const [availableFilters, setAvailableFilters] = useState<TLabelResult[]>([]);
@@ -106,14 +58,6 @@ const ShadowSearch = ({ theme, themeConfig, features }: TProps) => {
           }}
           setQuery={setQuery}
         />
-        <AppliedLabels
-          availableFilters={availableFilters}
-          query={query}
-          labels={selectedLabels}
-          onSelectLabel={handleSelectLabel}
-          onRemoveLabel={(label) => setFilters((prev) => (prev ? removeLabelRule(prev, label) : createGroup()))}
-          setQuery={setQuery}
-        />
         <div className="flex justify-between items-center">
           <SearchFilters
             availableFilters={availableFilters}
@@ -130,8 +74,21 @@ const ShadowSearch = ({ theme, themeConfig, features }: TProps) => {
             }}
           />
           <QueryBuilder filters={filters} setFilters={setFilters} />
-          {/* <pre className="text-xs">{filters ? JSON.stringify(filters, null, 2) : "No filters"}</pre> */}
         </div>
+        {(query !== "" || !isFilterGroupEmpty(filters)) && (
+          <AppliedLabels
+            availableFilters={availableFilters}
+            query={query}
+            labels={selectedLabels}
+            onClear={() => {
+              setFilters(createGroup());
+              setQuery("");
+            }}
+            onSelectLabel={handleSelectLabel}
+            onRemoveLabel={(label) => setFilters((prev) => (prev ? removeLabelRule(prev, label) : createGroup()))}
+            setQuery={setQuery}
+          />
+        )}
         <SearchContainer
           query={query}
           onSelectLabel={(label) => {

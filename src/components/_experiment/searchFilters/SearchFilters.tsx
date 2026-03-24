@@ -50,7 +50,7 @@ export function SearchFilters({ availableFilters, filters, openFilter, open, onO
 
   return (
     <BasePopover.Root open={open} onOpenChange={(value) => onOpenChange?.(value)}>
-      <BasePopover.Trigger className="inline-flex items-center gap-2 rounded-md border border-gray-300 bg-white px-3 py-2 text-sm font-medium text-gray-700 shadow-sm hover:bg-gray-50 hover:border-gray-400 transition-colors focus:outline-none focus:ring-2 focus:ring-blue-200 focus:border-blue-500">
+      <BasePopover.Trigger className="inline-flex items-center gap-2 rounded-full border border-gray-300 bg-white px-3 py-2 text-sm font-medium text-gray-700 shadow-sm hover:bg-gray-50 hover:border-gray-400 transition-colors focus:outline-none focus:ring-2 focus:ring-blue-200 focus:border-blue-500">
         <ListFilter className="h-4 w-4" />
         Filters
       </BasePopover.Trigger>
