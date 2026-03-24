@@ -478,15 +478,19 @@ export function QueryBuilder({ filters, setFilters }: TProps) {
   return (
     <BasePopover.Root>
       <BasePopover.Trigger
-        className={joinTailwindClasses(
-          "inline-flex items-center gap-2 rounded-md border border-gray-300 bg-white px-3 py-2 text-sm font-medium text-gray-700 shadow-sm",
-          "hover:bg-gray-50 hover:border-gray-400 transition-colors",
-          "focus:outline-none focus:ring-2 focus:ring-blue-200 focus:border-blue-500"
+        render={(props, state) => (
+          <button
+            {...props}
+            className={joinTailwindClasses(
+              "inline-flex items-center gap-2 rounded-full border border-transparent-regular bg-white px-3 py-2 text-sm font-medium text-gray-700 shadow-sm hover:bg-neutral-100 transition-colors focus:outline-none focus:ring-2 focus:ring-blue-200 focus:border-blue-500",
+              state.open ? "bg-inky-black! text-white!" : ""
+            )}
+          >
+            <SlidersHorizontal className="text-neutral-400 h-4 w-4" />
+            Advanced Filters
+          </button>
         )}
-      >
-        <SlidersHorizontal className="h-4 w-4" />
-        Advanced Filters
-      </BasePopover.Trigger>
+      />
 
       <BasePopover.Portal>
         <BasePopover.Positioner positionMethod="fixed" sideOffset={8} side="bottom" align="start" className="z-50">

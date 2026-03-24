@@ -1,4 +1,12 @@
 @theme {
+  /* NEW SEARCH */
+
+  --color-inky-blue: #1a4f8c; /* Brand, Links */
+  --color-inky-black: #101a24; /* Primary Text, Inverse surface */
+  --color-recycled-paper: #e5e3dc;
+  --color-transparent-regular: rgba(13, 26, 37, 0.16); /* UI element border */
+  --color-transparent-light: rgba(13, 26, 37, 0.12); /* Division lines */
+
   /* COLOURS */
 
   --color-brand: #0038a9;
