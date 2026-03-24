@@ -3,7 +3,7 @@ import { TFamilyPageBlock, TFeatures, TTheme } from "@/types";
 export const getFamilyBlocks = (familyBlocks: TFamilyPageBlock[], features: TFeatures, theme: TTheme): TFamilyPageBlock[] => {
   let updatedFamilyBlocks = [...familyBlocks];
 
-  if (features["new-data-model"]) {
+  if (features.debug) {
     updatedFamilyBlocks.push("debug");
   }
 
