@@ -87,7 +87,7 @@ export const FamilyListItem: FC<IProps> = ({
       )}
       {family_metadata?.status?.length > 0 && <p className="text-sm">Status: {family_metadata?.status.join(", ")}</p>}
       {children}
-      {features["new-data-model"] && <DataInDebug corpusId={corpus_import_id} />}
+      {features["new-data-model"] && features.debug && <DataInDebug corpusId={corpus_import_id} />}
     </li>
   );
 };

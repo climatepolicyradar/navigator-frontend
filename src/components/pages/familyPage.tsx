@@ -197,7 +197,7 @@ export const FamilyPage = ({
           isSubdivision={Boolean(breadcrumbParentGeography)}
           label={family.title}
         />
-        {features["new-data-model"] && <DataInDebug corpusId={family.corpus_id} usesDataIn={usesDataIn} />}
+        {features["new-data-model"] && features.debug && <DataInDebug corpusId={family.corpus_id} usesDataIn={debug.usesDataIn} />}
         <PageHeader title={family.title} metadata={pageHeaderMetadata} />
         <BlocksLayout blockDefinitions={blockDefinitions} blocksToRender={blocksToRender} />
         <Head>
