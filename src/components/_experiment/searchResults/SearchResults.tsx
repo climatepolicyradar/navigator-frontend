@@ -17,6 +17,11 @@ interface DocumentLabelRelationship {
   timestamp: string | null;
 }
 
+interface DocumentRelationship {
+  type: string;
+  value: SearchDocument;
+}
+
 interface DocumentItem {
   url: string | null;
 }
@@ -26,6 +31,7 @@ interface SearchDocument {
   title: string;
   description: string | null;
   labels: DocumentLabelRelationship[];
+  documents: DocumentRelationship[];
   items: DocumentItem[];
   attributes: Record<string, string | number | boolean>;
 }
@@ -101,6 +107,21 @@ export function SearchResults({ promise, onSelectLabel }: { promise: Promise<Sea
                     onClick={() => onSelectLabel?.(label.value.value)}
                   >
                     {label.value.value} {label.count !== null && `(${label.count})`}
+                  </span>
+                ))}
+              </div>
+            )}
+            {doc.documents.length > 0 && (
+              <div className="flex flex-wrap gap-1 mt-2">
+                {doc.documents.map((documentRelationship, i) => (
+                  <span key={i} className="text-xs bg-gray-100 rounded px-2 py-0.5 cursor-pointer hover:bg-gray-200">
+                    {linkHref(documentRelationship.value) ? (
+                      <Link href={linkHref(documentRelationship.value)} className="text-brand hover:underline">
+                        {documentRelationship.type}: {documentRelationship.value.title}
+                      </Link>
+                    ) : (
+                      `${documentRelationship.type}: ${documentRelationship.value.title}`
+                    )}
                   </span>
                 ))}
               </div>
