@@ -75,7 +75,7 @@ const ShadowSearch = ({ theme, themeConfig, features }: TProps) => {
           />
           <QueryBuilder filters={filters} setFilters={setFilters} />
         </div>
-        {(query !== "" || !isFilterGroupEmpty(filters)) && (
+        {!isFilterGroupEmpty(filters) && (
           <AppliedLabels
             availableFilters={availableFilters}
             query={query}

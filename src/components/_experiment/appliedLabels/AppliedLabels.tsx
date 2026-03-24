@@ -25,10 +25,10 @@ function AppliedLabel({ label, type, onSelect, onRemove }: { label: string; type
 
 export function AppliedLabels({
   availableFilters,
-  query,
+  // query,
   labels,
   onClear,
-  setQuery,
+  // setQuery,
   onSelectLabel,
   onRemoveLabel,
 }: {
@@ -42,9 +42,9 @@ export function AppliedLabels({
 }) {
   return (
     <div className="flex flex-wrap gap-1 text-sm text-gray-700 rounded-lg bg-gray-100 p-2">
-      {query && (
+      {/* {query && (
         <AppliedLabel type="Keyword" label={`Anything matching "${query}"`} onSelect={() => setQuery?.("")} onRemove={() => setQuery?.("")} />
-      )}
+      )} */}
       {labels.map((label, i) => {
         const type = getTypeOfLabel(label, availableFilters);
         return (
@@ -57,7 +57,7 @@ export function AppliedLabels({
           />
         );
       })}
-      <button className="ml-2 justify-self-end" onClick={onClear}>
+      <button className="rounded-xl px-2 ml-2 justify-self-end hover:bg-gray-200" onClick={onClear}>
         Clear
       </button>
     </div>
