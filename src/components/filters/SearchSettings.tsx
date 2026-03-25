@@ -2,6 +2,7 @@ import { ParsedUrlQuery } from "querystring";
 
 import { MutableRefObject, useEffect, useRef, useState, Fragment } from "react";
 
+import { PageLink } from "@/components/atoms/pageLink/PageLink";
 import { QUERY_PARAMS } from "@/constants/queryParams";
 import { SEARCH_PASSAGE_ORDER } from "@/constants/searchPassagesOrder";
 import { SEARCH_SETTINGS } from "@/constants/searchSettings";
@@ -101,12 +102,17 @@ export const SearchSettings = ({
                 <SearchSettingsItem
                   onClick={(e) => handleSemanticSearchClick(e, "false")}
                   isActive={getCurrentSearchChoice(queryParams) === "false"}
+                  isDisabled
                   aria-label="Related phrases"
                 >
                   <span className="">
                     <span>{SEARCH_SETTINGS.semantic}</span>
                     <span className="block text-text-secondary">
-                      This may surface results that are not relevant to your search. We are working on improving this.
+                      Temporarily unavailable.{" "}
+                      <PageLink external href="https://form.jotform.com/260824503109350" className="text-brand underline">
+                        Get notified
+                      </PageLink>{" "}
+                      when this is available.
                     </span>
                   </span>
                 </SearchSettingsItem>
