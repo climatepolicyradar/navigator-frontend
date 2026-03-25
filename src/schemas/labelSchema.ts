@@ -12,7 +12,6 @@ export const LABEL_TYPES = [
   "instrument",
   "keyword",
   "language",
-  "organisation",
   "provider",
   "role",
   "sector",
@@ -25,7 +24,7 @@ export const LABEL_TYPES = [
 const LabelTypeSchema = v.custom<(typeof LABEL_TYPES)[number]>((value) => typeof value === "string");
 export type TDataInLabelType = v.InferOutput<typeof LabelTypeSchema>;
 
-export const MANDATORY_FAMILY_LABEL_TYPES: TDataInLabelType[] = ["category", "organisation"];
+export const MANDATORY_FAMILY_LABEL_TYPES: TDataInLabelType[] = ["category", "provider"];
 
 // TODO type these out as they become necessary for transformations
 export const LabelLabelSchema = v.unknown();
