@@ -4,6 +4,7 @@ import { useState } from "react";
 
 import { Checkbox } from "@/components/checkbox/Checkbox";
 import { TLabelResult } from "@/hooks/useLabelSearch";
+import { joinTailwindClasses } from "@/utils/tailwind";
 
 import { TQueryGroup } from "../queryBuilder/QueryBuilder";
 
@@ -50,8 +51,13 @@ export function SearchFilters({ availableFilters, filters, openFilter, open, onO
 
   return (
     <BasePopover.Root open={open} onOpenChange={(value) => onOpenChange?.(value)}>
-      <BasePopover.Trigger className="inline-flex items-center gap-2 rounded-full border border-gray-300 bg-white px-3 py-2 text-sm font-medium text-gray-700 shadow-sm hover:bg-gray-50 hover:border-gray-400 transition-colors focus:outline-none focus:ring-2 focus:ring-blue-200 focus:border-blue-500">
-        <ListFilter className="h-4 w-4" />
+      <BasePopover.Trigger
+        className={joinTailwindClasses(
+          "inline-flex items-center gap-2 rounded-full border border-transparent-regular bg-white px-3 py-2 text-sm font-medium text-gray-700 shadow-sm hover:bg-neutral-100 transition-colors focus:outline-none focus:ring-2 focus:ring-blue-200 focus:border-blue-500",
+          open ? "bg-inky-black! text-white!" : ""
+        )}
+      >
+        <ListFilter className="text-neutral-400 h-4 w-4" />
         Filters
       </BasePopover.Trigger>
 
@@ -67,7 +73,7 @@ export function SearchFilters({ availableFilters, filters, openFilter, open, onO
                       {FILTER_AGGREGATIONS.sort((a, b) => a.localeCompare(b)).map((agg) => (
                         <li key={agg} className="text-sm text-gray-700 mb-1">
                           <button
-                            className={`relative w-full text-left px-6 py-1 text-sm text-gray-700 hover:bg-gray-300 ${activeFilter === agg ? "bg-brand! text-white!" : ""}`}
+                            className={`relative w-full text-left px-6 py-1 text-sm text-gray-700 hover:bg-gray-200 ${activeFilter === agg ? "bg-inky-black! text-white!" : ""}`}
                             onClick={() => setActiveFilter(agg)}
                           >
                             {agg.slice(0, 1).toUpperCase() + agg.replace("_", " ").slice(1)}
@@ -85,7 +91,7 @@ export function SearchFilters({ availableFilters, filters, openFilter, open, onO
                   <div className="max-h-[60vh] basis-2/3 p-4 overflow-y-auto text-sm flex flex-col gap-4">
                     {!!selectedFilters.length && (
                       <div>
-                        <p className="mb-2 text-xs text-brand">ACTIVE FILTERS</p>
+                        <p className="mb-2 text-xs text-inky-black">ACTIVE FILTERS</p>
                         <ul className="flex flex-col gap-2">
                           {selectedFilters.map((filter) => {
                             return (

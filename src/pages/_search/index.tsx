@@ -10,6 +10,7 @@ import { IntelliSearch } from "@/components/_experiment/intellisearch";
 import { createGroup, isFilterGroupEmpty, QueryBuilder, TQueryGroup, TQueryRule } from "@/components/_experiment/queryBuilder/QueryBuilder";
 import { SearchFilters, TFilterCategory } from "@/components/_experiment/searchFilters/SearchFilters";
 import { SearchContainer } from "@/components/_experiment/searchResults/SearchResults";
+import { FiveColumns } from "@/components/atoms/columns/FiveColumns";
 import { withEnvConfig } from "@/context/EnvConfig";
 import { FeaturesContext } from "@/context/FeaturesContext";
 import { TLabelResult, loadLabels } from "@/hooks/useLabelSearch";
@@ -18,6 +19,9 @@ import { getFeatureFlags } from "@/utils/featureFlags";
 import { getFeatures } from "@/utils/features";
 import { addLabelRule, extractLabels, removeLabelRule } from "@/utils/filters/advancedFilters";
 import { readConfigFile } from "@/utils/readConfigFile";
+import { joinTailwindClasses } from "@/utils/tailwind";
+
+const columnLayoutCss = "col-start-1 -col-end-1 cols-5:col-start-3 cols-5:-col-end-3";
 
 type TProps = InferGetServerSidePropsType<typeof getServerSideProps>;
 
@@ -46,19 +50,26 @@ const ShadowSearch = ({ theme, themeConfig, features }: TProps) => {
 
   return (
     <FeaturesContext.Provider value={features}>
-      <div className="w-3/4 m-auto mt-8 pb-12 flex flex-col gap-4">
-        <IntelliSearch
-          selectedLabels={selectedLabels}
-          onSelectSuggestion={(suggestion) => {
-            if (suggestion) {
-              if (suggestion && !selectedLabels.includes(suggestion)) {
-                setFilters((prev) => addLabelRule(prev, suggestion));
+      {/* <div className="w-3/4 m-auto mt-8 pb-12 flex flex-col gap-4"> */}
+      <FiveColumns className="gap-y-4">
+        <div className={columnLayoutCss}>
+          <h1 className="text-5xl font-bold text-inky-black">Search</h1>
+        </div>
+        <div className={columnLayoutCss}>
+          <IntelliSearch
+            query={query}
+            selectedLabels={selectedLabels}
+            onSelectSuggestion={(suggestion) => {
+              if (suggestion) {
+                if (suggestion && !selectedLabels.includes(suggestion)) {
+                  setFilters((prev) => addLabelRule(prev, suggestion));
+                }
               }
-            }
-          }}
-          setQuery={setQuery}
-        />
-        <div className="flex justify-between items-center">
+            }}
+            setQuery={setQuery}
+          />
+        </div>
+        <div className={joinTailwindClasses(columnLayoutCss, "flex justify-between items-center")}>
           <SearchFilters
             availableFilters={availableFilters}
             filters={filters}
@@ -76,29 +87,33 @@ const ShadowSearch = ({ theme, themeConfig, features }: TProps) => {
           <QueryBuilder filters={filters} setFilters={setFilters} />
         </div>
         {!isFilterGroupEmpty(filters) && (
-          <AppliedLabels
-            availableFilters={availableFilters}
-            query={query}
-            labels={selectedLabels}
-            onClear={() => {
-              setFilters(createGroup());
-              setQuery("");
-            }}
-            onSelectLabel={handleSelectLabel}
-            onRemoveLabel={(label) => setFilters((prev) => (prev ? removeLabelRule(prev, label) : createGroup()))}
-            setQuery={setQuery}
-          />
+          <div className={columnLayoutCss}>
+            <AppliedLabels
+              availableFilters={availableFilters}
+              query={query}
+              labels={selectedLabels}
+              onClear={() => {
+                setFilters(createGroup());
+                setQuery("");
+              }}
+              onSelectLabel={handleSelectLabel}
+              onRemoveLabel={(label) => setFilters((prev) => (prev ? removeLabelRule(prev, label) : createGroup()))}
+              setQuery={setQuery}
+            />
+          </div>
         )}
-        <SearchContainer
-          query={query}
-          onSelectLabel={(label) => {
-            if (!selectedLabels.includes(label)) {
-              setFilters((prev) => addLabelRule(prev, label));
-            }
-          }}
-          filters={filters}
-        />
-      </div>
+        <div className={columnLayoutCss}>
+          <SearchContainer
+            query={query}
+            onSelectLabel={(label) => {
+              if (!selectedLabels.includes(label)) {
+                setFilters((prev) => addLabelRule(prev, label));
+              }
+            }}
+            filters={filters}
+          />
+        </div>
+      </FiveColumns>
     </FeaturesContext.Provider>
   );
 };

@@ -57,9 +57,11 @@ export function AppliedLabels({
           />
         );
       })}
-      <button className="rounded-xl px-2 ml-2 justify-self-end hover:bg-gray-200" onClick={onClear}>
-        Clear
-      </button>
+      {onClear && (
+        <button className="rounded-xl px-2 ml-auto hover:bg-gray-200" onClick={onClear}>
+          Clear
+        </button>
+      )}
     </div>
   );
 }
