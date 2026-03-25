@@ -24,6 +24,8 @@ export const LABEL_TYPES = [
 const LabelTypeSchema = v.custom<(typeof LABEL_TYPES)[number]>((value) => typeof value === "string");
 export type TDataInLabelType = v.InferOutput<typeof LabelTypeSchema>;
 
+export const MANDATORY_FAMILY_LABEL_TYPES: TDataInLabelType[] = ["category", "organisation"];
+
 // TODO type these out as they become necessary for transformations
 export const LabelLabelSchema = v.unknown();
 export const LabelDocumentSchema = v.unknown();
@@ -41,13 +43,3 @@ export const LabelSchema = v.object({
 });
 
 export type TDataInLabel = v.InferOutput<typeof LabelSchema>;
-
-export const MANDATORY_LABEL_TYPES: TDataInLabelType[] = ["category", "organisation"];
-export const MandatoryLabelsSchema = v.object(
-  Object.fromEntries(
-    MANDATORY_LABEL_TYPES.map((labelType) => [
-      labelType,
-      v.pipe(v.array(LabelSchema), v.minLength(1, `Expected document to have at least 1 label of type '${labelType}'`)),
-    ])
-  )
-);

@@ -12,7 +12,9 @@ export const DocumentSchema = v.object({
   attributes: v.object({
     deprecated_slug: v.string(),
     last_updated_date: v.string(),
+    md5_sum: v.string(),
     published_date: v.string(),
+    variant: v.string(),
   }),
 });
 
