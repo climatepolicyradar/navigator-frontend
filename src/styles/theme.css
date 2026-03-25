@@ -121,7 +121,7 @@
   --spacing-maxSidebar: var(--MAX_SIDEBAR_WIDTH);
   --spacing-max-cols: 1500px;
 
-  /* BREAKPOINTS */
+  /* BREAKPOINTS - BASED ON OUR FiveColumns COMPONENT LAYOUT */
 
   --breakpoint-cols-2: 500px;
   --breakpoint-cols-3: 700px;
