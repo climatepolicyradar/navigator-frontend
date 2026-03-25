@@ -11,6 +11,7 @@ export const LABEL_TYPES = [
   "hazard",
   "instrument",
   "keyword",
+  "language",
   "organisation",
   "provider",
   "role",

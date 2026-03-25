@@ -25,7 +25,8 @@ export const FileSchema = v.object({
     labels: v.array(LabelSchema),
     attributes: v.object({
       deprecated_slug: v.string(),
-      languages: v.pipe(v.array(v.string()), v.minLength(1)),
+      md5_sum: v.optional(v.string()),
+      variant: v.optional(v.string()),
     }),
   }),
   timestamp: v.nullable(v.string()),

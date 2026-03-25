@@ -24,7 +24,7 @@ export const familyTransformer = (
           family: {
             category: groupedLabels.category[0].value.value as TCategory,
             corpus_id: familyApiOldData.family.corpus_id, // unused except for debugging
-            documents: transformFamilyDocuments(familyApiOldData.family.documents, documents, familyApiNewData),
+            documents: transformFamilyDocuments(familyApiOldData.family.documents, documents),
             geographies: groupedLabels.geography.map((label) => label.value.id),
             import_id: familyApiNewData.id,
             last_updated_date: familyApiNewData.attributes.last_updated_date,
