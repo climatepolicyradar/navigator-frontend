@@ -1,6 +1,6 @@
 import { Autocomplete } from "@base-ui/react/autocomplete";
 import { ScrollArea } from "@base-ui/react/scroll-area";
-import { LucideSearch, SlidersHorizontal } from "lucide-react";
+import { CornerDownLeft, LucideSearch, SlidersHorizontal } from "lucide-react";
 import { useMemo, useRef, useState } from "react";
 
 import { TLabelResult, useLabelSearch } from "@/hooks/useLabelSearch";
@@ -90,7 +90,7 @@ export function IntelliSearch({
             </div>
           )}
         </div>
-        <Autocomplete.Portal hidden={!inputFocused}>
+        <Autocomplete.Portal hidden={!inputFocused || searchTerm.trim() === ""}>
           <Autocomplete.Positioner className="outline-hidden" align="start" anchor={containerRef}>
             <Autocomplete.Popup className="mt-1 w-(--anchor-width) border bg-white border-transparent-regular rounded-xl">
               <ScrollArea.Root className="flex max-h-[60dvh] min-h-0 flex-[0_1_auto] overflow-hidden rounded-top-xl">
@@ -103,9 +103,13 @@ export function IntelliSearch({
                           <Autocomplete.Item
                             value={{ value: searchTerm, type: "search" }}
                             onClick={() => handleSearchClick()}
-                            className="flex min-h-8 cursor-pointer items-center gap-1 rounded-md pl-4 pr-3 text-base text-inky-black select-none outline-none scroll-my-1 data-highlighted:bg-neutral-200"
+                            className="flex min-h-8 cursor-pointer items-center gap-1 rounded-md pl-4 pr-3 text-base text-inky-black select-none outline-none scroll-my-1 group data-highlighted:bg-neutral-200"
                           >
                             <span dangerouslySetInnerHTML={{ __html: `Search for <b>${searchTerm}</b>` }} />
+                            <div className="hidden text-sm text-neutral-600 gap-1 items-center ml-auto group-data-highlighted:inline-flex">
+                              Enter
+                              <CornerDownLeft height={16} width={16} className="inline" />
+                            </div>
                           </Autocomplete.Item>
                         </Autocomplete.Group>
                       )}
@@ -125,7 +129,7 @@ export function IntelliSearch({
                                 key={suggestion.value}
                                 value={{ value: suggestion.value, type: "label" }}
                                 onClick={() => handleSuggestionClick(suggestion.value)}
-                                className="flex min-h-9 cursor-pointer items-center gap-1 rounded-md pl-4 pr-3 text-base text-inky-black select-none outline-none scroll-my-1 data-highlighted:bg-neutral-200"
+                                className="flex min-h-9 cursor-pointer items-center gap-1 rounded-md pl-4 pr-3 text-base text-inky-black select-none outline-none scroll-my-1 group data-highlighted:bg-neutral-200"
                               >
                                 <span
                                   className="truncate"
@@ -133,6 +137,10 @@ export function IntelliSearch({
                                 />
                                 <span className="text-gray-500">—</span>
                                 <span className="shrink-0 whitespace-nowrap text-neutral-500">{suggestion.type}</span>
+                                <div className="hidden text-sm text-neutral-600 gap-1 items-center ml-auto group-data-highlighted:inline-flex">
+                                  Enter
+                                  <CornerDownLeft height={16} width={16} className="inline" />
+                                </div>
                               </Autocomplete.Item>
                             )}
                           </Autocomplete.Collection>
