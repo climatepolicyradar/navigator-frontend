@@ -69,39 +69,6 @@ export function IntelliSearch({
 
   return (
     <div ref={containerRef} className={joinTailwindClasses("relative w-full", className)}>
-      {/* Input Field */}
-      {/* <div
-        className={joinTailwindClasses(
-          "w-full rounded-lg border border-transparent-regular bg-white p-4 relative flex flex-nowrap items-center gap-2 transition-all duration-200",
-          "hover:border-gray-400",
-          "focus-within:border-blue-500 focus-within:ring-2 focus-within:ring-blue-100 focus-within:shadow-md"
-        )}
-      >
-        <LucideSearch width={16} height={16} className="text-neutral-500" />
-        <Input
-          ref={inputRef}
-          type="text"
-          value={searchTerm}
-          onChange={handleInputChange}
-          onFocus={() => {
-            setIsInputFocused(true);
-            setOpen(true);
-          }}
-          onBlur={() => {
-            setIsInputFocused(false);
-          }}
-          onClick={() => setOpen(true)}
-          onKeyDown={handleKeyDownInput}
-          placeholder={placeholder}
-          aria-label="Intelligent search input"
-          aria-autocomplete="list"
-          aria-controls="suggestions-list"
-          aria-expanded={shouldShowSuggestions}
-          className="w-full bg-transparent text-base leading-5 text-inky-black placeholder-neutral-500 outline-none border-0 p-0"
-          autoComplete="off"
-        />
-      </div> */}
-
       <Autocomplete.Root open items={suggestions} autoHighlight="always" keepHighlight>
         <div className="relative border border-transparent-regular rounded-xl">
           <div className="flex items-center gap-2 ml-6">
@@ -114,6 +81,7 @@ export function IntelliSearch({
               onChange={(e) => setSearchTerm(e.target.value)}
               onFocus={() => setInputFocused(true)}
               onBlur={() => setInputFocused(false)}
+              autoComplete="off"
             />
           </div>
           {isLoadingLabels && (
@@ -137,7 +105,7 @@ export function IntelliSearch({
                             onClick={() => handleSearchClick()}
                             className="flex min-h-8 cursor-pointer items-center gap-1 rounded-md pl-4 pr-3 text-base text-inky-black select-none outline-none scroll-my-1 data-highlighted:bg-neutral-200"
                           >
-                            <span className="truncate font-normal" dangerouslySetInnerHTML={{ __html: `Search for <b>${searchTerm}</b>` }} />
+                            <span dangerouslySetInnerHTML={{ __html: `Search for <b>${searchTerm}</b>` }} />
                           </Autocomplete.Item>
                         </Autocomplete.Group>
                       )}
@@ -160,7 +128,7 @@ export function IntelliSearch({
                                 className="flex min-h-9 cursor-pointer items-center gap-1 rounded-md pl-4 pr-3 text-base text-inky-black select-none outline-none scroll-my-1 data-highlighted:bg-neutral-200"
                               >
                                 <span
-                                  className="truncate font-normal"
+                                  className="truncate"
                                   dangerouslySetInnerHTML={{ __html: underlineFirstInstanceOfQuery(suggestion.value, searchTerm) }}
                                 />
                                 <span className="text-gray-500">—</span>
@@ -174,7 +142,7 @@ export function IntelliSearch({
                   </ScrollArea.Content>
                 </ScrollArea.Viewport>
                 <ScrollArea.Scrollbar className="-mr-1 flex w-6 justify-center py-2">
-                  <ScrollArea.Thumb className="flex w-full justify-center before:block before:h-full before:w-1 before:rounded-sm before:bg-gray-400 before:content-['']" />
+                  <ScrollArea.Thumb className="flex w-full justify-center before:block before:h-full before:w-1 before:rounded-sm before:bg-neutral-400 before:content-['']" />
                 </ScrollArea.Scrollbar>
               </ScrollArea.Root>
 
