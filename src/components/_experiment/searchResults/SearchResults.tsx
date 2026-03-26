@@ -2,6 +2,7 @@ import { LucideCog, LucideEarth, LucideTag, LucideFileText } from "lucide-react"
 import Link from "next/link";
 import { Suspense, use, useMemo } from "react";
 
+import { documentRelationshipLabel } from "@/utils/_experiment/documentRelationshipLabel";
 import { labelTypeLabel } from "@/utils/_experiment/labelTypeLabel";
 
 import styles from "./SearchResults.module.css";
@@ -142,7 +143,7 @@ export function SearchResults({ promise, onSelectLabel }: { promise: Promise<Sea
 
               return (
                 <div key={agg} className="flex items-start gap-6 text-sm text-inky-black">
-                  <div className="basis-25 shrink-0 py-0.5 font-semibold">{labelTypeLabel(agg)}</div>
+                  <div className="basis-25 shrink-0 py-0.5 font-semibold">{documentRelationshipLabel(agg)}</div>
                   <div className="flex flex-wrap gap-1">
                     {relationshipsOfType.slice(0, 3).map((relationship, i) => (
                       <span key={i} className="rounded px-2 py-0.5 flex gap-1 items-start">
