@@ -51,7 +51,7 @@ const ShadowSearch = ({ theme, themeConfig, features }: TProps) => {
   return (
     <FeaturesContext.Provider value={features}>
       {/* <div className="w-3/4 m-auto mt-8 pb-12 flex flex-col gap-4"> */}
-      <FiveColumns className="gap-y-4">
+      <FiveColumns className="mt-4 gap-y-4">
         <div className={columnLayoutCss}>
           <h1 className="text-5xl font-bold text-inky-black">Search</h1>
         </div>

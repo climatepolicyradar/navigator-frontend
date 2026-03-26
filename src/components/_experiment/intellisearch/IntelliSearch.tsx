@@ -78,6 +78,13 @@ export function IntelliSearch({
               placeholder={placeholder}
               ref={inputRef}
               value={searchTerm}
+              onKeyDown={(e) => {
+                // We need to catch hitting enter with an empty string
+                // Otherwise we can't clear the current search term using base-ui's autocomplete
+                if (e.key === "Enter" && searchTerm.trim() === "") {
+                  setQuery?.(searchTerm.trim());
+                }
+              }}
               onChange={(e) => setSearchTerm(e.target.value)}
               onFocus={() => setInputFocused(true)}
               onBlur={() => setInputFocused(false)}
