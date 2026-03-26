@@ -6,6 +6,7 @@ import { documentRelationshipLabel } from "@/utils/_experiment/documentRelations
 import { labelTypeLabel } from "@/utils/_experiment/labelTypeLabel";
 
 import styles from "./SearchResults.module.css";
+import { EmptySearch } from "../emptySearch/EmptySearch";
 import { TQueryGroup } from "../queryBuilder/QueryBuilder";
 import { TFilterCategory } from "../searchFilters/SearchFilters";
 
@@ -216,7 +217,7 @@ export function SearchContainer({
 
   return (
     <>
-      {searchPromise && (
+      {searchPromise ? (
         <Suspense
           fallback={
             <p className="text-sm text-text-secondary flex gap-2 items-center">
@@ -226,6 +227,8 @@ export function SearchContainer({
         >
           <SearchResults promise={searchPromise} onSelectLabel={onSelectLabel} />
         </Suspense>
+      ) : (
+        <EmptySearch />
       )}
     </>
   );
