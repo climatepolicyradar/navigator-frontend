@@ -47,6 +47,11 @@ export function IntelliSearch({
     inputRef.current?.blur();
   }
 
+  function handleAdvancedClick() {
+    onAdvancedClick?.();
+    inputRef.current?.blur();
+  }
+
   const suggestions = useMemo(() => {
     const selectedSet = new Set(selectedLabels.map((s) => s.toLowerCase()));
     const unified: TLabelResult[] = [];
@@ -128,7 +133,8 @@ export function IntelliSearch({
                         {searchTerm.trim().length === 0 ? "Enter a search query to see suggestions" : "No suggestions found for your query"}
                       </Autocomplete.Empty>
                       {/* SUGGESTIONS */}
-                      {!!labelsResults.length && (
+                      {/* the first suggestion is always the search term, so we start from index 1 to show label suggestions first */}
+                      {suggestions.length > 1 && (
                         <Autocomplete.Group items={suggestions.slice(1, suggestions.length)} className="block pb-2">
                           <Autocomplete.GroupLabel className="sticky top-0 z-1 m-0 mr-2 bg-white px-4 py-2 text-xs text-neutral-500">
                             Suggestions
@@ -165,7 +171,11 @@ export function IntelliSearch({
               </ScrollArea.Root>
 
               <div className="flex items-center justify-between border-t border-transparent-regular p-4 text-sm text-inky-black">
-                <button className="flex items-center gap-2 hover:bg-neutral-200 rounded-md p-1" onClick={onAdvancedClick}>
+                <button
+                  className="flex items-center gap-2 hover:bg-neutral-200 rounded-md p-1"
+                  onMouseDown={(e) => e.preventDefault()}
+                  onClick={handleAdvancedClick}
+                >
                   <SlidersHorizontal className="h-4 w-4" />
                   Advanced
                 </button>
