@@ -1,8 +1,14 @@
-import { LucideCog } from "lucide-react";
+import { LucideCog, LucideEarth, LucideTag, LucideFileText } from "lucide-react";
 import Link from "next/link";
 import { Suspense, use, useMemo } from "react";
 
+import { documentRelationshipLabel } from "@/utils/_experiment/documentRelationshipLabel";
+import { labelTypeLabel } from "@/utils/_experiment/labelTypeLabel";
+
+import styles from "./SearchResults.module.css";
+import { EmptySearch } from "../emptySearch/EmptySearch";
 import { TQueryGroup } from "../queryBuilder/QueryBuilder";
+import { TFilterCategory } from "../searchFilters/SearchFilters";
 
 interface DocumentLabel {
   id: string;
@@ -37,7 +43,7 @@ interface SearchDocument {
 }
 
 export interface SearchDocumentsResponse {
-  total_results: number | null;
+  total_size: number | null;
   page: number;
   page_size: number;
   total_pages: number | null;
@@ -77,55 +83,97 @@ function linkHref(doc: SearchDocument): string | undefined {
     }
 }
 
+function iconForLabelType(type: string) {
+  switch (type) {
+    case "geography":
+      return <LucideEarth width={14} height={14} />;
+    case "concept":
+      return <LucideTag width={14} height={14} />;
+  }
+}
+
+const FILTER_AGGREGATIONS: TFilterCategory[] = ["geography", "concept"];
+const RELATIONSHIP_AGGREGATIONS = ["member_of", "has_member"];
+
 export function SearchResults({ promise, onSelectLabel }: { promise: Promise<SearchDocumentsResponse>; onSelectLabel?: (label: string) => void }) {
   const data = use(promise);
 
   return (
     <div>
       {/* <p className="text-sm text-text-secondary mb-4">
-        {data.total_results ?? 0} results — page {data.page} of {data.total_pages ?? 1}
+        {data.total_size ?? 0} results — page {data.page} of {data.total_pages ?? 1}
       </p> */}
       <ul className="space-y-4">
         {data.results.map((doc) => (
-          <li key={doc.id} className="border border-gray-200 rounded-md p-4">
+          <li key={doc.id} className={`flex flex-col gap-3 border border-transparent-regular rounded-md p-6 ${styles["highlights"]}`}>
+            {/* CORE DOCUMENT DETAILS */}
             <h3 className="font-semibold text-lg">
               {linkHref(doc) ? (
-                <Link href={linkHref(doc)} className="text-brand hover:underline">
-                  {doc.title}
-                </Link>
+                <Link href={linkHref(doc)} className="text-inky-blue hover:underline" dangerouslySetInnerHTML={{ __html: doc.title }} />
               ) : (
-                doc.title
+                <span dangerouslySetInnerHTML={{ __html: doc.title }} />
               )}
             </h3>
-            {doc.description && <p className="text-sm text-text-secondary mt-1" dangerouslySetInnerHTML={{ __html: doc.description }} />}
-            {doc.labels.length > 0 && (
-              <div className="flex flex-wrap gap-1 mt-2">
-                {doc.labels.map((label, i) => (
-                  <span
-                    key={i}
-                    className="text-xs bg-gray-100 rounded px-2 py-0.5 cursor-pointer hover:bg-gray-200"
-                    onClick={() => onSelectLabel?.(label.value.value)}
-                  >
-                    {label.value.value} {label.count !== null && `(${label.count})`}
-                  </span>
-                ))}
-              </div>
+            {doc.description && (
+              <p
+                className="text-base text-inky-black"
+                dangerouslySetInnerHTML={{ __html: doc.description.slice(0, 275) + (doc.description.length > 275 ? "..." : "") }}
+              />
             )}
-            {doc.documents.length > 0 && (
-              <div className="flex flex-wrap gap-1 mt-2">
-                {doc.documents.map((documentRelationship, i) => (
-                  <span key={i} className="text-xs bg-gray-100 rounded px-2 py-0.5 cursor-pointer hover:bg-gray-200">
-                    {linkHref(documentRelationship.value) ? (
-                      <Link href={linkHref(documentRelationship.value)} className="text-brand hover:underline">
-                        {documentRelationship.type}: {documentRelationship.value.title}
-                      </Link>
-                    ) : (
-                      `${documentRelationship.type}: ${documentRelationship.value.title}`
-                    )}
-                  </span>
-                ))}
-              </div>
-            )}
+            {/* DISPLAYING FILTERS */}
+            {FILTER_AGGREGATIONS.map((agg) => {
+              const relationshipsOfType = doc.labels.filter((label) => label.type === agg);
+              if (relationshipsOfType.length === 0) return null;
+
+              return (
+                <div key={agg} className="flex items-start gap-6 text-sm text-inky-black">
+                  <div className="basis-25 shrink-0 py-0.5 font-semibold">{labelTypeLabel(agg)}</div>
+                  <div className="flex flex-wrap gap-1">
+                    {relationshipsOfType
+                      .sort((a, b) => b.count - a.count)
+                      .slice(0, 3)
+                      .map((relationship, i) => (
+                        <button
+                          key={i}
+                          className="flex gap-1 items-center rounded px-2 py-0.5 cursor-pointer hover:bg-neutral-200"
+                          onClick={() => onSelectLabel?.(relationship.value.value)}
+                        >
+                          {iconForLabelType(relationship.value.type)}
+                          <span>{relationship.value.value}</span>
+                          {/* <span>{relationship.count !== null && `(${relationship.count})`}</span> */}
+                        </button>
+                      ))}
+                    {relationshipsOfType.length > 3 && <span className="py-0.5 text-neutral-600">+{relationshipsOfType.length - 3} more</span>}
+                  </div>
+                </div>
+              );
+            })}
+            {/* DISPLAYING DOCUMENT RELATIONSHIPS */}
+            {RELATIONSHIP_AGGREGATIONS.map((agg) => {
+              const relationshipsOfType = doc.documents.filter((relationship) => relationship.type === agg);
+              if (relationshipsOfType.length === 0) return null;
+
+              return (
+                <div key={agg} className="flex items-start gap-6 text-sm text-inky-black">
+                  <div className="basis-25 shrink-0 py-0.5 font-semibold">{documentRelationshipLabel(agg)}</div>
+                  <div className="flex flex-wrap gap-1">
+                    {relationshipsOfType.slice(0, 3).map((relationship, i) => (
+                      <span key={i} className="rounded px-2 py-0.5 flex gap-1 items-start">
+                        <LucideFileText width={14} height={14} className="inline mt-0.5 shrink-0" />
+                        {linkHref(relationship.value) ? (
+                          <Link href={linkHref(relationship.value)} className="hover:underline">
+                            {relationship.value.title}
+                          </Link>
+                        ) : (
+                          <span>{relationship.value.title}</span>
+                        )}
+                      </span>
+                    ))}
+                    {relationshipsOfType.length > 3 && <span className="py-0.5 text-neutral-600">+{relationshipsOfType.length - 3} more</span>}
+                  </div>
+                </div>
+              );
+            })}
           </li>
         ))}
       </ul>
@@ -160,6 +208,7 @@ export function SearchContainer({
 
     return fetchSearchDocuments({
       query,
+      // TODO: add pagination
       // limit: 10,
       // offset: 0,
       filters: filtersDoesNotContainEmptyRule(filters) ? JSON.stringify(filters) : undefined,
@@ -168,7 +217,7 @@ export function SearchContainer({
 
   return (
     <>
-      {searchPromise && (
+      {searchPromise ? (
         <Suspense
           fallback={
             <p className="text-sm text-text-secondary flex gap-2 items-center">
@@ -178,6 +227,8 @@ export function SearchContainer({
         >
           <SearchResults promise={searchPromise} onSelectLabel={onSelectLabel} />
         </Suspense>
+      ) : (
+        <EmptySearch />
       )}
     </>
   );

@@ -4,6 +4,7 @@ import { useState } from "react";
 
 import { Checkbox } from "@/components/checkbox/Checkbox";
 import { TLabelResult } from "@/hooks/useLabelSearch";
+import { labelTypeLabel } from "@/utils/_experiment/labelTypeLabel";
 import { joinTailwindClasses } from "@/utils/tailwind";
 
 import { TQueryGroup } from "../queryBuilder/QueryBuilder";
@@ -21,7 +22,7 @@ function hasActiveFilterOfType(filters: TLabelResult[], group: TQueryGroup | nul
 }
 
 export type TFilterCategory = "concept" | "entity_type" | "geography" | "agent" | "activity_status" | "status";
-const FILTER_AGGREGATIONS: TFilterCategory[] = ["concept", "entity_type", "geography", "agent", "activity_status", "status"];
+const FILTER_AGGREGATIONS: TFilterCategory[] = ["agent", "entity_type", "geography", "concept", "activity_status", "status"];
 
 type TProps = {
   availableFilters: TLabelResult[];
@@ -40,14 +41,14 @@ export function SearchFilters({ availableFilters, filters, openFilter, open, onO
     if (openFilter) setActiveFilter(openFilter);
   }
 
-  const selectedFilters = availableFilters
-    .filter((filter) => hasValue(filters, filter.value))
-    .filter((filter) => filter.type === activeFilter)
-    .sort((a, b) => a.value.localeCompare(b.value));
-  const unSelectedFilters = availableFilters
-    .filter((filter) => !hasValue(filters, filter.value))
-    .filter((filter) => filter.type === activeFilter)
-    .sort((a, b) => a.value.localeCompare(b.value));
+  // const selectedFilters = availableFilters
+  //   .filter((filter) => hasValue(filters, filter.value))
+  //   .filter((filter) => filter.type === activeFilter)
+  //   .sort((a, b) => a.value.localeCompare(b.value));
+  // const unSelectedFilters = availableFilters
+  //   .filter((filter) => !hasValue(filters, filter.value))
+  //   .filter((filter) => filter.type === activeFilter)
+  //   .sort((a, b) => a.value.localeCompare(b.value));
 
   return (
     <BasePopover.Root open={open} onOpenChange={(value) => onOpenChange?.(value)}>
@@ -63,20 +64,20 @@ export function SearchFilters({ availableFilters, filters, openFilter, open, onO
 
       <BasePopover.Portal>
         <BasePopover.Positioner positionMethod="fixed" sideOffset={8} side="bottom" align="start" className="z-50">
-          <BasePopover.Popup className="w-130 rounded-xl border border-gray-200 bg-white shadow-2xl focus-visible:outline-none">
+          <BasePopover.Popup className="w-150 rounded-xl border border-transparent-regular bg-white shadow-xl focus-visible:outline-none">
             <div className="">
               {!availableFilters.length && <p className="text-sm text-gray-500">No filter options found.</p>}
               {availableFilters.length > 0 && (
                 <div className="flex gap-2">
-                  <div className="basis-1/3 pt-2 border-r border-gray-300">
+                  <div className="basis-1/3 p-2 border-r border-transparent-regular">
                     <ul className="flex flex-col gap-2">
-                      {FILTER_AGGREGATIONS.sort((a, b) => a.localeCompare(b)).map((agg) => (
-                        <li key={agg} className="text-sm text-gray-700 mb-1">
+                      {FILTER_AGGREGATIONS.map((agg) => (
+                        <li key={agg} className="text-sm text-inky-black mb-1">
                           <button
-                            className={`relative w-full text-left px-6 py-1 text-sm text-gray-700 hover:bg-gray-200 ${activeFilter === agg ? "bg-inky-black! text-white!" : ""}`}
+                            className={`relative rounded-sm w-full text-left px-6 py-2 text-sm text-inky-black font-medium hover:bg-neutral-200 ${activeFilter === agg ? "bg-neutral-200!" : ""}`}
                             onClick={() => setActiveFilter(agg)}
                           >
-                            {agg.slice(0, 1).toUpperCase() + agg.replace("_", " ").slice(1)}
+                            {labelTypeLabel(agg)}
                             {activeFilter === agg && (
                               <ChevronRight width={20} height={20} className="absolute right-2 top-1/2 transform -translate-y-1/2"></ChevronRight>
                             )}
@@ -89,7 +90,7 @@ export function SearchFilters({ availableFilters, filters, openFilter, open, onO
                     </ul>
                   </div>
                   <div className="max-h-[60vh] basis-2/3 p-4 overflow-y-auto text-sm flex flex-col gap-4">
-                    {!!selectedFilters.length && (
+                    {/* {!!selectedFilters.length && (
                       <div>
                         <p className="mb-2 text-xs text-inky-black">ACTIVE FILTERS</p>
                         <ul className="flex flex-col gap-2">
@@ -104,7 +105,7 @@ export function SearchFilters({ availableFilters, filters, openFilter, open, onO
                       </div>
                     )}
                     {!!unSelectedFilters.length && (
-                      <ul className="flex flex-col gap-2">
+                      <ul className="flex flex-col gap-2 text-inky-black">
                         {unSelectedFilters.map((filter) => {
                           return (
                             <li key={filter.id}>
@@ -113,7 +114,23 @@ export function SearchFilters({ availableFilters, filters, openFilter, open, onO
                           );
                         })}
                       </ul>
-                    )}
+                    )} */}
+                    <ul className="flex flex-col gap-2 text-inky-black">
+                      {availableFilters
+                        .filter((filter) => filter.type === activeFilter)
+                        .sort((a, b) => a.value.localeCompare(b.value))
+                        .map((filter) => {
+                          return (
+                            <li key={filter.id}>
+                              <Checkbox
+                                label={filter.value}
+                                onChange={(checked) => onChange?.(checked, filter.value)}
+                                checked={hasValue(filters, filter.value)}
+                              />
+                            </li>
+                          );
+                        })}
+                    </ul>
                   </div>
                 </div>
               )}

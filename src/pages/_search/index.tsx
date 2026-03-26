@@ -39,6 +39,9 @@ const ShadowSearch = ({ theme, themeConfig, features }: TProps) => {
   const [filtersOpen, setFiltersOpen] = useState(false);
   const [filtersOpenFilter, setFiltersOpenFilter] = useState<TFilterCategory | undefined>(undefined);
 
+  // Control Advanced Filters view
+  const [advancedFiltersOpen, setAdvancedFiltersOpen] = useState(false);
+
   const handleSelectLabel = (label: string, type: string) => {
     setFiltersOpenFilter((type as TFilterCategory) || undefined);
     setFiltersOpen(true);
@@ -51,7 +54,7 @@ const ShadowSearch = ({ theme, themeConfig, features }: TProps) => {
   return (
     <FeaturesContext.Provider value={features}>
       {/* <div className="w-3/4 m-auto mt-8 pb-12 flex flex-col gap-4"> */}
-      <FiveColumns className="gap-y-4">
+      <FiveColumns className="mt-4 gap-y-4">
         <div className={columnLayoutCss}>
           <h1 className="text-5xl font-bold text-inky-black">Search</h1>
         </div>
@@ -67,6 +70,7 @@ const ShadowSearch = ({ theme, themeConfig, features }: TProps) => {
               }
             }}
             setQuery={setQuery}
+            onAdvancedClick={() => setAdvancedFiltersOpen(true)}
           />
         </div>
         <div className={joinTailwindClasses(columnLayoutCss, "flex justify-between items-center")}>
@@ -84,13 +88,13 @@ const ShadowSearch = ({ theme, themeConfig, features }: TProps) => {
               }
             }}
           />
-          <QueryBuilder filters={filters} setFilters={setFilters} />
+          <QueryBuilder filters={filters} setFilters={setFilters} open={advancedFiltersOpen} onOpenChange={setAdvancedFiltersOpen} />
         </div>
         {!isFilterGroupEmpty(filters) && (
           <div className={columnLayoutCss}>
             <AppliedLabels
+              filters={filters}
               availableFilters={availableFilters}
-              query={query}
               labels={selectedLabels}
               onClear={() => {
                 setFilters(createGroup());
@@ -98,7 +102,7 @@ const ShadowSearch = ({ theme, themeConfig, features }: TProps) => {
               }}
               onSelectLabel={handleSelectLabel}
               onRemoveLabel={(label) => setFilters((prev) => (prev ? removeLabelRule(prev, label) : createGroup()))}
-              setQuery={setQuery}
+              onAdvancedClick={() => setAdvancedFiltersOpen(true)}
             />
           </div>
         )}

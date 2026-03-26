@@ -4,11 +4,13 @@ import { CornerDownLeft, LucideSearch, SlidersHorizontal } from "lucide-react";
 import { useMemo, useRef, useState } from "react";
 
 import { TLabelResult, useLabelSearch } from "@/hooks/useLabelSearch";
+import { labelTypeLabel } from "@/utils/_experiment/labelTypeLabel";
 import { joinTailwindClasses } from "@/utils/tailwind";
 
 import { IntelliSearchProps } from "./IntelliSearch.types";
 
 const underlineFirstInstanceOfQuery = (text: string, query: string) => {
+  if (!query) return text;
   const regex = new RegExp(`(${query})`, "i");
   return text.replace(regex, "<b><u>$1</u></b>");
 };
@@ -17,11 +19,12 @@ export function IntelliSearch({
   query,
   className,
   placeholder = "Search",
-  debounceDelay = 300,
+  debounceDelay = 50,
   maxSuggestions,
   selectedLabels = [],
   onSelectSuggestion,
   setQuery,
+  onAdvancedClick,
 }: IntelliSearchProps) {
   // State management
   const [searchTerm, setSearchTerm] = useState(query);
@@ -41,6 +44,11 @@ export function IntelliSearch({
 
   function handleSearchClick() {
     setQuery?.(searchTerm.trim());
+    inputRef.current?.blur();
+  }
+
+  function handleAdvancedClick() {
+    onAdvancedClick?.();
     inputRef.current?.blur();
   }
 
@@ -78,6 +86,13 @@ export function IntelliSearch({
               placeholder={placeholder}
               ref={inputRef}
               value={searchTerm}
+              onKeyDown={(e) => {
+                // We need to catch hitting enter with an empty string
+                // Otherwise we can't clear the current search term using base-ui's autocomplete
+                if (e.key === "Enter" && searchTerm.trim() === "") {
+                  setQuery?.(searchTerm.trim());
+                }
+              }}
               onChange={(e) => setSearchTerm(e.target.value)}
               onFocus={() => setInputFocused(true)}
               onBlur={() => setInputFocused(false)}
@@ -118,7 +133,8 @@ export function IntelliSearch({
                         {searchTerm.trim().length === 0 ? "Enter a search query to see suggestions" : "No suggestions found for your query"}
                       </Autocomplete.Empty>
                       {/* SUGGESTIONS */}
-                      {!!labelsResults.length && (
+                      {/* the first suggestion is always the search term, so we start from index 1 to show label suggestions first */}
+                      {suggestions.length > 1 && (
                         <Autocomplete.Group items={suggestions.slice(1, suggestions.length)} className="block pb-2">
                           <Autocomplete.GroupLabel className="sticky top-0 z-1 m-0 mr-2 bg-white px-4 py-2 text-xs text-neutral-500">
                             Suggestions
@@ -136,7 +152,7 @@ export function IntelliSearch({
                                   dangerouslySetInnerHTML={{ __html: underlineFirstInstanceOfQuery(suggestion.value, searchTerm) }}
                                 />
                                 <span className="text-gray-500">—</span>
-                                <span className="shrink-0 whitespace-nowrap text-neutral-500">{suggestion.type}</span>
+                                <span className="shrink-0 whitespace-nowrap text-neutral-500">{labelTypeLabel(suggestion.type)}</span>
                                 <div className="hidden text-sm text-neutral-600 gap-1 items-center ml-auto group-data-highlighted:inline-flex">
                                   Enter
                                   <CornerDownLeft height={16} width={16} className="inline" />
@@ -155,7 +171,11 @@ export function IntelliSearch({
               </ScrollArea.Root>
 
               <div className="flex items-center justify-between border-t border-transparent-regular p-4 text-sm text-inky-black">
-                <button className="flex items-center gap-2 hover:bg-neutral-200 rounded-md p-1">
+                <button
+                  className="flex items-center gap-2 hover:bg-neutral-200 rounded-md p-1"
+                  onMouseDown={(e) => e.preventDefault()}
+                  onClick={handleAdvancedClick}
+                >
                   <SlidersHorizontal className="h-4 w-4" />
                   Advanced
                 </button>
