@@ -1,4 +1,4 @@
-import { LucideX } from "lucide-react";
+import { LucideX, SlidersHorizontal } from "lucide-react";
 
 import { TLabelResult } from "@/hooks/useLabelSearch";
 
@@ -56,9 +56,10 @@ export function AppliedLabels({
     <div className="flex flex-wrap gap-1 text-sm text-gray-700 rounded-lg bg-gray-100 p-2">
       {isFilterComplex(filters) ? (
         <button
-          className="bg-white py-1 px-2 rounded-lg inline-flex items-center border border-gray-300 hover:bg-gray-50"
+          className="bg-white py-1 px-2 rounded-lg inline-flex gap-2 items-center border border-gray-300 hover:bg-gray-50"
           onClick={() => onAdvancedClick?.()}
         >
+          <SlidersHorizontal className="text-neutral-400 h-4 w-4" />
           Advanced filters applied
         </button>
       ) : (

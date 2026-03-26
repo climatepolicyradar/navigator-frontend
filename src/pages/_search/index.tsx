@@ -70,6 +70,7 @@ const ShadowSearch = ({ theme, themeConfig, features }: TProps) => {
               }
             }}
             setQuery={setQuery}
+            onAdvancedClick={() => setAdvancedFiltersOpen(true)}
           />
         </div>
         <div className={joinTailwindClasses(columnLayoutCss, "flex justify-between items-center")}>

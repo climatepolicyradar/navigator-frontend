@@ -3,6 +3,7 @@ import { SlidersHorizontal, Plus, Trash2, X } from "lucide-react";
 import { useCallback, useEffect, useRef, useState } from "react";
 
 import { useLabelSearch, TLabelResult } from "@/hooks/useLabelSearch";
+import { labelTypeLabel } from "@/utils/_experiment/labelTypeLabel";
 import { joinTailwindClasses } from "@/utils/tailwind";
 
 // ---------------------------------------------------------------------------
@@ -197,7 +198,7 @@ function LabelPicker({ value, onChange, placeholder = "Search...", autoFocus = f
   }
 
   return (
-    <div ref={containerRef} className="relative">
+    <div ref={containerRef}>
       <input
         ref={inputRef}
         type="text"
@@ -224,7 +225,7 @@ function LabelPicker({ value, onChange, placeholder = "Search...", autoFocus = f
         </div>
       )}
       {isOpen && results.length > 0 && (
-        <ul className="absolute z-50 mt-1 max-h-48 w-[200%] overflow-y-auto rounded-md border border-gray-200 bg-white shadow-lg">
+        <ul className="absolute z-50 mt-1 max-h-48 w-[300px] overflow-y-auto rounded-md border border-gray-200 bg-white shadow-lg">
           {results.map((label, idx) => (
             <li
               key={label.id}
@@ -237,7 +238,7 @@ function LabelPicker({ value, onChange, placeholder = "Search...", autoFocus = f
               )}
             >
               <span className="font-medium">{label.value}</span>
-              <span className="ml-2 text-gray-400 text-xs">Type: {label.type}</span>
+              <span className="ml-2 text-gray-400 text-xs">- {labelTypeLabel(label.type)}</span>
             </li>
           ))}
         </ul>
@@ -495,7 +496,6 @@ export function QueryBuilder({ filters, setFilters, open, onOpenChange }: TProps
       />
 
       <BasePopover.Portal>
-        {/* <BasePopover.Backdrop className="fixed inset-0 bg-inky-black opacity-20 transition-opacity duration-150 ease-[cubic-bezier(0.45,1.005,0,1.005)] data-[ending-style]:opacity-0 data-[starting-style]:opacity-0 supports-[-webkit-touch-callout:none]:absolute" /> */}
         <BasePopover.Positioner positionMethod="fixed" sideOffset={8} side="bottom" align="start" className="z-50">
           <BasePopover.Popup
             className={joinTailwindClasses("w-130 rounded-xl border border-gray-200 bg-white shadow-2xl", "focus-visible:outline-none")}

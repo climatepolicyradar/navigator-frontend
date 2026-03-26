@@ -24,6 +24,7 @@ export function IntelliSearch({
   selectedLabels = [],
   onSelectSuggestion,
   setQuery,
+  onAdvancedClick,
 }: IntelliSearchProps) {
   // State management
   const [searchTerm, setSearchTerm] = useState(query);
@@ -164,7 +165,7 @@ export function IntelliSearch({
               </ScrollArea.Root>
 
               <div className="flex items-center justify-between border-t border-transparent-regular p-4 text-sm text-inky-black">
-                <button className="flex items-center gap-2 hover:bg-neutral-200 rounded-md p-1">
+                <button className="flex items-center gap-2 hover:bg-neutral-200 rounded-md p-1" onClick={onAdvancedClick}>
                   <SlidersHorizontal className="h-4 w-4" />
                   Advanced
                 </button>

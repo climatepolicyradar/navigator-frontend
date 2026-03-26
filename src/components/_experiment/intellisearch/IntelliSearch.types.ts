@@ -53,6 +53,7 @@ export interface IntelliSearchProps {
   onSelectSuggestion?: (suggestion: string) => void;
   /** Optional callback to set the search query */
   setQuery?: (query: string) => void;
+  onAdvancedClick?: () => void;
 }
 
 /**
