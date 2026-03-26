@@ -180,7 +180,7 @@ export type TFamily = {
   metadata: TVespaMetadata;
 };
 
-type TDocumentContentType = "application/pdf" | "text/html" | "application/octet-stream";
+export type TDocumentContentType = "application/pdf" | "text/html" | "application/octet-stream";
 
 export type TDocumentPage = {
   cdn_object?: string | null;

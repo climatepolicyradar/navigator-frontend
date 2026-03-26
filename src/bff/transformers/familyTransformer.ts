@@ -1,8 +1,9 @@
 import { transformCountries } from "@/bff/transformers/partials/transformCountries";
 import { transformFamilyDocuments } from "@/bff/transformers/partials/transformFamilyDocuments";
 import { transformFamilyMetadata } from "@/bff/transformers/partials/transformFamilyMetadata";
+import { LABEL_TYPES, MANDATORY_FAMILY_LABEL_TYPES, TDataInLabel, TDataInLabelType } from "@/schemas";
 import { TCategory, TFamilyApiNewData, TFamilyApiOldData, TFamilyPresentationalResponse } from "@/types";
-import { groupLabelsByType } from "@/utils/labels/groupLabelsByType";
+import { groupByType } from "@/utils/data-in/groupByType";
 
 export const familyTransformer = (
   familyApiOldData: TFamilyApiOldData,
@@ -14,7 +15,7 @@ export const familyTransformer = (
   if (familyApiNewData) {
     try {
       const { documents, labels } = familyApiNewData;
-      const groupedLabels = groupLabelsByType(labels);
+      const groupedLabels = groupByType<TDataInLabel, TDataInLabelType>(labels, LABEL_TYPES, MANDATORY_FAMILY_LABEL_TYPES);
 
       return {
         data: {
@@ -22,13 +23,11 @@ export const familyTransformer = (
           countries: transformCountries(familyApiOldData.countries, groupedLabels.geography),
           family: {
             category: groupedLabels.category[0].value.value as TCategory,
-            corpus_id: familyApiOldData.family.corpus_id, // unused except for debugging
             documents: transformFamilyDocuments(familyApiOldData.family.documents, documents),
             geographies: groupedLabels.geography.map((label) => label.value.id),
             import_id: familyApiNewData.id,
             last_updated_date: familyApiNewData.attributes.last_updated_date,
             metadata: transformFamilyMetadata(groupedLabels),
-            organisation: groupedLabels.organisation[0].value.value,
             published_date: familyApiNewData.attributes.published_date,
             slug: familyApiNewData.attributes.deprecated_slug,
             summary: familyApiNewData.description,
@@ -36,7 +35,9 @@ export const familyTransformer = (
             // TODO apply transformations to remaining fields:
             collections: familyApiOldData.family.collections,
             concepts: familyApiOldData.family.concepts, // currently out of scope
+            corpus_id: familyApiOldData.family.corpus_id,
             events: familyApiOldData.family.events,
+            organisation: familyApiOldData.family.organisation,
           },
           debug: {
             originalFamily: familyApiOldData.family,

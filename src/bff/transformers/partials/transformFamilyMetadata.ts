@@ -1,9 +1,10 @@
+import { TDataInLabel, TDataInLabelType } from "@/schemas";
 import { API_FAMILY_METADATA_KEY, TApiFamilyMetadata, TApiFamilyMetadataKey } from "@/types";
-import { TLabelsByType } from "@/utils/labels/groupLabelsByType";
+import { TItemsByType } from "@/utils/data-in/groupByType";
 
 const isFamilyMetadataKey = (string: string): string is TApiFamilyMetadataKey => API_FAMILY_METADATA_KEY.includes(string as TApiFamilyMetadataKey);
 
-export const transformFamilyMetadata = (groupedLabels: TLabelsByType): TApiFamilyMetadata => {
+export const transformFamilyMetadata = (groupedLabels: TItemsByType<TDataInLabel, TDataInLabelType>): TApiFamilyMetadata => {
   const familyMetadata: TApiFamilyMetadata = {};
 
   Object.entries(groupedLabels).forEach(([labelType, labels]) => {
