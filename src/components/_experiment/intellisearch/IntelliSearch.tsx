@@ -4,6 +4,7 @@ import { CornerDownLeft, LucideSearch, SlidersHorizontal } from "lucide-react";
 import { useMemo, useRef, useState } from "react";
 
 import { TLabelResult, useLabelSearch } from "@/hooks/useLabelSearch";
+import { labelTypeLabel } from "@/utils/_experiment/labelTypeLabel";
 import { joinTailwindClasses } from "@/utils/tailwind";
 
 import { IntelliSearchProps } from "./IntelliSearch.types";
@@ -143,7 +144,7 @@ export function IntelliSearch({
                                   dangerouslySetInnerHTML={{ __html: underlineFirstInstanceOfQuery(suggestion.value, searchTerm) }}
                                 />
                                 <span className="text-gray-500">—</span>
-                                <span className="shrink-0 whitespace-nowrap text-neutral-500">{suggestion.type}</span>
+                                <span className="shrink-0 whitespace-nowrap text-neutral-500">{labelTypeLabel(suggestion.type)}</span>
                                 <div className="hidden text-sm text-neutral-600 gap-1 items-center ml-auto group-data-highlighted:inline-flex">
                                   Enter
                                   <CornerDownLeft height={16} width={16} className="inline" />

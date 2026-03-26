@@ -1,0 +1,7 @@
+@reference "tailwindcss";
+
+.highlights {
+  :global(hi) {
+    @apply bg-yellow-200;
+  }
+}
