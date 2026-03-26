@@ -18,7 +18,7 @@ export function IntelliSearch({
   query,
   className,
   placeholder = "Search",
-  debounceDelay = 300,
+  debounceDelay = 50,
   maxSuggestions,
   selectedLabels = [],
   onSelectSuggestion,

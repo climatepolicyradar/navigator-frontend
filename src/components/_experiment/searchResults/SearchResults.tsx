@@ -42,7 +42,7 @@ interface SearchDocument {
 }
 
 export interface SearchDocumentsResponse {
-  total_results: number | null;
+  total_size: number | null;
   page: number;
   page_size: number;
   total_pages: number | null;
@@ -92,7 +92,7 @@ function iconForLabelType(type: string) {
 }
 
 const FILTER_AGGREGATIONS: TFilterCategory[] = ["geography", "concept"];
-const RELATIONSHIP_AGGREGATIONS = ["member_of", "has_member", "is_version_of"];
+const RELATIONSHIP_AGGREGATIONS = ["member_of", "has_member"];
 
 export function SearchResults({ promise, onSelectLabel }: { promise: Promise<SearchDocumentsResponse>; onSelectLabel?: (label: string) => void }) {
   const data = use(promise);
@@ -100,7 +100,7 @@ export function SearchResults({ promise, onSelectLabel }: { promise: Promise<Sea
   return (
     <div>
       <p className="text-sm text-text-secondary mb-4">
-        {data.total_results ?? 0} results — page {data.page} of {data.total_pages ?? 1}
+        {data.total_size ?? 0} results — page {data.page} of {data.total_pages ?? 1}
       </p>
       <ul className="space-y-4">
         {data.results.map((doc) => (
@@ -113,7 +113,12 @@ export function SearchResults({ promise, onSelectLabel }: { promise: Promise<Sea
                 <span dangerouslySetInnerHTML={{ __html: doc.title }} />
               )}
             </h3>
-            {doc.description && <p className="text-base text-inky-black" dangerouslySetInnerHTML={{ __html: doc.description }} />}
+            {doc.description && (
+              <p
+                className="text-base text-inky-black"
+                dangerouslySetInnerHTML={{ __html: doc.description.slice(0, 275) + (doc.description.length > 275 ? "..." : "") }}
+              />
+            )}
             {/* DISPLAYING FILTERS */}
             {FILTER_AGGREGATIONS.map((agg) => {
               const relationshipsOfType = doc.labels.filter((label) => label.type === agg);

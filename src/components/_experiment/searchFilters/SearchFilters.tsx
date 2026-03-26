@@ -9,10 +9,10 @@ import { joinTailwindClasses } from "@/utils/tailwind";
 
 import { TQueryGroup } from "../queryBuilder/QueryBuilder";
 
-function hasValue(group: TQueryGroup | null | undefined, value: string): boolean {
-  if (!group) return false;
-  return group.filters.some((f) => ("value" in f ? f.value === value : hasValue(f, value)));
-}
+// function hasValue(group: TQueryGroup | null | undefined, value: string): boolean {
+//   if (!group) return false;
+//   return group.filters.some((f) => ("value" in f ? f.value === value : hasValue(f, value)));
+// }
 
 function hasActiveFilterOfType(filters: TLabelResult[], group: TQueryGroup | null | undefined, type: TFilterCategory): boolean {
   if (!group) return false;
@@ -41,14 +41,14 @@ export function SearchFilters({ availableFilters, filters, openFilter, open, onO
     if (openFilter) setActiveFilter(openFilter);
   }
 
-  const selectedFilters = availableFilters
-    .filter((filter) => hasValue(filters, filter.value))
-    .filter((filter) => filter.type === activeFilter)
-    .sort((a, b) => a.value.localeCompare(b.value));
-  const unSelectedFilters = availableFilters
-    .filter((filter) => !hasValue(filters, filter.value))
-    .filter((filter) => filter.type === activeFilter)
-    .sort((a, b) => a.value.localeCompare(b.value));
+  // const selectedFilters = availableFilters
+  //   .filter((filter) => hasValue(filters, filter.value))
+  //   .filter((filter) => filter.type === activeFilter)
+  //   .sort((a, b) => a.value.localeCompare(b.value));
+  // const unSelectedFilters = availableFilters
+  //   .filter((filter) => !hasValue(filters, filter.value))
+  //   .filter((filter) => filter.type === activeFilter)
+  //   .sort((a, b) => a.value.localeCompare(b.value));
 
   return (
     <BasePopover.Root open={open} onOpenChange={(value) => onOpenChange?.(value)}>
@@ -90,7 +90,7 @@ export function SearchFilters({ availableFilters, filters, openFilter, open, onO
                     </ul>
                   </div>
                   <div className="max-h-[60vh] basis-2/3 p-4 overflow-y-auto text-sm flex flex-col gap-4">
-                    {!!selectedFilters.length && (
+                    {/* {!!selectedFilters.length && (
                       <div>
                         <p className="mb-2 text-xs text-inky-black">ACTIVE FILTERS</p>
                         <ul className="flex flex-col gap-2">
@@ -114,7 +114,19 @@ export function SearchFilters({ availableFilters, filters, openFilter, open, onO
                           );
                         })}
                       </ul>
-                    )}
+                    )} */}
+                    <ul className="flex flex-col gap-2 text-inky-black">
+                      {availableFilters
+                        .filter((filter) => filter.type === activeFilter)
+                        .sort((a, b) => a.value.localeCompare(b.value))
+                        .map((filter) => {
+                          return (
+                            <li key={filter.id}>
+                              <Checkbox label={filter.value} onChange={(checked) => onChange?.(checked, filter.value)} />
+                            </li>
+                          );
+                        })}
+                    </ul>
                   </div>
                 </div>
               )}
