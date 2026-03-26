@@ -100,9 +100,9 @@ export function SearchResults({ promise, onSelectLabel }: { promise: Promise<Sea
 
   return (
     <div>
-      <p className="text-sm text-text-secondary mb-4">
+      {/* <p className="text-sm text-text-secondary mb-4">
         {data.total_size ?? 0} results — page {data.page} of {data.total_pages ?? 1}
-      </p>
+      </p> */}
       <ul className="space-y-4">
         {data.results.map((doc) => (
           <li key={doc.id} className={`flex flex-col gap-3 border border-transparent-regular rounded-md p-6 ${styles["highlights"]}`}>

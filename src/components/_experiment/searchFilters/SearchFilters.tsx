@@ -9,10 +9,10 @@ import { joinTailwindClasses } from "@/utils/tailwind";
 
 import { TQueryGroup } from "../queryBuilder/QueryBuilder";
 
-// function hasValue(group: TQueryGroup | null | undefined, value: string): boolean {
-//   if (!group) return false;
-//   return group.filters.some((f) => ("value" in f ? f.value === value : hasValue(f, value)));
-// }
+function hasValue(group: TQueryGroup | null | undefined, value: string): boolean {
+  if (!group) return false;
+  return group.filters.some((f) => ("value" in f ? f.value === value : hasValue(f, value)));
+}
 
 function hasActiveFilterOfType(filters: TLabelResult[], group: TQueryGroup | null | undefined, type: TFilterCategory): boolean {
   if (!group) return false;
@@ -122,7 +122,11 @@ export function SearchFilters({ availableFilters, filters, openFilter, open, onO
                         .map((filter) => {
                           return (
                             <li key={filter.id}>
-                              <Checkbox label={filter.value} onChange={(checked) => onChange?.(checked, filter.value)} />
+                              <Checkbox
+                                label={filter.value}
+                                onChange={(checked) => onChange?.(checked, filter.value)}
+                                checked={hasValue(filters, filter.value)}
+                              />
                             </li>
                           );
                         })}

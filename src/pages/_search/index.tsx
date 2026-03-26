@@ -39,6 +39,9 @@ const ShadowSearch = ({ theme, themeConfig, features }: TProps) => {
   const [filtersOpen, setFiltersOpen] = useState(false);
   const [filtersOpenFilter, setFiltersOpenFilter] = useState<TFilterCategory | undefined>(undefined);
 
+  // Control Advanced Filters view
+  const [advancedFiltersOpen, setAdvancedFiltersOpen] = useState(false);
+
   const handleSelectLabel = (label: string, type: string) => {
     setFiltersOpenFilter((type as TFilterCategory) || undefined);
     setFiltersOpen(true);
@@ -84,13 +87,13 @@ const ShadowSearch = ({ theme, themeConfig, features }: TProps) => {
               }
             }}
           />
-          <QueryBuilder filters={filters} setFilters={setFilters} />
+          <QueryBuilder filters={filters} setFilters={setFilters} open={advancedFiltersOpen} onOpenChange={setAdvancedFiltersOpen} />
         </div>
         {!isFilterGroupEmpty(filters) && (
           <div className={columnLayoutCss}>
             <AppliedLabels
+              filters={filters}
               availableFilters={availableFilters}
-              query={query}
               labels={selectedLabels}
               onClear={() => {
                 setFilters(createGroup());
@@ -98,7 +101,7 @@ const ShadowSearch = ({ theme, themeConfig, features }: TProps) => {
               }}
               onSelectLabel={handleSelectLabel}
               onRemoveLabel={(label) => setFilters((prev) => (prev ? removeLabelRule(prev, label) : createGroup()))}
-              setQuery={setQuery}
+              onAdvancedClick={() => setAdvancedFiltersOpen(true)}
             />
           </div>
         )}

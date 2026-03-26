@@ -10,6 +10,7 @@ import { joinTailwindClasses } from "@/utils/tailwind";
 import { IntelliSearchProps } from "./IntelliSearch.types";
 
 const underlineFirstInstanceOfQuery = (text: string, query: string) => {
+  if (!query) return text;
   const regex = new RegExp(`(${query})`, "i");
   return text.replace(regex, "<b><u>$1</u></b>");
 };

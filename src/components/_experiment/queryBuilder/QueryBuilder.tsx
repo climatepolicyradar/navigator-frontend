@@ -472,11 +472,13 @@ function GroupRenderer({ group, path, root, onChange, depth, onDeleteGroup }: Gr
 type TProps = {
   filters?: TQueryGroup | null;
   setFilters?: (filters: TQueryGroup | null) => void;
+  open?: boolean;
+  onOpenChange?: (open: boolean) => void;
 };
 
-export function QueryBuilder({ filters, setFilters }: TProps) {
+export function QueryBuilder({ filters, setFilters, open, onOpenChange }: TProps) {
   return (
-    <BasePopover.Root>
+    <BasePopover.Root open={open} onOpenChange={onOpenChange}>
       <BasePopover.Trigger
         render={(props, state) => (
           <button
