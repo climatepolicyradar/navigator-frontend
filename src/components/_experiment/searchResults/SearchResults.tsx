@@ -105,6 +105,7 @@ export function SearchResults({ promise, onSelectLabel }: { promise: Promise<Sea
       <ul className="space-y-4">
         {data.results.map((doc) => (
           <li key={doc.id} className={`flex flex-col gap-3 border border-transparent-regular rounded-md p-6 ${styles["highlights"]}`}>
+            {/* CORE DOCUMENT DETAILS */}
             <h3 className="font-semibold text-lg">
               {linkHref(doc) ? (
                 <Link href={linkHref(doc)} className="text-inky-blue hover:underline" dangerouslySetInnerHTML={{ __html: doc.title }} />
@@ -113,6 +114,7 @@ export function SearchResults({ promise, onSelectLabel }: { promise: Promise<Sea
               )}
             </h3>
             {doc.description && <p className="text-base text-inky-black" dangerouslySetInnerHTML={{ __html: doc.description }} />}
+            {/* DISPLAYING FILTERS */}
             {FILTER_AGGREGATIONS.map((agg) => {
               const relationshipsOfType = doc.labels.filter((label) => label.type === agg);
               if (relationshipsOfType.length === 0) return null;
@@ -121,22 +123,26 @@ export function SearchResults({ promise, onSelectLabel }: { promise: Promise<Sea
                 <div key={agg} className="flex items-start gap-6 text-sm text-inky-black">
                   <div className="basis-25 shrink-0 py-0.5 font-semibold">{labelTypeLabel(agg)}</div>
                   <div className="flex flex-wrap gap-1">
-                    {relationshipsOfType.slice(0, 3).map((relationship, i) => (
-                      <button
-                        key={i}
-                        className="flex gap-1 items-center rounded px-2 py-0.5 cursor-pointer hover:bg-neutral-200"
-                        onClick={() => onSelectLabel?.(relationship.value.value)}
-                      >
-                        {iconForLabelType(relationship.value.type)}
-                        <span>{relationship.value.value}</span>
-                        {/* <span>{relationship.count !== null && `(${relationship.count})`}</span> */}
-                      </button>
-                    ))}
+                    {relationshipsOfType
+                      .sort((a, b) => b.count - a.count)
+                      .slice(0, 3)
+                      .map((relationship, i) => (
+                        <button
+                          key={i}
+                          className="flex gap-1 items-center rounded px-2 py-0.5 cursor-pointer hover:bg-neutral-200"
+                          onClick={() => onSelectLabel?.(relationship.value.value)}
+                        >
+                          {iconForLabelType(relationship.value.type)}
+                          <span>{relationship.value.value}</span>
+                          {/* <span>{relationship.count !== null && `(${relationship.count})`}</span> */}
+                        </button>
+                      ))}
                     {relationshipsOfType.length > 3 && <span className="py-0.5 text-neutral-600">+{relationshipsOfType.length - 3} more</span>}
                   </div>
                 </div>
               );
             })}
+            {/* DISPLAYING DOCUMENT RELATIONSHIPS */}
             {RELATIONSHIP_AGGREGATIONS.map((agg) => {
               const relationshipsOfType = doc.documents.filter((relationship) => relationship.type === agg);
               if (relationshipsOfType.length === 0) return null;
