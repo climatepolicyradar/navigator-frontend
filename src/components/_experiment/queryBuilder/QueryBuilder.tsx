@@ -3,6 +3,7 @@ import { SlidersHorizontal, Plus, Trash2, X } from "lucide-react";
 import { useCallback, useEffect, useRef, useState } from "react";
 
 import { useLabelSearch, TLabelResult } from "@/hooks/useLabelSearch";
+import { labelTypeLabel } from "@/utils/_experiment/labelTypeLabel";
 import { joinTailwindClasses } from "@/utils/tailwind";
 
 // ---------------------------------------------------------------------------
@@ -22,6 +23,12 @@ type TQueryRule = {
 
 function isRule(node: TQueryGroup | TQueryRule): node is TQueryRule {
   return "field" in node;
+}
+
+export function isFilterGroupEmpty(filters: TQueryGroup | null): boolean {
+  if (!filters) return true;
+  if (filters.filters.length === 0) return true;
+  return filters.filters.some((f) => isRule(f) && f.value === "");
 }
 
 // ---------------------------------------------------------------------------
@@ -191,7 +198,7 @@ function LabelPicker({ value, onChange, placeholder = "Search...", autoFocus = f
   }
 
   return (
-    <div ref={containerRef} className="relative">
+    <div ref={containerRef}>
       <input
         ref={inputRef}
         type="text"
@@ -218,7 +225,7 @@ function LabelPicker({ value, onChange, placeholder = "Search...", autoFocus = f
         </div>
       )}
       {isOpen && results.length > 0 && (
-        <ul className="absolute z-50 mt-1 max-h-48 w-[200%] overflow-y-auto rounded-md border border-gray-200 bg-white shadow-lg">
+        <ul className="absolute z-50 mt-1 max-h-48 w-[300px] overflow-y-auto rounded-md border border-gray-200 bg-white shadow-lg">
           {results.map((label, idx) => (
             <li
               key={label.id}
@@ -231,7 +238,7 @@ function LabelPicker({ value, onChange, placeholder = "Search...", autoFocus = f
               )}
             >
               <span className="font-medium">{label.value}</span>
-              <span className="ml-2 text-gray-400 text-xs">Type: {label.type}</span>
+              <span className="ml-2 text-gray-400 text-xs">- {labelTypeLabel(label.type)}</span>
             </li>
           ))}
         </ul>
@@ -466,21 +473,27 @@ function GroupRenderer({ group, path, root, onChange, depth, onDeleteGroup }: Gr
 type TProps = {
   filters?: TQueryGroup | null;
   setFilters?: (filters: TQueryGroup | null) => void;
+  open?: boolean;
+  onOpenChange?: (open: boolean) => void;
 };
 
-export function QueryBuilder({ filters, setFilters }: TProps) {
+export function QueryBuilder({ filters, setFilters, open, onOpenChange }: TProps) {
   return (
-    <BasePopover.Root>
+    <BasePopover.Root open={open} onOpenChange={onOpenChange}>
       <BasePopover.Trigger
-        className={joinTailwindClasses(
-          "inline-flex items-center gap-2 rounded-md border border-gray-300 bg-white px-3 py-2 text-sm font-medium text-gray-700 shadow-sm",
-          "hover:bg-gray-50 hover:border-gray-400 transition-colors",
-          "focus:outline-none focus:ring-2 focus:ring-blue-200 focus:border-blue-500"
+        render={(props, state) => (
+          <button
+            {...props}
+            className={joinTailwindClasses(
+              "inline-flex items-center gap-2 rounded-full border border-transparent-regular bg-white px-3 py-2 text-sm font-medium text-gray-700 shadow-sm hover:bg-neutral-100 transition-colors focus:outline-none focus:ring-2 focus:ring-blue-200 focus:border-blue-500",
+              state.open ? "bg-inky-black! text-white!" : ""
+            )}
+          >
+            <SlidersHorizontal className="text-neutral-400 h-4 w-4" />
+            Advanced Filters
+          </button>
         )}
-      >
-        <SlidersHorizontal className="h-4 w-4" />
-        Advanced Filters
-      </BasePopover.Trigger>
+      />
 
       <BasePopover.Portal>
         <BasePopover.Positioner positionMethod="fixed" sideOffset={8} side="bottom" align="start" className="z-50">

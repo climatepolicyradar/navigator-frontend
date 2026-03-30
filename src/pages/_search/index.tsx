@@ -7,67 +7,23 @@ import { useMemo, useState, useEffect } from "react";
 import { ApiClient } from "@/api/http-common";
 import { AppliedLabels } from "@/components/_experiment/appliedLabels/AppliedLabels";
 import { IntelliSearch } from "@/components/_experiment/intellisearch";
-import { createGroup, QueryBuilder, TQueryGroup, TQueryRule } from "@/components/_experiment/queryBuilder/QueryBuilder";
-import { SearchFilters } from "@/components/_experiment/searchFilters/SearchFilters";
+import { createGroup, isFilterGroupEmpty, QueryBuilder, TQueryGroup, TQueryRule } from "@/components/_experiment/queryBuilder/QueryBuilder";
+import { SearchFilters, TFilterCategory } from "@/components/_experiment/searchFilters/SearchFilters";
 import { SearchContainer } from "@/components/_experiment/searchResults/SearchResults";
+import { FiveColumns } from "@/components/atoms/columns/FiveColumns";
 import { withEnvConfig } from "@/context/EnvConfig";
 import { FeaturesContext } from "@/context/FeaturesContext";
 import { TLabelResult, loadLabels } from "@/hooks/useLabelSearch";
 import { FilterGroupSchema } from "@/schemas";
 import { getFeatureFlags } from "@/utils/featureFlags";
 import { getFeatures } from "@/utils/features";
+import { addLabelRule, extractLabels, removeLabelRule } from "@/utils/filters/advancedFilters";
 import { readConfigFile } from "@/utils/readConfigFile";
+import { joinTailwindClasses } from "@/utils/tailwind";
+
+const columnLayoutCss = "col-start-1 -col-end-1 cols-5:col-start-3 cols-5:-col-end-3";
 
 type TProps = InferGetServerSidePropsType<typeof getServerSideProps>;
-
-/** Extract all label values from "contains" rules in the filter tree. */
-function extractLabels(group: TQueryGroup | null): string[] {
-  if (!group) return [];
-  const labels: string[] = [];
-  for (const filter of group.filters) {
-    if ("field" in filter) {
-      if (filter.op === "contains" && filter.value) labels.push(filter.value);
-    } else {
-      labels.push(...extractLabels(filter));
-    }
-  }
-  return labels;
-}
-
-const groupIsEmpty = (group: TQueryGroup | null): boolean => {
-  if (!group) return true;
-  return group.filters.length === 0 || group.filters.every((f) => "field" in f && f.op === "contains" && !f.value);
-};
-
-/** Add a label as a new "contains" rule to the root filter group. */
-function addLabelRule(group: TQueryGroup | null, label: string): TQueryGroup {
-  const rule: TQueryRule = { field: "labels.value.id", op: "contains", value: label };
-  if (groupIsEmpty(group)) return { op: "and", filters: [rule] };
-  return { ...group, filters: [...group.filters, rule] };
-}
-
-/** Remove the first "contains" rule matching a label value from the filter tree. */
-function removeLabelRule(group: TQueryGroup, label: string): TQueryGroup | null {
-  const newFilters: (TQueryGroup | TQueryRule)[] = [];
-  let removed = false;
-
-  for (const filter of group.filters) {
-    if (!removed && "field" in filter && filter.op === "contains" && filter.value === label) {
-      removed = true; // skip this rule
-      continue;
-    }
-    if (!("field" in filter)) {
-      const updated = removeLabelRule(filter, label);
-      if (updated) newFilters.push(updated);
-      else removed = true; // nested group became empty
-    } else {
-      newFilters.push(filter);
-    }
-  }
-
-  if (newFilters.length === 0) return createGroup();
-  return { ...group, filters: newFilters };
-}
 
 const ShadowSearch = ({ theme, themeConfig, features }: TProps) => {
   const [availableFilters, setAvailableFilters] = useState<TLabelResult[]>([]);
@@ -79,39 +35,51 @@ const ShadowSearch = ({ theme, themeConfig, features }: TProps) => {
   // Derive selectedLabels from the filter tree
   const selectedLabels = useMemo(() => extractLabels(filters), [filters]);
 
+  // Control SearchFilters popover from outside
+  const [filtersOpen, setFiltersOpen] = useState(false);
+  const [filtersOpenFilter, setFiltersOpenFilter] = useState<TFilterCategory | undefined>(undefined);
+
+  // Control Advanced Filters view
+  const [advancedFiltersOpen, setAdvancedFiltersOpen] = useState(false);
+
+  const handleSelectLabel = (label: string, type: string) => {
+    setFiltersOpenFilter((type as TFilterCategory) || undefined);
+    setFiltersOpen(true);
+  };
+
   useEffect(() => {
     loadLabels("").then(setAvailableFilters);
   }, []);
 
   return (
     <FeaturesContext.Provider value={features}>
-      <div className="w-3/4 m-auto mt-8 pb-12 flex flex-col gap-4">
-        <IntelliSearch
-          selectedLabels={selectedLabels}
-          onSelectSuggestion={(suggestion) => {
-            if (suggestion) {
-              if (suggestion && !selectedLabels.includes(suggestion)) {
-                setFilters((prev) => addLabelRule(prev, suggestion));
+      {/* <div className="w-3/4 m-auto mt-8 pb-12 flex flex-col gap-4"> */}
+      <FiveColumns className="mt-4 gap-y-4">
+        <div className={columnLayoutCss}>
+          <h1 className="text-5xl font-bold text-inky-black">Search</h1>
+        </div>
+        <div className={columnLayoutCss}>
+          <IntelliSearch
+            query={query}
+            selectedLabels={selectedLabels}
+            onSelectSuggestion={(suggestion) => {
+              if (suggestion) {
+                if (suggestion && !selectedLabels.includes(suggestion)) {
+                  setFilters((prev) => addLabelRule(prev, suggestion));
+                }
               }
-            }
-          }}
-          setQuery={setQuery}
-        />
-        <AppliedLabels
-          availableFilters={availableFilters}
-          query={query}
-          labels={selectedLabels}
-          onSelectLabel={(label, type) => {
-            // eslint-disable-next-line no-console
-            console.log("Selected label:", label, ", Type:", type);
-          }}
-          onRemoveLabel={(label) => setFilters((prev) => (prev ? removeLabelRule(prev, label) : createGroup()))}
-          setQuery={setQuery}
-        />
-        <div className="flex justify-between items-center">
+            }}
+            setQuery={setQuery}
+            onAdvancedClick={() => setAdvancedFiltersOpen(true)}
+          />
+        </div>
+        <div className={joinTailwindClasses(columnLayoutCss, "flex justify-between items-center")}>
           <SearchFilters
             availableFilters={availableFilters}
             filters={filters}
+            open={filtersOpen}
+            onOpenChange={setFiltersOpen}
+            openFilter={filtersOpenFilter}
             onChange={(checked, label) => {
               if (checked) {
                 setFilters((prev) => addLabelRule(prev, label));
@@ -120,19 +88,36 @@ const ShadowSearch = ({ theme, themeConfig, features }: TProps) => {
               }
             }}
           />
-          <QueryBuilder filters={filters} setFilters={setFilters} />
-          {/* <pre className="text-xs">{filters ? JSON.stringify(filters, null, 2) : "No filters"}</pre> */}
+          <QueryBuilder filters={filters} setFilters={setFilters} open={advancedFiltersOpen} onOpenChange={setAdvancedFiltersOpen} />
         </div>
-        <SearchContainer
-          query={query}
-          onSelectLabel={(label) => {
-            if (!selectedLabels.includes(label)) {
-              setFilters((prev) => addLabelRule(prev, label));
-            }
-          }}
-          filters={filters}
-        />
-      </div>
+        {!isFilterGroupEmpty(filters) && (
+          <div className={columnLayoutCss}>
+            <AppliedLabels
+              filters={filters}
+              availableFilters={availableFilters}
+              labels={selectedLabels}
+              onClear={() => {
+                setFilters(createGroup());
+                setQuery("");
+              }}
+              onSelectLabel={handleSelectLabel}
+              onRemoveLabel={(label) => setFilters((prev) => (prev ? removeLabelRule(prev, label) : createGroup()))}
+              onAdvancedClick={() => setAdvancedFiltersOpen(true)}
+            />
+          </div>
+        )}
+        <div className={columnLayoutCss}>
+          <SearchContainer
+            query={query}
+            onSelectLabel={(label) => {
+              if (!selectedLabels.includes(label)) {
+                setFilters((prev) => addLabelRule(prev, label));
+              }
+            }}
+            filters={filters}
+          />
+        </div>
+      </FiveColumns>
     </FeaturesContext.Provider>
   );
 };

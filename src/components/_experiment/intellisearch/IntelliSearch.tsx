@@ -1,105 +1,73 @@
-import { Input } from "@base-ui/react/input";
-import { useCallback, useMemo, useRef, useState } from "react";
+import { Autocomplete } from "@base-ui/react/autocomplete";
+import { ScrollArea } from "@base-ui/react/scroll-area";
+import { CornerDownLeft, LucideSearch, SlidersHorizontal } from "lucide-react";
+import { useMemo, useRef, useState } from "react";
 
-import { useLabelSearch } from "@/hooks/useLabelSearch";
+import { TLabelResult, useLabelSearch } from "@/hooks/useLabelSearch";
+import { labelTypeLabel } from "@/utils/_experiment/labelTypeLabel";
 import { joinTailwindClasses } from "@/utils/tailwind";
 
-import { IntelliSearchProps, TSuggestion } from "./IntelliSearch.types";
+import { IntelliSearchProps } from "./IntelliSearch.types";
 
 const underlineFirstInstanceOfQuery = (text: string, query: string) => {
+  if (!query) return text;
   const regex = new RegExp(`(${query})`, "i");
-  return text.replace(regex, "<u>$1</u>");
+  return text.replace(regex, "<b><u>$1</u></b>");
 };
 
-const displaySuggestion = (suggestion: TSuggestion, searchTerm: string) => {
-  switch (suggestion.type) {
-    case "label":
-      return (
-        <>
-          <span
-            className="font-medium text-gray-900"
-            dangerouslySetInnerHTML={{ __html: underlineFirstInstanceOfQuery(suggestion.data.value, searchTerm) }}
-          />
-          <span className="text-gray-500"> — </span>
-          <span className="text-gray-600 font-medium">{suggestion.data.type}</span>
-        </>
-      );
-    case "search":
-      return (
-        <>
-          <span>
-            Search for "<b>{suggestion.data}</b>"
-          </span>
-        </>
-      );
-    default:
-      return "";
-  }
-};
-
-/**
- * IntelliSearch Component
- *
- * An intelligent search component that provides real-time suggestions from two sources:
- * 1. External Labels API - dynamically searched based on user input
- * 2. Concepts - pre-loaded data with definitions and alternative labels
- *
- * Features:
- * - Debounced search to minimize API calls
- * - Hover preview cards for concepts showing detailed information
- * - Full keyboard navigation (Arrow keys, Enter, Escape)
- * - Focus and mouse-aware suggestion visibility
- * - Case-insensitive matching across multiple fields
- *
- * @example
- * ```tsx
- * <IntelliSearch placeholder="Search for concepts or labels..." />
- * ```
- */
 export function IntelliSearch({
+  query,
   className,
-  placeholder = "Search for anything",
-  debounceDelay = 300,
+  placeholder = "Search",
+  debounceDelay = 50,
   maxSuggestions,
   selectedLabels = [],
   onSelectSuggestion,
   setQuery,
+  onAdvancedClick,
 }: IntelliSearchProps) {
   // State management
-  const [searchTerm, setSearchTerm] = useState("");
-  const [isInputFocused, setIsInputFocused] = useState(false);
-  const [isMouseInComponent, setIsMouseInComponent] = useState(false);
-  const [activeSuggestionIndex, setActiveSuggestionIndex] = useState(0);
+  const [searchTerm, setSearchTerm] = useState(query);
+  const [inputFocused, setInputFocused] = useState(false);
   const { results: labelsResults, isLoading: isLoadingLabels } = useLabelSearch(searchTerm, { debounceDelay });
 
   // Refs
   const inputRef = useRef<HTMLInputElement>(null);
   const containerRef = useRef<HTMLDivElement>(null);
 
-  const resetSearchState = () => {
+  function handleSuggestionClick(suggestion: string) {
+    onSelectSuggestion?.(suggestion);
+    setQuery?.("");
     setSearchTerm("");
-    setActiveSuggestionIndex(-1);
-  };
+    inputRef.current?.blur();
+  }
 
-  /**
-   * Unified suggestions list - labels first, then concepts.
-   * Excludes concepts already in selectedLabels (Active filters).
-   */
+  function handleSearchClick() {
+    setQuery?.(searchTerm.trim());
+    inputRef.current?.blur();
+  }
+
+  function handleAdvancedClick() {
+    onAdvancedClick?.();
+    inputRef.current?.blur();
+  }
+
   const suggestions = useMemo(() => {
     const selectedSet = new Set(selectedLabels.map((s) => s.toLowerCase()));
-    const unified: TSuggestion[] = [];
+    const unified: TLabelResult[] = [];
 
     // Add label suggestions first
     labelsResults.forEach((label) => {
-      if (selectedSet.has(label.id.toLowerCase())) return; // Exclude if already selected as filter
-      unified.push({ type: "label", data: label });
+      if (selectedSet.has(label.value.toLowerCase())) return; // Exclude if already selected as filter
+      unified.push(label);
     });
 
     // Add search suggestion
     if (searchTerm.trim()) {
       unified.unshift({
+        id: "search",
         type: "search",
-        data: searchTerm.trim(),
+        value: searchTerm.trim(),
       });
     }
 
@@ -107,156 +75,115 @@ export function IntelliSearch({
     return maxSuggestions ? unified.slice(0, maxSuggestions) : unified;
   }, [labelsResults, maxSuggestions, selectedLabels, searchTerm]);
 
-  /**
-   * Determine if suggestions should be visible
-   * Show when: input has value AND (input focused OR mouse in component)
-   */
-  const shouldShowSuggestions = (isInputFocused || isMouseInComponent) && suggestions.length > 0;
-
-  /**
-   * Handle input change
-   */
-  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setSearchTerm(e.target.value);
-    setActiveSuggestionIndex(-1); // Reset active suggestion
-  };
-
-  /**
-   * Handle keyboard navigation
-   * Arrow Up/Down: Navigate through suggestions
-   * Enter: Select active suggestion or trigger search with query
-   * Escape: Clear input and blur
-   */
-  const handleKeyDownInput = useCallback(
-    (e: React.KeyboardEvent<HTMLInputElement>) => {
-      switch (e.key) {
-        case "ArrowDown":
-          e.preventDefault();
-          setActiveSuggestionIndex((prev) => (prev < suggestions.length - 1 ? prev + 1 : 0));
-          break;
-
-        case "ArrowUp":
-          e.preventDefault();
-          setActiveSuggestionIndex((prev) => (prev > 0 ? prev - 1 : suggestions.length - 1));
-          break;
-
-        case "Enter":
-          e.preventDefault();
-          // If a suggestion is active, trigger selection callback, otherwise search for string
-          if (activeSuggestionIndex >= 0) {
-            if (suggestions[activeSuggestionIndex].type === "label") {
-              onSelectSuggestion?.(suggestions[activeSuggestionIndex].data.value);
-            } else if (suggestions[activeSuggestionIndex].type === "search") {
-              setQuery?.(suggestions[activeSuggestionIndex].data);
-            }
-            resetSearchState();
-          } else {
-            setQuery?.(searchTerm.trim());
-            inputRef.current?.blur();
-            resetSearchState();
-          }
-
-          break;
-
-        case "Escape":
-          e.preventDefault();
-          resetSearchState();
-          inputRef.current?.blur();
-          break;
-      }
-    },
-    [activeSuggestionIndex, onSelectSuggestion, suggestions, setQuery, searchTerm]
-  );
-
   return (
-    <div
-      ref={containerRef}
-      className={joinTailwindClasses("relative w-full", className)}
-      onMouseEnter={() => setIsMouseInComponent(true)}
-      onMouseLeave={() => {
-        setIsMouseInComponent(false);
-      }}
-    >
-      {/* Input Field */}
-      <div
-        className={joinTailwindClasses(
-          "w-full rounded-lg border border-gray-300 bg-white px-4 py-3 relative",
-          "shadow-sm transition-all duration-200",
-          "hover:border-gray-400",
-          "focus-within:border-blue-500 focus-within:ring-2 focus-within:ring-blue-100 focus-within:shadow-md"
-        )}
-      >
-        <Input
-          ref={inputRef}
-          type="text"
-          value={searchTerm}
-          onChange={handleInputChange}
-          onFocus={() => setIsInputFocused(true)}
-          onBlur={() => setIsInputFocused(false)}
-          onKeyDown={handleKeyDownInput}
-          placeholder={placeholder}
-          aria-label="Intelligent search input"
-          aria-autocomplete="list"
-          aria-controls="suggestions-list"
-          aria-expanded={shouldShowSuggestions}
-          className="w-full bg-transparent text-base text-gray-900 placeholder-gray-400 outline-none border-0"
-          autoComplete="off"
-        />
-      </div>
-
-      {/* Loading Indicator */}
-      {isLoadingLabels && (
-        <div className="absolute right-6 top-6">
-          <div className="h-5 w-5 animate-spin rounded-full border-2 border-gray-300 border-t-blue-500" />
-        </div>
-      )}
-
-      {/* Suggestions List */}
-      {shouldShowSuggestions && (
-        <div className="relative mt-1">
-          <div
-            id="suggestions-list"
-            role="listbox"
-            className={joinTailwindClasses(
-              "absolute z-10 w-full",
-              "max-h-96 overflow-y-auto",
-              "rounded-lg border border-gray-200 bg-white shadow-xl",
-              "py-2"
-            )}
-          >
-            {suggestions.map((suggestion, index) => {
-              const isActive = activeSuggestionIndex === -1 ? index === 0 : index === activeSuggestionIndex;
-
-              return (
-                <div
-                  key={`${suggestion.type}-${index}`}
-                  role="option"
-                  aria-selected={isActive}
-                  className={joinTailwindClasses(
-                    "relative px-4 py-2.5 cursor-pointer",
-                    "transition-all duration-150",
-                    "hover:bg-gray-100 hover:shadow-sm hover:scale-[1.01]",
-                    isActive && "bg-blue-50 border-l-2 border-l-blue-500",
-                    !isActive && "border-l-2 border-l-transparent"
-                  )}
-                  onMouseDown={(e) => e.preventDefault()}
-                  onClick={() => {
-                    resetSearchState();
-                    if (suggestion.type === "label") {
-                      onSelectSuggestion?.(suggestion.data.value);
-                    } else if (suggestion.type === "search") {
-                      setQuery?.(suggestion.data);
-                    }
-                  }}
-                >
-                  <div className="text-sm">{displaySuggestion(suggestion, searchTerm)}</div>
-                  {isActive && <span className="absolute top-2 right-2 bg-white p-1 text-xs border border-gray-200">Enter</span>}
-                </div>
-              );
-            })}
+    <div ref={containerRef} className={joinTailwindClasses("relative w-full", className)}>
+      <Autocomplete.Root open items={suggestions} autoHighlight="always" keepHighlight>
+        <div className="relative border border-transparent-regular rounded-xl">
+          <div className="flex items-center gap-2 ml-6">
+            <LucideSearch width={16} height={16} className="text-neutral-500" />
+            <Autocomplete.Input
+              className="w-full p-4 pl-0 border-0 bg-transparent text-base leading-5 text-inky-black placeholder-neutral-500"
+              placeholder={placeholder}
+              ref={inputRef}
+              value={searchTerm}
+              onKeyDown={(e) => {
+                // We need to catch hitting enter with an empty string
+                // Otherwise we can't clear the current search term using base-ui's autocomplete
+                if (e.key === "Enter" && searchTerm.trim() === "") {
+                  setQuery?.(searchTerm.trim());
+                }
+              }}
+              onChange={(e) => setSearchTerm(e.target.value)}
+              onFocus={() => setInputFocused(true)}
+              onBlur={() => setInputFocused(false)}
+              autoComplete="off"
+            />
           </div>
+          {isLoadingLabels && (
+            <div className="absolute right-4 top-4">
+              <div className="h-5 w-5 animate-spin rounded-full border-2 border-gray-300 border-t-blue-500" />
+            </div>
+          )}
         </div>
-      )}
+        <Autocomplete.Portal hidden={!inputFocused || searchTerm.trim() === ""}>
+          <Autocomplete.Positioner className="outline-hidden" align="start" anchor={containerRef}>
+            <Autocomplete.Popup className="mt-1 w-(--anchor-width) border bg-white border-transparent-regular rounded-xl">
+              <ScrollArea.Root className="flex max-h-[60dvh] min-h-0 flex-[0_1_auto] overflow-hidden rounded-top-xl">
+                <ScrollArea.Viewport className="min-h-0 flex-1 overscroll-contain scroll-py-2 focus-visible:outline-1 focus-visible:-outline-offset-1 focus-visible:outline-blue-800">
+                  <ScrollArea.Content className="min-w-full">
+                    <Autocomplete.List className="p-2">
+                      {/* TEXT SEARCH */}
+                      {searchTerm.trim() && (
+                        <Autocomplete.Group className="block pb-2">
+                          <Autocomplete.Item
+                            value={{ value: searchTerm, type: "search" }}
+                            onClick={() => handleSearchClick()}
+                            className="flex min-h-8 cursor-pointer items-center gap-1 rounded-md pl-4 pr-3 text-base text-inky-black select-none outline-none scroll-my-1 group data-highlighted:bg-neutral-200"
+                          >
+                            <span dangerouslySetInnerHTML={{ __html: `Search for <b>${searchTerm}</b>` }} />
+                            <div className="hidden text-sm text-neutral-600 gap-1 items-center ml-auto group-data-highlighted:inline-flex">
+                              Enter
+                              <CornerDownLeft height={16} width={16} className="inline" />
+                            </div>
+                          </Autocomplete.Item>
+                        </Autocomplete.Group>
+                      )}
+                      {/* EMPTY STATE */}
+                      <Autocomplete.Empty className="min-h-10 p-4 text-sm leading-4 text-gray-600 empty:m-0 empty:min-h-0 empty:p-0">
+                        {searchTerm.trim().length === 0 ? "Enter a search query to see suggestions" : "No suggestions found for your query"}
+                      </Autocomplete.Empty>
+                      {/* SUGGESTIONS */}
+                      {/* the first suggestion is always the search term, so we start from index 1 to show label suggestions first */}
+                      {suggestions.length > 1 && (
+                        <Autocomplete.Group items={suggestions.slice(1, suggestions.length)} className="block pb-2">
+                          <Autocomplete.GroupLabel className="sticky top-0 z-1 m-0 mr-2 bg-white px-4 py-2 text-xs text-neutral-500">
+                            Suggestions
+                          </Autocomplete.GroupLabel>
+                          <Autocomplete.Collection>
+                            {(suggestion: TLabelResult) => (
+                              <Autocomplete.Item
+                                key={suggestion.value}
+                                value={{ value: suggestion.value, type: "label" }}
+                                onClick={() => handleSuggestionClick(suggestion.value)}
+                                className="flex min-h-9 cursor-pointer items-center gap-1 rounded-md pl-4 pr-3 text-base text-inky-black select-none outline-none scroll-my-1 group data-highlighted:bg-neutral-200"
+                              >
+                                <span
+                                  className="truncate"
+                                  dangerouslySetInnerHTML={{ __html: underlineFirstInstanceOfQuery(suggestion.value, searchTerm) }}
+                                />
+                                <span className="text-gray-500">—</span>
+                                <span className="shrink-0 whitespace-nowrap text-neutral-500">{labelTypeLabel(suggestion.type)}</span>
+                                <div className="hidden text-sm text-neutral-600 gap-1 items-center ml-auto group-data-highlighted:inline-flex">
+                                  Enter
+                                  <CornerDownLeft height={16} width={16} className="inline" />
+                                </div>
+                              </Autocomplete.Item>
+                            )}
+                          </Autocomplete.Collection>
+                        </Autocomplete.Group>
+                      )}
+                    </Autocomplete.List>
+                  </ScrollArea.Content>
+                </ScrollArea.Viewport>
+                <ScrollArea.Scrollbar className="-mr-1 flex w-6 justify-center py-2">
+                  <ScrollArea.Thumb className="flex w-full justify-center before:block before:h-full before:w-1 before:rounded-sm before:bg-neutral-400 before:content-['']" />
+                </ScrollArea.Scrollbar>
+              </ScrollArea.Root>
+
+              <div className="flex items-center justify-between border-t border-transparent-regular p-4 text-sm text-inky-black">
+                <button
+                  className="flex items-center gap-2 hover:bg-neutral-200 rounded-md p-1"
+                  onMouseDown={(e) => e.preventDefault()}
+                  onClick={handleAdvancedClick}
+                >
+                  <SlidersHorizontal className="h-4 w-4" />
+                  Advanced
+                </button>
+              </div>
+            </Autocomplete.Popup>
+          </Autocomplete.Positioner>
+        </Autocomplete.Portal>
+      </Autocomplete.Root>
     </div>
   );
 }

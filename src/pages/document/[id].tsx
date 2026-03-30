@@ -39,6 +39,7 @@ export const getServerSideProps = (async (context) => {
   const { data: familyData, errors } = await getFamilyData(slug, features);
   errors.forEach((err) => console.error(err));
   if (familyData === null) return { notFound: true };
+  if (!features.debug) delete familyData.debug;
 
   return {
     props: withEnvConfig({

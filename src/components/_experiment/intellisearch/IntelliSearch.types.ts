@@ -38,6 +38,7 @@ export type TSuggestion =
  * Props for the main IntelliSearch component
  */
 export interface IntelliSearchProps {
+  query: string;
   /** Optional className for custom styling */
   className?: string;
   /** Placeholder text for the input */
@@ -52,6 +53,7 @@ export interface IntelliSearchProps {
   onSelectSuggestion?: (suggestion: string) => void;
   /** Optional callback to set the search query */
   setQuery?: (query: string) => void;
+  onAdvancedClick?: () => void;
 }
 
 /**

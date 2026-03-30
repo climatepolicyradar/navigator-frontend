@@ -37,6 +37,7 @@ import {
   TTheme,
   TThemeConfig,
   TFeatures,
+  TFamilyApiNewData,
 } from "@/types";
 import { getFamilyBlocks } from "@/utils/blocks/getFamilyBlocks";
 import { getFamilyMetadata } from "@/utils/family-metadata/getFamilyMetadata";
@@ -59,13 +60,18 @@ export interface IProps {
   theme: TTheme;
   themeConfig: TThemeConfig;
   vespaFamilyData?: TSearchResponse | null;
-  usesDataIn: boolean;
+  debug?: {
+    usesDataIn: boolean;
+    newApiData?: TFamilyApiNewData;
+    originalFamily?: TFamilyPublic;
+  };
 }
 
 export const FamilyPage = ({
   collections,
   corpus_types,
   countries,
+  debug,
   errors,
   family,
   familyTopics,
@@ -74,7 +80,6 @@ export const FamilyPage = ({
   subdivisions,
   theme,
   themeConfig,
-  usesDataIn,
 }: IProps) => {
   const configQuery = useConfig();
   const { data: { languages = {} } = {} } = configQuery;
@@ -111,9 +116,11 @@ export const FamilyPage = ({
     debug: {
       render: () => (
         <Section key="debug" block="debug" title="Debug">
-          <div className="col-start-1 -col-end-1">
+          <div className="col-start-1 -col-end-1 flex flex-col gap-2">
             <Debug data={errors.map((error) => JSON.parse(error))} title="Transformation errors" />
-            <Debug data={family} title="Family" />
+            <Debug data={family} title={debug?.usesDataIn ? "Family (Data-in API)" : "Family (V2 API)"} />
+            {debug?.originalFamily && <Debug data={debug?.originalFamily} title="Family (V2 API)" />}
+            {debug?.newApiData && <Debug data={debug?.newApiData} title="Data-in API document response" />}
             <Debug data={collections} title="Collections" />
             <Debug data={countries} title="Countries" />
             <Debug data={subdivisions} title="Subdivisions" />
@@ -190,7 +197,7 @@ export const FamilyPage = ({
           isSubdivision={Boolean(breadcrumbParentGeography)}
           label={family.title}
         />
-        {features["new-data-model"] && <DataInDebug corpusId={family.corpus_id} usesDataIn={usesDataIn} />}
+        {features["new-data-model"] && features.debug && <DataInDebug corpusId={family.corpus_id} usesDataIn={debug.usesDataIn} />}
         <PageHeader title={family.title} metadata={pageHeaderMetadata} />
         <BlocksLayout blockDefinitions={blockDefinitions} blocksToRender={blocksToRender} />
         <Head>

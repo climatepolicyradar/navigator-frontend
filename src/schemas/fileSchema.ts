@@ -2,11 +2,18 @@ import * as v from "valibot";
 
 import { LabelSchema } from "./labelSchema";
 
-const ItemSchema = v.object({
+export const FILE_ITEM_TYPES = ["cdn", "source"] as const;
+const FileItemTypeSchema = v.union(FILE_ITEM_TYPES.map((type) => v.literal(type)));
+export type TDataInFileItemType = v.InferOutput<typeof FileItemTypeSchema>;
+export const MANDATORY_FILE_ITEM_TYPES: TDataInFileItemType[] = ["cdn", "source"];
+
+const FileItemSchema = v.object({
   url: v.string(),
-  type: v.string(),
+  type: FileItemTypeSchema,
   content_type: v.nullable(v.string()),
 });
+
+export type TDataInFileItem = v.InferOutput<typeof FileItemSchema>;
 
 export const FileSchema = v.object({
   type: v.union([v.literal("has_member"), v.literal("has_version")]),
@@ -14,10 +21,12 @@ export const FileSchema = v.object({
     id: v.string(),
     title: v.string(),
     description: v.nullable(v.string()),
-    items: v.array(ItemSchema),
+    items: v.array(FileItemSchema),
     labels: v.array(LabelSchema),
     attributes: v.object({
       deprecated_slug: v.string(),
+      md5_sum: v.optional(v.string()),
+      variant: v.optional(v.string()),
     }),
   }),
   timestamp: v.nullable(v.string()),
