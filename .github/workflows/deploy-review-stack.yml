@@ -72,6 +72,39 @@ jobs:
           fi
           echo "Stack ready (HTTP $status)"
 
+      - name: Configure stack deployment settings
+        if: steps.decide.outputs.action == 'update'
+        env:
+          STACK_NAME: ${{ steps.decide.outputs.stack_name }}
+        run: |
+          # Apply deployment settings so the stack knows where to find
+          # source code, how to authenticate, and which ESC environment
+          # to use. Config is copied from cpr-review at deploy time via
+          # a preRunCommand.
+          curl -fsSL -X POST \
+            -H "Authorization: token ${PULUMI_ACCESS_TOKEN}" \
+            -H "Content-Type: application/json" \
+            "https://api.pulumi.com/api/stacks/${ORG}/${PROJECT}/${STACK_NAME}/deployments/settings" \
+            -d "{
+              \"sourceContext\": {
+                \"git\": {
+                  \"branch\": \"main\",
+                  \"repoDir\": \"infra\"
+                }
+              },
+              \"operationContext\": {
+                \"preRunCommands\": [
+                  \"pulumi config env add ${PROJECT}/cpr-review --yes --stack ${ORG}/${PROJECT}/${STACK_NAME} || true\",
+                  \"pulumi config cp -d ${ORG}/${PROJECT}/${STACK_NAME} -s ${ORG}/${PROJECT}/cpr-review\"
+                ],
+                \"options\": {
+                  \"skipIntermediateDeployments\": true
+                }
+              }
+            }"
+
+          echo "Deployment settings configured for ${STACK_NAME}"
+
       - name: Trigger update deployment
         if: steps.decide.outputs.action == 'update'
         env:
