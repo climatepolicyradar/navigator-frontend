@@ -76,11 +76,13 @@ jobs:
         if: steps.decide.outputs.action == 'update'
         env:
           STACK_NAME: ${{ steps.decide.outputs.stack_name }}
+          GITHUB_INSTALLATION_ID: b6353284-2ab2-483d-b6e0-df619e6a69ca
         run: |
           # Apply deployment settings so the stack knows where to find
           # source code, how to authenticate, and which ESC environment
-          # to use. Config is copied from cpr-review at deploy time via
-          # a preRunCommand.
+          # to use. The gitHub block provides repo access via the Pulumi
+          # GitHub App. Config is copied from cpr-review at deploy time
+          # via a preRunCommand.
           curl -fsSL -X POST \
             -H "Authorization: token ${PULUMI_ACCESS_TOKEN}" \
             -H "Content-Type: application/json" \
@@ -91,6 +93,10 @@ jobs:
                   \"branch\": \"main\",
                   \"repoDir\": \"infra\"
                 }
+              },
+              \"gitHub\": {
+                \"repository\": \"climatepolicyradar/navigator-frontend\",
+                \"installationId\": \"${GITHUB_INSTALLATION_ID}\"
               },
               \"operationContext\": {
                 \"preRunCommands\": [
