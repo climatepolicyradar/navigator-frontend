@@ -239,30 +239,31 @@ cpr_review_env = pulumiservice.Environment(
 # Manages the deployment settings for the cpr-review stack, which serves as
 # the template for PR review stacks. Credentials come from ESC (via the
 # cpr-review environment), not from inline OIDC.
-cpr_review_deployment_settings = pulumiservice.DeploymentSettings(
-    "cpr-review-deployment-settings",
-    organization=org_name,
-    project=project_name,
-    stack="cpr-review",
-    source_context=pulumiservice.DeploymentSettingsSourceContextArgs(
-        git=pulumiservice.DeploymentSettingsGitSourceArgs(
-            branch="main",
-            repo_dir="infra",
+for theme in ["cpr", "cclw", "mcf", "ccc"]:
+    deployment_settings = pulumiservice.DeploymentSettings(
+        f"{theme}-review-deployment-settings",
+        organization=org_name,
+        project=project_name,
+        stack=f"{theme}-review",
+        source_context=pulumiservice.DeploymentSettingsSourceContextArgs(
+            git=pulumiservice.DeploymentSettingsGitSourceArgs(
+                branch="main",
+                repo_dir="infra",
+            ),
         ),
-    ),
-    vcs=pulumiservice.DeploymentSettingsVcsArgs(
-        provider="github",
-        repository="climatepolicyradar/navigator-frontend",
-        pull_request_template=False,
-        deploy_commits=False,
-        preview_pull_requests=False,
-    ),
-    operation_context=pulumiservice.DeploymentSettingsOperationContextArgs(
-        # DEPLOY_FROM_MAIN_BRANCH_ONLY and DEPLOY_TO_PROD_STACK_ALLOWED are
-        # now provided via the cpr-review ESC environment so that PR review
-        # stacks inherit them automatically.
-        options=pulumiservice.OperationContextOptionsArgs(
-            skip_intermediate_deployments=True,
+        vcs=pulumiservice.DeploymentSettingsVcsArgs(
+            provider="github",
+            repository="climatepolicyradar/navigator-frontend",
+            pull_request_template=False,
+            deploy_commits=False,
+            preview_pull_requests=False,
         ),
-    ),
-)
+        operation_context=pulumiservice.DeploymentSettingsOperationContextArgs(
+            # DEPLOY_FROM_MAIN_BRANCH_ONLY and DEPLOY_TO_PROD_STACK_ALLOWED are
+            # now provided via the cpr-review ESC environment so that PR review
+            # stacks inherit them automatically.
+            options=pulumiservice.OperationContextOptionsArgs(
+                skip_intermediate_deployments=True,
+            ),
+        ),
+    )
