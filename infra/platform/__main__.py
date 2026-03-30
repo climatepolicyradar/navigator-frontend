@@ -255,7 +255,7 @@ cpr_review_deployment_settings = pulumiservice.DeploymentSettings(
         repository="climatepolicyradar/navigator-frontend",
         pull_request_template=True,
         deploy_commits=False,
-        preview_pull_requests=True,
+        preview_pull_requests=False,
     ),
     operation_context=pulumiservice.DeploymentSettingsOperationContextArgs(
         # DEPLOY_FROM_MAIN_BRANCH_ONLY and DEPLOY_TO_PROD_STACK_ALLOWED are
