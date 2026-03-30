@@ -139,9 +139,9 @@ if is_review_stack:
         build_on_preview=False,
     )
 
-    repository_url: pulumi.Input[str] = review_ecr_url
     # Use the tag-based identifier for App Runner (it doesn't support @digest refs).
-    image_identifier: pulumi.Input[str] = f"{review_ecr_url}:{docker_tag}"
+    repository_url = review_ecr_url
+    image_identifier = pulumi.Output.concat(review_ecr_url, ":", docker_tag)
     pulumi.info(f"Repository URL: {review_ecr_url}")
 
     # Export the repository URL for use in CI/CD pipelines

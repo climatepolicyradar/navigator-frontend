@@ -157,7 +157,6 @@ cpr_review_ecr_repo = aws.ecr.Repository(
     ),
     image_tag_mutability="MUTABLE",
     opts=pulumi.ResourceOptions(
-        import_="review-navigator-frontend-cpr",
         protect=True,
     ),
 )
