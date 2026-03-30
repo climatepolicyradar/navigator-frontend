@@ -118,7 +118,7 @@ if is_review_stack:
     ecr_auth = aws.ecr.get_authorization_token_output()
     frontend_image = docker_build.Image(
         f"review-{theme}-frontend-image",
-        tags=[f"{review_ecr_url}:{docker_tag}"],
+        tags=[pulumi.Output.concat(review_ecr_url, ":", stack)],
         context=docker_build.BuildContextArgs(
             location="..",
         ),
