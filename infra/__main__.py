@@ -69,7 +69,7 @@ if is_review_stack:
     # Extract PR number from stack name like "pr-climatepolicyradar-navigator-frontend-1139"
     match = re.search(r"(\d+)$", stack)
     pr_number = match.group(1) if match else stack[-8:]  # fallback to last 8 chars
-    review_name = f"review-{theme}-{pr_number}"  # e.g. "review-cpr-1139" (15 chars)
+    review_name = f"review-{theme}-frontend-{pr_number}"  # e.g. "review-cpr-1139" (15 chars)
 else:
     review_name = None
 
