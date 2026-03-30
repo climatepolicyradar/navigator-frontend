@@ -160,7 +160,7 @@ class AppRunnerService(pulumi.ComponentResource):
         super().__init__("pkg:index:AppRunnerService", name, None, opts)
 
         self._name = name
-        self._name_prefix = tag_name()
+        self._name_prefix = name if pulumi.get_stack().startswith("pr-") else tag_name()
         self._opts = self._merge_opts(opts)
 
         # Set default tags first, then extend/override with user tags if provided
