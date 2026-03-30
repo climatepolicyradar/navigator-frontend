@@ -51,10 +51,6 @@ jobs:
           echo "action=$action" >> "$GITHUB_OUTPUT"
           echo "stack_name=pr-climatepolicyradar-navigator-frontend-${PR_NUMBER}" >> "$GITHUB_OUTPUT"
 
-      - name: Exit if no action
-        if: steps.decide.outputs.action == 'none'
-        run: echo "Nothing to do"
-
       - name: Create stack (if needed)
         if: steps.decide.outputs.action == 'update'
         env:
@@ -76,7 +72,7 @@ jobs:
         if: steps.decide.outputs.action == 'update'
         env:
           STACK_NAME: ${{ steps.decide.outputs.stack_name }}
-          GITHUB_INSTALLATION_ID: b6353284-2ab2-483d-b6e0-df619e6a69ca
+          GITHUB_INSTALLATION_ID: ${{secrets.PULUMI_INTEGRATION_ID}}
         run: |
           # Apply deployment settings so the stack knows where to find
           # source code, how to authenticate, and which ESC environment
