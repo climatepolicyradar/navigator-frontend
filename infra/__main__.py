@@ -62,8 +62,9 @@ FRONTEND_ENV = {
 ########################################################################
 
 stack = pulumi.get_stack()
-is_review_stack = "review" in stack or stack.startswith("pr-")
-
+is_review_stack = stack.startswith("pr-")
+is_review_template = "review" in stack
+is_review_stack_or_template = is_review_stack or is_review_template
 if is_review_stack:
     # Extract PR number from stack name like "pr-climatepolicyradar-navigator-frontend-1139"
     match = re.search(r"(\d+)$", stack)
@@ -73,7 +74,7 @@ else:
     review_name = None
 
 env = "sandbox"
-if "staging" in stack or is_review_stack:
+if "staging" in stack or is_review_stack_or_template:
     env = "staging"
 
 if "production" in stack:
@@ -86,19 +87,38 @@ if "production" in stack:
 docker_tag = config.require("docker_tag")
 pulumi.info(f"Docker tag: {docker_tag}")
 
-review_ecr_url = config.get("review_ecr_repository_url") if is_review_stack else None
-frontend_image: docker_build.Image | None = None
+ecr_repo = None
+if not is_review_stack_or_template:
+    # Non-review stack: create a dedicated ECR repo.
+    ecr_name = f"navigator-frontend-{theme}"
+    ecr_repo = ECRRepository(
+        ecr_name,
+        config=ECRRepositoryConfig(image_scan_on_push=False),
+    )
+    repository_url = ecr_repo.repository.repository_url
+    repository_url.apply(lambda url: pulumi.info(f"Repository URL: {url}"))
+    image_identifier = ecr_repo.repository.repository_url.apply(
+        lambda url: f"{url}:{docker_tag}"
+    )
+    image_identifier.apply(lambda id: pulumi.info(f"Final image identifier: {id}"))
 
-if review_ecr_url:
-    # Review stack: use the shared ECR repo from frontend-platform.
+    # Export the repository URL for use in CI/CD pipelines
+    pulumi.export("ecr_repository_url", repository_url)
+
+# Review stack: use the shared ECR repo from frontend-platform.
+shared_resources_review_stack = pulumi.StackReference("climatepolicyradar/frontend-platform/staging")
+
+review_ecr_url = None
+frontend_image: docker_build.Image | None = None
+if is_review_stack:
+    review_ecr_url = shared_resources_review_stack.get_output("cpr_review_ecr_repository_url")
+
     # Build and push the Docker image as part of the Pulumi deployment so that
     # the App Runner service has a valid image to pull.
-    ecr_repo = None
-
     ecr_auth = aws.ecr.get_authorization_token_output()
     frontend_image = docker_build.Image(
-        "frontend-image",
-        tags=[f"{review_ecr_url}:{docker_tag}"],
+        f"review-{theme}-frontend-image",
+        tags=[pulumi.Output.concat(review_ecr_url, ":", stack)],
         context=docker_build.BuildContextArgs(
             location="..",
         ),
@@ -119,83 +139,74 @@ if review_ecr_url:
         build_on_preview=False,
     )
 
-    repository_url: pulumi.Input[str] = review_ecr_url
     # Use the tag-based identifier for App Runner (it doesn't support @digest refs).
-    image_identifier: pulumi.Input[str] = f"{review_ecr_url}:{docker_tag}"
+    repository_url = review_ecr_url
+    image_identifier = pulumi.Output.concat(review_ecr_url, ":", docker_tag)
     pulumi.info(f"Repository URL: {review_ecr_url}")
-else:
-    # Non-review stack: create a dedicated ECR repo.
-    ecr_name = f"navigator-frontend-{theme}"
-    ecr_repo = ECRRepository(
-        ecr_name,
-        config=ECRRepositoryConfig(image_scan_on_push=False),
-    )
-    repository_url = ecr_repo.repository.repository_url
-    repository_url.apply(lambda url: pulumi.info(f"Repository URL: {url}"))
-    image_identifier = ecr_repo.repository.repository_url.apply(
-        lambda url: f"{url}:{docker_tag}"
-    )
-    image_identifier.apply(lambda id: pulumi.info(f"Final image identifier: {id}"))
 
-# Export the repository URL for use in CI/CD pipelines
-pulumi.export("ecr_repository_url", repository_url)
+    # Export the repository URL for use in CI/CD pipelines
+    pulumi.export("ecr_repository_url", repository_url)
+
+
 if ecr_repo:
     pulumi.export("ecr_repository_name", ecr_repo.repository.name)
 
-# Configure AppRunner settings (using current account)
-is_cpr_stack = stack in ["cpr-production", "cpr-staging"]
-default_max_concurrency = 50
-default_max_instances = 10
-default_min_instances = 1
-apprunner_config = AppRunnerConfig(
-    max_concurrency=int(
-        config.require("apprunner_frontend_max_concurrency")
-        if is_cpr_stack
-        else default_max_concurrency
-    ),
-    max_instances=int(
-        config.require("apprunner_frontend_max_instance_count")
-        if is_cpr_stack
-        else default_max_instances
-    ),
-    min_instances=int(
-        config.require("apprunner_frontend_min_instance_count")
-        if is_cpr_stack
-        else default_min_instances
-    ),
-    auto_deploy=True,
-)
+shared_access_role_arn= None
+if not is_review_template:
+    # For review stacks, use the shared ECR access role created in frontend-platform
+    # to avoid the 64-character IAM role name limit on ephemeral PR stacks.
+    shared_access_role_arn = shared_resources_review_stack.get_output("apprunner_ecr_access_role_arn")
 
-# For review stacks, use the shared ECR access role created in frontend-platform
-# to avoid the 64-character IAM role name limit on ephemeral PR stacks.
-shared_access_role_arn = config.get("apprunner_ecr_access_role_arn") if is_review_stack else None
-
-# Create the frontend AppRunner service in current account
-name_prefix = review_name if review_name else tag_name()
-frontend = AppRunnerService(
-    name=name_prefix,
-    config=apprunner_config,
-    image_identifier=cast(str, image_identifier),
-    env_vars=FRONTEND_ENV,
-    auto_scaling_config_arn=(
-        config.require("auto_scaling_config_arn")
-        if not is_cpr_stack
-        else None
-    ),
-    access_role_arn=shared_access_role_arn,
-    opts=pulumi.ResourceOptions(
-        depends_on=(
-            [frontend_image] if frontend_image is not None
-            else [ecr_repo.repository] if ecr_repo
-            else []
+    # Configure AppRunner settings (using current account)
+    is_cpr_stack = stack in ["cpr-production", "cpr-staging"]
+    default_max_concurrency = 50
+    default_max_instances = 10
+    default_min_instances = 1
+    apprunner_config = AppRunnerConfig(
+        max_concurrency=int(
+            config.require("apprunner_frontend_max_concurrency")
+            if is_cpr_stack
+            else default_max_concurrency
         ),
-    ),
-)
+        max_instances=int(
+            config.require("apprunner_frontend_max_instance_count")
+            if is_cpr_stack
+            else default_max_instances
+        ),
+        min_instances=int(
+            config.require("apprunner_frontend_min_instance_count")
+            if is_cpr_stack
+            else default_min_instances
+        ),
+        auto_deploy=True,
+    )
 
-# Export outputs
-pulumi.export("frontend service name", frontend.service.service_name)
-pulumi.export("frontend arn", frontend.service.arn)
-pulumi.export("apprunner_service_url", frontend.service.service_url)
+    # Create the frontend AppRunner service in current account
+    name_prefix = review_name if review_name else tag_name()
+    frontend = AppRunnerService(
+        name=name_prefix,
+        config=apprunner_config,
+        image_identifier=cast(str, image_identifier),
+        env_vars=FRONTEND_ENV,
+        auto_scaling_config_arn=(
+            config.require("auto_scaling_config_arn")
+            if not is_cpr_stack
+            else None
+        ),
+        access_role_arn=shared_access_role_arn,
+        opts=pulumi.ResourceOptions(
+            depends_on=(
+                [frontend_image] if frontend_image is not None
+                else [ecr_repo.repository] if ecr_repo
+                else []
+            ),
+        ),
+    )
+
+    # Export outputs
+    pulumi.export("frontend service name", frontend.service.service_name)
+    pulumi.export("frontend arn", frontend.service.arn)
+    pulumi.export("apprunner_service_url", frontend.service.service_url)
 
 ########################################################################
 # Create old GitHub Actions role
@@ -280,7 +291,7 @@ if stack == "staging" or stack == "production":
 # ########################################################################
 # Review stacks only need ECR + App Runner — skip CloudFront, DNS, and
 # all downstream resources to keep ephemeral environments lightweight.
-if not is_review_stack:
+if not is_review_stack_or_template:
     CLOUDFRONT_ZONE_ID = "Z2FDTNDATAQYW2"  # CloudFront's fixed zone ID
     # See here https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-properties-route53-recordset-aliastarget.html#aws-properties-route53-recordset-aliastarget-properties
     # Create CORS policy
