@@ -253,7 +253,7 @@ cpr_review_deployment_settings = pulumiservice.DeploymentSettings(
     vcs=pulumiservice.DeploymentSettingsVcsArgs(
         provider="github",
         repository="climatepolicyradar/navigator-frontend",
-        pull_request_template=True,
+        pull_request_template=False,
         deploy_commits=False,
         preview_pull_requests=False,
     ),

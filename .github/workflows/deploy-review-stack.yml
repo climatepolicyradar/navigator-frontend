@@ -72,6 +72,45 @@ jobs:
           fi
           echo "Stack ready (HTTP $status)"
 
+      - name: Configure stack deployment settings
+        if: steps.decide.outputs.action == 'update'
+        env:
+          STACK_NAME: ${{ steps.decide.outputs.stack_name }}
+          GITHUB_INSTALLATION_ID: b6353284-2ab2-483d-b6e0-df619e6a69ca
+        run: |
+          # Apply deployment settings so the stack knows where to find
+          # source code, how to authenticate, and which ESC environment
+          # to use. The gitHub block provides repo access via the Pulumi
+          # GitHub App. Config is copied from cpr-review at deploy time
+          # via a preRunCommand.
+          curl -fsSL -X POST \
+            -H "Authorization: token ${PULUMI_ACCESS_TOKEN}" \
+            -H "Content-Type: application/json" \
+            "https://api.pulumi.com/api/stacks/${ORG}/${PROJECT}/${STACK_NAME}/deployments/settings" \
+            -d "{
+              \"sourceContext\": {
+                \"git\": {
+                  \"branch\": \"main\",
+                  \"repoDir\": \"infra\"
+                }
+              },
+              \"gitHub\": {
+                \"repository\": \"climatepolicyradar/navigator-frontend\",
+                \"installationId\": \"${GITHUB_INSTALLATION_ID}\"
+              },
+              \"operationContext\": {
+                \"preRunCommands\": [
+                  \"pulumi config env add ${PROJECT}/cpr-review --yes --stack ${ORG}/${PROJECT}/${STACK_NAME} || true\",
+                  \"pulumi config cp -d ${ORG}/${PROJECT}/${STACK_NAME} -s ${ORG}/${PROJECT}/cpr-review\"
+                ],
+                \"options\": {
+                  \"skipIntermediateDeployments\": true
+                }
+              }
+            }"
+
+          echo "Deployment settings configured for ${STACK_NAME}"
+
       - name: Trigger update deployment
         if: steps.decide.outputs.action == 'update'
         env:
@@ -113,6 +152,16 @@ jobs:
         env:
           STACK_NAME: ${{ steps.decide.outputs.stack_name }}
         run: |
+          # Check if the stack exists before attempting destroy
+          stack_status=$(curl -s -o /dev/null -w "%{http_code}" \
+            -H "Authorization: token ${PULUMI_ACCESS_TOKEN}" \
+            "https://api.pulumi.com/api/stacks/${ORG}/${PROJECT}/${STACK_NAME}")
+
+          if [ "$stack_status" -eq 404 ]; then
+            echo "Stack ${STACK_NAME} does not exist, nothing to destroy"
+            exit 0
+          fi
+
           response=$(curl -fsSL -w "\n%{http_code}" -X POST \
             -H "Authorization: token ${PULUMI_ACCESS_TOKEN}" \
             -H "Content-Type: application/json" \
