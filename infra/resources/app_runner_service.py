@@ -8,7 +8,7 @@ from typing import Dict, Optional, cast
 import pulumi
 import pulumi_aws as aws
 
-from resources.util import tag_name
+
 
 account_id = aws.get_caller_identity().account_id
 
@@ -159,7 +159,7 @@ class AppRunnerService(pulumi.ComponentResource):
         super().__init__("pkg:index:AppRunnerService", name, None, opts)
 
         self._name = name
-        self._name_prefix = tag_name()
+        self._name_prefix = name
         self._opts = self._merge_opts(opts)
 
         # Set default tags first, then extend/override with user tags if provided

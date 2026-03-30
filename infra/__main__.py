@@ -1,6 +1,7 @@
 """An AWS Python Pulumi program."""
 
 import json
+import re
 from enum import Enum
 from pathlib import Path
 from typing import cast
@@ -62,6 +63,15 @@ FRONTEND_ENV = {
 
 stack = pulumi.get_stack()
 is_review_stack = "review" in stack or stack.startswith("pr-")
+
+if is_review_stack:
+    # Extract PR number from stack name like "pr-climatepolicyradar-navigator-frontend-1139"
+    match = re.search(r"(\d+)$", stack)
+    pr_number = match.group(1) if match else stack[-8:]  # fallback to last 8 chars
+    review_name = f"review-{theme}-{pr_number}"  # e.g. "review-cpr-1139" (15 chars)
+else:
+    review_name = None
+
 env = "sandbox"
 if "staging" in stack or is_review_stack:
     env = "staging"
@@ -161,7 +171,7 @@ apprunner_config = AppRunnerConfig(
 shared_access_role_arn = config.get("apprunner_ecr_access_role_arn") if is_review_stack else None
 
 # Create the frontend AppRunner service in current account
-name_prefix = tag_name()
+name_prefix = review_name if review_name else tag_name()
 frontend = AppRunnerService(
     name=name_prefix,
     config=apprunner_config,
