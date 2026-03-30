@@ -113,6 +113,16 @@ jobs:
         env:
           STACK_NAME: ${{ steps.decide.outputs.stack_name }}
         run: |
+          # Check if the stack exists before attempting destroy
+          stack_status=$(curl -s -o /dev/null -w "%{http_code}" \
+            -H "Authorization: token ${PULUMI_ACCESS_TOKEN}" \
+            "https://api.pulumi.com/api/stacks/${ORG}/${PROJECT}/${STACK_NAME}")
+
+          if [ "$stack_status" -eq 404 ]; then
+            echo "Stack ${STACK_NAME} does not exist, nothing to destroy"
+            exit 0
+          fi
+
           response=$(curl -fsSL -w "\n%{http_code}" -X POST \
             -H "Authorization: token ${PULUMI_ACCESS_TOKEN}" \
             -H "Content-Type: application/json" \
