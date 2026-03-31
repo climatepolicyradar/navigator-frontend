@@ -70,7 +70,7 @@ staging_deployment_role = aws.iam.Role(
         )
     ),
     max_session_duration=3600,
-    opts=pulumi.ResourceOptions(protect=True),
+    opts=pulumi.ResourceOptions(protect=True, additional_secret_outputs=["arn"]),
 )
 
 # Attach AdministratorAccess (matches current configuration)
@@ -112,6 +112,7 @@ apprunner_ecr_access_role = aws.iam.Role(
         }
     ),
     max_session_duration=3600,
+    opts=pulumi.ResourceOptions(protect=True, additional_secret_outputs=["arn"])
 )
 
 apprunner_ecr_access_policy = aws.iam.Policy(
@@ -231,8 +232,9 @@ for theme in ["cpr", "cclw", "mcf", "ccc"]:
         project=project_name,
         name=f"{theme}-review",
         yaml=cpr_review_yaml.apply(lambda y: pulumi.StringAsset(y)),
-        opts=pulumi.ResourceOptions(depends_on=[aws_creds_staging_env]),
+        opts=pulumi.ResourceOptions(depends_on=[aws_creds_staging_env], additional_secret_outputs=["repository_url"]),
     )
+    pulumi.export(f"{theme}_review_ecr_repository_url", review_ecr_repo.repository_url)
 
 # ---------------------------------------------------------------------------
 # Deployment Settings for cpr-review stack
@@ -267,4 +269,12 @@ for theme in ["cpr", "cclw", "mcf", "ccc"]:
                 skip_intermediate_deployments=True,
             ),
         ),
-    )
+    ),
+
+
+# ---------------------------------------------------------------------------
+# Exports
+# ---------------------------------------------------------------------------
+pulumi.export("staging_deployment_role_arn", staging_deployment_role.arn)
+pulumi.export("apprunner_ecr_access_role_arn", apprunner_ecr_access_role.arn)
+
