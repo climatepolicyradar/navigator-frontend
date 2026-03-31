@@ -13,6 +13,9 @@ jobs:
       PULUMI_ACCESS_TOKEN: ${{ secrets.PULUMI_ACCESS_TOKEN }}
       ORG: climatepolicyradar
       PROJECT: frontend
+    strategy:
+      matrix:
+        theme: [cpr, cclw, mcf, ccc]
     steps:
       - name: Check if deploy:dev label is present
         id: label_check
@@ -34,6 +37,7 @@ jobs:
           EVENT_ACTION: ${{ github.event.action }}
           HAS_LABEL: ${{ steps.label_check.outputs.has_label }}
           PR_NUMBER: ${{ github.event.pull_request.number }}
+          THEME: ${{matrix.theme}}
         run: |
           action="none"
 
@@ -49,9 +53,9 @@ jobs:
           fi
 
           echo "action=$action" >> "$GITHUB_OUTPUT"
-          echo "stack_name=pr-climatepolicyradar-navigator-frontend-${PR_NUMBER}" >> "$GITHUB_OUTPUT"
+          echo "stack_name=pr-${THEME}-navigator-frontend-${PR_NUMBER}" >> "$GITHUB_OUTPUT"
 
-      - name: Create stack (if needed)
+      - name: Create ${{matrix.theme}} stack (if needed)
         if: steps.decide.outputs.action == 'update'
         env:
           STACK_NAME: ${{ steps.decide.outputs.stack_name }}
@@ -68,7 +72,7 @@ jobs:
           fi
           echo "Stack ready (HTTP $status)"
 
-      - name: Configure stack deployment settings
+      - name: Configure ${{matrix.theme}} stack deployment settings
         if: steps.decide.outputs.action == 'update'
         env:
           STACK_NAME: ${{ steps.decide.outputs.stack_name }}
@@ -107,7 +111,7 @@ jobs:
 
           echo "Deployment settings configured for ${STACK_NAME}"
 
-      - name: Trigger update deployment
+      - name: Trigger update deployment for ${{matrix.theme}}
         if: steps.decide.outputs.action == 'update'
         env:
           STACK_NAME: ${{ steps.decide.outputs.stack_name }}
@@ -143,7 +147,7 @@ jobs:
             exit 1
           fi
 
-      - name: Trigger destroy deployment
+      - name: Trigger destroy deployment for ${{matrix.theme}}
         if: steps.decide.outputs.action == 'destroy'
         env:
           STACK_NAME: ${{ steps.decide.outputs.stack_name }}
