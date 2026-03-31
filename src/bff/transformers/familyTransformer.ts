@@ -36,6 +36,7 @@ export const familyTransformer = (
             collections: familyApiOldData.family.collections,
             concepts: familyApiOldData.family.concepts, // currently out of scope
             corpus_id: familyApiOldData.family.corpus_id,
+            corpus: familyApiOldData.family.corpus,
             events: familyApiOldData.family.events,
             organisation: familyApiOldData.family.organisation,
           },
