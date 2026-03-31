@@ -1,5 +1,6 @@
 import { transformCountries } from "@/bff/transformers/partials/transformCountries";
 import { transformFamilyDocuments } from "@/bff/transformers/partials/transformFamilyDocuments";
+import { transformFamilyEvents } from "@/bff/transformers/partials/transformFamilyEvents";
 import { transformFamilyMetadata } from "@/bff/transformers/partials/transformFamilyMetadata";
 import { LABEL_TYPES, MANDATORY_FAMILY_LABEL_TYPES, TDataInLabel, TDataInLabelType } from "@/schemas";
 import { TCategory, TFamilyApiNewData, TFamilyApiOldData, TFamilyPresentationalResponse } from "@/types";
@@ -24,6 +25,7 @@ export const familyTransformer = (
           family: {
             category: groupedLabels.category[0].value.value as TCategory,
             documents: transformFamilyDocuments(familyApiOldData.family.documents, documents),
+            events: transformFamilyEvents(groupedLabels),
             geographies: groupedLabels.geography.map((label) => label.value.id),
             import_id: familyApiNewData.id,
             last_updated_date: familyApiNewData.attributes.last_updated_date,
@@ -37,7 +39,6 @@ export const familyTransformer = (
             concepts: familyApiOldData.family.concepts, // currently out of scope
             corpus_id: familyApiOldData.family.corpus_id,
             corpus: familyApiOldData.family.corpus,
-            events: familyApiOldData.family.events,
             organisation: familyApiOldData.family.organisation,
           },
           debug: {
