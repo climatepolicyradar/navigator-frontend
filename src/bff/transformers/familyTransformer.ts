@@ -1,4 +1,5 @@
 import { transformCountries } from "@/bff/transformers/partials/transformCountries";
+import { transformFamilyCollections } from "@/bff/transformers/partials/transformFamilyCollections";
 import { transformFamilyDocuments } from "@/bff/transformers/partials/transformFamilyDocuments";
 import { transformFamilyEvents } from "@/bff/transformers/partials/transformFamilyEvents";
 import { transformFamilyMetadata } from "@/bff/transformers/partials/transformFamilyMetadata";
@@ -24,6 +25,7 @@ export const familyTransformer = (
           countries: transformCountries(familyApiOldData.countries, groupedLabels.geography),
           family: {
             category: groupedLabels.category[0].value.value as TCategory,
+            collections: transformFamilyCollections(familyApiOldData.family.collections, familyApiNewData.documents),
             documents: transformFamilyDocuments(familyApiOldData.family.documents, documents),
             events: transformFamilyEvents(groupedLabels),
             geographies: groupedLabels.geography.map((label) => label.value.id),
@@ -35,7 +37,6 @@ export const familyTransformer = (
             summary: familyApiNewData.description,
             title: familyApiNewData.title,
             // TODO apply transformations to remaining fields:
-            collections: familyApiOldData.family.collections,
             concepts: familyApiOldData.family.concepts, // currently out of scope
             corpus_id: familyApiOldData.family.corpus_id,
             corpus: familyApiOldData.family.corpus,

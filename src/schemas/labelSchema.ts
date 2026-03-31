@@ -12,6 +12,7 @@ export const LABEL_TYPES = [
   "instrument",
   "keyword",
   "language",
+  "member_of",
   "provider",
   "role",
   "sector",
