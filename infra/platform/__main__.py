@@ -224,14 +224,15 @@ cpr_review_yaml = pulumi.Output.all(
     )
 )
 
-cpr_review_env = pulumiservice.Environment(
-    "cpr-review",
-    organization=org_name,
-    project=project_name,
-    name="cpr-review",
-    yaml=cpr_review_yaml.apply(lambda y: pulumi.StringAsset(y)),
-    opts=pulumi.ResourceOptions(depends_on=[aws_creds_staging_env]),
-)
+for theme in ["cpr", "cclw", "mcf", "ccc"]:
+    review_env = pulumiservice.Environment(
+        f"{theme}-review",
+        organization=org_name,
+        project=project_name,
+        name=f"{theme}-review",
+        yaml=cpr_review_yaml.apply(lambda y: pulumi.StringAsset(y)),
+        opts=pulumi.ResourceOptions(depends_on=[aws_creds_staging_env]),
+    )
 
 # ---------------------------------------------------------------------------
 # Deployment Settings for cpr-review stack
