@@ -149,7 +149,7 @@ aws.iam.RolePolicyAttachment(
 # pushes its image with a branch-specific tag (e.g. the PR number or branch
 # name) so images don't collide. This avoids creating/destroying ECR repos
 # per PR stack and prevents RepositoryAlreadyExistsException errors.
-review_ecr_repo = aws.ecr.Repository(
+cpr_review_ecr_repo = aws.ecr.Repository(
     "review-navigator-frontend-cpr",
     name="review-navigator-frontend-cpr",
     image_scanning_configuration=aws.ecr.RepositoryImageScanningConfigurationArgs(
@@ -157,7 +157,6 @@ review_ecr_repo = aws.ecr.Repository(
     ),
     image_tag_mutability="MUTABLE",
     opts=pulumi.ResourceOptions(
-        import_="review-navigator-frontend-cpr",
         protect=True,
     ),
 )
@@ -204,7 +203,7 @@ aws_creds_staging_env = pulumiservice.Environment(
 # via the shared ESC environment.
 cpr_review_yaml = pulumi.Output.all(
     apprunner_ecr_access_role.arn,
-    review_ecr_repo.repository_url,
+    cpr_review_ecr_repo.repository_url,
 ).apply(
     lambda args: (
         "imports:\n"
@@ -251,9 +250,9 @@ cpr_review_deployment_settings = pulumiservice.DeploymentSettings(
     vcs=pulumiservice.DeploymentSettingsVcsArgs(
         provider="github",
         repository="climatepolicyradar/navigator-frontend",
-        pull_request_template=True,
+        pull_request_template=False,
         deploy_commits=False,
-        preview_pull_requests=True,
+        preview_pull_requests=False,
     ),
     operation_context=pulumiservice.DeploymentSettingsOperationContextArgs(
         # DEPLOY_FROM_MAIN_BRANCH_ONLY and DEPLOY_TO_PROD_STACK_ALLOWED are
@@ -270,4 +269,4 @@ cpr_review_deployment_settings = pulumiservice.DeploymentSettings(
 # ---------------------------------------------------------------------------
 pulumi.export("staging_deployment_role_arn", staging_deployment_role.arn)
 pulumi.export("apprunner_ecr_access_role_arn", apprunner_ecr_access_role.arn)
-pulumi.export("review_ecr_repository_url", review_ecr_repo.repository_url)
+pulumi.export("cpr_review_ecr_repository_url", cpr_review_ecr_repo.repository_url)
