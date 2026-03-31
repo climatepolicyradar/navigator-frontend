@@ -1,0 +1,31 @@
+config:
+  aws:region: eu-west-1
+  frontend:adobe_api_key:
+    secure: AAABAEKmOcwRRlyi2xq5GzkGaQQ8zF5ga5dbVls0i7NXx0XaCI7xJ73I2OoL91Zj5wnsRkgx3ZxZ7/+OCUS/WQ==
+  frontend:app_url: https://ccc.staging.climatepolicyradar.org
+  frontend:auto_scaling_config_arn:
+    secure: AAABAMLiVgfPfCMKyoSzo25Rv0K82cRhG3GOMy8/4JMohXyqSmQL04y1o3qTjY9gnI4Er1RuufR1zfwKwbb7qNdi6/+q02IU1rBTNTN5Mg76ZlVsFbvdSSTj7zynp4IWH6LZfjCRzzbrN3wtCfHRneS2f+CXHGn7ozBJ1jq2105U7AbcLtk+M/elmKgZ6IsyyeA5wX1KKiU=
+  frontend:backend_api_token:
+    secure: AAABALm6UvakS6tRQpz9UmK1PFa6S0Ho6k03/2xIGU996yNcCkXr/ATk7Waz9rHSyu9S99I7J3X4kI4RUFTu4hr+A6TBpMG5uLpq+issblTY08spYIgP6Myqvy5h24Fp/ChyuuRxYW7obojLYcuOZGn7MSMInQSciiurS/xVjyGZQbGLcW+//yUdBC65+31boUR6NPZgxehRd1+lBNqPU8agscXaS1iH1//C1y+3Yp329bwj7O/9sgzY11x0XHJXc3uoRU33P3j3JnypKYw5PFGO4voa1ro4TFsI/G7CPioHSaT8G/gBZKpwoOHqv+lDpMYKYjjIJN+UNM5Ge3iIAMk3UeiY+2hXWHSvhqzyNNBIfTM9dVEe1yYc1HRY5O3TJcgJXdfnHv1qwV+k/oHc9/zNq2j41sNPgTXl04dchQuFpRq4s2zgmBQpuqWB5vAC8oboosrbJzH8bgTZ7Rjd5Sg=
+  frontend:backend_api_url: https://cpr.staging.climatepolicyradar.org/api/v1
+  frontend:cdn_url: https://cdn.dev.climatepolicyradar.org
+  frontend:concepts_api_url: https://api.staging.climatepolicyradar.org
+  frontend:ecr_uri:
+    secure: AAABAJwpWK11uFCUFabj+0svcZRr7sdbcahEvnZUiFDk6wDrdWH85VSEDxiJEvQLDCYxLrsHCUP1Tu2enN76ouTihjT1b0zlG7sNU9BwB+05ENIn6TJnAXMZMNw1kJzBuHe0
+  frontend:next_public_faro_app_name: ccc-review-frontend
+  frontend:next_public_faro_app_namespace: frontend
+  frontend:next_public_faro_url: https://faro-collector-prod-gb-south-0.grafana.net/collect/74f6d4bd78b7bb2cc270036193aaa3a6
+  frontend:otel_exporter_otlp_endpoint: https://otel.staging.climatepolicyradar.org/
+  frontend:otel_exporter_otlp_protocol: http/protobuf
+  frontend:otel_resource_attributes: service.namespace=frontend
+  frontend:otel_service_name: frontend-server
+  frontend:redirect_file: default.json
+  frontend:robots: "true"
+  frontend:s3-path:
+    secure: AAABAHOxhVvcpptdQEWonRCZI4GfZreRuDuotNFOhNhor789YnKiuuUBDtp8lxizCh6HoXOZ+jDCamoKoYJ+vYNPbY7rNC9eMBkG7iuJeDYAsq7oPuScW9fvMxTV/aPG2A==
+  frontend:targets_url: https://cpr-staging-targets-json-store.s3.eu-west-1.amazonaws.com
+  frontend:theme: ccc
+  frontend:validation_account_id:
+    secure: AAABAO27voF7di6u38zns14+kI+/wjLr5GzuvDz8LZxc2grKbCFv2+trwMQ=
+environment:
+  - frontend/ccc-staging
