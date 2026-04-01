@@ -82,7 +82,7 @@ jobs:
           # Apply deployment settings so the stack knows where to find
           # source code, how to authenticate, and which ESC environment
           # to use. The gitHub block provides repo access via the Pulumi
-          # GitHub App. Config is copied from cpr-review at deploy time
+          # GitHub App. Config is copied from ${THEME}-review at deploy time
           # via a preRunCommand.
           curl -fsSL -X POST \
             -H "Authorization: token ${PULUMI_ACCESS_TOKEN}" \
