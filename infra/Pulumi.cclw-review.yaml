@@ -28,4 +28,4 @@ config:
   frontend:validation_account_id:
     secure: AAABAPuRdTBqdG17KLnwRCZoQXSnRhTX9zA23rCeq+Ettk8ESiauYGnV/z8=
 environment:
-  - frontend/cclw-staging
+  - frontend/cclw-review

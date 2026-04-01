@@ -28,4 +28,4 @@ config:
   frontend:validation_account_id:
     secure: AAABAO27voF7di6u38zns14+kI+/wjLr5GzuvDz8LZxc2grKbCFv2+trwMQ=
 environment:
-  - frontend/ccc-staging
+  - frontend/ccc-review
