@@ -334,7 +334,7 @@ export type TSearchResponse = {
 
 /* /families API response types */
 
-type TCollectionPublic = {
+export type TCollectionPublic = {
   description: string;
   import_id: string;
   metadata: TMetadata<"event_type" | "description" | "datetime_event_name" | "id">;

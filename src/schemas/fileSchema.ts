@@ -15,21 +15,33 @@ const FileItemSchema = v.object({
 
 export type TDataInFileItem = v.InferOutput<typeof FileItemSchema>;
 
-export const FileSchema = v.object({
-  type: v.union([v.literal("has_member"), v.literal("has_version")]),
-  value: v.object({
-    id: v.string(),
-    title: v.string(),
-    description: v.nullable(v.string()),
-    items: v.array(FileItemSchema),
-    labels: v.array(LabelSchema),
-    attributes: v.object({
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+const FileSchemaByType = (type: v.UnionSchema<any, any> | v.LiteralSchema<any, any>, attributes: v.ObjectSchema<any, any>) =>
+  v.object({
+    type,
+    value: v.object({
+      id: v.string(),
+      title: v.string(),
+      description: v.nullable(v.string()),
+      items: v.array(FileItemSchema),
+      labels: v.array(LabelSchema),
+      attributes,
+    }),
+    timestamp: v.nullable(v.string()),
+  });
+
+export const FileSchema = v.union([
+  // Documents
+  FileSchemaByType(
+    v.union([v.literal("has_member"), v.literal("has_version")]),
+    v.object({
       deprecated_slug: v.string(),
       md5_sum: v.optional(v.string()),
       variant: v.optional(v.string()),
-    }),
-  }),
-  timestamp: v.nullable(v.string()),
-});
+    })
+  ),
+  // Collections
+  FileSchemaByType(v.literal("member_of"), v.object({})),
+]);
 
 export type TDataInFile = v.InferOutput<typeof FileSchema>;

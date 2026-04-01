@@ -280,7 +280,7 @@ export type TApiSearchResponse = {
 
 /* /families API response types */
 
-type TApiCollectionPublic = {
+export type TApiCollectionPublic = {
   description: string;
   import_id: string;
   metadata: TApiMetadata<"event_type" | "description" | "datetime_event_name" | "id">;
