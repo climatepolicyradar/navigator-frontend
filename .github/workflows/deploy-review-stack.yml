@@ -13,9 +13,6 @@ jobs:
       PULUMI_ACCESS_TOKEN: ${{ secrets.PULUMI_ACCESS_TOKEN }}
       ORG: climatepolicyradar
       PROJECT: frontend
-    strategy:
-      matrix:
-        theme: [cpr, cclw, mcf, ccc]
     steps:
       - name: Check if deploy:dev label is present
         id: label_check
@@ -37,7 +34,6 @@ jobs:
           EVENT_ACTION: ${{ github.event.action }}
           HAS_LABEL: ${{ steps.label_check.outputs.has_label }}
           PR_NUMBER: ${{ github.event.pull_request.number }}
-          THEME: ${{matrix.theme}}
         run: |
           action="none"
 
@@ -53,9 +49,13 @@ jobs:
           fi
 
           echo "action=$action" >> "$GITHUB_OUTPUT"
-          echo "stack_name=pr-${THEME}-navigator-frontend-${PR_NUMBER}" >> "$GITHUB_OUTPUT"
+          echo "stack_name=pr-climatepolicyradar-navigator-frontend-${PR_NUMBER}" >> "$GITHUB_OUTPUT"
 
-      - name: Create ${{matrix.theme}} stack (if needed)
+      - name: Exit if no action
+        if: steps.decide.outputs.action == 'none'
+        run: echo "Nothing to do"
+
+      - name: Create stack (if needed)
         if: steps.decide.outputs.action == 'update'
         env:
           STACK_NAME: ${{ steps.decide.outputs.stack_name }}
@@ -72,11 +72,11 @@ jobs:
           fi
           echo "Stack ready (HTTP $status)"
 
-      - name: Configure ${{matrix.theme}} stack deployment settings
+      - name: Configure stack deployment settings
         if: steps.decide.outputs.action == 'update'
         env:
           STACK_NAME: ${{ steps.decide.outputs.stack_name }}
-          GITHUB_INSTALLATION_ID: ${{secrets.PULUMI_INTEGRATION_ID}}
+          GITHUB_INSTALLATION_ID: b6353284-2ab2-483d-b6e0-df619e6a69ca
         run: |
           # Apply deployment settings so the stack knows where to find
           # source code, how to authenticate, and which ESC environment
@@ -111,7 +111,7 @@ jobs:
 
           echo "Deployment settings configured for ${STACK_NAME}"
 
-      - name: Trigger update deployment for ${{matrix.theme}}
+      - name: Trigger update deployment
         if: steps.decide.outputs.action == 'update'
         env:
           STACK_NAME: ${{ steps.decide.outputs.stack_name }}
@@ -147,7 +147,7 @@ jobs:
             exit 1
           fi
 
-      - name: Trigger destroy deployment for ${{matrix.theme}}
+      - name: Trigger destroy deployment
         if: steps.decide.outputs.action == 'destroy'
         env:
           STACK_NAME: ${{ steps.decide.outputs.stack_name }}
