@@ -1,8 +1,9 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 
+import isEqual from "lodash/isEqual";
 import { GetServerSideProps, InferGetServerSidePropsType } from "next";
 import { useQueryState, parseAsString, parseAsJson } from "nuqs";
-import { useMemo, useState, useEffect } from "react";
+import { useCallback, useEffect, useMemo, useState, type SetStateAction } from "react";
 
 import { ApiClient } from "@/api/http-common";
 import { AppliedLabels } from "@/components/_experiment/appliedLabels/AppliedLabels";
@@ -32,25 +33,53 @@ const ShadowSearch = ({ theme, themeConfig, features }: TProps) => {
   // search query that is typed into the search box
   const [query, setQuery] = useQueryState("q", parseAsString.withDefault(""));
   // structured filters built in QueryBuilder
-  const [filters, setFilters] = useQueryState("filters", parseAsJson<TQueryGroup>(FilterGroupSchema).withDefault(createGroup()));
+  const [filters, setFiltersInUrl] = useQueryState("filters", parseAsJson<TQueryGroup>(FilterGroupSchema).withDefault(createGroup()));
+
+  /**
+   * Drops aggregations only when the filter tree becomes empty so greyed options
+   * from an old response are not kept with no filters. If at least one filter
+   * stays active, previous aggregations are retained until the new search returns.
+   * Skips no-op updates. Done here instead of an effect for set-state-in-effect.
+   */
+  const setFilters = useCallback(
+    (updater: SetStateAction<TQueryGroup>) => {
+      let shouldClearAggregations = false;
+      void setFiltersInUrl((prev) => {
+        const next = typeof updater === "function" ? (updater as (p: TQueryGroup) => TQueryGroup)(prev) : updater;
+        if (!isEqual(prev, next) && isFilterGroupEmpty(next)) {
+          shouldClearAggregations = true;
+        }
+        return next;
+      });
+      if (shouldClearAggregations) {
+        setLabelAggregations(undefined);
+      }
+    },
+    [setFiltersInUrl]
+  );
 
   // Derive selectedLabels from the filter tree
   const selectedLabels = useMemo(() => extractLabels(filters), [filters]);
 
-  // Control SearchFilters popover from outside
+  // Control SearchFilters popover and active category tab (single source of truth)
   const [filtersOpen, setFiltersOpen] = useState(false);
-  const [filtersOpenFilter, setFiltersOpenFilter] = useState<TFilterCategory | undefined>(undefined);
+  const [filterSidebarCategory, setFilterSidebarCategory] = useState<TFilterCategory>("agent");
 
   // Control Advanced Filters view
   const [advancedFiltersOpen, setAdvancedFiltersOpen] = useState(false);
 
   const handleSelectLabel = (label: string, type: string) => {
-    setFiltersOpenFilter((type as TFilterCategory) || undefined);
+    setFilterSidebarCategory((type as TFilterCategory) || "agent");
     setFiltersOpen(true);
   };
 
   useEffect(() => {
     loadLabels("").then(setAvailableFilters);
+  }, []);
+
+  /** Avoid re-renders when the search payload repeats the same aggregation list. */
+  const applyAggregationsFromSearch = useCallback((labels: IAggregationLabel[] | undefined) => {
+    setLabelAggregations((prev) => (isEqual(prev, labels) ? prev : labels));
   }, []);
 
   return (
@@ -76,9 +105,10 @@ const ShadowSearch = ({ theme, themeConfig, features }: TProps) => {
           <SearchFilters
             availableFilters={availableFilters}
             filters={filters}
+            activeCategory={filterSidebarCategory}
+            onActiveCategoryChange={setFilterSidebarCategory}
             open={filtersOpen}
             onOpenChange={setFiltersOpen}
-            openFilter={filtersOpenFilter}
             onChange={(checked, label) => {
               if (checked) {
                 setFilters((prev) => addLabelRule(prev, label));
@@ -100,7 +130,7 @@ const ShadowSearch = ({ theme, themeConfig, features }: TProps) => {
               onClear={() => {
                 setFilters(createGroup());
                 setQuery("");
-                setLabelAggregations(undefined); // Hard reset aggregations when user explicitly clears
+                setLabelAggregations(undefined); // belt & braces
               }}
               onSelectLabel={handleSelectLabel}
               onRemoveLabel={(label) => setFilters((prev) => (prev ? removeLabelRule(prev, label) : createGroup()))}
@@ -117,7 +147,7 @@ const ShadowSearch = ({ theme, themeConfig, features }: TProps) => {
               }
             }}
             filters={filters}
-            onAggregationsChange={setLabelAggregations}
+            onAggregationsChange={applyAggregationsFromSearch}
           />
         </div>
       </FiveColumns>

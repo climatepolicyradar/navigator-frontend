@@ -1,6 +1,6 @@
 import { LucideCog, LucideEarth, LucideTag, LucideFileText } from "lucide-react";
 import Link from "next/link";
-import { Suspense, use, useMemo } from "react";
+import { Suspense, use, useEffect, useMemo } from "react";
 
 import { documentRelationshipLabel } from "@/utils/_experiment/documentRelationshipLabel";
 import { labelTypeLabel } from "@/utils/_experiment/labelTypeLabel";
@@ -206,7 +206,15 @@ function SearchResultsWithAggregations({
   onAggregationsChange?: (labels: IAggregationLabel[] | undefined) => void;
 }) {
   const data = use(promise);
-  onAggregationsChange?.(data.aggregations?.labels);
+  const labels = data.aggregations?.labels;
+
+  /**
+   * Pushing aggregations during render forced the parent to re-render on every
+   * child render and fought cleared aggregation state. Sync after commit only.
+   */
+  useEffect(() => {
+    onAggregationsChange?.(labels);
+  }, [labels, onAggregationsChange]);
 
   return <SearchResults promise={Promise.resolve(data)} onSelectLabel={onSelectLabel} />;
 }
