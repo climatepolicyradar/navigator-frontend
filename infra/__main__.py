@@ -111,7 +111,7 @@ shared_resources_review_stack = pulumi.StackReference("climatepolicyradar/fronte
 review_ecr_url = None
 frontend_image: docker_build.Image | None = None
 if is_review_stack:
-    review_ecr_url = shared_resources_review_stack.get_output("cpr_review_ecr_repository_url")
+    review_ecr_url = shared_resources_review_stack.get_output(f"{theme}_review_ecr_repository_url")
 
     # Build and push the Docker image as part of the Pulumi deployment so that
     # the App Runner service has a valid image to pull.
