@@ -22,9 +22,7 @@ export const Checkbox = ({ label, checked, disabled = false, onChange }: Checkbo
     <label
       className={[
         "flex items-center gap-2 rounded-sm px-1 py-0.5",
-        disabled
-          ? "cursor-not-allowed opacity-50 bg-neutral-100 text-neutral-400"
-          : "cursor-pointer bg-transparent text-gray-900 hover:bg-neutral-100",
+        disabled ? "cursor-not-allowed text-neutral-400" : "cursor-pointer bg-transparent text-gray-900 hover:bg-neutral-100",
       ].join(" ")}
     >
       <BaseCheckbox.Root

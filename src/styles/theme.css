@@ -20,6 +20,8 @@
   --color-gray-800: #1d2939;
   --color-gray-950: #030712; /* Dark text & headings */
 
+  --color-neutral-400: #a3a3a3; /* Muted / disabled label text */
+
   /* Deprecated colours */
 
   --color-nearBlack: #101010;
