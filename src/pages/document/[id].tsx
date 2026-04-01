@@ -44,7 +44,7 @@ export const getServerSideProps = (async (context) => {
   return {
     props: withEnvConfig({
       ...familyData,
-      errors: errors.map((error) => JSON.stringify(error)),
+      errors: errors.map((error) => JSON.stringify(error, Object.getOwnPropertyNames(error))),
       features,
       theme,
       themeConfig,
