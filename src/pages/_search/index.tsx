@@ -9,7 +9,7 @@ import { AppliedLabels } from "@/components/_experiment/appliedLabels/AppliedLab
 import { IntelliSearch } from "@/components/_experiment/intellisearch";
 import { createGroup, isFilterGroupEmpty, QueryBuilder, TQueryGroup, TQueryRule } from "@/components/_experiment/queryBuilder/QueryBuilder";
 import { SearchFilters, TFilterCategory } from "@/components/_experiment/searchFilters/SearchFilters";
-import { SearchContainer } from "@/components/_experiment/searchResults/SearchResults";
+import { SearchContainer, IAggregationLabel } from "@/components/_experiment/searchResults/SearchResults";
 import { FiveColumns } from "@/components/atoms/columns/FiveColumns";
 import { withEnvConfig } from "@/context/EnvConfig";
 import { FeaturesContext } from "@/context/FeaturesContext";
@@ -27,6 +27,8 @@ type TProps = InferGetServerSidePropsType<typeof getServerSideProps>;
 
 const ShadowSearch = ({ theme, themeConfig, features }: TProps) => {
   const [availableFilters, setAvailableFilters] = useState<TLabelResult[]>([]);
+  const [labelAggregations, setLabelAggregations] = useState<IAggregationLabel[] | undefined>(undefined);
+
   // search query that is typed into the search box
   const [query, setQuery] = useQueryState("q", parseAsString.withDefault(""));
   // structured filters built in QueryBuilder
@@ -53,7 +55,6 @@ const ShadowSearch = ({ theme, themeConfig, features }: TProps) => {
 
   return (
     <FeaturesContext.Provider value={features}>
-      {/* <div className="w-3/4 m-auto mt-8 pb-12 flex flex-col gap-4"> */}
       <FiveColumns className="mt-4 gap-y-4">
         <div className={columnLayoutCss}>
           <h1 className="text-5xl font-bold text-inky-black">Search</h1>
@@ -63,10 +64,8 @@ const ShadowSearch = ({ theme, themeConfig, features }: TProps) => {
             query={query}
             selectedLabels={selectedLabels}
             onSelectSuggestion={(suggestion) => {
-              if (suggestion) {
-                if (suggestion && !selectedLabels.includes(suggestion)) {
-                  setFilters((prev) => addLabelRule(prev, suggestion));
-                }
+              if (suggestion && !selectedLabels.includes(suggestion)) {
+                setFilters((prev) => addLabelRule(prev, suggestion));
               }
             }}
             setQuery={setQuery}
@@ -87,6 +86,8 @@ const ShadowSearch = ({ theme, themeConfig, features }: TProps) => {
                 setFilters((prev) => (prev ? removeLabelRule(prev, label) : createGroup()));
               }
             }}
+            aggregations={labelAggregations}
+            query={query}
           />
           <QueryBuilder filters={filters} setFilters={setFilters} open={advancedFiltersOpen} onOpenChange={setAdvancedFiltersOpen} />
         </div>
@@ -99,6 +100,7 @@ const ShadowSearch = ({ theme, themeConfig, features }: TProps) => {
               onClear={() => {
                 setFilters(createGroup());
                 setQuery("");
+                setLabelAggregations(undefined); // Hard reset aggregations when user explicitly clears
               }}
               onSelectLabel={handleSelectLabel}
               onRemoveLabel={(label) => setFilters((prev) => (prev ? removeLabelRule(prev, label) : createGroup()))}
@@ -115,6 +117,7 @@ const ShadowSearch = ({ theme, themeConfig, features }: TProps) => {
               }
             }}
             filters={filters}
+            onAggregationsChange={setLabelAggregations}
           />
         </div>
       </FiveColumns>
