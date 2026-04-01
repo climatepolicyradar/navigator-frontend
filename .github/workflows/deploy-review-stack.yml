@@ -77,6 +77,7 @@ jobs:
         env:
           STACK_NAME: ${{ steps.decide.outputs.stack_name }}
           GITHUB_INSTALLATION_ID: ${{secrets.PULUMI_INTEGRATION_ID}}
+          THEME: ${{matrix.theme}}
         run: |
           # Apply deployment settings so the stack knows where to find
           # source code, how to authenticate, and which ESC environment
@@ -100,8 +101,8 @@ jobs:
               },
               \"operationContext\": {
                 \"preRunCommands\": [
-                  \"pulumi config env add ${PROJECT}/cpr-review --yes --stack ${ORG}/${PROJECT}/${STACK_NAME} || true\",
-                  \"pulumi config cp -d ${ORG}/${PROJECT}/${STACK_NAME} -s ${ORG}/${PROJECT}/cpr-review\"
+                  \"pulumi config env add ${PROJECT}/${THEME}-review --yes --stack ${ORG}/${PROJECT}/${STACK_NAME} || true\",
+                  \"pulumi config cp -d ${ORG}/${PROJECT}/${STACK_NAME} -s ${ORG}/${PROJECT}/${THEME}-review\"
                 ],
                 \"options\": {
                   \"skipIntermediateDeployments\": true
