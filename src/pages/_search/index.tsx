@@ -16,6 +16,7 @@ import { withEnvConfig } from "@/context/EnvConfig";
 import { FeaturesContext } from "@/context/FeaturesContext";
 import { TLabelResult, loadLabels } from "@/hooks/useLabelSearch";
 import { FilterGroupSchema } from "@/schemas";
+import { getAvailableLabelIdsFromAggregations } from "@/utils/_experiment/labelAggregationAvailability";
 import { getFeatureFlags } from "@/utils/featureFlags";
 import { getFeatures } from "@/utils/features";
 import { addLabelRule, extractLabels, removeLabelRule } from "@/utils/filters/advancedFilters";
@@ -82,6 +83,11 @@ const ShadowSearch = ({ theme, themeConfig, features }: TProps) => {
     setLabelAggregations((prev) => (isEqual(prev, labels) ? prev : labels));
   }, []);
 
+  const availableLabelIds = useMemo(
+    () => getAvailableLabelIdsFromAggregations(labelAggregations, query, filters),
+    [labelAggregations, query, filters]
+  );
+
   return (
     <FeaturesContext.Provider value={features}>
       <FiveColumns className="mt-4 gap-y-4">
@@ -91,6 +97,7 @@ const ShadowSearch = ({ theme, themeConfig, features }: TProps) => {
         <div className={columnLayoutCss}>
           <IntelliSearch
             query={query}
+            availableLabelIds={availableLabelIds}
             selectedLabels={selectedLabels}
             onSelectSuggestion={(suggestion) => {
               if (suggestion && !selectedLabels.includes(suggestion)) {
@@ -119,7 +126,13 @@ const ShadowSearch = ({ theme, themeConfig, features }: TProps) => {
             aggregations={labelAggregations}
             query={query}
           />
-          <QueryBuilder filters={filters} setFilters={setFilters} open={advancedFiltersOpen} onOpenChange={setAdvancedFiltersOpen} />
+          <QueryBuilder
+            filters={filters}
+            setFilters={setFilters}
+            open={advancedFiltersOpen}
+            onOpenChange={setAdvancedFiltersOpen}
+            availableLabelIds={availableLabelIds}
+          />
         </div>
         {!isFilterGroupEmpty(filters) && (
           <div className={columnLayoutCss}>
