@@ -4,6 +4,7 @@ import { useMemo } from "react";
 
 import { Checkbox } from "@/components/checkbox/Checkbox";
 import { TLabelResult } from "@/hooks/useLabelSearch";
+import { getAvailableLabelIdsFromAggregations, partitionByAvailability } from "@/utils/_experiment/labelAggregationAvailability";
 import { labelTypeLabel } from "@/utils/_experiment/labelTypeLabel";
 import { joinTailwindClasses } from "@/utils/tailwind";
 
@@ -20,21 +21,6 @@ function hasActiveFilterOfType(filters: TLabelResult[], group: TQueryGroup | nul
   return group.filters.some((f) =>
     "value" in f ? filters.some((label) => label.value === f.value && label.type === type) : hasActiveFilterOfType(filters, f, type)
   );
-}
-
-function isFilterGroupEmpty(group: TQueryGroup | null | undefined): boolean {
-  if (!group || !group.filters || group.filters.length === 0) return true;
-
-  for (const f of group.filters) {
-    if ("value" in f) {
-      return false;
-    }
-    if (!isFilterGroupEmpty(f)) {
-      return false;
-    }
-  }
-
-  return true;
 }
 
 export type TFilterCategory = "concept" | "entity_type" | "geography" | "agent" | "activity_status" | "status";
@@ -73,43 +59,7 @@ export function SearchFilters({
   aggregations,
   query,
 }: TProps) {
-  const hasAnyFilters = !isFilterGroupEmpty(filters);
-  const hasQuery = !!(query && query.trim().length > 0);
-
-  /**
-   * We only want aggregations to disable the UI filters when the user
-   * has actually "committed" to a search context – i.e. there is
-   * a non‑empty query or some active filters.
-   *
-   * If both query and filters are empty, we treat everything as enabled
-   * regardless of whatever last aggregations we might have cached.
-   */
-  const shouldConstrain = hasQuery || hasAnyFilters;
-
-  /**
-   * Build a set of label IDs that have hits in the current search.
-   * If we decide not to disable (no query and no filters) or if
-   * there are no aggregations, this is undefined, which we treat
-   * as "don't disable anything".
-   */
-  const availableLabelIds = useMemo(() => {
-    if (!shouldConstrain || !aggregations || aggregations.length === 0) {
-      return undefined;
-    }
-
-    const ids: string[] = [];
-    for (const agg of aggregations) {
-      if (agg && agg.value && typeof agg.value.id === "string") {
-        ids.push(agg.value.id);
-      }
-    }
-
-    if (ids.length === 0) {
-      return undefined;
-    }
-
-    return new Set(ids);
-  }, [aggregations, shouldConstrain]);
+  const availableLabelIds = useMemo(() => getAvailableLabelIdsFromAggregations(aggregations, query, filters), [aggregations, query, filters]);
 
   const sortedForCategory = useMemo(
     () => availableFilters.filter((filter) => filter.type === activeCategory).sort((a, b) => a.value.localeCompare(b.value)),
@@ -118,18 +68,7 @@ export function SearchFilters({
 
   // Available (selectable) rows first - disabled aggregations at the bottom.
   const { enabledFilters, disabledFilters } = useMemo(() => {
-    if (!availableLabelIds) {
-      return { enabledFilters: sortedForCategory, disabledFilters: [] as TLabelResult[] };
-    }
-    const enabled: TLabelResult[] = [];
-    const disabled: TLabelResult[] = [];
-    for (const row of sortedForCategory) {
-      if (availableLabelIds.has(row.id)) {
-        enabled.push(row);
-      } else {
-        disabled.push(row);
-      }
-    }
+    const { enabled, disabled } = partitionByAvailability(sortedForCategory, availableLabelIds);
     return { enabledFilters: enabled, disabledFilters: disabled };
   }, [sortedForCategory, availableLabelIds]);
 
