@@ -44,7 +44,6 @@ const FILTER_AGGREGATIONS: TFilterCategory[] = ["agent", "entity_type", "geograp
 type TProps = {
   availableFilters: TLabelResult[];
   filters?: TQueryGroup | null;
-  /** Which category tab is selected (owned by parent — avoids sync effects). */
   activeCategory: TFilterCategory;
   onActiveCategoryChange: (category: TFilterCategory) => void;
   open?: boolean;
@@ -112,6 +111,45 @@ export function SearchFilters({
     return new Set(ids);
   }, [aggregations, shouldConstrain]);
 
+  const sortedForCategory = useMemo(
+    () => availableFilters.filter((filter) => filter.type === activeCategory).sort((a, b) => a.value.localeCompare(b.value)),
+    [availableFilters, activeCategory]
+  );
+
+  // Available (selectable) rows first - disabled aggregations at the bottom.
+  const { enabledFilters, disabledFilters } = useMemo(() => {
+    if (!availableLabelIds) {
+      return { enabledFilters: sortedForCategory, disabledFilters: [] as TLabelResult[] };
+    }
+    const enabled: TLabelResult[] = [];
+    const disabled: TLabelResult[] = [];
+    for (const row of sortedForCategory) {
+      if (availableLabelIds.has(row.id)) {
+        enabled.push(row);
+      } else {
+        disabled.push(row);
+      }
+    }
+    return { enabledFilters: enabled, disabledFilters: disabled };
+  }, [sortedForCategory, availableLabelIds]);
+
+  const renderCheckboxRow = (filter: TLabelResult, isAvailable: boolean) => {
+    const checked = hasValue(filters, filter.value);
+    return (
+      <li key={filter.id}>
+        <Checkbox
+          label={filter.value}
+          checked={checked}
+          disabled={!isAvailable}
+          onChange={(nextChecked) => {
+            if (!isAvailable) return;
+            onChange?.(nextChecked, filter.value);
+          }}
+        />
+      </li>
+    );
+  };
+
   return (
     <BasePopover.Root open={open} onOpenChange={(value) => onOpenChange?.(value)}>
       <BasePopover.Trigger
@@ -154,36 +192,12 @@ export function SearchFilters({
                       ))}
                     </ul>
                   </div>
-                  <div className="max-h-[60vh] basis-2/3 p-4 overflow-y-auto text-sm flex flex-col gap-4">
-                    <ul className="flex flex-col gap-2 text-inky-black">
-                      {availableFilters
-                        .filter((filter) => filter.type === activeCategory)
-                        .sort((a, b) => a.value.localeCompare(b.value))
-                        .map((filter) => {
-                          const checked = hasValue(filters, filter.value);
-
-                          /**
-                           * When availableLabelIds is undefined (no query + no filters
-                           * or no valid aggregations), everything is considered available.
-                           * Otherwise, the label must appear in the aggregation ids.
-                           */
-                          const isAvailable = !availableLabelIds || availableLabelIds.has(filter.id);
-
-                          return (
-                            <li key={filter.id}>
-                              <Checkbox
-                                label={filter.value}
-                                checked={checked}
-                                disabled={!isAvailable}
-                                onChange={(nextChecked) => {
-                                  if (!isAvailable) return;
-                                  onChange?.(nextChecked, filter.value);
-                                }}
-                              />
-                            </li>
-                          );
-                        })}
-                    </ul>
+                  <div className="max-h-[60vh] basis-2/3 p-4 overflow-y-auto text-sm flex flex-col">
+                    <ul className="flex flex-col gap-2 text-inky-black">{enabledFilters.map((f) => renderCheckboxRow(f, true))}</ul>
+                    {disabledFilters.length > 0 && enabledFilters.length > 0 ? <div className="h-6 w-full shrink-0" aria-hidden /> : null}
+                    {disabledFilters.length > 0 ? (
+                      <ul className="flex flex-col gap-2 text-inky-black">{disabledFilters.map((f) => renderCheckboxRow(f, false))}</ul>
+                    ) : null}
                   </div>
                 </div>
               )}
