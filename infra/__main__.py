@@ -73,6 +73,24 @@ if is_review_stack:
 else:
     review_name = None
 
+# ---------------------------------------------------------------------------
+# Auto-tag all AWS resources on review stacks for cost tracking & cleanup.
+# ---------------------------------------------------------------------------
+if is_review_stack:
+    _review_tags = {"Environment": "review", "PRNumber": pr_number}
+
+    def _add_review_tags(args: pulumi.ResourceTransformArgs) -> pulumi.ResourceTransformResult | None:
+        if not args.type_.startswith("aws:"):
+            return None
+        existing_tags = args.props.get("tags") or {}
+        props = {**args.props, "tags": {**existing_tags, **_review_tags}}  # type: ignore[arg-type]
+        return pulumi.ResourceTransformResult(
+            props=props,
+            opts=args.opts,
+        )
+
+    pulumi.runtime.register_resource_transform(_add_review_tags)
+
 env = "sandbox"
 if "staging" in stack or is_review_stack_or_template:
     env = "staging"
@@ -111,7 +129,7 @@ shared_resources_review_stack = pulumi.StackReference("climatepolicyradar/fronte
 review_ecr_url = None
 frontend_image: docker_build.Image | None = None
 if is_review_stack:
-    review_ecr_url = shared_resources_review_stack.get_output(f"{theme}_review_ecr_repository_url")
+    review_ecr_url = shared_resources_review_stack.get_output("cpr_review_ecr_repository_url")
 
     # Build and push the Docker image as part of the Pulumi deployment so that
     # the App Runner service has a valid image to pull.
