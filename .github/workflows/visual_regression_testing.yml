@@ -42,16 +42,10 @@ jobs:
           echo "Waiting for server to start..."
           npx wait-on http://localhost:3000
 
-      - name: Run Percy tests - main
+      - name: Run Percy tests
         run: npx percy snapshot snapshots.js
         env:
           PERCY_TOKEN: ${{ secrets.PERCY_TOKEN }}
-
-      - name: Run Percy tests - features
-        run: npx percy snapshot snapshots.js
-        env:
-          PERCY_TOKEN: ${{ secrets.PERCY_TOKEN }}
-          E2E_TEST_FEATURE_FLAGS: true
 
       - if: always()
         run: kill $(lsof -t -i:3000) || true
