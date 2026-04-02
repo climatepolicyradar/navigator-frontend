@@ -150,12 +150,20 @@ jobs:
           sed -i "s/__THEME__/$THEME/g" tsconfig.json
         env:
           THEME: cpr
-      - name: Run vitest
+      - name: Run vitest - main
         run: npm run test
         # This is needed to pass the results on to the trunk-io/analytics-uploader
         continue-on-error: true
         env:
           THEME: cpr
+
+      - name: Run vitest - features
+        run: npm run test
+        # This is needed to pass the results on to the trunk-io/analytics-uploader
+        continue-on-error: true
+        env:
+          THEME: cpr
+          E2E_TEST_FEATURE_FLAGS: true
 
       - name: Upload vitest results to Trunk.io
         uses: trunk-io/analytics-uploader@v2
