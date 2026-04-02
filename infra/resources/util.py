@@ -50,7 +50,7 @@ def validate_aws_account() -> None:
     """Enforce AWS account."""
     config = pulumi.Config()
 
-    expected_account_id = config.require("validation_account_id")
+    expected_account_id = config.require_secret("validation_account_id")
     deploy_identity = aws.get_caller_identity()
 
     if expected_account_id != deploy_identity.account_id:
