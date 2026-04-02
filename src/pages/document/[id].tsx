@@ -40,6 +40,7 @@ export const getServerSideProps = (async (context) => {
   errors.forEach((err) => console.error(err));
   if (familyData === null) return { notFound: true };
   if (!features.debug) delete familyData.debug;
+  if (features["new-data-model"]) throw Error("new-data-model feature is ON");
 
   return {
     props: withEnvConfig({
