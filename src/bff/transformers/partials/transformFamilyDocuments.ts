@@ -14,7 +14,7 @@ import { groupByType } from "@/utils/data-in/groupByType";
 
 export const transformFamilyDocuments = (oldDocuments: TApiFamilyDocumentPublic[], newFiles: TDataInFile[]): TFamilyDocumentPublic[] =>
   newFiles
-    .filter((file) => file.type === "has_member")
+    .filter((file) => file.type === "has_member" && file.value.attributes.status === "published")
     .map((file) => {
       const oldDocument = oldDocuments.find((document) => file.value.id === document.import_id);
       if (!oldDocument) throw new Error(`File '${file.value.id}' does not match any V2 API document`);
