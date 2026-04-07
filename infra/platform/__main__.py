@@ -162,7 +162,7 @@ for theme in ["cpr", "cclw", "mcf", "ccc"]:
         ),
         image_tag_mutability="MUTABLE",
         opts=pulumi.ResourceOptions(
-            protect=True,
+            protect=True, additional_secret_outputs=["repository_url"]
         ),
     )
     pulumi.export(f"{theme}_review_ecr_repository_url", review_ecr_repo.repository_url)
@@ -232,9 +232,8 @@ for theme in ["cpr", "cclw", "mcf", "ccc"]:
         project=project_name,
         name=f"{theme}-review",
         yaml=cpr_review_yaml.apply(lambda y: pulumi.StringAsset(y)),
-        opts=pulumi.ResourceOptions(depends_on=[aws_creds_staging_env], additional_secret_outputs=["repository_url"]),
+        opts=pulumi.ResourceOptions(depends_on=[aws_creds_staging_env]),
     )
-    pulumi.export(f"{theme}_review_ecr_repository_url", review_ecr_repo.repository_url)
 
 # ---------------------------------------------------------------------------
 # Deployment Settings for cpr-review stack
