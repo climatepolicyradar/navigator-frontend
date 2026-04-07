@@ -1,9 +1,11 @@
 import * as v from "valibot";
 
+import { toLiteralUnion } from "@/utils/schemas/toLiteralUnion";
+
 import { LabelSchema } from "./labelSchema";
 
 export const FILE_ITEM_TYPES = ["cdn", "source"] as const;
-const FileItemTypeSchema = v.union(FILE_ITEM_TYPES.map((type) => v.literal(type)));
+const FileItemTypeSchema = toLiteralUnion(FILE_ITEM_TYPES);
 export type TDataInFileItemType = v.InferOutput<typeof FileItemTypeSchema>;
 export const MANDATORY_FILE_ITEM_TYPES: TDataInFileItemType[] = ["cdn", "source"];
 
@@ -33,11 +35,12 @@ const FileSchemaByType = (type: v.UnionSchema<any, any> | v.LiteralSchema<any, a
 export const FileSchema = v.union([
   // Documents
   FileSchemaByType(
-    v.union([v.literal("has_member"), v.literal("has_version")]),
+    toLiteralUnion(["has_member", "has_version"]),
     v.object({
       deprecated_slug: v.string(),
       md5_sum: v.optional(v.string()),
       variant: v.optional(v.string()),
+      status: toLiteralUnion(["created", "deleted", "published"]),
     })
   ),
   // Collections
