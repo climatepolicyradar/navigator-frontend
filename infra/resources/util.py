@@ -50,13 +50,18 @@ def validate_aws_account() -> None:
     """Enforce AWS account."""
     config = pulumi.Config()
 
-    expected_account_id = config.require("validation_account_id")
+    expected_account_id = config.require_secret("validation_account_id")
     deploy_identity = aws.get_caller_identity()
 
-    if expected_account_id != deploy_identity.account_id:
-        raise RuntimeError(
-            "The AWS credentials in use do not match the expected account ID."
+    expected_account_id.apply(
+        lambda expected: (_ for _ in ()).throw(
+            RuntimeError(
+                "The AWS credentials in use do not match the expected account ID."
+            )
         )
+        if expected != deploy_identity.account_id
+        else None
+    )
 
 
 def get_active_branch() -> str:

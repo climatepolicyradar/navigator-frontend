@@ -1,20 +1,22 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 
+import isEqual from "lodash/isEqual";
 import { GetServerSideProps, InferGetServerSidePropsType } from "next";
 import { useQueryState, parseAsString, parseAsJson } from "nuqs";
-import { useMemo, useState, useEffect } from "react";
+import { useCallback, useEffect, useMemo, useState, type SetStateAction } from "react";
 
 import { ApiClient } from "@/api/http-common";
 import { AppliedLabels } from "@/components/_experiment/appliedLabels/AppliedLabels";
 import { IntelliSearch } from "@/components/_experiment/intellisearch";
 import { createGroup, isFilterGroupEmpty, QueryBuilder, TQueryGroup, TQueryRule } from "@/components/_experiment/queryBuilder/QueryBuilder";
 import { SearchFilters, TFilterCategory } from "@/components/_experiment/searchFilters/SearchFilters";
-import { SearchContainer } from "@/components/_experiment/searchResults/SearchResults";
+import { SearchContainer, IAggregationLabel } from "@/components/_experiment/searchResults/SearchResults";
 import { FiveColumns } from "@/components/atoms/columns/FiveColumns";
 import { withEnvConfig } from "@/context/EnvConfig";
 import { FeaturesContext } from "@/context/FeaturesContext";
 import { TLabelResult, loadLabels } from "@/hooks/useLabelSearch";
 import { FilterGroupSchema } from "@/schemas";
+import { getAvailableLabelIdsFromAggregations } from "@/utils/_experiment/labelAggregationAvailability";
 import { getFeatureFlags } from "@/utils/featureFlags";
 import { getFeatures } from "@/utils/features";
 import { addLabelRule, extractLabels, removeLabelRule } from "@/utils/filters/advancedFilters";
@@ -27,23 +29,48 @@ type TProps = InferGetServerSidePropsType<typeof getServerSideProps>;
 
 const ShadowSearch = ({ theme, themeConfig, features }: TProps) => {
   const [availableFilters, setAvailableFilters] = useState<TLabelResult[]>([]);
+  const [labelAggregations, setLabelAggregations] = useState<IAggregationLabel[] | undefined>(undefined);
+
   // search query that is typed into the search box
   const [query, setQuery] = useQueryState("q", parseAsString.withDefault(""));
   // structured filters built in QueryBuilder
-  const [filters, setFilters] = useQueryState("filters", parseAsJson<TQueryGroup>(FilterGroupSchema).withDefault(createGroup()));
+  const [filters, setFiltersInUrl] = useQueryState("filters", parseAsJson<TQueryGroup>(FilterGroupSchema).withDefault(createGroup()));
+
+  /**
+   * Drops aggregations only when the filter tree becomes empty so greyed options
+   * from an old response are not kept with no filters. If at least one filter
+   * stays active, previous aggregations are retained until the new search returns.
+   * Skips no-op updates. Done here instead of an effect for set-state-in-effect.
+   */
+  const setFilters = useCallback(
+    (updater: SetStateAction<TQueryGroup>) => {
+      let shouldClearAggregations = false;
+      void setFiltersInUrl((prev) => {
+        const next = typeof updater === "function" ? (updater as (p: TQueryGroup) => TQueryGroup)(prev) : updater;
+        if (!isEqual(prev, next) && isFilterGroupEmpty(next)) {
+          shouldClearAggregations = true;
+        }
+        return next;
+      });
+      if (shouldClearAggregations) {
+        setLabelAggregations(undefined);
+      }
+    },
+    [setFiltersInUrl]
+  );
 
   // Derive selectedLabels from the filter tree
   const selectedLabels = useMemo(() => extractLabels(filters), [filters]);
 
-  // Control SearchFilters popover from outside
+  // Control SearchFilters popover and active category tab (single source of truth)
   const [filtersOpen, setFiltersOpen] = useState(false);
-  const [filtersOpenFilter, setFiltersOpenFilter] = useState<TFilterCategory | undefined>(undefined);
+  const [filterSidebarCategory, setFilterSidebarCategory] = useState<TFilterCategory>("agent");
 
   // Control Advanced Filters view
   const [advancedFiltersOpen, setAdvancedFiltersOpen] = useState(false);
 
   const handleSelectLabel = (label: string, type: string) => {
-    setFiltersOpenFilter((type as TFilterCategory) || undefined);
+    setFilterSidebarCategory((type as TFilterCategory) || "agent");
     setFiltersOpen(true);
   };
 
@@ -51,9 +78,18 @@ const ShadowSearch = ({ theme, themeConfig, features }: TProps) => {
     loadLabels("").then(setAvailableFilters);
   }, []);
 
+  /** Avoid re-renders when the search payload repeats the same aggregation list. */
+  const applyAggregationsFromSearch = useCallback((labels: IAggregationLabel[] | undefined) => {
+    setLabelAggregations((prev) => (isEqual(prev, labels) ? prev : labels));
+  }, []);
+
+  const availableLabelIds = useMemo(
+    () => getAvailableLabelIdsFromAggregations(labelAggregations, query, filters),
+    [labelAggregations, query, filters]
+  );
+
   return (
     <FeaturesContext.Provider value={features}>
-      {/* <div className="w-3/4 m-auto mt-8 pb-12 flex flex-col gap-4"> */}
       <FiveColumns className="mt-4 gap-y-4">
         <div className={columnLayoutCss}>
           <h1 className="text-5xl font-bold text-inky-black">Search</h1>
@@ -61,12 +97,11 @@ const ShadowSearch = ({ theme, themeConfig, features }: TProps) => {
         <div className={columnLayoutCss}>
           <IntelliSearch
             query={query}
+            availableLabelIds={availableLabelIds}
             selectedLabels={selectedLabels}
             onSelectSuggestion={(suggestion) => {
-              if (suggestion) {
-                if (suggestion && !selectedLabels.includes(suggestion)) {
-                  setFilters((prev) => addLabelRule(prev, suggestion));
-                }
+              if (suggestion && !selectedLabels.includes(suggestion)) {
+                setFilters((prev) => addLabelRule(prev, suggestion));
               }
             }}
             setQuery={setQuery}
@@ -77,9 +112,10 @@ const ShadowSearch = ({ theme, themeConfig, features }: TProps) => {
           <SearchFilters
             availableFilters={availableFilters}
             filters={filters}
+            activeCategory={filterSidebarCategory}
+            onActiveCategoryChange={setFilterSidebarCategory}
             open={filtersOpen}
             onOpenChange={setFiltersOpen}
-            openFilter={filtersOpenFilter}
             onChange={(checked, label) => {
               if (checked) {
                 setFilters((prev) => addLabelRule(prev, label));
@@ -87,8 +123,16 @@ const ShadowSearch = ({ theme, themeConfig, features }: TProps) => {
                 setFilters((prev) => (prev ? removeLabelRule(prev, label) : createGroup()));
               }
             }}
+            aggregations={labelAggregations}
+            query={query}
           />
-          <QueryBuilder filters={filters} setFilters={setFilters} open={advancedFiltersOpen} onOpenChange={setAdvancedFiltersOpen} />
+          <QueryBuilder
+            filters={filters}
+            setFilters={setFilters}
+            open={advancedFiltersOpen}
+            onOpenChange={setAdvancedFiltersOpen}
+            availableLabelIds={availableLabelIds}
+          />
         </div>
         {!isFilterGroupEmpty(filters) && (
           <div className={columnLayoutCss}>
@@ -99,6 +143,7 @@ const ShadowSearch = ({ theme, themeConfig, features }: TProps) => {
               onClear={() => {
                 setFilters(createGroup());
                 setQuery("");
+                setLabelAggregations(undefined); // belt & braces
               }}
               onSelectLabel={handleSelectLabel}
               onRemoveLabel={(label) => setFilters((prev) => (prev ? removeLabelRule(prev, label) : createGroup()))}
@@ -115,6 +160,7 @@ const ShadowSearch = ({ theme, themeConfig, features }: TProps) => {
               }
             }}
             filters={filters}
+            onAggregationsChange={applyAggregationsFromSearch}
           />
         </div>
       </FiveColumns>

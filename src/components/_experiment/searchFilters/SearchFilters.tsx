@@ -1,13 +1,15 @@
 import { Popover as BasePopover } from "@base-ui/react/popover";
 import { ChevronRight, Circle, ListFilter } from "lucide-react";
-import { useState } from "react";
+import { useMemo } from "react";
 
 import { Checkbox } from "@/components/checkbox/Checkbox";
 import { TLabelResult } from "@/hooks/useLabelSearch";
+import { getAvailableLabelIdsFromAggregations, partitionByAvailability } from "@/utils/_experiment/labelAggregationAvailability";
 import { labelTypeLabel } from "@/utils/_experiment/labelTypeLabel";
 import { joinTailwindClasses } from "@/utils/tailwind";
 
 import { TQueryGroup } from "../queryBuilder/QueryBuilder";
+import { IAggregationLabel } from "../searchResults/SearchResults";
 
 function hasValue(group: TQueryGroup | null | undefined, value: string): boolean {
   if (!group) return false;
@@ -22,33 +24,70 @@ function hasActiveFilterOfType(filters: TLabelResult[], group: TQueryGroup | nul
 }
 
 export type TFilterCategory = "concept" | "entity_type" | "geography" | "agent" | "activity_status" | "status";
+
 const FILTER_AGGREGATIONS: TFilterCategory[] = ["agent", "entity_type", "geography", "concept", "activity_status", "status"];
 
 type TProps = {
   availableFilters: TLabelResult[];
   filters?: TQueryGroup | null;
-  openFilter?: TFilterCategory;
+  activeCategory: TFilterCategory;
+  onActiveCategoryChange: (category: TFilterCategory) => void;
   open?: boolean;
   onOpenChange?: (open: boolean) => void;
   onChange?: (checked: boolean, label: string) => void;
+  /**
+   * Labels aggregations from search results.
+   * When present and there is an active query or filters, only labels whose
+   * id appears here remain enabled - others are disabled/greyed.
+   */
+  aggregations?: IAggregationLabel[] | undefined;
+  /**
+   * Current text query, used so that clearing the search box also resets
+   * any aggregation‑based disabling.
+   */
+  query?: string;
 };
 
-export function SearchFilters({ availableFilters, filters, openFilter, open, onOpenChange, onChange }: TProps) {
-  const [activeFilter, setActiveFilter] = useState<TFilterCategory>(openFilter || "agent");
-  const [prevOpenFilter, setPrevOpenFilter] = useState(openFilter);
-  if (openFilter !== prevOpenFilter) {
-    setPrevOpenFilter(openFilter);
-    if (openFilter) setActiveFilter(openFilter);
-  }
+export function SearchFilters({
+  availableFilters,
+  filters,
+  activeCategory,
+  onActiveCategoryChange,
+  open,
+  onOpenChange,
+  onChange,
+  aggregations,
+  query,
+}: TProps) {
+  const availableLabelIds = useMemo(() => getAvailableLabelIdsFromAggregations(aggregations, query, filters), [aggregations, query, filters]);
 
-  // const selectedFilters = availableFilters
-  //   .filter((filter) => hasValue(filters, filter.value))
-  //   .filter((filter) => filter.type === activeFilter)
-  //   .sort((a, b) => a.value.localeCompare(b.value));
-  // const unSelectedFilters = availableFilters
-  //   .filter((filter) => !hasValue(filters, filter.value))
-  //   .filter((filter) => filter.type === activeFilter)
-  //   .sort((a, b) => a.value.localeCompare(b.value));
+  const sortedForCategory = useMemo(
+    () => availableFilters.filter((filter) => filter.type === activeCategory).sort((a, b) => a.value.localeCompare(b.value)),
+    [availableFilters, activeCategory]
+  );
+
+  // Available (selectable) rows first - disabled aggregations at the bottom.
+  const { enabledFilters, disabledFilters } = useMemo(() => {
+    const { enabled, disabled } = partitionByAvailability(sortedForCategory, availableLabelIds);
+    return { enabledFilters: enabled, disabledFilters: disabled };
+  }, [sortedForCategory, availableLabelIds]);
+
+  const renderCheckboxRow = (filter: TLabelResult, isAvailable: boolean) => {
+    const checked = hasValue(filters, filter.value);
+    return (
+      <li key={filter.id}>
+        <Checkbox
+          label={filter.value}
+          checked={checked}
+          disabled={!isAvailable}
+          onChange={(nextChecked) => {
+            if (!isAvailable) return;
+            onChange?.(nextChecked, filter.value);
+          }}
+        />
+      </li>
+    );
+  };
 
   return (
     <BasePopover.Root open={open} onOpenChange={(value) => onOpenChange?.(value)}>
@@ -74,12 +113,15 @@ export function SearchFilters({ availableFilters, filters, openFilter, open, onO
                       {FILTER_AGGREGATIONS.map((agg) => (
                         <li key={agg} className="text-sm text-inky-black mb-1">
                           <button
-                            className={`relative rounded-sm w-full text-left px-6 py-2 text-sm text-inky-black font-medium hover:bg-neutral-200 ${activeFilter === agg ? "bg-neutral-200!" : ""}`}
-                            onClick={() => setActiveFilter(agg)}
+                            className={joinTailwindClasses(
+                              "relative rounded-sm w-full text-left px-6 py-2 text-sm text-inky-black font-medium hover:bg-neutral-200",
+                              activeCategory === agg ? "bg-neutral-200!" : ""
+                            )}
+                            onClick={() => onActiveCategoryChange(agg)}
                           >
                             {labelTypeLabel(agg)}
-                            {activeFilter === agg && (
-                              <ChevronRight width={20} height={20} className="absolute right-2 top-1/2 transform -translate-y-1/2"></ChevronRight>
+                            {activeCategory === agg && (
+                              <ChevronRight width={20} height={20} className="absolute right-2 top-1/2 transform -translate-y-1/2" />
                             )}
                             {hasActiveFilterOfType(availableFilters, filters, agg) && (
                               <Circle width={8} height={8} fill="currentColor" className="absolute left-2 top-1/2 transform -translate-y-1/2" />
@@ -89,48 +131,12 @@ export function SearchFilters({ availableFilters, filters, openFilter, open, onO
                       ))}
                     </ul>
                   </div>
-                  <div className="max-h-[60vh] basis-2/3 p-4 overflow-y-auto text-sm flex flex-col gap-4">
-                    {/* {!!selectedFilters.length && (
-                      <div>
-                        <p className="mb-2 text-xs text-inky-black">ACTIVE FILTERS</p>
-                        <ul className="flex flex-col gap-2">
-                          {selectedFilters.map((filter) => {
-                            return (
-                              <li key={filter.id}>
-                                <Checkbox label={filter.value} checked onChange={(checked) => onChange?.(checked, filter.value)} />
-                              </li>
-                            );
-                          })}
-                        </ul>
-                      </div>
-                    )}
-                    {!!unSelectedFilters.length && (
-                      <ul className="flex flex-col gap-2 text-inky-black">
-                        {unSelectedFilters.map((filter) => {
-                          return (
-                            <li key={filter.id}>
-                              <Checkbox label={filter.value} onChange={(checked) => onChange?.(checked, filter.value)} />
-                            </li>
-                          );
-                        })}
-                      </ul>
-                    )} */}
-                    <ul className="flex flex-col gap-2 text-inky-black">
-                      {availableFilters
-                        .filter((filter) => filter.type === activeFilter)
-                        .sort((a, b) => a.value.localeCompare(b.value))
-                        .map((filter) => {
-                          return (
-                            <li key={filter.id}>
-                              <Checkbox
-                                label={filter.value}
-                                onChange={(checked) => onChange?.(checked, filter.value)}
-                                checked={hasValue(filters, filter.value)}
-                              />
-                            </li>
-                          );
-                        })}
-                    </ul>
+                  <div className="max-h-[60vh] basis-2/3 p-4 overflow-y-auto text-sm flex flex-col">
+                    <ul className="flex flex-col gap-2 text-inky-black">{enabledFilters.map((f) => renderCheckboxRow(f, true))}</ul>
+                    {disabledFilters.length > 0 && enabledFilters.length > 0 ? <div className="h-6 w-full shrink-0" aria-hidden /> : null}
+                    {disabledFilters.length > 0 ? (
+                      <ul className="flex flex-col gap-2 text-inky-black">{disabledFilters.map((f) => renderCheckboxRow(f, false))}</ul>
+                    ) : null}
                   </div>
                 </div>
               )}

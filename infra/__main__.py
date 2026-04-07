@@ -69,9 +69,27 @@ if is_review_stack:
     # Extract PR number from stack name like "pr-climatepolicyradar-navigator-frontend-1139"
     match = re.search(r"(\d+)$", stack)
     pr_number = match.group(1) if match else stack[-8:]  # fallback to last 8 chars
-    review_name = f"review-{theme}-{pr_number}"  # e.g. "review-cpr-1139" (15 chars)
+    review_name = f"review-{theme}-frontend-{pr_number}"
 else:
     review_name = None
+
+# ---------------------------------------------------------------------------
+# Auto-tag all AWS resources on review stacks for cost tracking & cleanup.
+# ---------------------------------------------------------------------------
+if is_review_stack:
+    _review_tags = {"Environment": "review", "PRNumber": pr_number}
+
+    def _add_review_tags(args: pulumi.ResourceTransformArgs) -> pulumi.ResourceTransformResult | None:
+        if not args.type_.startswith("aws:"):
+            return None
+        existing_tags = args.props.get("tags") or {}
+        props = {**args.props, "tags": {**existing_tags, **_review_tags}}  # type: ignore[arg-type]
+        return pulumi.ResourceTransformResult(
+            props=props,
+            opts=args.opts,
+        )
+
+    pulumi.runtime.register_resource_transform(_add_review_tags)
 
 env = "sandbox"
 if "staging" in stack or is_review_stack_or_template:

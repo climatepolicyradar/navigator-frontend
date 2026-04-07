@@ -1,6 +1,6 @@
 import { LucideCog, LucideEarth, LucideTag, LucideFileText } from "lucide-react";
 import Link from "next/link";
-import { Suspense, use, useMemo } from "react";
+import { Suspense, use, useEffect, useMemo } from "react";
 
 import { documentRelationshipLabel } from "@/utils/_experiment/documentRelationshipLabel";
 import { labelTypeLabel } from "@/utils/_experiment/labelTypeLabel";
@@ -42,6 +42,15 @@ interface SearchDocument {
   attributes: Record<string, string | number | boolean>;
 }
 
+export interface IAggregationLabel {
+  count: number;
+  value: {
+    id: string;
+    type: string;
+    value: string;
+  };
+}
+
 export interface SearchDocumentsResponse {
   total_size: number | null;
   page: number;
@@ -50,6 +59,9 @@ export interface SearchDocumentsResponse {
   next_page: string | null;
   previous_page: string | null;
   results: SearchDocument[];
+  aggregations?: {
+    labels: IAggregationLabel[];
+  };
 }
 
 interface SearchDocumentsParams {
@@ -60,6 +72,7 @@ interface SearchDocumentsParams {
 }
 
 const SEARCH_DOCUMENTS_BASE_URL = "https://api.climatepolicyradar.org/search/documents";
+const MAX_DESCRIPTION_LENGTH = 275;
 
 export async function fetchSearchDocuments(params: SearchDocumentsParams = {}): Promise<SearchDocumentsResponse> {
   const url = new URL(SEARCH_DOCUMENTS_BASE_URL);
@@ -109,7 +122,7 @@ export function SearchResults({ promise, onSelectLabel }: { promise: Promise<Sea
             {/* CORE DOCUMENT DETAILS */}
             <h3 className="font-semibold text-lg">
               {linkHref(doc) ? (
-                <Link href={linkHref(doc)} className="text-inky-blue hover:underline" dangerouslySetInnerHTML={{ __html: doc.title }} />
+                <Link href={linkHref(doc)!} className="text-inky-blue hover:underline" dangerouslySetInnerHTML={{ __html: doc.title }} />
               ) : (
                 <span dangerouslySetInnerHTML={{ __html: doc.title }} />
               )}
@@ -117,7 +130,9 @@ export function SearchResults({ promise, onSelectLabel }: { promise: Promise<Sea
             {doc.description && (
               <p
                 className="text-base text-inky-black"
-                dangerouslySetInnerHTML={{ __html: doc.description.slice(0, 275) + (doc.description.length > 275 ? "..." : "") }}
+                dangerouslySetInnerHTML={{
+                  __html: doc.description.slice(0, MAX_DESCRIPTION_LENGTH) + (doc.description.length > MAX_DESCRIPTION_LENGTH ? "..." : ""),
+                }}
               />
             )}
             {/* DISPLAYING FILTERS */}
@@ -130,7 +145,7 @@ export function SearchResults({ promise, onSelectLabel }: { promise: Promise<Sea
                   <div className="basis-25 shrink-0 py-0.5 font-semibold">{labelTypeLabel(agg)}</div>
                   <div className="flex flex-wrap gap-1">
                     {relationshipsOfType
-                      .sort((a, b) => b.count - a.count)
+                      .sort((a, b) => (b.count ?? 0) - (a.count ?? 0))
                       .slice(0, 3)
                       .map((relationship, i) => (
                         <button
@@ -161,7 +176,7 @@ export function SearchResults({ promise, onSelectLabel }: { promise: Promise<Sea
                       <span key={i} className="rounded px-2 py-0.5 flex gap-1 items-start">
                         <LucideFileText width={14} height={14} className="inline mt-0.5 shrink-0" />
                         {linkHref(relationship.value) ? (
-                          <Link href={linkHref(relationship.value)} className="hover:underline">
+                          <Link href={linkHref(relationship.value)!} className="hover:underline">
                             {relationship.value.title}
                           </Link>
                         ) : (
@@ -181,6 +196,29 @@ export function SearchResults({ promise, onSelectLabel }: { promise: Promise<Sea
   );
 }
 
+function SearchResultsWithAggregations({
+  promise,
+  onSelectLabel,
+  onAggregationsChange,
+}: {
+  promise: Promise<SearchDocumentsResponse>;
+  onSelectLabel?: (label: string) => void;
+  onAggregationsChange?: (labels: IAggregationLabel[] | undefined) => void;
+}) {
+  const data = use(promise);
+  const labels = data.aggregations?.labels;
+
+  /**
+   * Pushing aggregations during render forced the parent to re-render on every
+   * child render and fought cleared aggregation state. Sync after commit only.
+   */
+  useEffect(() => {
+    onAggregationsChange?.(labels);
+  }, [labels, onAggregationsChange]);
+
+  return <SearchResults promise={Promise.resolve(data)} onSelectLabel={onSelectLabel} />;
+}
+
 // If any of the values are empty strings, the filters are considered invalid and will not be sent to the API
 const filtersDoesNotContainEmptyRule = (filters: TQueryGroup): boolean => {
   if (!filters || !filters.filters || filters.filters.length === 0) return false;
@@ -197,11 +235,13 @@ export function SearchContainer({
   query,
   filters,
   onSelectLabel,
+  onAggregationsChange,
 }: {
   selectedLabels?: string[];
   query?: string;
   filters?: TQueryGroup;
   onSelectLabel?: (label: string) => void;
+  onAggregationsChange?: (labels: IAggregationLabel[] | undefined) => void;
 }) {
   const searchPromise = useMemo(() => {
     if (!query && (!filters || !filtersDoesNotContainEmptyRule(filters))) return null;
@@ -225,7 +265,7 @@ export function SearchContainer({
             </p>
           }
         >
-          <SearchResults promise={searchPromise} onSelectLabel={onSelectLabel} />
+          <SearchResultsWithAggregations promise={searchPromise} onSelectLabel={onSelectLabel} onAggregationsChange={onAggregationsChange} />
         </Suspense>
       ) : (
         <EmptySearch />

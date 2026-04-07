@@ -4,6 +4,7 @@ import { CornerDownLeft, LucideSearch, SlidersHorizontal } from "lucide-react";
 import { useMemo, useRef, useState } from "react";
 
 import { TLabelResult, useLabelSearch } from "@/hooks/useLabelSearch";
+import { partitionByAvailability } from "@/utils/_experiment/labelAggregationAvailability";
 import { labelTypeLabel } from "@/utils/_experiment/labelTypeLabel";
 import { joinTailwindClasses } from "@/utils/tailwind";
 
@@ -17,6 +18,7 @@ const underlineFirstInstanceOfQuery = (text: string, query: string) => {
 
 export function IntelliSearch({
   query,
+  availableLabelIds,
   className,
   placeholder = "Search",
   debounceDelay = 50,
@@ -52,15 +54,20 @@ export function IntelliSearch({
     inputRef.current?.blur();
   }
 
+  const isSuggestionAvailable = (suggestion: TLabelResult) => !availableLabelIds || availableLabelIds.has(suggestion.id);
+
   const suggestions = useMemo(() => {
     const selectedSet = new Set(selectedLabels.map((s) => s.toLowerCase()));
-    const unified: TLabelResult[] = [];
+    const candidateLabels: TLabelResult[] = [];
 
-    // Add label suggestions first
+    // Add label suggestions first. Unavailable ones stay visible but disabled.
     labelsResults.forEach((label) => {
       if (selectedSet.has(label.value.toLowerCase())) return; // Exclude if already selected as filter
-      unified.push(label);
+      candidateLabels.push(label);
     });
+
+    const { enabled, disabled } = partitionByAvailability(candidateLabels, availableLabelIds);
+    const unified: TLabelResult[] = [...enabled, ...disabled];
 
     // Add search suggestion
     if (searchTerm.trim()) {
@@ -73,7 +80,13 @@ export function IntelliSearch({
 
     // Apply max suggestions limit if specified
     return maxSuggestions ? unified.slice(0, maxSuggestions) : unified;
-  }, [labelsResults, maxSuggestions, selectedLabels, searchTerm]);
+  }, [availableLabelIds, labelsResults, maxSuggestions, selectedLabels, searchTerm]);
+
+  const labelSuggestions = useMemo(() => suggestions.slice(1), [suggestions]);
+  const firstDisabledIndex = useMemo(
+    () => labelSuggestions.findIndex((s) => availableLabelIds && !availableLabelIds.has(s.id)),
+    [labelSuggestions, availableLabelIds]
+  );
 
   return (
     <div ref={containerRef} className={joinTailwindClasses("relative w-full", className)}>
@@ -135,31 +148,53 @@ export function IntelliSearch({
                       {/* SUGGESTIONS */}
                       {/* the first suggestion is always the search term, so we start from index 1 to show label suggestions first */}
                       {suggestions.length > 1 && (
-                        <Autocomplete.Group items={suggestions.slice(1, suggestions.length)} className="block pb-2">
+                        <Autocomplete.Group items={labelSuggestions} className="block pb-2">
                           <Autocomplete.GroupLabel className="sticky top-0 z-1 m-0 mr-2 bg-white px-4 py-2 text-xs text-neutral-500">
                             Suggestions
                           </Autocomplete.GroupLabel>
-                          <Autocomplete.Collection>
-                            {(suggestion: TLabelResult) => (
-                              <Autocomplete.Item
-                                key={suggestion.value}
-                                value={{ value: suggestion.value, type: "label" }}
-                                onClick={() => handleSuggestionClick(suggestion.value)}
-                                className="flex min-h-9 cursor-pointer items-center gap-1 rounded-md pl-4 pr-3 text-base text-inky-black select-none outline-none scroll-my-1 group data-highlighted:bg-neutral-200"
-                              >
-                                <span
-                                  className="truncate"
-                                  dangerouslySetInnerHTML={{ __html: underlineFirstInstanceOfQuery(suggestion.value, searchTerm) }}
-                                />
-                                <span className="text-gray-500">—</span>
-                                <span className="shrink-0 whitespace-nowrap text-neutral-500">{labelTypeLabel(suggestion.type)}</span>
-                                <div className="hidden text-sm text-neutral-600 gap-1 items-center ml-auto group-data-highlighted:inline-flex">
-                                  Enter
-                                  <CornerDownLeft height={16} width={16} className="inline" />
-                                </div>
-                              </Autocomplete.Item>
-                            )}
-                          </Autocomplete.Collection>
+                          {labelSuggestions.map((suggestion, idx) => {
+                            const isAvailable = isSuggestionAvailable(suggestion);
+                            return (
+                              <div key={suggestion.id}>
+                                {firstDisabledIndex > 0 && idx === firstDisabledIndex ? <div className="h-6" aria-hidden /> : null}
+                                <Autocomplete.Item
+                                  value={{ value: suggestion.value, type: "label" }}
+                                  onClick={() => {
+                                    if (!isAvailable) return;
+                                    handleSuggestionClick(suggestion.value);
+                                  }}
+                                  className={joinTailwindClasses(
+                                    "flex min-h-9 items-center gap-1 rounded-md pl-4 pr-3 text-base select-none outline-none scroll-my-1 group",
+                                    isAvailable
+                                      ? "cursor-pointer text-inky-black data-highlighted:bg-neutral-200"
+                                      : "cursor-not-allowed text-neutral-400"
+                                  )}
+                                >
+                                  <span
+                                    className="truncate"
+                                    dangerouslySetInnerHTML={{ __html: underlineFirstInstanceOfQuery(suggestion.value, searchTerm) }}
+                                  />
+                                  <span className={isAvailable ? "text-gray-500" : "text-neutral-400"}>—</span>
+                                  <span
+                                    className={joinTailwindClasses(
+                                      "shrink-0 whitespace-nowrap",
+                                      isAvailable ? "text-neutral-500" : "text-neutral-400"
+                                    )}
+                                  >
+                                    {labelTypeLabel(suggestion.type)}
+                                  </span>
+                                  {isAvailable ? (
+                                    <div className="hidden text-sm text-neutral-600 gap-1 items-center ml-auto group-data-highlighted:inline-flex">
+                                      Enter
+                                      <CornerDownLeft height={16} width={16} className="inline" />
+                                    </div>
+                                  ) : (
+                                    <div className="text-xs text-neutral-400 ml-auto">Unavailable</div>
+                                  )}
+                                </Autocomplete.Item>
+                              </div>
+                            );
+                          })}
                         </Autocomplete.Group>
                       )}
                     </Autocomplete.List>

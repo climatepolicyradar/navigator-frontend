@@ -70,7 +70,7 @@ staging_deployment_role = aws.iam.Role(
         )
     ),
     max_session_duration=3600,
-    opts=pulumi.ResourceOptions(protect=True),
+    opts=pulumi.ResourceOptions(protect=True, additional_secret_outputs=["arn"]),
 )
 
 # Attach AdministratorAccess (matches current configuration)
@@ -79,6 +79,7 @@ staging_deployment_role_policy = aws.iam.RolePolicyAttachment(
     role=staging_deployment_role.name,
     policy_arn="arn:aws:iam::aws:policy/AdministratorAccess",
 )
+pulumi.export("staging_deployment_role_arn", staging_deployment_role.arn)
 
 # ---------------------------------------------------------------------------
 # Shared App Runner ECR Access Role
@@ -111,6 +112,7 @@ apprunner_ecr_access_role = aws.iam.Role(
         }
     ),
     max_session_duration=3600,
+    opts=pulumi.ResourceOptions(protect=True, additional_secret_outputs=["arn"])
 )
 
 apprunner_ecr_access_policy = aws.iam.Policy(
@@ -142,24 +144,28 @@ aws.iam.RolePolicyAttachment(
     policy_arn=apprunner_ecr_access_policy.arn,
 )
 
+pulumi.export("apprunner_ecr_access_role_arn", apprunner_ecr_access_role.arn)
+
 # ---------------------------------------------------------------------------
 # Shared ECR Repository for Review Stacks
 # ---------------------------------------------------------------------------
-# A single ECR repository shared by all ephemeral PR review stacks. Each PR
-# pushes its image with a branch-specific tag (e.g. the PR number or branch
+# A single ECR repository shared by all ephemeral PR review stacks of that theme. Each
+# PR pushes its image with a branch-specific tag (e.g. the PR number or branch
 # name) so images don't collide. This avoids creating/destroying ECR repos
 # per PR stack and prevents RepositoryAlreadyExistsException errors.
-cpr_review_ecr_repo = aws.ecr.Repository(
-    "review-navigator-frontend-cpr",
-    name="review-navigator-frontend-cpr",
-    image_scanning_configuration=aws.ecr.RepositoryImageScanningConfigurationArgs(
-        scan_on_push=False,
-    ),
-    image_tag_mutability="MUTABLE",
-    opts=pulumi.ResourceOptions(
-        protect=True,
-    ),
-)
+for theme in ["cpr", "cclw", "mcf", "ccc"]:
+    review_ecr_repo = aws.ecr.Repository(
+        f"review-navigator-frontend-{theme}",
+        name=f"review-navigator-frontend-{theme}",
+        image_scanning_configuration=aws.ecr.RepositoryImageScanningConfigurationArgs(
+            scan_on_push=False,
+        ),
+        image_tag_mutability="MUTABLE",
+        opts=pulumi.ResourceOptions(
+            protect=True, additional_secret_outputs=["repository_url"]
+        ),
+    )
+    pulumi.export(f"{theme}_review_ecr_repository_url", review_ecr_repo.repository_url)
 
 # ---------------------------------------------------------------------------
 # ESC Environments
@@ -203,7 +209,6 @@ aws_creds_staging_env = pulumiservice.Environment(
 # via the shared ESC environment.
 cpr_review_yaml = pulumi.Output.all(
     apprunner_ecr_access_role.arn,
-    cpr_review_ecr_repo.repository_url,
 ).apply(
     lambda args: (
         "imports:\n"
@@ -213,7 +218,6 @@ cpr_review_yaml = pulumi.Output.all(
         "  pulumiConfig:\n"
         "    docker_tag: ${docker_tag}\n"
         f"    frontend:apprunner_ecr_access_role_arn: {args[0]}\n"
-        f"    frontend:review_ecr_repository_url: {args[1]}\n"
         "  docker_tag: latest\n"
         "  environmentVariables:\n"
         "    DEPLOY_FROM_MAIN_BRANCH_ONLY: 'false'\n"
@@ -221,14 +225,15 @@ cpr_review_yaml = pulumi.Output.all(
     )
 )
 
-cpr_review_env = pulumiservice.Environment(
-    "cpr-review",
-    organization=org_name,
-    project=project_name,
-    name="cpr-review",
-    yaml=cpr_review_yaml.apply(lambda y: pulumi.StringAsset(y)),
-    opts=pulumi.ResourceOptions(depends_on=[aws_creds_staging_env]),
-)
+for theme in ["cpr", "cclw", "mcf", "ccc"]:
+    review_env = pulumiservice.Environment(
+        f"{theme}-review",
+        organization=org_name,
+        project=project_name,
+        name=f"{theme}-review",
+        yaml=cpr_review_yaml.apply(lambda y: pulumi.StringAsset(y)),
+        opts=pulumi.ResourceOptions(depends_on=[aws_creds_staging_env]),
+    )
 
 # ---------------------------------------------------------------------------
 # Deployment Settings for cpr-review stack
@@ -236,37 +241,39 @@ cpr_review_env = pulumiservice.Environment(
 # Manages the deployment settings for the cpr-review stack, which serves as
 # the template for PR review stacks. Credentials come from ESC (via the
 # cpr-review environment), not from inline OIDC.
-cpr_review_deployment_settings = pulumiservice.DeploymentSettings(
-    "cpr-review-deployment-settings",
-    organization=org_name,
-    project=project_name,
-    stack="cpr-review",
-    source_context=pulumiservice.DeploymentSettingsSourceContextArgs(
-        git=pulumiservice.DeploymentSettingsGitSourceArgs(
-            branch="main",
-            repo_dir="infra",
+for theme in ["cpr", "cclw", "mcf", "ccc"]:
+    deployment_settings = pulumiservice.DeploymentSettings(
+        f"{theme}-review-deployment-settings",
+        organization=org_name,
+        project=project_name,
+        stack=f"{theme}-review",
+        source_context=pulumiservice.DeploymentSettingsSourceContextArgs(
+            git=pulumiservice.DeploymentSettingsGitSourceArgs(
+                branch="main",
+                repo_dir="infra",
+            ),
+        ),
+        vcs=pulumiservice.DeploymentSettingsVcsArgs(
+            provider="github",
+            repository="climatepolicyradar/navigator-frontend",
+            pull_request_template=False,
+            deploy_commits=False,
+            preview_pull_requests=False,
+        ),
+        operation_context=pulumiservice.DeploymentSettingsOperationContextArgs(
+            # DEPLOY_FROM_MAIN_BRANCH_ONLY and DEPLOY_TO_PROD_STACK_ALLOWED are
+            # now provided via the cpr-review ESC environment so that PR review
+            # stacks inherit them automatically.
+            options=pulumiservice.OperationContextOptionsArgs(
+                skip_intermediate_deployments=True,
+            ),
         ),
     ),
-    vcs=pulumiservice.DeploymentSettingsVcsArgs(
-        provider="github",
-        repository="climatepolicyradar/navigator-frontend",
-        pull_request_template=False,
-        deploy_commits=False,
-        preview_pull_requests=False,
-    ),
-    operation_context=pulumiservice.DeploymentSettingsOperationContextArgs(
-        # DEPLOY_FROM_MAIN_BRANCH_ONLY and DEPLOY_TO_PROD_STACK_ALLOWED are
-        # now provided via the cpr-review ESC environment so that PR review
-        # stacks inherit them automatically.
-        options=pulumiservice.OperationContextOptionsArgs(
-            skip_intermediate_deployments=True,
-        ),
-    ),
-)
+
 
 # ---------------------------------------------------------------------------
 # Exports
 # ---------------------------------------------------------------------------
 pulumi.export("staging_deployment_role_arn", staging_deployment_role.arn)
 pulumi.export("apprunner_ecr_access_role_arn", apprunner_ecr_access_role.arn)
-pulumi.export("cpr_review_ecr_repository_url", cpr_review_ecr_repo.repository_url)
+
