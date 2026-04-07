@@ -24,14 +24,14 @@ export const familyTransformer = (
           ...familyApiOldData,
           countries: transformCountries(familyApiOldData.countries, groupedLabels.geography),
           family: {
-            category: groupedLabels.category[0].value.value as TCategory,
+            category: groupedLabels.deprecated_category[0].value.value as TCategory,
             collections: transformFamilyCollections(familyApiOldData.family.collections, familyApiNewData.documents),
             documents: transformFamilyDocuments(familyApiOldData.family.documents, documents),
             events: transformFamilyEvents(groupedLabels),
             geographies: groupedLabels.geography.map((label) => label.value.id),
             import_id: familyApiNewData.id,
             last_updated_date: familyApiNewData.attributes.last_updated_date,
-            metadata: transformFamilyMetadata(groupedLabels),
+            metadata: transformFamilyMetadata(familyApiNewData.attributes, groupedLabels),
             published_date: familyApiNewData.attributes.published_date,
             slug: familyApiNewData.attributes.deprecated_slug,
             summary: familyApiNewData.description,
@@ -39,6 +39,7 @@ export const familyTransformer = (
             // TODO apply transformations to remaining fields:
             concepts: familyApiOldData.family.concepts, // currently out of scope
             corpus_id: familyApiOldData.family.corpus_id,
+            corpus_type_name: familyApiOldData.family.corpus_type_name,
             corpus: familyApiOldData.family.corpus,
             organisation: familyApiOldData.family.organisation,
           },

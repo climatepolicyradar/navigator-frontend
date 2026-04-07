@@ -187,11 +187,12 @@ export const API_FAMILY_METADATA_KEY = [
   // MCF specific
   "focal_area",
   "implementing_agency",
-  "project_value_fund_spend",
-  "project_value_co_financing",
+  "project_id",
   "project_url",
-  "theme",
+  "project_value_co_financing",
+  "project_value_fund_spend",
   "result_area",
+  "theme",
 ] as const;
 export type TApiFamilyMetadataKey = (typeof API_FAMILY_METADATA_KEY)[number];
 export type TApiFamilyMetadata = TApiMetadata<TApiFamilyMetadataKey>;
