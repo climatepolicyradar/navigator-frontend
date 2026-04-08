@@ -2,6 +2,7 @@ import { LucideCog, LucideEarth, LucideTag, LucideFileText } from "lucide-react"
 import Link from "next/link";
 import { Suspense, use, useEffect, useMemo } from "react";
 
+import { fetchSearchDocuments, SearchDocument, SearchDocumentsResponse, IAggregationLabel } from "@/api/search";
 import { documentRelationshipLabel } from "@/utils/_experiment/documentRelationshipLabel";
 import { labelTypeLabel } from "@/utils/_experiment/labelTypeLabel";
 
@@ -10,82 +11,7 @@ import { EmptySearch } from "../emptySearch/EmptySearch";
 import { TQueryGroup } from "../queryBuilder/QueryBuilder";
 import { TFilterCategory } from "../searchFilters/SearchFilters";
 
-interface DocumentLabel {
-  id: string;
-  value: string;
-  type: string;
-}
-
-interface DocumentLabelRelationship {
-  count: number | null;
-  type: string;
-  value: DocumentLabel;
-  timestamp: string | null;
-}
-
-interface DocumentRelationship {
-  type: string;
-  value: SearchDocument;
-}
-
-interface DocumentItem {
-  url: string | null;
-}
-
-interface SearchDocument {
-  id: string;
-  title: string;
-  description: string | null;
-  labels: DocumentLabelRelationship[];
-  documents: DocumentRelationship[];
-  items: DocumentItem[];
-  attributes: Record<string, string | number | boolean>;
-}
-
-export interface IAggregationLabel {
-  count: number;
-  value: {
-    id: string;
-    type: string;
-    value: string;
-  };
-}
-
-export interface SearchDocumentsResponse {
-  total_size: number | null;
-  page: number;
-  page_size: number;
-  total_pages: number | null;
-  next_page: string | null;
-  previous_page: string | null;
-  results: SearchDocument[];
-  aggregations?: {
-    labels: IAggregationLabel[];
-  };
-}
-
-interface SearchDocumentsParams {
-  query?: string;
-  filters?: string;
-  page_size?: string;
-  page_token?: string;
-}
-
-const SEARCH_DOCUMENTS_BASE_URL = "https://api.climatepolicyradar.org/search/documents";
 const MAX_DESCRIPTION_LENGTH = 275;
-
-export async function fetchSearchDocuments(params: SearchDocumentsParams = {}): Promise<SearchDocumentsResponse> {
-  const url = new URL(SEARCH_DOCUMENTS_BASE_URL);
-
-  if (params.query) url.searchParams.set("query", params.query);
-  if (params.filters) url.searchParams.set("filters", params.filters);
-  if (params.page_size !== undefined) url.searchParams.set("page_size", params.page_size);
-  if (params.page_token !== undefined) url.searchParams.set("page_token", params.page_token);
-
-  const res = await fetch(url);
-  if (!res.ok) throw new Error(`Search API error: ${res.status}`);
-  return res.json() as Promise<SearchDocumentsResponse>;
-}
 
 function linkHref(doc: SearchDocument): string | undefined {
   if (doc.attributes.deprecated_slug)
@@ -108,14 +34,10 @@ function iconForLabelType(type: string) {
 const FILTER_AGGREGATIONS: TFilterCategory[] = ["geography", "concept"];
 const RELATIONSHIP_AGGREGATIONS = ["member_of", "has_member"];
 
-export function SearchResults({ promise, onSelectLabel }: { promise: Promise<SearchDocumentsResponse>; onSelectLabel?: (label: string) => void }) {
-  const data = use(promise);
-
+export function SearchResults({ data, onSelectLabel }: { data: SearchDocumentsResponse; onSelectLabel?: (label: string) => void }) {
   return (
     <div>
-      {/* <p className="text-sm text-text-secondary mb-4">
-        {data.total_size ?? 0} results — page {data.page} of {data.total_pages ?? 1}
-      </p> */}
+      <p className="text-sm text-text-secondary mb-4">{data.total_size ?? 0} results</p>
       <ul className="space-y-4">
         {data.results.map((doc) => (
           <li key={doc.id} className={`flex flex-col gap-3 border border-transparent-regular rounded-md p-6 ${styles["highlights"]}`}>
@@ -216,7 +138,7 @@ function SearchResultsWithAggregations({
     onAggregationsChange?.(labels);
   }, [labels, onAggregationsChange]);
 
-  return <SearchResults promise={Promise.resolve(data)} onSelectLabel={onSelectLabel} />;
+  return <SearchResults data={data} onSelectLabel={onSelectLabel} />;
 }
 
 // If any of the values are empty strings, the filters are considered invalid and will not be sent to the API
@@ -247,16 +169,18 @@ export function SearchContainer({
   onSelectLabel?: (label: string) => void;
   onAggregationsChange?: (labels: IAggregationLabel[] | undefined) => void;
 }) {
+  const filtersJson = filtersDoesNotContainEmptyRule(filters) ? JSON.stringify(filters) : undefined;
+
   const searchPromise = useMemo(() => {
-    if (!query && (!filters || !filtersDoesNotContainEmptyRule(filters))) return null;
+    if (!query && !filtersJson) return null;
 
     return fetchSearchDocuments({
       query,
       page_size,
       page_token,
-      filters: filtersDoesNotContainEmptyRule(filters) ? JSON.stringify(filters) : undefined,
+      filters: filtersJson,
     });
-  }, [query, filters, page_token, page_size]);
+  }, [query, filtersJson, page_token, page_size]);
 
   return (
     <>
