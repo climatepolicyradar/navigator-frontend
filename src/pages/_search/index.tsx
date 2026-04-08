@@ -11,7 +11,7 @@ import { AppliedLabels } from "@/components/_experiment/appliedLabels/AppliedLab
 import { IntelliSearch } from "@/components/_experiment/intellisearch";
 import { Pagination } from "@/components/_experiment/pagination/Pagination";
 import { createGroup, isFilterGroupEmpty, QueryBuilder, TQueryGroup, TQueryRule } from "@/components/_experiment/queryBuilder/QueryBuilder";
-import { SearchFilters, TFilterCategory } from "@/components/_experiment/searchFilters/SearchFilters";
+import { SearchFilters, TLabelType } from "@/components/_experiment/searchFilters/SearchFilters";
 import { SearchContainer } from "@/components/_experiment/searchResults/SearchResults";
 import { SelectPerPage } from "@/components/_experiment/selectPerPage/SelectPerPage";
 import { FiveColumns } from "@/components/atoms/columns/FiveColumns";
@@ -71,13 +71,13 @@ const ShadowSearch = ({ theme, themeConfig, features }: TProps) => {
 
   // Control SearchFilters popover and active category tab (single source of truth)
   const [filtersOpen, setFiltersOpen] = useState(false);
-  const [filterSidebarCategory, setFilterSidebarCategory] = useState<TFilterCategory>("agent");
+  const [filterSidebarCategory, setFilterSidebarCategory] = useState<TLabelType>("agent");
 
   // Control Advanced Filters view
   const [advancedFiltersOpen, setAdvancedFiltersOpen] = useState(false);
 
   const handleSelectLabel = (label: string, type: string) => {
-    setFilterSidebarCategory((type as TFilterCategory) || "agent");
+    setFilterSidebarCategory((type as TLabelType) || "agent");
     setFiltersOpen(true);
   };
 
@@ -119,8 +119,8 @@ const ShadowSearch = ({ theme, themeConfig, features }: TProps) => {
           <SearchFilters
             availableFilters={availableFilters}
             filters={filters}
-            activeCategory={filterSidebarCategory}
-            onActiveCategoryChange={setFilterSidebarCategory}
+            activeLabelType={filterSidebarCategory}
+            onActiveLabelTypeChange={setFilterSidebarCategory}
             open={filtersOpen}
             onOpenChange={setFiltersOpen}
             onChange={(checked, label) => {

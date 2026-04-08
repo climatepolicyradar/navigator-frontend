@@ -9,7 +9,7 @@ import { labelTypeLabel } from "@/utils/_experiment/labelTypeLabel";
 import styles from "./SearchResults.module.css";
 import { EmptySearch } from "../emptySearch/EmptySearch";
 import { TQueryGroup } from "../queryBuilder/QueryBuilder";
-import { TFilterCategory } from "../searchFilters/SearchFilters";
+import { TLabelType } from "../searchFilters/SearchFilters";
 
 const MAX_DESCRIPTION_LENGTH = 275;
 
@@ -31,7 +31,7 @@ function iconForLabelType(type: string) {
   }
 }
 
-const FILTER_AGGREGATIONS: TFilterCategory[] = ["geography", "concept"];
+const FILTER_AGGREGATIONS: TLabelType[] = ["geography", "concept"];
 const RELATIONSHIP_AGGREGATIONS = ["member_of", "has_member"];
 
 export function SearchResults({ data, onSelectLabel }: { data: SearchDocumentsResponse; onSelectLabel?: (label: string) => void }) {
