@@ -109,9 +109,13 @@ const ShadowSearch = ({ theme, themeConfig, features }: TProps) => {
             onSelectSuggestion={(suggestion) => {
               if (suggestion && !selectedLabels.includes(suggestion)) {
                 setFilters((prev) => addLabelRule(prev, suggestion));
+                setCurrentPage("1");
               }
             }}
-            setQuery={setQuery}
+            setQuery={(query) => {
+              setQuery(query);
+              setCurrentPage("1");
+            }}
             onAdvancedClick={() => setAdvancedFiltersOpen(true)}
           />
         </div>
@@ -126,8 +130,10 @@ const ShadowSearch = ({ theme, themeConfig, features }: TProps) => {
             onChange={(checked, label) => {
               if (checked) {
                 setFilters((prev) => addLabelRule(prev, label));
+                setCurrentPage("1");
               } else {
                 setFilters((prev) => (prev ? removeLabelRule(prev, label) : createGroup()));
+                setCurrentPage("1");
               }
             }}
             aggregations={labelAggregations}
@@ -135,7 +141,10 @@ const ShadowSearch = ({ theme, themeConfig, features }: TProps) => {
           />
           <QueryBuilder
             filters={filters}
-            setFilters={setFilters}
+            setFilters={(filters) => {
+              setFilters(filters);
+              setCurrentPage("1");
+            }}
             open={advancedFiltersOpen}
             onOpenChange={setAdvancedFiltersOpen}
             availableLabelIds={availableLabelIds}
@@ -150,10 +159,15 @@ const ShadowSearch = ({ theme, themeConfig, features }: TProps) => {
               onClear={() => {
                 setFilters(createGroup());
                 setQuery("");
+                setTotalNoOfResults(null);
+                setCurrentPage("1");
                 setLabelAggregations(undefined); // belt & braces
               }}
               onSelectLabel={handleSelectLabel}
-              onRemoveLabel={(label) => setFilters((prev) => (prev ? removeLabelRule(prev, label) : createGroup()))}
+              onRemoveLabel={(label) => {
+                setFilters((prev) => (prev ? removeLabelRule(prev, label) : createGroup()));
+                setCurrentPage("1");
+              }}
               onAdvancedClick={() => setAdvancedFiltersOpen(true)}
             />
           </div>
@@ -164,6 +178,7 @@ const ShadowSearch = ({ theme, themeConfig, features }: TProps) => {
             onSelectLabel={(label) => {
               if (!selectedLabels.includes(label)) {
                 setFilters((prev) => addLabelRule(prev, label));
+                setCurrentPage("1");
               }
             }}
             filters={filters}
@@ -173,19 +188,27 @@ const ShadowSearch = ({ theme, themeConfig, features }: TProps) => {
             onTotalResultsChange={setTotalNoOfResults}
           />
         </div>
-        <div className={columnLayoutCss}>
-          <div className="flex justify-between items-center">
-            <Pagination
-              currentPage={parseInt(currentPage)}
-              totalPages={totalNoOfResults !== null ? Math.ceil(totalNoOfResults / parseInt(pageSize)) : 0} // TODO: calculate this from the API total_size and page_size
-              onPageChange={(page) => {
-                window.scrollTo(0, 0);
-                setCurrentPage(page.toString());
-              }}
-            />
-            <SelectPerPage value={pageSize} onChange={setPageSize} />
+        {totalNoOfResults !== null && totalNoOfResults > 0 && (query || !isFilterGroupEmpty(filters)) && (
+          <div className={columnLayoutCss}>
+            <div className="flex justify-between items-center">
+              <Pagination
+                currentPage={parseInt(currentPage)}
+                totalPages={totalNoOfResults !== null ? Math.ceil(totalNoOfResults / parseInt(pageSize)) : 0}
+                onPageChange={(page) => {
+                  window.scrollTo(0, 0);
+                  setCurrentPage(page.toString());
+                }}
+              />
+              <SelectPerPage
+                value={pageSize}
+                onChange={(size) => {
+                  setPageSize(size);
+                  setCurrentPage("1");
+                }}
+              />
+            </div>
           </div>
-        </div>
+        )}
       </FiveColumns>
     </FeaturesContext.Provider>
   );
