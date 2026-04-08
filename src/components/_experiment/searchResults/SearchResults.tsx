@@ -122,10 +122,12 @@ function SearchResultsWithAggregations({
   promise,
   onSelectLabel,
   onAggregationsChange,
+  onTotalResultsChange,
 }: {
   promise: Promise<SearchDocumentsResponse>;
   onSelectLabel?: (label: string) => void;
   onAggregationsChange?: (labels: IAggregationLabel[] | undefined) => void;
+  onTotalResultsChange?: (total: number | null) => void;
 }) {
   const data = use(promise);
   const labels = data.aggregations?.labels;
@@ -137,6 +139,10 @@ function SearchResultsWithAggregations({
   useEffect(() => {
     onAggregationsChange?.(labels);
   }, [labels, onAggregationsChange]);
+
+  useEffect(() => {
+    onTotalResultsChange?.(data.total_size ?? null);
+  }, [data.total_size, onTotalResultsChange]);
 
   return <SearchResults data={data} onSelectLabel={onSelectLabel} />;
 }
@@ -160,6 +166,7 @@ export function SearchContainer({
   page_size,
   onSelectLabel,
   onAggregationsChange,
+  onTotalResultsChange,
 }: {
   selectedLabels?: string[];
   query?: string;
@@ -168,6 +175,7 @@ export function SearchContainer({
   page_size?: string;
   onSelectLabel?: (label: string) => void;
   onAggregationsChange?: (labels: IAggregationLabel[] | undefined) => void;
+  onTotalResultsChange?: (total: number | null) => void;
 }) {
   const filtersJson = filtersDoesNotContainEmptyRule(filters) ? JSON.stringify(filters) : undefined;
 
@@ -192,7 +200,12 @@ export function SearchContainer({
             </p>
           }
         >
-          <SearchResultsWithAggregations promise={searchPromise} onSelectLabel={onSelectLabel} onAggregationsChange={onAggregationsChange} />
+          <SearchResultsWithAggregations
+            promise={searchPromise}
+            onSelectLabel={onSelectLabel}
+            onAggregationsChange={onAggregationsChange}
+            onTotalResultsChange={onTotalResultsChange}
+          />
         </Suspense>
       ) : (
         <EmptySearch />

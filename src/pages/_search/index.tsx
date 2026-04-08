@@ -41,6 +41,7 @@ const ShadowSearch = ({ theme, themeConfig, features }: TProps) => {
   // pagination state
   const [currentPage, setCurrentPage] = useQueryState("page_token", parseAsString.withDefault("1"));
   const [pageSize, setPageSize] = useQueryState("page_size", parseAsString.withDefault("10"));
+  const [totalNoOfResults, setTotalNoOfResults] = useState<number | null>(null);
 
   /**
    * Drops aggregations only when the filter tree becomes empty so greyed options
@@ -169,13 +170,14 @@ const ShadowSearch = ({ theme, themeConfig, features }: TProps) => {
             page_token={currentPage}
             page_size={pageSize} // TODO: make this configurable
             onAggregationsChange={applyAggregationsFromSearch}
+            onTotalResultsChange={setTotalNoOfResults}
           />
         </div>
         <div className={columnLayoutCss}>
           <div className="flex justify-between items-center">
             <Pagination
               currentPage={parseInt(currentPage)}
-              totalPages={50} // TODO: calculate this from the API total_size and page_size
+              totalPages={totalNoOfResults !== null ? Math.ceil(totalNoOfResults / parseInt(pageSize)) : 0} // TODO: calculate this from the API total_size and page_size
               onPageChange={(page) => {
                 window.scrollTo(0, 0);
                 setCurrentPage(page.toString());
