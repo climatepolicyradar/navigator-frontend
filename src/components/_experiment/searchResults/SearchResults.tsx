@@ -67,7 +67,7 @@ export interface SearchDocumentsResponse {
 interface SearchDocumentsParams {
   query?: string;
   filters?: string;
-  page_size?: number;
+  page_size?: string;
   page_token?: string;
 }
 
@@ -79,7 +79,7 @@ export async function fetchSearchDocuments(params: SearchDocumentsParams = {}): 
 
   if (params.query) url.searchParams.set("query", params.query);
   if (params.filters) url.searchParams.set("filters", params.filters);
-  if (params.page_size !== undefined) url.searchParams.set("page_size", String(params.page_size));
+  if (params.page_size !== undefined) url.searchParams.set("page_size", params.page_size);
   if (params.page_token !== undefined) url.searchParams.set("page_token", params.page_token);
 
   const res = await fetch(url);
@@ -243,7 +243,7 @@ export function SearchContainer({
   query?: string;
   filters?: TQueryGroup;
   page_token?: string;
-  page_size?: number;
+  page_size?: string;
   onSelectLabel?: (label: string) => void;
   onAggregationsChange?: (labels: IAggregationLabel[] | undefined) => void;
 }) {

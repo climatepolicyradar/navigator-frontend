@@ -12,6 +12,7 @@ import { Pagination } from "@/components/_experiment/pagination/Pagination";
 import { createGroup, isFilterGroupEmpty, QueryBuilder, TQueryGroup, TQueryRule } from "@/components/_experiment/queryBuilder/QueryBuilder";
 import { SearchFilters, TFilterCategory } from "@/components/_experiment/searchFilters/SearchFilters";
 import { SearchContainer, IAggregationLabel } from "@/components/_experiment/searchResults/SearchResults";
+import { SelectPerPage } from "@/components/_experiment/selectPerPage/SelectPerPage";
 import { FiveColumns } from "@/components/atoms/columns/FiveColumns";
 import { withEnvConfig } from "@/context/EnvConfig";
 import { FeaturesContext } from "@/context/FeaturesContext";
@@ -38,6 +39,7 @@ const ShadowSearch = ({ theme, themeConfig, features }: TProps) => {
   const [filters, setFiltersInUrl] = useQueryState("filters", parseAsJson<TQueryGroup>(FilterGroupSchema).withDefault(createGroup()));
   // pagination state
   const [currentPage, setCurrentPage] = useQueryState("page_token", parseAsString.withDefault("1"));
+  const [pageSize, setPageSize] = useQueryState("page_size", parseAsString.withDefault("10"));
 
   /**
    * Drops aggregations only when the filter tree becomes empty so greyed options
@@ -164,19 +166,22 @@ const ShadowSearch = ({ theme, themeConfig, features }: TProps) => {
             }}
             filters={filters}
             page_token={currentPage}
-            page_size={40} // TODO: make this configurable
+            page_size={pageSize} // TODO: make this configurable
             onAggregationsChange={applyAggregationsFromSearch}
           />
         </div>
         <div className={columnLayoutCss}>
-          <Pagination
-            currentPage={parseInt(currentPage)}
-            totalPages={50} // TODO: calculate this from the API total_size and page_size
-            onPageChange={(page) => {
-              window.scrollTo(0, 0);
-              setCurrentPage(page.toString());
-            }}
-          />
+          <div className="flex justify-between items-center">
+            <Pagination
+              currentPage={parseInt(currentPage)}
+              totalPages={50} // TODO: calculate this from the API total_size and page_size
+              onPageChange={(page) => {
+                window.scrollTo(0, 0);
+                setCurrentPage(page.toString());
+              }}
+            />
+            <SelectPerPage value={pageSize} onChange={setPageSize} />
+          </div>
         </div>
       </FiveColumns>
     </FeaturesContext.Provider>
