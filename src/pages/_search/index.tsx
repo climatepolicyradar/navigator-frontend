@@ -168,7 +168,14 @@ const ShadowSearch = ({ theme, themeConfig, features }: TProps) => {
           />
         </div>
         <div className={columnLayoutCss}>
-          <Pagination currentPage={parseInt(currentPage)} totalPages={50} onPageChange={(page) => setCurrentPage(page.toString())} />
+          <Pagination
+            currentPage={parseInt(currentPage)}
+            totalPages={50}
+            onPageChange={(page) => {
+              window.scrollTo(0, 0);
+              setCurrentPage(page.toString());
+            }}
+          />
         </div>
       </FiveColumns>
     </FeaturesContext.Provider>
