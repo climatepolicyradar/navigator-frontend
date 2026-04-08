@@ -68,7 +68,7 @@ interface SearchDocumentsParams {
   query?: string;
   filters?: string;
   limit?: number;
-  offset?: number;
+  page_token?: string;
 }
 
 const SEARCH_DOCUMENTS_BASE_URL = "https://api.climatepolicyradar.org/search/documents";
@@ -80,7 +80,7 @@ export async function fetchSearchDocuments(params: SearchDocumentsParams = {}): 
   if (params.query) url.searchParams.set("query", params.query);
   if (params.filters) url.searchParams.set("filters", params.filters);
   if (params.limit !== undefined) url.searchParams.set("limit", String(params.limit));
-  if (params.offset !== undefined) url.searchParams.set("offset", String(params.offset));
+  if (params.page_token !== undefined) url.searchParams.set("page_token", params.page_token);
 
   const res = await fetch(url);
   if (!res.ok) throw new Error(`Search API error: ${res.status}`);
@@ -234,12 +234,14 @@ const filtersDoesNotContainEmptyRule = (filters: TQueryGroup): boolean => {
 export function SearchContainer({
   query,
   filters,
+  page_token,
   onSelectLabel,
   onAggregationsChange,
 }: {
   selectedLabels?: string[];
   query?: string;
   filters?: TQueryGroup;
+  page_token?: string;
   onSelectLabel?: (label: string) => void;
   onAggregationsChange?: (labels: IAggregationLabel[] | undefined) => void;
 }) {
@@ -250,10 +252,10 @@ export function SearchContainer({
       query,
       // TODO: add pagination
       // limit: 10,
-      // offset: 0,
+      page_token,
       filters: filtersDoesNotContainEmptyRule(filters) ? JSON.stringify(filters) : undefined,
     });
-  }, [query, filters]);
+  }, [query, filters, page_token]);
 
   return (
     <>

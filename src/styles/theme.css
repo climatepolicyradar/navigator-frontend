@@ -1,11 +1,33 @@
 @theme {
   /* NEW SEARCH */
 
-  --color-inky-blue: #1a4f8c; /* Brand, Links */
-  --color-inky-black: #101a24; /* Primary Text, Inverse surface */
+  --color-inky-blue: #1a4f8c;
+  --color-inky-black: #101a24;
   --color-recycled-paper: #e5e3dc;
-  --color-transparent-regular: rgba(13, 26, 37, 0.16); /* UI element border */
-  --color-transparent-light: rgba(13, 26, 37, 0.12); /* Division lines */
+  --color-transparent-regular: rgba(13, 26, 37, 0.16);
+  --color-transparent-light: rgba(13, 26, 37, 0.12);
+  --color-transparent-checkbox: rgba(13, 26, 37, 0.32);
+
+  /* REFERENCES FROM FIGMA - BECAUSE THE VARIABLE SYSTEM IS DRIVING ME MAD */
+  /*
+  TEXT:
+  Primary: inky-black
+  Secondary: neutral-600
+  Tertiary: neutral-500
+  Inverse: white
+  Brand: inky-blue
+  Disabled: neutral-400
+
+  BACKGROUND:
+  Primary: white
+  Inverse: inky-black
+  Flat: neutral-100
+
+  ELEMENT:
+  Icon: neutral-500
+  Focus: neutral-200
+
+  */
 
   /* COLOURS */
 

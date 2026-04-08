@@ -8,6 +8,7 @@ import { useCallback, useEffect, useMemo, useState, type SetStateAction } from "
 import { ApiClient } from "@/api/http-common";
 import { AppliedLabels } from "@/components/_experiment/appliedLabels/AppliedLabels";
 import { IntelliSearch } from "@/components/_experiment/intellisearch";
+import { Pagination } from "@/components/_experiment/pagination/Pagination";
 import { createGroup, isFilterGroupEmpty, QueryBuilder, TQueryGroup, TQueryRule } from "@/components/_experiment/queryBuilder/QueryBuilder";
 import { SearchFilters, TFilterCategory } from "@/components/_experiment/searchFilters/SearchFilters";
 import { SearchContainer, IAggregationLabel } from "@/components/_experiment/searchResults/SearchResults";
@@ -35,6 +36,8 @@ const ShadowSearch = ({ theme, themeConfig, features }: TProps) => {
   const [query, setQuery] = useQueryState("q", parseAsString.withDefault(""));
   // structured filters built in QueryBuilder
   const [filters, setFiltersInUrl] = useQueryState("filters", parseAsJson<TQueryGroup>(FilterGroupSchema).withDefault(createGroup()));
+  // pagination state
+  const [currentPage, setCurrentPage] = useQueryState("page_token", parseAsString.withDefault("1"));
 
   /**
    * Drops aggregations only when the filter tree becomes empty so greyed options
@@ -90,7 +93,7 @@ const ShadowSearch = ({ theme, themeConfig, features }: TProps) => {
 
   return (
     <FeaturesContext.Provider value={features}>
-      <FiveColumns className="mt-4 gap-y-4">
+      <FiveColumns className="mt-4 gap-y-4 pb-12">
         <div className={columnLayoutCss}>
           <h1 className="text-5xl font-bold text-inky-black">Search</h1>
         </div>
@@ -160,8 +163,12 @@ const ShadowSearch = ({ theme, themeConfig, features }: TProps) => {
               }
             }}
             filters={filters}
+            page_token={currentPage}
             onAggregationsChange={applyAggregationsFromSearch}
           />
+        </div>
+        <div className={columnLayoutCss}>
+          <Pagination currentPage={parseInt(currentPage)} totalPages={50} onPageChange={(page) => setCurrentPage(page.toString())} />
         </div>
       </FiveColumns>
     </FeaturesContext.Provider>
