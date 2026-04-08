@@ -4,16 +4,15 @@ import isEqual from "lodash/isEqual";
 import { GetServerSideProps, InferGetServerSidePropsType } from "next";
 import { useQueryState, parseAsString, parseAsJson } from "nuqs";
 import { useCallback, useEffect, useMemo, useState, type SetStateAction } from "react";
-
 import { ApiClient } from "@/api/http-common";
 import { IAggregationLabel } from "@/api/search";
 import { AppliedLabels } from "@/components/_experiment/appliedLabels/AppliedLabels";
 import { IntelliSearch } from "@/components/_experiment/intellisearch";
 import { Pagination } from "@/components/_experiment/pagination/Pagination";
 import { createGroup, isFilterGroupEmpty, QueryBuilder, TQueryGroup, TQueryRule } from "@/components/_experiment/queryBuilder/QueryBuilder";
-import { SearchFilters, TFilterCategory } from "@/components/_experiment/searchFilters/SearchFilters";
-import { SearchContainer } from "@/components/_experiment/searchResults/SearchResults";
 import { SelectPerPage } from "@/components/_experiment/selectPerPage/SelectPerPage";
+import { SearchFilters, TLabelType } from "@/components/_experiment/searchFilters/SearchFilters";
+import { SearchContainer } from "@/components/_experiment/searchResults/SearchResults";
 import { FiveColumns } from "@/components/atoms/columns/FiveColumns";
 import { withEnvConfig } from "@/context/EnvConfig";
 import { FeaturesContext } from "@/context/FeaturesContext";
@@ -71,13 +70,13 @@ const ShadowSearch = ({ theme, themeConfig, features }: TProps) => {
 
   // Control SearchFilters popover and active category tab (single source of truth)
   const [filtersOpen, setFiltersOpen] = useState(false);
-  const [filterSidebarCategory, setFilterSidebarCategory] = useState<TFilterCategory>("agent");
+  const [filterSidebarCategory, setFilterSidebarCategory] = useState<TLabelType>("agent");
 
   // Control Advanced Filters view
   const [advancedFiltersOpen, setAdvancedFiltersOpen] = useState(false);
 
   const handleSelectLabel = (label: string, type: string) => {
-    setFilterSidebarCategory((type as TFilterCategory) || "agent");
+    setFilterSidebarCategory((type as TLabelType) || "agent");
     setFiltersOpen(true);
   };
 
@@ -119,8 +118,8 @@ const ShadowSearch = ({ theme, themeConfig, features }: TProps) => {
           <SearchFilters
             availableFilters={availableFilters}
             filters={filters}
-            activeCategory={filterSidebarCategory}
-            onActiveCategoryChange={setFilterSidebarCategory}
+            activeLabelType={filterSidebarCategory}
+            onActiveLabelTypeChange={setFilterSidebarCategory}
             open={filtersOpen}
             onOpenChange={setFiltersOpen}
             onChange={(checked, label) => {

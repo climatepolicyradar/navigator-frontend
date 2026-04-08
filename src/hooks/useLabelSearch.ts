@@ -21,7 +21,7 @@ interface UseLabelSearchOptions {
 export const loadLabels = async (query: string): Promise<TLabelResult[]> => {
   const apiUrl = process.env.NEXT_PUBLIC_API_URL || "https://api.climatepolicyradar.org";
   const client = new ApiClient(apiUrl);
-  const response = await client.get<TLabelsResponse>(`/search/labels?query=${encodeURIComponent(query)}`, null);
+  const response = await client.get<TLabelsResponse>(`/search/labels?query=${encodeURIComponent(query)}&page_size=5000`, null);
   return response.data.results || [];
 };
 
