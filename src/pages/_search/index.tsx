@@ -164,14 +164,14 @@ const ShadowSearch = ({ theme, themeConfig, features }: TProps) => {
             }}
             filters={filters}
             page_token={currentPage}
-            page_size={40}
+            page_size={40} // TODO: make this configurable
             onAggregationsChange={applyAggregationsFromSearch}
           />
         </div>
         <div className={columnLayoutCss}>
           <Pagination
             currentPage={parseInt(currentPage)}
-            totalPages={50}
+            totalPages={50} // TODO: calculate this from the API total_size and page_size
             onPageChange={(page) => {
               window.scrollTo(0, 0);
               setCurrentPage(page.toString());
