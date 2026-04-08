@@ -67,7 +67,7 @@ export interface SearchDocumentsResponse {
 interface SearchDocumentsParams {
   query?: string;
   filters?: string;
-  limit?: number;
+  page_size?: number;
   page_token?: string;
 }
 
@@ -79,7 +79,7 @@ export async function fetchSearchDocuments(params: SearchDocumentsParams = {}): 
 
   if (params.query) url.searchParams.set("query", params.query);
   if (params.filters) url.searchParams.set("filters", params.filters);
-  if (params.limit !== undefined) url.searchParams.set("limit", String(params.limit));
+  if (params.page_size !== undefined) url.searchParams.set("page_size", String(params.page_size));
   if (params.page_token !== undefined) url.searchParams.set("page_token", params.page_token);
 
   const res = await fetch(url);
@@ -235,6 +235,7 @@ export function SearchContainer({
   query,
   filters,
   page_token,
+  page_size,
   onSelectLabel,
   onAggregationsChange,
 }: {
@@ -242,6 +243,7 @@ export function SearchContainer({
   query?: string;
   filters?: TQueryGroup;
   page_token?: string;
+  page_size?: number;
   onSelectLabel?: (label: string) => void;
   onAggregationsChange?: (labels: IAggregationLabel[] | undefined) => void;
 }) {
@@ -250,12 +252,11 @@ export function SearchContainer({
 
     return fetchSearchDocuments({
       query,
-      // TODO: add pagination
-      // limit: 10,
+      page_size,
       page_token,
       filters: filtersDoesNotContainEmptyRule(filters) ? JSON.stringify(filters) : undefined,
     });
-  }, [query, filters, page_token]);
+  }, [query, filters, page_token, page_size]);
 
   return (
     <>

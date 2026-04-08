@@ -164,6 +164,7 @@ const ShadowSearch = ({ theme, themeConfig, features }: TProps) => {
             }}
             filters={filters}
             page_token={currentPage}
+            page_size={40}
             onAggregationsChange={applyAggregationsFromSearch}
           />
         </div>
