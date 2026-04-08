@@ -21,7 +21,7 @@ export function SelectPerPage({ value, onChange }: TProps) {
         </Select.Trigger>
         <Select.Portal>
           <Select.Positioner className="outline-hidden z-10" sideOffset={4} alignItemWithTrigger={false}>
-            <Select.Popup className="group max-h-(--available-height) min-w-(--anchor-width) origin-(--transform-origin) bg-clip-padding overflow-y-auto rounded-md bg-[canvas] shadow-lg shadow-gray-200 outline-1 outline-transparent-regular transition-[transform,scale,opacity] data-ending-style:scale-90 data-ending-style:opacity-0 data-[side=none]:min-w-[calc(var(--anchor-width)+1rem)] data-[side=none]:data-[ending-style]:transition-none data-[starting-style]:scale-90 data-[starting-style]:opacity-0 data-[side=none]:data-[starting-style]:scale-100 data-[side=none]:data-[starting-style]:opacity-100 data-[side=none]:data-[starting-style]:transition-none">
+            <Select.Popup className="group max-h-(--available-height) min-w-(--anchor-width) origin-(--transform-origin) bg-clip-padding overflow-y-auto rounded-md bg-[canvas] shadow-lg shadow-gray-200 outline-1 outline-transparent-regular transition-[transform,scale,opacity] data-ending-style:scale-90 data-ending-style:opacity-0">
               {values.map((value) => (
                 <Select.Item
                   key={value}
