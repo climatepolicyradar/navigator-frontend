@@ -2,6 +2,7 @@ import { Popover as BasePopover } from "@base-ui/react/popover";
 import { ChevronRight, Circle, ListFilter } from "lucide-react";
 import { useMemo } from "react";
 
+import { IAggregationLabel } from "@/api/search";
 import { Checkbox } from "@/components/checkbox/Checkbox";
 import { TLabelResult } from "@/hooks/useLabelSearch";
 import { getAvailableLabelIdsFromAggregations, partitionByAvailability } from "@/utils/_experiment/labelAggregationAvailability";
@@ -9,7 +10,6 @@ import { labelTypeLabel } from "@/utils/_experiment/labelTypeLabel";
 import { joinTailwindClasses } from "@/utils/tailwind";
 
 import { TQueryGroup } from "../queryBuilder/QueryBuilder";
-import { IAggregationLabel } from "../searchResults/SearchResults";
 
 function hasValue(group: TQueryGroup | null | undefined, value: string): boolean {
   if (!group) return false;
