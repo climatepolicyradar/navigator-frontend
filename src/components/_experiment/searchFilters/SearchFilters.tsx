@@ -23,7 +23,7 @@ function hasActiveFilterOfType(filters: TLabelResult[], group: TQueryGroup | nul
   );
 }
 
-const LABEL_TYPES = ["agent", "entity_type", "geography", "concept", "activity_status", "status", "category"] as const;
+const LABEL_TYPES = ["agent", "category", "entity_type", "geography", "concept", "activity_status", "status"] as const;
 export type TLabelType = (typeof LABEL_TYPES)[number];
 
 type TProps = {
