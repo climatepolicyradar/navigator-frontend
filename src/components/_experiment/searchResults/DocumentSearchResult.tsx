@@ -13,7 +13,9 @@ function linkHref(doc: SearchDocument): string | undefined {
 
 const displayParentRelationshipContext = (document: SearchDocument) => {
   const entityType = document.labels.find((label) => label.type === "entity_type")?.value.value;
-  const parent = document.documents.find((rel) => rel.type === "member_of");
+  let parent = document.documents.find((rel) => rel.type === "member_of");
+  // when a principal has a single document the relationship is "is_version_of" instead of "member_of"
+  if (!parent) parent = document.documents.find((rel) => rel.type === "is_version_of");
   const parentCategory = parent?.value.labels.find((label) => label.type === "category")?.value.value;
 
   return (

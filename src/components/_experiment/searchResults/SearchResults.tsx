@@ -63,6 +63,7 @@ function SearchResultsWithAggregations({
     onAggregationsChange?.(labels);
   }, [labels, onAggregationsChange]);
 
+  // notify parent of the number of results
   useEffect(() => {
     onTotalResultsChange?.(data.total_size ?? null);
   }, [data.total_size, onTotalResultsChange]);
