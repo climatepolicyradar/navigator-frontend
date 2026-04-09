@@ -7,9 +7,13 @@ export const transformOldFamily = (oldFamily: TApiFamilyPublic, corpusTypes: TCo
   const attribution: TFamilyAttribution = {
     corpusImageAlt: corpus?.title ?? "No corpus image found",
     corpusNote: corpus?.text ?? "No corpus note found",
+    organisation: oldFamily.corpus?.organisation?.name || oldFamily.organisation,
   };
   if (corpus?.image_url) attribution.corpusImage = corpus.image_url;
   if (oldFamily.corpus?.attribution_url) attribution.url = oldFamily.corpus.attribution_url;
 
-  return { ...oldFamily, attribution };
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  const { corpus: _corpus, ...strippedOldFamily } = oldFamily;
+
+  return { ...strippedOldFamily, attribution };
 };

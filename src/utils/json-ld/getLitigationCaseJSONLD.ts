@@ -37,11 +37,11 @@ export const getLitigationCaseJSONLD = (familyCase: TFamilyPublic, countries: TG
     dateModified: `${familyCase.last_updated_date}`,
   };
 
-  if (familyCase.corpus?.organisation) {
+  if (familyCase.attribution.organisation && familyCase.attribution.url) {
     jsonLd.publisher = {
       "@type": "Organization",
-      name: `${familyCase.corpus.organisation.name}`,
-      url: `${familyCase.corpus.attribution_url}`,
+      name: `${familyCase.attribution.organisation}`,
+      url: `${familyCase.attribution.url}`,
     };
   }
 

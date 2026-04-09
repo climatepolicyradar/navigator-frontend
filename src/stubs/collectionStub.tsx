@@ -83,16 +83,21 @@ export const COLLECTION_STUB: TCollectionPublicWithFamilies = {
           subconcept_of_labels: [],
         },
       ],
-      corpus: {
-        import_id: "Academic.corpus.Litigation.n0000",
-        title: "Litigation",
-        corpus_type_name: "Litigation",
-        organisation: {
-          name: "Sabin",
-          id: 11,
-        },
-        attribution_url: null,
+      attribution: {
+        corpusImageAlt: "No corpus image found",
+        corpusNote: "No corpus note found",
+        organisation: "Sabin",
       },
+      // corpus: {
+      //   import_id: "Academic.corpus.Litigation.n0000",
+      //   title: "Litigation",
+      //   corpus_type_name: "Litigation",
+      //   organisation: {
+      //     name: "Sabin",
+      //     id: 11,
+      //   },
+      //   attribution_url: null,
+      // },
       corpus_id: "Academic.corpus.Litigation.n0000",
       organisation: "Sabin",
       summary:
@@ -506,16 +511,21 @@ export const COLLECTION_STUB: TCollectionPublicWithFamilies = {
           subconcept_of_labels: ["Federal Courts"],
         },
       ],
-      corpus: {
-        import_id: "Academic.corpus.Litigation.n0000",
-        title: "Litigation",
-        corpus_type_name: "Litigation",
-        organisation: {
-          name: "Sabin",
-          id: 11,
-        },
-        attribution_url: null,
+      attribution: {
+        corpusImageAlt: "No corpus image found",
+        corpusNote: "No corpus note found",
+        organisation: "Sabin",
       },
+      // corpus: {
+      //   import_id: "Academic.corpus.Litigation.n0000",
+      //   title: "Litigation",
+      //   corpus_type_name: "Litigation",
+      //   organisation: {
+      //     name: "Sabin",
+      //     id: 11,
+      //   },
+      //   attribution_url: null,
+      // },
       corpus_id: "Academic.corpus.Litigation.n0000",
       organisation: "Sabin",
       summary:
@@ -2776,16 +2786,21 @@ export const COLLECTION_STUB: TCollectionPublicWithFamilies = {
           subconcept_of_labels: [],
         },
       ],
-      corpus: {
-        import_id: "Academic.corpus.Litigation.n0000",
-        title: "Litigation",
-        corpus_type_name: "Litigation",
-        organisation: {
-          name: "Sabin",
-          id: 11,
-        },
-        attribution_url: null,
+      attribution: {
+        corpusImageAlt: "No corpus image found",
+        corpusNote: "No corpus note found",
+        organisation: "Sabin",
       },
+      // corpus: {
+      //   import_id: "Academic.corpus.Litigation.n0000",
+      //   title: "Litigation",
+      //   corpus_type_name: "Litigation",
+      //   organisation: {
+      //     name: "Sabin",
+      //     id: 11,
+      //   },
+      //   attribution_url: null,
+      // },
       corpus_id: "Academic.corpus.Litigation.n0000",
       organisation: "Sabin",
       summary:
@@ -9668,16 +9683,21 @@ export const COLLECTION_STUB: TCollectionPublicWithFamilies = {
           subconcept_of_labels: ["Federal Courts"],
         },
       ],
-      corpus: {
-        import_id: "Academic.corpus.Litigation.n0000",
-        title: "Litigation",
-        corpus_type_name: "Litigation",
-        organisation: {
-          name: "Sabin",
-          id: 11,
-        },
-        attribution_url: null,
+      attribution: {
+        corpusImageAlt: "No corpus image found",
+        corpusNote: "No corpus note found",
+        organisation: "Sabin",
       },
+      // corpus: {
+      //   import_id: "Academic.corpus.Litigation.n0000",
+      //   title: "Litigation",
+      //   corpus_type_name: "Litigation",
+      //   organisation: {
+      //     name: "Sabin",
+      //     id: 11,
+      //   },
+      //   attribution_url: null,
+      // },
       corpus_id: "Academic.corpus.Litigation.n0000",
       organisation: "Sabin",
       summary:
@@ -9910,16 +9930,21 @@ export const COLLECTION_STUB: TCollectionPublicWithFamilies = {
           subconcept_of_labels: [],
         },
       ],
-      corpus: {
-        import_id: "Academic.corpus.Litigation.n0000",
-        title: "Litigation",
-        corpus_type_name: "Litigation",
-        organisation: {
-          name: "Sabin",
-          id: 11,
-        },
-        attribution_url: null,
+      attribution: {
+        corpusImageAlt: "No corpus image found",
+        corpusNote: "No corpus note found",
+        organisation: "Sabin",
       },
+      // corpus: {
+      //   import_id: "Academic.corpus.Litigation.n0000",
+      //   title: "Litigation",
+      //   corpus_type_name: "Litigation",
+      //   organisation: {
+      //     name: "Sabin",
+      //     id: 11,
+      //   },
+      //   attribution_url: null,
+      // },
       corpus_id: "Academic.corpus.Litigation.n0000",
       organisation: "Sabin",
       summary:
@@ -10998,16 +11023,21 @@ export const COLLECTION_STUB: TCollectionPublicWithFamilies = {
           subconcept_of_labels: ["Federal Courts"],
         },
       ],
-      corpus: {
-        import_id: "Academic.corpus.Litigation.n0000",
-        title: "Litigation",
-        corpus_type_name: "Litigation",
-        organisation: {
-          name: "Sabin",
-          id: 11,
-        },
-        attribution_url: null,
+      attribution: {
+        corpusImageAlt: "No corpus image found",
+        corpusNote: "No corpus note found",
+        organisation: "Sabin",
       },
+      // corpus: {
+      //   import_id: "Academic.corpus.Litigation.n0000",
+      //   title: "Litigation",
+      //   corpus_type_name: "Litigation",
+      //   organisation: {
+      //     name: "Sabin",
+      //     id: 11,
+      //   },
+      //   attribution_url: null,
+      // },
       corpus_id: "Academic.corpus.Litigation.n0000",
       organisation: "Sabin",
       summary:
@@ -14947,16 +14977,21 @@ export const COLLECTION_STUB: TCollectionPublicWithFamilies = {
           subconcept_of_labels: ["Federal Courts"],
         },
       ],
-      corpus: {
-        import_id: "Academic.corpus.Litigation.n0000",
-        title: "Litigation",
-        corpus_type_name: "Litigation",
-        organisation: {
-          name: "Sabin",
-          id: 11,
-        },
-        attribution_url: null,
+      attribution: {
+        corpusImageAlt: "No corpus image found",
+        corpusNote: "No corpus note found",
+        organisation: "Sabin",
       },
+      // corpus: {
+      //   import_id: "Academic.corpus.Litigation.n0000",
+      //   title: "Litigation",
+      //   corpus_type_name: "Litigation",
+      //   organisation: {
+      //     name: "Sabin",
+      //     id: 11,
+      //   },
+      //   attribution_url: null,
+      // },
       corpus_id: "Academic.corpus.Litigation.n0000",
       organisation: "Sabin",
       summary:
@@ -15365,16 +15400,21 @@ export const COLLECTION_STUB: TCollectionPublicWithFamilies = {
           subconcept_of_labels: ["Federal Courts"],
         },
       ],
-      corpus: {
-        import_id: "Academic.corpus.Litigation.n0000",
-        title: "Litigation",
-        corpus_type_name: "Litigation",
-        organisation: {
-          name: "Sabin",
-          id: 11,
-        },
-        attribution_url: null,
+      attribution: {
+        corpusImageAlt: "No corpus image found",
+        corpusNote: "No corpus note found",
+        organisation: "Sabin",
       },
+      // corpus: {
+      //   import_id: "Academic.corpus.Litigation.n0000",
+      //   title: "Litigation",
+      //   corpus_type_name: "Litigation",
+      //   organisation: {
+      //     name: "Sabin",
+      //     id: 11,
+      //   },
+      //   attribution_url: null,
+      // },
       corpus_id: "Academic.corpus.Litigation.n0000",
       organisation: "Sabin",
       summary:
@@ -15881,16 +15921,21 @@ export const COLLECTION_STUB: TCollectionPublicWithFamilies = {
           subconcept_of_labels: ["Federal Courts"],
         },
       ],
-      corpus: {
-        import_id: "Academic.corpus.Litigation.n0000",
-        title: "Litigation",
-        corpus_type_name: "Litigation",
-        organisation: {
-          name: "Sabin",
-          id: 11,
-        },
-        attribution_url: null,
+      attribution: {
+        corpusImageAlt: "No corpus image found",
+        corpusNote: "No corpus note found",
+        organisation: "Sabin",
       },
+      // corpus: {
+      //   import_id: "Academic.corpus.Litigation.n0000",
+      //   title: "Litigation",
+      //   corpus_type_name: "Litigation",
+      //   organisation: {
+      //     name: "Sabin",
+      //     id: 11,
+      //   },
+      //   attribution_url: null,
+      // },
       corpus_id: "Academic.corpus.Litigation.n0000",
       organisation: "Sabin",
       summary:
@@ -16168,16 +16213,21 @@ export const COLLECTION_STUB: TCollectionPublicWithFamilies = {
           subconcept_of_labels: ["Federal Courts"],
         },
       ],
-      corpus: {
-        import_id: "Academic.corpus.Litigation.n0000",
-        title: "Litigation",
-        corpus_type_name: "Litigation",
-        organisation: {
-          name: "Sabin",
-          id: 11,
-        },
-        attribution_url: null,
+      attribution: {
+        corpusImageAlt: "No corpus image found",
+        corpusNote: "No corpus note found",
+        organisation: "Sabin",
       },
+      // corpus: {
+      //   import_id: "Academic.corpus.Litigation.n0000",
+      //   title: "Litigation",
+      //   corpus_type_name: "Litigation",
+      //   organisation: {
+      //     name: "Sabin",
+      //     id: 11,
+      //   },
+      //   attribution_url: null,
+      // },
       corpus_id: "Academic.corpus.Litigation.n0000",
       organisation: "Sabin",
       summary:
@@ -16553,16 +16603,21 @@ export const COLLECTION_STUB: TCollectionPublicWithFamilies = {
           subconcept_of_labels: [],
         },
       ],
-      corpus: {
-        import_id: "Academic.corpus.Litigation.n0000",
-        title: "Litigation",
-        corpus_type_name: "Litigation",
-        organisation: {
-          name: "Sabin",
-          id: 11,
-        },
-        attribution_url: null,
+      attribution: {
+        corpusImageAlt: "No corpus image found",
+        corpusNote: "No corpus note found",
+        organisation: "Sabin",
       },
+      // corpus: {
+      //   import_id: "Academic.corpus.Litigation.n0000",
+      //   title: "Litigation",
+      //   corpus_type_name: "Litigation",
+      //   organisation: {
+      //     name: "Sabin",
+      //     id: 11,
+      //   },
+      //   attribution_url: null,
+      // },
       corpus_id: "Academic.corpus.Litigation.n0000",
       organisation: "Sabin",
       summary:
@@ -16885,16 +16940,21 @@ export const COLLECTION_STUB: TCollectionPublicWithFamilies = {
           subconcept_of_labels: ["Federal Courts"],
         },
       ],
-      corpus: {
-        import_id: "Academic.corpus.Litigation.n0000",
-        title: "Litigation",
-        corpus_type_name: "Litigation",
-        organisation: {
-          name: "Sabin",
-          id: 11,
-        },
-        attribution_url: null,
+      attribution: {
+        corpusImageAlt: "No corpus image found",
+        corpusNote: "No corpus note found",
+        organisation: "Sabin",
       },
+      // corpus: {
+      //   import_id: "Academic.corpus.Litigation.n0000",
+      //   title: "Litigation",
+      //   corpus_type_name: "Litigation",
+      //   organisation: {
+      //     name: "Sabin",
+      //     id: 11,
+      //   },
+      //   attribution_url: null,
+      // },
       corpus_id: "Academic.corpus.Litigation.n0000",
       organisation: "Sabin",
       summary:
@@ -17225,16 +17285,21 @@ export const COLLECTION_STUB: TCollectionPublicWithFamilies = {
           subconcept_of_labels: ["Federal Courts"],
         },
       ],
-      corpus: {
-        import_id: "Academic.corpus.Litigation.n0000",
-        title: "Litigation",
-        corpus_type_name: "Litigation",
-        organisation: {
-          name: "Sabin",
-          id: 11,
-        },
-        attribution_url: null,
+      attribution: {
+        corpusImageAlt: "No corpus image found",
+        corpusNote: "No corpus note found",
+        organisation: "Sabin",
       },
+      // corpus: {
+      //   import_id: "Academic.corpus.Litigation.n0000",
+      //   title: "Litigation",
+      //   corpus_type_name: "Litigation",
+      //   organisation: {
+      //     name: "Sabin",
+      //     id: 11,
+      //   },
+      //   attribution_url: null,
+      // },
       corpus_id: "Academic.corpus.Litigation.n0000",
       organisation: "Sabin",
       summary:
@@ -17653,16 +17718,21 @@ export const COLLECTION_STUB: TCollectionPublicWithFamilies = {
           subconcept_of_labels: [],
         },
       ],
-      corpus: {
-        import_id: "Academic.corpus.Litigation.n0000",
-        title: "Litigation",
-        corpus_type_name: "Litigation",
-        organisation: {
-          name: "Sabin",
-          id: 11,
-        },
-        attribution_url: null,
+      attribution: {
+        corpusImageAlt: "No corpus image found",
+        corpusNote: "No corpus note found",
+        organisation: "Sabin",
       },
+      // corpus: {
+      //   import_id: "Academic.corpus.Litigation.n0000",
+      //   title: "Litigation",
+      //   corpus_type_name: "Litigation",
+      //   organisation: {
+      //     name: "Sabin",
+      //     id: 11,
+      //   },
+      //   attribution_url: null,
+      // },
       corpus_id: "Academic.corpus.Litigation.n0000",
       organisation: "Sabin",
       summary:
@@ -17929,16 +17999,21 @@ export const COLLECTION_STUB: TCollectionPublicWithFamilies = {
           subconcept_of_labels: [],
         },
       ],
-      corpus: {
-        import_id: "Academic.corpus.Litigation.n0000",
-        title: "Litigation",
-        corpus_type_name: "Litigation",
-        organisation: {
-          name: "Sabin",
-          id: 11,
-        },
-        attribution_url: null,
+      attribution: {
+        corpusImageAlt: "No corpus image found",
+        corpusNote: "No corpus note found",
+        organisation: "Sabin",
       },
+      // corpus: {
+      //   import_id: "Academic.corpus.Litigation.n0000",
+      //   title: "Litigation",
+      //   corpus_type_name: "Litigation",
+      //   organisation: {
+      //     name: "Sabin",
+      //     id: 11,
+      //   },
+      //   attribution_url: null,
+      // },
       corpus_id: "Academic.corpus.Litigation.n0000",
       organisation: "Sabin",
       summary:

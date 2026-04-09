@@ -1,9 +1,8 @@
 import { TApiDocumentPage, TApiFamilyPublic, TApiSearchResponse } from "../api";
 import { TTopics } from "../topics";
-import { TCorpusTypeDictionary, TDocumentPage, TFamilyPublic, TSearchResponse } from "../types";
+import { TDocumentPage, TFamilyPublic, TSearchResponse } from "../types";
 
 export type TDocumentApiOldData = {
-  corpusTypes: TCorpusTypeDictionary;
   document: TApiDocumentPage;
   family: TApiFamilyPublic;
   topicsData: TTopics;

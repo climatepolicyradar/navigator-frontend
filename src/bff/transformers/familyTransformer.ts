@@ -4,7 +4,7 @@ import { transformFamilyCollections } from "@/bff/transformers/partials/transfor
 import { transformFamilyDocuments } from "@/bff/transformers/partials/transformFamilyDocuments";
 import { transformFamilyEvents } from "@/bff/transformers/partials/transformFamilyEvents";
 import { transformFamilyMetadata } from "@/bff/transformers/partials/transformFamilyMetadata";
-import { transformOldCollections } from "@/bff/transformers/partials/transformOldCollections";
+import { transformOldCollection } from "@/bff/transformers/partials/transformOldCollection";
 import { transformOldFamily } from "@/bff/transformers/partials/transformOldFamily";
 import { LABEL_TYPES, MANDATORY_FAMILY_LABEL_TYPES, TDataInLabel, TDataInLabelType } from "@/schemas";
 import { TCategory, TFamilyApiNewData, TFamilyApiOldData, TFamilyPresentationalResponse } from "@/types";
@@ -28,7 +28,7 @@ export const familyTransformer = (
       return {
         data: {
           ...oldData,
-          collections: transformOldCollections(familyApiOldData.collections, corpusTypes),
+          collections: familyApiOldData.collections.map((collection) => transformOldCollection(collection, corpusTypes)),
           countries: transformCountries(familyApiOldData.countries, groupedLabels.geography),
           family: {
             attribution: transformAttribution(groupedLabels),
@@ -48,8 +48,6 @@ export const familyTransformer = (
             concepts: familyApiOldData.family.concepts, // currently out of scope
             corpus_id: familyApiOldData.family.corpus_id,
             corpus_type_name: familyApiOldData.family.corpus_type_name,
-            corpus: familyApiOldData.family.corpus,
-            organisation: familyApiOldData.family.organisation,
           },
           debug: {
             originalFamily: transformOldFamily(familyApiOldData.family, corpusTypes),

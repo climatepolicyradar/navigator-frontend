@@ -45,9 +45,6 @@ export const getDocumentData = async (slug: string, features: TFeatures): Promis
     return { data: null, errors };
   }
 
-  const configRaw = await backendApiClient.getConfig();
-  const corpusTypes: TCorpusTypeDictionary = configRaw.data.corpus_types;
-
   /**
    * TODO:
    * - Check family data + features to determine if new data model API calls are needed
@@ -73,5 +70,5 @@ export const getDocumentData = async (slug: string, features: TFeatures): Promis
 
   /* Transform API data for presentation */
 
-  return documentTransformer({ corpusTypes, document, family, topicsData, vespaDocumentData }, null, errors);
+  return documentTransformer({ document, family, topicsData, vespaDocumentData }, null, errors);
 };

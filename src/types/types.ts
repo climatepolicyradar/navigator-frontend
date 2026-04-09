@@ -389,12 +389,13 @@ export type TFamilyDocumentPublic = {
 };
 
 export type TFamilyAttribution = {
-  categoryName?: string;
-  subCategoryName?: string;
-  url?: string;
+  categoryName?: string; // TODO
   corpusImage?: string;
   corpusImageAlt: string;
   corpusNote: string;
+  organisation: string;
+  subCategoryName?: string; // TODO
+  url?: string;
 };
 
 export type TFamilyPublic = {
@@ -405,12 +406,10 @@ export type TFamilyPublic = {
   import_id: string;
   last_updated_date: string | null;
   metadata: TFamilyMetadata;
-  organisation: string;
   published_date: string | null;
   slug: string;
   summary: string;
   title: string;
-  corpus?: TCorpusPublic;
   collections: TCollectionPublic[];
   concepts: TFamilyConcept[];
   documents: TFamilyDocumentPublic[];

@@ -10,6 +10,7 @@ export const transformAttribution = (groupedLabels: TItemsByType<TDataInLabel, T
     corpusImage: providerLabel.value.attributes.corpus_image_url,
     corpusImageAlt: providerLabel.value.value,
     corpusNote: providerLabel.value.attributes.corpus_text,
+    organisation: "TODO", // TODO
     url: providerLabel.value.attributes.attribution_url,
   };
 };

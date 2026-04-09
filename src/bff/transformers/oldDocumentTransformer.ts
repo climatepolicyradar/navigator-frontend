@@ -6,13 +6,13 @@ export const oldDocumentTransformer = (
   documentApiNewData: TDocumentApiNewData,
   errors: Error[]
 ): TDocumentPresentationalResponse => {
-  const { corpusTypes, family } = documentApiOldData;
+  const { family } = documentApiOldData;
 
   try {
     return {
       data: {
         ...documentApiOldData,
-        family: transformOldFamily(family, corpusTypes),
+        family: transformOldFamily(family, {}),
       },
       errors,
     };

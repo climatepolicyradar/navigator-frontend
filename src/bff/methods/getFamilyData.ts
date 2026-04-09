@@ -127,7 +127,7 @@ export const getFamilyData = async (slug: string, features: TFeatures): Promise<
   }
 
   // Check the family is in the "allowed_corpora"
-  if (family.corpus?.import_id && !isCorpusIdAllowed(process.env.BACKEND_API_TOKEN, family.corpus.import_id)) {
+  if (family.corpus_id && !isCorpusIdAllowed(process.env.BACKEND_API_TOKEN, family.corpus_id)) {
     errors.push(new Error("Family is not in an allowed corpora"));
     return { data: null, errors };
   }

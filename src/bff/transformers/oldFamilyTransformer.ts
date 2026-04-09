@@ -1,4 +1,4 @@
-import { transformOldCollections } from "@/bff/transformers/partials/transformOldCollections";
+import { transformOldCollection } from "@/bff/transformers/partials/transformOldCollection";
 import { transformOldFamily } from "@/bff/transformers/partials/transformOldFamily";
 import { TFamilyApiNewData, TFamilyApiOldData, TFamilyPresentationalResponse } from "@/types";
 
@@ -13,7 +13,7 @@ export const oldFamilyTransformer = (
     return {
       data: {
         ...familyApiOldData,
-        collections: transformOldCollections(collections, corpusTypes),
+        collections: collections.map((collection) => transformOldCollection(collection, corpusTypes)),
         family: transformOldFamily(family, corpusTypes),
         debug: { newApiData: familyApiNewData, usesDataIn: false },
       },
