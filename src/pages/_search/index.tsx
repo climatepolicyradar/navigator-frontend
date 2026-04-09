@@ -97,9 +97,28 @@ const ShadowSearch = ({ theme, themeConfig, features }: TProps) => {
 
   return (
     <FeaturesContext.Provider value={features}>
-      <FiveColumns className="mt-4 gap-y-4 pb-12">
+      <FiveColumns className="mt-4 gap-y-5 pb-12 rounded-2xl border border-border-lighter bg-gradient-to-b from-text-brand/[0.05] via-white to-surface-light p-4 shadow-sm ring-1 ring-text-brand/10 cols-2:p-6">
         <div className={columnLayoutCss}>
-          <h1 className="text-5xl font-bold text-inky-black">Search</h1>
+          <aside
+            role="status"
+            className="flex flex-col gap-2 rounded-xl border border-dashed border-text-brand/35 bg-white/70 px-4 py-3 text-left sm:flex-row sm:items-center sm:justify-between"
+          >
+            <span className="text-sm font-semibold text-text-brand">Ephemeral environment</span>
+            <span className="text-xs text-text-secondary">Isolated from production—ideal for demos and preview deployments.</span>
+          </aside>
+        </div>
+        <div className={columnLayoutCss}>
+          <header className="flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
+            <div className="space-y-2">
+              <span className="inline-flex w-fit items-center rounded-full border border-text-brand/25 bg-text-brand/10 px-2.5 py-0.5 text-[10px] font-semibold uppercase tracking-[0.14em] text-text-brand">
+                Preview
+              </span>
+              <h1 className="bg-gradient-to-r from-text-brand via-text-brand-darker to-inky-black bg-clip-text text-5xl font-bold text-transparent">
+                Search
+              </h1>
+            </div>
+            <p className="max-w-sm text-sm leading-relaxed text-text-tertiary">Experimental search—polish and data may differ from the live site.</p>
+          </header>
         </div>
         <div className={columnLayoutCss}>
           <IntelliSearch
