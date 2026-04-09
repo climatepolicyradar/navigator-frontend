@@ -26,7 +26,6 @@ import { useText } from "@/hooks/useText";
 import {
   IFamilyDocumentTopics,
   TCollectionPublicWithFamilies,
-  TCorpusTypeDictionary,
   TMatchedFamily,
   TFamilyPageBlock,
   TFamilyPublic,
@@ -49,7 +48,6 @@ import { familyTopicsHasTopics } from "@/utils/topics/processFamilyTopics";
 
 export interface IProps {
   collections: TCollectionPublicWithFamilies[];
-  corpus_types: TCorpusTypeDictionary;
   countries: TGeography[];
   errors: string[];
   family: TFamilyPublic;
@@ -69,7 +67,6 @@ export interface IProps {
 
 export const FamilyPage = ({
   collections,
-  corpus_types,
   countries,
   debug,
   errors,
@@ -154,7 +151,7 @@ export const FamilyPage = ({
       sideBarItem: { display: "About" },
     },
     note: {
-      render: () => <NoteBlock key="note" corpusId={family.corpus_id} corpusTypes={corpus_types} />,
+      render: () => <NoteBlock key="note" attribution={family.attribution} />,
     },
     summary: {
       render: () => {
@@ -188,7 +185,7 @@ export const FamilyPage = ({
       description={getFamilyMetaDescription(family?.metadata?.core_object?.[0] ?? family.summary, family.geographies.join(", "), family.category)}
       theme={theme as TTheme}
       themeConfig={themeConfig}
-      attributionUrl={family?.corpus?.attribution_url}
+      attributionUrl={family.attribution.url}
     >
       <FeaturesContext.Provider value={features}>
         <BreadCrumbs

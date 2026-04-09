@@ -42,6 +42,7 @@ export const LabelSchema = v.object({
     value: v.string(),
     labels: v.array(LabelLabelSchema),
     documents: v.array(LabelDocumentSchema),
+    attributes: v.optional(v.any()),
   }),
   timestamp: v.nullable(v.string()),
 });

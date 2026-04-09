@@ -388,6 +388,15 @@ export type TFamilyDocumentPublic = {
   document_status: string | null;
 };
 
+export type TFamilyAttribution = {
+  categoryName?: string;
+  subCategoryName?: string;
+  url?: string;
+  corpusImage?: string;
+  corpusImageAlt: string;
+  corpusNote: string;
+};
+
 export type TFamilyPublic = {
   category: TCategory;
   corpus_id: string;
@@ -406,6 +415,7 @@ export type TFamilyPublic = {
   concepts: TFamilyConcept[];
   documents: TFamilyDocumentPublic[];
   events: TFamilyEventPublic[];
+  attribution: TFamilyAttribution;
 };
 
 export type TCollectionPublicWithFamilies = {

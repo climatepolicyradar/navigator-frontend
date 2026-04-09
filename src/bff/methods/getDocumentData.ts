@@ -1,4 +1,5 @@
 import { ApiClient } from "@/api/http-common";
+import { documentTransformer } from "@/bff/transformers/documentTransformer";
 import { DEFAULT_DOCUMENT_TITLE } from "@/constants/document";
 import {
   TApiDocumentPage,
@@ -6,13 +7,12 @@ import {
   TApiItemResponse,
   TApiSearchResponse,
   TApiSlugResponse,
+  TCorpusTypeDictionary,
   TDocumentPresentationalResponse,
   TFeatures,
 } from "@/types";
 import { extractTopicIds } from "@/utils/extractTopicIds";
 import { fetchAndProcessTopics } from "@/utils/fetchAndProcessTopics";
-
-import { documentTransformer } from "../transformers/documentTransformer";
 
 // TODO: remove this ESLint disable when the features object is used for data source switching
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
@@ -45,6 +45,9 @@ export const getDocumentData = async (slug: string, features: TFeatures): Promis
     return { data: null, errors };
   }
 
+  const configRaw = await backendApiClient.getConfig();
+  const corpusTypes: TCorpusTypeDictionary = configRaw.data.corpus_types;
+
   /**
    * TODO:
    * - Check family data + features to determine if new data model API calls are needed
@@ -70,5 +73,5 @@ export const getDocumentData = async (slug: string, features: TFeatures): Promis
 
   /* Transform API data for presentation */
 
-  return documentTransformer({ document, family, topicsData, vespaDocumentData }, null, errors);
+  return documentTransformer({ corpusTypes, document, family, topicsData, vespaDocumentData }, null, errors);
 };

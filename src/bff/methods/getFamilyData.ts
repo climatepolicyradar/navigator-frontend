@@ -85,7 +85,7 @@ export const getFamilyData = async (slug: string, features: TFeatures): Promise<
   const configRaw = await backendApiClient.getConfig();
   const response_geo = extractNestedData<TApiGeography>(configRaw.data.geographies);
   const countries = response_geo[1];
-  const corpus_types: TCorpusTypeDictionary = configRaw.data.corpus_types;
+  const corpusTypes: TCorpusTypeDictionary = configRaw.data.corpus_types;
 
   // This is because our family.geographies field isn't hydrated but rather a string[]
   const allSubdivisions = await Promise.all<TApiGeographySubdivision[]>(
@@ -137,7 +137,7 @@ export const getFamilyData = async (slug: string, features: TFeatures): Promise<
   return familyTransformer(
     {
       collections,
-      corpus_types,
+      corpusTypes,
       countries,
       family,
       familyTopics: familyTopics || null,

@@ -17,7 +17,7 @@ interface IProps {
   theme?: TTheme;
   themeConfig?: TThemeConfig;
   children?: ReactNode;
-  attributionUrl?: string | null;
+  attributionUrl?: string;
 }
 
 const Layout: FC<IProps> = ({ children, title, description, metadataKey, text, attributionUrl, themeConfig, theme }) => {

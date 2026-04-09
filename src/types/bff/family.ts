@@ -11,19 +11,11 @@ import {
   TApiTarget,
 } from "../api";
 import { IFamilyDocumentTopics } from "../tables/familyDocumentTopics";
-import {
-  TCollectionPublicWithFamilies,
-  TCorpusTypeDictionary,
-  TFamilyPublic,
-  TGeography,
-  TGeographySubdivision,
-  TSearchResponse,
-  TTarget,
-} from "../types";
+import { TCollectionPublicWithFamilies, TFamilyPublic, TGeography, TGeographySubdivision, TSearchResponse, TTarget } from "../types";
 
 export type TFamilyApiOldData = {
   collections: TApiCollectionPublicWithFamilies[];
-  corpus_types: TApiCorpusTypeDictionary;
+  corpusTypes: TApiCorpusTypeDictionary;
   countries: TApiGeography[];
   family: TApiFamilyPublic;
   familyTopics: IApiFamilyDocumentTopics | null;
@@ -37,7 +29,6 @@ export type TFamilyApiNewData = TDataInDocument | null;
 
 export type TFamilyPresentationalData = {
   collections: TCollectionPublicWithFamilies[];
-  corpus_types: TCorpusTypeDictionary;
   countries: TGeography[];
   family: TFamilyPublic;
   familyTopics: IFamilyDocumentTopics | null;
