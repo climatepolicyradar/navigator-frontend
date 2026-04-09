@@ -18,7 +18,7 @@ const Hero = ({ handleSearchInput, searchInput }: IProps) => (
           SEARCH ALL
         </p>
         <Heading extraClasses="custom-hero" level={1}>
-          Multilateral Climate Funds
+          Katy&apos;s innermost thoughts
         </Heading>
       </div>
       <VerticalSpacing size="lg" />
