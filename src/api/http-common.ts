@@ -62,10 +62,10 @@ class ApiClient {
       .catch((error) => {
         if (axios.isAxiosError(error)) {
           console.error(error.response);
-          return error.response;
+          throw error.response;
         }
         console.error(error);
-        return error;
+        throw error;
       });
   }
 
