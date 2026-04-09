@@ -97,7 +97,7 @@ export const getFamilyData = async (slug: string, features: TFeatures): Promise<
           return subDivisionResponse;
         } catch (error) {
           errors.push(new Error("Failed to fetch subdivisions data for country: " + country, error));
-          return [];
+          return { data: null, errors };
         }
       })
   );
