@@ -88,6 +88,7 @@ export function SearchContainer({
   filters,
   page_token,
   page_size,
+  documents_only,
   onSelectLabel,
   onAggregationsChange,
   onTotalResultsChange,
@@ -97,22 +98,24 @@ export function SearchContainer({
   filters?: TQueryGroup;
   page_token?: string;
   page_size?: string;
+  documents_only?: boolean;
   onSelectLabel?: (label: string) => void;
   onAggregationsChange?: (labels: IAggregationLabel[] | undefined) => void;
   onTotalResultsChange?: (total: number | null) => void;
 }) {
-  const filtersJson = filtersDoesNotContainEmptyRule(filters) ? JSON.stringify(filters) : undefined;
+  const filtersCheckedForEmpty = filtersDoesNotContainEmptyRule(filters) ? filters : undefined;
 
   const searchPromise = useMemo(() => {
-    if (!query && !filtersJson) return null;
+    if (!query && !filtersCheckedForEmpty) return null;
 
     return fetchSearchDocuments({
       query,
       page_size,
       page_token,
-      filters: filtersJson,
+      documents_only,
+      filters: filtersCheckedForEmpty,
     });
-  }, [query, filtersJson, page_token, page_size]);
+  }, [query, filtersCheckedForEmpty, page_token, page_size, documents_only]);
 
   return (
     <>
