@@ -144,7 +144,7 @@ const ShadowSearch = ({ theme, themeConfig, features }: TProps) => {
           />
           <div className="flex items-center gap-6">
             <div>
-              <label className="flex items-center gap-2 text-neutral-600 text-sm font-medium">
+              <label className="flex items-center gap-2 text-neutral-600 text-sm font-medium cursor-pointer">
                 Show individual documents
                 <Switch.Root
                   checked={documents_only}
