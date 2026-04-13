@@ -17,7 +17,9 @@ export const FrontendObservability = (): null => {
           version: "1",
           environment: "local",
         },
-
+        sessionTracking: {
+          samplingRate: 0.2,
+        },
         instrumentations: [
           // Mandatory, omits default instrumentations otherwise.
           ...getWebInstrumentations(),
