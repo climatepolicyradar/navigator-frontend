@@ -97,7 +97,7 @@ export const getFamilyData = async (slug: string, features: TFeatures): Promise<
           return subDivisionResponse;
         } catch (error) {
           errors.push(new Error("Failed to fetch subdivisions data for country: " + country, error));
-          return { data: null, errors };
+          return [];
         }
       })
   );
@@ -110,10 +110,11 @@ export const getFamilyData = async (slug: string, features: TFeatures): Promise<
         return collectionResponse.data;
       } catch (error) {
         errors.push(new Error("Failed to fetch collection data for collection: " + collection.import_id, error));
+        return [];
       }
     })
   );
-  const collections = allCollections.flat();
+  const collections = allCollections.flat().filter((collection) => collection !== undefined);
 
   let targets: TApiTarget[] = [];
   try {
