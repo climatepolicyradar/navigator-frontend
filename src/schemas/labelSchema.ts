@@ -3,6 +3,7 @@ import * as v from "valibot";
 // Strictly validate label types so they reliably grouped and found later
 export const LABEL_TYPES = [
   "activity_status",
+  "category",
   "deprecated_category",
   "entity_type",
   "external_id",
@@ -27,12 +28,11 @@ export const LABEL_TYPES = [
 const LabelTypeSchema = v.custom<(typeof LABEL_TYPES)[number]>((value) => typeof value === "string");
 export type TDataInLabelType = v.InferOutput<typeof LabelTypeSchema>;
 
-export const MANDATORY_FAMILY_LABEL_TYPES: TDataInLabelType[] = ["activity_status", "deprecated_category", "provider"];
+export const MANDATORY_FAMILY_LABEL_TYPES: TDataInLabelType[] = ["activity_status", "category", "provider"];
 export const MANDATORY_DOCUMENT_LABEL_TYPES: TDataInLabelType[] = [];
 
 // TODO type these out as they become necessary for transformations
 export const LabelLabelSchema = v.unknown();
-export const LabelDocumentSchema = v.unknown();
 
 export const LabelSchema = v.object({
   type: LabelTypeSchema,
@@ -41,7 +41,6 @@ export const LabelSchema = v.object({
     type: v.string(),
     value: v.string(),
     labels: v.array(LabelLabelSchema),
-    documents: v.array(LabelDocumentSchema),
     attributes: v.optional(v.any()),
   }),
   timestamp: v.nullable(v.string()),

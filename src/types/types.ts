@@ -123,19 +123,21 @@ export type TTarget = {
 
 // TODO resolve different litigation cases depending on API endpoint used
 export type TCategory =
-  | "Legislative"
-  | "LEGISLATIVE"
   | "Executive"
   | "EXECUTIVE"
+  | "Law"
+  | "Legislative"
+  | "LEGISLATIVE"
   | "Litigation"
   | "LITIGATION"
-  | "Policy"
-  | "Law"
-  | "UNFCCC"
   | "MCF"
+  | "Policy"
   | "Reports"
-  | "REPORTS";
+  | "REPORTS"
+  | "UNFCCC";
 export type TCorpusTypeSubCategory = "AF" | "CIF" | "GCF" | "GEF" | "Laws and Policies" | "Intl. agreements" | "Litigation" | "Reports";
+
+export type TAttributionCategory = "Law" | "Litigation" | "Multilateral Climate Fund project" | "Policy" | "Report" | "UN submission";
 
 export type TEvent = {
   title: string;
@@ -389,12 +391,12 @@ export type TFamilyDocumentPublic = {
 };
 
 export type TFamilyAttribution = {
-  categoryName?: string; // TODO
+  category: TAttributionCategory;
   corpusImage?: string;
   corpusImageAlt: string;
   corpusNote: string;
-  organisation: string;
-  subCategoryName?: string; // TODO
+  provider: string;
+  taxonomy: string;
   url?: string;
 };
 

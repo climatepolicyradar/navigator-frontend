@@ -1,4 +1,6 @@
 import { oldFamilyTransformer } from "@/bff/transformers/oldFamilyTransformer";
+import { transformAttribution } from "@/bff/transformers/partials/transformAttribution";
+import { transformCategory } from "@/bff/transformers/partials/transformCategory";
 import { transformCountries } from "@/bff/transformers/partials/transformCountries";
 import { transformFamilyCollections } from "@/bff/transformers/partials/transformFamilyCollections";
 import { transformFamilyDocuments } from "@/bff/transformers/partials/transformFamilyDocuments";
@@ -7,10 +9,8 @@ import { transformFamilyMetadata } from "@/bff/transformers/partials/transformFa
 import { transformOldCollection } from "@/bff/transformers/partials/transformOldCollection";
 import { transformOldFamily } from "@/bff/transformers/partials/transformOldFamily";
 import { LABEL_TYPES, MANDATORY_FAMILY_LABEL_TYPES, TDataInLabel, TDataInLabelType } from "@/schemas";
-import { TCategory, TFamilyApiNewData, TFamilyApiOldData, TFamilyPresentationalResponse } from "@/types";
+import { TFamilyApiNewData, TFamilyApiOldData, TFamilyPresentationalResponse } from "@/types";
 import { groupByType } from "@/utils/data-in/groupByType";
-
-import { transformAttribution } from "./partials/transformAttribution";
 
 export const familyTransformer = (
   familyApiOldData: TFamilyApiOldData,
@@ -32,7 +32,7 @@ export const familyTransformer = (
           countries: transformCountries(familyApiOldData.countries, groupedLabels.geography),
           family: {
             attribution: transformAttribution(groupedLabels),
-            category: groupedLabels.deprecated_category[0].value.value as TCategory,
+            category: transformCategory(groupedLabels.category[0]),
             collections: transformFamilyCollections(familyApiOldData.family.collections, familyApiNewData.documents),
             documents: transformFamilyDocuments(familyApiOldData.family.documents, documents),
             events: transformFamilyEvents(groupedLabels),
@@ -45,7 +45,7 @@ export const familyTransformer = (
             summary: familyApiNewData.description,
             title: familyApiNewData.title,
             // TODO apply transformations to remaining fields:
-            concepts: familyApiOldData.family.concepts, // currently out of scope
+            concepts: familyApiOldData.family.concepts,
             corpus_id: familyApiOldData.family.corpus_id,
             corpus_type_name: familyApiOldData.family.corpus_type_name,
           },
