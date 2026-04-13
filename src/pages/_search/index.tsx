@@ -1,5 +1,6 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 
+import { Switch } from "@base-ui/react/switch";
 import isEqual from "lodash/isEqual";
 import { GetServerSideProps, InferGetServerSidePropsType } from "next";
 import { useQueryState, parseAsString, parseAsJson } from "nuqs";
@@ -42,6 +43,8 @@ const ShadowSearch = ({ theme, themeConfig, features }: TProps) => {
   const [currentPage, setCurrentPage] = useQueryState("page_token", parseAsString.withDefault("1"));
   const [pageSize, setPageSize] = useQueryState("page_size", parseAsString.withDefault("10"));
   const [totalNoOfResults, setTotalNoOfResults] = useState<number | null>(null);
+  // principal or documents
+  const [includeDocumentsInSearch, setIncludeDocumentsInSearch] = useState(false);
 
   /**
    * Drops aggregations only when the filter tree becomes empty so greyed options
@@ -139,16 +142,30 @@ const ShadowSearch = ({ theme, themeConfig, features }: TProps) => {
             aggregations={labelAggregations}
             query={query}
           />
-          <QueryBuilder
-            filters={filters}
-            setFilters={(filters) => {
-              setFilters(filters);
-              setCurrentPage("1");
-            }}
-            open={advancedFiltersOpen}
-            onOpenChange={setAdvancedFiltersOpen}
-            availableLabelIds={availableLabelIds}
-          />
+          <div className="flex items-center gap-6">
+            <div>
+              <label className="flex items-center gap-2 text-neutral-600 text-sm font-medium cursor-pointer">
+                Show individual documents
+                <Switch.Root
+                  checked={includeDocumentsInSearch}
+                  onCheckedChange={setIncludeDocumentsInSearch}
+                  className="relative flex h-4 w-7 p-0.5 rounded-full bg-neutral-200 transition data-checked:bg-inky-blue"
+                >
+                  <Switch.Thumb className="aspect-square h-full rounded-full bg-white transition-transform duration-150 data-checked:translate-x-3" />
+                </Switch.Root>
+              </label>
+            </div>
+            <QueryBuilder
+              filters={filters}
+              setFilters={(filters) => {
+                setFilters(filters);
+                setCurrentPage("1");
+              }}
+              open={advancedFiltersOpen}
+              onOpenChange={setAdvancedFiltersOpen}
+              availableLabelIds={availableLabelIds}
+            />
+          </div>
         </div>
         {!isFilterGroupEmpty(filters) && (
           <div className={columnLayoutCss}>
@@ -183,7 +200,8 @@ const ShadowSearch = ({ theme, themeConfig, features }: TProps) => {
             }}
             filters={filters}
             page_token={currentPage}
-            page_size={pageSize} // TODO: make this configurable
+            page_size={pageSize}
+            includeDocumentsInSearch={includeDocumentsInSearch}
             onAggregationsChange={applyAggregationsFromSearch}
             onTotalResultsChange={setTotalNoOfResults}
           />
