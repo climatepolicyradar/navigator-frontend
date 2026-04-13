@@ -10,8 +10,14 @@ container.
 
 ### General
 
-- The UI should be clean and intuitive, with a focus on usability and
-  accessibility.
+- When generating code keep all code within the same file unless specifically
+  instructed not to.
+
+### Components
+
+- Use the appropriate Base-UI component where necessary, see here for a list of
+  the common components:
+  [Base UI components](https://base-ui.com/react/components)
 - When generating new components, do not apply too many tailwind classes, allow
   for developer discretion.
 
@@ -24,6 +30,8 @@ container.
   the same file as the component. Allow the developer to move the type
   definition if they feel it is necessary, but this should be the default
   behaviour.
+- If creating any new Interfaces prefix the name of the Interface with `I`, e.g.
+  `IInterfaceName`
 
 ### Utilities
 
