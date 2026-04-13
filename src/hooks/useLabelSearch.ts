@@ -21,7 +21,51 @@ interface UseLabelSearchOptions {
 export const loadLabels = async (query: string): Promise<TLabelResult[]> => {
   const apiUrl = process.env.NEXT_PUBLIC_API_URL || "https://api.climatepolicyradar.org";
   const client = new ApiClient(apiUrl);
-  const response = await client.get<TLabelsResponse>(`/search/labels?query=${encodeURIComponent(query)}`, null);
+  // We exclude these types as it is legacy data, but still used elsewhere.
+  const defaultFilter = {
+    op: "and",
+    filters: [
+      {
+        field: "type",
+        op: "not_contains",
+        value: "framework",
+      },
+      {
+        field: "type",
+        op: "not_contains",
+        value: "keyword",
+      },
+      {
+        field: "type",
+        op: "not_contains",
+        value: "hazard",
+      },
+      {
+        field: "type",
+        op: "not_contains",
+        value: "keyword",
+      },
+      {
+        field: "type",
+        op: "not_contains",
+        value: "instrument",
+      },
+      {
+        field: "type",
+        op: "not_contains",
+        value: "theme",
+      },
+      {
+        field: "type",
+        op: "not_contains",
+        value: "result_type",
+      },
+    ],
+  };
+  const response = await client.get<TLabelsResponse>(
+    `/search/labels?query=${encodeURIComponent(query)}&page_size=5000&filters=${encodeURIComponent(JSON.stringify(defaultFilter))}`,
+    null
+  );
   return response.data.results || [];
 };
 

@@ -77,7 +77,7 @@ export function AppliedLabels({
         })
       )}
       {onClear && (
-        <button className="rounded-xl px-2 ml-auto hover:bg-gray-200" onClick={onClear}>
+        <button className="rounded-md px-2 ml-auto hover:bg-gray-200" onClick={onClear}>
           Clear
         </button>
       )}

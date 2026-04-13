@@ -2,6 +2,7 @@ import { Popover as BasePopover } from "@base-ui/react/popover";
 import { ChevronRight, Circle, ListFilter } from "lucide-react";
 import { useMemo } from "react";
 
+import { IAggregationLabel } from "@/api/search";
 import { Checkbox } from "@/components/checkbox/Checkbox";
 import { TLabelResult } from "@/hooks/useLabelSearch";
 import { getAvailableLabelIdsFromAggregations, partitionByAvailability } from "@/utils/_experiment/labelAggregationAvailability";
@@ -9,29 +10,27 @@ import { labelTypeLabel } from "@/utils/_experiment/labelTypeLabel";
 import { joinTailwindClasses } from "@/utils/tailwind";
 
 import { TQueryGroup } from "../queryBuilder/QueryBuilder";
-import { IAggregationLabel } from "../searchResults/SearchResults";
 
 function hasValue(group: TQueryGroup | null | undefined, value: string): boolean {
   if (!group) return false;
   return group.filters.some((f) => ("value" in f ? f.value === value : hasValue(f, value)));
 }
 
-function hasActiveFilterOfType(filters: TLabelResult[], group: TQueryGroup | null | undefined, type: TFilterCategory): boolean {
+function hasActiveFilterOfType(filters: TLabelResult[], group: TQueryGroup | null | undefined, type: TLabelType): boolean {
   if (!group) return false;
   return group.filters.some((f) =>
     "value" in f ? filters.some((label) => label.value === f.value && label.type === type) : hasActiveFilterOfType(filters, f, type)
   );
 }
 
-export type TFilterCategory = "concept" | "entity_type" | "geography" | "agent" | "activity_status" | "status";
-
-const FILTER_AGGREGATIONS: TFilterCategory[] = ["agent", "entity_type", "geography", "concept", "activity_status", "status"];
+const LABEL_TYPES = ["agent", "category", "entity_type", "geography", "concept", "activity_status", "status"] as const;
+export type TLabelType = (typeof LABEL_TYPES)[number];
 
 type TProps = {
   availableFilters: TLabelResult[];
   filters?: TQueryGroup | null;
-  activeCategory: TFilterCategory;
-  onActiveCategoryChange: (category: TFilterCategory) => void;
+  activeLabelType: TLabelType;
+  onActiveLabelTypeChange: (labelType: TLabelType) => void;
   open?: boolean;
   onOpenChange?: (open: boolean) => void;
   onChange?: (checked: boolean, label: string) => void;
@@ -51,8 +50,8 @@ type TProps = {
 export function SearchFilters({
   availableFilters,
   filters,
-  activeCategory,
-  onActiveCategoryChange,
+  activeLabelType: activeLabelType,
+  onActiveLabelTypeChange: onActiveLabelTypeChange,
   open,
   onOpenChange,
   onChange,
@@ -61,16 +60,16 @@ export function SearchFilters({
 }: TProps) {
   const availableLabelIds = useMemo(() => getAvailableLabelIdsFromAggregations(aggregations, query, filters), [aggregations, query, filters]);
 
-  const sortedForCategory = useMemo(
-    () => availableFilters.filter((filter) => filter.type === activeCategory).sort((a, b) => a.value.localeCompare(b.value)),
-    [availableFilters, activeCategory]
+  const sortedForLabelType = useMemo(
+    () => availableFilters.filter((filter) => filter.type === activeLabelType).sort((a, b) => a.value.localeCompare(b.value)),
+    [availableFilters, activeLabelType]
   );
 
   // Available (selectable) rows first - disabled aggregations at the bottom.
   const { enabledFilters, disabledFilters } = useMemo(() => {
-    const { enabled, disabled } = partitionByAvailability(sortedForCategory, availableLabelIds);
+    const { enabled, disabled } = partitionByAvailability(sortedForLabelType, availableLabelIds);
     return { enabledFilters: enabled, disabledFilters: disabled };
-  }, [sortedForCategory, availableLabelIds]);
+  }, [sortedForLabelType, availableLabelIds]);
 
   const renderCheckboxRow = (filter: TLabelResult, isAvailable: boolean) => {
     const checked = hasValue(filters, filter.value);
@@ -110,17 +109,17 @@ export function SearchFilters({
                 <div className="flex gap-2">
                   <div className="basis-1/3 p-2 border-r border-transparent-regular">
                     <ul className="flex flex-col gap-2">
-                      {FILTER_AGGREGATIONS.map((agg) => (
+                      {LABEL_TYPES.map((agg) => (
                         <li key={agg} className="text-sm text-inky-black mb-1">
                           <button
                             className={joinTailwindClasses(
                               "relative rounded-sm w-full text-left px-6 py-2 text-sm text-inky-black font-medium hover:bg-neutral-200",
-                              activeCategory === agg ? "bg-neutral-200!" : ""
+                              activeLabelType === agg ? "bg-neutral-200!" : ""
                             )}
-                            onClick={() => onActiveCategoryChange(agg)}
+                            onClick={() => onActiveLabelTypeChange(agg)}
                           >
                             {labelTypeLabel(agg)}
-                            {activeCategory === agg && (
+                            {activeLabelType === agg && (
                               <ChevronRight width={20} height={20} className="absolute right-2 top-1/2 transform -translate-y-1/2" />
                             )}
                             {hasActiveFilterOfType(availableFilters, filters, agg) && (
