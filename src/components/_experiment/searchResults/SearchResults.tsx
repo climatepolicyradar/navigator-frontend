@@ -1,117 +1,40 @@
-import { LucideCog, LucideEarth, LucideTag, LucideFileText } from "lucide-react";
-import Link from "next/link";
-import { Suspense, use, useEffect, useMemo } from "react";
+import { LucideCog, LucideFileText } from "lucide-react";
+import { Fragment, Suspense, use, useEffect, useMemo } from "react";
 
 import { fetchSearchDocuments, SearchDocument, SearchDocumentsResponse, IAggregationLabel } from "@/api/search";
-import { documentRelationshipLabel } from "@/utils/_experiment/documentRelationshipLabel";
-import { labelTypeLabel } from "@/utils/_experiment/labelTypeLabel";
 
+import { DocumentSearchResult } from "./DocumentSearchResult";
+import { PrincipalSearchResult } from "./PrincipalSearchResult";
 import styles from "./SearchResults.module.css";
 import { EmptySearch } from "../emptySearch/EmptySearch";
 import { TQueryGroup } from "../queryBuilder/QueryBuilder";
-import { TLabelType } from "../searchFilters/SearchFilters";
 
-const MAX_DESCRIPTION_LENGTH = 275;
-
-function linkHref(doc: SearchDocument): string | undefined {
-  if (doc.attributes.deprecated_slug)
-    if (doc.labels.find((label) => label.value.value === "Principal")) {
-      return `/document/${doc.attributes.deprecated_slug}`;
-    } else {
-      return `/documents/${doc.attributes.deprecated_slug}`;
-    }
-}
-
-function iconForLabelType(type: string) {
-  switch (type) {
-    case "geography":
-      return <LucideEarth width={14} height={14} />;
-    case "concept":
-      return <LucideTag width={14} height={14} />;
-  }
-}
-
-const FILTER_AGGREGATIONS: TLabelType[] = ["geography", "concept"];
-const RELATIONSHIP_AGGREGATIONS = ["member_of", "has_member"];
+// Principal = Family in old model
+const isPrincipal = (result: SearchDocument): boolean => {
+  return result.labels.some((label) => label.type === "status" && label.value.value === "Principal");
+};
 
 export function SearchResults({ data, onSelectLabel }: { data: SearchDocumentsResponse; onSelectLabel?: (label: string) => void }) {
   return (
     <div>
       <p className="text-sm text-text-secondary mb-4">{data.total_size ?? 0} results</p>
       <ul className="space-y-4">
-        {data.results.map((doc) => (
-          <li key={doc.id} className={`flex flex-col gap-3 border border-transparent-regular rounded-md p-6 ${styles["highlights"]}`}>
-            {/* CORE DOCUMENT DETAILS */}
-            <h3 className="font-semibold text-lg">
-              {linkHref(doc) ? (
-                <Link href={linkHref(doc)!} className="text-inky-blue hover:underline" dangerouslySetInnerHTML={{ __html: doc.title }} />
-              ) : (
-                <span dangerouslySetInnerHTML={{ __html: doc.title }} />
-              )}
-            </h3>
-            {doc.description && (
-              <p
-                className="text-base text-inky-black"
-                dangerouslySetInnerHTML={{
-                  __html: doc.description.slice(0, MAX_DESCRIPTION_LENGTH) + (doc.description.length > MAX_DESCRIPTION_LENGTH ? "..." : ""),
-                }}
-              />
+        {data.results.map((result) => (
+          <Fragment key={result.id}>
+            {isPrincipal(result) && (
+              <li className={`flex flex-col border border-transparent-regular rounded-md p-6 ${styles["highlights"]}`}>
+                <PrincipalSearchResult result={result} onSelectLabel={onSelectLabel} />
+              </li>
             )}
-            {/* DISPLAYING FILTERS */}
-            {FILTER_AGGREGATIONS.map((agg) => {
-              const relationshipsOfType = doc.labels.filter((label) => label.type === agg);
-              if (relationshipsOfType.length === 0) return null;
-
-              return (
-                <div key={agg} className="flex items-start gap-6 text-sm text-inky-black">
-                  <div className="basis-25 shrink-0 py-0.5 font-semibold">{labelTypeLabel(agg)}</div>
-                  <div className="flex flex-wrap gap-1">
-                    {relationshipsOfType
-                      .sort((a, b) => (b.count ?? 0) - (a.count ?? 0))
-                      .slice(0, 3)
-                      .map((relationship, i) => (
-                        <button
-                          key={i}
-                          className="flex gap-1 items-center rounded px-2 py-0.5 cursor-pointer hover:bg-neutral-200"
-                          onClick={() => onSelectLabel?.(relationship.value.value)}
-                        >
-                          {iconForLabelType(relationship.value.type)}
-                          <span>{relationship.value.value}</span>
-                          {/* <span>{relationship.count !== null && `(${relationship.count})`}</span> */}
-                        </button>
-                      ))}
-                    {relationshipsOfType.length > 3 && <span className="py-0.5 text-neutral-600">+{relationshipsOfType.length - 3} more</span>}
-                  </div>
+            {!isPrincipal(result) && (
+              <li className={`flex gap-2 border border-transparent rounded-md py-2 pr-6 ${styles["highlights"]}`}>
+                <LucideFileText width={20} height={20} className="text-neutral-500 shrink-0 mt-1" />
+                <div className="flex flex-col">
+                  <DocumentSearchResult result={result} />
                 </div>
-              );
-            })}
-            {/* DISPLAYING DOCUMENT RELATIONSHIPS */}
-            {RELATIONSHIP_AGGREGATIONS.map((agg) => {
-              const relationshipsOfType = doc.documents.filter((relationship) => relationship.type === agg);
-              if (relationshipsOfType.length === 0) return null;
-
-              return (
-                <div key={agg} className="flex items-start gap-6 text-sm text-inky-black">
-                  <div className="basis-25 shrink-0 py-0.5 font-semibold">{documentRelationshipLabel(agg)}</div>
-                  <div className="flex flex-wrap gap-1">
-                    {relationshipsOfType.slice(0, 3).map((relationship, i) => (
-                      <span key={i} className="rounded px-2 py-0.5 flex gap-1 items-start">
-                        <LucideFileText width={14} height={14} className="inline mt-0.5 shrink-0" />
-                        {linkHref(relationship.value) ? (
-                          <Link href={linkHref(relationship.value)!} className="hover:underline">
-                            {relationship.value.title}
-                          </Link>
-                        ) : (
-                          <span>{relationship.value.title}</span>
-                        )}
-                      </span>
-                    ))}
-                    {relationshipsOfType.length > 3 && <span className="py-0.5 text-neutral-600">+{relationshipsOfType.length - 3} more</span>}
-                  </div>
-                </div>
-              );
-            })}
-          </li>
+              </li>
+            )}
+          </Fragment>
         ))}
       </ul>
     </div>
@@ -140,6 +63,7 @@ function SearchResultsWithAggregations({
     onAggregationsChange?.(labels);
   }, [labels, onAggregationsChange]);
 
+  // notify parent of the number of results
   useEffect(() => {
     onTotalResultsChange?.(data.total_size ?? null);
   }, [data.total_size, onTotalResultsChange]);
@@ -164,6 +88,7 @@ export function SearchContainer({
   filters,
   page_token,
   page_size,
+  includeDocumentsInSearch,
   onSelectLabel,
   onAggregationsChange,
   onTotalResultsChange,
@@ -173,22 +98,24 @@ export function SearchContainer({
   filters?: TQueryGroup;
   page_token?: string;
   page_size?: string;
+  includeDocumentsInSearch?: boolean;
   onSelectLabel?: (label: string) => void;
   onAggregationsChange?: (labels: IAggregationLabel[] | undefined) => void;
   onTotalResultsChange?: (total: number | null) => void;
 }) {
-  const filtersJson = filtersDoesNotContainEmptyRule(filters) ? JSON.stringify(filters) : undefined;
+  const filtersCheckedForEmpty = filtersDoesNotContainEmptyRule(filters) ? filters : undefined;
 
   const searchPromise = useMemo(() => {
-    if (!query && !filtersJson) return null;
+    if (!query && !filtersCheckedForEmpty) return null;
 
     return fetchSearchDocuments({
       query,
       page_size,
       page_token,
-      filters: filtersJson,
+      includeDocumentsInSearch,
+      filters: filtersCheckedForEmpty,
     });
-  }, [query, filtersJson, page_token, page_size]);
+  }, [query, filtersCheckedForEmpty, page_token, page_size, includeDocumentsInSearch]);
 
   return (
     <>
