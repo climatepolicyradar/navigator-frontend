@@ -44,7 +44,7 @@ const ShadowSearch = ({ theme, themeConfig, features }: TProps) => {
   const [pageSize, setPageSize] = useQueryState("page_size", parseAsString.withDefault("10"));
   const [totalNoOfResults, setTotalNoOfResults] = useState<number | null>(null);
   // principal or documents
-  const [documents_only, setDocumentsOnly] = useState(false);
+  const [includeDocumentsInSearch, setIncludeDocumentsInSearch] = useState(false);
 
   /**
    * Drops aggregations only when the filter tree becomes empty so greyed options
@@ -147,8 +147,8 @@ const ShadowSearch = ({ theme, themeConfig, features }: TProps) => {
               <label className="flex items-center gap-2 text-neutral-600 text-sm font-medium cursor-pointer">
                 Show individual documents
                 <Switch.Root
-                  checked={documents_only}
-                  onCheckedChange={setDocumentsOnly}
+                  checked={includeDocumentsInSearch}
+                  onCheckedChange={setIncludeDocumentsInSearch}
                   className="relative flex h-4 w-7 p-0.5 rounded-full bg-neutral-200 transition data-checked:bg-inky-blue"
                 >
                   <Switch.Thumb className="aspect-square h-full rounded-full bg-white transition-transform duration-150 data-checked:translate-x-3" />
@@ -201,7 +201,7 @@ const ShadowSearch = ({ theme, themeConfig, features }: TProps) => {
             filters={filters}
             page_token={currentPage}
             page_size={pageSize}
-            documents_only={documents_only}
+            includeDocumentsInSearch={includeDocumentsInSearch}
             onAggregationsChange={applyAggregationsFromSearch}
             onTotalResultsChange={setTotalNoOfResults}
           />

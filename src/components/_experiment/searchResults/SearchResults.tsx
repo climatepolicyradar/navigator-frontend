@@ -88,7 +88,7 @@ export function SearchContainer({
   filters,
   page_token,
   page_size,
-  documents_only,
+  includeDocumentsInSearch,
   onSelectLabel,
   onAggregationsChange,
   onTotalResultsChange,
@@ -98,7 +98,7 @@ export function SearchContainer({
   filters?: TQueryGroup;
   page_token?: string;
   page_size?: string;
-  documents_only?: boolean;
+  includeDocumentsInSearch?: boolean;
   onSelectLabel?: (label: string) => void;
   onAggregationsChange?: (labels: IAggregationLabel[] | undefined) => void;
   onTotalResultsChange?: (total: number | null) => void;
@@ -112,10 +112,10 @@ export function SearchContainer({
       query,
       page_size,
       page_token,
-      documents_only,
+      includeDocumentsInSearch,
       filters: filtersCheckedForEmpty,
     });
-  }, [query, filtersCheckedForEmpty, page_token, page_size, documents_only]);
+  }, [query, filtersCheckedForEmpty, page_token, page_size, includeDocumentsInSearch]);
 
   return (
     <>
