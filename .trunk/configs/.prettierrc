@@ -13,5 +13,14 @@
   "singleQuote": false,
   "trailingComma": "es5",
   "insertPragma": false,
-  "requirePragma": false
+  "requirePragma": false,
+  "overrides": [
+    {
+      "files": "*.md",
+      "options": {
+        "printWidth": 80,
+        "proseWrap": "always"
+      }
+    }
+  ]
 }
