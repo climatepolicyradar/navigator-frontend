@@ -6,6 +6,7 @@ const LABELMAPPING: Record<string, string> = {
   agent: "Data provider",
   status: "Status",
   activity_status: "Activity status",
+  topic: "Response area",
 };
 
 export function labelTypeLabel(type: string) {

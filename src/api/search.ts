@@ -1,3 +1,5 @@
+import { TQueryGroup } from "@/components/_experiment/queryBuilder/QueryBuilder";
+
 interface DocumentLabel {
   id: string;
   value: string;
@@ -11,7 +13,7 @@ interface DocumentLabelRelationship {
   timestamp: string | null;
 }
 
-interface DocumentRelationship {
+export interface DocumentRelationship {
   type: string;
   value: SearchDocument;
 }
@@ -54,18 +56,47 @@ export interface SearchDocumentsResponse {
 
 interface SearchDocumentsParams {
   query?: string;
-  filters?: string;
+  filters?: TQueryGroup;
   page_size?: string;
   page_token?: string;
+  includeDocumentsInSearch?: boolean;
 }
 
 const SEARCH_DOCUMENTS_BASE_URL = "https://api.climatepolicyradar.org/search/documents";
 
+function configureDocumentsFilters(filters: TQueryGroup | undefined, includeDocumentsInSearch: boolean): TQueryGroup {
+  // including documents in search is the default search, otherwise default to only principal documents
+  // principal will have to be added as a parent group with AND to ensure there are no conflicts if a user has built an advanced filtering ruleset
+  if (!includeDocumentsInSearch) {
+    const documentsFilter: TQueryGroup = {
+      op: "and",
+      filters: [
+        {
+          field: "labels.value.id",
+          op: "contains",
+          value: "principal",
+        },
+      ],
+    };
+    if (filters) {
+      filters = {
+        op: "and",
+        filters: [filters, documentsFilter],
+      };
+    } else {
+      filters = documentsFilter;
+    }
+  }
+
+  return filters;
+}
+
 export async function fetchSearchDocuments(params: SearchDocumentsParams = {}): Promise<SearchDocumentsResponse> {
   const url = new URL(SEARCH_DOCUMENTS_BASE_URL);
+  const filters = configureDocumentsFilters(params.filters, params.includeDocumentsInSearch ?? false);
 
   if (params.query) url.searchParams.set("query", params.query);
-  if (params.filters) url.searchParams.set("filters", params.filters);
+  if (filters) url.searchParams.set("filters", JSON.stringify(filters));
   if (params.page_size !== undefined) url.searchParams.set("page_size", params.page_size);
   if (params.page_token !== undefined) url.searchParams.set("page_token", params.page_token);
 
