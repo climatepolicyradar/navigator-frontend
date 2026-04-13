@@ -1,5 +1,6 @@
 /* eslint-disable no-console */
-import axios, { AxiosInstance, AxiosResponse } from "axios";
+import axios from "axios";
+import type { AxiosInstance, AxiosResponse } from "axios";
 
 import { TApiCorpusTypeDictionary, TApiDataNode, TApiGeography, TApiLanguages } from "@/types";
 
@@ -50,7 +51,7 @@ class ApiClient {
       .then((res: any) => res)
       .catch((err) => {
         console.log(err);
-        return err;
+        throw err;
       });
   }
 
@@ -65,16 +66,6 @@ class ApiClient {
         }
         console.error(error);
         return error;
-      });
-  }
-
-  put(url: string, values: any) {
-    return this.axiosClient
-      .put(url, values)
-      .then((res) => res)
-      .catch((err) => {
-        console.log(err);
-        return Promise.reject(err);
       });
   }
 

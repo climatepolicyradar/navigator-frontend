@@ -150,12 +150,20 @@ jobs:
           sed -i "s/__THEME__/$THEME/g" tsconfig.json
         env:
           THEME: cpr
-      - name: Run vitest
+      - name: Run vitest - core functionality
         run: npm run test
         # This is needed to pass the results on to the trunk-io/analytics-uploader
         continue-on-error: true
         env:
           THEME: cpr
+
+      - name: Run vitest - new features
+        run: npm run test
+        # This is needed to pass the results on to the trunk-io/analytics-uploader
+        continue-on-error: true
+        env:
+          THEME: cpr
+          E2E_TEST_FEATURE_FLAGS: true
 
       - name: Upload vitest results to Trunk.io
         uses: trunk-io/analytics-uploader@v2
@@ -237,11 +245,19 @@ jobs:
           PLAYWRIGHT_BROWSERS_PATH: ${{ env.PLAYWRIGHT_BROWSERS_PATH }}
         timeout-minutes: 3
 
-      - name: Run Tests
+      - name: Run Tests - core functionality
         continue-on-error: true
         env:
           THEME: ${{ matrix.theme }}
           PLAYWRIGHT_BROWSERS_PATH: ${{ env.PLAYWRIGHT_BROWSERS_PATH }}
+        run: npx playwright test tests/${{ matrix.theme }}/ --shard=${{ matrix.shardIndex }}/${{ matrix.shardTotal }}
+
+      - name: Run Tests - new features
+        continue-on-error: true
+        env:
+          THEME: ${{ matrix.theme }}
+          PLAYWRIGHT_BROWSERS_PATH: ${{ env.PLAYWRIGHT_BROWSERS_PATH }}
+          E2E_TEST_FEATURE_FLAGS: true
         run: npx playwright test tests/${{ matrix.theme }}/ --shard=${{ matrix.shardIndex }}/${{ matrix.shardTotal }}
 
       - name: Upload Test Results to Trunk.io
