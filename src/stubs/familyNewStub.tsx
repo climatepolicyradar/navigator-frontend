@@ -82,18 +82,7 @@ export const FAMILY_NEW_STUB: TFamilyPublic = {
     corpusNote: "No corpus note found",
     organisation: "Sabin",
   },
-  // corpus: {
-  //   import_id: "Academic.corpus.Litigation.n0000",
-  //   title: "Litigation",
-  //   corpus_type_name: "Litigation",
-  //   organisation: {
-  //     name: "Sabin",
-  //     id: 11,
-  //   },
-  //   attribution_url: null,
-  // },
   corpus_id: "Academic.corpus.Litigation.n0000",
-  organisation: "Sabin",
   summary:
     "Action by young plaintiffs asserting that the federal government violated their constitutional rights by causing dangerous carbon dioxide concentrations. [Due to a technical issue, some documents are currently not available.]",
   geographies: ["USA", "US-OR"],

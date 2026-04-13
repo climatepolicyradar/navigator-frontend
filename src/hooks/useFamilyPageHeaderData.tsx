@@ -36,7 +36,7 @@ export const useFamilyPageHeaderData = ({ countries, family, subdivisions }: IPr
 
   return useMemo(() => {
     /* Misc */
-    const categoryName = getCategoryName(family.category, family.corpus_type_name, family.organisation);
+    const categoryName = getCategoryName(family.category, family.corpus_type_name, family.attribution.organisation);
     const [year] = convertDate(family.published_date);
     const isLitigation = family.corpus_type_name === "Litigation";
     const isMCF = family.category === "MCF";

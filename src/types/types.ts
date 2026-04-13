@@ -400,8 +400,6 @@ export type TFamilyAttribution = {
 
 export type TFamilyPublic = {
   category: TCategory;
-  corpus_id: string;
-  corpus_type_name?: TCorpusTypeSubCategory;
   geographies: string[];
   import_id: string;
   last_updated_date: string | null;
@@ -415,6 +413,9 @@ export type TFamilyPublic = {
   documents: TFamilyDocumentPublic[];
   events: TFamilyEventPublic[];
   attribution: TFamilyAttribution;
+  // TODO remove
+  corpus_id: string;
+  corpus_type_name?: TCorpusTypeSubCategory;
 };
 
 export type TCollectionPublicWithFamilies = {

@@ -1,4 +1,4 @@
-import { TCategory, TCorpusPublic, TFamilyDocumentPublic, TFamilyPublic } from "@/types";
+import { TCategory, TFamilyAttribution, TFamilyDocumentPublic, TFamilyPublic } from "@/types";
 
 import { getEventTableRows } from "./eventTable";
 
@@ -8,7 +8,7 @@ describe("getEventTableRows", () => {
       category: "Litigation" as TCategory,
       collections: [],
       concepts: [],
-      corpus: {} as TCorpusPublic,
+      attribution: {} as TFamilyAttribution,
       documents: [],
       events: [
         {
@@ -35,7 +35,6 @@ describe("getEventTableRows", () => {
       corpus_id: "",
       summary: "",
       title: "Case 1",
-      organisation: "",
       published_date: "",
       slug: "",
     };
@@ -50,7 +49,7 @@ describe("getEventTableRows", () => {
       category: "Litigation" as TCategory,
       collections: [],
       concepts: [],
-      corpus: {} as TCorpusPublic,
+      attribution: {} as TFamilyAttribution,
       documents: [
         {
           import_id: "Document 1",
@@ -84,7 +83,6 @@ describe("getEventTableRows", () => {
       corpus_id: "",
       summary: "",
       title: "Case 1",
-      organisation: "",
       published_date: "",
       slug: "",
     };
@@ -100,7 +98,7 @@ describe("getEventTableRows", () => {
       category: "Litigation" as TCategory,
       collections: [],
       concepts: [],
-      corpus: {} as TCorpusPublic,
+      attribution: {} as TFamilyAttribution,
       documents: [
         {
           import_id: "Document 1",
@@ -148,7 +146,6 @@ describe("getEventTableRows", () => {
       corpus_id: "",
       summary: "",
       title: "Case 1",
-      organisation: "",
       published_date: "",
       slug: "",
     };
@@ -165,7 +162,7 @@ describe("getEventTableRows", () => {
       category: "Litigation" as TCategory,
       collections: [],
       concepts: [],
-      corpus: {} as TCorpusPublic,
+      attribution: {} as TFamilyAttribution,
       documents: [
         {
           import_id: "Document 1",
@@ -213,7 +210,6 @@ describe("getEventTableRows", () => {
       corpus_id: "",
       summary: "",
       title: "Case 1",
-      organisation: "",
       published_date: "",
       slug: "",
     };

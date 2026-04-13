@@ -42,7 +42,7 @@ export function getMCFMetadata(family: TFamilyPublic, familyTopics: IFamilyDocum
 
   metadata.push({
     label: "Fund",
-    value: getSubCategoryName(family.organisation as TCorpusTypeSubCategory) || EN_DASH,
+    value: getSubCategoryName(family.attribution.organisation as TCorpusTypeSubCategory) || EN_DASH,
   });
 
   family.metadata?.project_value_fund_spend &&
