@@ -3,7 +3,7 @@
 import { Switch } from "@base-ui/react/switch";
 import isEqual from "lodash/isEqual";
 import { GetServerSideProps, InferGetServerSidePropsType } from "next";
-import { useQueryState, parseAsString, parseAsJson } from "nuqs";
+import { useQueryState, parseAsBoolean, parseAsString, parseAsJson } from "nuqs";
 import { useCallback, useEffect, useMemo, useState, type SetStateAction } from "react";
 
 import { ApiClient } from "@/api/http-common";
@@ -44,7 +44,7 @@ const ShadowSearch = ({ theme, themeConfig, features }: TProps) => {
   const [pageSize, setPageSize] = useQueryState("page_size", parseAsString.withDefault("10"));
   const [totalNoOfResults, setTotalNoOfResults] = useState<number | null>(null);
   // principal or documents
-  const [includeDocumentsInSearch, setIncludeDocumentsInSearch] = useState(false);
+  const [includeDocumentsInSearch, setIncludeDocumentsInSearch] = useQueryState("include_documents", parseAsBoolean.withDefault(true));
 
   /**
    * Drops aggregations only when the filter tree becomes empty so greyed options
@@ -148,7 +148,7 @@ const ShadowSearch = ({ theme, themeConfig, features }: TProps) => {
                 Show individual documents
                 <Switch.Root
                   checked={includeDocumentsInSearch}
-                  onCheckedChange={setIncludeDocumentsInSearch}
+                  onCheckedChange={(checked) => setIncludeDocumentsInSearch(checked)}
                   className="relative flex h-4 w-7 p-0.5 rounded-full bg-neutral-200 transition data-checked:bg-inky-blue"
                 >
                   <Switch.Thumb className="aspect-square h-full rounded-full bg-white transition-transform duration-150 data-checked:translate-x-3" />
