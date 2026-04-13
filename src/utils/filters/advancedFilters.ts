@@ -21,7 +21,7 @@ function groupIsEmpty(group: TQueryGroup | null): boolean {
 
 /** Add a label as a new "contains" rule to the root filter group. */
 export function addLabelRule(group: TQueryGroup | null, label: string): TQueryGroup {
-  const rule: TQueryRule = { field: "labels.value.id", op: "contains", value: label };
+  const rule: TQueryRule = { field: "labels.value.value", op: "contains", value: label };
   if (groupIsEmpty(group)) return { op: "and", filters: [rule] };
   return { ...group, filters: [...group.filters, rule] };
 }
