@@ -3,13 +3,13 @@ import { LucideChevronDownCircle } from "lucide-react";
 import Link from "next/link";
 import { ReactNode, useContext, useMemo } from "react";
 
+import { getTaxonomyFromV1 } from "@/bff/methods/getTaxonomy";
 import { PageLink } from "@/components/atoms/pageLink/PageLink";
 import { EntityCard, IProps as IEntityCardProps } from "@/components/molecules/entityCard/EntityCard";
 import { ARROW_RIGHT } from "@/constants/chars";
 import { QUERY_PARAMS } from "@/constants/queryParams";
 import { GeographiesContext } from "@/context/GeographiesContext";
 import { ThemeContext } from "@/context/ThemeContext";
-import { getCategoryName } from "@/helpers/getCategoryName";
 import { GeographyTypeV2, GeographyV2, TCategorySummary } from "@/types";
 import { pluralise } from "@/utils/pluralise";
 import { joinTailwindClasses } from "@/utils/tailwind";
@@ -48,7 +48,7 @@ export const RecentFamiliesCategory = ({
         const geographies = family.family_geographies.map((familyGeo) => allGeographies.find((geo) => geo.id === familyGeo)).filter((geo) => geo);
 
         const metadata = [
-          getCategoryName(family.family_category, family.corpus_type_name, family.family_source),
+          getTaxonomyFromV1(family.family_category, family.corpus_type_name, family.family_source, family.corpus_import_id),
           getMostSpecificGeography(geographies)?.name,
           formatDate(family.family_date)[0].toString(),
         ].filter((line) => Boolean(line));

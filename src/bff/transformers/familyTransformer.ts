@@ -1,6 +1,5 @@
 import { oldFamilyTransformer } from "@/bff/transformers/oldFamilyTransformer";
 import { transformAttribution } from "@/bff/transformers/partials/transformAttribution";
-import { transformCategory } from "@/bff/transformers/partials/transformCategory";
 import { transformCountries } from "@/bff/transformers/partials/transformCountries";
 import { transformFamilyCollections } from "@/bff/transformers/partials/transformFamilyCollections";
 import { transformFamilyDocuments } from "@/bff/transformers/partials/transformFamilyDocuments";
@@ -32,7 +31,6 @@ export const familyTransformer = (
           countries: transformCountries(familyApiOldData.countries, groupedLabels.geography),
           family: {
             attribution: transformAttribution(groupedLabels),
-            category: transformCategory(groupedLabels.category[0]),
             collections: transformFamilyCollections(familyApiOldData.family.collections, familyApiNewData.documents),
             documents: transformFamilyDocuments(familyApiOldData.family.documents, documents),
             events: transformFamilyEvents(groupedLabels),
@@ -46,8 +44,6 @@ export const familyTransformer = (
             title: familyApiNewData.title,
             // TODO apply transformations to remaining fields:
             concepts: familyApiOldData.family.concepts,
-            corpus_id: familyApiOldData.family.corpus_id,
-            corpus_type_name: familyApiOldData.family.corpus_type_name,
           },
           debug: {
             originalFamily: transformOldFamily(familyApiOldData.family, corpusTypes),

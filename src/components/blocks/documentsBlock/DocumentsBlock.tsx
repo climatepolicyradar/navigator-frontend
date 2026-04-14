@@ -30,7 +30,7 @@ export const DocumentsBlock = ({ family, familyTopics, languages, matchesFamily,
     if (!open) setShowDocumentDrawer(false);
   };
 
-  const isLitigation = family.corpus_type_name === "Litigation";
+  const isLitigation = family.attribution.category === "Litigation";
   const isUSA = family.geographies.includes("USA");
 
   const tableColumns = useMemo(

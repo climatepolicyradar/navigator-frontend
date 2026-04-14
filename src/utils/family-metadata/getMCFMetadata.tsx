@@ -4,10 +4,9 @@ import { ExternalLink } from "@/components/ExternalLink";
 import { GeographyLink } from "@/components/molecules/geographyLink/GeographyLink";
 import { EN_DASH } from "@/constants/chars";
 import { getApprovedYearFromEvents } from "@/helpers/getApprovedYearFromEvents";
-import { getSubCategoryName } from "@/helpers/getCategoryName";
 import { getCountryName, getCountrySlug } from "@/helpers/getCountryFields";
 import { getSumUSD } from "@/helpers/getSumUSD";
-import { IFamilyDocumentTopics, IMetadata, TCorpusTypeSubCategory, TFamilyPublic, TGeography } from "@/types";
+import { IFamilyDocumentTopics, IMetadata, TFamilyPublic, TGeography } from "@/types";
 import { getTopicsMetadataItem } from "@/utils/family-metadata/getTopicsMetadataItem";
 import { isSystemGeo } from "@/utils/isSystemGeo";
 import { familyTopicsHasTopics } from "@/utils/topics/processFamilyTopics";
@@ -17,11 +16,12 @@ export function getMCFMetadata(family: TFamilyPublic, familyTopics: IFamilyDocum
 
   const approvalYear = getApprovedYearFromEvents(family.events);
 
-  approvalYear &&
+  if (approvalYear) {
     metadata.push({
       label: "Approval FY",
       value: approvalYear,
     });
+  }
 
   /* Geography */
   if (family.geographies.length > 0) {
@@ -42,62 +42,67 @@ export function getMCFMetadata(family: TFamilyPublic, familyTopics: IFamilyDocum
 
   metadata.push({
     label: "Fund",
-    value: getSubCategoryName(family.attribution.organisation as TCorpusTypeSubCategory) || EN_DASH,
+    value: family.attribution.taxonomy || EN_DASH,
   });
 
-  family.metadata?.project_value_fund_spend &&
-    family.metadata?.project_value_fund_spend[0] !== "0" &&
+  if (family.metadata?.project_value_fund_spend && family.metadata?.project_value_fund_spend[0] !== "0") {
     metadata.push({
       label: "Fund Spend",
       value: getSumUSD(family.metadata?.project_value_fund_spend),
     });
+  }
 
-  family.metadata?.project_value_co_financing &&
-    family.metadata?.project_value_co_financing[0] !== "0" &&
+  if (family.metadata?.project_value_co_financing && family.metadata?.project_value_co_financing[0] !== "0") {
     metadata.push({
       label: "Co-Financing",
       value: getSumUSD(family.metadata?.project_value_co_financing),
     });
+  }
 
   /* Metadata */
-  family.metadata?.status?.length &&
+  if (family.metadata?.status?.length) {
     metadata.push({
       label: "Status",
       value: family.metadata.status.join(", "),
     });
-  family.metadata?.theme?.length &&
+  }
+  if (family.metadata?.theme?.length) {
     metadata.push({
       label: "Theme",
       value: family.metadata.theme.join(", "),
     });
-  family.metadata?.implementing_agency?.length &&
+  }
+  if (family.metadata?.implementing_agency?.length) {
     metadata.push({
       label: "Implementing Agency",
       value: family.metadata.implementing_agency.join(", "),
     });
-  family.metadata?.sector?.length &&
+  }
+  if (family.metadata?.sector?.length) {
     metadata.push({
       label: "Sector",
       value: family.metadata.sector.join(", "),
     });
-  family.metadata?.focal_area?.length &&
+  }
+  if (family.metadata?.focal_area?.length) {
     metadata.push({
       label: "Focal Area",
       value: family.metadata.focal_area.join(", "),
     });
-  family.metadata?.result_area?.length &&
+  }
+  if (family.metadata?.result_area?.length) {
     metadata.push({
       label: "Result Area",
       value: family.metadata.result_area.join(", "),
     });
+  }
 
   metadata.push({
     label: "Type",
     value: "Project", // MCF families are always projects
   });
 
-  family.metadata?.project_url &&
-    family.metadata?.project_url[0] !== "" &&
+  if (family.metadata?.project_url && family.metadata?.project_url[0] !== "") {
     metadata.push({
       label: "Source",
       value: (
@@ -106,6 +111,7 @@ export function getMCFMetadata(family: TFamilyPublic, familyTopics: IFamilyDocum
         </ExternalLink>
       ),
     });
+  }
 
   /* Topics */
   if (familyTopicsHasTopics(familyTopics)) {

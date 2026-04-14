@@ -1,7 +1,7 @@
 import { getTaxonomy } from "@/bff/methods/getTaxonomy";
 import { TApiDataInCategory, TApiFamilyPublic, TCategory, TCorpusTypeDictionary, TFamilyAttribution, TFamilyPublic } from "@/types";
 
-const CATEGORY_MAP: Record<TCategory, TApiDataInCategory> = {
+export const CATEGORY_MAP: Record<TCategory, TApiDataInCategory> = {
   Executive: "Policy",
   EXECUTIVE: "Policy",
   Law: "Law",
@@ -30,8 +30,19 @@ export const transformOldFamily = (oldFamily: TApiFamilyPublic, corpusTypes: TCo
   if (corpus?.image_url) attribution.corpusImage = corpus.image_url;
   if (oldFamily.corpus?.attribution_url) attribution.url = oldFamily.corpus.attribution_url;
 
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  const { corpus: _corpus, ...strippedOldFamily } = oldFamily;
-
-  return { ...strippedOldFamily, attribution };
+  return {
+    attribution,
+    collections: oldFamily.collections,
+    concepts: oldFamily.concepts,
+    documents: oldFamily.documents,
+    events: oldFamily.events,
+    geographies: oldFamily.geographies,
+    import_id: oldFamily.import_id,
+    last_updated_date: oldFamily.last_updated_date,
+    metadata: oldFamily.metadata,
+    published_date: oldFamily.published_date,
+    slug: oldFamily.slug,
+    summary: oldFamily.summary,
+    title: oldFamily.title,
+  };
 };

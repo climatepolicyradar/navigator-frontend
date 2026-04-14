@@ -141,7 +141,7 @@ const DocumentPage = ({
               handlePassagesOrderChange={handlePassagesOrderChange}
             />
           </section>
-          {["Litigation", "LITIGATION"].includes(family.category) && (
+          {family.attribution.category === "Litigation" && (
             <Head>
               <script
                 type="application/ld+json"

@@ -232,8 +232,8 @@ export type TFamilyMetadata = TMetadata<
 
 export type TMCFFamilyMetadata = {
   approval_date?: string;
-  category?: TCorpusTypeSubCategory | TCategory;
-  organisation?: string;
+  category?: TAttributionCategory;
+  fund?: string;
   theme?: string[];
   geographies?: string[];
   sector?: string[];
@@ -401,7 +401,6 @@ export type TFamilyAttribution = {
 };
 
 export type TFamilyPublic = {
-  category: TCategory;
   geographies: string[];
   import_id: string;
   last_updated_date: string | null;
@@ -415,9 +414,6 @@ export type TFamilyPublic = {
   documents: TFamilyDocumentPublic[];
   events: TFamilyEventPublic[];
   attribution: TFamilyAttribution;
-  // TODO remove
-  corpus_id: string;
-  corpus_type_name?: TCorpusTypeSubCategory;
 };
 
 export type TCollectionPublicWithFamilies = {

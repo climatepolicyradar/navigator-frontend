@@ -1,4 +1,4 @@
-import { TCategory, TTheme } from "@/types";
+import { TAttributionCategory, TTheme } from "@/types";
 
 // NOTE: Don't reference the constants in this file directly, use the useText hook
 
@@ -39,42 +39,32 @@ export type TAppDictionaryKey = keyof typeof APP_DICTIONARY;
 
 /* Corpus type specific text */
 
-type TCategoryDictionary = TDictionary<TCategory>;
+type TCategoryDictionary = TDictionary<TAttributionCategory>;
 
 export const CATEGORY_DICTIONARY = {
   // TODO resolve different litigation cases depending on API endpoint used
   // TODO store singular and plural in the same key?
   familySingular: {
     default: "document",
-    Executive: "policy",
-    EXECUTIVE: "policy",
     Law: "law",
-    Legislative: "law",
-    LEGISLATIVE: "law",
     Litigation: "case",
-    LITIGATION: "case",
+    "Multilateral Climate Fund project": "project",
     Policy: "policy",
-    MCF: "project",
   },
   familyPlural: {
-    default: "document",
-    Executive: "policies",
-    EXECUTIVE: "policies",
+    default: "documents",
     Law: "laws",
-    Legislative: "laws",
-    LEGISLATIVE: "laws",
     Litigation: "cases",
-    LITIGATION: "cases",
+    "Multilateral Climate Fund project": "projects",
     Policy: "policies",
-    MCF: "projects",
   },
   familyDate: {
     default: "Year",
-    MCF: "Approval FY",
+    "Multilateral Climate Fund project": "Approval FY",
   },
   familyType: {
     default: "Document Type",
-    MCF: "Fund",
+    "Multilateral Climate Fund project": "Fund",
   },
 } satisfies Record<string, TCategoryDictionary>;
 

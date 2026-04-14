@@ -7,7 +7,6 @@ import {
   TApiItemResponse,
   TApiSearchResponse,
   TApiSlugResponse,
-  TCorpusTypeDictionary,
   TDocumentPresentationalResponse,
   TFeatures,
 } from "@/types";

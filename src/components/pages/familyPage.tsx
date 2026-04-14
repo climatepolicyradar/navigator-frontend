@@ -81,7 +81,7 @@ export const FamilyPage = ({
   const configQuery = useConfig();
   const { data: { languages = {} } = {} } = configQuery;
   const { getCategoryTextLookup } = useText();
-  const getCategoryText = getCategoryTextLookup(family.category);
+  const getCategoryText = getCategoryTextLookup(family.attribution.category);
 
   /* Search matches */
 
@@ -182,7 +182,11 @@ export const FamilyPage = ({
   return (
     <Layout
       title={family.title}
-      description={getFamilyMetaDescription(family?.metadata?.core_object?.[0] ?? family.summary, family.geographies.join(", "), family.category)}
+      description={getFamilyMetaDescription(
+        family?.metadata?.core_object?.[0] ?? family.summary,
+        family.geographies.join(", "),
+        family.attribution.taxonomy
+      )}
       theme={theme as TTheme}
       themeConfig={themeConfig}
       attributionUrl={family.attribution.url}
@@ -194,7 +198,7 @@ export const FamilyPage = ({
           isSubdivision={Boolean(breadcrumbParentGeography)}
           label={family.title}
         />
-        {features["new-data-model"] && features.debug && <DataInDebug corpusId={family.corpus_id} usesDataIn={debug.usesDataIn} />}
+        {features["new-data-model"] && features.debug && <DataInDebug corpusId={"No corpus ID"} usesDataIn={debug.usesDataIn} />}
         <PageHeader title={family.title} metadata={pageHeaderMetadata} />
         <BlocksLayout blockDefinitions={blockDefinitions} blocksToRender={blocksToRender} />
         <Head>

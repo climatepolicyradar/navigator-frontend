@@ -1,8 +1,6 @@
-import { MULTILATERALCLIMATEFUNDSCATEGORY } from "@/components/documents/renderers/DocumentMetaRenderer";
 import { metadataLabelMappings } from "@/constants/familyMetadataMappings";
-import { getSubCategoryName } from "@/helpers/getCategoryName";
 import { getSumUSD } from "@/helpers/getSumUSD";
-import { TCorpusTypeSubCategory } from "@/types";
+import { TAttributionCategory, TCorpusTypeSubCategory } from "@/types";
 
 interface IMetadata {
   [key: string]: string[] | TCorpusTypeSubCategory | string;
@@ -32,12 +30,12 @@ export const mapFamilyMetadata = (metadata: IMetadata) => {
             value: getSumUSD(values as string[]),
           });
         }
-      } else if (key === "organisation") {
+      } else if (key === "fund") {
         result.push({
           label: mapping.label,
-          value: getSubCategoryName(values as TCorpusTypeSubCategory),
+          value: values,
         });
-      } else if (key === "category" && metadata.category === MULTILATERALCLIMATEFUNDSCATEGORY) {
+      } else if (key === "category" && (metadata.category as TAttributionCategory) === "Multilateral Climate Fund project") {
         result.push({ label: mapping.label, value: "Projects" });
       } else {
         result.push({

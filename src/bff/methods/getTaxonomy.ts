@@ -1,4 +1,5 @@
-import { TAttributionCategory, TCategory } from "@/types";
+import { CATEGORY_MAP } from "@/bff/transformers/partials/transformOldFamily";
+import { TAttributionCategory, TCategory, TCorpusTypeSubCategory } from "@/types";
 
 type TAnyCategory = Lowercase<TCategory | TAttributionCategory>;
 
@@ -101,4 +102,10 @@ export const getTaxonomy = (category: TAnyCategory, provider: string, corpusId?:
   });
 
   return taxonomyMatch?.taxonomy ?? category;
+};
+
+export const getTaxonomyFromV1 = (oldCategory: TCategory, subCategory: TCorpusTypeSubCategory, source: string, corpusId: string) => {
+  const category = CATEGORY_MAP[oldCategory];
+  const provider = ["Multilateral Climate Fund project", "UN submission"].includes(category) ? source : subCategory;
+  return getTaxonomy(category.toLowerCase() as Lowercase<TCategory>, provider, corpusId);
 };
