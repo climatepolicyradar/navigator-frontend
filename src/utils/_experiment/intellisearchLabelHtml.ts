@@ -22,9 +22,7 @@ function escapeHtml(text: string): string {
 function underlineFirstMatch(text: string, query: string): string {
   const q = query.trim();
   if (!q) return escapeHtml(text);
-  const lower = text.toLowerCase();
-  const qLower = q.toLowerCase();
-  const idx = lower.indexOf(qLower);
+  const idx = text.toLowerCase().indexOf(q.toLowerCase());
   if (idx === -1) return escapeHtml(text);
   const before = escapeHtml(text.slice(0, idx));
   const matched = escapeHtml(text.slice(idx, idx + q.length));
@@ -66,14 +64,11 @@ export function buildLabelSuggestionHtml(value: string, alternativeLabels: strin
   const q = query.trim();
   if (!q) return escapeHtml(value);
 
-  const matchInPreferred = value.toLowerCase().includes(q.toLowerCase());
-  if (matchInPreferred) {
-    return underlineFirstMatch(value, q);
-  }
-
-  const alt = pickMatchingAlternative(alternativeLabels, q);
-  if (alt) {
-    return `${escapeHtml(value)} (${underlineFirstMatch(alt, q)})`;
+  if (!value.toLowerCase().includes(q.toLowerCase())) {
+    const alt = pickMatchingAlternative(alternativeLabels, q);
+    if (alt) {
+      return `${escapeHtml(value)} (${underlineFirstMatch(alt, q)})`;
+    }
   }
 
   return underlineFirstMatch(value, q);
