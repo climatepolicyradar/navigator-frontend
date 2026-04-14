@@ -1,195 +1,40 @@
-import { LucideCog, LucideEarth, LucideTag, LucideFileText } from "lucide-react";
-import Link from "next/link";
-import { Suspense, use, useEffect, useMemo } from "react";
+import { LucideCog, LucideFileText } from "lucide-react";
+import { Fragment, Suspense, use, useEffect, useMemo } from "react";
 
-import { documentRelationshipLabel } from "@/utils/_experiment/documentRelationshipLabel";
-import { labelTypeLabel } from "@/utils/_experiment/labelTypeLabel";
+import { fetchSearchDocuments, SearchDocument, SearchDocumentsResponse, IAggregationLabel } from "@/api/search";
 
+import { DocumentSearchResult } from "./DocumentSearchResult";
+import { PrincipalSearchResult } from "./PrincipalSearchResult";
 import styles from "./SearchResults.module.css";
 import { EmptySearch } from "../emptySearch/EmptySearch";
 import { TQueryGroup } from "../queryBuilder/QueryBuilder";
-import { TFilterCategory } from "../searchFilters/SearchFilters";
 
-interface DocumentLabel {
-  id: string;
-  value: string;
-  type: string;
-}
+// Principal = Family in old model
+const isPrincipal = (result: SearchDocument): boolean => {
+  return result.labels.some((label) => label.type === "status" && label.value.value === "Principal");
+};
 
-interface DocumentLabelRelationship {
-  count: number | null;
-  type: string;
-  value: DocumentLabel;
-  timestamp: string | null;
-}
-
-interface DocumentRelationship {
-  type: string;
-  value: SearchDocument;
-}
-
-interface DocumentItem {
-  url: string | null;
-}
-
-interface SearchDocument {
-  id: string;
-  title: string;
-  description: string | null;
-  labels: DocumentLabelRelationship[];
-  documents: DocumentRelationship[];
-  items: DocumentItem[];
-  attributes: Record<string, string | number | boolean>;
-}
-
-export interface IAggregationLabel {
-  count: number;
-  value: {
-    id: string;
-    type: string;
-    value: string;
-  };
-}
-
-export interface SearchDocumentsResponse {
-  total_size: number | null;
-  page: number;
-  page_size: number;
-  total_pages: number | null;
-  next_page: string | null;
-  previous_page: string | null;
-  results: SearchDocument[];
-  aggregations?: {
-    labels: IAggregationLabel[];
-  };
-}
-
-interface SearchDocumentsParams {
-  query?: string;
-  filters?: string;
-  limit?: number;
-  offset?: number;
-}
-
-const SEARCH_DOCUMENTS_BASE_URL = "https://api.climatepolicyradar.org/search/documents";
-const MAX_DESCRIPTION_LENGTH = 275;
-
-export async function fetchSearchDocuments(params: SearchDocumentsParams = {}): Promise<SearchDocumentsResponse> {
-  const url = new URL(SEARCH_DOCUMENTS_BASE_URL);
-
-  if (params.query) url.searchParams.set("query", params.query);
-  if (params.filters) url.searchParams.set("filters", params.filters);
-  if (params.limit !== undefined) url.searchParams.set("limit", String(params.limit));
-  if (params.offset !== undefined) url.searchParams.set("offset", String(params.offset));
-
-  const res = await fetch(url);
-  if (!res.ok) throw new Error(`Search API error: ${res.status}`);
-  return res.json() as Promise<SearchDocumentsResponse>;
-}
-
-function linkHref(doc: SearchDocument): string | undefined {
-  if (doc.attributes.deprecated_slug)
-    if (doc.labels.find((label) => label.value.value === "Principal")) {
-      return `/document/${doc.attributes.deprecated_slug}`;
-    } else {
-      return `/documents/${doc.attributes.deprecated_slug}`;
-    }
-}
-
-function iconForLabelType(type: string) {
-  switch (type) {
-    case "geography":
-      return <LucideEarth width={14} height={14} />;
-    case "concept":
-      return <LucideTag width={14} height={14} />;
-  }
-}
-
-const FILTER_AGGREGATIONS: TFilterCategory[] = ["geography", "concept"];
-const RELATIONSHIP_AGGREGATIONS = ["member_of", "has_member"];
-
-export function SearchResults({ promise, onSelectLabel }: { promise: Promise<SearchDocumentsResponse>; onSelectLabel?: (label: string) => void }) {
-  const data = use(promise);
-
+export function SearchResults({ data, onSelectLabel }: { data: SearchDocumentsResponse; onSelectLabel?: (label: string) => void }) {
   return (
     <div>
-      {/* <p className="text-sm text-text-secondary mb-4">
-        {data.total_size ?? 0} results — page {data.page} of {data.total_pages ?? 1}
-      </p> */}
+      <p className="text-sm text-text-secondary mb-4">{data.total_size ?? 0} results</p>
       <ul className="space-y-4">
-        {data.results.map((doc) => (
-          <li key={doc.id} className={`flex flex-col gap-3 border border-transparent-regular rounded-md p-6 ${styles["highlights"]}`}>
-            {/* CORE DOCUMENT DETAILS */}
-            <h3 className="font-semibold text-lg">
-              {linkHref(doc) ? (
-                <Link href={linkHref(doc)!} className="text-inky-blue hover:underline" dangerouslySetInnerHTML={{ __html: doc.title }} />
-              ) : (
-                <span dangerouslySetInnerHTML={{ __html: doc.title }} />
-              )}
-            </h3>
-            {doc.description && (
-              <p
-                className="text-base text-inky-black"
-                dangerouslySetInnerHTML={{
-                  __html: doc.description.slice(0, MAX_DESCRIPTION_LENGTH) + (doc.description.length > MAX_DESCRIPTION_LENGTH ? "..." : ""),
-                }}
-              />
+        {data.results.map((result) => (
+          <Fragment key={result.id}>
+            {isPrincipal(result) && (
+              <li className={`flex flex-col border border-transparent-regular rounded-md p-6 ${styles["highlights"]}`}>
+                <PrincipalSearchResult result={result} onSelectLabel={onSelectLabel} />
+              </li>
             )}
-            {/* DISPLAYING FILTERS */}
-            {FILTER_AGGREGATIONS.map((agg) => {
-              const relationshipsOfType = doc.labels.filter((label) => label.type === agg);
-              if (relationshipsOfType.length === 0) return null;
-
-              return (
-                <div key={agg} className="flex items-start gap-6 text-sm text-inky-black">
-                  <div className="basis-25 shrink-0 py-0.5 font-semibold">{labelTypeLabel(agg)}</div>
-                  <div className="flex flex-wrap gap-1">
-                    {relationshipsOfType
-                      .sort((a, b) => (b.count ?? 0) - (a.count ?? 0))
-                      .slice(0, 3)
-                      .map((relationship, i) => (
-                        <button
-                          key={i}
-                          className="flex gap-1 items-center rounded px-2 py-0.5 cursor-pointer hover:bg-neutral-200"
-                          onClick={() => onSelectLabel?.(relationship.value.value)}
-                        >
-                          {iconForLabelType(relationship.value.type)}
-                          <span>{relationship.value.value}</span>
-                          {/* <span>{relationship.count !== null && `(${relationship.count})`}</span> */}
-                        </button>
-                      ))}
-                    {relationshipsOfType.length > 3 && <span className="py-0.5 text-neutral-600">+{relationshipsOfType.length - 3} more</span>}
-                  </div>
+            {!isPrincipal(result) && (
+              <li className={`flex gap-2 border border-transparent rounded-md py-2 pr-6 ${styles["highlights"]}`}>
+                <LucideFileText width={20} height={20} className="text-neutral-500 shrink-0 mt-1" />
+                <div className="flex flex-col">
+                  <DocumentSearchResult result={result} />
                 </div>
-              );
-            })}
-            {/* DISPLAYING DOCUMENT RELATIONSHIPS */}
-            {RELATIONSHIP_AGGREGATIONS.map((agg) => {
-              const relationshipsOfType = doc.documents.filter((relationship) => relationship.type === agg);
-              if (relationshipsOfType.length === 0) return null;
-
-              return (
-                <div key={agg} className="flex items-start gap-6 text-sm text-inky-black">
-                  <div className="basis-25 shrink-0 py-0.5 font-semibold">{documentRelationshipLabel(agg)}</div>
-                  <div className="flex flex-wrap gap-1">
-                    {relationshipsOfType.slice(0, 3).map((relationship, i) => (
-                      <span key={i} className="rounded px-2 py-0.5 flex gap-1 items-start">
-                        <LucideFileText width={14} height={14} className="inline mt-0.5 shrink-0" />
-                        {linkHref(relationship.value) ? (
-                          <Link href={linkHref(relationship.value)!} className="hover:underline">
-                            {relationship.value.title}
-                          </Link>
-                        ) : (
-                          <span>{relationship.value.title}</span>
-                        )}
-                      </span>
-                    ))}
-                    {relationshipsOfType.length > 3 && <span className="py-0.5 text-neutral-600">+{relationshipsOfType.length - 3} more</span>}
-                  </div>
-                </div>
-              );
-            })}
-          </li>
+              </li>
+            )}
+          </Fragment>
         ))}
       </ul>
     </div>
@@ -200,10 +45,12 @@ function SearchResultsWithAggregations({
   promise,
   onSelectLabel,
   onAggregationsChange,
+  onTotalResultsChange,
 }: {
   promise: Promise<SearchDocumentsResponse>;
   onSelectLabel?: (label: string) => void;
   onAggregationsChange?: (labels: IAggregationLabel[] | undefined) => void;
+  onTotalResultsChange?: (total: number | null) => void;
 }) {
   const data = use(promise);
   const labels = data.aggregations?.labels;
@@ -216,7 +63,12 @@ function SearchResultsWithAggregations({
     onAggregationsChange?.(labels);
   }, [labels, onAggregationsChange]);
 
-  return <SearchResults promise={Promise.resolve(data)} onSelectLabel={onSelectLabel} />;
+  // notify parent of the number of results
+  useEffect(() => {
+    onTotalResultsChange?.(data.total_size ?? null);
+  }, [data.total_size, onTotalResultsChange]);
+
+  return <SearchResults data={data} onSelectLabel={onSelectLabel} />;
 }
 
 // If any of the values are empty strings, the filters are considered invalid and will not be sent to the API
@@ -234,26 +86,36 @@ const filtersDoesNotContainEmptyRule = (filters: TQueryGroup): boolean => {
 export function SearchContainer({
   query,
   filters,
+  page_token,
+  page_size,
+  includeDocumentsInSearch,
   onSelectLabel,
   onAggregationsChange,
+  onTotalResultsChange,
 }: {
   selectedLabels?: string[];
   query?: string;
   filters?: TQueryGroup;
+  page_token?: string;
+  page_size?: string;
+  includeDocumentsInSearch?: boolean;
   onSelectLabel?: (label: string) => void;
   onAggregationsChange?: (labels: IAggregationLabel[] | undefined) => void;
+  onTotalResultsChange?: (total: number | null) => void;
 }) {
+  const filtersCheckedForEmpty = filtersDoesNotContainEmptyRule(filters) ? filters : undefined;
+
   const searchPromise = useMemo(() => {
-    if (!query && (!filters || !filtersDoesNotContainEmptyRule(filters))) return null;
+    if (!query && !filtersCheckedForEmpty) return null;
 
     return fetchSearchDocuments({
       query,
-      // TODO: add pagination
-      // limit: 10,
-      // offset: 0,
-      filters: filtersDoesNotContainEmptyRule(filters) ? JSON.stringify(filters) : undefined,
+      page_size,
+      page_token,
+      includeDocumentsInSearch,
+      filters: filtersCheckedForEmpty,
     });
-  }, [query, filters]);
+  }, [query, filtersCheckedForEmpty, page_token, page_size, includeDocumentsInSearch]);
 
   return (
     <>
@@ -265,7 +127,12 @@ export function SearchContainer({
             </p>
           }
         >
-          <SearchResultsWithAggregations promise={searchPromise} onSelectLabel={onSelectLabel} onAggregationsChange={onAggregationsChange} />
+          <SearchResultsWithAggregations
+            promise={searchPromise}
+            onSelectLabel={onSelectLabel}
+            onAggregationsChange={onAggregationsChange}
+            onTotalResultsChange={onTotalResultsChange}
+          />
         </Suspense>
       ) : (
         <EmptySearch />

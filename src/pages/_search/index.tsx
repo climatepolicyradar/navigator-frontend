@@ -1,16 +1,20 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 
+import { Switch } from "@base-ui/react/switch";
 import isEqual from "lodash/isEqual";
 import { GetServerSideProps, InferGetServerSidePropsType } from "next";
-import { useQueryState, parseAsString, parseAsJson } from "nuqs";
+import { useQueryState, parseAsBoolean, parseAsString, parseAsJson } from "nuqs";
 import { useCallback, useEffect, useMemo, useState, type SetStateAction } from "react";
 
 import { ApiClient } from "@/api/http-common";
+import { IAggregationLabel } from "@/api/search";
 import { AppliedLabels } from "@/components/_experiment/appliedLabels/AppliedLabels";
 import { IntelliSearch } from "@/components/_experiment/intellisearch";
+import { Pagination } from "@/components/_experiment/pagination/Pagination";
 import { createGroup, isFilterGroupEmpty, QueryBuilder, TQueryGroup, TQueryRule } from "@/components/_experiment/queryBuilder/QueryBuilder";
-import { SearchFilters, TFilterCategory } from "@/components/_experiment/searchFilters/SearchFilters";
-import { SearchContainer, IAggregationLabel } from "@/components/_experiment/searchResults/SearchResults";
+import { SearchFilters, TLabelType } from "@/components/_experiment/searchFilters/SearchFilters";
+import { SearchContainer } from "@/components/_experiment/searchResults/SearchResults";
+import { SelectPerPage } from "@/components/_experiment/selectPerPage/SelectPerPage";
 import { FiveColumns } from "@/components/atoms/columns/FiveColumns";
 import { withEnvConfig } from "@/context/EnvConfig";
 import { FeaturesContext } from "@/context/FeaturesContext";
@@ -35,6 +39,12 @@ const ShadowSearch = ({ theme, themeConfig, features }: TProps) => {
   const [query, setQuery] = useQueryState("q", parseAsString.withDefault(""));
   // structured filters built in QueryBuilder
   const [filters, setFiltersInUrl] = useQueryState("filters", parseAsJson<TQueryGroup>(FilterGroupSchema).withDefault(createGroup()));
+  // pagination state
+  const [currentPage, setCurrentPage] = useQueryState("page_token", parseAsString.withDefault("1"));
+  const [pageSize, setPageSize] = useQueryState("page_size", parseAsString.withDefault("10"));
+  const [totalNoOfResults, setTotalNoOfResults] = useState<number | null>(null);
+  // principal or documents
+  const [includeDocumentsInSearch, setIncludeDocumentsInSearch] = useQueryState("include_documents", parseAsBoolean.withDefault(true));
 
   /**
    * Drops aggregations only when the filter tree becomes empty so greyed options
@@ -64,13 +74,13 @@ const ShadowSearch = ({ theme, themeConfig, features }: TProps) => {
 
   // Control SearchFilters popover and active category tab (single source of truth)
   const [filtersOpen, setFiltersOpen] = useState(false);
-  const [filterSidebarCategory, setFilterSidebarCategory] = useState<TFilterCategory>("agent");
+  const [filterSidebarCategory, setFilterSidebarCategory] = useState<TLabelType>("agent");
 
   // Control Advanced Filters view
   const [advancedFiltersOpen, setAdvancedFiltersOpen] = useState(false);
 
   const handleSelectLabel = (label: string, type: string) => {
-    setFilterSidebarCategory((type as TFilterCategory) || "agent");
+    setFilterSidebarCategory((type as TLabelType) || "agent");
     setFiltersOpen(true);
   };
 
@@ -90,7 +100,7 @@ const ShadowSearch = ({ theme, themeConfig, features }: TProps) => {
 
   return (
     <FeaturesContext.Provider value={features}>
-      <FiveColumns className="mt-4 gap-y-4">
+      <FiveColumns className="mt-4 gap-y-4 pb-12">
         <div className={columnLayoutCss}>
           <h1 className="text-5xl font-bold text-inky-black">Search</h1>
         </div>
@@ -102,9 +112,13 @@ const ShadowSearch = ({ theme, themeConfig, features }: TProps) => {
             onSelectSuggestion={(suggestion) => {
               if (suggestion && !selectedLabels.includes(suggestion)) {
                 setFilters((prev) => addLabelRule(prev, suggestion));
+                setCurrentPage("1");
               }
             }}
-            setQuery={setQuery}
+            setQuery={(query) => {
+              setQuery(query);
+              setCurrentPage("1");
+            }}
             onAdvancedClick={() => setAdvancedFiltersOpen(true)}
           />
         </div>
@@ -112,27 +126,46 @@ const ShadowSearch = ({ theme, themeConfig, features }: TProps) => {
           <SearchFilters
             availableFilters={availableFilters}
             filters={filters}
-            activeCategory={filterSidebarCategory}
-            onActiveCategoryChange={setFilterSidebarCategory}
+            activeLabelType={filterSidebarCategory}
+            onActiveLabelTypeChange={setFilterSidebarCategory}
             open={filtersOpen}
             onOpenChange={setFiltersOpen}
             onChange={(checked, label) => {
               if (checked) {
                 setFilters((prev) => addLabelRule(prev, label));
+                setCurrentPage("1");
               } else {
                 setFilters((prev) => (prev ? removeLabelRule(prev, label) : createGroup()));
+                setCurrentPage("1");
               }
             }}
             aggregations={labelAggregations}
             query={query}
           />
-          <QueryBuilder
-            filters={filters}
-            setFilters={setFilters}
-            open={advancedFiltersOpen}
-            onOpenChange={setAdvancedFiltersOpen}
-            availableLabelIds={availableLabelIds}
-          />
+          <div className="flex items-center gap-6">
+            <div>
+              <label className="flex items-center gap-2 text-neutral-600 text-sm font-medium cursor-pointer">
+                Show individual documents
+                <Switch.Root
+                  checked={includeDocumentsInSearch}
+                  onCheckedChange={(checked) => setIncludeDocumentsInSearch(checked)}
+                  className="relative flex h-4 w-7 p-0.5 rounded-full bg-neutral-200 transition data-checked:bg-inky-blue"
+                >
+                  <Switch.Thumb className="aspect-square h-full rounded-full bg-white transition-transform duration-150 data-checked:translate-x-3" />
+                </Switch.Root>
+              </label>
+            </div>
+            <QueryBuilder
+              filters={filters}
+              setFilters={(filters) => {
+                setFilters(filters);
+                setCurrentPage("1");
+              }}
+              open={advancedFiltersOpen}
+              onOpenChange={setAdvancedFiltersOpen}
+              availableLabelIds={availableLabelIds}
+            />
+          </div>
         </div>
         {!isFilterGroupEmpty(filters) && (
           <div className={columnLayoutCss}>
@@ -143,10 +176,15 @@ const ShadowSearch = ({ theme, themeConfig, features }: TProps) => {
               onClear={() => {
                 setFilters(createGroup());
                 setQuery("");
+                setTotalNoOfResults(null);
+                setCurrentPage("1");
                 setLabelAggregations(undefined); // belt & braces
               }}
               onSelectLabel={handleSelectLabel}
-              onRemoveLabel={(label) => setFilters((prev) => (prev ? removeLabelRule(prev, label) : createGroup()))}
+              onRemoveLabel={(label) => {
+                setFilters((prev) => (prev ? removeLabelRule(prev, label) : createGroup()));
+                setCurrentPage("1");
+              }}
               onAdvancedClick={() => setAdvancedFiltersOpen(true)}
             />
           </div>
@@ -157,12 +195,38 @@ const ShadowSearch = ({ theme, themeConfig, features }: TProps) => {
             onSelectLabel={(label) => {
               if (!selectedLabels.includes(label)) {
                 setFilters((prev) => addLabelRule(prev, label));
+                setCurrentPage("1");
               }
             }}
             filters={filters}
+            page_token={currentPage}
+            page_size={pageSize}
+            includeDocumentsInSearch={includeDocumentsInSearch}
             onAggregationsChange={applyAggregationsFromSearch}
+            onTotalResultsChange={setTotalNoOfResults}
           />
         </div>
+        {totalNoOfResults !== null && totalNoOfResults > 0 && (query || !isFilterGroupEmpty(filters)) && (
+          <div className={columnLayoutCss}>
+            <div className="flex justify-between items-center">
+              <Pagination
+                currentPage={parseInt(currentPage)}
+                totalPages={totalNoOfResults !== null ? Math.ceil(totalNoOfResults / parseInt(pageSize)) : 0}
+                onPageChange={(page) => {
+                  window.scrollTo(0, 0);
+                  setCurrentPage(page.toString());
+                }}
+              />
+              <SelectPerPage
+                value={pageSize}
+                onChange={(size) => {
+                  setPageSize(size);
+                  setCurrentPage("1");
+                }}
+              />
+            </div>
+          </div>
+        )}
       </FiveColumns>
     </FeaturesContext.Provider>
   );
