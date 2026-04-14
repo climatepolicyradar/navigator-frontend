@@ -24,10 +24,9 @@ function underlineFirstMatch(text: string, query: string): string {
   if (!trimmedQuery) return escapeHtml(text);
   const matchStartIndex = text.toLowerCase().indexOf(trimmedQuery.toLowerCase());
   if (matchStartIndex === -1) return escapeHtml(text);
-  const before = escapeHtml(text.slice(0, matchStartIndex));
-  const matched = escapeHtml(text.slice(matchStartIndex, matchStartIndex + trimmedQuery.length));
-  const after = escapeHtml(text.slice(matchStartIndex + trimmedQuery.length));
-  return `${before}<b><u>${matched}</u></b>${after}`;
+  return `${escapeHtml(text.slice(0, matchStartIndex))}<b><u>${escapeHtml(
+    text.slice(matchStartIndex, matchStartIndex + trimmedQuery.length)
+  )}</u></b>${escapeHtml(text.slice(matchStartIndex + trimmedQuery.length))}`;
 }
 
 /**
@@ -82,6 +81,5 @@ export function buildLabelSuggestionHtml(value: string, alternativeLabels: strin
  * @returns HTML string
  */
 export function buildSearchForRowHtml(searchTerm: string): string {
-  const trimmedSearchTerm = searchTerm.trim();
-  return `Search for ${underlineFirstMatch(trimmedSearchTerm, trimmedSearchTerm)}`;
+  return `Search for ${underlineFirstMatch(searchTerm.trim(), searchTerm.trim())}`;
 }
