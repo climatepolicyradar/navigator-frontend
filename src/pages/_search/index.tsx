@@ -141,6 +141,10 @@ const ShadowSearch = ({ theme, themeConfig, features }: TProps) => {
             }}
             aggregations={labelAggregations}
             query={query}
+            onAdvancedClick={() => {
+              setFiltersOpen(false);
+              setAdvancedFiltersOpen(true);
+            }}
           />
           <div className="flex items-center gap-6">
             <div>

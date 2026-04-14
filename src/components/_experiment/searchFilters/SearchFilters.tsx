@@ -1,5 +1,5 @@
 import { Popover as BasePopover } from "@base-ui/react/popover";
-import { ChevronRight, Circle, ListFilter } from "lucide-react";
+import { ChevronRight, Circle, ListFilter, SlidersHorizontal } from "lucide-react";
 import { useMemo } from "react";
 
 import { IAggregationLabel } from "@/api/search";
@@ -32,6 +32,7 @@ type TProps = {
   filters?: TQueryGroup | null;
   activeLabelType: TLabelType;
   onActiveLabelTypeChange: (labelType: TLabelType) => void;
+  onAdvancedClick?: () => void;
   open?: boolean;
   onOpenChange?: (open: boolean) => void;
   onChange?: (checked: boolean, label: string) => void;
@@ -53,6 +54,7 @@ export function SearchFilters({
   filters,
   activeLabelType: activeLabelType,
   onActiveLabelTypeChange: onActiveLabelTypeChange,
+  onAdvancedClick,
   open,
   onOpenChange,
   onChange,
@@ -108,7 +110,7 @@ export function SearchFilters({
               {!availableFilters.length && <p className="text-sm text-gray-500 p-2">No filter options found, please refresh the page.</p>}
               {availableFilters.length > 0 && (
                 <div className="flex gap-2">
-                  <div className="basis-60 p-2 border-r border-transparent-regular flex flex-col gap-2">
+                  <div className="basis-60 shrink-0 p-2 border-r border-transparent-regular flex flex-col gap-2">
                     <ul className="flex flex-col border-b border-transparent-regular">
                       {PRIMARY_LABEL_TYPES.map((agg) => (
                         <li key={agg} className="text-sm text-inky-black mb-1">
@@ -163,8 +165,19 @@ export function SearchFilters({
                         </li>
                       ))}
                     </ul>
+                    <div className="mt-auto">
+                      <button
+                        className="flex flex-nowrap items-center gap-2 rounded-sm w-full text-left p-2 pl-1 text-sm text-inky-black font-medium hover:bg-neutral-100"
+                        onClick={onAdvancedClick}
+                      >
+                        <span className="px-1">
+                          <SlidersHorizontal width={16} height={16} />
+                        </span>
+                        <span className="grow">Advanced filters</span>
+                      </button>
+                    </div>
                   </div>
-                  <div className="max-h-[60vh] grow p-4 overflow-y-auto text-sm flex flex-col gap-6">
+                  <div className="max-h-[50vh] grow p-4 overflow-y-auto text-sm flex flex-col gap-6">
                     <div className="flex flex-col gap-2">
                       <div className="border-b border-transparent-regular pb-2">
                         <h4 className="text-sm text-inky-black font-medium">{labelTypeLabel(activeLabelType)}</h4>
