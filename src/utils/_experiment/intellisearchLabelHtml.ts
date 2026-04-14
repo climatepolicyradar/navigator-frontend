@@ -80,13 +80,13 @@ export function buildLabelSuggestionHtml(value: string, alternativeLabels: strin
 }
 
 /**
- * HTML for the "Search for …" row: bold echoed term only (no underline; that is
- * reserved for label suggestions).
+ * HTML for the "Search for …" row: underlines the query within the echoed term
+ * (same visual treatment as label suggestions).
  *
  * @param searchTerm - Raw input (typically trimmed for the row)
  * @returns HTML string
  */
 export function buildSearchForRowHtml(searchTerm: string): string {
   const t = searchTerm.trim();
-  return `Search for <b>${escapeHtml(t)}</b>`;
+  return `Search for ${underlineFirstMatch(t, t)}`;
 }
