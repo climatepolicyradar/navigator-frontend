@@ -1,4 +1,4 @@
-import { LucideChevronRight } from "lucide-react";
+import { LucideChevronRight, LucideEarth } from "lucide-react";
 import Link from "next/link";
 
 import { SearchDocument } from "@/api/search";
@@ -43,7 +43,7 @@ const displayParentRelationshipContext = (document: SearchDocument) => {
   );
 };
 
-export function DocumentSearchResult({ result }: { result: SearchDocument }) {
+export function DocumentSearchResult({ result, onSelectLabel }: { result: SearchDocument; onSelectLabel?: (label: string) => void }) {
   return (
     <>
       {/* CORE DETAILS */}
@@ -55,13 +55,21 @@ export function DocumentSearchResult({ result }: { result: SearchDocument }) {
         )}
       </h3>
       <p className="font-medium text-neutral-500 mb-3 flex items-center gap-1">{displayParentRelationshipContext(result)}</p>
-      <div className="text-sm font-medium text-inky-black mb-3 flex gap-6">
+      <div className="text-sm text-inky-black mb-3 flex gap-6 -ml-2">
         {result.labels
           .filter((label) => label.type === "geography")
           .sort((a, b) => (b.count ?? 0) - (a.count ?? 0))
           .slice(0, 3)
           .map((relationship, i) => (
-            <span key={i}>{relationship.value.value}</span>
+            <button
+              key={i}
+              className="flex gap-1 items-center rounded px-2 py-0.5 cursor-pointer hover:bg-neutral-200"
+              onClick={() => onSelectLabel?.(relationship.value.value)}
+            >
+              <LucideEarth width={14} height={14} />
+              <span>{relationship.value.value}</span>
+              {/* <span>{relationship.count !== null && `(${relationship.count})`}</span> */}
+            </button>
           ))}
       </div>
     </>
