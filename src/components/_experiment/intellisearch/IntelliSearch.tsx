@@ -4,17 +4,26 @@ import { CornerDownLeft, LucideSearch, SlidersHorizontal } from "lucide-react";
 import { useMemo, useRef, useState } from "react";
 
 import { TLabelResult, useLabelSearch } from "@/hooks/useLabelSearch";
+import { buildLabelSuggestionHtml, buildSearchForRowHtml } from "@/utils/_experiment/intellisearchLabelHtml";
 import { partitionByAvailability } from "@/utils/_experiment/labelAggregationAvailability";
 import { labelTypeLabel } from "@/utils/_experiment/labelTypeLabel";
 import { joinTailwindClasses } from "@/utils/tailwind";
 
 import { IntelliSearchProps } from "./IntelliSearch.types";
 
-const underlineFirstInstanceOfQuery = (text: string, query: string) => {
-  if (!query) return text;
-  const regex = new RegExp(`(${query})`, "i");
-  return text.replace(regex, "<b><u>$1</u></b>");
-};
+/** Shared layout for popup rows (search + label suggestions). */
+const suggestionRow = "flex items-center gap-1 rounded-md pl-4 pr-3 text-base select-none outline-none scroll-my-1 group";
+const searchRow = joinTailwindClasses(suggestionRow, "min-h-8 cursor-pointer text-inky-black data-highlighted:bg-neutral-200");
+const enterHint = "ml-auto hidden items-center gap-1 text-sm text-neutral-600 group-data-highlighted:inline-flex";
+
+function EnterHint() {
+  return (
+    <div className={enterHint}>
+      Enter
+      <CornerDownLeft height={16} width={16} className="inline" />
+    </div>
+  );
+}
 
 export function IntelliSearch({
   query,
@@ -128,16 +137,9 @@ export function IntelliSearch({
                       {/* TEXT SEARCH */}
                       {searchTerm.trim() && (
                         <Autocomplete.Group className="block pb-2">
-                          <Autocomplete.Item
-                            value={{ value: searchTerm, type: "search" }}
-                            onClick={() => handleSearchClick()}
-                            className="flex min-h-8 cursor-pointer items-center gap-1 rounded-md pl-4 pr-3 text-base text-inky-black select-none outline-none scroll-my-1 group data-highlighted:bg-neutral-200"
-                          >
-                            <span dangerouslySetInnerHTML={{ __html: `Search for <b>${searchTerm}</b>` }} />
-                            <div className="hidden text-sm text-neutral-600 gap-1 items-center ml-auto group-data-highlighted:inline-flex">
-                              Enter
-                              <CornerDownLeft height={16} width={16} className="inline" />
-                            </div>
+                          <Autocomplete.Item value={{ value: searchTerm, type: "search" }} onClick={() => handleSearchClick()} className={searchRow}>
+                            <span dangerouslySetInnerHTML={{ __html: buildSearchForRowHtml(searchTerm) }} />
+                            <EnterHint />
                           </Autocomplete.Item>
                         </Autocomplete.Group>
                       )}
@@ -164,7 +166,8 @@ export function IntelliSearch({
                                     handleSuggestionClick(suggestion.value);
                                   }}
                                   className={joinTailwindClasses(
-                                    "flex min-h-9 items-center gap-1 rounded-md pl-4 pr-3 text-base select-none outline-none scroll-my-1 group",
+                                    suggestionRow,
+                                    "min-h-9",
                                     isAvailable
                                       ? "cursor-pointer text-inky-black data-highlighted:bg-neutral-200"
                                       : "cursor-not-allowed text-neutral-400"
@@ -172,7 +175,9 @@ export function IntelliSearch({
                                 >
                                   <span
                                     className="truncate"
-                                    dangerouslySetInnerHTML={{ __html: underlineFirstInstanceOfQuery(suggestion.value, searchTerm) }}
+                                    dangerouslySetInnerHTML={{
+                                      __html: buildLabelSuggestionHtml(suggestion.value, suggestion.alternative_labels, searchTerm),
+                                    }}
                                   />
                                   <span className={isAvailable ? "text-gray-500" : "text-neutral-400"}>—</span>
                                   <span
@@ -183,14 +188,7 @@ export function IntelliSearch({
                                   >
                                     {labelTypeLabel(suggestion.type)}
                                   </span>
-                                  {isAvailable ? (
-                                    <div className="hidden text-sm text-neutral-600 gap-1 items-center ml-auto group-data-highlighted:inline-flex">
-                                      Enter
-                                      <CornerDownLeft height={16} width={16} className="inline" />
-                                    </div>
-                                  ) : (
-                                    <div className="text-xs text-neutral-400 ml-auto">Unavailable</div>
-                                  )}
+                                  {isAvailable ? <EnterHint /> : <div className="ml-auto text-xs text-neutral-400">Unavailable</div>}
                                 </Autocomplete.Item>
                               </div>
                             );
