@@ -20,13 +20,13 @@ function escapeHtml(text: string): string {
  * @returns HTML string with a single highlighted span, or fully escaped text
  */
 function underlineFirstMatch(text: string, query: string): string {
-  const q = query.trim();
-  if (!q) return escapeHtml(text);
-  const idx = text.toLowerCase().indexOf(q.toLowerCase());
-  if (idx === -1) return escapeHtml(text);
-  const before = escapeHtml(text.slice(0, idx));
-  const matched = escapeHtml(text.slice(idx, idx + q.length));
-  const after = escapeHtml(text.slice(idx + q.length));
+  const trimmedQuery = query.trim();
+  if (!trimmedQuery) return escapeHtml(text);
+  const matchStartIndex = text.toLowerCase().indexOf(trimmedQuery.toLowerCase());
+  if (matchStartIndex === -1) return escapeHtml(text);
+  const before = escapeHtml(text.slice(0, matchStartIndex));
+  const matched = escapeHtml(text.slice(matchStartIndex, matchStartIndex + trimmedQuery.length));
+  const after = escapeHtml(text.slice(matchStartIndex + trimmedQuery.length));
   return `${before}<b><u>${matched}</u></b>${after}`;
 }
 
@@ -40,13 +40,13 @@ function underlineFirstMatch(text: string, query: string): string {
  */
 function pickMatchingAlternative(alternatives: string[] | undefined, query: string): string | null {
   if (!alternatives?.length) return null;
-  const q = query.trim().toLowerCase();
-  if (!q) return null;
-  const matches = alternatives.filter((a) => a.toLowerCase().includes(q));
+  const queryLowercase = query.trim().toLowerCase();
+  if (!queryLowercase) return null;
+  const matches = alternatives.filter((alternative) => alternative.toLowerCase().includes(queryLowercase));
   if (matches.length === 0) return null;
-  return [...matches].sort((a, b) => {
-    if (a.length !== b.length) return a.length - b.length;
-    return alternatives.indexOf(a) - alternatives.indexOf(b);
+  return [...matches].sort((first, second) => {
+    if (first.length !== second.length) return first.length - second.length;
+    return alternatives.indexOf(first) - alternatives.indexOf(second);
   })[0];
 }
 
@@ -61,17 +61,17 @@ function pickMatchingAlternative(alternatives: string[] | undefined, query: stri
  * @returns HTML string safe for `dangerouslySetInnerHTML`
  */
 export function buildLabelSuggestionHtml(value: string, alternativeLabels: string[] | undefined, query: string): string {
-  const q = query.trim();
-  if (!q) return escapeHtml(value);
+  const trimmedQuery = query.trim();
+  if (!trimmedQuery) return escapeHtml(value);
 
-  if (!value.toLowerCase().includes(q.toLowerCase())) {
-    const alt = pickMatchingAlternative(alternativeLabels, q);
-    if (alt) {
-      return `${escapeHtml(value)} (${underlineFirstMatch(alt, q)})`;
+  if (!value.toLowerCase().includes(trimmedQuery.toLowerCase())) {
+    const matchingAlternative = pickMatchingAlternative(alternativeLabels, trimmedQuery);
+    if (matchingAlternative) {
+      return `${escapeHtml(value)} (${underlineFirstMatch(matchingAlternative, trimmedQuery)})`;
     }
   }
 
-  return underlineFirstMatch(value, q);
+  return underlineFirstMatch(value, trimmedQuery);
 }
 
 /**
@@ -82,6 +82,6 @@ export function buildLabelSuggestionHtml(value: string, alternativeLabels: strin
  * @returns HTML string
  */
 export function buildSearchForRowHtml(searchTerm: string): string {
-  const t = searchTerm.trim();
-  return `Search for ${underlineFirstMatch(t, t)}`;
+  const trimmedSearchTerm = searchTerm.trim();
+  return `Search for ${underlineFirstMatch(trimmedSearchTerm, trimmedSearchTerm)}`;
 }
