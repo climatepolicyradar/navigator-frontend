@@ -7,6 +7,7 @@ export type TLabelResult = {
   id: string;
   type: string;
   value: string;
+  alternative_labels?: string[];
 };
 
 type TLabelsResponse = {
