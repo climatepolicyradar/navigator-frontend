@@ -102,40 +102,57 @@ export function SearchFilters({
 
       <BasePopover.Portal>
         <BasePopover.Positioner positionMethod="fixed" sideOffset={8} side="bottom" align="start" className="z-50">
-          <BasePopover.Popup className="w-150 rounded-xl border border-transparent-regular bg-white shadow-xl focus-visible:outline-none">
+          <BasePopover.Popup className="w-160 rounded-xl border border-transparent-regular bg-white shadow-xl focus-visible:outline-none">
             <div className="">
-              {!availableFilters.length && <p className="text-sm text-gray-500">No filter options found.</p>}
+              {!availableFilters.length && <p className="text-sm text-gray-500 p-2">No filter options found, please refresh the page.</p>}
               {availableFilters.length > 0 && (
                 <div className="flex gap-2">
-                  <div className="basis-1/3 p-2 border-r border-transparent-regular">
-                    <ul className="flex flex-col gap-2">
+                  <div className="basis-60 p-2 border-r border-transparent-regular">
+                    <ul className="flex flex-col">
                       {LABEL_TYPES.map((agg) => (
                         <li key={agg} className="text-sm text-inky-black mb-1">
                           <button
                             className={joinTailwindClasses(
-                              "relative rounded-sm w-full text-left px-6 py-2 text-sm text-inky-black font-medium hover:bg-neutral-200",
-                              activeLabelType === agg ? "bg-neutral-200!" : ""
+                              "flex flex-nowrap items-center gap-2 rounded-sm w-full text-left p-2 pl-1 text-sm text-inky-black font-medium hover:bg-neutral-100",
+                              activeLabelType === agg ? "bg-neutral-100!" : ""
                             )}
                             onClick={() => onActiveLabelTypeChange(agg)}
                           >
-                            {labelTypeLabel(agg)}
+                            <span className="text-inky-blue px-2">
+                              {hasActiveFilterOfType(availableFilters, filters, agg) ? (
+                                <Circle width={8} height={8} fill="currentColor" />
+                              ) : (
+                                <span>&nbsp;&nbsp;</span>
+                              )}
+                            </span>
+                            <span className="grow">{labelTypeLabel(agg)}</span>
                             {activeLabelType === agg && (
-                              <ChevronRight width={20} height={20} className="absolute right-2 top-1/2 transform -translate-y-1/2" />
-                            )}
-                            {hasActiveFilterOfType(availableFilters, filters, agg) && (
-                              <Circle width={8} height={8} fill="currentColor" className="absolute left-2 top-1/2 transform -translate-y-1/2" />
+                              <span className=" text-neutral-500">
+                                <ChevronRight width={20} height={20} />
+                              </span>
                             )}
                           </button>
                         </li>
                       ))}
                     </ul>
                   </div>
-                  <div className="max-h-[60vh] basis-2/3 p-4 overflow-y-auto text-sm flex flex-col">
-                    <ul className="flex flex-col gap-2 text-inky-black">{enabledFilters.map((f) => renderCheckboxRow(f, true))}</ul>
-                    {disabledFilters.length > 0 && enabledFilters.length > 0 ? <div className="h-6 w-full shrink-0" aria-hidden /> : null}
-                    {disabledFilters.length > 0 ? (
-                      <ul className="flex flex-col gap-2 text-inky-black">{disabledFilters.map((f) => renderCheckboxRow(f, false))}</ul>
-                    ) : null}
+                  <div className="max-h-[60vh] grow p-4 overflow-y-auto text-sm flex flex-col gap-6">
+                    <div className="flex flex-col gap-2">
+                      <div className="border-b border-transparent-regular pb-2">
+                        <h4 className="text-sm text-inky-black font-medium">{labelTypeLabel(activeLabelType)}</h4>
+                      </div>
+                      {enabledFilters.length === 0 && <span>There are no available options</span>}
+                      <ul className="flex flex-col gap-1 text-inky-black">{enabledFilters.map((f) => renderCheckboxRow(f, true))}</ul>
+                    </div>
+                    {disabledFilters.length > 0 && <div className="h-0 w-full shrink-0 border-b border-transparent-regular" aria-hidden />}
+                    {disabledFilters.length > 0 && (
+                      <div className="flex flex-col gap-2">
+                        <div className="">
+                          <h4 className="text-sm text-inky-black font-medium">Not relevant to applied filters</h4>
+                        </div>
+                        <ul className="flex flex-col gap-1 text-inky-black">{disabledFilters.map((f) => renderCheckboxRow(f, false))}</ul>
+                      </div>
+                    )}
                   </div>
                 </div>
               )}
