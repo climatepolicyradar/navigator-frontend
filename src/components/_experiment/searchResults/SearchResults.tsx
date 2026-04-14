@@ -1,7 +1,7 @@
 import { LucideCog, LucideFileText } from "lucide-react";
 import { Fragment, Suspense, use, useEffect, useMemo } from "react";
 
-import { fetchSearchDocuments, SearchDocument, SearchDocumentsResponse, IAggregationLabel } from "@/api/search";
+import { fetchSearchDocuments, SearchDocument, SearchDocumentsResponse, IAggregationLabel, type SearchDocumentsSortKey } from "@/api/search";
 
 import { DocumentSearchResult } from "./DocumentSearchResult";
 import { PrincipalSearchResult } from "./PrincipalSearchResult";
@@ -89,6 +89,7 @@ export function SearchContainer({
   page_token,
   page_size,
   includeDocumentsInSearch,
+  sort,
   onSelectLabel,
   onAggregationsChange,
   onTotalResultsChange,
@@ -99,6 +100,7 @@ export function SearchContainer({
   page_token?: string;
   page_size?: string;
   includeDocumentsInSearch?: boolean;
+  sort?: SearchDocumentsSortKey;
   onSelectLabel?: (label: string) => void;
   onAggregationsChange?: (labels: IAggregationLabel[] | undefined) => void;
   onTotalResultsChange?: (total: number | null) => void;
@@ -114,8 +116,9 @@ export function SearchContainer({
       page_token,
       includeDocumentsInSearch,
       filters: filtersCheckedForEmpty,
+      sort,
     });
-  }, [query, filtersCheckedForEmpty, page_token, page_size, includeDocumentsInSearch]);
+  }, [query, filtersCheckedForEmpty, page_token, page_size, includeDocumentsInSearch, sort]);
 
   return (
     <>

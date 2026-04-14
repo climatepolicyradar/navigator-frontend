@@ -54,15 +54,57 @@ export interface SearchDocumentsResponse {
   };
 }
 
+/** URL/query-state keys for shadow SERP sort; maps to search API `order_by`. */
+export const SEARCH_DOCUMENT_SORT_KEYS = ["relevance", "recent", "oldest", "title_asc", "title_desc"] as const;
+
+export type SearchDocumentsSortKey = (typeof SEARCH_DOCUMENT_SORT_KEYS)[number];
+
+/**
+ * Maps a compact sort key to the AIP-132 `order_by` value for `GET /search/documents`.
+ *
+ * @param key - Sort mode from UI or URL state
+ * @returns `order_by` query value
+ */
+export function orderByParamFromSortKey(key: SearchDocumentsSortKey): string {
+  const map: Record<SearchDocumentsSortKey, string> = {
+    relevance: "relevance desc",
+    recent: "published_timestamp desc",
+    oldest: "published_timestamp asc",
+    title_asc: "title_sort asc",
+    title_desc: "title_sort desc",
+  };
+  return map[key];
+}
+
+/**
+ * @param raw - Raw `sort` query string
+ * @returns A valid sort key, defaulting to relevance
+ */
+export function normaliseSearchDocumentsSortKey(raw: string | null | undefined): SearchDocumentsSortKey {
+  if (raw && (SEARCH_DOCUMENT_SORT_KEYS as readonly string[]).includes(raw)) {
+    return raw as SearchDocumentsSortKey;
+  }
+  return "relevance";
+}
+
 interface SearchDocumentsParams {
   query?: string;
   filters?: TQueryGroup;
   page_size?: string;
   page_token?: string;
   includeDocumentsInSearch?: boolean;
+  /** Result ordering; defaults to relevance when omitted */
+  sort?: SearchDocumentsSortKey;
 }
 
-const SEARCH_DOCUMENTS_BASE_URL = "https://api.climatepolicyradar.org/search/documents";
+/**
+ * Same API origin as `useLabelSearch` / `loadLabels` (`NEXT_PUBLIC_API_URL`).
+ * Defaults to production; set e.g. `http://localhost:8000` for local search API.
+ */
+function searchDocumentsUrl(): string {
+  const origin = (process.env.NEXT_PUBLIC_API_URL || "https://api.climatepolicyradar.org").replace(/\/$/, "");
+  return `${origin}/search/documents`;
+}
 
 function configureDocumentsFilters(filters: TQueryGroup | undefined, includeDocumentsInSearch: boolean): TQueryGroup {
   // including documents in search is the default search, otherwise default to only principal documents
@@ -92,13 +134,15 @@ function configureDocumentsFilters(filters: TQueryGroup | undefined, includeDocu
 }
 
 export async function fetchSearchDocuments(params: SearchDocumentsParams = {}): Promise<SearchDocumentsResponse> {
-  const url = new URL(SEARCH_DOCUMENTS_BASE_URL);
+  const url = new URL(searchDocumentsUrl());
   const filters = configureDocumentsFilters(params.filters, params.includeDocumentsInSearch ?? false);
 
   if (params.query) url.searchParams.set("query", params.query);
   if (filters) url.searchParams.set("filters", JSON.stringify(filters));
   if (params.page_size !== undefined) url.searchParams.set("page_size", params.page_size);
   if (params.page_token !== undefined) url.searchParams.set("page_token", params.page_token);
+  const sortKey = params.sort ?? "relevance";
+  url.searchParams.set("order_by", orderByParamFromSortKey(sortKey));
 
   const res = await fetch(url);
   if (!res.ok) throw new Error(`Search API error: ${res.status}`);
