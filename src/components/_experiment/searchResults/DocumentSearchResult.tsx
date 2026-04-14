@@ -68,7 +68,6 @@ export function DocumentSearchResult({ result, onSelectLabel }: { result: Search
             >
               <LucideEarth width={14} height={14} />
               <span>{relationship.value.value}</span>
-              {/* <span>{relationship.count !== null && `(${relationship.count})`}</span> */}
             </button>
           ))}
       </div>
