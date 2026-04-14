@@ -1,7 +1,7 @@
 import { Meta, StoryObj } from "@storybook/nextjs-vite";
 
 import { GeographiesContext } from "@/context/GeographiesContext";
-import { CATEGORY_SUMMARY_STUB } from "@/stubs/categorySummarytStub";
+import { CATEGORY_SUMMARY_STUB } from "@/stubs/categorySummaryStub";
 import { GEOGRAPHY_V2_STUB } from "@/stubs/geographyV2Stub";
 import { GeographyV2 } from "@/types";
 

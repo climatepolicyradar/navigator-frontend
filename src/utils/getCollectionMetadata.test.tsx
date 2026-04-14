@@ -20,8 +20,6 @@ const baseCollection: TCollectionPublicWithFamilies = {
   description: "Test Description",
   families: [
     {
-      category: "Litigation",
-      corpus_id: "",
       geographies: ["USA"],
       import_id: "",
       last_updated_date: null,
@@ -37,9 +35,11 @@ const baseCollection: TCollectionPublicWithFamilies = {
       documents: [],
       events: [],
       attribution: {
+        category: "Litigation",
         corpusImageAlt: "No corpus image found",
         corpusNote: "No corpus note found",
-        organisation: "Sabin",
+        provider: "Sabin",
+        taxonomy: "Litigation",
         url: "https://climatecasechart.com/",
       },
     },

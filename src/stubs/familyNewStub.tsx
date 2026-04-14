@@ -78,19 +78,18 @@ export const FAMILY_NEW_STUB: TFamilyPublic = {
     },
   ],
   attribution: {
+    category: "Litigation",
     corpusImageAlt: "No corpus image found",
     corpusNote: "No corpus note found",
-    organisation: "Sabin",
+    provider: "Sabin",
+    taxonomy: "Litigation",
   },
-  corpus_id: "Academic.corpus.Litigation.n0000",
   summary:
     "Action by young plaintiffs asserting that the federal government violated their constitutional rights by causing dangerous carbon dioxide concentrations. [Due to a technical issue, some documents are currently not available.]",
   geographies: ["USA", "US-OR"],
   published_date: "2015-01-01T00:00:00Z",
   last_updated_date: "2024-04-19T00:00:00Z",
   slug: "juliana-v-united-states_83df",
-  category: "Litigation",
-  corpus_type_name: "Litigation",
   collections: [
     {
       import_id: "Sabin.collection.154.0",

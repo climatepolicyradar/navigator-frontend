@@ -41,10 +41,10 @@ export const getLitigationCollectionJSONLD = (collection: TCollectionPublicWithF
       .reverse()[0], // Newest
   };
 
-  if (families[0].attribution.organisation && families[0].attribution.url) {
+  if (families[0].attribution.provider && families[0].attribution.url) {
     jsonLd.publisher = {
       "@type": "Organization",
-      name: `${families[0].attribution.organisation}`,
+      name: `${families[0].attribution.provider}`,
       url: `${families[0].attribution.url}`,
     };
   }

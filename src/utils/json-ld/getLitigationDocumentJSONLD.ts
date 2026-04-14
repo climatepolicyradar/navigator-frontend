@@ -43,10 +43,10 @@ export const getLitigationDocumentJSONLD = (document: TDocumentPage, family: TFa
     },
   };
 
-  if (family.attribution.organisation && family.attribution.url) {
+  if (family.attribution.provider && family.attribution.url) {
     jsonLd.publisher = {
       "@type": "Organization",
-      name: `${family.attribution.organisation}`,
+      name: `${family.attribution.provider}`,
       url: `${family.attribution.url}`,
     };
   }

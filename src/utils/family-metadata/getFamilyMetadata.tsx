@@ -14,23 +14,20 @@ export const getFamilyMetadata = (
 ): IMetadata[] => {
   const familyMetadata = [];
 
-  switch (family.corpus_type_name) {
+  switch (family.attribution.category) {
     case "Litigation":
       familyMetadata.push(...getLitigationMetadata(family, familyTopics, countries, subdivisions));
       break;
-    case "Laws and Policies":
+    case "Law":
       familyMetadata.push(...getLawsPolicyMetadata(family, familyTopics, countries));
       break;
-    case "AF":
-    case "CIF":
-    case "GCF":
-    case "GEF":
+    case "Multilateral Climate Fund project":
       familyMetadata.push(...getMCFMetadata(family, familyTopics, countries));
       break;
-    case "Intl. agreements":
+    case "UN submission":
       familyMetadata.push(...getUNFCCCMetadata(family, familyTopics, countries));
       break;
-    case "Reports":
+    case "Report":
       familyMetadata.push(...getReportsMetadata(family, familyTopics, countries));
       break;
     default:
