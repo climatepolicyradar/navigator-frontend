@@ -62,6 +62,7 @@ export interface IProps {
     usesDataIn: boolean;
     newApiData?: TFamilyApiNewData;
     originalFamily?: TFamilyPublic;
+    corpusId: string;
   };
 }
 
@@ -198,7 +199,7 @@ export const FamilyPage = ({
           isSubdivision={Boolean(breadcrumbParentGeography)}
           label={family.title}
         />
-        {features["new-data-model"] && features.debug && <DataInDebug corpusId={"No corpus ID"} usesDataIn={debug.usesDataIn} />}
+        {features["new-data-model"] && features.debug && <DataInDebug corpusId={debug.corpusId} usesDataIn={debug.usesDataIn} />}
         <PageHeader title={family.title} metadata={pageHeaderMetadata} />
         <BlocksLayout blockDefinitions={blockDefinitions} blocksToRender={blocksToRender} />
         <Head>

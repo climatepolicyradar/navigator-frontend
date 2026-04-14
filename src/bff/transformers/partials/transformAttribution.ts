@@ -9,8 +9,8 @@ export const transformAttribution = (groupedLabels: TItemsByType<TDataInLabel, T
 
   const attribution: TFamilyAttribution = {
     category: groupedLabels.category[0].value.value as TAttributionCategory,
-    corpusImageAlt: providerLabel.value.value ?? "No corpus image found",
-    corpusNote: providerLabel.value.attributes.corpus_text ?? "No corpus note found",
+    corpusImageAlt: providerLabel.value.value ?? "",
+    corpusNote: providerLabel.value.attributes.corpus_text ?? "",
     provider: providerLabel.value.value,
     taxonomy: getTaxonomy(
       groupedLabels.category[0].value.value.toLowerCase() as Lowercase<TAttributionCategory>,

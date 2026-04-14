@@ -46,6 +46,7 @@ export const familyTransformer = (
             concepts: familyApiOldData.family.concepts,
           },
           debug: {
+            corpusId: familyApiOldData.family.corpus_id,
             originalFamily: transformOldFamily(familyApiOldData.family, corpusTypes),
             newApiData: familyApiNewData,
             usesDataIn: true,

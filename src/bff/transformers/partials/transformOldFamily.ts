@@ -23,8 +23,8 @@ export const transformOldFamily = (oldFamily: TApiFamilyPublic, corpusTypes: TCo
   const attribution: TFamilyAttribution = {
     category: CATEGORY_MAP[oldFamily.category],
     taxonomy: getTaxonomy(oldFamily.category.toLowerCase() as Lowercase<TCategory>, oldFamily.organisation, oldFamily.corpus_id),
-    corpusImageAlt: corpus?.title ?? "No corpus image found",
-    corpusNote: corpus?.text ?? "No corpus note found",
+    corpusImageAlt: corpus?.title ?? "",
+    corpusNote: corpus?.text ?? "",
     provider: oldFamily.corpus?.organisation?.name || oldFamily.organisation,
   };
   if (corpus?.image_url) attribution.corpusImage = corpus.image_url;
