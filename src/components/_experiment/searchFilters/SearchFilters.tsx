@@ -23,8 +23,9 @@ function hasActiveFilterOfType(filters: TLabelResult[], group: TQueryGroup | nul
   );
 }
 
-const LABEL_TYPES = ["agent", "category", "entity_type", "geography", "concept", "activity_status", "status"] as const;
-export type TLabelType = (typeof LABEL_TYPES)[number];
+const PRIMARY_LABEL_TYPES = ["category", "entity_type", "geography", "concept"] as const;
+const OTHER_LABEL_TYPES = ["activity_status", "agent"] as const;
+export type TLabelType = (typeof PRIMARY_LABEL_TYPES)[number] | (typeof OTHER_LABEL_TYPES)[number];
 
 type TProps = {
   availableFilters: TLabelResult[];
@@ -107,9 +108,36 @@ export function SearchFilters({
               {!availableFilters.length && <p className="text-sm text-gray-500 p-2">No filter options found, please refresh the page.</p>}
               {availableFilters.length > 0 && (
                 <div className="flex gap-2">
-                  <div className="basis-60 p-2 border-r border-transparent-regular">
+                  <div className="basis-60 p-2 border-r border-transparent-regular flex flex-col gap-2">
+                    <ul className="flex flex-col border-b border-transparent-regular">
+                      {PRIMARY_LABEL_TYPES.map((agg) => (
+                        <li key={agg} className="text-sm text-inky-black mb-1">
+                          <button
+                            className={joinTailwindClasses(
+                              "flex flex-nowrap items-center gap-2 rounded-sm w-full text-left p-2 pl-1 text-sm text-inky-black font-medium hover:bg-neutral-100",
+                              activeLabelType === agg ? "bg-neutral-100!" : ""
+                            )}
+                            onClick={() => onActiveLabelTypeChange(agg)}
+                          >
+                            <span className="text-inky-blue px-2">
+                              {hasActiveFilterOfType(availableFilters, filters, agg) ? (
+                                <Circle width={8} height={8} fill="currentColor" />
+                              ) : (
+                                <span>&nbsp;&nbsp;</span>
+                              )}
+                            </span>
+                            <span className="grow">{labelTypeLabel(agg)}</span>
+                            {activeLabelType === agg && (
+                              <span className=" text-neutral-500">
+                                <ChevronRight width={20} height={20} />
+                              </span>
+                            )}
+                          </button>
+                        </li>
+                      ))}
+                    </ul>
                     <ul className="flex flex-col">
-                      {LABEL_TYPES.map((agg) => (
+                      {OTHER_LABEL_TYPES.map((agg) => (
                         <li key={agg} className="text-sm text-inky-black mb-1">
                           <button
                             className={joinTailwindClasses(
