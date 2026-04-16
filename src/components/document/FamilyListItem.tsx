@@ -1,9 +1,8 @@
 import { FC, ReactNode, useContext } from "react";
 
-import { getTaxonomy } from "@/bff/methods/getTaxonomy";
 import { LinkWithQuery } from "@/components/LinkWithQuery";
 import { FeaturesContext } from "@/context/FeaturesContext";
-import { TCategory, TFamily } from "@/types";
+import { TFamily } from "@/types";
 import { joinTailwindClasses } from "@/utils/tailwind";
 import { truncateString } from "@/utils/truncateString";
 import { transformVespaMetadataToFamilyMetadata } from "@/utils/vespa";
@@ -53,13 +52,6 @@ export const FamilyListItem: FC<IProps> = ({
 
   return (
     <li className={`family-list-item relative flex flex-col gap-2 pb-8 border-border-light ${className}`}>
-      <p>
-        {getTaxonomy(
-          family_category.toLowerCase() as Lowercase<TCategory>,
-          corpus_type_name === "Reports" ? family_source : corpus_type_name,
-          corpus_import_id
-        )}
-      </p>
       <div className="flex flex-wrap text-sm gap-x-4 items-center">
         <FamilyMeta
           category={family_category}
