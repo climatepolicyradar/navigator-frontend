@@ -82,11 +82,6 @@ const config: TThemeConfig = {
         value: ["CPR.corpus.i00000002.n0000"],
       },
       {
-        label: "Climate Council Reports",
-        slug: "climate-council-reports",
-        value: ["ICCN.corpus.i00000001.n0000"],
-      },
-      {
         label: "Offshore Wind Reports",
         slug: "offshore-wind-reports",
         value: ["OEP.corpus.i00000001.n0000"],
