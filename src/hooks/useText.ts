@@ -2,7 +2,7 @@ import { useContext } from "react";
 
 import { APP_DICTIONARY, CATEGORY_DICTIONARY, TAppDictionaryKey, TDictionary, TCategoryDictionaryKey } from "@/constants/text";
 import { ThemeContext } from "@/context/ThemeContext";
-import { TCategory } from "@/types";
+import { TAttributionCategory } from "@/types";
 
 const getValueFromDictionary = (dictionary: Record<string, TDictionary<string>>, textKey: string, variant: string): string => {
   const dictionaryEntry = dictionary[textKey];
@@ -26,7 +26,7 @@ export const useText = () => {
 
   return {
     getAppText: (textKey: TAppDictionaryKey) => getValueFromDictionary(APP_DICTIONARY, textKey, theme),
-    getCategoryTextLookup: (category: TCategory) => (textKey: TCategoryDictionaryKey) =>
+    getCategoryTextLookup: (category: TAttributionCategory) => (textKey: TCategoryDictionaryKey) =>
       getValueFromDictionary(CATEGORY_DICTIONARY, textKey, category),
   };
 };

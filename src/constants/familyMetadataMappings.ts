@@ -1,6 +1,6 @@
 export const metadataLabelMappings = {
   approval_date: { label: "Approval FY" },
-  organisation: { label: "Fund" },
+  fund: { label: "Fund" },
   theme: { label: "Theme" },
   geographies: { label: "Geography" },
   sector: { label: "Sector" },

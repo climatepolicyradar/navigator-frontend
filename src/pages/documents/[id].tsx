@@ -110,7 +110,7 @@ const DocumentPage = ({
       description={getDocumentDescription(document.title)}
       theme={theme as TTheme}
       themeConfig={themeConfig}
-      attributionUrl={family.corpus.attribution_url}
+      attributionUrl={family.attribution.url}
     >
       <FeaturesContext.Provider value={features}>
         <TopicsContext.Provider value={topicsData}>
@@ -141,7 +141,7 @@ const DocumentPage = ({
               handlePassagesOrderChange={handlePassagesOrderChange}
             />
           </section>
-          {["Litigation", "LITIGATION"].includes(family.category) && (
+          {family.attribution.category === "Litigation" && (
             <Head>
               <script
                 type="application/ld+json"

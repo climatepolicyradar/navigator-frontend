@@ -1,3 +1,4 @@
+import { oldDocumentTransformer } from "@/bff/transformers/oldDocumentTransformer";
 import { TDocumentApiNewData, TDocumentApiOldData, TDocumentPresentationalResponse } from "@/types";
 
 export const documentTransformer = (
@@ -12,6 +13,6 @@ export const documentTransformer = (
     return { data: null, errors };
   } else {
     // Because the old API data type satisfies the presentational data type, no changes are needed
-    return { data: documentApiOldData, errors };
+    return oldDocumentTransformer(documentApiOldData, documentApiNewData, errors);
   }
 };

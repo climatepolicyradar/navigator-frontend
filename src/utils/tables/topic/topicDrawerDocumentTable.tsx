@@ -26,7 +26,7 @@ export const getTopicDrawerDocumentTableRows = (
 
     const contextLines: string[] = [];
 
-    if (family.corpus_type_name === "Litigation") {
+    if (family.attribution.category === "Litigation") {
       const documentFromFamily = family.documents.find((doc) => doc.import_id === document.importId);
       const latestEvent = sortBy(documentFromFamily.events, "date")[0];
 

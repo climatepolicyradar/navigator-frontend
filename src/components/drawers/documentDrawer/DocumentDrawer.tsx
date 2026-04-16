@@ -23,12 +23,14 @@ interface IProps {
 }
 
 export const DocumentDrawer = ({ documentImportId, family, familyTopics, languages, onOpenChange, open }: IProps) => {
+  const isLitigation = family.attribution.category === "Litigation";
+
   /* Get the document and its associated event if present */
 
   let document: TFamilyDocumentPublic | null = null;
   let event: TFamilyEventPublic | null = null;
 
-  if (family.corpus_type_name === "Litigation") {
+  if (isLitigation) {
     const eventAndDocument = getEventTableRowsData(family).find((row) => row.document?.import_id === documentImportId);
     if (eventAndDocument) {
       document = eventAndDocument.document;
@@ -51,7 +53,6 @@ export const DocumentDrawer = ({ documentImportId, family, familyTopics, languag
   /* Metadata */
 
   const metadata: IMetadata[] = [];
-  const isLitigation = family.corpus_type_name === "Litigation";
 
   if (isLitigation && event) {
     metadata.push({ label: "Filing date", value: formatDateShort(new Date(event.date)) }, { label: "Type", value: event.event_type });

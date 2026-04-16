@@ -1,14 +1,13 @@
 import { useContext } from "react";
 
+import { getTaxonomyFromV1 } from "@/bff/methods/getTaxonomy";
+import { CountryLinkWithSubdivisions } from "@/components/CountryLinkWithSubdivisions";
 import { CountryLinks } from "@/components/CountryLinks";
 import { WikiBaseConceptsContext } from "@/context/WikiBaseConceptsContext";
-import { getCategoryName } from "@/helpers/getCategoryName";
 import useConfig from "@/hooks/useConfig";
 import { TCategory, TCorpusTypeSubCategory, TFamilyConcept, TFamilyMetadata } from "@/types";
 import { getMostSpecificCourtsFromWikiConcepts } from "@/utils/getMostSpecificCourts";
 import { convertDate } from "@/utils/timedate";
-
-import { CountryLinkWithSubdivisions } from "../CountryLinkWithSubdivisions";
 
 interface IProps {
   category: TCategory;
@@ -58,12 +57,11 @@ export const FamilyMeta = ({ category, corpus_id, date, geographies, topics, aut
   return (
     <>
       <CountryLinkComponent geographies={geographies} countries={countries} subdivisions={subdivisions} />
-      {/* TODO: we need to revisit this once we have updated the config, so that we can determine this output based on the corpora */}
       {!isNaN(year) && <span>{`${category === "MCF" ? "Approval FY: " + year : year}`}</span>}
       {mostSpecificCourtName && <span className="capitalize">{mostSpecificCourtName}</span>}
       {topics && topics.length > 0 && <span className="capitalize">{topics.join(", ")}</span>}
       {author && author.length > 0 && <span className="capitalize">{author.join(", ")}</span>}
-      {category && <span className="capitalize">{getCategoryName(category, corpus_type_name, source, corpus_id)}</span>}
+      {category && <span className="capitalize">{getTaxonomyFromV1(category, corpus_type_name, source, corpus_id)}</span>}
       {document_type && <span className="capitalize">{document_type}</span>}
     </>
   );
