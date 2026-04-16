@@ -173,7 +173,8 @@ shared_access_role_arn= None
 if not is_review_template:
     # For review stacks, use the shared ECR access role created in frontend-platform
     # to avoid the 64-character IAM role name limit on ephemeral PR stacks.
-    shared_access_role_arn = shared_resources_review_stack.get_output("apprunner_ecr_access_role_arn")
+    if is_review_stack:
+        shared_access_role_arn = shared_resources_review_stack.get_output("apprunner_ecr_access_role_arn")
 
     # Configure AppRunner settings (using current account)
     is_cpr_stack = stack in ["cpr-production", "cpr-staging"]
