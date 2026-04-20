@@ -1,0 +1,43 @@
+name: Trigger Deploy Frontend on auto-App Token PR Merge
+
+on:
+  push:
+    branches:
+      - main
+
+permissions: read-all
+jobs:
+  trigger-deploy-frontend:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      actions: write
+    steps:
+      - name: Parse commit message
+        id: parse
+        env:
+          COMMIT_MSG: "${{ github.event.head_commit.message }}"
+        run: |
+          # Extract first line and match: Update app token for frontend/ccc-staging (staging)
+          FIRST_LINE=$(printf '%s\n' "${COMMIT_MSG}" | head -n1)
+          PATTERN='^Update app token for (infra/[^ ]+) in ([^ ]+) \(#[0-9]+\)$'
+          if [[ "${FIRST_LINE}" =~ ${PATTERN} ]]; then
+            echo "should_run=true" >> ${GITHUB_OUTPUT}
+            echo "stack=${BASH_REMATCH[1]}" >> ${GITHUB_OUTPUT}
+            echo "environment=${BASH_REMATCH[2]}" >> ${GITHUB_OUTPUT}
+          else
+            echo "should_run=false" >> ${GITHUB_OUTPUT}
+          fi
+
+      - uses: actions/checkout@v6
+
+      - name: Trigger Deploy Frontend workflow via GitHub CLI
+        if: steps.parse.outputs.should_run == 'true'
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          gh workflow run .github/workflows/deploy-frontend.yml \
+              --ref main \
+              -f environment="${{ steps.parse.outputs.environment }}" \
+              -f stack="${{ steps.parse.outputs.stack }}" \
+              -f docker-tag="latest"
