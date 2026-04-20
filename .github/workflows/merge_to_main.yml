@@ -333,3 +333,119 @@ jobs:
   #           -H "Accept: application/vnd.github.v3+json" \
   #           https://api.github.com/repos/${{ github.repository_owner }}/navigator-infra/dispatches \
   #           -d '{"event_type":"cleanup_lhci","client_payload":{"commit_hash":"${{ github.sha }}","source_repo":"${{ github.repository }}"}}'
+
+  changes:
+    runs-on: ubuntu-latest
+    outputs:
+      projects: ${{ steps.parse.outputs.projects }}
+    steps:
+      - uses: actions/checkout@v6
+      - uses: dorny/paths-filter@v3
+        id: filter
+        with:
+          filters: |
+            staging-frontend-cpr:
+              - 'infra/Pulumi.cpr-staging.yaml'
+              - 'infra/__main__.py'
+
+            staging-frontend-mcf:
+              - 'infra/Pulumi.mcf-staging.yaml'
+              - 'infra/__main__.py'
+
+            staging-frontend-cclw:
+              - 'infra/Pulumi.cclw-staging.yaml'
+              - 'infra/__main__.py'
+
+            staging-frontend-ccc:
+              - 'infra/Pulumi.ccc-staging.yaml'
+              - 'infra/__main__.py'
+
+            staging-shared-resources:
+              - 'infra/platform/**'
+
+            production-frontend-cpr:
+              - 'infra/Pulumi.cpr-production.yaml'
+              - 'infra/__main__.py'
+
+            production-frontend-mcf:
+              - 'infra/Pulumi.mcf-production.yaml'
+              - 'infra/__main__.py'
+
+            production-frontend-cclw:
+              - 'infra/Pulumi.cclw-production.yaml'
+              - 'infra/__main__.py'
+
+            production-frontend-ccc:
+              - 'infra/Pulumi.ccc-production.yaml'
+              - 'infra/__main__.py'
+
+      - id: parse
+        run: |
+          CHANGES='${{ steps.filter.outputs.changes }}'
+          CHANGES=${CHANGES:-[]}
+          echo "projects=$(echo "$CHANGES" | jq -c '.')" >> "$GITHUB_OUTPUT"
+
+  pulumi-up:
+    needs: changes
+    if: needs.changes.outputs.projects != '[]'
+    runs-on: ubuntu-latest
+    environment: ${{ startsWith(matrix.project, 'production-') && 'production' || 'staging' }}
+    strategy:
+      matrix:
+        project: ${{ fromJSON(needs.changes.outputs.projects) }}
+    steps:
+      - uses: actions/checkout@v6
+      - uses: astral-sh/setup-uv@v7
+
+      - name: Determine project directory
+        id: project_dir
+        run: |
+          project="${{ matrix.project }}"
+          if [[ "$project" == staging-frontend-* || "$project" == production-frontend-* ]]; then
+            echo "value=infra" >> "$GITHUB_OUTPUT"
+          else
+            echo "value=infra/platform" >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: Determine stack name
+        id: stack
+        run: |
+          project="${{ matrix.project }}"
+          if [[ "$project" =~ ^(staging|production)-frontend-([a-z0-9-]+)$ ]]; then
+            environment="${BASH_REMATCH[1]}"
+            theme="${BASH_REMATCH[2]}"
+            echo "value=frontend/${theme}-${environment}" >> "$GITHUB_OUTPUT"
+            echo "environment=${environment}" >> "$GITHUB_OUTPUT"
+          elif [[ "$project" =~ ^(staging|production)-shared-resources$ ]]; then
+            environment="${BASH_REMATCH[1]}"
+            echo "value=platform/${environment}" >> "$GITHUB_OUTPUT"
+            echo "environment=${environment}" >> "$GITHUB_OUTPUT"
+          else
+            echo "Unsupported project format: ${project}" >&2
+            exit 1
+          fi
+
+      - name: configure aws credentials
+        uses: aws-actions/configure-aws-credentials@v5.1.1
+        env:
+          AWS_REGION: eu-west-1
+        with:
+          role-to-assume: arn:aws:iam::${{ secrets.AWS_ACCOUNT_ID }}:role/navigator-infra-github-actions
+          role-session-name: GitHub_to_AWS_via_FederatedOIDC_${{ steps.stack.outputs.environment }}
+          aws-region: ${{ env.AWS_REGION }}
+
+      - name: Install pulumi
+        uses: pulumi/actions@v6
+        env:
+          PULUMI_ACCESS_TOKEN: ${{ secrets.PULUMI_ACCESS_TOKEN }}
+
+      - name: Install dependencies
+        working-directory: ${{ steps.project_dir.outputs.value }}
+        run: uv sync
+
+      - name: Pulumi up
+        working-directory: ${{ steps.project_dir.outputs.value }}
+        run: pulumi up --yes --skip-preview --stack climatepolicyradar/${{ steps.stack.outputs.value }}
+        env:
+          PULUMI_ACCESS_TOKEN: ${{ secrets.PULUMI_ACCESS_TOKEN }}
+          DEPLOY_TO_PROD_STACK_ALLOWED: true
