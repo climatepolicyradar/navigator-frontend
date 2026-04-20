@@ -68,10 +68,10 @@ export type SearchDocumentsSortKey = (typeof SEARCH_DOCUMENT_SORT_KEYS)[number];
 export function orderByParamFromSortKey(key: SearchDocumentsSortKey): string {
   const map: Record<SearchDocumentsSortKey, string> = {
     relevance: "relevance desc",
-    recent: "published_timestamp desc",
-    oldest: "published_timestamp asc",
-    title_asc: "title_sort asc",
-    title_desc: "title_sort desc",
+    recent: "attributes.published_date desc",
+    oldest: "attributes.published_date asc",
+    title_asc: "title asc",
+    title_desc: "title desc",
   };
   return map[key];
 }
