@@ -1,0 +1,67 @@
+name: Deploy frontend
+on:
+  workflow_dispatch:
+    inputs:
+      # trunk-ignore(checkov/CKV_GHA_7)
+      environment:
+        type: environment
+        description: Environment
+        required: true
+        default: staging
+      docker-tag:
+        description: Docker tag
+        required: true
+        type: string
+      stack:
+        description: Pulumi stack
+        required: true
+        type: choice
+        options:
+          - frontend/cpr-staging
+          - frontend/cpr-production
+          - frontend/mcf-staging
+          - frontend/mcf-production
+          - frontend/cclw-staging
+          - frontend/cclw-production
+          - frontend/ccc-staging
+          - frontend/ccc-production
+env:
+  AWS_REGION: eu-west-1
+  DEPLOY_FROM_MAIN_BRANCH_ONLY: False
+  DEPLOY_TO_PROD_STACK_ALLOWED: true
+permissions:
+  id-token: write
+  contents: read
+jobs:
+  deploy:
+    environment: ${{ github.event.inputs.environment }}
+    name: Deploy ${{ github.event.inputs.environment }} [${{ github.event.inputs.stack }}@${{ github.event.inputs.docker-tag }}]
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v6
+      - name: configure aws credentials
+        uses: aws-actions/configure-aws-credentials@v5.1.1
+        with:
+          role-to-assume: arn:aws:iam::${{ secrets.AWS_ACCOUNT_ID }}:role/navigator-infra-github-actions
+          role-session-name: GitHub_to_AWS_via_FederatedOIDC
+          aws-region: ${{ env.AWS_REGION }}
+      - name: Install pulumi
+        uses: pulumi/actions@v6
+        with:
+          stack-name: climatepolicyradar/${{ github.event.inputs.stack }}
+        env:
+          PULUMI_ACCESS_TOKEN: ${{ secrets.PULUMI_ACCESS_TOKEN }}
+      - name: Install dependencies
+        working-directory: frontend
+        run: |
+          pipx install rust-just
+          pipx install uv
+          uv sync
+      - name: Update pulumi docker_tag
+        working-directory: frontend
+        run: |
+          pulumi stack select climatepolicyradar/${{ github.event.inputs.stack }}
+          pulumi env set climatepolicyradar/${{ github.event.inputs.stack }} docker_tag ${{ github.event.inputs.docker-tag }}
+          pulumi up --yes
+        env:
+          PULUMI_ACCESS_TOKEN: ${{ secrets.PULUMI_ACCESS_TOKEN }}
