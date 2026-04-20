@@ -1,4 +1,4 @@
-import type { TQueryGroup } from "@/components/_experiment/queryBuilder/QueryBuilder";
+import type { TQueryGroup } from "@/components/_experiment/advancedFilters/AdvancedFilters";
 
 type TAggregationRow = {
   value?: { id?: string } | null;

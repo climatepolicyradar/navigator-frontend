@@ -2,7 +2,7 @@ import { LucideX, SlidersHorizontal } from "lucide-react";
 
 import { TLabelResult } from "@/hooks/useLabelSearch";
 
-import { TQueryGroup } from "../queryBuilder/QueryBuilder";
+import { TQueryGroup } from "../advancedFilters/AdvancedFilters";
 
 function getTypeOfLabel(label: string, availableFilters: TLabelResult[]): string | null {
   const found = availableFilters.find((f) => f.id === label);

@@ -6,8 +6,8 @@ import { fetchSearchDocuments, SearchDocument, SearchDocumentsResponse, IAggrega
 import { DocumentSearchResult } from "./DocumentSearchResult";
 import { PrincipalSearchResult } from "./PrincipalSearchResult";
 import styles from "./SearchResults.module.css";
+import { TQueryGroup } from "../advancedFilters/AdvancedFilters";
 import { EmptySearch } from "../emptySearch/EmptySearch";
-import { TQueryGroup } from "../queryBuilder/QueryBuilder";
 
 // Principal = Family in old model
 const isPrincipal = (result: SearchDocument): boolean => {
