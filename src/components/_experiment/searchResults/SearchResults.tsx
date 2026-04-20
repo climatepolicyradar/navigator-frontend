@@ -17,7 +17,6 @@ const isPrincipal = (result: SearchDocument): boolean => {
 export function SearchResults({ data, onSelectLabel }: { data: SearchDocumentsResponse; onSelectLabel?: (label: string) => void }) {
   return (
     <div>
-      <p className="text-sm text-text-secondary mb-4">{data.total_size ?? 0} results</p>
       <ul className="space-y-4">
         {data.results.map((result) => (
           <Fragment key={result.id}>
