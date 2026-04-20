@@ -66,7 +66,7 @@ export function PrincipalSearchResult({ result, onSelectLabel }: { result: Searc
                   <button
                     key={i}
                     className="flex gap-1 items-center rounded px-2 py-0.5 cursor-pointer hover:bg-neutral-200"
-                    onClick={() => onSelectLabel?.(relationship.value.value)}
+                    onClick={() => onSelectLabel?.(relationship.value.id)}
                   >
                     {iconForLabelType(relationship.value.type)}
                     <span>{relationship.value.value}</span>

@@ -64,7 +64,7 @@ export function DocumentSearchResult({ result, onSelectLabel }: { result: Search
             <button
               key={i}
               className="flex gap-1 items-center rounded px-2 py-0.5 cursor-pointer hover:bg-neutral-200"
-              onClick={() => onSelectLabel?.(relationship.value.value)}
+              onClick={() => onSelectLabel?.(relationship.value.id)}
             >
               <LucideEarth width={14} height={14} />
               <span>{relationship.value.value}</span>
