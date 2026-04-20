@@ -163,7 +163,7 @@ export function IntelliSearch({
                                   value={{ value: suggestion.value, type: "label" }}
                                   onClick={() => {
                                     if (!isAvailable) return;
-                                    handleSuggestionClick(suggestion.value);
+                                    handleSuggestionClick(suggestion.id);
                                   }}
                                   className={joinTailwindClasses(
                                     suggestionRow,

@@ -5,7 +5,7 @@ import { TLabelResult } from "@/hooks/useLabelSearch";
 import { TQueryGroup } from "../queryBuilder/QueryBuilder";
 
 function getTypeOfLabel(label: string, availableFilters: TLabelResult[]): string | null {
-  const found = availableFilters.find((f) => f.value === label);
+  const found = availableFilters.find((f) => f.id === label);
   return found ? found.type : null;
 }
 
@@ -26,7 +26,7 @@ function AppliedLabel({ label, type, onSelect, onRemove }: { label: string; type
         <span>{type.slice(0, 1).toUpperCase() + type.replace("_", " ").slice(1)}</span>
       </button>
       <button className="py-1 px-2 border-r border-gray-300" onClick={onSelect}>
-        <span>{label}</span>
+        <span>{label.split("::")?.[1]}</span>
       </button>
       <button className="px-2 rounded-r-lg h-7 hover:bg-gray-200" onClick={onRemove}>
         <LucideX width={16} height={16} />

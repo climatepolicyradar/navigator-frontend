@@ -72,7 +72,7 @@ export function SearchFilters({
   }, [sortedForLabelType, availableLabelIds]);
 
   const renderCheckboxRow = (filter: TLabelResult, isAvailable: boolean) => {
-    const checked = hasValue(filters, filter.value);
+    const checked = hasValue(filters, filter.id);
     return (
       <li key={filter.id}>
         <Checkbox
@@ -81,7 +81,7 @@ export function SearchFilters({
           disabled={!isAvailable}
           onChange={(nextChecked) => {
             if (!isAvailable) return;
-            onChange?.(nextChecked, filter.value);
+            onChange?.(nextChecked, filter.id);
           }}
         />
       </li>
