@@ -9,7 +9,7 @@ import { getAvailableLabelIdsFromAggregations, partitionByAvailability } from "@
 import { labelTypeLabel } from "@/utils/_experiment/labelTypeLabel";
 import { joinTailwindClasses } from "@/utils/tailwind";
 
-import { TQueryGroup } from "../queryBuilder/QueryBuilder";
+import { TQueryGroup } from "../advancedFilters/AdvancedFilters";
 
 function hasValue(group: TQueryGroup | null | undefined, value: string): boolean {
   if (!group) return false;

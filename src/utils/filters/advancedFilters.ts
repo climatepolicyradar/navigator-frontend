@@ -1,4 +1,4 @@
-import { createGroup, TQueryGroup, TQueryRule } from "@/components/_experiment/queryBuilder/QueryBuilder";
+import { createGroup, TQueryGroup, TQueryRule } from "@/components/_experiment/advancedFilters/AdvancedFilters";
 
 /** Extract all label values from "contains" rules in the filter tree. */
 export function extractLabels(group: TQueryGroup | null): string[] {
