@@ -1,0 +1,9 @@
+{
+  "name": "lambda-code",
+  "private": true,
+  "scripts": {},
+  "dependencies": {
+    "cloudfront": "^0.4.1"
+  },
+  "overrides": {}
+}
