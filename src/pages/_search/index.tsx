@@ -74,7 +74,7 @@ const ShadowSearch = ({ theme, themeConfig, features }: TProps) => {
 
   // Control SearchFilters popover and active category tab (single source of truth)
   const [filtersOpen, setFiltersOpen] = useState(false);
-  const [filterSidebarCategory, setFilterSidebarCategory] = useState<TLabelType>("agent");
+  const [filterSidebarCategory, setFilterSidebarCategory] = useState<TLabelType>("category");
 
   // Control Advanced Filters view
   const [advancedFiltersOpen, setAdvancedFiltersOpen] = useState(false);
@@ -141,6 +141,10 @@ const ShadowSearch = ({ theme, themeConfig, features }: TProps) => {
             }}
             aggregations={labelAggregations}
             query={query}
+            onAdvancedClick={() => {
+              setFiltersOpen(false);
+              setAdvancedFiltersOpen(true);
+            }}
           />
           <div className="flex items-center gap-6">
             <div>
