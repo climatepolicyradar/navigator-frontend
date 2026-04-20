@@ -17,8 +17,7 @@ type TQueryGroup = {
 };
 
 type TQueryRule = {
-  // TODO: Remove as part of
-  field: "labels.value.id" | "labels.value.value";
+  field: "labels.value.id";
   op: "contains" | "not_contains";
   value: string;
 };
