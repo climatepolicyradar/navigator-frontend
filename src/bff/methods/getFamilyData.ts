@@ -2,7 +2,6 @@ import axios from "axios";
 
 import { ApiClient } from "@/api/http-common";
 import { familyTransformer } from "@/bff/transformers/familyTransformer";
-import { BFF_TRANSFORMED_CORPORA } from "@/constants/bff";
 import { DEFAULT_DOCUMENT_TITLE } from "@/constants/document";
 import { EXCLUDED_ISO_CODES } from "@/constants/geography";
 import { TDataInDocument, validateDataInDocument } from "@/schemas";
@@ -56,7 +55,7 @@ export const getFamilyData = async (slug: string, features: TFeatures): Promise<
 
   // Get the new data-in document for this family or fall back to the older data
   let dataInDocument: TDataInDocument | null = null;
-  if (family && features["new-data-model"] && BFF_TRANSFORMED_CORPORA.includes(family.corpus_id)) {
+  if (family && features["new-data-model"]) {
     try {
       const { data: dataInDocumentResponse } = await apiClient.get<TApiItemResponse>(`/data-in/documents/${family.import_id}`);
       dataInDocument = validateDataInDocument(dataInDocumentResponse.data);

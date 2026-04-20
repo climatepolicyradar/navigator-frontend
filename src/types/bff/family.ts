@@ -39,7 +39,6 @@ export type TFamilyPresentationalData = {
     usesDataIn: boolean;
     newApiData?: TFamilyApiNewData;
     originalFamily?: TFamilyPublic;
-    corpusId: string;
   };
 };
 
