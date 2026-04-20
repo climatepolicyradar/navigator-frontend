@@ -1,6 +1,6 @@
 import { Popover as BasePopover } from "@base-ui/react/popover";
-import { ChevronRight, Circle, ListFilter, SlidersHorizontal } from "lucide-react";
-import { useMemo } from "react";
+import { ChevronDown, ChevronRight, ChevronUp, Circle, ListFilter, SlidersHorizontal } from "lucide-react";
+import { useMemo, useState } from "react";
 
 import { IAggregationLabel } from "@/api/search";
 import { Checkbox } from "@/components/checkbox/Checkbox";
@@ -61,6 +61,7 @@ export function SearchFilters({
   aggregations,
   query,
 }: TProps) {
+  const [openOther, setOpenOther] = useState(false);
   const availableLabelIds = useMemo(() => getAvailableLabelIdsFromAggregations(aggregations, query, filters), [aggregations, query, filters]);
 
   const sortedForLabelType = useMemo(
@@ -138,34 +139,59 @@ export function SearchFilters({
                         </li>
                       ))}
                     </ul>
-                    <ul className="flex flex-col">
-                      {OTHER_LABEL_TYPES.map((agg) => (
-                        <li key={agg} className="text-sm text-inky-black mb-1">
-                          <button
-                            className={joinTailwindClasses(
-                              "flex flex-nowrap items-center gap-2 rounded-sm w-full text-left p-2 pl-1 text-sm text-inky-black font-medium hover:bg-neutral-100",
-                              activeLabelType === agg ? "bg-neutral-100!" : ""
-                            )}
-                            onClick={() => onActiveLabelTypeChange(agg)}
-                          >
-                            <span className="text-inky-blue px-2">
-                              {hasActiveFilterOfType(availableFilters, filters, agg) ? (
-                                <Circle width={8} height={8} fill="currentColor" />
-                              ) : (
-                                <span>&nbsp;&nbsp;</span>
+                    <button
+                      className={joinTailwindClasses(
+                        "flex flex-nowrap items-center gap-2 rounded-sm w-full text-left p-2 pl-1 text-sm text-neutral-500 font-medium hover:bg-neutral-100",
+                        openOther ? "bg-neutral-100!" : ""
+                      )}
+                      onClick={() => setOpenOther((open) => !open)}
+                    >
+                      {openOther ? (
+                        <>
+                          <span className="px-1">
+                            <ChevronUp className="text-neutral-500" width={16} height={16} />
+                          </span>
+                          <span className="grow">Less</span>
+                        </>
+                      ) : (
+                        <>
+                          <span className="px-1">
+                            <ChevronDown className="text-neutral-500" width={16} height={16} />
+                          </span>
+                          <span className="grow">More</span>
+                        </>
+                      )}
+                    </button>
+                    {openOther && (
+                      <ul>
+                        {OTHER_LABEL_TYPES.map((agg) => (
+                          <li key={agg} className="text-sm text-inky-black mb-1">
+                            <button
+                              className={joinTailwindClasses(
+                                "flex flex-nowrap items-center gap-2 rounded-sm w-full text-left p-2 pl-1 text-sm text-inky-black font-medium hover:bg-neutral-100",
+                                activeLabelType === agg ? "bg-neutral-100!" : ""
                               )}
-                            </span>
-                            <span className="grow">{labelTypeLabel(agg)}</span>
-                            {activeLabelType === agg && (
-                              <span className=" text-neutral-500">
-                                <ChevronRight width={20} height={20} />
+                              onClick={() => onActiveLabelTypeChange(agg)}
+                            >
+                              <span className="text-inky-blue px-2">
+                                {hasActiveFilterOfType(availableFilters, filters, agg) ? (
+                                  <Circle width={8} height={8} fill="currentColor" />
+                                ) : (
+                                  <span>&nbsp;&nbsp;</span>
+                                )}
                               </span>
-                            )}
-                          </button>
-                        </li>
-                      ))}
-                    </ul>
-                    <div className="mt-auto">
+                              <span className="grow">{labelTypeLabel(agg)}</span>
+                              {activeLabelType === agg && (
+                                <span className=" text-neutral-500">
+                                  <ChevronRight width={20} height={20} />
+                                </span>
+                              )}
+                            </button>
+                          </li>
+                        ))}
+                      </ul>
+                    )}
+                    <div className="mt-auto pt-4">
                       <button
                         className="flex flex-nowrap items-center gap-2 rounded-sm w-full text-left p-2 pl-1 text-sm text-inky-black font-medium hover:bg-neutral-100"
                         onClick={onAdvancedClick}
