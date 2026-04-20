@@ -279,3 +279,119 @@ jobs:
     uses: climatepolicyradar/reusable-workflows/.github/workflows/dependabot-autopilot.yml@v23
     with:
       auto-approve: false
+
+  changes:
+    runs-on: ubuntu-latest
+    permissions:
+      pull-requests: read
+    outputs:
+      pulumi_projects: ${{ steps.parse.outputs.pulumi_projects }}
+    steps:
+      - uses: dorny/paths-filter@v3
+        id: filter
+        with:
+          filters: |
+            staging-frontend-cpr:
+              - 'infra/Pulumi.cpr-staging.yaml'
+              - 'infra/__main__.py'
+
+            staging-frontend-mcf:
+              - 'infra/Pulumi.mcf-staging.yaml'
+              - 'infra/__main__.py'
+
+            staging-frontend-cclw:
+              - 'infra/Pulumi.cclw-staging.yaml'
+              - 'infra/__main__.py'
+
+            staging-frontend-ccc:
+              - 'infra/Pulumi.ccc-staging.yaml'
+              - 'infra/__main__.py'
+
+            staging-shared-resources:
+              - 'infra/platform/**'
+
+            production-frontend-cpr:
+              - 'infra/Pulumi.cpr-production.yaml'
+              - 'infra/__main__.py'
+
+            production-frontend-mcf:
+              - 'infra/Pulumi.mcf-production.yaml'
+              - 'infra/__main__.py'
+
+            production-frontend-cclw:
+              - 'infra/Pulumi.cclw-production.yaml'
+              - 'infra/__main__.py'
+
+            production-frontend-ccc:
+              - 'infra/Pulumi.ccc-production.yaml'
+              - 'infra/__main__.py'
+      - id: parse
+        run: |
+          CHANGES='${{ steps.filter.outputs.changes }}'
+          CHANGES=${CHANGES:-[]}
+          echo "pulumi_projects=$(echo "$CHANGES" | jq -c '[.[] | select(. != "resources")]')" >> "$GITHUB_OUTPUT"
+
+  pulumi-preview:
+    needs: changes
+    if: needs.changes.outputs.pulumi_projects != '[]'
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        project: ${{ fromJSON(needs.changes.outputs.pulumi_projects) }}
+    environment: staging
+    env:
+      DEPLOY_FROM_MAIN_BRANCH_ONLY: false
+      AWS_REGION: eu-west-1
+      DEPLOY_TO_PROD_STACK_ALLOWED: true
+    steps:
+      - uses: actions/checkout@v6
+
+      - name: configure aws credentials
+        uses: aws-actions/configure-aws-credentials@v5.1.1
+        with:
+          role-to-assume: arn:aws:iam::${{ secrets.AWS_ACCOUNT_ID }}:role/navigator-infra-github-actions
+          role-session-name: GitHub_to_AWS_via_FederatedOIDC
+          aws-region: ${{ env.AWS_REGION }}
+
+      - uses: astral-sh/setup-uv@v7
+
+      - name: Determine project directory
+        id: project_dir
+        run: |
+          project="${{ matrix.project }}"
+          if [[ "$project" == staging-frontend-* || "$project" == production-frontend-* ]]; then
+            echo "value=infra" >> "$GITHUB_OUTPUT"
+          else
+            echo "value=infra/platform" >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: Determine stack name
+        id: stack
+        run: |
+          project="${{ matrix.project }}"
+          if [[ "$project" =~ ^(staging|production)-frontend-([a-z0-9-]+)$ ]]; then
+            environment="${BASH_REMATCH[1]}"
+            theme="${BASH_REMATCH[2]}"
+            echo "value=frontend/${theme}-${environment}" >> "$GITHUB_OUTPUT"
+          elif [[ "$project" =~ ^(staging|production)-shared-resources$ ]]; then
+            environment="${BASH_REMATCH[1]}"
+            echo "value=platform/${environment}" >> "$GITHUB_OUTPUT"
+          else
+            echo "Unsupported project format: ${project}" >&2
+            exit 1
+          fi
+
+      - name: Install pulumi
+        uses: pulumi/actions@v6
+        env:
+          PULUMI_ACCESS_TOKEN: ${{ secrets.PULUMI_ACCESS_TOKEN }}
+
+      - name: Install dependencies
+        working-directory: ${{ steps.project_dir.outputs.value }}
+        run: uv sync
+
+      - name: Pulumi preview
+        working-directory: ${{ steps.project_dir.outputs.value }}
+        run: uv run pulumi preview --stack climatepolicyradar/${{ steps.stack.outputs.value }} --suppress-outputs
+        env:
+          PULUMI_ACCESS_TOKEN: ${{ secrets.PULUMI_ACCESS_TOKEN }}
