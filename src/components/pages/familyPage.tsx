@@ -62,7 +62,6 @@ export interface IProps {
     usesDataIn: boolean;
     newApiData?: TFamilyApiNewData;
     originalFamily?: TFamilyPublic;
-    corpusId: string;
   };
 }
 

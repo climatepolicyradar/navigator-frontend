@@ -15,7 +15,7 @@ export const oldFamilyTransformer = (
         ...familyApiOldData,
         collections: collections.map((collection) => transformOldCollection(collection, corpusTypes)),
         family: transformOldFamily(family, corpusTypes),
-        debug: { corpusId: familyApiOldData.family.corpus_id, newApiData: familyApiNewData, usesDataIn: false },
+        debug: { newApiData: familyApiNewData, usesDataIn: false },
       },
       errors,
     };
