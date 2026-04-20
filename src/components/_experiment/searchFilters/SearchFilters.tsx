@@ -203,7 +203,7 @@ export function SearchFilters({
                       </button>
                     </div>
                   </div>
-                  <div className="max-h-[50vh] grow p-4 overflow-y-auto text-sm flex flex-col gap-6">
+                  <div className="max-h-[50vh] min-h-[50vh] grow p-4 overflow-y-auto text-sm flex flex-col gap-6">
                     <div className="flex flex-col gap-2">
                       <div className="border-b border-transparent-regular pb-2">
                         <h4 className="text-sm text-inky-black font-medium">{labelTypeLabel(activeLabelType)}</h4>
