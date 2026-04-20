@@ -123,19 +123,21 @@ export type TTarget = {
 
 // TODO resolve different litigation cases depending on API endpoint used
 export type TCategory =
-  | "Legislative"
-  | "LEGISLATIVE"
   | "Executive"
   | "EXECUTIVE"
+  | "Law"
+  | "Legislative"
+  | "LEGISLATIVE"
   | "Litigation"
   | "LITIGATION"
-  | "Policy"
-  | "Law"
-  | "UNFCCC"
   | "MCF"
+  | "Policy"
   | "Reports"
-  | "REPORTS";
+  | "REPORTS"
+  | "UNFCCC";
 export type TCorpusTypeSubCategory = "AF" | "CIF" | "GCF" | "GEF" | "Laws and Policies" | "Intl. agreements" | "Litigation" | "Reports";
+
+export type TAttributionCategory = "Law" | "Litigation" | "Multilateral Climate Fund project" | "Policy" | "Report" | "UN submission";
 
 export type TEvent = {
   title: string;
@@ -230,8 +232,8 @@ export type TFamilyMetadata = TMetadata<
 
 export type TMCFFamilyMetadata = {
   approval_date?: string;
-  category?: TCorpusTypeSubCategory | TCategory;
-  organisation?: string;
+  category?: TAttributionCategory;
+  fund?: string;
   theme?: string[];
   geographies?: string[];
   sector?: string[];
@@ -388,24 +390,30 @@ export type TFamilyDocumentPublic = {
   document_status: string | null;
 };
 
+export type TFamilyAttribution = {
+  category: TAttributionCategory;
+  corpusImage?: string;
+  corpusImageAlt: string;
+  corpusNote: string;
+  provider: string;
+  taxonomy: string;
+  url?: string;
+};
+
 export type TFamilyPublic = {
-  category: TCategory;
-  corpus_id: string;
-  corpus_type_name?: TCorpusTypeSubCategory;
   geographies: string[];
   import_id: string;
   last_updated_date: string | null;
   metadata: TFamilyMetadata;
-  organisation: string;
   published_date: string | null;
   slug: string;
   summary: string;
   title: string;
-  corpus?: TCorpusPublic;
   collections: TCollectionPublic[];
   concepts: TFamilyConcept[];
   documents: TFamilyDocumentPublic[];
   events: TFamilyEventPublic[];
+  attribution: TFamilyAttribution;
 };
 
 export type TCollectionPublicWithFamilies = {

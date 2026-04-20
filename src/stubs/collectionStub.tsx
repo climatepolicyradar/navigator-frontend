@@ -83,26 +83,19 @@ export const COLLECTION_STUB: TCollectionPublicWithFamilies = {
           subconcept_of_labels: [],
         },
       ],
-      corpus: {
-        import_id: "Academic.corpus.Litigation.n0000",
-        title: "Litigation",
-        corpus_type_name: "Litigation",
-        organisation: {
-          name: "Sabin",
-          id: 11,
-        },
-        attribution_url: null,
+      attribution: {
+        category: "Litigation",
+        corpusImageAlt: "No corpus image found",
+        corpusNote: "No corpus note found",
+        provider: "Sabin",
+        taxonomy: "Litigation",
       },
-      corpus_id: "Academic.corpus.Litigation.n0000",
-      organisation: "Sabin",
       summary:
         "Action by young plaintiffs asserting that the federal government violated their constitutional rights by causing dangerous carbon dioxide concentrations. [Due to a technical issue, some documents are currently not available.]",
       geographies: ["USA", "US-OR"],
       published_date: "2015-01-01T00:00:00Z",
       last_updated_date: "2025-03-24T00:00:00Z",
       slug: "juliana-v-united-states_fb95",
-      category: "Litigation",
-      corpus_type_name: "Litigation",
       collections: [
         {
           import_id: "Sabin.collection.154.0",
@@ -506,26 +499,19 @@ export const COLLECTION_STUB: TCollectionPublicWithFamilies = {
           subconcept_of_labels: ["Federal Courts"],
         },
       ],
-      corpus: {
-        import_id: "Academic.corpus.Litigation.n0000",
-        title: "Litigation",
-        corpus_type_name: "Litigation",
-        organisation: {
-          name: "Sabin",
-          id: 11,
-        },
-        attribution_url: null,
+      attribution: {
+        category: "Litigation",
+        corpusImageAlt: "No corpus image found",
+        corpusNote: "No corpus note found",
+        provider: "Sabin",
+        taxonomy: "Litigation",
       },
-      corpus_id: "Academic.corpus.Litigation.n0000",
-      organisation: "Sabin",
       summary:
         "Action by young plaintiffs asserting that the federal government violated their constitutional rights by causing dangerous carbon dioxide concentrations. [Due to a technical issue, some documents are currently not available.]",
       geographies: ["USA", "US-OR"],
       published_date: "2015-01-01T00:00:00Z",
       last_updated_date: "2024-04-19T00:00:00Z",
       slug: "juliana-v-united-states_83df",
-      category: "Litigation",
-      corpus_type_name: "Litigation",
       collections: [
         {
           import_id: "Sabin.collection.154.0",
@@ -2776,26 +2762,19 @@ export const COLLECTION_STUB: TCollectionPublicWithFamilies = {
           subconcept_of_labels: [],
         },
       ],
-      corpus: {
-        import_id: "Academic.corpus.Litigation.n0000",
-        title: "Litigation",
-        corpus_type_name: "Litigation",
-        organisation: {
-          name: "Sabin",
-          id: 11,
-        },
-        attribution_url: null,
+      attribution: {
+        category: "Litigation",
+        corpusImageAlt: "No corpus image found",
+        corpusNote: "No corpus note found",
+        provider: "Sabin",
+        taxonomy: "Litigation",
       },
-      corpus_id: "Academic.corpus.Litigation.n0000",
-      organisation: "Sabin",
       summary:
         "Action by young plaintiffs asserting that the federal government violated their constitutional rights by causing dangerous carbon dioxide concentrations. [Due to a technical issue, some documents are currently not available.]",
       geographies: ["USA", "US-OR"],
       published_date: "2015-01-01T00:00:00Z",
       last_updated_date: "2021-04-06T00:00:00Z",
       slug: "juliana-v-united-states_522f",
-      category: "Litigation",
-      corpus_type_name: "Litigation",
       collections: [
         {
           import_id: "Sabin.collection.154.0",
@@ -9668,26 +9647,19 @@ export const COLLECTION_STUB: TCollectionPublicWithFamilies = {
           subconcept_of_labels: ["Federal Courts"],
         },
       ],
-      corpus: {
-        import_id: "Academic.corpus.Litigation.n0000",
-        title: "Litigation",
-        corpus_type_name: "Litigation",
-        organisation: {
-          name: "Sabin",
-          id: 11,
-        },
-        attribution_url: null,
+      attribution: {
+        category: "Litigation",
+        corpusImageAlt: "No corpus image found",
+        corpusNote: "No corpus note found",
+        provider: "Sabin",
+        taxonomy: "Litigation",
       },
-      corpus_id: "Academic.corpus.Litigation.n0000",
-      organisation: "Sabin",
       summary:
         "Action by young plaintiffs asserting that the federal government violated their constitutional rights by causing dangerous carbon dioxide concentrations. [Due to a technical issue, some documents are currently not available.]",
       geographies: ["USA", "US-OR"],
       published_date: "2015-01-01T00:00:00Z",
       last_updated_date: "2024-11-12T00:00:00Z",
       slug: "in-re-juliana_7029",
-      category: "Litigation",
-      corpus_type_name: "Litigation",
       collections: [
         {
           import_id: "Sabin.collection.154.0",
@@ -9910,26 +9882,19 @@ export const COLLECTION_STUB: TCollectionPublicWithFamilies = {
           subconcept_of_labels: [],
         },
       ],
-      corpus: {
-        import_id: "Academic.corpus.Litigation.n0000",
-        title: "Litigation",
-        corpus_type_name: "Litigation",
-        organisation: {
-          name: "Sabin",
-          id: 11,
-        },
-        attribution_url: null,
+      attribution: {
+        category: "Litigation",
+        corpusImageAlt: "No corpus image found",
+        corpusNote: "No corpus note found",
+        provider: "Sabin",
+        taxonomy: "Litigation",
       },
-      corpus_id: "Academic.corpus.Litigation.n0000",
-      organisation: "Sabin",
       summary:
         "Action by young plaintiffs asserting that the federal government violated their constitutional rights by causing dangerous carbon dioxide concentrations. [Due to a technical issue, some documents are currently not available.]",
       geographies: ["USA", "US-OR"],
       published_date: "2015-01-01T00:00:00Z",
       last_updated_date: "2024-07-12T00:00:00Z",
       slug: "united-states-v-u-s-district-court-for-the-district-of-oregon_98ff",
-      category: "Litigation",
-      corpus_type_name: "Litigation",
       collections: [
         {
           import_id: "Sabin.collection.154.0",
@@ -10998,26 +10963,19 @@ export const COLLECTION_STUB: TCollectionPublicWithFamilies = {
           subconcept_of_labels: ["Federal Courts"],
         },
       ],
-      corpus: {
-        import_id: "Academic.corpus.Litigation.n0000",
-        title: "Litigation",
-        corpus_type_name: "Litigation",
-        organisation: {
-          name: "Sabin",
-          id: 11,
-        },
-        attribution_url: null,
+      attribution: {
+        category: "Litigation",
+        corpusImageAlt: "No corpus image found",
+        corpusNote: "No corpus note found",
+        provider: "Sabin",
+        taxonomy: "Litigation",
       },
-      corpus_id: "Academic.corpus.Litigation.n0000",
-      organisation: "Sabin",
       summary:
         "Action by young plaintiffs asserting that the federal government violated their constitutional rights by causing dangerous carbon dioxide concentrations. [Due to a technical issue, some documents are currently not available.]",
       geographies: ["USA", "US-OR"],
       published_date: "2015-01-01T00:00:00Z",
       last_updated_date: "2021-03-05T00:00:00Z",
       slug: "juliana-v-united-states_83f7",
-      category: "Litigation",
-      corpus_type_name: "Litigation",
       collections: [
         {
           import_id: "Sabin.collection.154.0",
@@ -14947,26 +14905,19 @@ export const COLLECTION_STUB: TCollectionPublicWithFamilies = {
           subconcept_of_labels: ["Federal Courts"],
         },
       ],
-      corpus: {
-        import_id: "Academic.corpus.Litigation.n0000",
-        title: "Litigation",
-        corpus_type_name: "Litigation",
-        organisation: {
-          name: "Sabin",
-          id: 11,
-        },
-        attribution_url: null,
+      attribution: {
+        category: "Litigation",
+        corpusImageAlt: "No corpus image found",
+        corpusNote: "No corpus note found",
+        provider: "Sabin",
+        taxonomy: "Litigation",
       },
-      corpus_id: "Academic.corpus.Litigation.n0000",
-      organisation: "Sabin",
       summary:
         "Action by young plaintiffs asserting that the federal government violated their constitutional rights by causing dangerous carbon dioxide concentrations. [Due to a technical issue, some documents are currently not available.]",
       geographies: ["USA", "US-OR"],
       published_date: "2015-01-01T00:00:00Z",
       last_updated_date: "2018-12-26T00:00:00Z",
       slug: "juliana-v-united-states_5218",
-      category: "Litigation",
-      corpus_type_name: "Litigation",
       collections: [
         {
           import_id: "Sabin.collection.154.0",
@@ -15365,26 +15316,19 @@ export const COLLECTION_STUB: TCollectionPublicWithFamilies = {
           subconcept_of_labels: ["Federal Courts"],
         },
       ],
-      corpus: {
-        import_id: "Academic.corpus.Litigation.n0000",
-        title: "Litigation",
-        corpus_type_name: "Litigation",
-        organisation: {
-          name: "Sabin",
-          id: 11,
-        },
-        attribution_url: null,
+      attribution: {
+        category: "Litigation",
+        corpusImageAlt: "No corpus image found",
+        corpusNote: "No corpus note found",
+        provider: "Sabin",
+        taxonomy: "Litigation",
       },
-      corpus_id: "Academic.corpus.Litigation.n0000",
-      organisation: "Sabin",
       summary:
         "Action by young plaintiffs asserting that the federal government violated their constitutional rights by causing dangerous carbon dioxide concentrations. [Due to a technical issue, some documents are currently not available.]",
       geographies: ["USA", "US-OR"],
       published_date: "2015-01-01T00:00:00Z",
       last_updated_date: "2018-12-26T00:00:00Z",
       slug: "united-states-v-u-s-district-court-for-district-of-oregon_e6b4",
-      category: "Litigation",
-      corpus_type_name: "Litigation",
       collections: [
         {
           import_id: "Sabin.collection.154.0",
@@ -15881,26 +15825,19 @@ export const COLLECTION_STUB: TCollectionPublicWithFamilies = {
           subconcept_of_labels: ["Federal Courts"],
         },
       ],
-      corpus: {
-        import_id: "Academic.corpus.Litigation.n0000",
-        title: "Litigation",
-        corpus_type_name: "Litigation",
-        organisation: {
-          name: "Sabin",
-          id: 11,
-        },
-        attribution_url: null,
+      attribution: {
+        category: "Litigation",
+        corpusImageAlt: "No corpus image found",
+        corpusNote: "No corpus note found",
+        provider: "Sabin",
+        taxonomy: "Litigation",
       },
-      corpus_id: "Academic.corpus.Litigation.n0000",
-      organisation: "Sabin",
       summary:
         "Action by young plaintiffs asserting that the federal government violated their constitutional rights by causing dangerous carbon dioxide concentrations. [Due to a technical issue, some documents are currently not available.]",
       geographies: ["USA", "US-OR"],
       published_date: "2015-01-01T00:00:00Z",
       last_updated_date: "2018-11-23T00:00:00Z",
       slug: "in-re-united-states_b264",
-      category: "Litigation",
-      corpus_type_name: "Litigation",
       collections: [
         {
           import_id: "Sabin.collection.154.0",
@@ -16168,26 +16105,19 @@ export const COLLECTION_STUB: TCollectionPublicWithFamilies = {
           subconcept_of_labels: ["Federal Courts"],
         },
       ],
-      corpus: {
-        import_id: "Academic.corpus.Litigation.n0000",
-        title: "Litigation",
-        corpus_type_name: "Litigation",
-        organisation: {
-          name: "Sabin",
-          id: 11,
-        },
-        attribution_url: null,
+      attribution: {
+        category: "Litigation",
+        corpusImageAlt: "No corpus image found",
+        corpusNote: "No corpus note found",
+        provider: "Sabin",
+        taxonomy: "Litigation",
       },
-      corpus_id: "Academic.corpus.Litigation.n0000",
-      organisation: "Sabin",
       summary:
         "Action by young plaintiffs asserting that the federal government violated their constitutional rights by causing dangerous carbon dioxide concentrations. [Due to a technical issue, some documents are currently not available.]",
       geographies: ["USA", "US-OR"],
       published_date: "2015-01-01T00:00:00Z",
       last_updated_date: "2018-11-02T00:00:00Z",
       slug: "in-re-united-states_04ac",
-      category: "Litigation",
-      corpus_type_name: "Litigation",
       collections: [
         {
           import_id: "Sabin.collection.154.0",
@@ -16553,26 +16483,19 @@ export const COLLECTION_STUB: TCollectionPublicWithFamilies = {
           subconcept_of_labels: [],
         },
       ],
-      corpus: {
-        import_id: "Academic.corpus.Litigation.n0000",
-        title: "Litigation",
-        corpus_type_name: "Litigation",
-        organisation: {
-          name: "Sabin",
-          id: 11,
-        },
-        attribution_url: null,
+      attribution: {
+        category: "Litigation",
+        corpusImageAlt: "No corpus image found",
+        corpusNote: "No corpus note found",
+        provider: "Sabin",
+        taxonomy: "Litigation",
       },
-      corpus_id: "Academic.corpus.Litigation.n0000",
-      organisation: "Sabin",
       summary:
         "Action by young plaintiffs asserting that the federal government violated their constitutional rights by causing dangerous carbon dioxide concentrations. [Due to a technical issue, some documents are currently not available.]",
       geographies: ["USA", "US-OR"],
       published_date: "2015-01-01T00:00:00Z",
       last_updated_date: "2018-11-02T00:00:00Z",
       slug: "united-states-v-u-s-district-court-for-district-of-oregon_140a",
-      category: "Litigation",
-      corpus_type_name: "Litigation",
       collections: [
         {
           import_id: "Sabin.collection.154.0",
@@ -16885,26 +16808,19 @@ export const COLLECTION_STUB: TCollectionPublicWithFamilies = {
           subconcept_of_labels: ["Federal Courts"],
         },
       ],
-      corpus: {
-        import_id: "Academic.corpus.Litigation.n0000",
-        title: "Litigation",
-        corpus_type_name: "Litigation",
-        organisation: {
-          name: "Sabin",
-          id: 11,
-        },
-        attribution_url: null,
+      attribution: {
+        category: "Litigation",
+        corpusImageAlt: "No corpus image found",
+        corpusNote: "No corpus note found",
+        provider: "Sabin",
+        taxonomy: "Litigation",
       },
-      corpus_id: "Academic.corpus.Litigation.n0000",
-      organisation: "Sabin",
       summary:
         "Action by young plaintiffs asserting that the federal government violated their constitutional rights by causing dangerous carbon dioxide concentrations. [Due to a technical issue, some documents are currently not available.]",
       geographies: ["USA", "US-OR"],
       published_date: "2015-01-01T00:00:00Z",
       last_updated_date: "2018-07-30T00:00:00Z",
       slug: "united-states-v-u-s-district-court-for-the-district-of-oregon_52f5",
-      category: "Litigation",
-      corpus_type_name: "Litigation",
       collections: [
         {
           import_id: "Sabin.collection.154.0",
@@ -17225,26 +17141,19 @@ export const COLLECTION_STUB: TCollectionPublicWithFamilies = {
           subconcept_of_labels: ["Federal Courts"],
         },
       ],
-      corpus: {
-        import_id: "Academic.corpus.Litigation.n0000",
-        title: "Litigation",
-        corpus_type_name: "Litigation",
-        organisation: {
-          name: "Sabin",
-          id: 11,
-        },
-        attribution_url: null,
+      attribution: {
+        category: "Litigation",
+        corpusImageAlt: "No corpus image found",
+        corpusNote: "No corpus note found",
+        provider: "Sabin",
+        taxonomy: "Litigation",
       },
-      corpus_id: "Academic.corpus.Litigation.n0000",
-      organisation: "Sabin",
       summary:
         "Action by young plaintiffs asserting that the federal government violated their constitutional rights by causing dangerous carbon dioxide concentrations. [Due to a technical issue, some documents are currently not available.]",
       geographies: ["USA", "US-OR"],
       published_date: "2015-01-01T00:00:00Z",
       last_updated_date: "2018-07-20T00:00:00Z",
       slug: "united-states-v-u-s-district-court-for-the-district-of-oregon_d4c6",
-      category: "Litigation",
-      corpus_type_name: "Litigation",
       collections: [
         {
           import_id: "Sabin.collection.154.0",
@@ -17653,26 +17562,19 @@ export const COLLECTION_STUB: TCollectionPublicWithFamilies = {
           subconcept_of_labels: [],
         },
       ],
-      corpus: {
-        import_id: "Academic.corpus.Litigation.n0000",
-        title: "Litigation",
-        corpus_type_name: "Litigation",
-        organisation: {
-          name: "Sabin",
-          id: 11,
-        },
-        attribution_url: null,
+      attribution: {
+        category: "Litigation",
+        corpusImageAlt: "No corpus image found",
+        corpusNote: "No corpus note found",
+        provider: "Sabin",
+        taxonomy: "Litigation",
       },
-      corpus_id: "Academic.corpus.Litigation.n0000",
-      organisation: "Sabin",
       summary:
         "Action by young plaintiffs asserting that the federal government violated their constitutional rights by causing dangerous carbon dioxide concentrations. [Due to a technical issue, some documents are currently not available.]",
       geographies: ["USA", "US-OR"],
       published_date: "2015-01-01T00:00:00Z",
       last_updated_date: "2018-06-27T00:00:00Z",
       slug: "united-states-v-u-s-district-court-for-the-district-of-oregon_94c4",
-      category: "Litigation",
-      corpus_type_name: "Litigation",
       collections: [
         {
           import_id: "Sabin.collection.154.0",
@@ -17929,26 +17831,19 @@ export const COLLECTION_STUB: TCollectionPublicWithFamilies = {
           subconcept_of_labels: [],
         },
       ],
-      corpus: {
-        import_id: "Academic.corpus.Litigation.n0000",
-        title: "Litigation",
-        corpus_type_name: "Litigation",
-        organisation: {
-          name: "Sabin",
-          id: 11,
-        },
-        attribution_url: null,
+      attribution: {
+        category: "Litigation",
+        corpusImageAlt: "No corpus image found",
+        corpusNote: "No corpus note found",
+        provider: "Sabin",
+        taxonomy: "Litigation",
       },
-      corpus_id: "Academic.corpus.Litigation.n0000",
-      organisation: "Sabin",
       summary:
         "Action by young plaintiffs asserting that the federal government violated their constitutional rights by causing dangerous carbon dioxide concentrations. [Due to a technical issue, some documents are currently not available.]",
       geographies: ["USA", "US-OR"],
       published_date: "2017-01-01T00:00:00Z",
       last_updated_date: "2018-03-07T00:00:00Z",
       slug: "united-states-v-u-s-district-court-for-district-of-oregon_a0a6",
-      category: "Litigation",
-      corpus_type_name: "Litigation",
       collections: [
         {
           import_id: "Sabin.collection.154.0",

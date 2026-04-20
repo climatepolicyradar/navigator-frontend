@@ -2,7 +2,6 @@ import axios from "axios";
 
 import { ApiClient } from "@/api/http-common";
 import { familyTransformer } from "@/bff/transformers/familyTransformer";
-import { BFF_TRANSFORMED_CORPORA } from "@/constants/bff";
 import { DEFAULT_DOCUMENT_TITLE } from "@/constants/document";
 import { EXCLUDED_ISO_CODES } from "@/constants/geography";
 import { TDataInDocument, validateDataInDocument } from "@/schemas";
@@ -56,7 +55,7 @@ export const getFamilyData = async (slug: string, features: TFeatures): Promise<
 
   // Get the new data-in document for this family or fall back to the older data
   let dataInDocument: TDataInDocument | null = null;
-  if (family && features["new-data-model"] && BFF_TRANSFORMED_CORPORA.includes(family.corpus_id)) {
+  if (family && features["new-data-model"]) {
     try {
       const { data: dataInDocumentResponse } = await apiClient.get<TApiItemResponse>(`/data-in/documents/${family.import_id}`);
       dataInDocument = validateDataInDocument(dataInDocumentResponse.data);
@@ -85,7 +84,7 @@ export const getFamilyData = async (slug: string, features: TFeatures): Promise<
   const configRaw = await backendApiClient.getConfig();
   const response_geo = extractNestedData<TApiGeography>(configRaw.data.geographies);
   const countries = response_geo[1];
-  const corpus_types: TCorpusTypeDictionary = configRaw.data.corpus_types;
+  const corpusTypes: TCorpusTypeDictionary = configRaw.data.corpus_types;
 
   // This is because our family.geographies field isn't hydrated but rather a string[]
   const allSubdivisions = await Promise.all<TApiGeographySubdivision[]>(
@@ -129,7 +128,7 @@ export const getFamilyData = async (slug: string, features: TFeatures): Promise<
   }
 
   // Check the family is in the "allowed_corpora"
-  if (family.corpus?.import_id && !isCorpusIdAllowed(process.env.BACKEND_API_TOKEN, family.corpus.import_id)) {
+  if (family.corpus_id && !isCorpusIdAllowed(process.env.BACKEND_API_TOKEN, family.corpus_id)) {
     errors.push(new Error("Family is not in an allowed corpora"));
     return { data: null, errors };
   }
@@ -139,7 +138,7 @@ export const getFamilyData = async (slug: string, features: TFeatures): Promise<
   return familyTransformer(
     {
       collections,
-      corpus_types,
+      corpusTypes,
       countries,
       family,
       familyTopics: familyTopics || null,

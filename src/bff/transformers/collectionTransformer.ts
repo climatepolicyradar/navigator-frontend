@@ -1,3 +1,4 @@
+import { oldCollectionTransformer } from "@/bff/transformers/oldCollectionTransformer";
 import { TCollectionApiNewData, TCollectionApiOldData, TCollectionPresentationalResponse } from "@/types";
 
 export const collectionTransformer = (
@@ -12,6 +13,6 @@ export const collectionTransformer = (
     return { data: null, errors };
   } else {
     // Because the old API data type satisfies the presentational data type, no changes are needed
-    return { data: collectionApiOldData, errors };
+    return oldCollectionTransformer(collectionApiOldData, collectionApiNewData, errors);
   }
 };

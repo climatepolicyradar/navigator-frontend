@@ -1,10 +1,14 @@
+import { oldFamilyTransformer } from "@/bff/transformers/oldFamilyTransformer";
+import { transformAttribution } from "@/bff/transformers/partials/transformAttribution";
 import { transformCountries } from "@/bff/transformers/partials/transformCountries";
 import { transformFamilyCollections } from "@/bff/transformers/partials/transformFamilyCollections";
 import { transformFamilyDocuments } from "@/bff/transformers/partials/transformFamilyDocuments";
 import { transformFamilyEvents } from "@/bff/transformers/partials/transformFamilyEvents";
 import { transformFamilyMetadata } from "@/bff/transformers/partials/transformFamilyMetadata";
+import { transformOldCollection } from "@/bff/transformers/partials/transformOldCollection";
+import { transformOldFamily } from "@/bff/transformers/partials/transformOldFamily";
 import { LABEL_TYPES, MANDATORY_FAMILY_LABEL_TYPES, TDataInLabel, TDataInLabelType } from "@/schemas";
-import { TCategory, TFamilyApiNewData, TFamilyApiOldData, TFamilyPresentationalResponse } from "@/types";
+import { TFamilyApiNewData, TFamilyApiOldData, TFamilyPresentationalResponse } from "@/types";
 import { groupByType } from "@/utils/data-in/groupByType";
 
 export const familyTransformer = (
@@ -16,15 +20,17 @@ export const familyTransformer = (
 
   if (familyApiNewData) {
     try {
+      const { corpusTypes, ...oldData } = familyApiOldData;
       const { documents, labels } = familyApiNewData;
       const groupedLabels = groupByType<TDataInLabel, TDataInLabelType>(labels, LABEL_TYPES, MANDATORY_FAMILY_LABEL_TYPES);
 
       return {
         data: {
-          ...familyApiOldData,
+          ...oldData,
+          collections: familyApiOldData.collections.map((collection) => transformOldCollection(collection, corpusTypes)),
           countries: transformCountries(familyApiOldData.countries, groupedLabels.geography),
           family: {
-            category: groupedLabels.deprecated_category[0].value.value as TCategory,
+            attribution: transformAttribution(groupedLabels),
             collections: transformFamilyCollections(familyApiOldData.family.collections, familyApiNewData.documents),
             documents: transformFamilyDocuments(familyApiOldData.family.documents, documents),
             events: transformFamilyEvents(groupedLabels),
@@ -37,14 +43,10 @@ export const familyTransformer = (
             summary: familyApiNewData.description,
             title: familyApiNewData.title,
             // TODO apply transformations to remaining fields:
-            concepts: familyApiOldData.family.concepts, // currently out of scope
-            corpus_id: familyApiOldData.family.corpus_id,
-            corpus_type_name: familyApiOldData.family.corpus_type_name,
-            corpus: familyApiOldData.family.corpus,
-            organisation: familyApiOldData.family.organisation,
+            concepts: familyApiOldData.family.concepts,
           },
           debug: {
-            originalFamily: familyApiOldData.family,
+            originalFamily: transformOldFamily(familyApiOldData.family, corpusTypes),
             newApiData: familyApiNewData,
             usesDataIn: true,
           },
@@ -52,22 +54,9 @@ export const familyTransformer = (
         errors,
       };
     } catch (error) {
-      return {
-        data: {
-          ...familyApiOldData,
-          debug: { newApiData: familyApiNewData, usesDataIn: false },
-        },
-        errors: [...errors, error as Error],
-      };
+      return oldFamilyTransformer(familyApiOldData, familyApiNewData, [...errors, error as Error]);
     }
   } else {
-    // Because the old API data type satisfies the presentational data type, no changes are needed
-    return {
-      data: {
-        ...familyApiOldData,
-        debug: { newApiData: familyApiNewData, usesDataIn: false },
-      },
-      errors,
-    };
+    return oldFamilyTransformer(familyApiOldData, familyApiNewData, errors);
   }
 };

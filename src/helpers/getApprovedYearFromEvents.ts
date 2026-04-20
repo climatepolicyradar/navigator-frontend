@@ -1,7 +1,7 @@
 import { TFamilyEventPublic } from "@/types";
 
 export const getApprovedYearFromEvents = (events: TFamilyEventPublic[]) => {
-  const approvalEvent = events.find((event) => ["Project Approved", "Published"].includes(event.event_type));
+  const approvalEvent = events.find((event) => ["Approved", "Project Approved", "Published"].includes(event.event_type));
 
   if (approvalEvent) {
     const date = new Date(approvalEvent.date);

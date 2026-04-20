@@ -30,7 +30,7 @@ export function SearchResults({ data, onSelectLabel }: { data: SearchDocumentsRe
               <li className={`flex gap-2 border border-transparent rounded-md py-2 pr-6 ${styles["highlights"]}`}>
                 <LucideFileText width={20} height={20} className="text-neutral-500 shrink-0 mt-1" />
                 <div className="flex flex-col">
-                  <DocumentSearchResult result={result} />
+                  <DocumentSearchResult result={result} onSelectLabel={onSelectLabel} />
                 </div>
               </li>
             )}

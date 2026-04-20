@@ -4,7 +4,6 @@ import { Fragment, ReactNode, useMemo } from "react";
 import { PageLink } from "@/components/atoms/pageLink/PageLink";
 import { TBreadcrumbLink } from "@/components/breadcrumbs/Breadcrumbs";
 import { GeographyLink, IProps as GeographyLinkProps } from "@/components/molecules/geographyLink/GeographyLink";
-import { getCategoryName } from "@/helpers/getCategoryName";
 import { getCountryName, getCountrySlug } from "@/helpers/getCountryFields";
 import { getSubdivisionName } from "@/helpers/getSubdivision";
 import { getSumUSD } from "@/helpers/getSumUSD";
@@ -32,14 +31,13 @@ type FamilyPageHeaderData = {
 
 export const useFamilyPageHeaderData = ({ countries, family, subdivisions }: IProps): FamilyPageHeaderData => {
   const { getCategoryTextLookup } = useText();
-  const getCategoryText = getCategoryTextLookup(family.category);
+  const getCategoryText = getCategoryTextLookup(family.attribution.category);
 
   return useMemo(() => {
     /* Misc */
-    const categoryName = getCategoryName(family.category, family.corpus_type_name, family.organisation);
     const [year] = convertDate(family.published_date);
-    const isLitigation = family.corpus_type_name === "Litigation";
-    const isMCF = family.category === "MCF";
+    const isLitigation = family.attribution.category === "Litigation";
+    const isMCF = family.attribution.category === "Multilateral Climate Fund project";
 
     /* Geographies data */
 
@@ -128,7 +126,7 @@ export const useFamilyPageHeaderData = ({ countries, family, subdivisions }: IPr
       { label: `${getCategoryText("familyDate")}`, value: isNaN(year) ? "" : year },
       {
         label: getCategoryText("familyType"),
-        value: categoryName,
+        value: family.attribution.taxonomy,
       },
     ];
     if (family.collections.length) {

@@ -1,4 +1,5 @@
 import { ApiClient } from "@/api/http-common";
+import { documentTransformer } from "@/bff/transformers/documentTransformer";
 import { DEFAULT_DOCUMENT_TITLE } from "@/constants/document";
 import {
   TApiDocumentPage,
@@ -11,8 +12,6 @@ import {
 } from "@/types";
 import { extractTopicIds } from "@/utils/extractTopicIds";
 import { fetchAndProcessTopics } from "@/utils/fetchAndProcessTopics";
-
-import { documentTransformer } from "../transformers/documentTransformer";
 
 // TODO: remove this ESLint disable when the features object is used for data source switching
 // eslint-disable-next-line @typescript-eslint/no-unused-vars

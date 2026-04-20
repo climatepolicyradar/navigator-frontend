@@ -7,7 +7,6 @@ const TESTING_LABELS: TDataInLabel[] = [
     type: "status",
     value: {
       labels: [],
-      documents: [],
       id: "Principal",
       type: "status",
       value: "Principal",
@@ -18,7 +17,6 @@ const TESTING_LABELS: TDataInLabel[] = [
     type: "geography",
     value: {
       labels: [],
-      documents: [],
       id: "USA",
       type: "agent",
       value: "United States",
@@ -29,7 +27,6 @@ const TESTING_LABELS: TDataInLabel[] = [
     type: "geography",
     value: {
       labels: [],
-      documents: [],
       id: "US-DC",
       type: "agent",
       value: "District of Columbia",
@@ -40,7 +37,6 @@ const TESTING_LABELS: TDataInLabel[] = [
     type: "UNKNOWN" as TDataInLabelType,
     value: {
       labels: [],
-      documents: [],
       id: "UNKNOWN",
       type: "UNKNOWN",
       value: "UNKNOWN",

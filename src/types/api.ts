@@ -103,6 +103,9 @@ export type TApiCategory =
   | "REPORTS";
 export type TApiCorpusTypeSubCategory = "AF" | "CIF" | "GCF" | "GEF" | "Laws and Policies" | "Intl. agreements" | "Litigation" | "Reports";
 
+export const DATA_IN_CATEGORY_VALUES = ["Law", "Litigation", "Multilateral Climate Fund project", "Policy", "Report", "UN submission"] as const;
+export type TApiDataInCategory = (typeof DATA_IN_CATEGORY_VALUES)[number];
+
 export type TApiEvent = {
   title: string;
   date: string;
