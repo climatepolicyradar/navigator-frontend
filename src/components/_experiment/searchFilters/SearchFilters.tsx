@@ -19,7 +19,7 @@ function hasValue(group: TQueryGroup | null | undefined, value: string): boolean
 function hasActiveFilterOfType(filters: TLabelResult[], group: TQueryGroup | null | undefined, type: TLabelType): boolean {
   if (!group) return false;
   return group.filters.some((f) =>
-    "value" in f ? filters.some((label) => label.value === f.value && label.type === type) : hasActiveFilterOfType(filters, f, type)
+    "value" in f ? filters.some((label) => label.id === f.value && label.type === type) : hasActiveFilterOfType(filters, f, type)
   );
 }
 
