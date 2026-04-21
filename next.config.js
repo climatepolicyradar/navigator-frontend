@@ -73,9 +73,6 @@ const nextConfig = {
     ];
   },
   devIndicators: false,
-  experimental: {
-    instrumentationHook: true,
-  },
   /**
    * this is used for instrumentation.ts
    * @see: https://github.com/vercel/next.js/issues/65324
