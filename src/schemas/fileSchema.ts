@@ -35,7 +35,7 @@ const FileSchemaByType = (type: v.UnionSchema<any, any> | v.LiteralSchema<any, a
 export const FileSchema = v.union([
   // Documents
   FileSchemaByType(
-    toLiteralUnion(["has_member", "has_version"]),
+    v.literal("has_member"),
     v.object({
       deprecated_slug: v.string(),
       md5_sum: v.optional(v.string()),
@@ -44,7 +44,7 @@ export const FileSchema = v.union([
     })
   ),
   // Collections
-  FileSchemaByType(v.literal("member_of"), v.object({})),
+  FileSchemaByType(toLiteralUnion(["has_version", "member_of"]), v.object({})),
 ]);
 
 export type TDataInFile = v.InferOutput<typeof FileSchema>;
