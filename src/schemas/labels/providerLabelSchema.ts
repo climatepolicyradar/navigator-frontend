@@ -9,9 +9,9 @@ export const ProviderLabelSchema = v.object({
     type: v.literal("agent"),
     value: v.string(),
     attributes: v.object({
-      attribution_url: v.optional(v.pipe(v.string(), v.url())),
+      attribution_url: v.optional(v.string()),
       corpus_text: v.optional(v.string()),
-      corpus_image_url: v.optional(v.pipe(v.string(), v.url())),
+      corpus_image_url: v.optional(v.string()),
     }),
   }),
 });
