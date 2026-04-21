@@ -1,5 +1,6 @@
 import { oldFamilyTransformer } from "@/bff/transformers/oldFamilyTransformer";
 import { transformAttribution } from "@/bff/transformers/partials/transformAttribution";
+import { transformConcepts } from "@/bff/transformers/partials/transformConcepts";
 import { transformCountries } from "@/bff/transformers/partials/transformCountries";
 import { transformFamilyCollections } from "@/bff/transformers/partials/transformFamilyCollections";
 import { transformFamilyDocuments } from "@/bff/transformers/partials/transformFamilyDocuments";
@@ -7,6 +8,7 @@ import { transformFamilyEvents } from "@/bff/transformers/partials/transformFami
 import { transformFamilyMetadata } from "@/bff/transformers/partials/transformFamilyMetadata";
 import { transformOldCollection } from "@/bff/transformers/partials/transformOldCollection";
 import { transformOldFamily } from "@/bff/transformers/partials/transformOldFamily";
+import { ID_SEPARATOR } from "@/constants/chars";
 import { LABEL_TYPES, MANDATORY_FAMILY_LABEL_TYPES, TDataInLabel, TDataInLabelType } from "@/schemas";
 import { TFamilyApiNewData, TFamilyApiOldData, TFamilyPresentationalResponse } from "@/types";
 import { groupByType } from "@/utils/data-in/groupByType";
@@ -23,6 +25,7 @@ export const familyTransformer = (
       const { corpusTypes, ...oldData } = familyApiOldData;
       const { documents, labels } = familyApiNewData;
       const groupedLabels = groupByType<TDataInLabel, TDataInLabelType>(labels, LABEL_TYPES, MANDATORY_FAMILY_LABEL_TYPES);
+      const attribution = transformAttribution(groupedLabels);
 
       return {
         data: {
@@ -30,20 +33,19 @@ export const familyTransformer = (
           collections: familyApiOldData.collections.map((collection) => transformOldCollection(collection, corpusTypes)),
           countries: transformCountries(familyApiOldData.countries, groupedLabels.geography),
           family: {
-            attribution: transformAttribution(groupedLabels),
+            attribution,
             collections: transformFamilyCollections(familyApiOldData.family.collections, familyApiNewData.documents),
+            concepts: transformConcepts(groupedLabels.legal_concept),
             documents: transformFamilyDocuments(familyApiOldData.family.documents, documents),
             events: transformFamilyEvents(groupedLabels),
-            geographies: groupedLabels.geography.map((label) => label.value.id),
+            geographies: groupedLabels.geography.map((label) => label.value.id.split(ID_SEPARATOR)[1]),
             import_id: familyApiNewData.id,
             last_updated_date: familyApiNewData.attributes.last_updated_date,
-            metadata: transformFamilyMetadata(familyApiNewData.attributes, groupedLabels),
+            metadata: transformFamilyMetadata(familyApiNewData.attributes, groupedLabels, attribution.category),
             published_date: familyApiNewData.attributes.published_date,
             slug: familyApiNewData.attributes.deprecated_slug,
             summary: familyApiNewData.description,
             title: familyApiNewData.title,
-            // TODO apply transformations to remaining fields:
-            concepts: familyApiOldData.family.concepts,
           },
           debug: {
             originalFamily: transformOldFamily(familyApiOldData.family, corpusTypes),

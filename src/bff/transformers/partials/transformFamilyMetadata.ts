@@ -1,5 +1,5 @@
 import { TDataInDocumentAttributes, TDataInLabel, TDataInLabelType } from "@/schemas";
-import { API_FAMILY_METADATA_KEY, TApiFamilyMetadata, TApiFamilyMetadataKey } from "@/types";
+import { API_FAMILY_METADATA_KEY, TApiFamilyMetadata, TApiFamilyMetadataKey, TAttributionCategory } from "@/types";
 import { TItemsByType } from "@/utils/data-in/groupByType";
 
 // For labels and attributes that are now named differently to their corresponding metadata key
@@ -12,11 +12,16 @@ const ATTRIBUTE_TO_METADATA_MAP: Record<string, TApiFamilyMetadataKey> = {
   project_fund_spend_usd: "project_value_fund_spend",
 };
 
+const CONCEPT_PREFERRED_LABEL_TYPE_MAP: Record<string, string> = {
+  case_category: "category",
+};
+
 const isFamilyMetadataKey = (string: string): string is TApiFamilyMetadataKey => API_FAMILY_METADATA_KEY.includes(string as TApiFamilyMetadataKey);
 
 export const transformFamilyMetadata = (
   attributes: TDataInDocumentAttributes,
-  groupedLabels: TItemsByType<TDataInLabel, TDataInLabelType>
+  groupedLabels: TItemsByType<TDataInLabel, TDataInLabelType>,
+  category: TAttributionCategory
 ): TApiFamilyMetadata => {
   const familyMetadata: TApiFamilyMetadata = {};
 
@@ -48,6 +53,15 @@ export const transformFamilyMetadata = (
       familyMetadata[metadataKey] = labels.map((label) => label.value.value);
     }
   });
+
+  if (category === "Litigation") {
+    familyMetadata.concept_preferred_label = groupedLabels.legal_concept
+      .map((concept) => {
+        const type = CONCEPT_PREFERRED_LABEL_TYPE_MAP[concept.value.type] || concept.value.type;
+        return [type, concept.value.value].join("/");
+      })
+      .sort();
+  }
 
   return familyMetadata;
 };
