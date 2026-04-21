@@ -197,6 +197,8 @@ if not is_review_template:
             if is_cpr_stack
             else default_min_instances
         ),
+        cpu=config.require("apprunner_frontend_vcpu_count")
+        memory=config.require("apprunner_frontend_memory_gb"),
         auto_deploy=True,
     )
 

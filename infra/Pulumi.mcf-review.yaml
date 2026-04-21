@@ -27,5 +27,7 @@ config:
   frontend:theme: mcf
   frontend:validation_account_id:
     secure: AAABALb4+jGsEUpV9cPzWOpYfckqJ9axpWmmIy4gNI/7MGuRK0rsW1nf9UE=
+  frontend:apprunner_frontend_vcpu_count: "1 vCPU"
+  frontend:apprunner_frontend_memory_gb: "2 GB"
 environment:
   - frontend/mcf-review

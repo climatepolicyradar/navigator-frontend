@@ -30,5 +30,7 @@ config:
     secure: AAABAAdvxmEKMe/vt4YkB0vy7/99YxgHXxgPELCVZkQHXdNiwbMFhXAmsPI=
   frontend:auto_scaling_config_arn:
     secure: AAABAIYK+Jf0+zrDf5/RZv4E/6idWDa4SPInQIfztZc+cRiiTzXvriyF+iLSdKPK2ZmfoG/GJrWBzIfoIkqv1Ji2Swb2fpgrgTyuSmPgAmZitX6ots+aJ2X7gtjsPbviacmcq1CyYgmxwry5vvA1A8VyqSJdzlUySkEivolmD1GP9UK5RsNjNpd3XzeWYjPt85C1dNqfCpY=
+  frontend:apprunner_frontend_vcpu_count: "1 vCPU"
+  frontend:apprunner_frontend_memory_gb: "2 GB"
 environment:
   - frontend/cpr-review
