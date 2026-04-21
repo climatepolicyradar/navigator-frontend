@@ -248,14 +248,14 @@ jobs:
       # most of this is taken from
       # https://docs.github.com/en/actions/use-cases-and-examples/deploying/deploying-to-amazon-elastic-container-service#creating-the-workflow
       - name: Configure AWS credentials (staging)
-        uses: aws-actions/configure-aws-credentials@v6
+        uses: aws-actions/configure-aws-credentials@v6.1.0
         with:
           role-to-assume: arn:aws:iam::${{ secrets.AWS_ACCOUNT_ID_STAGING }}:role/navigator-frontend-github-actions
           role-session-name: GitHub_to_AWS_via_FederatedOIDC
           aws-region: eu-west-1
       - name: Login to Amazon ECR (staging)
         id: login-ecr-staging
-        uses: aws-actions/amazon-ecr-login@f2e9fc6c2b355c1890b65e6f6f0e2ac3e6e22f78
+        uses: aws-actions/amazon-ecr-login@376925c9d111252e87ae59691e5a442dd100ef6a
       - name: Build, tag, and push image to Amazon ECR (staging)
         id: build-image-staging
         env:
@@ -270,14 +270,14 @@ jobs:
           echo "image=$ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG" >> $GITHUB_OUTPUT
 
       - name: Configure aws credentials (production)
-        uses: aws-actions/configure-aws-credentials@v6
+        uses: aws-actions/configure-aws-credentials@v6.1.0
         with:
           role-to-assume: arn:aws:iam::${{ secrets.AWS_ACCOUNT_ID_PROD }}:role/navigator-frontend-github-actions
           role-session-name: GitHub_to_AWS_via_FederatedOIDC
           aws-region: eu-west-1
       - name: Login to Amazon ECR (production)
         id: login-ecr-prod
-        uses: aws-actions/amazon-ecr-login@f2e9fc6c2b355c1890b65e6f6f0e2ac3e6e22f78
+        uses: aws-actions/amazon-ecr-login@376925c9d111252e87ae59691e5a442dd100ef6a
 
       - name: Build, tag, and push image to Amazon ECR (production)
         id: build-image-prod
@@ -302,7 +302,7 @@ jobs:
         with:
           node-version: 22.12.0
       - name: Configure AWS credentials
-        uses: aws-actions/configure-aws-credentials@v6
+        uses: aws-actions/configure-aws-credentials@v6.1.0
         with:
           aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
@@ -340,7 +340,7 @@ jobs:
       projects: ${{ steps.parse.outputs.projects }}
     steps:
       - uses: actions/checkout@v6
-      - uses: dorny/paths-filter@v3
+      - uses: dorny/paths-filter@v4
         id: filter
         with:
           filters: |
@@ -426,7 +426,7 @@ jobs:
           fi
 
       - name: configure aws credentials
-        uses: aws-actions/configure-aws-credentials@v5.1.1
+        uses: aws-actions/configure-aws-credentials@v6.1.0
         env:
           AWS_REGION: eu-west-1
         with:
