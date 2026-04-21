@@ -20,6 +20,7 @@ from resources.cors_policy import CloudFrontCORSPolicy, CORSPolicyConfig
 from resources.dns import DNS, DNSConfig
 from resources.ecr_repository import ECRRepository, ECRRepositoryConfig
 from resources.github_actions_role import GitHubActionsRole
+from resources.waf import FrontendWebAcl
 from resources.util import (
     BehaviourOptions,
     CookieConfig,
@@ -496,6 +497,11 @@ if not is_review_stack_or_template:
         EXTERNAL = "public facing"
 
 
+    frontend_web_acl = FrontendWebAcl(
+        name=f"{theme}-{env}-frontend-waf",
+        tags={"CUSTOM_APP_THEME": theme, "Environment": env},
+    )
+
     cf = CloudFrontDistribution(
         f"{theme.upper()}FrontendDistribution",
         DistributionType.FRONTEND,
@@ -506,6 +512,7 @@ if not is_review_stack_or_template:
         acm_certificate=dns.certificate,
         origin_request_policy_id=cast(str, cors_policy.policy.id),
         ordered_cache_behaviors=ordered_cache_behaviors,
+        web_acl_id=cast(str, frontend_web_acl.web_acl.arn),
         # Needed for auto-invalidations to work, @related: CUSTOM_APP_THEME
         tags={
             "CUSTOM_APP_THEME": theme,
@@ -551,6 +558,7 @@ if not is_review_stack_or_template:
             acm_certificate=cname_dns.certificate,
             origin_request_policy_id=cast(str, cors_policy.policy.id),
             ordered_cache_behaviors=ordered_cache_behaviors,
+            web_acl_id=cast(str, frontend_web_acl.web_acl.arn),
             # Needed for auto-invalidations to work, @related: CUSTOM_APP_THEME
             tags={
                 "CUSTOM_APP_THEME": theme,
@@ -606,12 +614,12 @@ if not is_review_stack_or_template:
             comment="Redirects for CCC",
         )
 
-        infra_dir = Path(__file__).parent.parent
-        with open(infra_dir / "redirects.json", "r") as f:
+        infra_dir = Path(__file__).parent
+        with open(infra_dir / "lambda_code" / "redirects.json", "r") as f:
             redirects: list[dict[str, str]] = json.load(f)["redirects"]
 
         # Get the code as a string for the CloudFront Function
-        with open(infra_dir / "redirection.js", "r") as f:
+        with open(infra_dir / "lambda_code" / "redirection.js", "r") as f:
             lambda_code = f.read()
 
         for redirect in redirects:
@@ -710,6 +718,7 @@ if not is_review_stack_or_template:
                     ),
                 ],
             ),
+            web_acl_id=cast(str, frontend_web_acl.web_acl.arn),
             # These are used for cache invalidations
             tags={"CUSTOM_APP_THEME": "ccc", "Environment": "production"},
         )

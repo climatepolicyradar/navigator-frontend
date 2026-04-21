@@ -50,6 +50,9 @@ class CloudFrontDistribution(pulumi.ComponentResource):
     :type ordered_cache_behaviors: Optional[List[Dict[str, Any]]]
     :param tags: Resource tags
     :type tags: Optional[Dict[str, str]]
+    :param web_acl_id: ARN of the WAFv2 WebACL to attach (despite the field
+        name, CloudFront expects the WebACL ARN, not its id)
+    :type web_acl_id: Optional[str]
     :param opts: Resource options
     :type opts: Optional[pulumi.ResourceOptions]
     """
@@ -67,6 +70,7 @@ class CloudFrontDistribution(pulumi.ComponentResource):
         default_cache_behavior: Optional[List[Dict[str, Any]]] = None,
         ordered_cache_behaviors: Optional[List[Dict[str, Any]]] = None,
         tags: Optional[Dict[str, str]] = None,
+        web_acl_id: Optional[str] = None,
         opts: Optional[pulumi.ResourceOptions] = None,
     ):
 
@@ -99,6 +103,7 @@ class CloudFrontDistribution(pulumi.ComponentResource):
             acm_certificate,
             origin_request_policy_id,
             ordered_cache_behaviors,
+            web_acl_id,
         )
 
         # Register outputs
@@ -164,6 +169,7 @@ class CloudFrontDistribution(pulumi.ComponentResource):
         acm_certificate_arn: str,
         origin_request_policy_id: Optional[str],
         ordered_cache_behaviors: Optional[List[Dict[str, Any]]] = None,
+        web_acl_id: Optional[str] = None,
     ) -> Dict[str, Any]:
         config = {
             "aliases": aliases,
@@ -195,6 +201,9 @@ class CloudFrontDistribution(pulumi.ComponentResource):
         if ordered_cache_behaviors:
             config["ordered_cache_behaviors"] = ordered_cache_behaviors
 
+        if web_acl_id:
+            config["web_acl_id"] = web_acl_id
+
         return config
 
     def _create_distribution(
@@ -207,6 +216,7 @@ class CloudFrontDistribution(pulumi.ComponentResource):
         acm_certificate: aws.acm.Certificate,
         origin_request_policy_id: Optional[str],
         ordered_cache_behaviors: Optional[List[Dict[str, Any]]] = None,
+        web_acl_id: Optional[str] = None,
         opts: Optional[pulumi.ResourceOptions] = None,
     ) -> aws.cloudfront.Distribution:
         # Allow user options to override our defaults.
@@ -227,6 +237,7 @@ class CloudFrontDistribution(pulumi.ComponentResource):
                 cast(str, acm_certificate.arn),
                 origin_request_policy_id,
                 ordered_cache_behaviors,
+                web_acl_id,
             ),
             opts=resource_opts,
             tags=self.tags,
