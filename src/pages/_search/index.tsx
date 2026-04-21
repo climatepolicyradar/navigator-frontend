@@ -8,10 +8,10 @@ import { useCallback, useEffect, useMemo, useState, type SetStateAction } from "
 
 import { ApiClient } from "@/api/http-common";
 import { IAggregationLabel, normaliseSearchDocumentsSortKey } from "@/api/search";
+import { createGroup, isFilterGroupEmpty, AdvancedFilters, TQueryGroup } from "@/components/_experiment/advancedFilters/AdvancedFilters";
 import { AppliedLabels } from "@/components/_experiment/appliedLabels/AppliedLabels";
 import { IntelliSearch } from "@/components/_experiment/intellisearch";
 import { Pagination } from "@/components/_experiment/pagination/Pagination";
-import { createGroup, isFilterGroupEmpty, QueryBuilder, TQueryGroup, TQueryRule } from "@/components/_experiment/queryBuilder/QueryBuilder";
 import { SearchFilters, TLabelType } from "@/components/_experiment/searchFilters/SearchFilters";
 import { SearchContainer } from "@/components/_experiment/searchResults/SearchResults";
 import { SearchSortSelect } from "@/components/_experiment/searchSort/SearchSortSelect";
@@ -165,11 +165,10 @@ const ShadowSearch = ({ theme, themeConfig, features }: TProps) => {
             <SearchSortSelect
               value={sort}
               onChange={(next) => {
-                void setSortParam(next);
                 setCurrentPage("1");
               }}
             />
-            <QueryBuilder
+            <AdvancedFilters
               filters={filters}
               setFilters={(filters) => {
                 setFilters(filters);

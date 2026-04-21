@@ -14,12 +14,14 @@ export const LABEL_TYPES = [
   "instrument",
   "keyword",
   "language",
+  "legal_concept",
   "member_of",
   "project_status",
   "provider",
   "role",
   "sector",
   "status",
+  "subconcept_of",
   "topic",
 ] as const;
 
@@ -31,19 +33,27 @@ export type TDataInLabelType = v.InferOutput<typeof LabelTypeSchema>;
 export const MANDATORY_FAMILY_LABEL_TYPES: TDataInLabelType[] = ["activity_status", "category", "provider"];
 export const MANDATORY_DOCUMENT_LABEL_TYPES: TDataInLabelType[] = [];
 
-// TODO type these out as they become necessary for transformations
-export const LabelLabelSchema = v.unknown();
+export type TDataInLabel = {
+  type: TDataInLabelType;
+  value: {
+    id: string;
+    type: string;
+    value: string;
+    labels: TDataInLabel[];
+    attributes?: Record<string, string>;
+  };
+  timestamp: string | null;
+};
 
-export const LabelSchema = v.object({
+// Making changes? Update TDataInLabel to match
+export const LabelSchema: v.GenericSchema<TDataInLabel> = v.object({
   type: LabelTypeSchema,
   value: v.object({
     id: v.string(),
     type: v.string(),
     value: v.string(),
-    labels: v.array(LabelLabelSchema),
+    labels: v.array(v.lazy(() => LabelSchema)), // v.lazy allows for a recursive type. v.GenericSchema keeps TS happy
     attributes: v.optional(v.any()),
   }),
   timestamp: v.nullable(v.string()),
 });
-
-export type TDataInLabel = v.InferOutput<typeof LabelSchema>;

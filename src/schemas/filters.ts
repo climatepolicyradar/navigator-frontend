@@ -1,6 +1,6 @@
 import * as v from "valibot";
 
-import { TQueryGroup } from "@/components/_experiment/queryBuilder/QueryBuilder";
+import { TQueryGroup } from "@/components/_experiment/advancedFilters/AdvancedFilters";
 
 export const FilterSchema = v.object({
   field: v.picklist(["labels.value.id"]),

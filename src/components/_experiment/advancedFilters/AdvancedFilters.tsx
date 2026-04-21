@@ -1,5 +1,5 @@
-import { Popover as BasePopover } from "@base-ui/react/popover";
-import { SlidersHorizontal, Plus, Trash2, X } from "lucide-react";
+import { Dialog as BaseDialog } from "@base-ui/react/dialog";
+import { Plus, Trash2, X } from "lucide-react";
 import { Fragment, useCallback, useEffect, useRef, useState } from "react";
 
 import { useLabelSearch, TLabelResult } from "@/hooks/useLabelSearch";
@@ -7,16 +7,12 @@ import { partitionByAvailability } from "@/utils/_experiment/labelAggregationAva
 import { labelTypeLabel } from "@/utils/_experiment/labelTypeLabel";
 import { joinTailwindClasses } from "@/utils/tailwind";
 
-// ---------------------------------------------------------------------------
-// Types
-// ---------------------------------------------------------------------------
-
-type TQueryGroup = {
+export type TQueryGroup = {
   op: "and" | "or";
   filters: (TQueryGroup | TQueryRule)[];
 };
 
-type TQueryRule = {
+export type TQueryRule = {
   field: "labels.value.id";
   op: "contains" | "not_contains";
   value: string;
@@ -32,10 +28,7 @@ export function isFilterGroupEmpty(filters: TQueryGroup | null): boolean {
   return filters.filters.some((f) => isRule(f) && f.value === "");
 }
 
-// ---------------------------------------------------------------------------
 // ID helpers (stable keys for React lists)
-// ---------------------------------------------------------------------------
-
 let _nextId = 1;
 const nodeIds = new WeakMap<object, number>();
 function nodeId(node: TQueryGroup | TQueryRule): number {
@@ -47,9 +40,7 @@ function nodeId(node: TQueryGroup | TQueryRule): number {
   return id;
 }
 
-// ---------------------------------------------------------------------------
 // Immutable tree helpers (produce new references on every change)
-// ---------------------------------------------------------------------------
 
 function createRule(): TQueryRule {
   return { field: "labels.value.id", op: "contains", value: "" };
@@ -112,10 +103,7 @@ function addAtPath(root: TQueryGroup, path: number[], item: TQueryGroup | TQuery
   return { ...root, filters: newFilters };
 }
 
-// ---------------------------------------------------------------------------
 // Label Picker (inline dropdown with search — powered by useLabelSearch)
-// ---------------------------------------------------------------------------
-
 interface LabelPickerProps {
   value: string;
   onChange: (label: string) => void;
@@ -235,7 +223,7 @@ function LabelPicker({ value, onChange, placeholder = "Search...", autoFocus = f
         </div>
       )}
       {isOpen && orderedResults.length > 0 && (
-        <ul className="absolute z-50 mt-1 max-h-48 w-[300px] overflow-y-auto rounded-md border border-gray-200 bg-white shadow-lg">
+        <ul className="absolute z-50 mt-1 max-h-48 w-75 overflow-y-auto rounded-md border border-gray-200 bg-white shadow-lg">
           {orderedResults.map((label, idx) => {
             const isAvailable = isResultAvailable(label);
             return (
@@ -276,10 +264,7 @@ function LabelPicker({ value, onChange, placeholder = "Search...", autoFocus = f
   );
 }
 
-// ---------------------------------------------------------------------------
 // Operator selector
-// ---------------------------------------------------------------------------
-
 const OPERATORS = [
   { value: "contains" as const, label: "is" },
   { value: "not_contains" as const, label: "is not" },
@@ -305,10 +290,7 @@ function OperatorSelect({ value, onChange }: { value: TQueryRule["op"]; onChange
   );
 }
 
-// ---------------------------------------------------------------------------
 // Boolean connector pill (AND / OR)
-// ---------------------------------------------------------------------------
-
 function ConnectorPill({ value, onChange }: { value: "and" | "or"; onChange: (v: "and" | "or") => void }) {
   return (
     <button
@@ -324,10 +306,7 @@ function ConnectorPill({ value, onChange }: { value: "and" | "or"; onChange: (v:
   );
 }
 
-// ---------------------------------------------------------------------------
 // Rule row
-// ---------------------------------------------------------------------------
-
 interface RuleRowProps {
   rule: TQueryRule;
   onUpdate: (updated: TQueryRule) => void;
@@ -363,10 +342,7 @@ function RuleRow({ rule, onUpdate, onDelete, isOnly, availableLabelIds }: RuleRo
   );
 }
 
-// ---------------------------------------------------------------------------
 // Group renderer (recursive)
-// ---------------------------------------------------------------------------
-
 interface GroupRendererProps {
   group: TQueryGroup;
   path: number[];
@@ -504,10 +480,6 @@ function GroupRenderer({ group, path, root, onChange, depth, onDeleteGroup, avai
   );
 }
 
-// ---------------------------------------------------------------------------
-// Main QueryBuilder component
-// ---------------------------------------------------------------------------
-
 type TProps = {
   filters?: TQueryGroup | null;
   setFilters?: (filters: TQueryGroup | null) => void;
@@ -516,63 +488,41 @@ type TProps = {
   availableLabelIds?: ReadonlySet<string> | undefined;
 };
 
-export function QueryBuilder({ filters, setFilters, open, onOpenChange, availableLabelIds }: TProps) {
+export function AdvancedFilters({ filters, setFilters, open, onOpenChange, availableLabelIds }: TProps) {
   return (
-    <BasePopover.Root open={open} onOpenChange={onOpenChange}>
-      <BasePopover.Trigger
-        render={(props, state) => (
-          <button
-            {...props}
-            className={joinTailwindClasses(
-              "inline-flex items-center gap-2 rounded-full border border-transparent-regular bg-white px-3 py-2 text-sm font-medium text-gray-700 shadow-sm hover:bg-neutral-100 transition-colors focus:outline-none focus:ring-2 focus:ring-blue-200 focus:border-blue-500",
-              state.open ? "bg-inky-black! text-white!" : ""
-            )}
-          >
-            <SlidersHorizontal className="text-neutral-400 h-4 w-4" />
-            Advanced Filters
-          </button>
-        )}
-      />
+    <BaseDialog.Root open={open} onOpenChange={onOpenChange}>
+      <BaseDialog.Portal>
+        <BaseDialog.Backdrop className="fixed inset-0 min-h-dvh bg-inky-black opacity-20 transition-all duration-150 data-ending-style:opacity-0 data-starting-style:opacity-0 dark:opacity-70 supports-[-webkit-touch-callout:none]:absolute" />
+        <BaseDialog.Popup className="w-3/4 max-w-4xl fixed top-1/5 left-1/2 -translate-x-1/2 rounded-xl border border-transparent-regular bg-white shadow-2xl focus-visible:outline-none  transition-all duration-150 data-ending-style:scale-90 data-ending-style:opacity-0 ">
+          {/* Header */}
+          <div className="flex items-center justify-between border-b border-gray-100 px-4 py-3">
+            <h3 className="text-sm font-semibold text-gray-900">Advanced Filters</h3>
+            <BaseDialog.Close className="rounded p-1 text-gray-400 hover:text-gray-600 hover:bg-gray-100 transition-colors" aria-label="Close">
+              <X className="h-4 w-4" />
+            </BaseDialog.Close>
+          </div>
 
-      <BasePopover.Portal>
-        <BasePopover.Positioner positionMethod="fixed" sideOffset={8} side="bottom" align="start" className="z-50">
-          <BasePopover.Popup
-            className={joinTailwindClasses("w-130 rounded-xl border border-gray-200 bg-white shadow-2xl", "focus-visible:outline-none")}
-          >
-            {/* Header */}
-            <div className="flex items-center justify-between border-b border-gray-100 px-4 py-3">
-              <h3 className="text-sm font-semibold text-gray-900">Advanced Filters</h3>
-              <BasePopover.Close className="rounded p-1 text-gray-400 hover:text-gray-600 hover:bg-gray-100 transition-colors" aria-label="Close">
-                <X className="h-4 w-4" />
-              </BasePopover.Close>
-            </div>
+          {/* Body */}
+          <div className="max-h-[60vh] overflow-y-auto p-4">
+            <GroupRenderer group={filters} path={[]} root={filters} onChange={setFilters} depth={0} availableLabelIds={availableLabelIds} />
+          </div>
 
-            {/* Body */}
-            <div className="max-h-[60vh] overflow-y-auto p-4">
-              <GroupRenderer group={filters} path={[]} root={filters} onChange={setFilters} depth={0} availableLabelIds={availableLabelIds} />
+          {/* Footer */}
+          <div className="flex items-center justify-between border-t border-gray-100 px-4 py-3">
+            <button type="button" onClick={() => setFilters(createGroup())} className="text-xs text-gray-500 hover:text-gray-700 transition-colors">
+              Reset all
+            </button>
+            <div className="text-[10px] text-gray-400">
+              {countRules(filters)} rule{countRules(filters) !== 1 && "s"}
             </div>
-
-            {/* Footer */}
-            <div className="flex items-center justify-between border-t border-gray-100 px-4 py-3">
-              <button type="button" onClick={() => setFilters(createGroup())} className="text-xs text-gray-500 hover:text-gray-700 transition-colors">
-                Reset all
-              </button>
-              <div className="text-[10px] text-gray-400">
-                {countRules(filters)} rule{countRules(filters) !== 1 && "s"}
-              </div>
-            </div>
-          </BasePopover.Popup>
-        </BasePopover.Positioner>
-      </BasePopover.Portal>
-    </BasePopover.Root>
+          </div>
+        </BaseDialog.Popup>
+      </BaseDialog.Portal>
+    </BaseDialog.Root>
   );
 }
 
-/** Count the total number of rules in the tree. */
 function countRules(node: TQueryGroup | TQueryRule): number {
   if (isRule(node)) return 1;
   return node.filters.reduce((sum, child) => sum + countRules(child), 0);
 }
-
-export type { TQueryGroup, TQueryRule };
-export default QueryBuilder;

@@ -1,4 +1,4 @@
-import { TQueryGroup } from "@/components/_experiment/queryBuilder/QueryBuilder";
+import { TQueryGroup } from "@/components/_experiment/advancedFilters/AdvancedFilters";
 
 interface DocumentLabel {
   id: string;

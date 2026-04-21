@@ -54,7 +54,7 @@ export function DocumentSearchResult({ result, onSelectLabel }: { result: Search
           <span dangerouslySetInnerHTML={{ __html: result.title }} />
         )}
       </h3>
-      <p className="font-medium text-neutral-500 mb-3 flex items-center gap-1">{displayParentRelationshipContext(result)}</p>
+      <p className="font-medium text-neutral-500 mb-3 flex flex-wrap items-center gap-1">{displayParentRelationshipContext(result)}</p>
       <div className="text-sm text-inky-black mb-3 flex gap-6 -ml-2">
         {result.labels
           .filter((label) => label.type === "geography")
@@ -64,7 +64,7 @@ export function DocumentSearchResult({ result, onSelectLabel }: { result: Search
             <button
               key={i}
               className="flex gap-1 items-center rounded px-2 py-0.5 cursor-pointer hover:bg-neutral-200"
-              onClick={() => onSelectLabel?.(relationship.value.value)}
+              onClick={() => onSelectLabel?.(relationship.value.id)}
             >
               <LucideEarth width={14} height={14} />
               <span>{relationship.value.value}</span>
