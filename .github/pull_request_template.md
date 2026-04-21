@@ -1,5 +1,7 @@
 # What's changed
 
-## Why?
+## Why
 
-## Screenshots?
+## AI attribution
+
+## Screenshots

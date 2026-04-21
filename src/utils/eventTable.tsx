@@ -128,7 +128,8 @@ export const getEventTableRowsData = (family: TFamilyPublic): TEventRowData[] =>
   });
 
   const allRows = [...eventRows, ...documentRows];
-  const filteredRows = allRows.filter((row) => !row.event || row.event.event_type !== "Filing Year For Action");
+  // TODO review event_type values once transformFamily maps litigation events (APP-1928)
+  const filteredRows = allRows.filter((row) => !row.event || !["Filing Year For Action", "activity_status::Filed"].includes(row.event.event_type));
 
   // family.events and family.document.events sometimes have the same event
   // remove duplicates by import_id and prioritise the document event (because it was added to allRows last)

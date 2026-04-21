@@ -108,7 +108,7 @@ export function getLitigationMetadata(
 
   if (isUSA && family.collections[0]) {
     atIssueValue = <span>{family.collections[0].description}</span>;
-  } else if (!isUSA && family.metadata.core_object.length > 0) {
+  } else if (!isUSA && family.metadata.core_object?.length > 0) {
     atIssueValue = family.metadata.core_object.map((label) => <span key={label}>{label}</span>);
   }
 
