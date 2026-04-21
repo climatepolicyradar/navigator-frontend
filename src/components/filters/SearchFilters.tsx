@@ -100,9 +100,6 @@ const SearchFilters = ({
         <Accordion title={themeConfig.categories.label} data-cy="categories" key={themeConfig.categories.label} startOpen>
           <InputListContainer>
             {themeConfig.categories?.options?.map((option) => {
-              if (!features["iccn-reports"] && option.slug === "climate-council-reports") {
-                return false;
-              }
               return (
                 <InputRadio
                   key={option.slug}
