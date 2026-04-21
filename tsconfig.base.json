@@ -32,7 +32,6 @@
       "@/themes/*": ["./themes/cpr/*"],
       "@/types": ["./src/types/index"],
       "@/utils/*": ["./src/utils/*"],
-      // THEMES
       "@/ccc/*": ["./themes/ccc/*"],
       "@/cclw/*": ["./themes/cclw/*"],
       "@/cpr/*": ["./themes/cpr/*"],
