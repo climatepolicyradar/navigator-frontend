@@ -8,6 +8,7 @@ import { transformFamilyEvents } from "@/bff/transformers/partials/transformFami
 import { transformFamilyMetadata } from "@/bff/transformers/partials/transformFamilyMetadata";
 import { transformOldCollection } from "@/bff/transformers/partials/transformOldCollection";
 import { transformOldFamily } from "@/bff/transformers/partials/transformOldFamily";
+import { ID_SEPARATOR } from "@/constants/chars";
 import { LABEL_TYPES, MANDATORY_FAMILY_LABEL_TYPES, TDataInLabel, TDataInLabelType } from "@/schemas";
 import { TFamilyApiNewData, TFamilyApiOldData, TFamilyPresentationalResponse } from "@/types";
 import { groupByType } from "@/utils/data-in/groupByType";
@@ -36,7 +37,7 @@ export const familyTransformer = (
             concepts: transformConcepts(groupedLabels.legal_concept),
             documents: transformFamilyDocuments(familyApiOldData.family.documents, documents),
             events: transformFamilyEvents(groupedLabels),
-            geographies: groupedLabels.geography.map((label) => label.value.id),
+            geographies: groupedLabels.geography.map((label) => label.value.id.split(ID_SEPARATOR)[1]),
             import_id: familyApiNewData.id,
             last_updated_date: familyApiNewData.attributes.last_updated_date,
             metadata: transformFamilyMetadata(familyApiNewData.attributes, groupedLabels),
