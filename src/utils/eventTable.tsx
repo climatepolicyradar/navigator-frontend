@@ -128,12 +128,10 @@ export const getEventTableRowsData = (family: TFamilyPublic): TEventRowData[] =>
   });
 
   const allRows = [...eventRows, ...documentRows];
-  // TODO review event_type values once transformFamily maps litigation events (APP-1928)
-  const filteredRows = allRows.filter((row) => !row.event || !["Filing Year For Action", "activity_status::Filed"].includes(row.event.event_type));
 
   // family.events and family.document.events sometimes have the same event
   // remove duplicates by import_id and prioritise the document event (because it was added to allRows last)
-  const rowEntries = filteredRows.map((row) => [row.event?.import_id || row.document.import_id, row] as const);
+  const rowEntries = allRows.map((row) => [row.event?.import_id || row.document.import_id, row] as const);
   const uniqueRows = Object.values(Object.fromEntries(rowEntries));
 
   return uniqueRows;
@@ -331,7 +329,8 @@ export const getEventTableRows = ({
         date: date
           ? {
               label: formatDateShort(date, language),
-              value: date.getTime(),
+              // Ensures the first event displays first even if it shares a date with other events
+              value: `${date.getTime()}-${event?.event_type === "Filing Year For Action" ? "0" : "1"}`,
             }
           : null,
         searchResults:
