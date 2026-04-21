@@ -165,6 +165,7 @@ const ShadowSearch = ({ theme, themeConfig, features }: TProps) => {
             <SearchSortSelect
               value={sort}
               onChange={(next) => {
+                setSortParam(next);
                 setCurrentPage("1");
               }}
             />

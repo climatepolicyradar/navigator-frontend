@@ -54,17 +54,10 @@ export interface SearchDocumentsResponse {
   };
 }
 
-/** URL/query-state keys for shadow SERP sort; maps to search API `order_by`. */
 export const SEARCH_DOCUMENT_SORT_KEYS = ["relevance", "recent", "oldest", "title_asc", "title_desc"] as const;
 
 export type SearchDocumentsSortKey = (typeof SEARCH_DOCUMENT_SORT_KEYS)[number];
 
-/**
- * Maps a compact sort key to the AIP-132 `order_by` value for `GET /search/documents`.
- *
- * @param key - Sort mode from UI or URL state
- * @returns `order_by` query value
- */
 export function orderByParamFromSortKey(key: SearchDocumentsSortKey): string {
   const map: Record<SearchDocumentsSortKey, string> = {
     relevance: "relevance desc",
@@ -76,15 +69,12 @@ export function orderByParamFromSortKey(key: SearchDocumentsSortKey): string {
   return map[key];
 }
 
-/**
- * @param raw - Raw `sort` query string
- * @returns A valid sort key, defaulting to relevance
- */
+function isSearchDocumentsSortKey(raw: string): raw is SearchDocumentsSortKey {
+  return (SEARCH_DOCUMENT_SORT_KEYS as readonly string[]).includes(raw);
+}
+
 export function normaliseSearchDocumentsSortKey(raw: string | null | undefined): SearchDocumentsSortKey {
-  if (raw && (SEARCH_DOCUMENT_SORT_KEYS as readonly string[]).includes(raw)) {
-    return raw as SearchDocumentsSortKey;
-  }
-  return "relevance";
+  return raw && isSearchDocumentsSortKey(raw) ? raw : "relevance";
 }
 
 interface SearchDocumentsParams {
@@ -93,7 +83,6 @@ interface SearchDocumentsParams {
   page_size?: string;
   page_token?: string;
   includeDocumentsInSearch?: boolean;
-  /** Result ordering; defaults to relevance when omitted */
   sort?: SearchDocumentsSortKey;
 }
 
