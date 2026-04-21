@@ -112,7 +112,40 @@ def validate_stack_and_branch() -> None:
     deploy_to_prod_stack_allowed = convert_str_to_bool(
         os.getenv("DEPLOY_TO_PROD_STACK_ALLOWED", "False")
     )
-    
+
+    if deploy_from_main_branch_only and is_branch_dirty():
+        raise RuntimeError("The current branch has uncommitted changes.\n\n")
+
+    if "production" in stack:
+        if not deploy_to_prod_stack_allowed:
+            raise RuntimeError(
+                f"Deploying to the '{stack}' stack is not allowed.\n\n"
+                f"Set the environment variable 'DEPLOY_TO_PROD_STACK_ALLOWED' to 'True' in the pulumi command to allow "
+                f"it.\n\n "
+            )
+        if branch != deployment_branch:
+            raise RuntimeError(
+                f"The stack '{stack}' is only deployable from the '{deployment_branch}' branch.\n\n"
+            )
+
+    elif "staging" in stack:
+        if deploy_from_main_branch_only and branch != deployment_branch:
+            raise RuntimeError(
+                f"The stack '{stack}' is only deployable from the '{deployment_branch}'. Set the environment "
+                f"variable 'DEPLOY_FROM_MAIN_BRANCH_ONLY' to 'False' in the pulumi command to allow it.\n\n"
+            )
+
+    elif "sandbox" in stack:
+        pass
+
+    elif "review" in stack or stack.startswith("pr-"):
+        # Review stacks (e.g. cpr-review, pr-climatepolicyradar-navigator-frontend-1139)
+        # are ephemeral and can be deployed from any branch.
+        pass
+
+    else:
+        raise RuntimeError(f"The stack '{stack}' is not a valid stack.\n\n")
+
 
 class BehaviourTypes(Enum):
     """Enum for behaviour types."""
