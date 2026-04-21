@@ -12,6 +12,9 @@ jobs:
       THEME: cpr
     steps:
       - uses: actions/checkout@v6
+      - uses: actions/setup-node@v6
+        with:
+          node-version: 22.12.0
       - name: Generate tsconfig.json
         run: |
           cp tsconfig.base.json tsconfig.json
