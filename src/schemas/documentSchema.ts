@@ -4,8 +4,11 @@ import { FileSchema } from "./fileSchema";
 import { LabelSchema } from "./labelSchema";
 
 const AttributesSchema = v.object({
+  case_status: v.optional(v.string()),
   deprecated_slug: v.string(),
+  "identifier::case_number": v.optional(v.string()),
   "identifier::project_id": v.optional(v.string()),
+  "identifier::provider_id": v.optional(v.string()),
   last_updated_date: v.string(),
   project_url: v.optional(v.string()),
   project_co_financing_usd: v.optional(v.number()),

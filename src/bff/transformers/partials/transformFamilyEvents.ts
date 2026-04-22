@@ -12,7 +12,7 @@ export const transformFamilyEvents = (groupedLabels: TItemsByType<TDataInLabel, 
         event_type: label.value.id,
         title: label.value.value,
         // Required properties but unused
-        import_id: "",
+        import_id: "TODO",
         metadata: {},
         status: "OK",
       }))

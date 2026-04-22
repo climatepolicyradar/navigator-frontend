@@ -131,7 +131,7 @@ export const getEventTableRowsData = (family: TFamilyPublic): TEventRowData[] =>
 
   // family.events and family.document.events sometimes have the same event
   // remove duplicates by import_id and prioritise the document event (because it was added to allRows last)
-  const rowEntries = allRows.map((row) => [row.event?.import_id || row.document.import_id, row] as const);
+  const rowEntries = allRows.map((row) => [row.event?.import_id ?? row.document.import_id, row] as const);
   const uniqueRows = Object.values(Object.fromEntries(rowEntries));
 
   return uniqueRows;
@@ -262,7 +262,7 @@ export const getEventTableRows = ({
       const sortedTopics = orderBy(Object.entries(documentTopicsData), ["1"], ["desc"]);
       const someTopicsHidden = sortedTopics.length > MAX_TOPICS_PER_DOCUMENT;
 
-      const topicLinks = sortedTopics.slice(0, MAX_TOPICS_PER_DOCUMENT).map(([topicId, topicCount]) => {
+      const topicLinks = sortedTopics.slice(0, MAX_TOPICS_PER_DOCUMENT).map(([topicId]) => {
         const [wikibaseId, fallbackLabel] = topicId.split(":");
         const topic = topicsData.find((concept) => concept.wikibase_id === wikibaseId);
 

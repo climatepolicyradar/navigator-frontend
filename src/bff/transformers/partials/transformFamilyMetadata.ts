@@ -7,7 +7,10 @@ const LABEL_TO_METADATA_MAP: Partial<Record<TDataInLabelType, TApiFamilyMetadata
   project_status: "status",
 };
 const ATTRIBUTE_TO_METADATA_MAP: Record<string, TApiFamilyMetadataKey> = {
+  case_status: "status",
+  "identifier::case_number": "case_number",
   "identifier::project_id": "project_id",
+  "identifier::provider_id": "id",
   project_co_financing_usd: "project_value_co_financing",
   project_fund_spend_usd: "project_value_fund_spend",
 };
@@ -24,20 +27,6 @@ export const transformFamilyMetadata = (
   category: TAttributionCategory
 ): TApiFamilyMetadata => {
   const familyMetadata: TApiFamilyMetadata = {};
-
-  /* Attributes */
-
-  Object.entries(attributes).forEach(([attributeKey, value]) => {
-    if (value && isFamilyMetadataKey(attributeKey)) {
-      familyMetadata[attributeKey] = [value.toString()];
-    }
-  });
-
-  Object.entries(ATTRIBUTE_TO_METADATA_MAP).forEach(([attributeKey, metadataKey]) => {
-    if (!(attributeKey in attributes)) return;
-    const value = attributes[attributeKey as keyof TDataInDocumentAttributes];
-    familyMetadata[metadataKey] = [value.toString()];
-  });
 
   /* Labels */
 
@@ -62,6 +51,20 @@ export const transformFamilyMetadata = (
       })
       .sort();
   }
+
+  /* Attributes */
+
+  Object.entries(attributes).forEach(([attributeKey, value]) => {
+    if (value && isFamilyMetadataKey(attributeKey)) {
+      familyMetadata[attributeKey] = [value.toString()];
+    }
+  });
+
+  Object.entries(ATTRIBUTE_TO_METADATA_MAP).forEach(([attributeKey, metadataKey]) => {
+    if (!(attributeKey in attributes)) return;
+    const value = attributes[attributeKey as keyof TDataInDocumentAttributes];
+    familyMetadata[metadataKey] = [value.toString()];
+  });
 
   return familyMetadata;
 };
