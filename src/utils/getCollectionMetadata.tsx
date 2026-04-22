@@ -1,5 +1,6 @@
 import { ConceptHierarchy } from "@/components/molecules/conceptHierarchy/ConceptHierarchy";
 import { EN_DASH } from "@/constants/chars";
+import { FILING_DATE_EVENT_TYPES } from "@/constants/events";
 import { IMetadata, TCollectionPublicWithFamilies } from "@/types";
 import { buildConceptHierarchy } from "@/utils/buildConceptHierarchy";
 
@@ -9,10 +10,7 @@ export const getCollectionMetadata = (collection: TCollectionPublicWithFamilies)
   // Get all events from all families in the collection
   const allEvents = collection.families.flatMap((family) => family.events);
 
-  const filingDates = allEvents
-    // TODO: confirm if events must be of type "Filing Year For Action" or "Filing Date"
-    // .filter((event) => event.event_type === "Filing Year For Action" || event.event_type === "Filing Date")
-    .map((event) => new Date(event.date));
+  const filingDates = allEvents.filter((event) => FILING_DATE_EVENT_TYPES.includes(event.event_type)).map((event) => new Date(event.date));
 
   if (filingDates.length > 0) {
     const earliestFilingDate = new Date(Math.min(...filingDates.map((date) => date.getTime())));

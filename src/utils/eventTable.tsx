@@ -9,6 +9,7 @@ import { PageLink } from "@/components/atoms/pageLink/PageLink";
 import { Popover } from "@/components/atoms/popover/Popover";
 import { ViewMore } from "@/components/molecules/viewMore/ViewMore";
 import { ARROW_UP_RIGHT } from "@/constants/chars";
+import { FILING_DATE_EVENT_TYPES } from "@/constants/events";
 import { QUERY_PARAMS } from "@/constants/queryParams";
 import { getLanguage } from "@/helpers/getLanguage";
 import { getMainDocuments } from "@/helpers/getMainDocuments";
@@ -330,7 +331,7 @@ export const getEventTableRows = ({
           ? {
               label: formatDateShort(date, language),
               // Ensures the first event displays first even if it shares a date with other events
-              value: `${date.getTime()}-${event?.event_type === "Filing Year For Action" ? "0" : "1"}`,
+              value: `${date.getTime()}-${FILING_DATE_EVENT_TYPES.includes(event?.event_type) ? "0" : "1"}`,
             }
           : null,
         searchResults:
