@@ -54,7 +54,7 @@ class ApiClient {
           console.error(error.response);
           return error.response;
         }
-        console.log(error);
+        console.error(error);
         throw error;
       });
   }
