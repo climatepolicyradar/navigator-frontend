@@ -38,7 +38,7 @@ export const EventsBlock = ({ families }: IProps) => {
           rows={updatedRowsWithLocalisedDates || tableRows}
           maxRows={showAllEntries ? 0 : MAX_ENTRIES_SHOWN}
         />
-        {true && (
+        {entriesToHide && (
           <button
             type="button"
             onClick={toggleShowAll}

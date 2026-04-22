@@ -35,7 +35,7 @@ export const familyTransformer = (
           countries: transformCountries(familyApiOldData.countries, groupedLabels.geography),
           family: {
             attribution,
-            collections: transformFamilyCollections(familyApiOldData.family.collections, familyApiNewData.documents),
+            collections: transformFamilyCollections(familyApiNewData),
             concepts: transformConcepts(groupedLabels.legal_concept),
             documents: transformFamilyDocuments(documents, documentEvents),
             events: familyEvents,

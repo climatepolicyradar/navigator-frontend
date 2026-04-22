@@ -61,13 +61,11 @@ const topicsColumnName = (
 export const getEventTableColumns = ({
   hasTopics = false,
   isLitigation,
-  isUSA = true,
   showFamilyColumns = false,
   showMatches = false,
 }: {
   hasTopics?: boolean;
   isLitigation: boolean;
-  isUSA?: boolean;
   showFamilyColumns?: boolean;
   showMatches?: boolean;
 }) => {
