@@ -27,7 +27,7 @@ config:
   frontend:theme: cclw
   frontend:validation_account_id:
     secure: AAABAPuRdTBqdG17KLnwRCZoQXSnRhTX9zA23rCeq+Ettk8ESiauYGnV/z8=
-  frontend:apprunner_frontend_vcpu_count: "1 vCPU"
-  frontend:apprunner_frontend_memory_gb: "2 GB"
+  frontend:apprunner_frontend_vcpu_count: 1 vCPU
+  frontend:apprunner_frontend_memory_gb: 2 GB
 environment:
   - frontend/cclw-review
