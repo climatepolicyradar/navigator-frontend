@@ -30,8 +30,8 @@ export const LABEL_TYPES = [
 const LabelTypeSchema = v.custom<(typeof LABEL_TYPES)[number]>((value) => typeof value === "string");
 export type TDataInLabelType = v.InferOutput<typeof LabelTypeSchema>;
 
-export const MANDATORY_FAMILY_LABEL_TYPES: TDataInLabelType[] = ["activity_status", "category", "provider"];
-export const MANDATORY_DOCUMENT_LABEL_TYPES: TDataInLabelType[] = [];
+export const MANDATORY_DOCUMENT_LABEL_TYPES: TDataInLabelType[] = ["activity_status", "category", "provider"];
+export const MANDATORY_FILE_LABEL_TYPES: TDataInLabelType[] = ["activity_status"];
 
 export type TDataInLabel = {
   type: TDataInLabelType;
