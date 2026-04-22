@@ -95,7 +95,8 @@ export const getFamilyData = async (slug: string, features: TFeatures): Promise<
           const { data: subDivisionResponse } = await apiClient.get<TApiGeographySubdivision[]>(`/geographies/subdivisions/${country}`);
           return subDivisionResponse;
         } catch (error) {
-          errors.push(new Error("Failed to fetch subdivisions data for country: " + country, error));
+          const status = axios.isAxiosError(error) ? error.response?.status : "unknown";
+          errors.push(new Error(`Failed to fetch subdivisions data for country: ${country}`, { cause: status }));
           return [];
         }
       })
