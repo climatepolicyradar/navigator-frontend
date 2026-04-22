@@ -1,3 +1,4 @@
+/* eslint-disable no-console */
 import axios from "axios";
 import type { AxiosInstance, AxiosResponse } from "axios";
 
@@ -48,13 +49,9 @@ class ApiClient {
     return this.axiosClient
       .get<T>(url, { params })
       .then((res: any) => res)
-      .catch((error) => {
-        if (axios.isAxiosError(error)) {
-          console.error(error.response);
-          return error.response;
-        }
-        console.error(error);
-        throw error;
+      .catch((err) => {
+        console.log(err);
+        throw err;
       });
   }
 
