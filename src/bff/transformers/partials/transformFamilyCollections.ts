@@ -9,7 +9,7 @@ export const transformFamilyCollections = (document: TFamilyApiNewData): TCollec
       description: description || file.value.description || "",
       import_id: file.value.id,
       metadata: {}, // Not used
-      slug: file.value.attributes.deprecated_slug || "TODO", // TODO
+      slug: file.value.attributes.deprecated_slug,
       title: file.value.title,
     }));
 };

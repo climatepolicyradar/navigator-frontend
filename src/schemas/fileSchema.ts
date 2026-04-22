@@ -44,7 +44,13 @@ export const FileSchema = v.union([
     })
   ),
   // Collections
-  FileSchemaByType(toLiteralUnion(["has_version", "member_of"]), v.object({})),
+  FileSchemaByType(
+    v.literal("member_of"),
+    v.object({
+      deprecated_slug: v.string(),
+    })
+  ),
+  FileSchemaByType(v.literal("has_version"), v.object({})),
 ]);
 
 export type TDataInFile = v.InferOutput<typeof FileSchema>;
