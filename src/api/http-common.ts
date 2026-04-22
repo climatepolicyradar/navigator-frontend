@@ -49,9 +49,13 @@ class ApiClient {
     return this.axiosClient
       .get<T>(url, { params })
       .then((res: any) => res)
-      .catch((err) => {
-        console.log(err);
-        throw err;
+      .catch((error) => {
+        if (axios.isAxiosError(error)) {
+          console.error(error.response);
+          return error.response;
+        }
+        console.log(error);
+        throw error;
       });
   }
 
