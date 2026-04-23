@@ -58,16 +58,13 @@ export const SEARCH_DOCUMENT_SORT_KEYS = ["relevance", "recent", "oldest", "titl
 
 export type SearchDocumentsSortKey = (typeof SEARCH_DOCUMENT_SORT_KEYS)[number];
 
-export function orderByParamFromSortKey(key: SearchDocumentsSortKey): string {
-  const map: Record<SearchDocumentsSortKey, string> = {
-    relevance: "relevance desc",
-    recent: "attributes.published_date desc",
-    oldest: "attributes.published_date asc",
-    title_asc: "title asc",
-    title_desc: "title desc",
-  };
-  return map[key];
-}
+export const SEARCH_DOCUMENT_SORT_PARAMS: Record<SearchDocumentsSortKey, string> = {
+  relevance: "relevance desc",
+  recent: "attributes.published_date desc",
+  oldest: "attributes.published_date asc",
+  title_asc: "title asc",
+  title_desc: "title desc",
+};
 
 function isSearchDocumentsSortKey(raw: string): raw is SearchDocumentsSortKey {
   return (SEARCH_DOCUMENT_SORT_KEYS as readonly string[]).includes(raw);
@@ -87,10 +84,6 @@ interface SearchDocumentsParams {
   excludeMergedDocuments?: boolean;
 }
 
-/**
- * Same API origin as `useLabelSearch` / `loadLabels` (`NEXT_PUBLIC_API_URL`).
- * Defaults to production; set e.g. `http://localhost:8000` for local search API.
- */
 function searchDocumentsUrl(): string {
   const origin = (process.env.NEXT_PUBLIC_API_URL || "https://api.climatepolicyradar.org").replace(/\/$/, "");
   return `${origin}/search/documents`;
@@ -156,7 +149,7 @@ export async function fetchSearchDocuments(params: SearchDocumentsParams = {}): 
   if (params.page_size !== undefined) url.searchParams.set("page_size", params.page_size);
   if (params.page_token !== undefined) url.searchParams.set("page_token", params.page_token);
   const sortKey = params.sort ?? "relevance";
-  url.searchParams.set("order_by", orderByParamFromSortKey(sortKey));
+  url.searchParams.set("order_by", SEARCH_DOCUMENT_SORT_PARAMS[sortKey]);
 
   const res = await fetch(url);
   if (!res.ok) throw new Error(`Search API error: ${res.status}`);

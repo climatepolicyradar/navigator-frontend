@@ -1,10 +1,10 @@
 import { Select } from "@base-ui/react/select";
 import { LucideCheck, LucideChevronDown } from "lucide-react";
 
-import type { SearchDocumentsSortKey } from "@/api/search";
+import { normaliseSearchDocumentsSortKey, type SearchDocumentsSortKey } from "@/api/search";
 
 type TProps = {
-  value: SearchDocumentsSortKey;
+  value: string;
   onChange: (value: SearchDocumentsSortKey) => void;
 };
 
@@ -28,13 +28,14 @@ const triggerClassName =
   "inline-flex h-9 max-w-full min-w-0 items-center justify-between gap-2 rounded-full border border-transparent-regular bg-[canvas] px-4 py-1.5 text-left text-sm font-medium text-neutral-600 select-none transition-colors hover:border-inky-black focus-visible:outline-2 focus-visible:-outline-offset-1 focus-visible:outline-blue-800 data-popup-open:border-inky-black";
 
 const popupClassName =
-  "max-h-(--available-height) min-w-(--anchor-width) origin-(--transform-origin) overflow-y-auto rounded-lg border border-transparent-regular bg-[canvas] py-1 shadow-lg shadow-gray-200/80 outline-none transition-[transform,scale,opacity] data-ending-style:scale-95 data-ending-style:opacity-0";
+  "max-h-(--available-height) min-w-(--anchor-width) origin-(--transform-origin) overflow-y-auto rounded-lg border border-transparent-regular bg-[canvas] py-1 shadow-lg outline-none transition-[transform,scale,opacity] data-ending-style:scale-95 data-ending-style:opacity-0";
 
 export function SearchSortSelect({ value, onChange }: TProps) {
+  const sortKey = normaliseSearchDocumentsSortKey(value);
   return (
-    <Select.Root value={value} onValueChange={(v) => onChange(v as SearchDocumentsSortKey)}>
+    <Select.Root value={sortKey} onValueChange={(v) => onChange(v as SearchDocumentsSortKey)}>
       <Select.Trigger className={triggerClassName}>
-        <Select.Value className="truncate">{triggerLabel(value)}</Select.Value>
+        <Select.Value className="truncate">{triggerLabel(sortKey)}</Select.Value>
         <Select.Icon className="flex shrink-0">
           <LucideChevronDown width={16} height={16} aria-hidden />
         </Select.Icon>
