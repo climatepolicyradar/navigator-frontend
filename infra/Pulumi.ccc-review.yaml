@@ -27,5 +27,7 @@ config:
   frontend:theme: ccc
   frontend:validation_account_id:
     secure: AAABAO27voF7di6u38zns14+kI+/wjLr5GzuvDz8LZxc2grKbCFv2+trwMQ=
+  frontend:apprunner_frontend_vcpu_count: 1 vCPU
+  frontend:apprunner_frontend_memory_gb: 2 GB
 environment:
   - frontend/ccc-review
