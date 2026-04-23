@@ -29,7 +29,7 @@
       "@/schemas": ["./src/schemas/index"],
       "@/stubs/*": ["./src/stubs/*"],
       "@/tests/*": ["./tests/*"],
-      "@/themes/*": ["./themes/cpr/*"],
+      "@/themes/*": ["./themes/__THEME__/*"],
       "@/types": ["./src/types/index"],
       "@/utils/*": ["./src/utils/*"],
       "@/ccc/*": ["./themes/ccc/*"],
