@@ -45,6 +45,7 @@ const ShadowSearch = ({ theme, themeConfig, features }: TProps) => {
   const [totalNoOfResults, setTotalNoOfResults] = useState<number | null>(null);
   // principal or documents
   const [includeDocumentsInSearch, setIncludeDocumentsInSearch] = useQueryState("include_documents", parseAsBoolean.withDefault(true));
+  const [excludeMergedDocuments, setExcludeMergedDocuments] = useQueryState("exclude_merged_documents", parseAsBoolean.withDefault(true));
 
   /**
    * Drops aggregations only when the filter tree becomes empty so greyed options
@@ -148,6 +149,12 @@ const ShadowSearch = ({ theme, themeConfig, features }: TProps) => {
           />
           <div className="flex items-center gap-6">
             <div>
+              <button className="text-gray-300" onClick={() => setExcludeMergedDocuments(!excludeMergedDocuments)}>
+                {excludeMergedDocuments && "."}
+                {!excludeMergedDocuments && ":"}
+              </button>
+            </div>
+            <div>
               <label className="flex items-center gap-2 text-neutral-600 text-sm font-medium cursor-pointer">
                 Show individual documents
                 <Switch.Root
@@ -159,6 +166,7 @@ const ShadowSearch = ({ theme, themeConfig, features }: TProps) => {
                 </Switch.Root>
               </label>
             </div>
+
             <AdvancedFilters
               filters={filters}
               setFilters={(filters) => {
@@ -206,6 +214,7 @@ const ShadowSearch = ({ theme, themeConfig, features }: TProps) => {
             page_token={currentPage}
             page_size={pageSize}
             includeDocumentsInSearch={includeDocumentsInSearch}
+            excludeMergedDocuments={excludeMergedDocuments}
             onAggregationsChange={applyAggregationsFromSearch}
             onTotalResultsChange={setTotalNoOfResults}
           />

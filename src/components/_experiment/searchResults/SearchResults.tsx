@@ -88,6 +88,7 @@ export function SearchContainer({
   page_token,
   page_size,
   includeDocumentsInSearch,
+  excludeMergedDocuments,
   onSelectLabel,
   onAggregationsChange,
   onTotalResultsChange,
@@ -98,6 +99,7 @@ export function SearchContainer({
   page_token?: string;
   page_size?: string;
   includeDocumentsInSearch?: boolean;
+  excludeMergedDocuments?: boolean;
   onSelectLabel?: (label: string) => void;
   onAggregationsChange?: (labels: IAggregationLabel[] | undefined) => void;
   onTotalResultsChange?: (total: number | null) => void;
@@ -112,9 +114,10 @@ export function SearchContainer({
       page_size,
       page_token,
       includeDocumentsInSearch,
+      excludeMergedDocuments,
       filters: filtersCheckedForEmpty,
     });
-  }, [query, filtersCheckedForEmpty, page_token, page_size, includeDocumentsInSearch]);
+  }, [query, filtersCheckedForEmpty, page_token, page_size, includeDocumentsInSearch, excludeMergedDocuments]);
 
   return (
     <>
