@@ -71,6 +71,8 @@ function isSearchDocumentsSortKey(raw: string): raw is SearchDocumentsSortKey {
 }
 
 export function normaliseSearchDocumentsSortKey(raw: string | null | undefined): SearchDocumentsSortKey {
+  // Converts the raw URL `sort` query value to a known sort key (invalid to
+  // `relevance`).
   return raw && isSearchDocumentsSortKey(raw) ? raw : "relevance";
 }
 

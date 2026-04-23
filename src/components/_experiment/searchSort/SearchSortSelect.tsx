@@ -1,10 +1,10 @@
 import { Select } from "@base-ui/react/select";
 import { LucideCheck, LucideChevronDown } from "lucide-react";
 
-import { normaliseSearchDocumentsSortKey, type SearchDocumentsSortKey } from "@/api/search";
+import { SearchDocumentsSortKey } from "@/api/search";
 
 type TProps = {
-  value: string;
+  sortParam: SearchDocumentsSortKey;
   onChange: (value: SearchDocumentsSortKey) => void;
 };
 
@@ -30,12 +30,11 @@ const triggerClassName =
 const popupClassName =
   "max-h-(--available-height) min-w-(--anchor-width) origin-(--transform-origin) overflow-y-auto rounded-lg border border-transparent-regular bg-[canvas] py-1 shadow-lg outline-none transition-[transform,scale,opacity] data-ending-style:scale-95 data-ending-style:opacity-0";
 
-export function SearchSortSelect({ value, onChange }: TProps) {
-  const sortKey = normaliseSearchDocumentsSortKey(value);
+export function SearchSortSelect({ sortParam, onChange }: TProps) {
   return (
-    <Select.Root value={sortKey} onValueChange={(v) => onChange(v as SearchDocumentsSortKey)}>
+    <Select.Root value={sortParam} onValueChange={(v) => onChange(v as SearchDocumentsSortKey)}>
       <Select.Trigger className={triggerClassName}>
-        <Select.Value className="truncate">{triggerLabel(sortKey)}</Select.Value>
+        <Select.Value className="truncate">{triggerLabel(sortParam)}</Select.Value>
         <Select.Icon className="flex shrink-0">
           <LucideChevronDown width={16} height={16} aria-hidden />
         </Select.Icon>

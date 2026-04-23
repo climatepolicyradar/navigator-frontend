@@ -1,7 +1,7 @@
 import { LucideCog, LucideFileText } from "lucide-react";
 import { Fragment, Suspense, use, useEffect, useMemo } from "react";
 
-import { fetchSearchDocuments, normaliseSearchDocumentsSortKey, SearchDocument, SearchDocumentsResponse, IAggregationLabel } from "@/api/search";
+import { fetchSearchDocuments, SearchDocument, SearchDocumentsResponse, IAggregationLabel, SearchDocumentsSortKey } from "@/api/search";
 
 import { DocumentSearchResult } from "./DocumentSearchResult";
 import { PrincipalSearchResult } from "./PrincipalSearchResult";
@@ -100,14 +100,13 @@ export function SearchContainer({
   page_token?: string;
   page_size?: string;
   includeDocumentsInSearch?: boolean;
-  sort?: string | null;
+  sort?: SearchDocumentsSortKey;
   excludeMergedDocuments?: boolean;
   onSelectLabel?: (label: string) => void;
   onAggregationsChange?: (labels: IAggregationLabel[] | undefined) => void;
   onTotalResultsChange?: (total: number | null) => void;
 }) {
   const filtersCheckedForEmpty = filtersDoesNotContainEmptyRule(filters) ? filters : undefined;
-  const sortKey = normaliseSearchDocumentsSortKey(sort);
 
   const searchPromise = useMemo(() => {
     if (!query && !filtersCheckedForEmpty) return null;
@@ -119,9 +118,9 @@ export function SearchContainer({
       includeDocumentsInSearch,
       excludeMergedDocuments,
       filters: filtersCheckedForEmpty,
-      sort: sortKey,
+      sort,
     });
-  }, [query, filtersCheckedForEmpty, page_token, page_size, includeDocumentsInSearch, sortKey, excludeMergedDocuments]);
+  }, [query, filtersCheckedForEmpty, page_token, page_size, includeDocumentsInSearch, sort, excludeMergedDocuments]);
 
   return (
     <>
