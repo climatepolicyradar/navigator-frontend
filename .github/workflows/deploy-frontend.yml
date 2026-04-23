@@ -1,4 +1,4 @@
-name: Deploy frontend
+name: Deploy hashed image to AWS
 on:
   workflow_dispatch:
     inputs:
@@ -35,14 +35,16 @@ permissions:
 jobs:
   deploy:
     environment: ${{ github.event.inputs.environment }}
-    name: Deploy ${{ github.event.inputs.environment }} [${{ github.event.inputs.stack }}@${{ github.event.inputs.docker-tag }}]
+    name: Deploy ${{ github.event.inputs.environment }} [${{
+      github.event.inputs.stack }}@${{ github.event.inputs.docker-tag }}]
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v6
       - name: configure aws credentials
         uses: aws-actions/configure-aws-credentials@v6.1.0
         with:
-          role-to-assume: arn:aws:iam::${{ secrets.AWS_ACCOUNT_ID }}:role/navigator-infra-github-actions
+          role-to-assume: arn:aws:iam::${{ secrets.AWS_ACCOUNT_ID
+            }}:role/navigator-infra-github-actions
           role-session-name: GitHub_to_AWS_via_FederatedOIDC
           aws-region: ${{ env.AWS_REGION }}
       - name: Install pulumi
@@ -52,13 +54,13 @@ jobs:
         env:
           PULUMI_ACCESS_TOKEN: ${{ secrets.PULUMI_ACCESS_TOKEN }}
       - name: Install dependencies
-        working-directory: frontend
+        working-directory: infra
         run: |
           pipx install rust-just
           pipx install uv
           uv sync
       - name: Update pulumi docker_tag
-        working-directory: frontend
+        working-directory: infra
         run: |
           pulumi stack select climatepolicyradar/${{ github.event.inputs.stack }}
           pulumi env set climatepolicyradar/${{ github.event.inputs.stack }} docker_tag ${{ github.event.inputs.docker-tag }}
