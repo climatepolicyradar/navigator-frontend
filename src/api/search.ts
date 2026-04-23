@@ -95,6 +95,9 @@ export async function fetchSearchDocuments(params: SearchDocumentsParams = {}): 
   const url = new URL(SEARCH_DOCUMENTS_BASE_URL);
   const filters = configureDocumentsFilters(params.filters, params.includeDocumentsInSearch ?? false);
 
+  // This enables `bolding` in vespa AKA highlighting, which highlights the matched terms in the results.
+  url.searchParams.set("bolding", "true");
+
   if (params.query) url.searchParams.set("query", params.query);
   if (filters) url.searchParams.set("filters", JSON.stringify(filters));
   if (params.page_size !== undefined) url.searchParams.set("page_size", params.page_size);
