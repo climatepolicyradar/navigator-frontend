@@ -1,4 +1,4 @@
-import { TDataInDocument } from "src/schemas";
+import { TDataInDocument } from "@/schemas";
 
 import {
   IApiFamilyDocumentTopics,

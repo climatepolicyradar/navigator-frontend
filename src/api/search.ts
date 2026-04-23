@@ -84,6 +84,7 @@ interface SearchDocumentsParams {
   page_token?: string;
   includeDocumentsInSearch?: boolean;
   sort?: SearchDocumentsSortKey;
+  excludeMergedDocuments?: boolean;
 }
 
 /**
@@ -95,36 +96,60 @@ function searchDocumentsUrl(): string {
   return `${origin}/search/documents`;
 }
 
-function configureDocumentsFilters(filters: TQueryGroup | undefined, includeDocumentsInSearch: boolean): TQueryGroup {
-  // including documents in search is the default search, otherwise default to only principal documents
-  // principal will have to be added as a parent group with AND to ensure there are no conflicts if a user has built an advanced filtering ruleset
-  if (!includeDocumentsInSearch) {
-    const documentsFilter: TQueryGroup = {
-      op: "and",
-      filters: [
-        {
-          field: "labels.value.id",
-          op: "contains",
-          value: "principal",
-        },
-      ],
-    };
-    if (filters) {
-      filters = {
-        op: "and",
-        filters: [filters, documentsFilter],
-      };
-    } else {
-      filters = documentsFilter;
-    }
+function configureDocumentsFilters(
+  filters: TQueryGroup | undefined,
+  includeDocumentsInSearch: boolean,
+  excludeMergedDocuments: boolean
+): TQueryGroup {
+  const notContainsMergedLabelFilter: TQueryGroup = {
+    op: "and",
+    filters: [
+      {
+        field: "labels.value.id",
+        op: "not_contains",
+        value: "status::Merged",
+      },
+    ],
+  };
+  const principalDocumentsFilter: TQueryGroup = {
+    op: "and",
+    filters: [
+      {
+        field: "labels.value.id",
+        op: "contains",
+        value: "status::Principal",
+      },
+    ],
+  };
+
+  const filtersWithConditionals: TQueryGroup[] = [];
+  if (filters) {
+    filtersWithConditionals.push(filters);
   }
 
-  return filters;
+  if (excludeMergedDocuments) {
+    filtersWithConditionals.push(notContainsMergedLabelFilter);
+  }
+
+  if (!includeDocumentsInSearch) {
+    filtersWithConditionals.push(principalDocumentsFilter);
+  }
+
+  return {
+    op: "and",
+    filters: filtersWithConditionals,
+  };
 }
 
 export async function fetchSearchDocuments(params: SearchDocumentsParams = {}): Promise<SearchDocumentsResponse> {
   const url = new URL(searchDocumentsUrl());
-  const filters = configureDocumentsFilters(params.filters, params.includeDocumentsInSearch ?? false);
+  const filters = configureDocumentsFilters(params.filters, params.includeDocumentsInSearch ?? false, params.excludeMergedDocuments ?? true);
+
+  // This enables `bolding` in vespa AKA highlighting, which highlights the matched terms in the results.
+  url.searchParams.set("bolding", "true");
+
+  // This enables `bolding` in vespa AKA highlighting, which highlights the matched terms in the results.
+  url.searchParams.set("bolding", "true");
 
   if (params.query) url.searchParams.set("query", params.query);
   if (filters) url.searchParams.set("filters", JSON.stringify(filters));

@@ -2,11 +2,13 @@
 
 GitHub debugging tools for your CI woes using `act`.
 
-More information on other forms of testing in this repo can be found in our [README](../../../README.md).
+More information on other forms of testing in this repo can be found in our
+[README](../../../README.md).
 
 ## Prerequisites
 
-1. **Install act**: `brew install act` (macOS) or visit [nektos/act](https://github.com/nektos/act)
+1. **Install act**: `brew install act` (macOS) or visit
+   [nektos/act](https://github.com/nektos/act)
 2. **Docker**: act requires Docker to run GitHub Actions locally
 
 ## Quick Start
@@ -58,7 +60,7 @@ minimal `.env` file.
 
 ### 2. Node.js Version
 
-The workflow uses Node.js 22.12.0. Ensure your local environment matches or act
+The workflow uses Node.js 22.13.0. Ensure your local environment matches or act
 will use the container.
 
 ### 3. Dependencies
