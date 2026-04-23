@@ -54,16 +54,42 @@ export interface SearchDocumentsResponse {
   };
 }
 
+export const SEARCH_DOCUMENT_SORT_KEYS = ["relevance", "recent", "oldest", "title_asc", "title_desc"] as const;
+
+export type SearchDocumentsSortKey = (typeof SEARCH_DOCUMENT_SORT_KEYS)[number];
+
+export const SEARCH_DOCUMENT_SORT_PARAMS: Record<SearchDocumentsSortKey, string> = {
+  relevance: "relevance desc",
+  recent: "attributes.published_date desc",
+  oldest: "attributes.published_date asc",
+  title_asc: "title asc",
+  title_desc: "title desc",
+};
+
+function isSearchDocumentsSortKey(raw: string): raw is SearchDocumentsSortKey {
+  return (SEARCH_DOCUMENT_SORT_KEYS as readonly string[]).includes(raw);
+}
+
+export function normaliseSearchDocumentsSortKey(raw: string | null | undefined): SearchDocumentsSortKey {
+  // Converts the raw URL `sort` query value to a known sort key (invalid to
+  // `relevance`).
+  return raw && isSearchDocumentsSortKey(raw) ? raw : "relevance";
+}
+
 interface SearchDocumentsParams {
   query?: string;
   filters?: TQueryGroup;
   page_size?: string;
   page_token?: string;
   includeDocumentsInSearch?: boolean;
+  sort?: SearchDocumentsSortKey;
   excludeMergedDocuments?: boolean;
 }
 
-const SEARCH_DOCUMENTS_BASE_URL = "https://api.climatepolicyradar.org/search/documents";
+function searchDocumentsUrl(): string {
+  const origin = (process.env.NEXT_PUBLIC_API_URL || "https://api.climatepolicyradar.org").replace(/\/$/, "");
+  return `${origin}/search/documents`;
+}
 
 function configureDocumentsFilters(
   filters: TQueryGroup | undefined,
@@ -111,11 +137,8 @@ function configureDocumentsFilters(
 }
 
 export async function fetchSearchDocuments(params: SearchDocumentsParams = {}): Promise<SearchDocumentsResponse> {
-  const url = new URL(SEARCH_DOCUMENTS_BASE_URL);
+  const url = new URL(searchDocumentsUrl());
   const filters = configureDocumentsFilters(params.filters, params.includeDocumentsInSearch ?? false, params.excludeMergedDocuments ?? true);
-
-  // This enables `bolding` in vespa AKA highlighting, which highlights the matched terms in the results.
-  url.searchParams.set("bolding", "true");
 
   // This enables `bolding` in vespa AKA highlighting, which highlights the matched terms in the results.
   url.searchParams.set("bolding", "true");
@@ -124,6 +147,8 @@ export async function fetchSearchDocuments(params: SearchDocumentsParams = {}): 
   if (filters) url.searchParams.set("filters", JSON.stringify(filters));
   if (params.page_size !== undefined) url.searchParams.set("page_size", params.page_size);
   if (params.page_token !== undefined) url.searchParams.set("page_token", params.page_token);
+  const sortKey = params.sort ?? "relevance";
+  url.searchParams.set("order_by", SEARCH_DOCUMENT_SORT_PARAMS[sortKey]);
 
   const res = await fetch(url);
   if (!res.ok) throw new Error(`Search API error: ${res.status}`);

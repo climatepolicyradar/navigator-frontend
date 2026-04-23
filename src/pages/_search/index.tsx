@@ -7,13 +7,14 @@ import { useQueryState, parseAsBoolean, parseAsString, parseAsJson } from "nuqs"
 import { useCallback, useEffect, useMemo, useState, type SetStateAction } from "react";
 
 import { ApiClient } from "@/api/http-common";
-import { IAggregationLabel } from "@/api/search";
+import { IAggregationLabel, normaliseSearchDocumentsSortKey } from "@/api/search";
 import { createGroup, isFilterGroupEmpty, AdvancedFilters, TQueryGroup } from "@/components/_experiment/advancedFilters/AdvancedFilters";
 import { AppliedLabels } from "@/components/_experiment/appliedLabels/AppliedLabels";
 import { IntelliSearch } from "@/components/_experiment/intellisearch";
 import { Pagination } from "@/components/_experiment/pagination/Pagination";
 import { SearchFilters, TLabelType } from "@/components/_experiment/searchFilters/SearchFilters";
 import { SearchContainer } from "@/components/_experiment/searchResults/SearchResults";
+import { SearchSortSelect } from "@/components/_experiment/searchSort/SearchSortSelect";
 import { SelectPerPage } from "@/components/_experiment/selectPerPage/SelectPerPage";
 import { FiveColumns } from "@/components/atoms/columns/FiveColumns";
 import { withEnvConfig } from "@/context/EnvConfig";
@@ -42,6 +43,8 @@ const ShadowSearch = ({ theme, themeConfig, features }: TProps) => {
   // pagination state
   const [currentPage, setCurrentPage] = useQueryState("page_token", parseAsString.withDefault("1"));
   const [pageSize, setPageSize] = useQueryState("page_size", parseAsString.withDefault("10"));
+  const [sortParam, setSortParam] = useQueryState("sort", parseAsString.withDefault("relevance"));
+  const sortKey = normaliseSearchDocumentsSortKey(sortParam);
   const [totalNoOfResults, setTotalNoOfResults] = useState<number | null>(null);
   // principal or documents
   const [includeDocumentsInSearch, setIncludeDocumentsInSearch] = useQueryState("include_documents", parseAsBoolean.withDefault(true));
@@ -147,7 +150,7 @@ const ShadowSearch = ({ theme, themeConfig, features }: TProps) => {
               setAdvancedFiltersOpen(true);
             }}
           />
-          <div className="flex items-center gap-6">
+          <div className="flex items-center gap-6 flex-wrap">
             <div>
               <button className="text-gray-300" onClick={() => setExcludeMergedDocuments(!excludeMergedDocuments)}>
                 {excludeMergedDocuments && "."}
@@ -166,7 +169,13 @@ const ShadowSearch = ({ theme, themeConfig, features }: TProps) => {
                 </Switch.Root>
               </label>
             </div>
-
+            <SearchSortSelect
+              sortParam={sortKey}
+              onChange={(next) => {
+                setSortParam(next);
+                setCurrentPage("1");
+              }}
+            />
             <AdvancedFilters
               filters={filters}
               setFilters={(filters) => {
@@ -214,6 +223,7 @@ const ShadowSearch = ({ theme, themeConfig, features }: TProps) => {
             page_token={currentPage}
             page_size={pageSize}
             includeDocumentsInSearch={includeDocumentsInSearch}
+            sort={sortKey}
             excludeMergedDocuments={excludeMergedDocuments}
             onAggregationsChange={applyAggregationsFromSearch}
             onTotalResultsChange={setTotalNoOfResults}
