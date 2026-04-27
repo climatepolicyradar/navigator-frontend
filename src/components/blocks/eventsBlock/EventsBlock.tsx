@@ -26,6 +26,7 @@ export const EventsBlock = ({ families }: IProps) => {
   useEffect(() => {
     const language = navigator?.language;
 
+    // eslint-disable-next-line react-hooks/set-state-in-effect
     setUpdatedRowsWithLocalisedDates(getEventTableRows({ families, language, isLitigation: true }));
   }, [families]);
 

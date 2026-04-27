@@ -1,4 +1,4 @@
-import { TDataInDocument } from "src/schemas";
+import { TDataInDocument } from "@/schemas";
 
 import {
   IApiFamilyDocumentTopics,
@@ -24,7 +24,6 @@ export type TFamilyApiOldData = {
   vespaFamilyData: TApiSearchResponse | null;
 };
 
-// TODO: fill this out when we are making new data model API calls
 export type TFamilyApiNewData = TDataInDocument | null;
 
 export type TFamilyPresentationalData = {

@@ -1,5 +1,5 @@
 import { ID_SEPARATOR } from "@/constants/chars";
-import { LABEL_TYPES, MANDATORY_DOCUMENT_LABEL_TYPES, MANDATORY_FILE_LABEL_TYPES, TDataInLabel, TDataInLabelType } from "@/schemas";
+import { LABEL_TYPES, MANDATORY_FAMILY_LABEL_TYPES, MANDATORY_DOCUMENT_LABEL_TYPES, TDataInLabel, TDataInLabelType } from "@/schemas";
 import { TAttributionCategory, TFamilyApiNewData, TFamilyEventPublic } from "@/types";
 import { groupByType } from "@/utils/data-in/groupByType";
 
@@ -24,7 +24,7 @@ type TAllFamilyEvents = {
 };
 
 export const transformFamilyEvents = (document: TFamilyApiNewData, category: TAttributionCategory): TAllFamilyEvents => {
-  const groupedDocumentLabels = groupByType<TDataInLabel, TDataInLabelType>(document.labels, LABEL_TYPES, MANDATORY_DOCUMENT_LABEL_TYPES);
+  const groupedDocumentLabels = groupByType<TDataInLabel, TDataInLabelType>(document.labels, LABEL_TYPES, MANDATORY_FAMILY_LABEL_TYPES);
   const familyEvents: TFamilyEventPublic[] = [];
 
   if (groupedDocumentLabels.activity_status.length > 0) {
@@ -41,7 +41,7 @@ export const transformFamilyEvents = (document: TFamilyApiNewData, category: TAt
   const documentEvents: TDocumentEvents[] = document.documents
     .filter((file) => file.type === "has_member" && file.value.attributes.status === "published")
     .map((file) => {
-      const groupedFileLabels = groupByType<TDataInLabel, TDataInLabelType>(file.value.labels, LABEL_TYPES, MANDATORY_FILE_LABEL_TYPES);
+      const groupedFileLabels = groupByType<TDataInLabel, TDataInLabelType>(file.value.labels, LABEL_TYPES, MANDATORY_DOCUMENT_LABEL_TYPES);
       const events: TFamilyEventPublic[] = [];
 
       if (groupedFileLabels.activity_status.length > 0) {

@@ -1,4 +1,6 @@
-import { TDataInDocumentAttributes, TDataInLabel, TDataInLabelType } from "@/schemas";
+import { TDataInFamilyAttributes } from "src/schemas/attributesSchema";
+
+import { TDataInLabel, TDataInLabelType } from "@/schemas";
 import { API_FAMILY_METADATA_KEY, TApiFamilyMetadata, TApiFamilyMetadataKey, TAttributionCategory } from "@/types";
 import { TItemsByType } from "@/utils/data-in/groupByType";
 
@@ -22,7 +24,7 @@ const CONCEPT_PREFERRED_LABEL_TYPE_MAP: Record<string, string> = {
 const isFamilyMetadataKey = (string: string): string is TApiFamilyMetadataKey => API_FAMILY_METADATA_KEY.includes(string as TApiFamilyMetadataKey);
 
 export const transformFamilyMetadata = (
-  attributes: TDataInDocumentAttributes,
+  attributes: TDataInFamilyAttributes,
   groupedLabels: TItemsByType<TDataInLabel, TDataInLabelType>,
   category: TAttributionCategory
 ): TApiFamilyMetadata => {
@@ -62,7 +64,7 @@ export const transformFamilyMetadata = (
 
   Object.entries(ATTRIBUTE_TO_METADATA_MAP).forEach(([attributeKey, metadataKey]) => {
     if (!(attributeKey in attributes)) return;
-    const value = attributes[attributeKey as keyof TDataInDocumentAttributes];
+    const value = attributes[attributeKey as keyof TDataInFamilyAttributes];
     familyMetadata[metadataKey] = [value.toString()];
   });
 

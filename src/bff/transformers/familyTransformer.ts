@@ -1,3 +1,5 @@
+import { validateFamilyAttributes } from "src/schemas/attributesSchema";
+
 import { oldFamilyTransformer } from "@/bff/transformers/oldFamilyTransformer";
 import { transformAttribution } from "@/bff/transformers/partials/transformAttribution";
 import { transformConcepts } from "@/bff/transformers/partials/transformConcepts";
@@ -9,7 +11,7 @@ import { transformFamilyMetadata } from "@/bff/transformers/partials/transformFa
 import { transformOldCollection } from "@/bff/transformers/partials/transformOldCollection";
 import { transformOldFamily } from "@/bff/transformers/partials/transformOldFamily";
 import { ID_SEPARATOR } from "@/constants/chars";
-import { LABEL_TYPES, MANDATORY_DOCUMENT_LABEL_TYPES, TDataInLabel, TDataInLabelType } from "@/schemas";
+import { LABEL_TYPES, MANDATORY_FAMILY_LABEL_TYPES, TDataInLabel, TDataInLabelType } from "@/schemas";
 import { TFamilyApiNewData, TFamilyApiOldData, TFamilyPresentationalResponse } from "@/types";
 import { groupByType } from "@/utils/data-in/groupByType";
 
@@ -24,7 +26,8 @@ export const familyTransformer = (
     try {
       const { corpusTypes, ...oldData } = familyApiOldData;
       const { documents, labels } = familyApiNewData;
-      const groupedLabels = groupByType<TDataInLabel, TDataInLabelType>(labels, LABEL_TYPES, MANDATORY_DOCUMENT_LABEL_TYPES);
+      const familyAttributes = validateFamilyAttributes(familyApiNewData.attributes);
+      const groupedLabels = groupByType<TDataInLabel, TDataInLabelType>(labels, LABEL_TYPES, MANDATORY_FAMILY_LABEL_TYPES);
       const attribution = transformAttribution(groupedLabels);
       const { familyEvents, documentEvents } = transformFamilyEvents(familyApiNewData, attribution.category);
 
@@ -41,10 +44,10 @@ export const familyTransformer = (
             events: familyEvents,
             geographies: groupedLabels.geography.map((label) => label.value.id.split(ID_SEPARATOR)[1]),
             import_id: familyApiNewData.id,
-            last_updated_date: familyApiNewData.attributes.last_updated_date,
-            metadata: transformFamilyMetadata(familyApiNewData.attributes, groupedLabels, attribution.category),
-            published_date: familyApiNewData.attributes.published_date,
-            slug: familyApiNewData.attributes.deprecated_slug,
+            last_updated_date: familyAttributes.last_updated_date,
+            metadata: transformFamilyMetadata(familyAttributes, groupedLabels, attribution.category),
+            published_date: familyAttributes.published_date,
+            slug: familyAttributes.deprecated_slug,
             summary: familyApiNewData.description,
             title: familyApiNewData.title,
           },
