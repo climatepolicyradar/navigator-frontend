@@ -24,7 +24,6 @@ export type TFamilyApiOldData = {
   vespaFamilyData: TApiSearchResponse | null;
 };
 
-// TODO: fill this out when we are making new data model API calls
 export type TFamilyApiNewData = TDataInDocument | null;
 
 export type TFamilyPresentationalData = {

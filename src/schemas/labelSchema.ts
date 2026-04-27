@@ -1,5 +1,7 @@
 import * as v from "valibot";
 
+// Making changes? Update both the TypeScript type and Valibot schema
+
 // Strictly validate label types so they reliably grouped and found later
 export const LABEL_TYPES = [
   "activity_status",
@@ -31,7 +33,7 @@ const LabelTypeSchema = v.custom<(typeof LABEL_TYPES)[number]>((value) => typeof
 export type TDataInLabelType = v.InferOutput<typeof LabelTypeSchema>;
 
 export const MANDATORY_FAMILY_LABEL_TYPES: TDataInLabelType[] = ["activity_status", "category", "provider"];
-export const MANDATORY_DOCUMENT_LABEL_TYPES: TDataInLabelType[] = [];
+export const MANDATORY_DOCUMENT_LABEL_TYPES: TDataInLabelType[] = ["activity_status"];
 
 export type TDataInLabel = {
   type: TDataInLabelType;
@@ -45,7 +47,6 @@ export type TDataInLabel = {
   timestamp: string | null;
 };
 
-// Making changes? Update TDataInLabel to match
 export const LabelSchema: v.GenericSchema<TDataInLabel> = v.object({
   type: LabelTypeSchema,
   value: v.object({

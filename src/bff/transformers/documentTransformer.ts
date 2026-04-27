@@ -1,9 +1,9 @@
 import { oldDocumentTransformer } from "@/bff/transformers/oldDocumentTransformer";
-import { TDocumentApiNewData, TDocumentApiOldData, TDocumentPresentationalResponse } from "@/types";
+import { TDocumentApiOldData, TDocumentPresentationalResponse, TFamilyApiNewData } from "@/types";
 
 export const documentTransformer = (
   documentApiOldData: TDocumentApiOldData,
-  documentApiNewData: TDocumentApiNewData,
+  documentApiNewData: TFamilyApiNewData,
   errors: Error[]
 ): TDocumentPresentationalResponse => {
   if (documentApiOldData === null) return { data: null, errors };

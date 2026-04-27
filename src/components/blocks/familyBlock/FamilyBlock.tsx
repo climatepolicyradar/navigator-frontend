@@ -19,9 +19,8 @@ export const FamilyBlock = ({ family }: IProps) => {
   const [updatedRowsWithLocalisedDates, setUpdatedRowsWithLocalisedDates] = useState<TEventTableRow[]>(null);
 
   const isLitigation = family.attribution.category === "Litigation";
-  const isUSA = family.geographies.includes("USA");
 
-  const tableColumns = useMemo(() => getEventTableColumns({ isLitigation, isUSA }), [isLitigation, isUSA]);
+  const tableColumns = useMemo(() => getEventTableColumns({ isLitigation }), [isLitigation]);
   const tableRows = useMemo(() => getEventTableRows({ families: [family], isLitigation }), [family, isLitigation]);
   const entriesToHide = tableRows.length > MAX_ENTRIES_SHOWN;
 
@@ -35,6 +34,7 @@ export const FamilyBlock = ({ family }: IProps) => {
   useEffect(() => {
     const language = navigator?.language;
 
+    // eslint-disable-next-line react-hooks/set-state-in-effect
     setUpdatedRowsWithLocalisedDates(getEventTableRows({ families: [family], language, isLitigation }));
   }, [family, isLitigation]);
 
