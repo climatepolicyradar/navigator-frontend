@@ -13,6 +13,6 @@ export const documentTransformer = (
     return { data: null, errors };
   } else {
     // Because the old API data type satisfies the presentational data type, no changes are needed
-    return oldDocumentTransformer(documentApiOldData, documentApiNewData, errors);
+    return oldDocumentTransformer(documentApiOldData, errors);
   }
 };

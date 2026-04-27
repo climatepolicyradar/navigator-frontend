@@ -1,10 +1,10 @@
 import { McfFamilyMeta } from "@/components/document/McfFamilyMeta";
 import { getApprovedYearFromEvents } from "@/helpers/getApprovedYearFromEvents";
-import { TDocumentPage, TFamilyPublic } from "@/types";
+import { TFamilyDocumentPublic, TFamilyPublic } from "@/types";
 
 import { DocumentMeta } from "../DocumentMeta";
 
-export const DocumentMetaRenderer = ({ family, isMain, document }: { family: TFamilyPublic; isMain: boolean; document: TDocumentPage }) => {
+export const DocumentMetaRenderer = ({ family, isMain, document }: { family: TFamilyPublic; isMain: boolean; document: TFamilyDocumentPublic }) => {
   const {
     attribution: { category, taxonomy: fund },
     documents,

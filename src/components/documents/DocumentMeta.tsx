@@ -1,7 +1,7 @@
 import { CountryLinks } from "@/components/CountryLinks";
 import { getLanguage } from "@/helpers/getLanguage";
 import useConfig from "@/hooks/useConfig";
-import { TDocumentPage, TFamilyPublic } from "@/types";
+import { TFamilyDocumentPublic, TFamilyPublic } from "@/types";
 import { convertDate } from "@/utils/timedate";
 
 export const DocumentMeta = ({
@@ -12,7 +12,7 @@ export const DocumentMeta = ({
 }: {
   family: TFamilyPublic;
   isMain: boolean;
-  document: TDocumentPage;
+  document: TFamilyDocumentPublic;
   document_type: string;
 }) => {
   const configQuery = useConfig();

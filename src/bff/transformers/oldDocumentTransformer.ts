@@ -1,17 +1,17 @@
 import { transformOldFamily } from "@/bff/transformers/partials/transformOldFamily";
-import { TDocumentApiNewData, TDocumentApiOldData, TDocumentPresentationalResponse } from "@/types";
+import { TDocumentApiOldData, TDocumentPresentationalResponse } from "@/types";
 
-export const oldDocumentTransformer = (
-  documentApiOldData: TDocumentApiOldData,
-  documentApiNewData: TDocumentApiNewData,
-  errors: Error[]
-): TDocumentPresentationalResponse => {
-  const { family } = documentApiOldData;
+export const oldDocumentTransformer = (documentApiOldData: TDocumentApiOldData, errors: Error[]): TDocumentPresentationalResponse => {
+  const { family } = documentApiOldData.document;
 
   try {
     return {
       data: {
         ...documentApiOldData,
+        document: {
+          ...documentApiOldData.document,
+          events: [],
+        },
         family: transformOldFamily(family, {}),
       },
       errors,

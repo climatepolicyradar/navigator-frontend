@@ -1,15 +1,17 @@
+import { getParentDocuments } from "@/bff/methods/getRelations";
+import { validateCollectionAttributes } from "@/schemas";
 import { TCollectionPublic, TFamilyApiNewData } from "@/types";
 
-export const transformFamilyCollections = (document: TFamilyApiNewData): TCollectionPublic[] => {
-  const { description, documents: files } = document;
+export const transformFamilyCollections = (document: TFamilyApiNewData): TCollectionPublic[] =>
+  getParentDocuments(document.documents).map(({ value: collection }) => {
+    const collectionAttributes = validateCollectionAttributes(collection.attributes);
 
-  return files
-    .filter((file) => file.type === "member_of")
-    .map((file) => ({
-      description: description || file.value.description || "",
-      import_id: file.value.id,
+    // TODO add transformCollection, handle description from family
+    return {
+      description: document.description || collection.description || "",
+      import_id: collection.id,
       metadata: {}, // Not used
-      slug: file.value.attributes.deprecated_slug,
-      title: file.value.title,
-    }));
-};
+      slug: collectionAttributes.deprecated_slug,
+      title: collection.title,
+    };
+  });

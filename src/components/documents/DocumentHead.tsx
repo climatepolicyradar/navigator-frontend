@@ -12,11 +12,11 @@ import { Heading } from "@/components/typography/Heading";
 import { MAX_FAMILY_SUMMARY_LENGTH_BRIEF } from "@/constants/document";
 import { getCountryName, getCountrySlug } from "@/helpers/getCountryFields";
 import useConfig from "@/hooks/useConfig";
-import { TDocumentPage, TFamilyPublic } from "@/types";
+import { TFamilyDocumentPublic, TFamilyPublic } from "@/types";
 import { truncateString } from "@/utils/truncateString";
 
 interface IProps {
-  document: TDocumentPage;
+  document: TFamilyDocumentPublic;
   family: TFamilyPublic;
   handleViewOtherDocsClick: (e: React.FormEvent<HTMLButtonElement>) => void;
   handleViewSourceClick: (e: React.FormEvent<HTMLButtonElement>) => void;
@@ -31,7 +31,7 @@ export const DocumentHead = ({ document, family, handleViewOtherDocsClick, handl
   const [summary, setSummary] = useState("");
 
   const configQuery = useConfig();
-  const { data: { countries = [], languages = {} } = {} } = configQuery;
+  const { data: { countries = [] } = {} } = configQuery;
 
   const geographyNames = family.geographies ? family.geographies.map((geo) => getCountryName(geo, countries)) : null;
   const geoName = geographyNames ? geographyNames[0] : "";
@@ -49,6 +49,7 @@ export const DocumentHead = ({ document, family, handleViewOtherDocsClick, handl
     if (family?.summary) {
       const text = family?.summary;
       if (showFullSummary) {
+        // eslint-disable-next-line react-hooks/set-state-in-effect
         setSummary(text);
       } else {
         setSummary(truncateString(text, MAX_FAMILY_SUMMARY_LENGTH_BRIEF));

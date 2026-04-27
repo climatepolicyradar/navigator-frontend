@@ -1,5 +1,13 @@
+import { getChildDocuments } from "@/bff/methods/getRelations";
 import { ID_SEPARATOR } from "@/constants/chars";
-import { LABEL_TYPES, MANDATORY_FAMILY_LABEL_TYPES, MANDATORY_DOCUMENT_LABEL_TYPES, TDataInLabel, TDataInLabelType } from "@/schemas";
+import {
+  LABEL_TYPES,
+  MANDATORY_FAMILY_LABEL_TYPES,
+  MANDATORY_DOCUMENT_LABEL_TYPES,
+  TDataInLabel,
+  TDataInLabelType,
+  validateDocumentAttributes,
+} from "@/schemas";
 import { TAttributionCategory, TFamilyApiNewData, TFamilyEventPublic } from "@/types";
 import { groupByType } from "@/utils/data-in/groupByType";
 
@@ -38,21 +46,24 @@ export const transformFamilyEvents = (document: TFamilyApiNewData, category: TAt
     };
   }
 
-  const documentEvents: TDocumentEvents[] = document.documents
-    .filter((file) => file.type === "has_member" && file.value.attributes.status === "published")
-    .map((file) => {
-      const groupedFileLabels = groupByType<TDataInLabel, TDataInLabelType>(file.value.labels, LABEL_TYPES, MANDATORY_DOCUMENT_LABEL_TYPES);
+  const documentEvents: TDocumentEvents[] = getChildDocuments(document.documents)
+    .map(({ value: doc }) => {
+      const docAttributes = validateDocumentAttributes(doc.attributes);
+      if (docAttributes.status !== "published") return null;
+
+      const groupedDocLabels = groupByType<TDataInLabel, TDataInLabelType>(doc.labels, LABEL_TYPES, MANDATORY_DOCUMENT_LABEL_TYPES);
       const events: TFamilyEventPublic[] = [];
 
-      if (groupedFileLabels.activity_status.length > 0) {
-        events.push(...makeActivityStatusEvents(groupedFileLabels.activity_status));
+      if (groupedDocLabels.activity_status.length > 0) {
+        events.push(...makeActivityStatusEvents(groupedDocLabels.activity_status));
       }
 
       return {
-        importId: file.value.id,
+        importId: doc.id,
         events,
       };
-    });
+    })
+    .filter((doc) => doc);
 
   return {
     familyEvents,
