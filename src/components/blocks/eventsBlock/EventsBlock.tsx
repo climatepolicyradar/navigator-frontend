@@ -26,6 +26,7 @@ export const EventsBlock = ({ families }: IProps) => {
   useEffect(() => {
     const language = navigator?.language;
 
+    // eslint-disable-next-line react-hooks/set-state-in-effect
     setUpdatedRowsWithLocalisedDates(getEventTableRows({ families, language, isLitigation: true }));
   }, [families]);
 
@@ -38,7 +39,7 @@ export const EventsBlock = ({ families }: IProps) => {
           rows={updatedRowsWithLocalisedDates || tableRows}
           maxRows={showAllEntries ? 0 : MAX_ENTRIES_SHOWN}
         />
-        {true && (
+        {entriesToHide && (
           <button
             type="button"
             onClick={toggleShowAll}

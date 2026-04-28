@@ -1,20 +1,17 @@
-import { TDataInFile } from "@/schemas";
-import { TApiCollectionPublic, TCollectionPublic } from "@/types";
+import { getParentDocuments } from "@/bff/methods/getRelations";
+import { validateCollectionAttributes } from "@/schemas";
+import { TAttributionCategory, TCollectionPublic, TFamilyApiNewData } from "@/types";
 
-export const transformFamilyCollections = (oldCollections: TApiCollectionPublic[], newFiles: TDataInFile[]): TCollectionPublic[] =>
-  newFiles
-    .filter((file) => file.type === "member_of")
-    .map((file) => {
-      const oldCollection = oldCollections.find((collection) => file.value.id === collection.import_id);
-      if (!oldCollection) throw new Error(`File '${file.value.id}' does not match any V2 API collection`);
+export const transformFamilyCollections = (document: TFamilyApiNewData, category: TAttributionCategory): TCollectionPublic[] =>
+  getParentDocuments(document.documents, category).map(({ value: collection }) => {
+    const collectionAttributes = validateCollectionAttributes(collection.attributes);
 
-      return {
-        description: file.value.description || "",
-        import_id: file.value.id,
-        title: file.value.title,
-        // Not used:
-        metadata: {},
-        // TODO apply transformations to remaining fields
-        slug: oldCollection.slug,
-      };
-    });
+    // TODO add transformCollection, handle description from family
+    return {
+      description: document.description || collection.description || "",
+      import_id: collection.id,
+      metadata: {}, // Not used
+      slug: collectionAttributes.deprecated_slug,
+      title: collection.title,
+    };
+  });

@@ -151,21 +151,6 @@ export type TApiFamily = {
 
 type TApiDocumentContentType = "application/pdf" | "text/html" | "application/octet-stream";
 
-export type TApiDocumentPage = {
-  cdn_object?: string | null;
-  content_type: TApiDocumentContentType;
-  document_role: string;
-  document_type: string | null;
-  import_id: string;
-  language: string;
-  languages: string[];
-  md5_sum: string | null;
-  slug: string;
-  source_url: string;
-  title: string;
-  variant: string | null;
-};
-
 type TApiMetadata<Key extends string> = {
   [K in Key]?: string[];
 };
@@ -340,23 +325,26 @@ export type TApiFamilyDocumentPublic = {
 
 export type TApiFamilyPublic = {
   category: TApiCategory;
+  collections: TApiCollectionPublic[];
+  concepts: TApiFamilyConcept[];
   corpus_id: string;
   corpus_type_name?: TApiCorpusTypeSubCategory;
+  corpus?: TApiCorpusPublic;
+  documents: TApiFamilyDocumentPublic[];
+  events: TApiFamilyEventPublic[];
   geographies: string[];
   import_id: string;
   last_updated_date: string | null;
   metadata: TApiFamilyMetadata;
   organisation: string;
+  organisation_attribution_url: string | null;
   published_date: string | null;
   slug: string;
   summary: string;
   title: string;
-  corpus?: TApiCorpusPublic;
-  collections: TApiCollectionPublic[];
-  concepts: TApiFamilyConcept[];
-  documents: TApiFamilyDocumentPublic[];
-  events: TApiFamilyEventPublic[];
 };
+
+export type TApiDocumentPublic = Omit<TApiFamilyDocumentPublic, "events"> & { family: TApiFamilyPublic };
 
 export type TApiCollectionPublicWithFamilies = {
   description: string;

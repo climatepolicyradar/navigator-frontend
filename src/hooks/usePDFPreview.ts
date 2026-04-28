@@ -1,8 +1,8 @@
 import ViewSDKClient from "@/api/pdf";
 import { DEFAULT_DOCUMENT_TITLE } from "@/constants/document";
-import { TPassage, TDocumentPage } from "@/types";
+import { TPassage, TFamilyDocumentPublic } from "@/types";
 
-function generateHighlights(document: TDocumentPage, documentPassageMatches: TPassage[]) {
+function generateHighlights(document: TFamilyDocumentPublic, documentPassageMatches: TPassage[]) {
   const date = new Date();
   return documentPassageMatches.map((passage) => {
     return {
@@ -60,7 +60,7 @@ type TAdobeApis = {
   annotationManagerApi: any;
 };
 
-export default function usePDFPreview(physicalDocument: TDocumentPage, adobeKey: string) {
+export default function usePDFPreview(physicalDocument: TFamilyDocumentPublic, adobeKey: string) {
   const viewerConfig = {
     showDownloadPDF: false,
     showPrintPDF: false,

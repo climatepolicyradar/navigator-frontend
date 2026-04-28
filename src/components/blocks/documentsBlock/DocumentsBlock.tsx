@@ -31,11 +31,10 @@ export const DocumentsBlock = ({ family, familyTopics, languages, matchesFamily,
   };
 
   const isLitigation = family.attribution.category === "Litigation";
-  const isUSA = family.geographies.includes("USA");
 
   const tableColumns = useMemo(
-    () => getEventTableColumns({ hasTopics: familyTopicsHasTopics(familyTopics), isLitigation, isUSA, showMatches }),
-    [familyTopics, isLitigation, isUSA, showMatches]
+    () => getEventTableColumns({ hasTopics: familyTopicsHasTopics(familyTopics), isLitigation, showMatches }),
+    [familyTopics, isLitigation, showMatches]
   );
   const tableRows = useMemo(
     () =>
@@ -57,6 +56,7 @@ export const DocumentsBlock = ({ family, familyTopics, languages, matchesFamily,
 
   useEffect(() => {
     const language = navigator?.language;
+    // eslint-disable-next-line react-hooks/set-state-in-effect
     setUpdatedRowsWithLocalisedDates(
       getEventTableRows({
         documentEventsOnly: true,

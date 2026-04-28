@@ -184,21 +184,6 @@ export type TFamily = {
 
 export type TDocumentContentType = "application/pdf" | "text/html" | "application/octet-stream";
 
-export type TDocumentPage = {
-  cdn_object?: string | null;
-  content_type: TDocumentContentType;
-  document_role: string;
-  document_type: string | null;
-  import_id: string;
-  language: string;
-  languages: string[];
-  md5_sum: string | null;
-  slug: string;
-  source_url: string;
-  title: string;
-  variant: string | null;
-};
-
 type TMetadata<Key extends string> = {
   [K in Key]?: string[];
 };
@@ -401,6 +386,12 @@ export type TFamilyAttribution = {
 };
 
 export type TFamilyPublic = {
+  attribution: TFamilyAttribution;
+  collections: TCollectionPublic[];
+  concepts: TFamilyConcept[];
+  corpus?: TCorpusPublic;
+  documents: TFamilyDocumentPublic[];
+  events: TFamilyEventPublic[];
   geographies: string[];
   import_id: string;
   last_updated_date: string | null;
@@ -409,11 +400,6 @@ export type TFamilyPublic = {
   slug: string;
   summary: string;
   title: string;
-  collections: TCollectionPublic[];
-  concepts: TFamilyConcept[];
-  documents: TFamilyDocumentPublic[];
-  events: TFamilyEventPublic[];
-  attribution: TFamilyAttribution;
 };
 
 export type TCollectionPublicWithFamilies = {
