@@ -22,7 +22,7 @@ export const documentPageModel = {
   waitUntilLoaded: async (page: Page, title?: TTextMatch): Promise<void> => {
     // the adobe reader takes a while to load sometimes so waiting for all network calls
     // to complete causes timing issues and test flakiness on the document page
-    await page.waitForLoadState("load");
+    await page.waitForLoadState("domcontentloaded");
     await expect(page.getByRole("heading", { name: title, level: 1 })).toBeVisible();
   },
 };
