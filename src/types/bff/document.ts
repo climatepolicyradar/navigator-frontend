@@ -17,6 +17,11 @@ export type TDocumentPresentationalData = {
   family: TFamilyPublic;
   topicsData: TTopics;
   vespaDocumentData: TSearchResponse;
+  debug?: {
+    usesDataIn: boolean;
+    newApiData?: TDocumentApiNewData;
+    originalDocument?: TApiDocumentPublic;
+  };
 };
 
 export type TDocumentPresentationalResponse = {

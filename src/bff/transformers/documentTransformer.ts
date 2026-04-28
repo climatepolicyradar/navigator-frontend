@@ -24,13 +24,18 @@ export const documentTransformer = (
           ...documentApiOldData,
           document,
           family: transformDocumentFamily(documentApiNewData.documents || [], groupedLabels.category[0].value.value as TAttributionCategory),
+          debug: {
+            originalDocument: documentApiOldData.document,
+            newApiData: documentApiNewData,
+            usesDataIn: true,
+          },
         },
         errors,
       };
     } catch (error) {
-      return oldDocumentTransformer(documentApiOldData, [...errors, error as Error]);
+      return oldDocumentTransformer(documentApiOldData, documentApiNewData, [...errors, error as Error]);
     }
   } else {
-    return oldDocumentTransformer(documentApiOldData, errors);
+    return oldDocumentTransformer(documentApiOldData, documentApiNewData, errors);
   }
 };
