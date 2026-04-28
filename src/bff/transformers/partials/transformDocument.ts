@@ -20,15 +20,18 @@ export const transformDocument = (document: TDataInDocument, events: TFamilyEven
   const groupedLabels = groupByType<TDataInLabel, TDataInLabelType>(document.labels, LABEL_TYPES, MANDATORY_DOCUMENT_LABEL_TYPES);
   const groupedItems = groupByType<TDataInItem, TDataInItemType>(document.items ?? [], ITEM_TYPES, MANDATORY_ITEM_TYPES);
 
+  const languages = groupedLabels.language.map((label) => label.value.value);
+
   return {
     cdn_object: groupedItems.cdn[0].url,
     content_type: groupedItems.cdn[0].content_type as TDocumentContentType,
-    document_role: groupedLabels.role[0]?.value.value.toUpperCase() || null,
+    document_role: groupedLabels.role[0]?.value.value.toUpperCase() || "",
     document_status: documentAttributes.status,
     document_type: groupedLabels.entity_type[0]?.value.value || null,
     events,
     import_id: document.id,
-    languages: groupedLabels.language.map((label) => label.value.value),
+    language: languages[0] ?? "",
+    languages,
     md5_sum: documentAttributes.md5_sum || null,
     slug: documentAttributes.deprecated_slug,
     source_url: groupedItems.source[0].url,
@@ -36,7 +39,6 @@ export const transformDocument = (document: TDataInDocument, events: TFamilyEven
     variant_name: documentAttributes.variant || null,
     variant: documentAttributes.variant || null,
     // Not used:
-    language: "",
     valid_metadata: {},
   };
 };

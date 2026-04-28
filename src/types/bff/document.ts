@@ -1,3 +1,5 @@
+import { TDataInDocument } from "@/schemas";
+
 import { TApiDocumentPublic, TApiSearchResponse } from "../api";
 import { TTopics } from "../topics";
 import { TFamilyDocumentPublic, TFamilyPublic, TSearchResponse } from "../types";
@@ -7,6 +9,8 @@ export type TDocumentApiOldData = {
   topicsData: TTopics;
   vespaDocumentData: TApiSearchResponse;
 };
+
+export type TDocumentApiNewData = TDataInDocument | null;
 
 export type TDocumentPresentationalData = {
   document: TFamilyDocumentPublic;
