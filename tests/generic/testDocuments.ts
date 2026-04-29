@@ -14,8 +14,8 @@ export const TEST_DOCUMENTS: TTestDocument[] = [
     titleForTests: "UN Submission",
     slug: "malaysia-national-biodiversity-strategy-and-action-plan-nbsap-2023_3213",
     withSearch: "biodiversity",
-    withTopic: "Greenhouse gas",
-    withParentTopic: "Greenhouse gas",
+    withTopic: "Target",
+    withParentTopic: "Target",
     availableOn: ["cpr"],
   },
   {
