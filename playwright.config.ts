@@ -62,8 +62,8 @@ export default defineConfig({
   forbidOnly: !!process.env.CI,
   /* Retry on CI only */
   retries: process.env.CI ? 1 : 0,
-  /* Attempt to see fewer timeout errors on CI */
-  workers: process.env.CI ? 1 : undefined,
+  /* Attempt to see fewer timeout errors on CI. Locally we have issues with over concurrency */
+  workers: process.env.CI ? 1 : 2,
   /*
    * timeout is for the entire test, not per request.
    * Set to 60 seconds to accommodate for slower CI environments
