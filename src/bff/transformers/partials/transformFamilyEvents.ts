@@ -11,11 +11,11 @@ import {
 import { TAttributionCategory, TFamilyApiNewData, TFamilyEventPublic } from "@/types";
 import { groupByType } from "@/utils/data-in/groupByType";
 
-const makeActivityStatusEvents = (activityStatusLabels: TDataInLabel[]): TFamilyEventPublic[] =>
+const makeActivityStatusEvents = (importId: string, activityStatusLabels: TDataInLabel[]): TFamilyEventPublic[] =>
   activityStatusLabels.map((label) => ({
     date: label.timestamp,
     event_type: label.value.id.split(ID_SEPARATOR)[1],
-    import_id: `activity_status_${label.timestamp.slice(10)}`,
+    import_id: `${importId}_activity_status_${label.timestamp.slice(10)}`,
     metadata: {},
     status: "OK",
     title: label.value.value,
@@ -36,7 +36,7 @@ export const transformFamilyEvents = (document: TFamilyApiNewData, category: TAt
   const familyEvents: TFamilyEventPublic[] = [];
 
   if (groupedDocumentLabels.activity_status.length > 0) {
-    familyEvents.push(...makeActivityStatusEvents(groupedDocumentLabels.activity_status));
+    familyEvents.push(...makeActivityStatusEvents(document.id, groupedDocumentLabels.activity_status));
   }
 
   if (category !== "Litigation") {
@@ -55,7 +55,7 @@ export const transformFamilyEvents = (document: TFamilyApiNewData, category: TAt
       const events: TFamilyEventPublic[] = [];
 
       if (groupedDocLabels.activity_status.length > 0) {
-        events.push(...makeActivityStatusEvents(groupedDocLabels.activity_status));
+        events.push(...makeActivityStatusEvents(doc.id, groupedDocLabels.activity_status));
       }
 
       return {
