@@ -45,7 +45,7 @@ export const runGenericDocumentTests = (theme: TTheme): void => {
       await expect(page.getByRole("list", { name: "Passage matches" })).not.toBeVisible();
 
       // Select a topic (some accordions can be open by default and some need to be manually expanded)
-      documentPage.ensureAccordionOpen(page, withParentTopic);
+      await documentPage.ensureAccordionOpen(page, withParentTopic);
       const topic = page.getByRole("checkbox", { name: withTopic });
 
       await documentPage.withBackendResponse(page, async () => {
