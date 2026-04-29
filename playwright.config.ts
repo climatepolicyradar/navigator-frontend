@@ -72,6 +72,14 @@ export default defineConfig({
    */
   timeout: 60_000,
   /*
+   * setting the timeout for specific expect calls to cater for some slower React hydration in CI
+   * overwrite in specific tests but do not increase here unless agreed with team
+   */
+  expect: {
+    timeout: 15_000,
+  },
+
+  /*
    * Reporter to use. See https://playwright.dev/docs/test-reporters
    * The generated XML file is used in merge_to_main and pull_request gitHub workflows
    * junit is used to report to Trunk
