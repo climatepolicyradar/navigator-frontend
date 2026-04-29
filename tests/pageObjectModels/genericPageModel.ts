@@ -24,7 +24,7 @@ export const genericPageModel = {
   },
 
   waitUntilLoaded: async (page: Page, title?: TTextMatch): Promise<void> => {
-    await page.waitForLoadState("domcontentloaded");
+    await page.waitForLoadState("networkidle");
     await expect(page.getByRole("heading", { name: title, level: 1 })).toBeVisible();
   },
 };
