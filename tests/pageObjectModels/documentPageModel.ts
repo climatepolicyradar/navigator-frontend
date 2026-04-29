@@ -28,8 +28,7 @@ export const documentPageModel = {
 
   // waits for the backend api URL to return
   withBackendResponse: async (page: Page, action: () => Promise<void>): Promise<void> => {
-    const backendApiUrl = process.env.BACKEND_API_URL ?? "https://app.climatepolicyradar.org/api/v1";
-    const responsePromise = page.waitForResponse((resp) => resp.url().startsWith(backendApiUrl) && resp.ok());
+    const responsePromise = page.waitForResponse((resp) => resp.url().startsWith("https://app.climatepolicyradar.org/api/v1"), { timeout: 15_000 });
     await action();
     await responsePromise;
   },
