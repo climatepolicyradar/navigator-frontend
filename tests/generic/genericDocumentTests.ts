@@ -24,7 +24,9 @@ export const runGenericDocumentTests = (theme: TTheme): void => {
 
       const searchInput = page.getByRole("textbox", { name: "Search" });
       await searchInput.fill(withSearch);
-      await searchInput.press("Enter");
+      await documentPage.withBackendResponse(page, async () => {
+        await searchInput.press("Enter");
+      });
 
       // Check that passage matches appear
       const passageMatches = page.getByRole("list", { name: "Passage matches" });
@@ -36,7 +38,7 @@ export const runGenericDocumentTests = (theme: TTheme): void => {
       // Load the document page
 
       await documentPage.goToDocument(page, slug);
-      await genericPage.waitUntilLoaded(page);
+      await documentPage.waitUntilLoaded(page);
       await genericPage.dismissPopups(page);
 
       // Ensure the passage matches list is empty to start
@@ -45,7 +47,10 @@ export const runGenericDocumentTests = (theme: TTheme): void => {
       // Select a topic (some accordions can be open by default and some need to be manually expanded)
       documentPage.ensureAccordionOpen(page, withParentTopic);
       const topic = page.getByRole("checkbox", { name: withTopic });
-      await topic.click();
+
+      await documentPage.withBackendResponse(page, async () => {
+        await topic.click();
+      });
       await expect(topic).toBeChecked();
 
       // Check that passage matches appear

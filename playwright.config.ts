@@ -1,4 +1,6 @@
 import { defineConfig, devices } from "@playwright/test";
+import dotenv from "dotenv";
+dotenv.config();
 
 type TEnvironmentConfig = {
   baseURL: string;

@@ -25,4 +25,12 @@ export const documentPageModel = {
     await page.waitForLoadState("domcontentloaded");
     await expect(page.getByRole("heading", { name: title, level: 1 })).toBeVisible();
   },
+
+  // waits for the backend api URL to return
+  withBackendResponse: async (page: Page, action: () => Promise<void>): Promise<void> => {
+    const backendApiUrl = process.env.BACKEND_API_URL ?? "";
+    const responsePromise = page.waitForResponse((resp) => resp.url().startsWith(backendApiUrl) && resp.ok());
+    await action();
+    await responsePromise;
+  },
 };
