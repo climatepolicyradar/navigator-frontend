@@ -13,8 +13,8 @@ export type TQueryGroup = {
 };
 
 export type TQueryRule = {
-  field: "labels.value.id";
-  op: "contains" | "not_contains";
+  field: "labels.value.id" | "attributes.status";
+  op: "contains" | "not_contains" | "eq";
   value: string;
 };
 

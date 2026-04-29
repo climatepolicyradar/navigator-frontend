@@ -116,8 +116,19 @@ function configureDocumentsFilters(
       },
     ],
   };
+  const containsAttributesPublishedFilter: TQueryGroup = {
+    op: "and",
+    filters: [
+      {
+        field: "attributes.status",
+        op: "contains",
+        value: "published",
+      },
+    ],
+  };
 
-  const filtersWithConditionals: TQueryGroup[] = [];
+  // containsAttributesPublishedFilter by default
+  const filtersWithConditionals: TQueryGroup[] = [containsAttributesPublishedFilter];
   if (filters) {
     filtersWithConditionals.push(filters);
   }
