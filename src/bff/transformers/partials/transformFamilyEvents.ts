@@ -9,17 +9,23 @@ import {
   validateDocumentAttributes,
 } from "@/schemas";
 import { TAttributionCategory, TFamilyApiNewData, TFamilyEventPublic } from "@/types";
-import { groupByType } from "@/utils/data-in/groupByType";
+import { groupByType, TItemsByType } from "@/utils/data-in/groupByType";
 
-const makeActivityStatusEvents = (importId: string, activityStatusLabels: TDataInLabel[]): TFamilyEventPublic[] =>
-  activityStatusLabels.map((label) => ({
-    date: label.timestamp,
-    event_type: label.value.id.split(ID_SEPARATOR)[1],
-    import_id: `${importId}_activity_status_${label.timestamp.slice(10)}`,
+const makeActivityStatusEvent = (groupedLabels: TItemsByType<TDataInLabel, TDataInLabelType>): TFamilyEventPublic | null => {
+  const activityStatusLabel = groupedLabels.activity_status[0];
+  if (!activityStatusLabel) return null;
+
+  const eventType = groupedLabels.entity_type[0]?.value.value ?? activityStatusLabel.value.id.split(ID_SEPARATOR)[1];
+
+  return {
+    date: activityStatusLabel.timestamp,
+    event_type: eventType,
+    import_id: "event_" + Math.random().toString().replace(".", ""), // Only needs to be unique
     metadata: {},
     status: "OK",
-    title: label.value.value,
-  }));
+    title: eventType,
+  };
+};
 
 export type TDocumentEvents = {
   importId: string;
@@ -35,9 +41,8 @@ export const transformFamilyEvents = (document: TFamilyApiNewData, category: TAt
   const groupedDocumentLabels = groupByType<TDataInLabel, TDataInLabelType>(document.labels, LABEL_TYPES, MANDATORY_FAMILY_LABEL_TYPES);
   const familyEvents: TFamilyEventPublic[] = [];
 
-  if (groupedDocumentLabels.activity_status.length > 0) {
-    familyEvents.push(...makeActivityStatusEvents(document.id, groupedDocumentLabels.activity_status));
-  }
+  const familyActivityStatusEvent = makeActivityStatusEvent(groupedDocumentLabels);
+  if (familyActivityStatusEvent) familyEvents.push(familyActivityStatusEvent);
 
   if (category !== "Litigation") {
     return {
@@ -54,9 +59,8 @@ export const transformFamilyEvents = (document: TFamilyApiNewData, category: TAt
       const groupedDocLabels = groupByType<TDataInLabel, TDataInLabelType>(doc.labels, LABEL_TYPES, MANDATORY_DOCUMENT_LABEL_TYPES);
       const events: TFamilyEventPublic[] = [];
 
-      if (groupedDocLabels.activity_status.length > 0) {
-        events.push(...makeActivityStatusEvents(doc.id, groupedDocLabels.activity_status));
-      }
+      const documentActivityStatusEvent = makeActivityStatusEvent(groupedDocLabels);
+      if (documentActivityStatusEvent) events.push(documentActivityStatusEvent);
 
       return {
         importId: doc.id,
@@ -66,19 +70,10 @@ export const transformFamilyEvents = (document: TFamilyApiNewData, category: TAt
     .filter((doc) => doc);
 
   return {
-    familyEvents,
+    familyEvents: [
+      ...familyEvents,
+      ...documentEvents.map((doc) => doc.events).flat(), // All document events need to be included in family events
+    ],
     documentEvents,
   };
 };
-
-// type MinimalRequiredLitigationEvent = {
-//   date: string;
-//   event_type: string;
-//   import_id: string;
-//   metadata: {
-//     action_taken: string[];
-//     description: string[];
-//   };
-//   status: "";
-//   title: "";
-// };
