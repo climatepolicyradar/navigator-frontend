@@ -9,6 +9,7 @@ import { PageLink } from "@/components/atoms/pageLink/PageLink";
 import { Popover } from "@/components/atoms/popover/Popover";
 import { ViewMore } from "@/components/molecules/viewMore/ViewMore";
 import { ARROW_UP_RIGHT } from "@/constants/chars";
+import { DEFAULT_DOCUMENT_TITLE } from "@/constants/document";
 import { QUERY_PARAMS } from "@/constants/queryParams";
 import { getLanguage } from "@/helpers/getLanguage";
 import { getMainDocuments } from "@/helpers/getMainDocuments";
@@ -155,7 +156,7 @@ const getDocumentLink = (document: TFamilyDocumentPublic, hasMatches: boolean, i
         href={`/documents/${document.slug}`}
         className={joinTailwindClasses(linkClasses, (isMainDocument || isLitigation) && "font-medium")}
       >
-        {document.title}
+        {document.title || DEFAULT_DOCUMENT_TITLE}
       </PageLink>
     );
   if (canViewSource)
