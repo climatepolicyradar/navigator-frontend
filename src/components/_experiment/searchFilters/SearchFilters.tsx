@@ -5,6 +5,13 @@ import { useMemo, useState } from "react";
 import { IAggregationLabel } from "@/api/search";
 import { Checkbox } from "@/components/checkbox/Checkbox";
 import { TLabelResult } from "@/hooks/useLabelSearch";
+import {
+  DATE_RANGE_MIN_YEAR,
+  parseYearRange,
+  resolveYearRangeForPreset,
+  serialiseYearRange,
+  TDateRangePreset,
+} from "@/utils/_experiment/dateRangeFilters";
 import { getAvailableLabelIdsFromAggregations, partitionByAvailability } from "@/utils/_experiment/labelAggregationAvailability";
 import { labelTypeLabel } from "@/utils/_experiment/labelTypeLabel";
 import { joinTailwindClasses } from "@/utils/tailwind";
@@ -47,7 +54,86 @@ type TProps = {
    * any aggregation‑based disabling.
    */
   query?: string;
+  dateRangeValue?: string | null;
+  onDateRangeChange?: (value: string | null) => void;
 };
+
+const DATE_RANGE_PRESETS: Array<{ value: TDateRangePreset; label: string }> = [
+  { value: "all_time", label: "All time" },
+  { value: "last_year", label: "In last year" },
+  { value: "last_5_years", label: "In last 5 years" },
+  { value: "custom", label: "Specify range" },
+];
+
+function DateRangeSection({ value, onChange }: { value: string | null | undefined; onChange: (value: string | null) => void }) {
+  const yearNow = new Date().getFullYear();
+  const parsedValue = value ? parseYearRange(value) : null;
+  const activeRange = parsedValue ?? resolveYearRangeForPreset("last_year", yearNow);
+  const [startYear, setStartYear] = useState(activeRange.startYear.toString());
+  const [endYear, setEndYear] = useState(activeRange.endYear.toString());
+
+  const isLastYear = activeRange.startYear === yearNow - 1 && activeRange.endYear === yearNow;
+  const isLastFiveYears = activeRange.startYear === yearNow - 5 && activeRange.endYear === yearNow;
+  const isAllTime = activeRange.startYear <= DATE_RANGE_MIN_YEAR && activeRange.endYear === yearNow;
+  const selectedPreset: TDateRangePreset =
+    value === null ? "custom" : isAllTime ? "all_time" : isLastYear ? "last_year" : isLastFiveYears ? "last_5_years" : "custom";
+
+  const applyPreset = (preset: TDateRangePreset) => {
+    if (preset === "custom") return;
+    const range = resolveYearRangeForPreset(preset, yearNow);
+    setStartYear(range.startYear.toString());
+    setEndYear(range.endYear.toString());
+    onChange(serialiseYearRange(range.startYear, range.endYear));
+  };
+
+  const applyCustomRange = () => {
+    const parsedStartYear = Number(startYear);
+    const parsedEndYear = Number(endYear);
+    if (!Number.isInteger(parsedStartYear) || !Number.isInteger(parsedEndYear)) return;
+    if (parsedStartYear > parsedEndYear) return;
+    if (parsedStartYear < DATE_RANGE_MIN_YEAR || parsedEndYear > yearNow) return;
+    onChange(serialiseYearRange(parsedStartYear, parsedEndYear));
+  };
+
+  return (
+    <div className="flex flex-col gap-2 text-inky-black">
+      <div className="border-b border-transparent-regular pb-2">
+        <h4 className="text-sm text-inky-black font-medium">Published date</h4>
+      </div>
+      {DATE_RANGE_PRESETS.map((preset) => (
+        <label key={preset.value} className="inline-flex items-center gap-2 text-sm text-inky-black">
+          <input type="radio" checked={selectedPreset === preset.value} onChange={() => applyPreset(preset.value)} className="h-3.5 w-3.5" />
+          <span>{preset.label}</span>
+        </label>
+      ))}
+      <button type="button" className="w-fit text-xs text-neutral-500 underline hover:text-neutral-700" onClick={() => onChange(null)}>
+        Clear date filter
+      </button>
+      <div className="grid grid-cols-2 gap-2">
+        <input
+          type="number"
+          min={DATE_RANGE_MIN_YEAR}
+          max={yearNow}
+          value={startYear}
+          onChange={(event) => setStartYear(event.target.value)}
+          onBlur={applyCustomRange}
+          className="rounded border border-gray-300 bg-white px-2 py-1 text-sm text-inky-black"
+          placeholder="From"
+        />
+        <input
+          type="number"
+          min={DATE_RANGE_MIN_YEAR}
+          max={yearNow}
+          value={endYear}
+          onChange={(event) => setEndYear(event.target.value)}
+          onBlur={applyCustomRange}
+          className="rounded border border-gray-300 bg-white px-2 py-1 text-sm text-inky-black"
+          placeholder="To"
+        />
+      </div>
+    </div>
+  );
+}
 
 export function SearchFilters({
   availableFilters,
@@ -60,6 +146,8 @@ export function SearchFilters({
   onChange,
   aggregations,
   query,
+  dateRangeValue,
+  onDateRangeChange,
 }: TProps) {
   const [openOther, setOpenOther] = useState(false);
   const availableLabelIds = useMemo(() => getAvailableLabelIdsFromAggregations(aggregations, query, filters), [aggregations, query, filters]);
@@ -220,6 +308,12 @@ export function SearchFilters({
                         <ul className="flex flex-col gap-1 text-inky-black">{disabledFilters.map((f) => renderCheckboxRow(f, false))}</ul>
                       </div>
                     )}
+                    <div className="h-0 w-full shrink-0 border-b border-transparent-regular" aria-hidden />
+                    <DateRangeSection
+                      key={dateRangeValue ?? "no-date-range"}
+                      value={dateRangeValue}
+                      onChange={(nextValue) => onDateRangeChange?.(nextValue)}
+                    />
                   </div>
                 </div>
               )}

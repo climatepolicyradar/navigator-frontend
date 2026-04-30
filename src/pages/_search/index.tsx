@@ -21,7 +21,13 @@ import { withEnvConfig } from "@/context/EnvConfig";
 import { FeaturesContext } from "@/context/FeaturesContext";
 import { TLabelResult, loadLabels } from "@/hooks/useLabelSearch";
 import { FilterGroupSchema } from "@/schemas";
-import { convertApiDateRulesToUiGroup, convertDateRangeRulesToApiGroup } from "@/utils/_experiment/dateRangeFilters";
+import {
+  convertApiDateRulesToUiGroup,
+  convertDateRangeRulesToApiGroup,
+  findPublishedDateBetweenValue,
+  removePublishedDateRules,
+  upsertPublishedDateBetweenRule,
+} from "@/utils/_experiment/dateRangeFilters";
 import { getAvailableLabelIdsFromAggregations } from "@/utils/_experiment/labelAggregationAvailability";
 import { getFeatureFlags } from "@/utils/featureFlags";
 import { getFeatures } from "@/utils/features";
@@ -105,6 +111,7 @@ const ShadowSearch = ({ theme, themeConfig, features }: TProps) => {
     () => getAvailableLabelIdsFromAggregations(labelAggregations, query, filters),
     [labelAggregations, query, filters]
   );
+  const selectedPublishedDateRange = useMemo(() => findPublishedDateBetweenValue(filters), [filters]);
 
   return (
     <FeaturesContext.Provider value={features}>
@@ -152,6 +159,16 @@ const ShadowSearch = ({ theme, themeConfig, features }: TProps) => {
             onAdvancedClick={() => {
               setFiltersOpen(false);
               setAdvancedFiltersOpen(true);
+            }}
+            dateRangeValue={selectedPublishedDateRange}
+            onDateRangeChange={(nextValue) => {
+              if (nextValue === null) {
+                setFilters((prev) => removePublishedDateRules(prev));
+                setCurrentPage("1");
+                return;
+              }
+              setFilters((prev) => upsertPublishedDateBetweenRule(prev, nextValue));
+              setCurrentPage("1");
             }}
           />
           <div className="flex items-center gap-6 flex-wrap">

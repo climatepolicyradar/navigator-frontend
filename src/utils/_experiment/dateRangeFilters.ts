@@ -130,3 +130,71 @@ export function convertApiDateRulesToUiGroup(group: TQueryGroup): TQueryGroup {
     filters: convertedFilters,
   };
 }
+
+export function findPublishedDateBetweenValue(group: TQueryGroup): string | null {
+  for (const filter of group.filters) {
+    if ("field" in filter) {
+      if (filter.field === "attributes.published_date" && filter.op === "between") {
+        return filter.value;
+      }
+      continue;
+    }
+    const nested = findPublishedDateBetweenValue(filter);
+    if (nested) return nested;
+  }
+  return null;
+}
+
+export function upsertPublishedDateBetweenRule(group: TQueryGroup, value: string): TQueryGroup {
+  let updated = false;
+  const filters: Array<TQueryGroup | TQueryRule> = group.filters.map((filter) => {
+    if ("field" in filter) {
+      if (filter.field === "attributes.published_date" && filter.op === "between") {
+        updated = true;
+        return { ...filter, value };
+      }
+      return filter;
+    }
+    const nested = upsertPublishedDateBetweenRule(filter, value);
+    if (nested !== filter) updated = true;
+    return nested;
+  });
+
+  if (updated) {
+    return { ...group, filters };
+  }
+
+  return {
+    ...group,
+    filters: [
+      ...group.filters,
+      {
+        field: "attributes.published_date",
+        op: "between",
+        value,
+      },
+    ],
+  };
+}
+
+export function removePublishedDateRules(group: TQueryGroup): TQueryGroup {
+  const filters: Array<TQueryGroup | TQueryRule> = [];
+  for (const filter of group.filters) {
+    if ("field" in filter) {
+      if (filter.field === "attributes.published_date") {
+        continue;
+      }
+      filters.push(filter);
+      continue;
+    }
+    const nested = removePublishedDateRules(filter);
+    if (nested.filters.length > 0) {
+      filters.push(nested);
+    }
+  }
+
+  return {
+    ...group,
+    filters,
+  };
+}
