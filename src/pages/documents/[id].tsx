@@ -5,9 +5,13 @@ import Head from "next/head";
 import { useRouter } from "next/router";
 import { useMemo } from "react";
 
+import { getDocumentData } from "@/bff/methods/getDocumentData";
+import { FiveColumns } from "@/components/atoms/columns/FiveColumns";
+import { Debug } from "@/components/atoms/debug/Debug";
 import { ConceptsDocumentViewer } from "@/components/documents/ConceptsDocumentViewer";
 import { DocumentHead } from "@/components/documents/DocumentHead";
 import Layout from "@/components/layouts/Main";
+import { Section } from "@/components/molecules/section/Section";
 import { getDocumentDescription } from "@/constants/metaDescriptions";
 import { MAX_PASSAGES } from "@/constants/paging";
 import { QUERY_PARAMS } from "@/constants/queryParams";
@@ -24,8 +28,6 @@ import { getFeatures } from "@/utils/features";
 import { getLitigationDocumentJSONLD } from "@/utils/json-ld/getLitigationDocumentJSONLD";
 import { readConfigFile } from "@/utils/readConfigFile";
 
-import { getDocumentData } from "../../bff/methods/getDocumentData";
-
 // If we don't have a query string or a concept selected, we do't have a search
 const isEmptySearch = (query: ParsedUrlQuery) => {
   return !(query[QUERY_PARAMS.query_string] || query[QUERY_PARAMS.concept_id] || query[QUERY_PARAMS.concept_name]);
@@ -40,7 +42,9 @@ const isEmptySearch = (query: ParsedUrlQuery) => {
 */
 
 const DocumentPage = ({
+  debug,
   document,
+  errors,
   family,
   features,
   theme,
@@ -124,8 +128,10 @@ const DocumentPage = ({
             <DocumentHead
               document={document}
               family={family}
+              features={features}
               handleViewOtherDocsClick={handleViewOtherDocsClick}
               handleViewSourceClick={handleViewSourceClick}
+              usesDataIn={Boolean(debug?.usesDataIn)}
             />
 
             <ConceptsDocumentViewer
@@ -151,6 +157,17 @@ const DocumentPage = ({
           )}
         </TopicsContext.Provider>
       </FeaturesContext.Provider>
+      {features.debug && (
+        <FiveColumns>
+          <Section key="debug" block="debug" title="Debug">
+            <Debug data={errors.map((error) => JSON.parse(error))} title="Transformation errors" />
+            <Debug data={document} title={debug?.usesDataIn ? "Document (Data-in API)" : "Document (V2 API)"} />
+            <Debug data={family} title={debug?.usesDataIn ? "Family (Data-in API)" : "Family (V2 API)"} />
+            {debug?.originalDocument && <Debug data={debug?.originalDocument} title="Original document (V2 API)" />}
+            {debug?.newApiData && <Debug data={debug?.newApiData} title="Data-in API document response" />}
+          </Section>
+        </FiveColumns>
+      )}
     </Layout>
   );
 };
@@ -177,6 +194,7 @@ export const getServerSideProps = (async (context) => {
   return {
     props: withEnvConfig({
       ...documentData,
+      errors: errors.map((error) => JSON.stringify(error, Object.getOwnPropertyNames(error))),
       features,
       theme,
       themeConfig,

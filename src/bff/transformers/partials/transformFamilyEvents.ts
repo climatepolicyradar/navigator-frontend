@@ -1,23 +1,72 @@
-import { TDataInLabel, TDataInLabelType } from "@/schemas";
-import { TFamilyEventPublic } from "@/types";
-import { TItemsByType } from "@/utils/data-in/groupByType";
+import { getChildDocuments } from "@/bff/methods/getRelations";
+import { ID_SEPARATOR } from "@/constants/chars";
+import {
+  LABEL_TYPES,
+  MANDATORY_FAMILY_LABEL_TYPES,
+  MANDATORY_DOCUMENT_LABEL_TYPES,
+  TDataInLabel,
+  TDataInLabelType,
+  validateDocumentAttributes,
+} from "@/schemas";
+import { TAttributionCategory, TFamilyApiNewData, TFamilyEventPublic } from "@/types";
+import { groupByType } from "@/utils/data-in/groupByType";
 
-export const transformFamilyEvents = (groupedLabels: TItemsByType<TDataInLabel, TDataInLabelType>): TFamilyEventPublic[] => {
-  const events: TFamilyEventPublic[] = [];
+const makeActivityStatusEvents = (activityStatusLabels: TDataInLabel[]): TFamilyEventPublic[] =>
+  activityStatusLabels.map((label) => ({
+    date: label.timestamp,
+    event_type: label.value.id.split(ID_SEPARATOR)[1],
+    import_id: `activity_status_${label.timestamp.slice(10)}`,
+    metadata: {},
+    status: "OK",
+    title: label.value.value,
+  }));
 
-  if (groupedLabels.activity_status.length > 0) {
-    events.push(
-      ...groupedLabels.activity_status.map((label) => ({
-        date: label.timestamp,
-        event_type: label.value.id,
-        title: label.value.value,
-        // Required properties but unused
-        import_id: "",
-        metadata: {},
-        status: "OK",
-      }))
-    );
+export type TDocumentEvents = {
+  importId: string;
+  events: TFamilyEventPublic[];
+};
+
+type TAllFamilyEvents = {
+  familyEvents: TFamilyEventPublic[];
+  documentEvents: TDocumentEvents[];
+};
+
+export const transformFamilyEvents = (document: TFamilyApiNewData, category: TAttributionCategory): TAllFamilyEvents => {
+  const groupedDocumentLabels = groupByType<TDataInLabel, TDataInLabelType>(document.labels, LABEL_TYPES, MANDATORY_FAMILY_LABEL_TYPES);
+  const familyEvents: TFamilyEventPublic[] = [];
+
+  if (groupedDocumentLabels.activity_status.length > 0) {
+    familyEvents.push(...makeActivityStatusEvents(groupedDocumentLabels.activity_status));
   }
 
-  return events;
+  if (category !== "Litigation") {
+    return {
+      familyEvents,
+      documentEvents: [],
+    };
+  }
+
+  const documentEvents: TDocumentEvents[] = getChildDocuments(document.documents, category)
+    .map(({ value: doc }) => {
+      const docAttributes = validateDocumentAttributes(doc.attributes);
+      if (docAttributes.status !== "published") return null;
+
+      const groupedDocLabels = groupByType<TDataInLabel, TDataInLabelType>(doc.labels, LABEL_TYPES, MANDATORY_DOCUMENT_LABEL_TYPES);
+      const events: TFamilyEventPublic[] = [];
+
+      if (groupedDocLabels.activity_status.length > 0) {
+        events.push(...makeActivityStatusEvents(groupedDocLabels.activity_status));
+      }
+
+      return {
+        importId: doc.id,
+        events,
+      };
+    })
+    .filter((doc) => doc);
+
+  return {
+    familyEvents,
+    documentEvents,
+  };
 };

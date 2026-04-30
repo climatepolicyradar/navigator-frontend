@@ -1,20 +1,11 @@
 import { ApiClient } from "@/api/http-common";
 import { documentTransformer } from "@/bff/transformers/documentTransformer";
 import { DEFAULT_DOCUMENT_TITLE } from "@/constants/document";
-import {
-  TApiDocumentPage,
-  TApiFamilyPublic,
-  TApiItemResponse,
-  TApiSearchResponse,
-  TApiSlugResponse,
-  TDocumentPresentationalResponse,
-  TFeatures,
-} from "@/types";
+import { TDataInDocument, validateDataInDocument } from "@/schemas";
+import { TApiDocumentPublic, TApiItemResponse, TApiSearchResponse, TApiSlugResponse, TDocumentPresentationalResponse, TFeatures } from "@/types";
 import { extractTopicIds } from "@/utils/extractTopicIds";
 import { fetchAndProcessTopics } from "@/utils/fetchAndProcessTopics";
 
-// TODO: remove this ESLint disable when the features object is used for data source switching
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
 export const getDocumentData = async (slug: string, features: TFeatures): Promise<TDocumentPresentationalResponse> => {
   /* Make API requests */
 
@@ -31,29 +22,32 @@ export const getDocumentData = async (slug: string, features: TFeatures): Promis
     return { data: null, errors };
   }
 
-  let family: TApiFamilyPublic;
-  let document: TApiDocumentPage;
+  let document: TApiDocumentPublic;
   try {
-    const { data: returnedDocumentData } = await apiClient.get(`/families/documents/${slugResponse.family_document_import_id}`);
-    const { family: familyData, ...otherDocumentData } = returnedDocumentData.data;
-    family = familyData;
-    document = otherDocumentData;
+    const { data: documentResponse } = await apiClient.get<TApiItemResponse<TApiDocumentPublic>>(
+      `/families/documents/${slugResponse.family_document_import_id}`
+    );
+    document = documentResponse.data;
     if (document.title === "") document.title = DEFAULT_DOCUMENT_TITLE;
   } catch (error) {
     errors.push(new Error("Failed to fetch document data", error));
     return { data: null, errors };
   }
 
-  /**
-   * TODO:
-   * - Check family data + features to determine if new data model API calls are needed
-   * - Branch the API calls from this point onwards
-   * - Reconverge before the transformer
-   */
-
-  if (!family || !document) {
+  if (!document || !document.family) {
     errors.push(new Error("No family or document data found"));
     return { data: null, errors };
+  }
+
+  // Get the new data-in document for this document's family or fall back to the older data
+  let dataInDocument: TDataInDocument | null = null;
+  if (features["new-data-model"]) {
+    try {
+      const { data: dataInDocumentResponse } = await apiClient.get<TApiItemResponse>(`/data-in/documents/${slugResponse.family_document_import_id}`);
+      dataInDocument = validateDataInDocument(dataInDocumentResponse.data);
+    } catch (error) {
+      errors.push(error as Error);
+    }
   }
 
   let vespaDocumentData: TApiSearchResponse;
@@ -69,5 +63,5 @@ export const getDocumentData = async (slug: string, features: TFeatures): Promis
 
   /* Transform API data for presentation */
 
-  return documentTransformer({ document, family, topicsData, vespaDocumentData }, null, errors);
+  return documentTransformer({ document, topicsData, vespaDocumentData }, dataInDocument, errors);
 };

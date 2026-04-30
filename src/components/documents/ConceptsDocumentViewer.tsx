@@ -19,7 +19,7 @@ import { MAX_RESULTS } from "@/constants/paging";
 import { SEARCH_PASSAGE_ORDER } from "@/constants/searchPassagesOrder";
 import { SEARCH_SETTINGS } from "@/constants/searchSettings";
 import { TopicsContext } from "@/context/TopicsContext";
-import { TTopic, TDocumentPage, TLoadingStatus, TMatchedFamily, TPassage, TSearchResponse } from "@/types";
+import { TTopic, TFamilyDocumentPublic, TLoadingStatus, TMatchedFamily, TPassage, TSearchResponse } from "@/types";
 import { getCurrentSearchChoice } from "@/utils/getCurrentSearchChoice";
 import { getPassageResultsContext } from "@/utils/getPassageResultsContext";
 import { getCurrentPassagesOrderChoice } from "@/utils/getPassagesSortOrder";
@@ -36,7 +36,7 @@ interface IProps {
   initialPageNumber?: number;
   initialConceptFilters?: string[];
   vespaDocumentData: TSearchResponse;
-  document: TDocumentPage;
+  document: TFamilyDocumentPublic;
   searchStatus: TLoadingStatus;
   searchResultFamilies: TMatchedFamily[];
   // Callback props for state changes

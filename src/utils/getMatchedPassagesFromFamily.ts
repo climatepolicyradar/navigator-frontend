@@ -1,6 +1,6 @@
-import { TDocumentPage, TMatchedFamily, TPassage } from "@/types";
+import { TFamilyDocumentPublic, TMatchedFamily, TPassage } from "@/types";
 
-export const getMatchedPassagesFromSearch = (families: TMatchedFamily[], document: TDocumentPage): [TPassage[], number] => {
+export const getMatchedPassagesFromSearch = (families: TMatchedFamily[], document: TFamilyDocumentPublic): [TPassage[], number] => {
   const passageMatches: TPassage[] = [];
   let totalNoOfMatches = 0;
   families.forEach((family) => {

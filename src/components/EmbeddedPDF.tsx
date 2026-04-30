@@ -3,12 +3,12 @@ import { useRef, useMemo, useEffect, useContext } from "react";
 
 import { AdobeContext } from "@/context/AdobeContext";
 import usePDFPreview from "@/hooks/usePDFPreview";
-import { TDocumentPage, TLoadingStatus, TPassage } from "@/types";
+import { TFamilyDocumentPublic, TLoadingStatus, TPassage } from "@/types";
 
 import Loader from "./Loader";
 
 interface IProps {
-  document: TDocumentPage;
+  document: TFamilyDocumentPublic;
   documentPassageMatches?: TPassage[];
   pageNumber?: number;
   startingPageNumber?: number;
