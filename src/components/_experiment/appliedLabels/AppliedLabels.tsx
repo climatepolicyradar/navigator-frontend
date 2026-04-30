@@ -35,6 +35,25 @@ function AppliedLabel({ label, type, onSelect, onRemove }: { label: string; type
   );
 }
 
+function AppliedDateRange({ value, onSelect, onRemove }: { value: string; onSelect: () => void; onRemove: () => void }) {
+  const [startYear, endYear] = value.split(":");
+  return (
+    <span className="bg-white rounded-lg inline-flex items-center border border-gray-300 hover:bg-gray-50">
+      <button className="py-1 px-2 border-r border-gray-300" onClick={onSelect}>
+        <span>Date</span>
+      </button>
+      <button className="py-1 px-2 border-r border-gray-300" onClick={onSelect}>
+        <span>
+          {startYear} - {endYear}
+        </span>
+      </button>
+      <button className="px-2 rounded-r-lg h-7 hover:bg-gray-200" onClick={onRemove}>
+        <LucideX width={16} height={16} />
+      </button>
+    </span>
+  );
+}
+
 export function AppliedLabels({
   filters,
   availableFilters,
@@ -43,6 +62,9 @@ export function AppliedLabels({
   onSelectLabel,
   onRemoveLabel,
   onAdvancedClick,
+  dateRangeValue,
+  onSelectDateRange,
+  onRemoveDateRange,
 }: {
   filters: TQueryGroup;
   availableFilters: TLabelResult[];
@@ -51,6 +73,9 @@ export function AppliedLabels({
   onRemoveLabel?: (label: string) => void;
   onSelectLabel?: (label: string, type: string) => void;
   onAdvancedClick?: () => void;
+  dateRangeValue?: string | null;
+  onSelectDateRange?: () => void;
+  onRemoveDateRange?: () => void;
 }) {
   return (
     <div className="flex flex-wrap gap-1 text-sm text-gray-700 rounded-lg bg-gray-100 p-2">
@@ -63,18 +88,23 @@ export function AppliedLabels({
           Advanced filters applied
         </button>
       ) : (
-        labels.map((label, i) => {
-          const type = getTypeOfLabel(label, availableFilters);
-          return (
-            <AppliedLabel
-              key={i}
-              label={label}
-              type={type || ""}
-              onSelect={() => onSelectLabel?.(label, type || "")}
-              onRemove={() => onRemoveLabel?.(label)}
-            />
-          );
-        })
+        <>
+          {dateRangeValue && (
+            <AppliedDateRange value={dateRangeValue} onSelect={() => onSelectDateRange?.()} onRemove={() => onRemoveDateRange?.()} />
+          )}
+          {labels.map((label, i) => {
+            const type = getTypeOfLabel(label, availableFilters);
+            return (
+              <AppliedLabel
+                key={i}
+                label={label}
+                type={type || ""}
+                onSelect={() => onSelectLabel?.(label, type || "")}
+                onRemove={() => onRemoveLabel?.(label)}
+              />
+            );
+          })}
+        </>
       )}
       {onClear && (
         <button className="rounded-md px-2 ml-auto hover:bg-gray-200" onClick={onClear}>

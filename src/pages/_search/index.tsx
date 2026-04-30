@@ -215,6 +215,7 @@ const ShadowSearch = ({ theme, themeConfig, features }: TProps) => {
               filters={filters}
               availableFilters={availableFilters}
               labels={selectedLabels}
+              dateRangeValue={selectedPublishedDateRange}
               onClear={() => {
                 setFilters(createGroup());
                 setQuery("");
@@ -225,6 +226,14 @@ const ShadowSearch = ({ theme, themeConfig, features }: TProps) => {
               onSelectLabel={handleSelectLabel}
               onRemoveLabel={(label) => {
                 setFilters((prev) => (prev ? removeLabelRule(prev, label) : createGroup()));
+                setCurrentPage("1");
+              }}
+              onSelectDateRange={() => {
+                setFilterSidebarCategory("published_date");
+                setFiltersOpen(true);
+              }}
+              onRemoveDateRange={() => {
+                setFilters((prev) => removePublishedDateRules(prev));
                 setCurrentPage("1");
               }}
               onAdvancedClick={() => setAdvancedFiltersOpen(true)}
