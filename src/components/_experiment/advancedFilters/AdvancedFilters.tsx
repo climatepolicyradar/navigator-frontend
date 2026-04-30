@@ -35,6 +35,13 @@ export type TQueryRule =
       key: "published_date";
       op: "eq" | "not_eq" | "lt" | "lte" | "gt" | "gte";
       value: string;
+    }
+  | {
+      // Backward-compatibility for old URL filter payloads.
+      field: "attributes";
+      key: "published_date";
+      op: "eq" | "not_eq" | "lt" | "lte" | "gt" | "gte";
+      value: string;
     };
 
 function isRule(node: TQueryGroup | TQueryRule): node is TQueryRule {

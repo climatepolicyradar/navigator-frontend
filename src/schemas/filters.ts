@@ -19,6 +19,13 @@ export const FilterSchema = v.union([
     op: v.picklist(["eq", "not_eq", "lt", "lte", "gt", "gte"]),
     value: v.string(),
   }),
+  v.object({
+    // Backward-compatibility for old URL filter payloads.
+    field: v.literal("attributes"),
+    key: v.literal("published_date"),
+    op: v.picklist(["eq", "not_eq", "lt", "lte", "gt", "gte"]),
+    value: v.string(),
+  }),
 ]);
 
 export const FilterGroupSchema: v.GenericSchema<TQueryGroup> = v.object({
