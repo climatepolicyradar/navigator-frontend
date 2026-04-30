@@ -7,9 +7,10 @@ import { useQueryState, parseAsBoolean, parseAsString, parseAsJson } from "nuqs"
 import { useCallback, useEffect, useMemo, useState, type SetStateAction } from "react";
 
 import { ApiClient } from "@/api/http-common";
-import { IAggregationLabel, normaliseSearchDocumentsSortKey } from "@/api/search";
+import { IAggregationLabel, normaliseSearchDocumentsSortKey, SearchDocument } from "@/api/search";
 import { createGroup, isFilterGroupEmpty, AdvancedFilters, TQueryGroup } from "@/components/_experiment/advancedFilters/AdvancedFilters";
 import { AppliedLabels } from "@/components/_experiment/appliedLabels/AppliedLabels";
+import { DocumentDrawer } from "@/components/_experiment/documentDrawer/DocumentDrawer";
 import { IntelliSearch } from "@/components/_experiment/intellisearch";
 import { Pagination } from "@/components/_experiment/pagination/Pagination";
 import { SearchFilters, TLabelType } from "@/components/_experiment/searchFilters/SearchFilters";
@@ -77,6 +78,9 @@ const ShadowSearch = ({ theme, themeConfig, features }: TProps) => {
   const selectedLabels = useMemo(() => extractLabels(filters), [filters]);
 
   // Control SearchFilters popover and active category tab (single source of truth)
+  const [selectedDocument, setSelectedDocument] = useState<SearchDocument | null>(null);
+  const [drawerOpen, setDrawerOpen] = useState(false);
+
   const [filtersOpen, setFiltersOpen] = useState(false);
   const [filterSidebarCategory, setFilterSidebarCategory] = useState<TLabelType>("category");
 
@@ -227,6 +231,10 @@ const ShadowSearch = ({ theme, themeConfig, features }: TProps) => {
             excludeMergedDocuments={excludeMergedDocuments}
             onAggregationsChange={applyAggregationsFromSearch}
             onTotalResultsChange={setTotalNoOfResults}
+            onResultClicked={(document) => {
+              setSelectedDocument(document);
+              setDrawerOpen(true);
+            }}
           />
         </div>
         {totalNoOfResults !== null && totalNoOfResults > 0 && (query || !isFilterGroupEmpty(filters)) && (
@@ -251,6 +259,7 @@ const ShadowSearch = ({ theme, themeConfig, features }: TProps) => {
           </div>
         )}
       </FiveColumns>
+      <DocumentDrawer document={selectedDocument} open={drawerOpen} onOpenChange={setDrawerOpen} />
     </FeaturesContext.Provider>
   );
 };
