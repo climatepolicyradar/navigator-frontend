@@ -35,9 +35,11 @@ export function DocumentDrawer({ document, open, onOpenChange }: TDocumentDrawer
       swipeDirection="right"
     >
       <Drawer.Portal>
-        <Drawer.Backdrop className="fixed inset-0 bg-inky-black/40 transition duration-120" />
-        <Drawer.Viewport className="fixed right-0 top-0 h-full w-4/5 max-w-200 transition-transform duration-120 data-starting-style:translate-x-full data-ending-style:translate-x-full">
-          <Drawer.Popup className={`h-full bg-white shadow-xl flex flex-col gap-6 overflow-y-auto p-6 ${styles["highlights"]}`}>
+        <Drawer.Backdrop className="fixed inset-0 bg-inky-black duration-200 [--backdrop-opacity:0.2] [--bleed:3rem] min-h-dvh opacity-[calc(var(--backdrop-opacity)*(1-var(--drawer-swipe-progress)))] transition-opacity ease-[cubic-bezier(0.32,0.72,0,1)] data-swiping:duration-0 data-ending-style:opacity-0 data-starting-style:opacity-0 " />
+        <Drawer.Viewport className="fixed inset-0 flex items-stretch justify-end">
+          <Drawer.Popup
+            className={`h-full bg-white shadow-xl flex flex-col gap-6 overflow-y-auto p-6 w-4/5 max-w-200 transition-transform duration-150 ease-[cubic-bezier(0.32,0.72,0,1)] data-starting-style:translate-x-full data-ending-style:translate-x-full ${styles["highlights"]}`}
+          >
             {document && (
               <>
                 <div className="flex items-start justify-between">
@@ -87,8 +89,8 @@ export function DocumentDrawer({ document, open, onOpenChange }: TDocumentDrawer
                 {/* Nested drawer lives inside the parent Popup so Base UI can track nesting */}
                 <Drawer.Root open={nestedDrawerOpen} onOpenChange={setNestedDrawerOpen} swipeDirection="right">
                   <Drawer.Portal>
-                    <Drawer.Viewport className="fixed right-0 top-0 h-full w-3/5 max-w-180 transition-transform duration-120 data-starting-style:translate-x-full data-ending-style:translate-x-full">
-                      <Drawer.Popup className="h-full bg-white shadow-2xl flex flex-col overflow-y-auto p-6">
+                    <Drawer.Viewport className="fixed inset-0 flex items-stretch justify-end">
+                      <Drawer.Popup className="h-full bg-white shadow-2xl flex flex-col overflow-y-auto p-6 w-3/5 max-w-180 transition-transform duration-150 ease-[cubic-bezier(0.32,0.72,0,1)] data-starting-style:translate-x-full data-ending-style:translate-x-full">
                         {nestedDocument && (
                           <>
                             <div className="flex items-start justify-between mb-4">
