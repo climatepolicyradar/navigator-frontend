@@ -29,6 +29,12 @@ export type TQueryRule =
       field: "attributes.published_date";
       op: "between" | "gte" | "lte";
       value: string;
+    }
+  | {
+      field: "attributes";
+      key: "published_date";
+      op: "eq" | "not_eq" | "lt" | "lte" | "gt" | "gte";
+      value: string;
     };
 
 function isRule(node: TQueryGroup | TQueryRule): node is TQueryRule {
@@ -407,6 +413,7 @@ interface RuleRowProps {
 }
 
 function RuleRow({ rule, onUpdate, onDelete, isOnly, availableLabelIds }: RuleRowProps) {
+  const isLabelRule = rule.field === "labels.value.id";
   const isPublishedDateRule = rule.field === "attributes.published_date";
 
   return (
@@ -430,7 +437,7 @@ function RuleRow({ rule, onUpdate, onDelete, isOnly, availableLabelIds }: RuleRo
         <option value="labels.value.id">Label</option>
         <option value="attributes.published_date">Published date</option>
       </select>
-      {!isPublishedDateRule && (
+      {isLabelRule && (
         <>
           <OperatorSelect value={rule.op} onChange={(op) => onUpdate({ ...rule, op })} />
           <div className="min-w-45 min-h-7.5">
