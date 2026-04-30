@@ -7,17 +7,23 @@ import {
   TDataInLabel,
   TDataInLabelType,
   validateDocumentAttributes,
+  TDataInDocument,
+  TDataInDocumentAttributes,
 } from "@/schemas";
 import { TAttributionCategory, TFamilyApiNewData, TFamilyEventPublic } from "@/types";
 import { groupByType, TItemsByType } from "@/utils/data-in/groupByType";
 
-const makeActivityStatusEvent = (groupedLabels: TItemsByType<TDataInLabel, TDataInLabelType>): TFamilyEventPublic | null => {
+const makeActivityStatusEvent = (
+  groupedLabels: TItemsByType<TDataInLabel, TDataInLabelType>,
+  document?: TDataInDocument,
+  documentAttributes?: TDataInDocumentAttributes
+): TFamilyEventPublic | null => {
   const activityStatusLabel = groupedLabels.activity_status[0];
   if (!activityStatusLabel) return null;
 
   const eventType = groupedLabels.entity_type[0]?.value.value ?? activityStatusLabel.value.id.split(ID_SEPARATOR)[1];
 
-  return {
+  const event: TFamilyEventPublic = {
     date: activityStatusLabel.timestamp,
     event_type: eventType,
     import_id: "event_" + Math.random().toString().replace(".", ""), // Only needs to be unique
@@ -25,6 +31,11 @@ const makeActivityStatusEvent = (groupedLabels: TItemsByType<TDataInLabel, TData
     status: "OK",
     title: eventType,
   };
+
+  if (document?.description) event.metadata.description = [document.description];
+  if (documentAttributes?.action_taken) event.metadata.action_taken = [documentAttributes.action_taken];
+
+  return event;
 };
 
 export type TDocumentEvents = {
@@ -59,7 +70,7 @@ export const transformFamilyEvents = (document: TFamilyApiNewData, category: TAt
       const groupedDocLabels = groupByType<TDataInLabel, TDataInLabelType>(doc.labels, LABEL_TYPES, MANDATORY_DOCUMENT_LABEL_TYPES);
       const events: TFamilyEventPublic[] = [];
 
-      const documentActivityStatusEvent = makeActivityStatusEvent(groupedDocLabels);
+      const documentActivityStatusEvent = makeActivityStatusEvent(groupedDocLabels, doc, docAttributes);
       if (documentActivityStatusEvent) events.push(documentActivityStatusEvent);
 
       return {

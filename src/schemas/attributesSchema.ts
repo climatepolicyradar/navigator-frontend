@@ -12,6 +12,7 @@ export type TDataInAttributes = v.InferOutput<typeof AttributesSchema>;
 /* Specific */
 
 export const FamilyAttributesSchema = v.object({
+  action_taken: v.optional(v.string()),
   case_status: v.optional(v.string()),
   deprecated_slug: v.string(),
   "identifier::case_number": v.optional(v.string()),
@@ -27,6 +28,7 @@ export type TDataInFamilyAttributes = v.InferOutput<typeof FamilyAttributesSchem
 export const validateFamilyAttributes = (attributes: TDataInAttributes): TDataInFamilyAttributes => v.parse(FamilyAttributesSchema, attributes);
 
 export const DocumentAttributesSchema = v.object({
+  action_taken: v.optional(v.string()),
   deprecated_slug: v.string(),
   md5_sum: v.optional(v.string()),
   variant: v.optional(v.string()),
