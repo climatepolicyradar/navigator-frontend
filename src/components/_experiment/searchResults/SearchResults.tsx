@@ -14,22 +14,31 @@ const isPrincipal = (result: SearchDocument): boolean => {
   return result.labels.some((label) => label.type === "status" && label.value.value === "Principal");
 };
 
-export function SearchResults({ data, onSelectLabel }: { data: SearchDocumentsResponse; onSelectLabel?: (label: string) => void }) {
+export function SearchResults({ data, onClick }: { data: SearchDocumentsResponse; onClick?: (document: SearchDocument) => void }) {
   return (
     <div>
       <ul className="space-y-4">
         {data.results.map((result) => (
           <Fragment key={result.id}>
             {isPrincipal(result) && (
-              <li className={`flex flex-col border border-transparent-regular rounded-md p-6 ${styles["highlights"]}`}>
-                <PrincipalSearchResult result={result} onSelectLabel={onSelectLabel} />
+              <li className={`flex flex-col ${styles["highlights"]}`}>
+                <button
+                  type="button"
+                  onClick={(e) => {
+                    e.currentTarget.blur();
+                    onClick(result);
+                  }}
+                  className="group text-left w-full p-6 border border-transparent-regular rounded-md hover:bg-neutral-50"
+                >
+                  <PrincipalSearchResult result={result} />
+                </button>
               </li>
             )}
             {!isPrincipal(result) && (
               <li className={`flex gap-2 border border-transparent rounded-md py-2 pr-6 ${styles["highlights"]}`}>
                 <LucideFileText width={20} height={20} className="text-neutral-500 shrink-0 mt-1" />
                 <div className="flex flex-col">
-                  <DocumentSearchResult result={result} onSelectLabel={onSelectLabel} />
+                  <DocumentSearchResult result={result} />
                 </div>
               </li>
             )}
@@ -42,14 +51,15 @@ export function SearchResults({ data, onSelectLabel }: { data: SearchDocumentsRe
 
 function SearchResultsWithAggregations({
   promise,
-  onSelectLabel,
   onAggregationsChange,
   onTotalResultsChange,
+  onResultClicked,
 }: {
   promise: Promise<SearchDocumentsResponse>;
   onSelectLabel?: (label: string) => void;
   onAggregationsChange?: (labels: IAggregationLabel[] | undefined) => void;
   onTotalResultsChange?: (total: number | null) => void;
+  onResultClicked?: (document: SearchDocument) => void;
 }) {
   const data = use(promise);
   const labels = data.aggregations?.labels;
@@ -67,7 +77,7 @@ function SearchResultsWithAggregations({
     onTotalResultsChange?.(data.total_size ?? null);
   }, [data.total_size, onTotalResultsChange]);
 
-  return <SearchResults data={data} onSelectLabel={onSelectLabel} />;
+  return <SearchResults data={data} onClick={onResultClicked} />;
 }
 
 // If any of the values are empty strings, the filters are considered invalid and will not be sent to the API
@@ -93,6 +103,7 @@ export function SearchContainer({
   onSelectLabel,
   onAggregationsChange,
   onTotalResultsChange,
+  onResultClicked,
 }: {
   selectedLabels?: string[];
   query?: string;
@@ -105,6 +116,7 @@ export function SearchContainer({
   onSelectLabel?: (label: string) => void;
   onAggregationsChange?: (labels: IAggregationLabel[] | undefined) => void;
   onTotalResultsChange?: (total: number | null) => void;
+  onResultClicked?: (document: SearchDocument) => void;
 }) {
   const filtersCheckedForEmpty = filtersDoesNotContainEmptyRule(filters) ? filters : undefined;
 
@@ -137,6 +149,7 @@ export function SearchContainer({
             onSelectLabel={onSelectLabel}
             onAggregationsChange={onAggregationsChange}
             onTotalResultsChange={onTotalResultsChange}
+            onResultClicked={onResultClicked}
           />
         </Suspense>
       ) : (
