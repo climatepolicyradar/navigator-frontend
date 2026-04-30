@@ -1,7 +1,7 @@
 import { LucideEarth, LucideTag } from "lucide-react";
 
 import { SearchDocument } from "@/api/search";
-// import { documentRelationshipLabel } from "@/utils/_experiment/documentRelationshipLabel";
+import { documentRelationshipLabel } from "@/utils/_experiment/documentRelationshipLabel";
 import { labelTypeLabel } from "@/utils/_experiment/labelTypeLabel";
 
 import { TLabelType } from "../searchFilters/SearchFilters";
@@ -27,7 +27,7 @@ function iconForLabelType(type: string) {
 }
 
 const FILTER_AGGREGATIONS: TLabelType[] = ["geography", "concept"];
-// const RELATIONSHIP_AGGREGATIONS = ["member_of", "has_member"];
+const RELATIONSHIP_AGGREGATIONS = ["member_of", "has_member"];
 
 export function PrincipalSearchResult({ result }: { result: SearchDocument }) {
   return (
@@ -73,10 +73,8 @@ export function PrincipalSearchResult({ result }: { result: SearchDocument }) {
           </div>
         );
       })}
-      {/* DISPLAYING RELATIONSHIPS
-       * Removed for now as we semantically should not be nesting anchors/interactivity
-       */}
-      {/* {RELATIONSHIP_AGGREGATIONS.map((agg) => {
+      {/* DISPLAYING RELATIONSHIPS */}
+      {RELATIONSHIP_AGGREGATIONS.map((agg) => {
         const relationshipsOfType = result.documents.filter((relationship) => relationship.type === agg);
         if (relationshipsOfType.length === 0) return null;
 
@@ -86,21 +84,14 @@ export function PrincipalSearchResult({ result }: { result: SearchDocument }) {
             <ul className="flex flex-wrap gap-1">
               {relationshipsOfType.slice(0, 3).map((relationship, i) => (
                 <li key={i} className="rounded px-2 py-0.5 flex gap-1 items-start">
-                  <LucideFileText width={14} height={14} className="inline mt-0.5 shrink-0" />
-                  {linkHref(relationship.value) ? (
-                    <Link href={linkHref(relationship.value)!} className="hover:underline">
-                      {relationship.value.title}
-                    </Link>
-                  ) : (
-                    <span>{relationship.value.title}</span>
-                  )}
+                  <span>{relationship.value.title}</span>
                 </li>
               ))}
               {relationshipsOfType.length > 3 && <span className="py-0.5 text-neutral-600">+{relationshipsOfType.length - 3} more</span>}
             </ul>
           </div>
         );
-      })} */}
+      })}
     </>
   );
 }
