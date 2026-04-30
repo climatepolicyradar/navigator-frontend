@@ -1,6 +1,8 @@
 import { oldCollectionTransformer } from "@/bff/transformers/oldCollectionTransformer";
 import { TCollectionApiNewData, TCollectionApiOldData, TCollectionPresentationalResponse } from "@/types";
 
+import { transformOldCollection } from "./partials/transformOldCollection";
+
 export const collectionTransformer = (
   collectionApiOldData: TCollectionApiOldData,
   collectionApiNewData: TCollectionApiNewData,
@@ -9,10 +11,23 @@ export const collectionTransformer = (
   if (collectionApiOldData === null) return { data: null, errors };
 
   if (collectionApiNewData) {
-    // TODO: introduce transformations for new data model API data
-    return { data: null, errors };
+    try {
+      return {
+        data: {
+          ...collectionApiOldData,
+          collection: transformOldCollection(collectionApiOldData.collection, {}),
+          debug: {
+            usesDataIn: false, // TODO
+            newApiData: collectionApiNewData,
+            originalCollection: collectionApiOldData.collection,
+          },
+        },
+        errors,
+      };
+    } catch (error) {
+      return oldCollectionTransformer(collectionApiOldData, collectionApiNewData, [...errors, error as Error]);
+    }
   } else {
-    // Because the old API data type satisfies the presentational data type, no changes are needed
     return oldCollectionTransformer(collectionApiOldData, collectionApiNewData, errors);
   }
 };
