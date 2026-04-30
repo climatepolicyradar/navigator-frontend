@@ -70,15 +70,3 @@ export const transformFamilyEvents = (document: TFamilyApiNewData, category: TAt
     documentEvents,
   };
 };
-
-// type MinimalRequiredLitigationEvent = {
-//   date: string;
-//   event_type: string;
-//   import_id: string;
-//   metadata: {
-//     action_taken: string[];
-//     description: string[];
-//   };
-//   status: "";
-//   title: "";
-// };
