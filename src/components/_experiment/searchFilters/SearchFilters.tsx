@@ -72,43 +72,38 @@ const DATE_RANGE_PRESETS: Array<{ value: TDateRangePreset; label: string }> = [
 ];
 
 function DateRangeSection({ value, onChange }: { value: string | null | undefined; onChange: (value: string | null) => void }) {
-  const yearNow = new Date().getFullYear();
-  const allTimeRange = resolveYearRangeForPreset("all_time", yearNow);
-  const parsedValue = value ? parseYearRange(value) : null;
-  const activeRange = parsedValue ?? allTimeRange;
-  const [startYear, setStartYear] = useState(activeRange.startYear.toString() || DATE_RANGE_MIN_YEAR.toString());
-  const [endYear, setEndYear] = useState(activeRange.endYear.toString() || yearNow.toString());
+  const currentYear = new Date().getFullYear();
+  const selectedDateRange = parseYearRange(value ?? "") ?? resolveYearRangeForPreset("all_time", currentYear);
+  const [startYearInput, setStartYearInput] = useState(String(selectedDateRange.startYear));
+  const [endYearInput, setEndYearInput] = useState(String(selectedDateRange.endYear));
 
-  const isLastYear = activeRange.startYear === yearNow - 1 && activeRange.endYear === yearNow;
-  const isLastFiveYears = activeRange.startYear === yearNow - 5 && activeRange.endYear === yearNow;
-  const isAllTime = activeRange.startYear <= DATE_RANGE_MIN_YEAR && activeRange.endYear === yearNow;
+  const isLastYear = selectedDateRange.startYear === currentYear - 1 && selectedDateRange.endYear === currentYear;
+  const isLastFiveYears = selectedDateRange.startYear === currentYear - 5 && selectedDateRange.endYear === currentYear;
+  const isAllTime = selectedDateRange.startYear <= DATE_RANGE_MIN_YEAR && selectedDateRange.endYear === currentYear;
   const selectedPreset: TDateRangePreset = isAllTime ? "all_time" : isLastYear ? "last_year" : isLastFiveYears ? "last_5_years" : "custom";
 
-  const applyPreset = (preset: TDateRangePreset) => {
-    if (preset === "all_time") {
-      const range = resolveYearRangeForPreset("all_time", yearNow);
-      setStartYear(range.startYear.toString());
-      setEndYear(range.endYear.toString());
+  const applyDateRangeSelection = (startYear: number, endYear: number, clearToAllTime = false) => {
+    setStartYearInput(String(startYear));
+    setEndYearInput(String(endYear));
+    if (clearToAllTime) {
       onChange(null);
       return;
     }
-    const range = resolveYearRangeForPreset(preset, yearNow);
-    setStartYear(range.startYear.toString());
-    setEndYear(range.endYear.toString());
-    onChange(serialiseYearRange(range.startYear, range.endYear));
+    onChange(serialiseYearRange(startYear, endYear));
   };
 
-  const applyCustomRange = () => {
-    const nextStartYear = startYear.trim() === "" ? DATE_RANGE_MIN_YEAR : Number(startYear);
-    const nextEndYear = endYear.trim() === "" ? yearNow : Number(endYear);
-    setStartYear(nextStartYear.toString());
-    setEndYear(nextEndYear.toString());
-    const parsedStartYear = Number(nextStartYear);
-    const parsedEndYear = Number(nextEndYear);
-    if (!Number.isInteger(parsedStartYear) || !Number.isInteger(parsedEndYear)) return;
-    if (parsedStartYear > parsedEndYear) return;
-    if (parsedStartYear < DATE_RANGE_MIN_YEAR || parsedEndYear > yearNow) return;
-    onChange(serialiseYearRange(parsedStartYear, parsedEndYear));
+  const applyPresetDateRange = (preset: TDateRangePreset) => {
+    const presetRange = resolveYearRangeForPreset(preset, currentYear);
+    applyDateRangeSelection(presetRange.startYear, presetRange.endYear, preset === "all_time");
+  };
+
+  const applyCustomDateRange = () => {
+    const startYearForFilter = startYearInput.trim() ? Number(startYearInput) : DATE_RANGE_MIN_YEAR;
+    const endYearForFilter = endYearInput.trim() ? Number(endYearInput) : currentYear;
+    if (!Number.isInteger(startYearForFilter) || !Number.isInteger(endYearForFilter)) return;
+    if (startYearForFilter > endYearForFilter) return;
+    if (startYearForFilter < DATE_RANGE_MIN_YEAR || endYearForFilter > currentYear) return;
+    applyDateRangeSelection(startYearForFilter, endYearForFilter);
   };
 
   return (
@@ -118,7 +113,7 @@ function DateRangeSection({ value, onChange }: { value: string | null | undefine
       </div>
       {DATE_RANGE_PRESETS.map((preset) => (
         <label key={preset.value} className="inline-flex items-center gap-2 text-sm text-inky-black">
-          <input type="radio" checked={selectedPreset === preset.value} onChange={() => applyPreset(preset.value)} className="h-3.5 w-3.5" />
+          <input type="radio" checked={selectedPreset === preset.value} onChange={() => applyPresetDateRange(preset.value)} className="h-3.5 w-3.5" />
           <span>{preset.label}</span>
         </label>
       ))}
@@ -131,10 +126,10 @@ function DateRangeSection({ value, onChange }: { value: string | null | undefine
           <input
             type="number"
             min={DATE_RANGE_MIN_YEAR}
-            max={yearNow}
-            value={startYear}
-            onChange={(event) => setStartYear(event.target.value)}
-            onBlur={applyCustomRange}
+            max={currentYear}
+            value={startYearInput}
+            onChange={(event) => setStartYearInput(event.target.value)}
+            onBlur={applyCustomDateRange}
             className="rounded border border-gray-300 bg-white px-2 py-1.5 text-sm text-inky-black"
           />
         </div>
@@ -143,10 +138,10 @@ function DateRangeSection({ value, onChange }: { value: string | null | undefine
           <input
             type="number"
             min={DATE_RANGE_MIN_YEAR}
-            max={yearNow}
-            value={endYear}
-            onChange={(event) => setEndYear(event.target.value)}
-            onBlur={applyCustomRange}
+            max={currentYear}
+            value={endYearInput}
+            onChange={(event) => setEndYearInput(event.target.value)}
+            onBlur={applyCustomDateRange}
             className="rounded border border-gray-300 bg-white px-2 py-1.5 text-sm text-inky-black"
           />
         </div>
