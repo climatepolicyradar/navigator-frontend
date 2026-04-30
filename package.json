@@ -18,7 +18,8 @@
     "test-e2e": "npx playwright test",
     "test-e2e-ui": "npx playwright test --ui",
     "storybook": "storybook dev -p 6006",
-    "build-storybook": "storybook build"
+    "build-storybook": "storybook build",
+    "analyze": "THEME=cpr next experimental-analyze"
   },
   "dependencies": {
     "@base-ui/react": "^1.4.1",
@@ -53,6 +54,7 @@
     "@babel/core": "^7.29.0",
     "@babel/preset-env": "^7.29.2",
     "@eslint/js": "^9.39.4",
+    "@next/bundle-analyzer": "^16.2.4",
     "@next/eslint-plugin-next": "^16.2.4",
     "@percy/cli": "^1.31.11",
     "@playwright/test": "^1.59.1",
