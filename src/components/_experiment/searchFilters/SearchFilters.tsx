@@ -37,7 +37,7 @@ function hasActiveDateRule(group: TQueryGroup | null | undefined): boolean {
   );
 }
 
-const PRIMARY_LABEL_TYPES = ["category", "entity_type", "geography", "concept", "published_date"] as const;
+const PRIMARY_LABEL_TYPES = ["category", "published_date", "geography", "concept"] as const;
 const OTHER_LABEL_TYPES = ["activity_status", "agent"] as const;
 export type TLabelType = (typeof PRIMARY_LABEL_TYPES)[number] | (typeof OTHER_LABEL_TYPES)[number];
 
@@ -67,9 +67,8 @@ type TProps = {
 
 const DATE_RANGE_PRESETS: Array<{ value: TDateRangePreset; label: string }> = [
   { value: "all_time", label: "All time" },
-  { value: "last_year", label: "In last year" },
-  { value: "last_5_years", label: "In last 5 years" },
-  { value: "custom", label: "Specify range" },
+  { value: "last_year", label: "Last year" },
+  { value: "last_5_years", label: "Last 5 years" },
 ];
 
 function DateRangeSection({ value, onChange }: { value: string | null | undefined; onChange: (value: string | null) => void }) {
@@ -77,29 +76,15 @@ function DateRangeSection({ value, onChange }: { value: string | null | undefine
   const allTimeRange = resolveYearRangeForPreset("all_time", yearNow);
   const parsedValue = value ? parseYearRange(value) : null;
   const activeRange = parsedValue ?? allTimeRange;
-  const [startYear, setStartYear] = useState(activeRange.startYear.toString());
-  const [endYear, setEndYear] = useState(activeRange.endYear.toString());
+  const [startYear, setStartYear] = useState(activeRange.startYear.toString() || DATE_RANGE_MIN_YEAR.toString());
+  const [endYear, setEndYear] = useState(activeRange.endYear.toString() || yearNow.toString());
 
   const isLastYear = activeRange.startYear === yearNow - 1 && activeRange.endYear === yearNow;
   const isLastFiveYears = activeRange.startYear === yearNow - 5 && activeRange.endYear === yearNow;
   const isAllTime = activeRange.startYear <= DATE_RANGE_MIN_YEAR && activeRange.endYear === yearNow;
-  const [customMode, setCustomMode] = useState<boolean>(!isAllTime && !isLastYear && !isLastFiveYears);
-  const selectedPreset: TDateRangePreset = customMode
-    ? "custom"
-    : isAllTime
-      ? "all_time"
-      : isLastYear
-        ? "last_year"
-        : isLastFiveYears
-          ? "last_5_years"
-          : "all_time";
+  const selectedPreset: TDateRangePreset = isAllTime ? "all_time" : isLastYear ? "last_year" : isLastFiveYears ? "last_5_years" : "custom";
 
   const applyPreset = (preset: TDateRangePreset) => {
-    if (preset === "custom") {
-      setCustomMode(true);
-      return;
-    }
-    setCustomMode(false);
     if (preset === "all_time") {
       const range = resolveYearRangeForPreset("all_time", yearNow);
       setStartYear(range.startYear.toString());
@@ -114,19 +99,22 @@ function DateRangeSection({ value, onChange }: { value: string | null | undefine
   };
 
   const applyCustomRange = () => {
-    const parsedStartYear = Number(startYear);
-    const parsedEndYear = Number(endYear);
+    const nextStartYear = startYear.trim() === "" ? DATE_RANGE_MIN_YEAR : Number(startYear);
+    const nextEndYear = endYear.trim() === "" ? yearNow : Number(endYear);
+    setStartYear(nextStartYear.toString());
+    setEndYear(nextEndYear.toString());
+    const parsedStartYear = Number(nextStartYear);
+    const parsedEndYear = Number(nextEndYear);
     if (!Number.isInteger(parsedStartYear) || !Number.isInteger(parsedEndYear)) return;
     if (parsedStartYear > parsedEndYear) return;
     if (parsedStartYear < DATE_RANGE_MIN_YEAR || parsedEndYear > yearNow) return;
-    setCustomMode(true);
     onChange(serialiseYearRange(parsedStartYear, parsedEndYear));
   };
 
   return (
     <div className="flex flex-col gap-2 text-inky-black">
       <div className="border-b border-transparent-regular pb-2">
-        <h4 className="text-sm text-inky-black font-medium">Published date</h4>
+        <h4 className="text-sm text-inky-black font-medium">Date range</h4>
       </div>
       {DATE_RANGE_PRESETS.map((preset) => (
         <label key={preset.value} className="inline-flex items-center gap-2 text-sm text-inky-black">
@@ -134,18 +122,12 @@ function DateRangeSection({ value, onChange }: { value: string | null | undefine
           <span>{preset.label}</span>
         </label>
       ))}
-      <button
-        type="button"
-        className="w-fit text-xs text-neutral-500 underline hover:text-neutral-700"
-        onClick={() => {
-          setCustomMode(false);
-          onChange(null);
-        }}
-      >
-        Clear date filter
-      </button>
-      {selectedPreset === "custom" && (
-        <div className="grid grid-cols-2 gap-2">
+      <div className="pt-2 border-b border-transparent-regular pb-2">
+        <h4 className="text-sm text-inky-black font-medium">Custom</h4>
+      </div>
+      <div className="grid grid-cols-2 gap-3">
+        <div className="flex flex-col gap-1">
+          <label className="text-sm text-inky-black font-medium">Earliest year</label>
           <input
             type="number"
             min={DATE_RANGE_MIN_YEAR}
@@ -153,9 +135,11 @@ function DateRangeSection({ value, onChange }: { value: string | null | undefine
             value={startYear}
             onChange={(event) => setStartYear(event.target.value)}
             onBlur={applyCustomRange}
-            className="rounded border border-gray-300 bg-white px-2 py-1 text-sm text-inky-black"
-            placeholder="From"
+            className="rounded border border-gray-300 bg-white px-2 py-1.5 text-sm text-inky-black"
           />
+        </div>
+        <div className="flex flex-col gap-1">
+          <label className="text-sm text-inky-black font-medium">Latest year</label>
           <input
             type="number"
             min={DATE_RANGE_MIN_YEAR}
@@ -163,11 +147,10 @@ function DateRangeSection({ value, onChange }: { value: string | null | undefine
             value={endYear}
             onChange={(event) => setEndYear(event.target.value)}
             onBlur={applyCustomRange}
-            className="rounded border border-gray-300 bg-white px-2 py-1 text-sm text-inky-black"
-            placeholder="To"
+            className="rounded border border-gray-300 bg-white px-2 py-1.5 text-sm text-inky-black"
           />
         </div>
-      )}
+      </div>
     </div>
   );
 }
@@ -254,7 +237,7 @@ export function SearchFilters({
                                 <span>&nbsp;&nbsp;</span>
                               )}
                             </span>
-                            <span className="grow">{agg === "published_date" ? "Published date" : labelTypeLabel(agg)}</span>
+                            <span className="grow">{agg === "published_date" ? "Date" : labelTypeLabel(agg)}</span>
                             {activeLabelType === agg && (
                               <span className=" text-neutral-500">
                                 <ChevronRight width={20} height={20} />
