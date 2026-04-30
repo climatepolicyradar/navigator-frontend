@@ -25,4 +25,11 @@ export const documentPageModel = {
     await page.waitForLoadState("load");
     await expect(page.getByRole("heading", { name: title, level: 1 })).toBeVisible();
   },
+
+  // waits for the backend api URL to return
+  withBackendResponse: async (page: Page, action: () => Promise<void>): Promise<void> => {
+    const responsePromise = page.waitForResponse((resp) => resp.url().startsWith("https://app.climatepolicyradar.org/api/v1"), { timeout: 15_000 });
+    await action();
+    await responsePromise;
+  },
 };

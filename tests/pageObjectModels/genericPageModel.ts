@@ -4,23 +4,19 @@ import { TTextMatch } from "./types";
 
 export const genericPageModel = {
   dismissPopups: async (page: Page): Promise<void> => {
+    const dismiss = async (locator: ReturnType<Page["getByTitle"]>) => {
+      await locator.waitFor({ state: "visible", timeout: 3000 }).catch(() => {});
+      if (await locator.isVisible()) {
+        await locator.click();
+      }
+    };
+
     // Tutorial modal
-    const tutorialModalCloseButton = page.getByTitle("Dismiss modal");
-    if (await tutorialModalCloseButton.nth(1).isVisible()) {
-      await tutorialModalCloseButton.nth(1).click();
-    }
-
+    await dismiss(page.getByTitle("Dismiss modal").nth(1));
     // Tutorial banner
-    const tutorialBannerCloseButton = page.getByTitle("Dismiss banner");
-    if (await tutorialBannerCloseButton.isVisible()) {
-      await tutorialBannerCloseButton.click();
-    }
-
+    await dismiss(page.getByTitle("Dismiss banner"));
     // Cookie consent
-    const cookieConsentRejectButton = page.getByTitle("Reject cookies");
-    if (await cookieConsentRejectButton.isVisible()) {
-      await cookieConsentRejectButton.click();
-    }
+    await dismiss(page.getByTitle("Reject cookies"));
   },
 
   waitUntilLoaded: async (page: Page, title?: TTextMatch): Promise<void> => {
