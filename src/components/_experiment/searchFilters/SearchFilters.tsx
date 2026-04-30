@@ -30,7 +30,14 @@ function hasActiveFilterOfType(filters: TLabelResult[], group: TQueryGroup | nul
   );
 }
 
-const PRIMARY_LABEL_TYPES = ["category", "entity_type", "geography", "concept"] as const;
+function hasActiveDateRule(group: TQueryGroup | null | undefined): boolean {
+  if (!group) return false;
+  return group.filters.some((filter) =>
+    "field" in filter ? filter.field === "attributes.published_date" && filter.op === "between" : hasActiveDateRule(filter)
+  );
+}
+
+const PRIMARY_LABEL_TYPES = ["category", "entity_type", "geography", "concept", "published_date"] as const;
 const OTHER_LABEL_TYPES = ["activity_status", "agent"] as const;
 export type TLabelType = (typeof PRIMARY_LABEL_TYPES)[number] | (typeof OTHER_LABEL_TYPES)[number];
 
@@ -67,19 +74,39 @@ const DATE_RANGE_PRESETS: Array<{ value: TDateRangePreset; label: string }> = [
 
 function DateRangeSection({ value, onChange }: { value: string | null | undefined; onChange: (value: string | null) => void }) {
   const yearNow = new Date().getFullYear();
+  const allTimeRange = resolveYearRangeForPreset("all_time", yearNow);
   const parsedValue = value ? parseYearRange(value) : null;
-  const activeRange = parsedValue ?? resolveYearRangeForPreset("last_year", yearNow);
+  const activeRange = parsedValue ?? allTimeRange;
   const [startYear, setStartYear] = useState(activeRange.startYear.toString());
   const [endYear, setEndYear] = useState(activeRange.endYear.toString());
 
   const isLastYear = activeRange.startYear === yearNow - 1 && activeRange.endYear === yearNow;
   const isLastFiveYears = activeRange.startYear === yearNow - 5 && activeRange.endYear === yearNow;
   const isAllTime = activeRange.startYear <= DATE_RANGE_MIN_YEAR && activeRange.endYear === yearNow;
-  const selectedPreset: TDateRangePreset =
-    value === null ? "custom" : isAllTime ? "all_time" : isLastYear ? "last_year" : isLastFiveYears ? "last_5_years" : "custom";
+  const [customMode, setCustomMode] = useState<boolean>(!isAllTime && !isLastYear && !isLastFiveYears);
+  const selectedPreset: TDateRangePreset = customMode
+    ? "custom"
+    : isAllTime
+      ? "all_time"
+      : isLastYear
+        ? "last_year"
+        : isLastFiveYears
+          ? "last_5_years"
+          : "all_time";
 
   const applyPreset = (preset: TDateRangePreset) => {
-    if (preset === "custom") return;
+    if (preset === "custom") {
+      setCustomMode(true);
+      return;
+    }
+    setCustomMode(false);
+    if (preset === "all_time") {
+      const range = resolveYearRangeForPreset("all_time", yearNow);
+      setStartYear(range.startYear.toString());
+      setEndYear(range.endYear.toString());
+      onChange(null);
+      return;
+    }
     const range = resolveYearRangeForPreset(preset, yearNow);
     setStartYear(range.startYear.toString());
     setEndYear(range.endYear.toString());
@@ -92,6 +119,7 @@ function DateRangeSection({ value, onChange }: { value: string | null | undefine
     if (!Number.isInteger(parsedStartYear) || !Number.isInteger(parsedEndYear)) return;
     if (parsedStartYear > parsedEndYear) return;
     if (parsedStartYear < DATE_RANGE_MIN_YEAR || parsedEndYear > yearNow) return;
+    setCustomMode(true);
     onChange(serialiseYearRange(parsedStartYear, parsedEndYear));
   };
 
@@ -106,31 +134,40 @@ function DateRangeSection({ value, onChange }: { value: string | null | undefine
           <span>{preset.label}</span>
         </label>
       ))}
-      <button type="button" className="w-fit text-xs text-neutral-500 underline hover:text-neutral-700" onClick={() => onChange(null)}>
+      <button
+        type="button"
+        className="w-fit text-xs text-neutral-500 underline hover:text-neutral-700"
+        onClick={() => {
+          setCustomMode(false);
+          onChange(null);
+        }}
+      >
         Clear date filter
       </button>
-      <div className="grid grid-cols-2 gap-2">
-        <input
-          type="number"
-          min={DATE_RANGE_MIN_YEAR}
-          max={yearNow}
-          value={startYear}
-          onChange={(event) => setStartYear(event.target.value)}
-          onBlur={applyCustomRange}
-          className="rounded border border-gray-300 bg-white px-2 py-1 text-sm text-inky-black"
-          placeholder="From"
-        />
-        <input
-          type="number"
-          min={DATE_RANGE_MIN_YEAR}
-          max={yearNow}
-          value={endYear}
-          onChange={(event) => setEndYear(event.target.value)}
-          onBlur={applyCustomRange}
-          className="rounded border border-gray-300 bg-white px-2 py-1 text-sm text-inky-black"
-          placeholder="To"
-        />
-      </div>
+      {selectedPreset === "custom" && (
+        <div className="grid grid-cols-2 gap-2">
+          <input
+            type="number"
+            min={DATE_RANGE_MIN_YEAR}
+            max={yearNow}
+            value={startYear}
+            onChange={(event) => setStartYear(event.target.value)}
+            onBlur={applyCustomRange}
+            className="rounded border border-gray-300 bg-white px-2 py-1 text-sm text-inky-black"
+            placeholder="From"
+          />
+          <input
+            type="number"
+            min={DATE_RANGE_MIN_YEAR}
+            max={yearNow}
+            value={endYear}
+            onChange={(event) => setEndYear(event.target.value)}
+            onBlur={applyCustomRange}
+            className="rounded border border-gray-300 bg-white px-2 py-1 text-sm text-inky-black"
+            placeholder="To"
+          />
+        </div>
+      )}
     </div>
   );
 }
@@ -211,13 +248,13 @@ export function SearchFilters({
                             onClick={() => onActiveLabelTypeChange(agg)}
                           >
                             <span className="text-inky-blue px-2">
-                              {hasActiveFilterOfType(availableFilters, filters, agg) ? (
+                              {(agg === "published_date" ? hasActiveDateRule(filters) : hasActiveFilterOfType(availableFilters, filters, agg)) ? (
                                 <Circle width={8} height={8} fill="currentColor" />
                               ) : (
                                 <span>&nbsp;&nbsp;</span>
                               )}
                             </span>
-                            <span className="grow">{labelTypeLabel(agg)}</span>
+                            <span className="grow">{agg === "published_date" ? "Published date" : labelTypeLabel(agg)}</span>
                             {activeLabelType === agg && (
                               <span className=" text-neutral-500">
                                 <ChevronRight width={20} height={20} />
@@ -292,28 +329,32 @@ export function SearchFilters({
                     </div>
                   </div>
                   <div className="max-h-[50vh] min-h-[50vh] grow p-4 overflow-y-auto text-sm flex flex-col gap-6">
-                    <div className="flex flex-col gap-2">
-                      <div className="border-b border-transparent-regular pb-2">
-                        <h4 className="text-sm text-inky-black font-medium">{labelTypeLabel(activeLabelType)}</h4>
-                      </div>
-                      {enabledFilters.length === 0 && <span>There are no available options</span>}
-                      <ul className="flex flex-col gap-1 text-inky-black">{enabledFilters.map((f) => renderCheckboxRow(f, true))}</ul>
-                    </div>
-                    {disabledFilters.length > 0 && <div className="h-0 w-full shrink-0 border-b border-transparent-regular" aria-hidden />}
-                    {disabledFilters.length > 0 && (
-                      <div className="flex flex-col gap-2">
-                        <div className="">
-                          <h4 className="text-sm text-inky-black font-medium">Not relevant to applied filters</h4>
+                    {activeLabelType === "published_date" ? (
+                      <DateRangeSection
+                        key={dateRangeValue ?? "no-date-range"}
+                        value={dateRangeValue}
+                        onChange={(nextValue) => onDateRangeChange?.(nextValue)}
+                      />
+                    ) : (
+                      <>
+                        <div className="flex flex-col gap-2">
+                          <div className="border-b border-transparent-regular pb-2">
+                            <h4 className="text-sm text-inky-black font-medium">{labelTypeLabel(activeLabelType)}</h4>
+                          </div>
+                          {enabledFilters.length === 0 && <span>There are no available options</span>}
+                          <ul className="flex flex-col gap-1 text-inky-black">{enabledFilters.map((f) => renderCheckboxRow(f, true))}</ul>
                         </div>
-                        <ul className="flex flex-col gap-1 text-inky-black">{disabledFilters.map((f) => renderCheckboxRow(f, false))}</ul>
-                      </div>
+                        {disabledFilters.length > 0 && <div className="h-0 w-full shrink-0 border-b border-transparent-regular" aria-hidden />}
+                        {disabledFilters.length > 0 && (
+                          <div className="flex flex-col gap-2">
+                            <div className="">
+                              <h4 className="text-sm text-inky-black font-medium">Not relevant to applied filters</h4>
+                            </div>
+                            <ul className="flex flex-col gap-1 text-inky-black">{disabledFilters.map((f) => renderCheckboxRow(f, false))}</ul>
+                          </div>
+                        )}
+                      </>
                     )}
-                    <div className="h-0 w-full shrink-0 border-b border-transparent-regular" aria-hidden />
-                    <DateRangeSection
-                      key={dateRangeValue ?? "no-date-range"}
-                      value={dateRangeValue}
-                      onChange={(nextValue) => onDateRangeChange?.(nextValue)}
-                    />
                   </div>
                 </div>
               )}
