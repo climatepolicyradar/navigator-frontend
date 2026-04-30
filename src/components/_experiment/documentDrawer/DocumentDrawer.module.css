@@ -37,6 +37,9 @@
     opacity 180ms cubic-bezier(0.32, 0.72, 0, 1);
   will-change: transform;
   transform: translateX(var(--translate-x)) scale(var(--stack-scale));
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
 
   &[data-swiping],
   &[data-nested-drawer-swiping] {
