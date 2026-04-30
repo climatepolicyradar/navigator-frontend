@@ -1,5 +1,5 @@
 import { LucideCog, LucideFileText } from "lucide-react";
-import { Fragment, Suspense, use, useEffect, useMemo } from "react";
+import React, { Fragment, Suspense, use, useEffect, useMemo } from "react";
 
 import { fetchSearchDocuments, SearchDocument, SearchDocumentsResponse, IAggregationLabel, SearchDocumentsSortKey } from "@/api/search";
 
@@ -14,7 +14,13 @@ const isPrincipal = (result: SearchDocument): boolean => {
   return result.labels.some((label) => label.type === "status" && label.value.value === "Principal");
 };
 
-export function SearchResults({ data, onClick }: { data: SearchDocumentsResponse; onClick?: (document: SearchDocument) => void }) {
+export function SearchResults({
+  data,
+  onClick,
+}: {
+  data: SearchDocumentsResponse;
+  onClick?: (document: SearchDocument, event: React.MouseEvent<HTMLButtonElement>) => void;
+}) {
   return (
     <div>
       <ul className="space-y-4">
@@ -26,7 +32,7 @@ export function SearchResults({ data, onClick }: { data: SearchDocumentsResponse
                   type="button"
                   onClick={(e) => {
                     e.currentTarget.blur();
-                    onClick(result);
+                    onClick(result, e);
                   }}
                   className="group text-left w-full p-6 border border-transparent-regular rounded-md hover:bg-neutral-50"
                 >
@@ -56,10 +62,9 @@ function SearchResultsWithAggregations({
   onResultClicked,
 }: {
   promise: Promise<SearchDocumentsResponse>;
-  onSelectLabel?: (label: string) => void;
   onAggregationsChange?: (labels: IAggregationLabel[] | undefined) => void;
   onTotalResultsChange?: (total: number | null) => void;
-  onResultClicked?: (document: SearchDocument) => void;
+  onResultClicked?: (document: SearchDocument, event: React.MouseEvent<HTMLButtonElement>) => void;
 }) {
   const data = use(promise);
   const labels = data.aggregations?.labels;
@@ -100,7 +105,6 @@ export function SearchContainer({
   includeDocumentsInSearch,
   sort,
   excludeMergedDocuments,
-  onSelectLabel,
   onAggregationsChange,
   onTotalResultsChange,
   onResultClicked,
@@ -113,10 +117,9 @@ export function SearchContainer({
   includeDocumentsInSearch?: boolean;
   sort?: SearchDocumentsSortKey;
   excludeMergedDocuments?: boolean;
-  onSelectLabel?: (label: string) => void;
   onAggregationsChange?: (labels: IAggregationLabel[] | undefined) => void;
   onTotalResultsChange?: (total: number | null) => void;
-  onResultClicked?: (document: SearchDocument) => void;
+  onResultClicked?: (document: SearchDocument, event: React.MouseEvent<HTMLButtonElement>) => void;
 }) {
   const filtersCheckedForEmpty = filtersDoesNotContainEmptyRule(filters) ? filters : undefined;
 
@@ -146,7 +149,6 @@ export function SearchContainer({
         >
           <SearchResultsWithAggregations
             promise={searchPromise}
-            onSelectLabel={onSelectLabel}
             onAggregationsChange={onAggregationsChange}
             onTotalResultsChange={onTotalResultsChange}
             onResultClicked={onResultClicked}

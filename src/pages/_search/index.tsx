@@ -217,12 +217,6 @@ const ShadowSearch = ({ theme, themeConfig, features }: TProps) => {
         <div className={columnLayoutCss}>
           <SearchContainer
             query={query}
-            onSelectLabel={(label) => {
-              if (!selectedLabels.includes(label)) {
-                setFilters((prev) => addLabelRule(prev, label));
-                setCurrentPage("1");
-              }
-            }}
             filters={filters}
             page_token={currentPage}
             page_size={pageSize}
@@ -231,7 +225,17 @@ const ShadowSearch = ({ theme, themeConfig, features }: TProps) => {
             excludeMergedDocuments={excludeMergedDocuments}
             onAggregationsChange={applyAggregationsFromSearch}
             onTotalResultsChange={setTotalNoOfResults}
-            onResultClicked={(document) => {
+            onResultClicked={(document, event) => {
+              // If command or ctrl is clicked open document new tab
+              if (event.metaKey || event.ctrlKey) {
+                const slug = document.attributes.deprecated_slug;
+                if (slug) {
+                  const isPrincipal = document.labels.some((label) => label.value.value === "Principal");
+                  window.open(isPrincipal ? `/document/${slug}` : `/documents/${slug}`, "_blank", "noopener,noreferrer");
+                }
+                return;
+              }
+              // otherwise open document in drawer
               setSelectedDocument(document);
               setDrawerOpen(true);
             }}
