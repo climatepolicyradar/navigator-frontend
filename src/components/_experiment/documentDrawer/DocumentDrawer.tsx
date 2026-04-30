@@ -93,7 +93,15 @@ export function DocumentDrawer({ document, open, onOpenChange }: TDocumentDrawer
                           <>
                             <div className="flex items-start justify-between mb-4">
                               <Drawer.Title className="text-lg font-semibold flex-1 mr-4">
-                                <span dangerouslySetInnerHTML={{ __html: nestedDocument.title }} />
+                                {linkHref(nestedDocument) ? (
+                                  <a
+                                    href={linkHref(nestedDocument)!}
+                                    className="text-inky-blue hover:underline"
+                                    dangerouslySetInnerHTML={{ __html: nestedDocument.title }}
+                                  />
+                                ) : (
+                                  <span dangerouslySetInnerHTML={{ __html: nestedDocument.title }} />
+                                )}
                               </Drawer.Title>
                               <Drawer.Close className="text-neutral-500 hover:text-neutral-800 shrink-0">
                                 <LucideX width={20} height={20} />
