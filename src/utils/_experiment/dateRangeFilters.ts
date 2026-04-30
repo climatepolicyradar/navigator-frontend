@@ -112,78 +112,65 @@ export function convertDateRangeRulesToApiGroup(group: TQueryGroup): TQueryGroup
 }
 
 export function convertApiDateRulesToUiGroup(group: TQueryGroup): TQueryGroup {
-  const convertedFilters: Array<TQueryGroup | TQueryRule> = [];
-  let index = 0;
-  while (index < group.filters.length) {
-    const currentFilter = group.filters[index];
-    const nextFilter = group.filters[index + 1];
-
-    if ("field" in currentFilter && nextFilter && "field" in nextFilter) {
-      const isCurrentDateRule = isApiPublishedDateRule(currentFilter) || isLegacyApiPublishedDateRule(currentFilter);
-      const isNextDateRule = isApiPublishedDateRule(nextFilter) || isLegacyApiPublishedDateRule(nextFilter);
-      const isDateRangePair = isCurrentDateRule && isNextDateRule && currentFilter.op === "gte" && nextFilter.op === "lte";
-
-      if (isDateRangePair) {
-        const startYear = parseIsoYear(currentFilter.value);
-        const endYear = parseIsoYear(nextFilter.value);
-        if (startYear !== null && endYear !== null) {
-          convertedFilters.push({
-            field: "attributes.published_date",
-            op: "between",
-            value: serialiseYearRange(startYear, endYear),
-          });
-          index += 2;
-          continue;
-        }
-      }
-    }
-
-    if (!("field" in currentFilter)) {
-      if (
-        currentFilter.op === "and" &&
-        currentFilter.filters.length === 2 &&
-        "field" in currentFilter.filters[0] &&
-        "field" in currentFilter.filters[1] &&
-        (isApiPublishedDateRule(currentFilter.filters[0]) || isLegacyApiPublishedDateRule(currentFilter.filters[0])) &&
-        (isApiPublishedDateRule(currentFilter.filters[1]) || isLegacyApiPublishedDateRule(currentFilter.filters[1])) &&
-        currentFilter.filters[0].op === "gte" &&
-        currentFilter.filters[1].op === "lte"
-      ) {
-        const startYear = parseIsoYear(currentFilter.filters[0].value);
-        const endYear = parseIsoYear(currentFilter.filters[1].value);
-        if (startYear !== null && endYear !== null) {
-          convertedFilters.push({
-            field: "attributes.published_date",
-            op: "between",
-            value: serialiseYearRange(startYear, endYear),
-          });
-          index += 1;
-          continue;
-        }
-      }
-      convertedFilters.push(convertApiDateRulesToUiGroup(currentFilter));
-      index += 1;
-      continue;
-    }
-
-    if (isLegacyApiPublishedDateRule(currentFilter)) {
-      convertedFilters.push({
+  const normalisedFilters: Array<TQueryGroup | TQueryRule> = group.filters.map((item) => {
+    if (!("field" in item)) return convertApiDateRulesToUiGroup(item);
+    if (isLegacyApiPublishedDateRule(item)) {
+      return {
         field: "attributes.published_date",
         key: "published_date",
-        op: currentFilter.op,
-        value: currentFilter.value,
-      });
-      index += 1;
-      continue;
+        op: item.op,
+        value: item.value,
+      };
     }
+    return item;
+  });
 
-    convertedFilters.push(currentFilter);
-    index += 1;
+  let gteIndex = -1;
+  let lteIndex = -1;
+  let gteValue = "";
+  let lteValue = "";
+
+  normalisedFilters.forEach((item, index) => {
+    if (!("field" in item)) return;
+    if (!isApiPublishedDateRule(item)) return;
+    if (item.op === "gte" && gteIndex === -1) {
+      gteIndex = index;
+      gteValue = item.value;
+      return;
+    }
+    if (item.op === "lte" && lteIndex === -1) {
+      lteIndex = index;
+      lteValue = item.value;
+    }
+  });
+
+  if (gteIndex !== -1 && lteIndex !== -1) {
+    const startYear = parseIsoYear(gteValue);
+    const endYear = parseIsoYear(lteValue);
+    if (startYear !== null && endYear !== null) {
+      const insertIndex = Math.min(gteIndex, lteIndex);
+      const withBetweenRule: Array<TQueryGroup | TQueryRule> = [];
+      for (let index = 0; index < normalisedFilters.length; index += 1) {
+        if (index === insertIndex) {
+          withBetweenRule.push({
+            field: "attributes.published_date",
+            op: "between",
+            value: serialiseYearRange(startYear, endYear),
+          });
+        }
+        if (index === gteIndex || index === lteIndex) continue;
+        withBetweenRule.push(normalisedFilters[index]);
+      }
+      return {
+        ...group,
+        filters: withBetweenRule,
+      };
+    }
   }
 
   return {
     ...group,
-    filters: convertedFilters,
+    filters: normalisedFilters,
   };
 }
 
