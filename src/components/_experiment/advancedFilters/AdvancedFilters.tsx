@@ -3,6 +3,13 @@ import { Plus, Trash2, X } from "lucide-react";
 import { Fragment, useCallback, useEffect, useRef, useState } from "react";
 
 import { useLabelSearch, TLabelResult } from "@/hooks/useLabelSearch";
+import {
+  DATE_RANGE_MIN_YEAR,
+  parseYearRange,
+  resolveYearRangeForPreset,
+  serialiseYearRange,
+  TDateRangePreset,
+} from "@/utils/_experiment/dateRangeFilters";
 import { partitionByAvailability } from "@/utils/_experiment/labelAggregationAvailability";
 import { labelTypeLabel } from "@/utils/_experiment/labelTypeLabel";
 import { joinTailwindClasses } from "@/utils/tailwind";
@@ -12,11 +19,17 @@ export type TQueryGroup = {
   filters: (TQueryGroup | TQueryRule)[];
 };
 
-export type TQueryRule = {
-  field: "labels.value.id";
-  op: "contains" | "not_contains";
-  value: string;
-};
+export type TQueryRule =
+  | {
+      field: "labels.value.id";
+      op: "contains" | "not_contains";
+      value: string;
+    }
+  | {
+      field: "attributes.published_date";
+      op: "between" | "gte" | "lte";
+      value: string;
+    };
 
 function isRule(node: TQueryGroup | TQueryRule): node is TQueryRule {
   return "field" in node;
@@ -270,11 +283,11 @@ const OPERATORS = [
   { value: "not_contains" as const, label: "is not" },
 ];
 
-function OperatorSelect({ value, onChange }: { value: TQueryRule["op"]; onChange: (op: TQueryRule["op"]) => void }) {
+function OperatorSelect({ value, onChange }: { value: "contains" | "not_contains"; onChange: (op: "contains" | "not_contains") => void }) {
   return (
     <select
       value={value}
-      onChange={(e) => onChange(e.target.value as TQueryRule["op"])}
+      onChange={(e) => onChange(e.target.value as "contains" | "not_contains")}
       className={joinTailwindClasses(
         "rounded border border-gray-300 bg-white px-2 py-1 text-sm font-medium text-gray-700",
         "focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-200",
@@ -287,6 +300,84 @@ function OperatorSelect({ value, onChange }: { value: TQueryRule["op"]; onChange
         </option>
       ))}
     </select>
+  );
+}
+
+const DATE_RANGE_PRESETS: Array<{ value: TDateRangePreset; label: string }> = [
+  { value: "all_time", label: "All time" },
+  { value: "last_year", label: "In last year" },
+  { value: "last_5_years", label: "In last 5 years" },
+  { value: "custom", label: "Specify range" },
+];
+
+type TDateRangePickerProps = {
+  value: string;
+  onChange: (value: string) => void;
+};
+
+function DateRangePicker({ value, onChange }: TDateRangePickerProps) {
+  const yearNow = new Date().getFullYear();
+  const parsedRange = parseYearRange(value) ?? resolveYearRangeForPreset("last_year", yearNow);
+  const [customStartYear, setCustomStartYear] = useState(parsedRange.startYear.toString());
+  const [customEndYear, setCustomEndYear] = useState(parsedRange.endYear.toString());
+
+  const isLastYear = parsedRange.startYear === yearNow - 1 && parsedRange.endYear === yearNow;
+  const isLastFiveYears = parsedRange.startYear === yearNow - 5 && parsedRange.endYear === yearNow;
+  const isAllTime = parsedRange.startYear <= DATE_RANGE_MIN_YEAR && parsedRange.endYear === yearNow;
+  const selectedPreset: TDateRangePreset = isAllTime ? "all_time" : isLastYear ? "last_year" : isLastFiveYears ? "last_5_years" : "custom";
+
+  const applyPreset = (preset: TDateRangePreset) => {
+    if (preset === "custom") {
+      onChange(serialiseYearRange(parsedRange.startYear, parsedRange.endYear));
+      return;
+    }
+    const range = resolveYearRangeForPreset(preset, yearNow);
+    onChange(serialiseYearRange(range.startYear, range.endYear));
+  };
+
+  const applyCustomRange = () => {
+    const nextStartYear = Number(customStartYear);
+    const nextEndYear = Number(customEndYear);
+    if (!Number.isInteger(nextStartYear) || !Number.isInteger(nextEndYear)) return;
+    if (nextStartYear > nextEndYear) return;
+    if (nextStartYear < DATE_RANGE_MIN_YEAR) return;
+    if (nextEndYear > yearNow) return;
+    onChange(serialiseYearRange(nextStartYear, nextEndYear));
+  };
+
+  return (
+    <div className="rounded border border-gray-200 p-2 text-inky-black">
+      <div className="flex flex-col gap-1">
+        {DATE_RANGE_PRESETS.map((preset) => (
+          <label key={preset.value} className="inline-flex items-center gap-2 text-xs text-inky-black">
+            <input type="radio" checked={selectedPreset === preset.value} onChange={() => applyPreset(preset.value)} className="h-3.5 w-3.5" />
+            {preset.label}
+          </label>
+        ))}
+      </div>
+      {selectedPreset === "custom" && (
+        <div className="mt-2 grid grid-cols-2 gap-2">
+          <input
+            type="number"
+            min={DATE_RANGE_MIN_YEAR}
+            max={yearNow}
+            value={customStartYear}
+            onChange={(event) => setCustomStartYear(event.target.value)}
+            onBlur={applyCustomRange}
+            className="rounded border border-gray-300 bg-white px-2 py-1 text-sm text-inky-black"
+          />
+          <input
+            type="number"
+            min={DATE_RANGE_MIN_YEAR}
+            max={yearNow}
+            value={customEndYear}
+            onChange={(event) => setCustomEndYear(event.target.value)}
+            onBlur={applyCustomRange}
+            className="rounded border border-gray-300 bg-white px-2 py-1 text-sm text-inky-black"
+          />
+        </div>
+      )}
+    </div>
   );
 }
 
@@ -316,18 +407,47 @@ interface RuleRowProps {
 }
 
 function RuleRow({ rule, onUpdate, onDelete, isOnly, availableLabelIds }: RuleRowProps) {
+  const isPublishedDateRule = rule.field === "attributes.published_date";
+
   return (
     <div className="flex items-center gap-2 group">
-      <span className="text-xs text-gray-500 font-medium shrink-0 w-10">Label</span>
-      <OperatorSelect value={rule.op} onChange={(op) => onUpdate({ ...rule, op })} />
-      <div className="min-w-45 min-h-7.5">
-        <LabelPicker
-          value={rule.value}
-          onChange={(value) => onUpdate({ ...rule, value })}
-          autoFocus={!rule.value}
-          availableLabelIds={availableLabelIds}
-        />
-      </div>
+      <select
+        value={rule.field}
+        onChange={(event) => {
+          if (event.target.value === "attributes.published_date") {
+            const currentYear = new Date().getFullYear();
+            onUpdate({
+              field: "attributes.published_date",
+              op: "between",
+              value: serialiseYearRange(currentYear - 1, currentYear),
+            });
+            return;
+          }
+          onUpdate({ field: "labels.value.id", op: "contains", value: "" });
+        }}
+        className="rounded border border-gray-300 bg-white px-2 py-1 text-sm font-medium text-gray-700"
+      >
+        <option value="labels.value.id">Label</option>
+        <option value="attributes.published_date">Published date</option>
+      </select>
+      {!isPublishedDateRule && (
+        <>
+          <OperatorSelect value={rule.op} onChange={(op) => onUpdate({ ...rule, op })} />
+          <div className="min-w-45 min-h-7.5">
+            <LabelPicker
+              value={rule.value}
+              onChange={(value) => onUpdate({ ...rule, value })}
+              autoFocus={!rule.value}
+              availableLabelIds={availableLabelIds}
+            />
+          </div>
+        </>
+      )}
+      {isPublishedDateRule && (
+        <div className="min-w-70">
+          <DateRangePicker value={rule.value} onChange={(value) => onUpdate({ ...rule, value, op: "between" })} />
+        </div>
+      )}
       {!isOnly && (
         <button
           type="button"

@@ -21,6 +21,7 @@ import { withEnvConfig } from "@/context/EnvConfig";
 import { FeaturesContext } from "@/context/FeaturesContext";
 import { TLabelResult, loadLabels } from "@/hooks/useLabelSearch";
 import { FilterGroupSchema } from "@/schemas";
+import { convertApiDateRulesToUiGroup, convertDateRangeRulesToApiGroup } from "@/utils/_experiment/dateRangeFilters";
 import { getAvailableLabelIdsFromAggregations } from "@/utils/_experiment/labelAggregationAvailability";
 import { getFeatureFlags } from "@/utils/featureFlags";
 import { getFeatures } from "@/utils/features";
@@ -39,7 +40,8 @@ const ShadowSearch = ({ theme, themeConfig, features }: TProps) => {
   // search query that is typed into the search box
   const [query, setQuery] = useQueryState("q", parseAsString.withDefault(""));
   // structured filters built in QueryBuilder
-  const [filters, setFiltersInUrl] = useQueryState("filters", parseAsJson<TQueryGroup>(FilterGroupSchema).withDefault(createGroup()));
+  const [filtersInUrl, setFiltersInUrl] = useQueryState("filters", parseAsJson<TQueryGroup>(FilterGroupSchema).withDefault(createGroup()));
+  const filters = useMemo(() => convertApiDateRulesToUiGroup(filtersInUrl), [filtersInUrl]);
   // pagination state
   const [currentPage, setCurrentPage] = useQueryState("page_token", parseAsString.withDefault("1"));
   const [pageSize, setPageSize] = useQueryState("page_size", parseAsString.withDefault("10"));
@@ -60,11 +62,13 @@ const ShadowSearch = ({ theme, themeConfig, features }: TProps) => {
     (updater: SetStateAction<TQueryGroup>) => {
       let shouldClearAggregations = false;
       void setFiltersInUrl((prev) => {
-        const next = typeof updater === "function" ? (updater as (p: TQueryGroup) => TQueryGroup)(prev) : updater;
-        if (!isEqual(prev, next) && isFilterGroupEmpty(next)) {
+        const previousForUi = convertApiDateRulesToUiGroup(prev);
+        const nextForUi = typeof updater === "function" ? (updater as (p: TQueryGroup) => TQueryGroup)(previousForUi) : updater;
+        if (!isEqual(previousForUi, nextForUi) && isFilterGroupEmpty(nextForUi)) {
           shouldClearAggregations = true;
         }
-        return next;
+        const nextForApi = convertDateRangeRulesToApiGroup(nextForUi);
+        return nextForApi;
       });
       if (shouldClearAggregations) {
         setLabelAggregations(undefined);
