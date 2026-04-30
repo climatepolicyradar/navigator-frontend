@@ -31,7 +31,7 @@ export type TQueryRule =
       value: string;
     }
   | {
-      field: "attributes";
+      field: "attributes.published_date";
       key: "published_date";
       op: "eq" | "not_eq" | "lt" | "lte" | "gt" | "gte";
       value: string;

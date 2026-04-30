@@ -46,12 +46,8 @@ function parseIsoYear(value: string): number | null {
   return Number.isInteger(year) ? year : null;
 }
 
-function isAttributesPublishedDateRule(rule: TQueryRule): rule is Extract<TQueryRule, { field: "attributes"; key: "published_date" }> {
-  return rule.field === "attributes" && rule.key === "published_date";
-}
-
-function isLegacyPublishedDateRule(rule: TQueryRule): rule is Extract<TQueryRule, { field: "attributes.published_date" }> {
-  return rule.field === "attributes.published_date";
+function isApiPublishedDateRule(rule: TQueryRule): rule is Extract<TQueryRule, { field: "attributes.published_date" }> {
+  return rule.field === "attributes.published_date" && rule.op !== "between";
 }
 
 export function convertDateRangeRulesToApiGroup(group: TQueryGroup): TQueryGroup {
@@ -64,13 +60,13 @@ export function convertDateRangeRulesToApiGroup(group: TQueryGroup): TQueryGroup
         if (!parsedRange) continue;
 
         convertedFilters.push({
-          field: "attributes",
+          field: "attributes.published_date",
           key: "published_date",
           op: "gte",
           value: toIsoStartOfYear(parsedRange.startYear),
         });
         convertedFilters.push({
-          field: "attributes",
+          field: "attributes.published_date",
           key: "published_date",
           op: "lte",
           value: toIsoEndOfYear(parsedRange.endYear),
@@ -80,7 +76,7 @@ export function convertDateRangeRulesToApiGroup(group: TQueryGroup): TQueryGroup
 
       if (filter.field === "attributes.published_date" && (filter.op === "gte" || filter.op === "lte")) {
         convertedFilters.push({
-          field: "attributes",
+          field: "attributes.published_date",
           key: "published_date",
           op: filter.op,
           value: filter.value,
@@ -109,8 +105,8 @@ export function convertApiDateRulesToUiGroup(group: TQueryGroup): TQueryGroup {
     const nextFilter = group.filters[index + 1];
 
     if ("field" in currentFilter && nextFilter && "field" in nextFilter) {
-      const isCurrentDateRule = isAttributesPublishedDateRule(currentFilter) || isLegacyPublishedDateRule(currentFilter);
-      const isNextDateRule = isAttributesPublishedDateRule(nextFilter) || isLegacyPublishedDateRule(nextFilter);
+      const isCurrentDateRule = isApiPublishedDateRule(currentFilter);
+      const isNextDateRule = isApiPublishedDateRule(nextFilter);
       const isDateRangePair = isCurrentDateRule && isNextDateRule && currentFilter.op === "gte" && nextFilter.op === "lte";
 
       if (isDateRangePair) {
@@ -129,6 +125,28 @@ export function convertApiDateRulesToUiGroup(group: TQueryGroup): TQueryGroup {
     }
 
     if (!("field" in currentFilter)) {
+      if (
+        currentFilter.op === "and" &&
+        currentFilter.filters.length === 2 &&
+        "field" in currentFilter.filters[0] &&
+        "field" in currentFilter.filters[1] &&
+        isApiPublishedDateRule(currentFilter.filters[0]) &&
+        isApiPublishedDateRule(currentFilter.filters[1]) &&
+        currentFilter.filters[0].op === "gte" &&
+        currentFilter.filters[1].op === "lte"
+      ) {
+        const startYear = parseIsoYear(currentFilter.filters[0].value);
+        const endYear = parseIsoYear(currentFilter.filters[1].value);
+        if (startYear !== null && endYear !== null) {
+          convertedFilters.push({
+            field: "attributes.published_date",
+            op: "between",
+            value: serialiseYearRange(startYear, endYear),
+          });
+          index += 1;
+          continue;
+        }
+      }
       convertedFilters.push(convertApiDateRulesToUiGroup(currentFilter));
       index += 1;
       continue;
@@ -150,10 +168,9 @@ export function findPublishedDateBetweenValue(group: TQueryGroup): string | null
       if (filter.field === "attributes.published_date" && filter.op === "between") {
         return filter.value;
       }
-      if (filter.field === "attributes" && filter.key === "published_date" && filter.op === "gte") {
+      if (filter.field === "attributes.published_date" && filter.op === "gte") {
         const endRule = group.filters.find(
-          (candidate): candidate is TQueryRule =>
-            "field" in candidate && candidate.field === "attributes" && candidate.key === "published_date" && candidate.op === "lte"
+          (candidate): candidate is TQueryRule => "field" in candidate && candidate.field === "attributes.published_date" && candidate.op === "lte"
         );
         if (endRule) {
           const startYear = parseIsoYear(filter.value);
