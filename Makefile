@@ -53,7 +53,10 @@ ECR_REGISTRY ?= $(if $(DOCKER_REGISTRY),$(DOCKER_REGISTRY),$(shell aws sts get-c
 .PHONY: deploy-production-ecr-login deploy-production-build-push deploy-production-theme deploy-production-all
 
 deploy-production-ecr-login:
-	aws ecr get-login-password --region $(AWS_REGION) | docker login --username AWS --password-stdin $(aws sts get-caller-identity --query 'Account' --output text).dkr.ecr.eu-west-1.amazonaws.com
+	@acct=$$(echo "$(ECR_REGISTRY)" | cut -d. -f1); \
+		echo "$$acct" | grep -qxE '[0-9]{12}' || \
+		(echo "Set DOCKER_REGISTRY or ECR_REGISTRY (12-digit account).dkr.ecr... — AWS caller identity missing?"; exit 1)
+	aws ecr get-login-password --region $(AWS_REGION) | docker login --username AWS --password-stdin $(ECR_REGISTRY)
 
 deploy-production-build-push:
 	@test -n "$(THEME)" || (echo "Set THEME=cpr|cclw|mcf|ccc"; exit 1)
@@ -63,7 +66,6 @@ deploy-production-build-push:
 		--build-arg GITHUB_SHA=$(GITHUB_SHA) \
 		-t $(ECR_REGISTRY)/navigator-frontend-$(THEME):$(IMAGE_TAG_PRODUCTION) .
 	docker push $(ECR_REGISTRY)/navigator-frontend-$(THEME):$(IMAGE_TAG_PRODUCTION)
-	echo "Pushed $(ECR_REGISTRY)/navigator-frontend-$(THEME):$(IMAGE_TAG_PRODUCTION)"
 
 deploy-production-theme:
 	@test -n "$(THEME)" || (echo "Usage: make deploy-production-theme THEME=cpr"; exit 1)
