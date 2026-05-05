@@ -31,3 +31,54 @@ run: build
 		-p 8080:8080 \
 		--env-file ./.env.example \
 		${TAG}-${THEME}
+
+# --- Production deploy (local machine) ---
+# Mirrors .github/workflows/deploy-production.yml and deploy-all-production.yml:
+# build with THEME + GITHUB_SHA, push navigator-frontend-<theme>:latest.
+#
+# Prerequisites: Docker, AWS CLI, credentials for the production ECR account
+# (same as GitHub's navigator-new-frontend-github-actions role would use).
+#
+# Registry: set DOCKER_REGISTRY (GitHub secret name) or ECR_REGISTRY explicitly,
+# otherwise it defaults to <caller-account>.dkr.ecr.eu-west-1.amazonaws.com.
+#
+# Optional: REQUIRE_MAIN_BRANCH=0 to skip the main-branch guard (CI enforces main).
+AWS_REGION ?= eu-west-1
+IMAGE_TAG_PRODUCTION ?= latest
+GITHUB_SHA ?= $(shell git rev-parse HEAD)
+PRODUCTION_THEMES := cpr cclw mcf ccc
+REQUIRE_MAIN_BRANCH ?= 1
+ECR_REGISTRY ?= $(if $(DOCKER_REGISTRY),$(DOCKER_REGISTRY),$(shell aws sts get-caller-identity --query Account --output text).dkr.ecr.eu-west-1.amazonaws.com)
+
+.PHONY: deploy-production-ecr-login deploy-production-build-push deploy-production-theme deploy-production-all
+
+deploy-production-ecr-login:
+	@acct=$$(echo "$(ECR_REGISTRY)" | cut -d. -f1); \
+		echo "$$acct" | grep -qxE '[0-9]{12}' || \
+		(echo "Set DOCKER_REGISTRY or ECR_REGISTRY (12-digit account).dkr.ecr... — AWS caller identity missing?"; exit 1)
+	aws ecr get-login-password --region $(AWS_REGION) | docker login --username AWS --password-stdin $(ECR_REGISTRY)
+
+deploy-production-build-push:
+	@test -n "$(THEME)" || (echo "Set THEME=cpr|cclw|mcf|ccc"; exit 1)
+	@test "$(filter $(THEME),$(PRODUCTION_THEMES))" = "$(THEME)" || (echo "Invalid THEME=$(THEME)"; exit 1)
+	docker build --platform linux/amd64 \
+		--build-arg THEME=$(THEME) \
+		--build-arg GITHUB_SHA=$(GITHUB_SHA) \
+		-t $(ECR_REGISTRY)/navigator-frontend-$(THEME):$(IMAGE_TAG_PRODUCTION) .
+	docker push $(ECR_REGISTRY)/navigator-frontend-$(THEME):$(IMAGE_TAG_PRODUCTION)
+
+deploy-production-theme:
+	@test -n "$(THEME)" || (echo "Usage: make deploy-production-theme THEME=cpr"; exit 1)
+	@test "$(filter $(THEME),$(PRODUCTION_THEMES))" = "$(THEME)" || (echo "Invalid THEME=$(THEME)"; exit 1)
+ifeq ($(REQUIRE_MAIN_BRANCH),1)
+	@test "$$(git rev-parse --abbrev-ref HEAD)" = "main" || (echo "Production deploy expects branch main (set REQUIRE_MAIN_BRANCH=0 to override)."; exit 1)
+endif
+	$(MAKE) deploy-production-ecr-login
+	$(MAKE) deploy-production-build-push THEME=$(THEME)
+
+deploy-production-all:
+ifeq ($(REQUIRE_MAIN_BRANCH),1)
+	@test "$$(git rev-parse --abbrev-ref HEAD)" = "main" || (echo "Production deploy expects branch main (set REQUIRE_MAIN_BRANCH=0 to override)."; exit 1)
+endif
+	$(MAKE) deploy-production-ecr-login
+	@for t in $(PRODUCTION_THEMES); do $(MAKE) deploy-production-build-push THEME=$$t; done
