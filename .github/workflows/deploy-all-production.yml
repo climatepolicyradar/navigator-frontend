@@ -8,7 +8,54 @@ permissions:
   contents: read
 
 jobs:
+  precheck:
+    name: Validate window before production deploy
+    runs-on: ubuntu-latest
+    environment:
+      name: production
+    env:
+      SLACK_WEBHOOK: ${{ secrets.SLACK_UPDATES_CHANNEL_WEBHOOK_URL }}
+    outputs:
+      blocked: ${{ steps.time-window.outputs.blocked }}
+      current_hm: ${{ steps.time-window.outputs.current_hm }}
+    steps:
+      - if: ${{ github.ref != 'refs/heads/main' }}
+        run: |
+          echo "This workflow can only be run from main."
+          exit 1
+      - name: Block deploy outside local change window
+        id: time-window
+        run: |
+          current_hm="$(TZ=Europe/London date +%H%M)"
+          echo "current_hm=$current_hm" >> "$GITHUB_OUTPUT"
+          if [[ "$current_hm" -ge 1730 || "$current_hm" -lt 0900 ]]; then
+            echo "blocked=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "blocked=false" >> "$GITHUB_OUTPUT"
+          fi
+      - name: Notify Slack about blocked deploy
+        if: steps.time-window.outputs.blocked == 'true' && env.SLACK_WEBHOOK != ''
+        run: |
+          COMMIT_URL="https://github.com/${{ github.repository }}/commit/${{ github.sha }}"
+          COMMIT_SHORT=$(echo "${{ github.sha }}" | cut -c1-7)
+          MESSAGE="⛔ Deploy blocked outside local change window (09:00-17:30 Europe/London). Current local time: ${{ steps.time-window.outputs.current_hm }}. Attempted deploy of all production themes from <$COMMIT_URL|$COMMIT_SHORT>. @application_engineers"
+          jq -n --arg msg "$MESSAGE" '{text: $msg, mrkdwn: true}' > slack-payload.json
+      - name: Send Slack message
+        if: steps.time-window.outputs.blocked == 'true' && env.SLACK_WEBHOOK != ''
+        uses: slackapi/slack-github-action@v3.0.2
+        with:
+          webhook: ${{ env.SLACK_WEBHOOK }}
+          webhook-type: incoming-webhook
+          payload-file-path: slack-payload.json
+      - name: Fail blocked deploy
+        if: steps.time-window.outputs.blocked == 'true'
+        run: |
+          echo "Deploy blocked outside local change window (09:00-17:30 Europe/London). Current local time: ${{ steps.time-window.outputs.current_hm }}"
+          exit 1
+
   deploy-production:
+    needs: precheck
+    if: needs.precheck.outputs.blocked != 'true'
     strategy:
       matrix:
         theme: [cpr, cclw, mcf, ccc]
@@ -17,10 +64,6 @@ jobs:
     environment:
       name: production
     steps:
-      - if: ${{ github.ref != 'refs/heads/main' }}
-        run: |
-          echo "This workflow can only be run from main."
-          exit 1
       - uses: actions/checkout@v6
       - name: Configure AWS credentials
         uses: aws-actions/configure-aws-credentials@v6.1.0
