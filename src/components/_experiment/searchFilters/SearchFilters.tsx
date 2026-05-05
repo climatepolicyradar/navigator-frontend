@@ -32,9 +32,7 @@ function hasActiveFilterOfType(filters: TLabelResult[], group: TQueryGroup | nul
 
 function hasActiveDateRule(group: TQueryGroup | null | undefined): boolean {
   if (!group) return false;
-  return group.filters.some((filter) =>
-    "field" in filter ? filter.field === "attributes.published_date" && filter.op === "between" : hasActiveDateRule(filter)
-  );
+  return group.filters.some((filter) => ("field" in filter ? filter.field === "attributes.published_date" : hasActiveDateRule(filter)));
 }
 
 const PRIMARY_LABEL_TYPES = ["category", "published_date", "geography", "concept"] as const;

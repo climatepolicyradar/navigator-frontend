@@ -39,6 +39,18 @@ function toIsoEndOfYear(year: number): string {
   return `${year}-12-31T23:59:59.999Z`;
 }
 
+function isDateOnly(value: string): boolean {
+  return /^\d{4}-\d{2}-\d{2}$/.test(value);
+}
+
+function normaliseDateValueForOp(op: "eq" | "not_eq" | "lt" | "lte" | "gt" | "gte", value: string): string {
+  if (!isDateOnly(value)) return value;
+  if (op === "lte" || op === "gt") {
+    return `${value}T23:59:59.999Z`;
+  }
+  return `${value}T00:00:00.000Z`;
+}
+
 function parseIsoYear(value: string): number | null {
   const match = /^(\d{4})-/.exec(value);
   if (!match) return null;
@@ -48,10 +60,6 @@ function parseIsoYear(value: string): number | null {
 
 function isApiPublishedDateRule(rule: TQueryRule): rule is Extract<TQueryRule, { field: "attributes.published_date" }> {
   return rule.field === "attributes.published_date" && rule.op !== "between";
-}
-
-function isLegacyApiPublishedDateRule(rule: TQueryRule): rule is Extract<TQueryRule, { field: "attributes" }> {
-  return rule.field === "attributes" && rule.key === "published_date";
 }
 
 export function convertDateRangeRulesToApiGroup(group: TQueryGroup): TQueryGroup {
@@ -88,12 +96,15 @@ export function convertDateRangeRulesToApiGroup(group: TQueryGroup): TQueryGroup
         continue;
       }
 
-      if (isLegacyApiPublishedDateRule(filter) && (filter.op === "gte" || filter.op === "lte")) {
+      if (
+        filter.field === "attributes.published_date" &&
+        (filter.op === "eq" || filter.op === "not_eq" || filter.op === "lt" || filter.op === "lte" || filter.op === "gt" || filter.op === "gte")
+      ) {
         convertedFilters.push({
           field: "attributes.published_date",
           key: "published_date",
           op: filter.op,
-          value: filter.value,
+          value: normaliseDateValueForOp(filter.op, filter.value),
         });
         continue;
       }
@@ -114,14 +125,6 @@ export function convertDateRangeRulesToApiGroup(group: TQueryGroup): TQueryGroup
 export function convertApiDateRulesToUiGroup(group: TQueryGroup): TQueryGroup {
   const normalisedFilters: Array<TQueryGroup | TQueryRule> = group.filters.map((item) => {
     if (!("field" in item)) return convertApiDateRulesToUiGroup(item);
-    if (isLegacyApiPublishedDateRule(item)) {
-      return {
-        field: "attributes.published_date",
-        key: "published_date",
-        op: item.op,
-        value: item.value,
-      };
-    }
     return item;
   });
 
@@ -180,12 +183,9 @@ export function findPublishedDateBetweenValue(group: TQueryGroup): string | null
       if (filter.field === "attributes.published_date" && filter.op === "between") {
         return filter.value;
       }
-      if ((filter.field === "attributes.published_date" || isLegacyApiPublishedDateRule(filter)) && filter.op === "gte") {
+      if (filter.field === "attributes.published_date" && filter.op === "gte") {
         const endRule = group.filters.find(
-          (candidate): candidate is TQueryRule =>
-            "field" in candidate &&
-            ((candidate.field === "attributes.published_date" && candidate.op === "lte") ||
-              (candidate.field === "attributes" && candidate.key === "published_date" && candidate.op === "lte"))
+          (candidate): candidate is TQueryRule => "field" in candidate && candidate.field === "attributes.published_date" && candidate.op === "lte"
         );
         if (endRule) {
           const startYear = parseIsoYear(filter.value);

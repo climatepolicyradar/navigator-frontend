@@ -1,4 +1,5 @@
 import { TQueryGroup } from "@/components/_experiment/advancedFilters/AdvancedFilters";
+import { convertDateRangeRulesToApiGroup, DATE_RANGE_MIN_YEAR } from "@/utils/_experiment/dateRangeFilters";
 
 interface DocumentLabel {
   id: string;
@@ -126,11 +127,28 @@ function configureDocumentsFilters(
       },
     ],
   };
+  const containsPublishedDateAllTimeFilter: TQueryGroup = {
+    op: "and",
+    filters: [
+      {
+        field: "attributes.published_date",
+        key: "published_date",
+        op: "gte",
+        value: `${DATE_RANGE_MIN_YEAR}-01-01T00:00:00.000Z`,
+      },
+      {
+        field: "attributes.published_date",
+        key: "published_date",
+        op: "lte",
+        value: new Date().toISOString(),
+      },
+    ],
+  };
 
   // containsAttributesPublishedFilter by default
-  const filtersWithConditionals: TQueryGroup[] = [containsAttributesPublishedFilter];
+  const filtersWithConditionals: TQueryGroup[] = [containsAttributesPublishedFilter, containsPublishedDateAllTimeFilter];
   if (filters) {
-    filtersWithConditionals.push(filters);
+    filtersWithConditionals.push(convertDateRangeRulesToApiGroup(filters));
   }
 
   if (excludeMergedDocuments) {
