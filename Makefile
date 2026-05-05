@@ -42,7 +42,7 @@ run: build
 # Registry: set DOCKER_REGISTRY (GitHub secret name) or ECR_REGISTRY explicitly,
 # otherwise it defaults to <caller-account>.dkr.ecr.eu-west-1.amazonaws.com.
 #
-# Optional: REQUIRE_MAIN_BRANCH=0 to skip the main-branch guard (CI enforces main).
+# Optional: DEPLOY_FROM_MAIN_BRANCH_ONLY=0 to skip the main-branch guard (CI enforces main).
 AWS_REGION ?= eu-west-1
 IMAGE_TAG_PRODUCTION ?= latest
 GITHUB_SHA ?= $(shell git rev-parse HEAD)
@@ -62,20 +62,20 @@ deploy-production-build-push:
 		--build-arg THEME=$(THEME) \
 		--build-arg GITHUB_SHA=$(GITHUB_SHA) \
 		-t $(ECR_REGISTRY)/navigator-frontend-$(THEME):$(IMAGE_TAG_PRODUCTION) .
-	echo "Pushed $(ECR_REGISTRY)/navigator-frontend-$(THEME):$(IMAGE_TAG_PRODUCTION)"
+	docker push $(ECR_REGISTRY)/navigator-frontend-$(THEME):$(IMAGE_TAG_PRODUCTION)
 
 deploy-production-theme:
 	@test -n "$(THEME)" || (echo "Usage: make deploy-production-theme THEME=cpr"; exit 1)
 	@test "$(filter $(THEME),$(PRODUCTION_THEMES))" = "$(THEME)" || (echo "Invalid THEME=$(THEME)"; exit 1)
-ifeq ($(REQUIRE_MAIN_BRANCH),1)
-	@test "$$(git rev-parse --abbrev-ref HEAD)" = "main" || (echo "Production deploy expects branch main (set REQUIRE_MAIN_BRANCH=0 to override)."; exit 1)
+ifeq ($(DEPLOY_FROM_MAIN_BRANCH_ONLY),1)
+	@test "$$(git rev-parse --abbrev-ref HEAD)" = "main" || (echo "Production deploy expects branch main (set DEPLOY_FROM_MAIN_BRANCH_ONLY=0 to override)."; exit 1)
 endif
 	$(MAKE) deploy-production-ecr-login
 	$(MAKE) deploy-production-build-push THEME=$(THEME)
 
 deploy-production-all:
-ifeq ($(REQUIRE_MAIN_BRANCH),1)
-	@test "$$(git rev-parse --abbrev-ref HEAD)" = "main" || (echo "Production deploy expects branch main (set REQUIRE_MAIN_BRANCH=0 to override)."; exit 1)
+ifeq ($(DEPLOY_FROM_MAIN_BRANCH_ONLY),1)
+	@test "$$(git rev-parse --abbrev-ref HEAD)" = "main" || (echo "Production deploy expects branch main (set DEPLOY_FROM_MAIN_BRANCH_ONLY=0 to override)."; exit 1)
 endif
 	$(MAKE) deploy-production-ecr-login
 	@for t in $(PRODUCTION_THEMES); do $(MAKE) deploy-production-build-push THEME=$$t; done
