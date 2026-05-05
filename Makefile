@@ -47,14 +47,13 @@ AWS_REGION ?= eu-west-1
 IMAGE_TAG_PRODUCTION ?= latest
 GITHUB_SHA ?= $(shell git rev-parse HEAD)
 PRODUCTION_THEMES := cpr cclw mcf ccc
-DEPLOY_FROM_MAIN_BRANCH_ONLY ?= 1
+REQUIRE_MAIN_BRANCH ?= 1
 ECR_REGISTRY ?= $(if $(DOCKER_REGISTRY),$(DOCKER_REGISTRY),$(shell aws sts get-caller-identity --query Account --output text).dkr.ecr.eu-west-1.amazonaws.com)
 
 .PHONY: deploy-production-ecr-login deploy-production-build-push deploy-production-theme deploy-production-all
 
 deploy-production-ecr-login:
 	aws ecr get-login-password --region $(AWS_REGION) | docker login --username AWS --password-stdin $(aws sts get-caller-identity --query 'Account' --output text).dkr.ecr.eu-west-1.amazonaws.com
-	aws ecr get-login-password --region $(AWS_REGION) | docker login --username AWS --password-stdin $(shell aws sts get-caller-identity --query 'Account' --output text).dkr.ecr.eu-west-1.amazonaws.com
 
 deploy-production-build-push:
 	@test -n "$(THEME)" || (echo "Set THEME=cpr|cclw|mcf|ccc"; exit 1)
