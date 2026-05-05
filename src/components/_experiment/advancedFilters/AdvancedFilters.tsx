@@ -1,9 +1,9 @@
 import { Dialog as BaseDialog } from "@base-ui/react/dialog";
 import { Plus, Trash2, X } from "lucide-react";
-import { Fragment, useCallback, useEffect, useMemo, useRef, useState } from "react";
+import { Fragment, useCallback, useEffect, useRef, useState } from "react";
 
 import { useLabelSearch, TLabelResult } from "@/hooks/useLabelSearch";
-import { DATE_RANGE_MIN_YEAR, parseYearRange, serialiseYearRange } from "@/utils/_experiment/dateRangeFilters";
+import { DATE_RANGE_MIN_YEAR, parseYearRange, resolveYearRangeForPreset, serialiseYearRange } from "@/utils/_experiment/dateRangeFilters";
 import { partitionByAvailability } from "@/utils/_experiment/labelAggregationAvailability";
 import { labelTypeLabel } from "@/utils/_experiment/labelTypeLabel";
 import { joinTailwindClasses } from "@/utils/tailwind";
@@ -13,20 +13,18 @@ export type TQueryGroup = {
   filters: (TQueryGroup | TQueryRule)[];
 };
 
-type TLabelRule = {
-  field: "labels.value.id" | "attributes.status";
-  op: "contains" | "not_contains" | "eq";
-  value: string;
-};
-
-type TPublishedDateRule = {
-  field: "attributes.published_date";
-  key?: "published_date";
-  op: "between" | "eq" | "not_eq" | "lt" | "lte" | "gt" | "gte";
-  value: string;
-};
-
-export type TQueryRule = TLabelRule | TPublishedDateRule;
+export type TQueryRule =
+  | {
+      field: "labels.value.id" | "attributes.status";
+      op: "contains" | "not_contains" | "eq";
+      value: string;
+    }
+  | {
+      field: "attributes.published_date";
+      key?: "published_date";
+      op: "between" | "eq" | "not_eq" | "lt" | "lte" | "gt" | "gte";
+      value: string;
+    };
 
 function isRule(node: TQueryGroup | TQueryRule): node is TQueryRule {
   return "field" in node;
@@ -300,25 +298,89 @@ function OperatorSelect({ value, onChange }: { value: "contains" | "not_contains
   );
 }
 
-const PUBLISHED_DATE_OPERATORS: Array<{ value: TPublishedDateRule["op"]; label: string }> = [
+type TDateRangePickerProps = {
+  op: "between" | "eq" | "not_eq" | "lt" | "lte" | "gt" | "gte";
+  onChangeOp: (op: "between" | "eq" | "not_eq" | "lt" | "lte" | "gt" | "gte") => void;
+  value: string;
+  onChange: (value: string) => void;
+};
+
+const PUBLISHED_DATE_OPERATORS: Array<{ value: "between" | "eq" | "not_eq" | "lt" | "lte" | "gt" | "gte"; label: string }> = [
   { value: "between", label: "is between" },
   { value: "eq", label: "is on" },
-  { value: "not_eq", label: "is not on" },
   { value: "lt", label: "is before" },
   { value: "lte", label: "is on or before" },
   { value: "gt", label: "is after" },
   { value: "gte", label: "is on or after" },
+  { value: "not_eq", label: "is not on" },
 ];
 
-function normalisePublishedDateValue(op: TPublishedDateRule["op"], value: string): string {
-  if (op === "between") {
-    const parsed = parseYearRange(value);
-    if (parsed) return value;
-    return "";
-  }
+function DateRangePicker({ op, onChangeOp, value, onChange }: TDateRangePickerProps) {
+  const yearNow = new Date().getFullYear();
+  const parsedRange = parseYearRange(value) ?? resolveYearRangeForPreset("all_time", yearNow);
+  const [startInput, setStartInput] = useState(parsedRange.startYear.toString());
+  const [endInput, setEndInput] = useState(parsedRange.endYear.toString());
+  const [singleInput, setSingleInput] = useState(value);
 
-  if (/^\d{4}-\d{2}-\d{2}$/.test(value)) return value;
-  return "";
+  const applyRange = () => {
+    const nextStart = Number(startInput);
+    const nextEnd = Number(endInput);
+    if (!Number.isInteger(nextStart) || !Number.isInteger(nextEnd)) return;
+    if (nextStart > nextEnd) return;
+    if (nextStart < DATE_RANGE_MIN_YEAR || nextEnd > yearNow) return;
+    onChange(serialiseYearRange(nextStart, nextEnd));
+  };
+
+  const applySingle = () => {
+    if (!singleInput.trim()) return;
+    onChange(singleInput.trim());
+  };
+
+  return (
+    <div className="rounded border border-gray-200 p-2 text-inky-black">
+      <select
+        value={op}
+        onChange={(event) => onChangeOp(event.target.value as "between" | "eq" | "not_eq" | "lt" | "lte" | "gt" | "gte")}
+        className="mb-2 w-full rounded border border-gray-300 bg-white px-2 py-1 text-sm text-gray-700"
+      >
+        {PUBLISHED_DATE_OPERATORS.map((operator) => (
+          <option key={operator.value} value={operator.value}>
+            {operator.label}
+          </option>
+        ))}
+      </select>
+      {op === "between" ? (
+        <div className="mt-2 grid grid-cols-2 gap-2">
+          <input
+            type="number"
+            min={DATE_RANGE_MIN_YEAR}
+            max={yearNow}
+            value={startInput}
+            onChange={(event) => setStartInput(event.target.value)}
+            onBlur={applyRange}
+            className="rounded border border-gray-300 bg-white px-2 py-1 text-sm text-inky-black"
+          />
+          <input
+            type="number"
+            min={DATE_RANGE_MIN_YEAR}
+            max={yearNow}
+            value={endInput}
+            onChange={(event) => setEndInput(event.target.value)}
+            onBlur={applyRange}
+            className="rounded border border-gray-300 bg-white px-2 py-1 text-sm text-inky-black"
+          />
+        </div>
+      ) : (
+        <input
+          type="date"
+          value={singleInput}
+          onChange={(event) => setSingleInput(event.target.value)}
+          onBlur={applySingle}
+          className="w-full rounded border border-gray-300 bg-white px-2 py-1 text-sm text-inky-black"
+        />
+      )}
+    </div>
+  );
 }
 
 // Boolean connector pill (AND / OR)
@@ -347,11 +409,8 @@ interface RuleRowProps {
 }
 
 function RuleRow({ rule, onUpdate, onDelete, isOnly, availableLabelIds }: RuleRowProps) {
+  const isLabelRule = rule.field === "labels.value.id";
   const isPublishedDateRule = rule.field === "attributes.published_date";
-  const publishedRange = useMemo(() => {
-    if (!isPublishedDateRule) return null;
-    return parseYearRange(rule.value);
-  }, [isPublishedDateRule, rule]);
 
   return (
     <div className="flex items-center gap-2 group">
@@ -359,15 +418,15 @@ function RuleRow({ rule, onUpdate, onDelete, isOnly, availableLabelIds }: RuleRo
         value={rule.field}
         onChange={(event) => {
           if (event.target.value === "attributes.published_date") {
+            const currentYear = new Date().getFullYear();
             onUpdate({
               field: "attributes.published_date",
               key: "published_date",
               op: "between",
-              value: "",
+              value: serialiseYearRange(DATE_RANGE_MIN_YEAR, currentYear),
             });
             return;
           }
-
           onUpdate({ field: "labels.value.id", op: "contains", value: "" });
         }}
         className="rounded border border-gray-300 bg-white px-2 py-1 text-sm font-medium text-gray-700"
@@ -375,8 +434,7 @@ function RuleRow({ rule, onUpdate, onDelete, isOnly, availableLabelIds }: RuleRo
         <option value="labels.value.id">Label</option>
         <option value="attributes.published_date">Published date</option>
       </select>
-
-      {!isPublishedDateRule && (
+      {isLabelRule && (
         <>
           <OperatorSelect value={rule.op === "not_contains" ? "not_contains" : "contains"} onChange={(op) => onUpdate({ ...rule, op })} />
           <div className="min-w-45 min-h-7.5">
@@ -389,64 +447,16 @@ function RuleRow({ rule, onUpdate, onDelete, isOnly, availableLabelIds }: RuleRo
           </div>
         </>
       )}
-
       {isPublishedDateRule && (
-        <div className="flex items-center gap-2 min-w-90">
-          <select
-            value={rule.op}
-            onChange={(event) => {
-              const nextOp = event.target.value as TPublishedDateRule["op"];
-              onUpdate({ ...rule, op: nextOp, value: normalisePublishedDateValue(nextOp, rule.value) });
-            }}
-            className="rounded border border-gray-300 bg-white px-2 py-1 text-sm text-gray-700 min-w-40"
-          >
-            {PUBLISHED_DATE_OPERATORS.map((operator) => (
-              <option key={operator.value} value={operator.value}>
-                {operator.label}
-              </option>
-            ))}
-          </select>
-          {rule.op === "between" ? (
-            <div className="flex items-center gap-2 min-w-0">
-              <input
-                type="number"
-                min={DATE_RANGE_MIN_YEAR}
-                max={new Date().getFullYear()}
-                value={publishedRange?.startYear ?? ""}
-                onChange={(event) => {
-                  const nextStart = Number(event.target.value);
-                  const nextEnd = publishedRange?.endYear ?? new Date().getFullYear();
-                  if (!Number.isInteger(nextStart) || !Number.isInteger(nextEnd) || nextStart > nextEnd) return;
-                  onUpdate({ ...rule, value: serialiseYearRange(nextStart, nextEnd) });
-                }}
-                className="w-24 rounded border border-gray-300 bg-white px-2 py-1 text-sm text-inky-black"
-              />
-              <span className="text-xs text-gray-500">to</span>
-              <input
-                type="number"
-                min={DATE_RANGE_MIN_YEAR}
-                max={new Date().getFullYear()}
-                value={publishedRange?.endYear ?? ""}
-                onChange={(event) => {
-                  const nextEnd = Number(event.target.value);
-                  const nextStart = publishedRange?.startYear ?? DATE_RANGE_MIN_YEAR;
-                  if (!Number.isInteger(nextStart) || !Number.isInteger(nextEnd) || nextStart > nextEnd) return;
-                  onUpdate({ ...rule, value: serialiseYearRange(nextStart, nextEnd) });
-                }}
-                className="w-24 rounded border border-gray-300 bg-white px-2 py-1 text-sm text-inky-black"
-              />
-            </div>
-          ) : (
-            <input
-              type="date"
-              value={/^\d{4}-\d{2}-\d{2}$/.test(rule.value) ? rule.value : ""}
-              onChange={(event) => onUpdate({ ...rule, value: event.target.value })}
-              className="w-44 rounded border border-gray-300 bg-white px-2 py-1 text-sm text-inky-black"
-            />
-          )}
+        <div className="min-w-70">
+          <DateRangePicker
+            op={rule.op}
+            onChangeOp={(op) => onUpdate({ ...rule, op })}
+            value={rule.value}
+            onChange={(value) => onUpdate({ ...rule, value })}
+          />
         </div>
       )}
-
       {!isOnly && (
         <button
           type="button"
