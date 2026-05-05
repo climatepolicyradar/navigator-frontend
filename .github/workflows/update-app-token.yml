@@ -54,7 +54,7 @@ jobs:
           aws-region: ${{ env.AWS_REGION }}
 
       - name: Install Pulumi
-        uses: pulumi/actions@v6
+        uses: pulumi/actions@v7
         with:
           stack-name: climatepolicyradar/${{ github.event.inputs.stack }}
         env:
