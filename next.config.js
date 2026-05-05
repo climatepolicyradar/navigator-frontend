@@ -77,7 +77,13 @@ const nextConfig = {
    * this is used for instrumentation.ts
    * @see: https://github.com/vercel/next.js/issues/65324
    */
-  serverExternalPackages: ["@vercel/otel"],
+  serverExternalPackages: [
+    "@vercel/otel",
+    "@opentelemetry/api",
+    "@opentelemetry/sdk-trace-node",
+    "@opentelemetry/instrumentation",
+    "@opentelemetry/api-logs",
+  ],
   /*
    * See Next docs for more info: https://nextjs.org/docs/pages/api-reference/config/next-config-js/output
    * standalone output is optimised for running the app in a container
@@ -85,4 +91,8 @@ const nextConfig = {
   output: "standalone",
 };
 
-module.exports = nextConfig;
+const withBundleAnalyzer = require("@next/bundle-analyzer")({
+  enabled: process.env.ANALYZE === "true",
+});
+
+module.exports = withBundleAnalyzer(nextConfig);

@@ -4,6 +4,7 @@ import { Fragment, ReactNode } from "react";
 import { ConceptHierarchy } from "@/components/molecules/conceptHierarchy/ConceptHierarchy";
 import { GeographyLink } from "@/components/molecules/geographyLink/GeographyLink";
 import { ARROW_RIGHT, EN_DASH } from "@/constants/chars";
+import { FILING_DATE_EVENT_TYPES } from "@/constants/events";
 import { getCountryName, getCountrySlug } from "@/helpers/getCountryFields";
 import { getSubdivisionName } from "@/helpers/getSubdivision";
 import { IFamilyDocumentTopics, IMetadata, TFamilyPublic, TGeography, TGeographySubdivision } from "@/types";
@@ -29,7 +30,7 @@ export function getLitigationMetadata(
   const isUSA = geosOrdered.includes("USA");
 
   /* Filing year */
-  let filingTimestamp = family.events.find((event) => event.event_type === "Filing Year For Action")?.date;
+  let filingTimestamp = family.events.find((event) => FILING_DATE_EVENT_TYPES.includes(event.event_type))?.date;
   if (isUSA && family.published_date) filingTimestamp = family.published_date;
 
   metadata.push({

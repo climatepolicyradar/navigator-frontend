@@ -21,24 +21,12 @@ export type TQueryGroup = {
 
 export type TQueryRule =
   | {
-      field: "labels.value.id";
-      op: "contains" | "not_contains";
+      field: "labels.value.id" | "attributes.status";
+      op: "contains" | "not_contains" | "eq";
       value: string;
     }
   | {
       field: "attributes.published_date";
-      op: "between" | "gte" | "lte";
-      value: string;
-    }
-  | {
-      field: "attributes.published_date";
-      key: "published_date";
-      op: "eq" | "not_eq" | "lt" | "lte" | "gt" | "gte";
-      value: string;
-    }
-  | {
-      // Backward-compatibility for old URL filter payloads.
-      field: "attributes";
       key: "published_date";
       op: "eq" | "not_eq" | "lt" | "lte" | "gt" | "gte";
       value: string;

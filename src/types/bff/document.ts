@@ -1,22 +1,27 @@
-import { TApiDocumentPage, TApiFamilyPublic, TApiSearchResponse } from "../api";
+import { TDataInDocument } from "@/schemas";
+
+import { TApiDocumentPublic, TApiSearchResponse } from "../api";
 import { TTopics } from "../topics";
-import { TDocumentPage, TFamilyPublic, TSearchResponse } from "../types";
+import { TFamilyDocumentPublic, TFamilyPublic, TSearchResponse } from "../types";
 
 export type TDocumentApiOldData = {
-  document: TApiDocumentPage;
-  family: TApiFamilyPublic;
+  document: TApiDocumentPublic;
   topicsData: TTopics;
   vespaDocumentData: TApiSearchResponse;
 };
 
-// TODO: fill this out when we are making new data model API calls
-export type TDocumentApiNewData = null;
+export type TDocumentApiNewData = TDataInDocument | null;
 
 export type TDocumentPresentationalData = {
-  document: TDocumentPage;
+  document: TFamilyDocumentPublic;
   family: TFamilyPublic;
   topicsData: TTopics;
   vespaDocumentData: TSearchResponse;
+  debug?: {
+    usesDataIn: boolean;
+    newApiData?: TDocumentApiNewData;
+    originalDocument?: TApiDocumentPublic;
+  };
 };
 
 export type TDocumentPresentationalResponse = {

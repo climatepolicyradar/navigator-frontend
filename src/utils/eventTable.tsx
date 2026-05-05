@@ -10,6 +10,7 @@ import { Popover } from "@/components/atoms/popover/Popover";
 import { ViewMore } from "@/components/molecules/viewMore/ViewMore";
 import { ARROW_UP_RIGHT } from "@/constants/chars";
 import { DEFAULT_DOCUMENT_TITLE } from "@/constants/document";
+import { FILING_DATE_EVENT_TYPES } from "@/constants/events";
 import { QUERY_PARAMS } from "@/constants/queryParams";
 import { getLanguage } from "@/helpers/getLanguage";
 import { getMainDocuments } from "@/helpers/getMainDocuments";
@@ -61,13 +62,11 @@ const topicsColumnName = (
 export const getEventTableColumns = ({
   hasTopics = false,
   isLitigation,
-  isUSA = true,
   showFamilyColumns = false,
   showMatches = false,
 }: {
   hasTopics?: boolean;
   isLitigation: boolean;
-  isUSA?: boolean;
   showFamilyColumns?: boolean;
   showMatches?: boolean;
 }) => {
@@ -129,12 +128,10 @@ export const getEventTableRowsData = (family: TFamilyPublic): TEventRowData[] =>
   });
 
   const allRows = [...eventRows, ...documentRows];
-  // TODO review event_type values once transformFamily maps litigation events (APP-1928)
-  const filteredRows = allRows.filter((row) => !row.event || !["Filing Year For Action", "activity_status::Filed"].includes(row.event.event_type));
 
   // family.events and family.document.events sometimes have the same event
   // remove duplicates by import_id and prioritise the document event (because it was added to allRows last)
-  const rowEntries = filteredRows.map((row) => [row.event?.import_id || row.document.import_id, row] as const);
+  const rowEntries = allRows.map((row) => [row.event?.import_id ?? row.document.import_id, row] as const);
   const uniqueRows = Object.values(Object.fromEntries(rowEntries));
 
   return uniqueRows;
@@ -265,7 +262,7 @@ export const getEventTableRows = ({
       const sortedTopics = orderBy(Object.entries(documentTopicsData), ["1"], ["desc"]);
       const someTopicsHidden = sortedTopics.length > MAX_TOPICS_PER_DOCUMENT;
 
-      const topicLinks = sortedTopics.slice(0, MAX_TOPICS_PER_DOCUMENT).map(([topicId, topicCount]) => {
+      const topicLinks = sortedTopics.slice(0, MAX_TOPICS_PER_DOCUMENT).map(([topicId]) => {
         const [wikibaseId, fallbackLabel] = topicId.split(":");
         const topic = topicsData.find((concept) => concept.wikibase_id === wikibaseId);
 
@@ -332,7 +329,8 @@ export const getEventTableRows = ({
         date: date
           ? {
               label: formatDateShort(date, language),
-              value: date.getTime(),
+              // Ensures the first event displays first even if it shares a date with other events
+              value: `${date.getTime()}-${FILING_DATE_EVENT_TYPES.includes(event?.event_type) ? "0" : "1"}`,
             }
           : null,
         searchResults:

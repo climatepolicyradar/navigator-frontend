@@ -6,32 +6,35 @@ import { ExternalLink } from "@/components/ExternalLink";
 import { Button } from "@/components/atoms/button/Button";
 import { Icon } from "@/components/atoms/icon/Icon";
 import { BreadCrumbs } from "@/components/breadcrumbs/Breadcrumbs";
+import { DataInDebug } from "@/components/debug/dataInDebug";
 import { DocumentMetaRenderer } from "@/components/documents/renderers/DocumentMetaRenderer";
 import { SiteWidth } from "@/components/panels/SiteWidth";
 import { Heading } from "@/components/typography/Heading";
 import { MAX_FAMILY_SUMMARY_LENGTH_BRIEF } from "@/constants/document";
 import { getCountryName, getCountrySlug } from "@/helpers/getCountryFields";
 import useConfig from "@/hooks/useConfig";
-import { TDocumentPage, TFamilyPublic } from "@/types";
+import { TFamilyDocumentPublic, TFamilyPublic, TFeatures } from "@/types";
 import { truncateString } from "@/utils/truncateString";
 
 interface IProps {
-  document: TDocumentPage;
+  document: TFamilyDocumentPublic;
   family: TFamilyPublic;
+  features: TFeatures;
   handleViewOtherDocsClick: (e: React.FormEvent<HTMLButtonElement>) => void;
   handleViewSourceClick: (e: React.FormEvent<HTMLButtonElement>) => void;
+  usesDataIn: boolean;
 }
 
 const containsNonEnglish = (languages: string[]) => {
   return languages.some((lang) => lang !== "eng");
 };
 
-export const DocumentHead = ({ document, family, handleViewOtherDocsClick, handleViewSourceClick }: IProps) => {
+export const DocumentHead = ({ document, family, features, handleViewOtherDocsClick, handleViewSourceClick, usesDataIn }: IProps) => {
   const [showFullSummary, setShowFullSummary] = useState(false);
   const [summary, setSummary] = useState("");
 
   const configQuery = useConfig();
-  const { data: { countries = [], languages = {} } = {} } = configQuery;
+  const { data: { countries = [] } = {} } = configQuery;
 
   const geographyNames = family.geographies ? family.geographies.map((geo) => getCountryName(geo, countries)) : null;
   const geoName = geographyNames ? geographyNames[0] : "";
@@ -49,6 +52,7 @@ export const DocumentHead = ({ document, family, handleViewOtherDocsClick, handl
     if (family?.summary) {
       const text = family?.summary;
       if (showFullSummary) {
+        // eslint-disable-next-line react-hooks/set-state-in-effect
         setSummary(text);
       } else {
         setSummary(truncateString(text, MAX_FAMILY_SUMMARY_LENGTH_BRIEF));
@@ -63,6 +67,7 @@ export const DocumentHead = ({ document, family, handleViewOtherDocsClick, handl
         family={breadcrumbFamily}
         label={breadcrumbLabel ? <span className="capitalize">{breadcrumbLabel}</span> : document.title}
       />
+      {features["new-data-model"] && features.debug && <DataInDebug usesDataIn={usesDataIn} />}
       <SiteWidth>
         <div className="flex flex-col justify-between lg:flex-row flex-wrap">
           <div className="flex-1 my-4">

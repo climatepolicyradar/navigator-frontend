@@ -2,7 +2,7 @@ import sortBy from "lodash/sortBy";
 import { Legislation, WithContext } from "schema-dts";
 
 import { getCountryName, getCountrySlug } from "@/helpers/getCountryFields";
-import { TDocumentPage, TFamilyPublic, TGeography } from "@/types";
+import { TFamilyDocumentPublic, TFamilyPublic, TGeography } from "@/types";
 
 import { getAppUrlForJSONLD } from "./helpers";
 
@@ -19,7 +19,7 @@ import { getAppUrlForJSONLD } from "./helpers";
  * The schema can be validated here: https://validator.schema.org/
  */
 
-export const getLitigationDocumentJSONLD = (document: TDocumentPage, family: TFamilyPublic, countries: TGeography[]) => {
+export const getLitigationDocumentJSONLD = (document: TFamilyDocumentPublic, family: TFamilyPublic, countries: TGeography[]) => {
   const appUrl = getAppUrlForJSONLD();
 
   // Default JSON-LD legislation structure
