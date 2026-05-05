@@ -48,7 +48,7 @@ jobs:
           role-session-name: GitHub_to_AWS_via_FederatedOIDC
           aws-region: ${{ env.AWS_REGION }}
       - name: Install pulumi
-        uses: pulumi/actions@v6
+        uses: pulumi/actions@v7
         with:
           stack-name: climatepolicyradar/${{ github.event.inputs.stack }}
         env:
