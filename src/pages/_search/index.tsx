@@ -33,6 +33,16 @@ const columnLayoutCss = "col-start-1 -col-end-1 cols-5:col-start-3 cols-5:-col-e
 
 type TProps = InferGetServerSidePropsType<typeof getServerSideProps>;
 
+/*
+ * SHADOW SEARCH is currently made up of 6 Core surfaces, each surface is commented in code below
+ * NB: this is not necessarily the order they appear within this component
+ * - Search input (and suggestions)
+ * - Filters
+ * - Applied filters
+ * - Advanced filters
+ * - Search results
+ * - Result drawer
+ */
 const ShadowSearch = ({ theme, themeConfig, features }: TProps) => {
   const [availableFilters, setAvailableFilters] = useState<TLabelResult[]>([]);
   const [labelAggregations, setLabelAggregations] = useState<IAggregationLabel[] | undefined>(undefined);
@@ -113,6 +123,7 @@ const ShadowSearch = ({ theme, themeConfig, features }: TProps) => {
           <h1 className="text-5xl font-bold text-inky-black">Search</h1>
         </div>
         <div className={columnLayoutCss}>
+          {/* SEARCH INPUT */}
           <IntelliSearch
             query={query}
             availableLabelIds={availableLabelIds}
@@ -130,7 +141,9 @@ const ShadowSearch = ({ theme, themeConfig, features }: TProps) => {
             onAdvancedClick={() => setAdvancedFiltersOpen(true)}
           />
         </div>
+        {/* CONTROLS - FILTERS, SORT, etc */}
         <div className={joinTailwindClasses(columnLayoutCss, "flex justify-between items-center")}>
+          {/* FILTERS */}
           <SearchFilters
             availableFilters={availableFilters}
             filters={filters}
@@ -155,6 +168,7 @@ const ShadowSearch = ({ theme, themeConfig, features }: TProps) => {
             }}
           />
           <div className="flex items-center gap-6 flex-wrap">
+            {/* EXPERIMENT CONTROLS */}
             <div>
               <button className="text-gray-300" onClick={() => setExcludeMergedDocuments(!excludeMergedDocuments)}>
                 {excludeMergedDocuments && "."}
@@ -173,6 +187,7 @@ const ShadowSearch = ({ theme, themeConfig, features }: TProps) => {
                 </Switch.Root>
               </label>
             </div>
+            {/* SORT */}
             <SearchSortSelect
               sortParam={sortKey}
               onChange={(next) => {
@@ -180,18 +195,9 @@ const ShadowSearch = ({ theme, themeConfig, features }: TProps) => {
                 setCurrentPage("1");
               }}
             />
-            <AdvancedFilters
-              filters={filters}
-              setFilters={(filters) => {
-                setFilters(filters);
-                setCurrentPage("1");
-              }}
-              open={advancedFiltersOpen}
-              onOpenChange={setAdvancedFiltersOpen}
-              availableLabelIds={availableLabelIds}
-            />
           </div>
         </div>
+        {/* APPLIED FILTERS */}
         {!isFilterGroupEmpty(filters) && (
           <div className={columnLayoutCss}>
             <AppliedLabels
@@ -214,6 +220,7 @@ const ShadowSearch = ({ theme, themeConfig, features }: TProps) => {
             />
           </div>
         )}
+        {/* SEARCH RESULTS */}
         <div className={columnLayoutCss}>
           <SearchContainer
             query={query}
@@ -241,6 +248,7 @@ const ShadowSearch = ({ theme, themeConfig, features }: TProps) => {
             }}
           />
         </div>
+        {/* PAGINATION */}
         {totalNoOfResults !== null && totalNoOfResults > 0 && (query || !isFilterGroupEmpty(filters)) && (
           <div className={columnLayoutCss}>
             <div className="flex justify-between items-center">
@@ -263,6 +271,18 @@ const ShadowSearch = ({ theme, themeConfig, features }: TProps) => {
           </div>
         )}
       </FiveColumns>
+      {/* ADVANCED FILTERS */}
+      <AdvancedFilters
+        filters={filters}
+        setFilters={(filters) => {
+          setFilters(filters);
+          setCurrentPage("1");
+        }}
+        open={advancedFiltersOpen}
+        onOpenChange={setAdvancedFiltersOpen}
+        availableLabelIds={availableLabelIds}
+      />
+      {/* DRAWER */}
       <DocumentDrawer document={selectedDocument} open={drawerOpen} onOpenChange={setDrawerOpen} />
     </FeaturesContext.Provider>
   );
