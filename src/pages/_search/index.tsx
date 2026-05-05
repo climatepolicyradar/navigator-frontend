@@ -35,7 +35,7 @@ type TProps = InferGetServerSidePropsType<typeof getServerSideProps>;
 
 /*
  * SHADOW SEARCH is currently made up of 6 Core surfaces, each surface is commented in code below
- * NB: this is not necessaruly the order they appear within this component
+ * NB: this is not necessarily the order they appear within this component
  * - Search input (and suggestions)
  * - Filters
  * - Applied filters
