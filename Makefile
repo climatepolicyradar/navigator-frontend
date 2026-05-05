@@ -53,6 +53,7 @@ ECR_REGISTRY ?= $(if $(DOCKER_REGISTRY),$(DOCKER_REGISTRY),$(shell aws sts get-c
 .PHONY: deploy-production-ecr-login deploy-production-build-push deploy-production-theme deploy-production-all
 
 deploy-production-ecr-login:
+	aws ecr get-login-password --region $(AWS_REGION) | docker login --username AWS --password-stdin $(aws sts get-caller-identity --query 'Account' --output text).dkr.ecr.eu-west-1.amazonaws.com
 	aws ecr get-login-password --region $(AWS_REGION) | docker login --username AWS --password-stdin $(shell aws sts get-caller-identity --query 'Account' --output text).dkr.ecr.eu-west-1.amazonaws.com
 
 deploy-production-build-push:
