@@ -277,6 +277,10 @@ export type TApiCollectionPublic = {
   title: string;
 };
 
+export type TApiCollectionPublicWithFamilies = TApiCollectionPublic & {
+  families: TApiFamilyPublic[];
+};
+
 export type TApiCorpusPublic = {
   corpus_type_name: string;
   import_id: string;
@@ -345,15 +349,6 @@ export type TApiFamilyPublic = {
 };
 
 export type TApiDocumentPublic = Omit<TApiFamilyDocumentPublic, "events"> & { family: TApiFamilyPublic };
-
-export type TApiCollectionPublicWithFamilies = {
-  description: string;
-  families: TApiFamilyPublic[];
-  import_id: string;
-  metadata: TApiMetadata<"id">;
-  slug: string;
-  title: string;
-};
 
 export type TApiSlugResponse = {
   name: string;
