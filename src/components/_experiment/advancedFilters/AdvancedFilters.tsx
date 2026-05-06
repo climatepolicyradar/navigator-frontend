@@ -32,7 +32,10 @@ function isRule(node: TQueryGroup | TQueryRule): node is TQueryRule {
 export function isFilterGroupEmpty(filters: TQueryGroup | null): boolean {
   if (!filters) return true;
   if (filters.filters.length === 0) return true;
-  return filters.filters.some((f) => isRule(f) && f.value === "");
+  return !filters.filters.some((filter) => {
+    if (isRule(filter)) return filter.value.trim().length > 0;
+    return !isFilterGroupEmpty(filter);
+  });
 }
 
 // ID helpers (stable keys for React lists)
@@ -324,6 +327,36 @@ interface RuleRowProps {
 
 function RuleRow({ rule, onUpdate, onDelete, isOnly, availableLabelIds }: RuleRowProps) {
   const isLabelRule = rule.field === "labels.value.id" || rule.field === "attributes.status";
+  const isPublishedDateRule = rule.field === "attributes.published_date";
+
+  if (isPublishedDateRule) {
+    const publishedDateOperatorLabel: Record<typeof rule.op, string> = {
+      eq: "is on",
+      not_eq: "is not on",
+      lt: "is before",
+      lte: "is on or before",
+      gt: "is after",
+      gte: "is on or after",
+    };
+
+    return (
+      <div className="flex items-center gap-2 group">
+        <span className="rounded border border-gray-300 bg-white px-2 py-1 text-sm font-medium text-gray-700">Published date</span>
+        <span className="rounded border border-gray-300 bg-white px-2 py-1 text-sm text-gray-700">{publishedDateOperatorLabel[rule.op]}</span>
+        <span className="rounded border border-gray-300 bg-white px-2 py-1 text-sm text-gray-700 truncate max-w-[360px]">{rule.value}</span>
+        {!isOnly && (
+          <button
+            type="button"
+            onClick={onDelete}
+            className="justify-end p-1 rounded text-gray-400 hover:text-red-500 hover:bg-red-50 opacity-0 group-hover:opacity-100 transition-all"
+            aria-label="Remove rule"
+          >
+            <Trash2 className="h-3.5 w-3.5" />
+          </button>
+        )}
+      </div>
+    );
+  }
 
   return (
     <div className="flex items-center gap-2 group">
