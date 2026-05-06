@@ -1,5 +1,5 @@
 import { TQueryGroup } from "@/components/_experiment/advancedFilters/AdvancedFilters";
-import { DATE_RANGE_MIN_YEAR } from "@/utils/_experiment/dateRangeFilters";
+import { DATE_RANGE_MIN_YEAR, hasPublishedDateRule } from "@/utils/_experiment/dateRangeFilters";
 
 interface DocumentLabel {
   id: string;
@@ -97,13 +97,6 @@ function configureDocumentsFilters(
   includeDocumentsInSearch: boolean,
   excludeMergedDocuments: boolean
 ): TQueryGroup {
-  const hasPublishedDateRule = (group: TQueryGroup): boolean => {
-    return group.filters.some((filter) => {
-      if ("field" in filter) return filter.field === "attributes.published_date";
-      return hasPublishedDateRule(filter);
-    });
-  };
-
   const excludeMergedDocumentsFilter: TQueryGroup = {
     op: "and",
     filters: [
@@ -155,7 +148,7 @@ function configureDocumentsFilters(
   // Always constrain document searches to published documents. Add default date
   // bounds only when the user has not provided any published_date rule.
   const filtersWithConditionals: TQueryGroup[] = [publishedStatusFilter];
-  if (!filters || !hasPublishedDateRule(filters)) {
+  if (!hasPublishedDateRule(filters)) {
     filtersWithConditionals.push(publishedDateBoundsFilter);
   }
   if (filters) {

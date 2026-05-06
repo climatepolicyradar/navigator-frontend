@@ -46,6 +46,31 @@ function parseIsoYear(value: string): number | null {
   return Number.isInteger(year) ? year : null;
 }
 
+export function hasPublishedDateRule(group: TQueryGroup | null | undefined): boolean {
+  if (!group) return false;
+  return group.filters.some((filter) => {
+    if ("field" in filter) return filter.field === "attributes.published_date";
+    return hasPublishedDateRule(filter);
+  });
+}
+
+export function buildPublishedDateRangeRules(startYear: number, endYear: number): TQueryRule[] {
+  return [
+    {
+      field: "attributes.published_date",
+      key: "published_date",
+      op: "gte",
+      value: toIsoStartOfYear(startYear),
+    },
+    {
+      field: "attributes.published_date",
+      key: "published_date",
+      op: "lte",
+      value: toIsoEndOfYear(endYear),
+    },
+  ];
+}
+
 export function findPublishedDateRangeValue(group: TQueryGroup): string | null {
   for (const filter of group.filters) {
     if ("field" in filter) {
@@ -76,21 +101,7 @@ export function upsertPublishedDateRangeRules(group: TQueryGroup, value: string)
   const groupWithoutDateRules = removePublishedDateRules(group);
   return {
     ...groupWithoutDateRules,
-    filters: [
-      ...groupWithoutDateRules.filters,
-      {
-        field: "attributes.published_date",
-        key: "published_date",
-        op: "gte",
-        value: toIsoStartOfYear(parsedRange.startYear),
-      },
-      {
-        field: "attributes.published_date",
-        key: "published_date",
-        op: "lte",
-        value: toIsoEndOfYear(parsedRange.endYear),
-      },
-    ],
+    filters: [...groupWithoutDateRules.filters, ...buildPublishedDateRangeRules(parsedRange.startYear, parsedRange.endYear)],
   };
 }
 

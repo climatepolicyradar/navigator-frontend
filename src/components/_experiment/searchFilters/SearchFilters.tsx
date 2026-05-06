@@ -7,6 +7,7 @@ import { Checkbox } from "@/components/checkbox/Checkbox";
 import { TLabelResult } from "@/hooks/useLabelSearch";
 import {
   DATE_RANGE_MIN_YEAR,
+  hasPublishedDateRule,
   parseYearRange,
   resolveYearRangeForPreset,
   serialiseYearRange,
@@ -28,11 +29,6 @@ function hasActiveFilterOfType(filters: TLabelResult[], group: TQueryGroup | nul
   return group.filters.some((f) =>
     "value" in f ? filters.some((label) => label.id === f.value && label.type === type) : hasActiveFilterOfType(filters, f, type)
   );
-}
-
-function hasActiveDateRule(group: TQueryGroup | null | undefined): boolean {
-  if (!group) return false;
-  return group.filters.some((filter) => ("field" in filter ? filter.field === "attributes.published_date" : hasActiveDateRule(filter)));
 }
 
 const PRIMARY_LABEL_TYPES = ["category", "published_date", "geography", "concept"] as const;
@@ -224,7 +220,7 @@ export function SearchFilters({
                             onClick={() => onActiveLabelTypeChange(agg)}
                           >
                             <span className="text-inky-blue px-2">
-                              {(agg === "published_date" ? hasActiveDateRule(filters) : hasActiveFilterOfType(availableFilters, filters, agg)) ? (
+                              {(agg === "published_date" ? hasPublishedDateRule(filters) : hasActiveFilterOfType(availableFilters, filters, agg)) ? (
                                 <Circle width={8} height={8} fill="currentColor" />
                               ) : (
                                 <span>&nbsp;&nbsp;</span>
