@@ -1,5 +1,5 @@
 import { TQueryGroup } from "@/components/_experiment/advancedFilters/AdvancedFilters";
-import { convertDateRangeRulesToApiGroup, DATE_RANGE_MIN_YEAR } from "@/utils/_experiment/dateRangeFilters";
+import { DATE_RANGE_MIN_YEAR } from "@/utils/_experiment/dateRangeFilters";
 
 interface DocumentLabel {
   id: string;
@@ -97,7 +97,7 @@ function configureDocumentsFilters(
   includeDocumentsInSearch: boolean,
   excludeMergedDocuments: boolean
 ): TQueryGroup {
-  const notContainsMergedLabelFilter: TQueryGroup = {
+  const excludeMergedDocumentsFilter: TQueryGroup = {
     op: "and",
     filters: [
       {
@@ -117,7 +117,7 @@ function configureDocumentsFilters(
       },
     ],
   };
-  const containsAttributesPublishedFilter: TQueryGroup = {
+  const publishedStatusFilter: TQueryGroup = {
     op: "and",
     filters: [
       {
@@ -127,7 +127,7 @@ function configureDocumentsFilters(
       },
     ],
   };
-  const containsPublishedDateAllTimeFilter: TQueryGroup = {
+  const publishedDateBoundsFilter: TQueryGroup = {
     op: "and",
     filters: [
       {
@@ -145,14 +145,14 @@ function configureDocumentsFilters(
     ],
   };
 
-  // containsAttributesPublishedFilter by default
-  const filtersWithConditionals: TQueryGroup[] = [containsAttributesPublishedFilter, containsPublishedDateAllTimeFilter];
+  // Always constrain document searches to published documents with a valid date.
+  const filtersWithConditionals: TQueryGroup[] = [publishedStatusFilter, publishedDateBoundsFilter];
   if (filters) {
-    filtersWithConditionals.push(convertDateRangeRulesToApiGroup(filters));
+    filtersWithConditionals.push(filters);
   }
 
   if (excludeMergedDocuments) {
-    filtersWithConditionals.push(notContainsMergedLabelFilter);
+    filtersWithConditionals.push(excludeMergedDocumentsFilter);
   }
 
   if (!includeDocumentsInSearch) {

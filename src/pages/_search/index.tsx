@@ -22,13 +22,7 @@ import { withEnvConfig } from "@/context/EnvConfig";
 import { FeaturesContext } from "@/context/FeaturesContext";
 import { TLabelResult, loadLabels } from "@/hooks/useLabelSearch";
 import { FilterGroupSchema } from "@/schemas";
-import {
-  convertApiDateRulesToUiGroup,
-  convertDateRangeRulesToApiGroup,
-  findPublishedDateBetweenValue,
-  removePublishedDateRules,
-  upsertPublishedDateBetweenRule,
-} from "@/utils/_experiment/dateRangeFilters";
+import { findPublishedDateRangeValue, removePublishedDateRules, upsertPublishedDateRangeRules } from "@/utils/_experiment/dateRangeFilters";
 import { getAvailableLabelIdsFromAggregations } from "@/utils/_experiment/labelAggregationAvailability";
 import { getFeatureFlags } from "@/utils/featureFlags";
 import { getFeatures } from "@/utils/features";
@@ -47,8 +41,7 @@ const ShadowSearch = ({ theme, themeConfig, features }: TProps) => {
   // search query that is typed into the search box
   const [query, setQuery] = useQueryState("q", parseAsString.withDefault(""));
   // structured filters built in QueryBuilder
-  const [filtersInUrl, setFiltersInUrl] = useQueryState("filters", parseAsJson<TQueryGroup>(FilterGroupSchema).withDefault(createGroup()));
-  const filters = useMemo(() => convertApiDateRulesToUiGroup(filtersInUrl), [filtersInUrl]);
+  const [filters, setFiltersInUrl] = useQueryState("filters", parseAsJson<TQueryGroup>(FilterGroupSchema).withDefault(createGroup()));
   // pagination state
   const [currentPage, setCurrentPage] = useQueryState("page_token", parseAsString.withDefault("1"));
   const [pageSize, setPageSize] = useQueryState("page_size", parseAsString.withDefault("10"));
@@ -69,13 +62,11 @@ const ShadowSearch = ({ theme, themeConfig, features }: TProps) => {
     (updater: SetStateAction<TQueryGroup>) => {
       let shouldClearAggregations = false;
       void setFiltersInUrl((prev) => {
-        const previousForUi = convertApiDateRulesToUiGroup(prev);
-        const nextForUi = typeof updater === "function" ? (updater as (p: TQueryGroup) => TQueryGroup)(previousForUi) : updater;
-        if (!isEqual(previousForUi, nextForUi) && isFilterGroupEmpty(nextForUi)) {
+        const nextFilters = typeof updater === "function" ? (updater as (p: TQueryGroup) => TQueryGroup)(prev) : updater;
+        if (!isEqual(prev, nextFilters) && isFilterGroupEmpty(nextFilters)) {
           shouldClearAggregations = true;
         }
-        const nextForApi = convertDateRangeRulesToApiGroup(nextForUi);
-        return nextForApi;
+        return nextFilters;
       });
       if (shouldClearAggregations) {
         setLabelAggregations(undefined);
@@ -115,7 +106,7 @@ const ShadowSearch = ({ theme, themeConfig, features }: TProps) => {
     () => getAvailableLabelIdsFromAggregations(labelAggregations, query, filters),
     [labelAggregations, query, filters]
   );
-  const selectedPublishedDateRange = useMemo(() => findPublishedDateBetweenValue(filters), [filters]);
+  const selectedPublishedDateRange = useMemo(() => findPublishedDateRangeValue(filters), [filters]);
 
   return (
     <FeaturesContext.Provider value={features}>
@@ -171,7 +162,7 @@ const ShadowSearch = ({ theme, themeConfig, features }: TProps) => {
                 setCurrentPage("1");
                 return;
               }
-              setFilters((prev) => upsertPublishedDateBetweenRule(prev, nextValue));
+              setFilters((prev) => upsertPublishedDateRangeRules(prev, nextValue));
               setCurrentPage("1");
             }}
           />

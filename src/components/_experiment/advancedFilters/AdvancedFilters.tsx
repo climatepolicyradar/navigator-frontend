@@ -3,7 +3,6 @@ import { Plus, Trash2, X } from "lucide-react";
 import { Fragment, useCallback, useEffect, useRef, useState } from "react";
 
 import { useLabelSearch, TLabelResult } from "@/hooks/useLabelSearch";
-import { DATE_RANGE_MIN_YEAR, parseYearRange, resolveYearRangeForPreset, serialiseYearRange } from "@/utils/_experiment/dateRangeFilters";
 import { partitionByAvailability } from "@/utils/_experiment/labelAggregationAvailability";
 import { labelTypeLabel } from "@/utils/_experiment/labelTypeLabel";
 import { joinTailwindClasses } from "@/utils/tailwind";
@@ -22,7 +21,7 @@ export type TQueryRule =
   | {
       field: "attributes.published_date";
       key?: "published_date";
-      op: "between" | "eq" | "not_eq" | "lt" | "lte" | "gt" | "gte";
+      op: "eq" | "not_eq" | "lt" | "lte" | "gt" | "gte";
       value: string;
     };
 
@@ -298,91 +297,6 @@ function OperatorSelect({ value, onChange }: { value: "contains" | "not_contains
   );
 }
 
-type TDateRangePickerProps = {
-  op: "between" | "eq" | "not_eq" | "lt" | "lte" | "gt" | "gte";
-  onChangeOp: (op: "between" | "eq" | "not_eq" | "lt" | "lte" | "gt" | "gte") => void;
-  value: string;
-  onChange: (value: string) => void;
-};
-
-const PUBLISHED_DATE_OPERATORS: Array<{ value: "between" | "eq" | "not_eq" | "lt" | "lte" | "gt" | "gte"; label: string }> = [
-  { value: "between", label: "is between" },
-  { value: "eq", label: "is on" },
-  { value: "lt", label: "is before" },
-  { value: "lte", label: "is on or before" },
-  { value: "gt", label: "is after" },
-  { value: "gte", label: "is on or after" },
-  { value: "not_eq", label: "is not on" },
-];
-
-function DateRangePicker({ op, onChangeOp, value, onChange }: TDateRangePickerProps) {
-  const yearNow = new Date().getFullYear();
-  const parsedRange = parseYearRange(value) ?? resolveYearRangeForPreset("all_time", yearNow);
-  const [startInput, setStartInput] = useState(parsedRange.startYear.toString());
-  const [endInput, setEndInput] = useState(parsedRange.endYear.toString());
-  const [singleInput, setSingleInput] = useState(value);
-
-  const applyRange = () => {
-    const nextStart = Number(startInput);
-    const nextEnd = Number(endInput);
-    if (!Number.isInteger(nextStart) || !Number.isInteger(nextEnd)) return;
-    if (nextStart > nextEnd) return;
-    if (nextStart < DATE_RANGE_MIN_YEAR || nextEnd > yearNow) return;
-    onChange(serialiseYearRange(nextStart, nextEnd));
-  };
-
-  const applySingle = () => {
-    if (!singleInput.trim()) return;
-    onChange(singleInput.trim());
-  };
-
-  return (
-    <div className="rounded border border-gray-200 p-2 text-inky-black">
-      <select
-        value={op}
-        onChange={(event) => onChangeOp(event.target.value as "between" | "eq" | "not_eq" | "lt" | "lte" | "gt" | "gte")}
-        className="mb-2 w-full rounded border border-gray-300 bg-white px-2 py-1 text-sm text-gray-700"
-      >
-        {PUBLISHED_DATE_OPERATORS.map((operator) => (
-          <option key={operator.value} value={operator.value}>
-            {operator.label}
-          </option>
-        ))}
-      </select>
-      {op === "between" ? (
-        <div className="mt-2 grid grid-cols-2 gap-2">
-          <input
-            type="number"
-            min={DATE_RANGE_MIN_YEAR}
-            max={yearNow}
-            value={startInput}
-            onChange={(event) => setStartInput(event.target.value)}
-            onBlur={applyRange}
-            className="rounded border border-gray-300 bg-white px-2 py-1 text-sm text-inky-black"
-          />
-          <input
-            type="number"
-            min={DATE_RANGE_MIN_YEAR}
-            max={yearNow}
-            value={endInput}
-            onChange={(event) => setEndInput(event.target.value)}
-            onBlur={applyRange}
-            className="rounded border border-gray-300 bg-white px-2 py-1 text-sm text-inky-black"
-          />
-        </div>
-      ) : (
-        <input
-          type="date"
-          value={singleInput}
-          onChange={(event) => setSingleInput(event.target.value)}
-          onBlur={applySingle}
-          className="w-full rounded border border-gray-300 bg-white px-2 py-1 text-sm text-inky-black"
-        />
-      )}
-    </div>
-  );
-}
-
 // Boolean connector pill (AND / OR)
 function ConnectorPill({ value, onChange }: { value: "and" | "or"; onChange: (v: "and" | "or") => void }) {
   return (
@@ -409,30 +323,16 @@ interface RuleRowProps {
 }
 
 function RuleRow({ rule, onUpdate, onDelete, isOnly, availableLabelIds }: RuleRowProps) {
-  const isLabelRule = rule.field === "labels.value.id";
-  const isPublishedDateRule = rule.field === "attributes.published_date";
+  const isLabelRule = rule.field === "labels.value.id" || rule.field === "attributes.status";
 
   return (
     <div className="flex items-center gap-2 group">
       <select
         value={rule.field}
-        onChange={(event) => {
-          if (event.target.value === "attributes.published_date") {
-            const currentYear = new Date().getFullYear();
-            onUpdate({
-              field: "attributes.published_date",
-              key: "published_date",
-              op: "between",
-              value: serialiseYearRange(DATE_RANGE_MIN_YEAR, currentYear),
-            });
-            return;
-          }
-          onUpdate({ field: "labels.value.id", op: "contains", value: "" });
-        }}
+        onChange={() => onUpdate({ field: "labels.value.id", op: "contains", value: "" })}
         className="rounded border border-gray-300 bg-white px-2 py-1 text-sm font-medium text-gray-700"
       >
         <option value="labels.value.id">Label</option>
-        <option value="attributes.published_date">Published date</option>
       </select>
       {isLabelRule && (
         <>
@@ -446,16 +346,6 @@ function RuleRow({ rule, onUpdate, onDelete, isOnly, availableLabelIds }: RuleRo
             />
           </div>
         </>
-      )}
-      {isPublishedDateRule && (
-        <div className="min-w-70">
-          <DateRangePicker
-            op={rule.op}
-            onChangeOp={(op) => onUpdate({ ...rule, op })}
-            value={rule.value}
-            onChange={(value) => onUpdate({ ...rule, value })}
-          />
-        </div>
       )}
       {!isOnly && (
         <button

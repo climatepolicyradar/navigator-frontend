@@ -10,19 +10,8 @@ export const FilterSchema = v.union([
   }),
   v.object({
     field: v.literal("attributes.published_date"),
-    op: v.picklist(["between", "gte", "lte"]),
-    value: v.string(),
-  }),
-  v.object({
-    field: v.literal("attributes.published_date"),
     key: v.literal("published_date"),
     op: v.picklist(["eq", "not_eq", "lt", "lte", "gt", "gte"]),
-    value: v.string(),
-  }),
-  v.object({
-    field: v.literal("attributes.published_date"),
-    key: v.literal("published_date"),
-    op: v.picklist(["between", "eq", "not_eq", "lt", "lte", "gt", "gte"]),
     value: v.string(),
   }),
 ]);

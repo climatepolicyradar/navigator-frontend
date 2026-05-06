@@ -2,7 +2,6 @@ import { LucideCog, LucideFileText } from "lucide-react";
 import React, { Fragment, Suspense, use, useEffect, useMemo } from "react";
 
 import { fetchSearchDocuments, SearchDocument, SearchDocumentsResponse, IAggregationLabel, SearchDocumentsSortKey } from "@/api/search";
-import { convertDateRangeRulesToApiGroup } from "@/utils/_experiment/dateRangeFilters";
 
 import { DocumentSearchResult } from "./DocumentSearchResult";
 import { PrincipalSearchResult } from "./PrincipalSearchResult";
@@ -122,11 +121,10 @@ export function SearchContainer({
   onTotalResultsChange?: (total: number | null) => void;
   onResultClicked?: (document: SearchDocument, event: React.MouseEvent<HTMLButtonElement>) => void;
 }) {
-  const filtersCheckedForEmpty = filtersDoesNotContainEmptyRule(filters) ? filters : undefined;
-  const apiFilters = filtersCheckedForEmpty ? convertDateRangeRulesToApiGroup(filtersCheckedForEmpty) : undefined;
+  const nonEmptyFilters = filtersDoesNotContainEmptyRule(filters) ? filters : undefined;
 
   const searchPromise = useMemo(() => {
-    if (!query && !apiFilters) return null;
+    if (!query && !nonEmptyFilters) return null;
 
     return fetchSearchDocuments({
       query,
@@ -134,10 +132,10 @@ export function SearchContainer({
       page_token,
       includeDocumentsInSearch,
       excludeMergedDocuments,
-      filters: apiFilters,
+      filters: nonEmptyFilters,
       sort,
     });
-  }, [query, apiFilters, page_token, page_size, includeDocumentsInSearch, sort, excludeMergedDocuments]);
+  }, [query, nonEmptyFilters, page_token, page_size, includeDocumentsInSearch, sort, excludeMergedDocuments]);
 
   return (
     <>
