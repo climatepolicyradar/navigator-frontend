@@ -19,6 +19,8 @@ const CONCEPT_PREFERRED_LABEL_TYPE_MAP: Record<string, string> = {
   case_category: "category",
 };
 
+const capitalize = (s: string) => s.charAt(0).toUpperCase() + s.slice(1);
+
 const isFamilyMetadataKey = (string: string): string is TApiFamilyMetadataKey => API_FAMILY_METADATA_KEY.includes(string as TApiFamilyMetadataKey);
 
 export const transformFamilyMetadata = (
@@ -42,6 +44,10 @@ export const transformFamilyMetadata = (
       familyMetadata[metadataKey] = labels.map((label) => label.value.value);
     }
   });
+
+  if (groupedLabels.author?.length > 0) {
+    familyMetadata.author_type = groupedLabels.author.map((author) => capitalize(author.value.type));
+  }
 
   if (category === "Litigation") {
     familyMetadata.concept_preferred_label = groupedLabels.legal_concept
