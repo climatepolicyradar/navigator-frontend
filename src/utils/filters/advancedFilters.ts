@@ -14,6 +14,31 @@ export function extractLabels(group: TQueryGroup | null): string[] {
   return labels;
 }
 
+export function stripEmptyValueRules(group: TQueryGroup): TQueryGroup {
+  // Recursively remove empty-value rules and empty nested groups from a filter tree.
+  const stripGroup = (node: TQueryGroup): TQueryGroup | null => {
+    const filters: Array<TQueryGroup | TQueryRule> = [];
+
+    for (const filter of node.filters) {
+      if ("field" in filter) {
+        if (filter.value.trim().length === 0) continue;
+        filters.push(filter);
+        continue;
+      }
+
+      const stripped = stripGroup(filter);
+      if (stripped && stripped.filters.length > 0) {
+        filters.push(stripped);
+      }
+    }
+
+    if (filters.length === 0) return null;
+    return { ...node, filters };
+  };
+
+  return stripGroup(group) ?? createGroup();
+}
+
 function groupIsEmpty(group: TQueryGroup | null): boolean {
   if (!group) return true;
   return group.filters.length === 0 || group.filters.every((f) => "field" in f && f.op === "contains" && !f.value);

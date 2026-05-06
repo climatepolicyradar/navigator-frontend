@@ -106,17 +106,22 @@ function DateRangeSection({ value, onChange }: { value: string | null | undefine
         <h4 className="text-sm text-inky-black font-medium">Date range</h4>
       </div>
       {DATE_RANGE_PRESETS.map((preset) => (
-        <label key={preset.value} className="inline-flex items-center gap-2 text-sm text-inky-black">
-          <input type="radio" checked={selectedPreset === preset.value} onChange={() => applyPresetDateRange(preset.value)} className="h-3.5 w-3.5" />
+        <label key={preset.value} className="inline-flex items-center gap-2 rounded-sm px-1 py-0.5 text-sm text-inky-black hover:bg-neutral-100">
+          <input
+            type="radio"
+            checked={selectedPreset === preset.value}
+            onChange={() => applyPresetDateRange(preset.value)}
+            className="h-4 w-4 shrink-0 cursor-pointer appearance-none rounded-full border border-gray-300 bg-white checked:border-4 checked:border-inky-black"
+          />
           <span>{preset.label}</span>
         </label>
       ))}
       <div className="pt-2 border-b border-transparent-regular pb-2">
-        <h4 className="text-sm text-inky-black font-medium">Custom</h4>
+        <h4 className="text-sm text-inky-black">Custom</h4>
       </div>
       <div className="grid grid-cols-2 gap-3">
         <div className="flex flex-col gap-1">
-          <label className="text-sm text-inky-black font-medium">Earliest year</label>
+          <label className="text-sm text-inky-black">Earliest year</label>
           <input
             type="number"
             min={DATE_RANGE_MIN_YEAR}
@@ -128,7 +133,7 @@ function DateRangeSection({ value, onChange }: { value: string | null | undefine
           />
         </div>
         <div className="flex flex-col gap-1">
-          <label className="text-sm text-inky-black font-medium">Latest year</label>
+          <label className="text-sm text-inky-black">Latest year</label>
           <input
             type="number"
             min={DATE_RANGE_MIN_YEAR}
