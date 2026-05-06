@@ -97,6 +97,13 @@ function configureDocumentsFilters(
   includeDocumentsInSearch: boolean,
   excludeMergedDocuments: boolean
 ): TQueryGroup {
+  const hasPublishedDateRule = (group: TQueryGroup): boolean => {
+    return group.filters.some((filter) => {
+      if ("field" in filter) return filter.field === "attributes.published_date";
+      return hasPublishedDateRule(filter);
+    });
+  };
+
   const excludeMergedDocumentsFilter: TQueryGroup = {
     op: "and",
     filters: [
@@ -145,8 +152,12 @@ function configureDocumentsFilters(
     ],
   };
 
-  // Always constrain document searches to published documents with a valid date.
-  const filtersWithConditionals: TQueryGroup[] = [publishedStatusFilter, publishedDateBoundsFilter];
+  // Always constrain document searches to published documents. Add default date
+  // bounds only when the user has not provided any published_date rule.
+  const filtersWithConditionals: TQueryGroup[] = [publishedStatusFilter];
+  if (!filters || !hasPublishedDateRule(filters)) {
+    filtersWithConditionals.push(publishedDateBoundsFilter);
+  }
   if (filters) {
     filtersWithConditionals.push(filters);
   }
