@@ -1,5 +1,21 @@
 import { createGroup, TQueryGroup, TQueryRule } from "@/components/_experiment/advancedFilters/AdvancedFilters";
 
+/**
+ * Determine if any of the current filters contain any groups, or have any of
+ * the settings set to "or", or contain a "not_contains" op rule
+ *
+ * @param filters - Root filter group from the URL/state, or null/undefined.
+ * @returns True when the tree is considered structurally complex.
+ */
+export function isFilterComplex(filters: TQueryGroup | null | undefined): boolean {
+  if (!filters) return false;
+  if (filters.op === "or") return true; // using or operator at top level
+  if (filters.filters.some((f) => "filters" in f)) return true; // has a subgroup
+  if (filters.filters.some((f) => "operator" in f && f.operator === "or")) return true; // has a rule with "or" operator
+  if (filters.filters.some((f) => "op" in f && f.op === "not_contains")) return true; // has a rule with "not_contains" operator
+  return filters.filters.some((f) => "filters" in f && isFilterComplex(f));
+}
+
 /** Extract all label values from "contains" rules in the filter tree. */
 export function extractLabels(group: TQueryGroup | null): string[] {
   if (!group) return [];

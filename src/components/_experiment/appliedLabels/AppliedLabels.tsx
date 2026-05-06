@@ -2,22 +2,23 @@ import { LucideX, SlidersHorizontal } from "lucide-react";
 
 import { TLabelResult } from "@/hooks/useLabelSearch";
 
-import { TQueryGroup } from "../advancedFilters/AdvancedFilters";
-
 function getTypeOfLabel(label: string, availableFilters: TLabelResult[]): string | null {
   const found = availableFilters.find((f) => f.id === label);
   return found ? found.type : null;
 }
 
-// determine if any of the current filters contain any groups, or have any of the settings set to "or", or contain a "not_contains" op rule
-function isFilterComplex(filters: TQueryGroup | null | undefined): boolean {
-  if (!filters) return false;
-  if (filters.op === "or") return true; // using or operator at top level
-  if (filters.filters.some((f) => "filters" in f)) return true; // has a subgroup
-  if (filters.filters.some((f) => "operator" in f && f.operator === "or")) return true; // has a rule with "or" operator
-  if (filters.filters.some((f) => "op" in f && f.op === "not_contains")) return true; // has a rule with "not_contains" operator
-  return filters.filters.some((f) => "filters" in f && isFilterComplex(f));
-}
+type TProps = {
+  availableFilters: TLabelResult[];
+  labels: string[];
+  summariseAsAdvancedOnly: boolean;
+  onClear?: () => void;
+  onRemoveLabel?: (label: string) => void;
+  onSelectLabel?: (label: string, type: string) => void;
+  onAdvancedClick?: () => void;
+  dateRangeValue?: string | null;
+  onSelectDateRange?: () => void;
+  onRemoveDateRange?: () => void;
+};
 
 function AppliedLabel({ label, type, onSelect, onRemove }: { label: string; type?: string; onSelect: () => void; onRemove: () => void }) {
   return (
@@ -55,9 +56,9 @@ function AppliedDateRange({ value, onSelect, onRemove }: { value: string; onSele
 }
 
 export function AppliedLabels({
-  filters,
   availableFilters,
   labels,
+  summariseAsAdvancedOnly,
   onClear,
   onSelectLabel,
   onRemoveLabel,
@@ -65,28 +66,14 @@ export function AppliedLabels({
   dateRangeValue,
   onSelectDateRange,
   onRemoveDateRange,
-}: {
-  filters: TQueryGroup;
-  availableFilters: TLabelResult[];
-  labels: string[];
-  onClear?: () => void;
-  onRemoveLabel?: (label: string) => void;
-  onSelectLabel?: (label: string, type: string) => void;
-  onAdvancedClick?: () => void;
-  dateRangeValue?: string | null;
-  onSelectDateRange?: () => void;
-  onRemoveDateRange?: () => void;
-}) {
+}: TProps) {
   return (
     <div className="flex flex-wrap gap-1 text-sm text-gray-700 rounded-lg bg-gray-100 p-2">
-      {dateRangeValue && !isFilterComplex(filters) && (
+      {dateRangeValue && !summariseAsAdvancedOnly && (
         <AppliedDateRange value={dateRangeValue} onSelect={() => onSelectDateRange?.()} onRemove={() => onRemoveDateRange?.()} />
       )}
-      {isFilterComplex(filters) ? (
+      {summariseAsAdvancedOnly ? (
         <>
-          {dateRangeValue && (
-            <AppliedDateRange value={dateRangeValue} onSelect={() => onSelectDateRange?.()} onRemove={() => onRemoveDateRange?.()} />
-          )}
           <button
             className="bg-white py-1 px-2 rounded-lg inline-flex gap-2 items-center border border-gray-300 hover:bg-gray-50"
             onClick={() => onAdvancedClick?.()}

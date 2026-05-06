@@ -1,5 +1,6 @@
-import { TQueryGroup } from "@/components/_experiment/advancedFilters/AdvancedFilters";
+import { isFilterGroupEmpty, TQueryGroup } from "@/components/_experiment/advancedFilters/AdvancedFilters";
 import { DATE_RANGE_MIN_YEAR, hasPublishedDateRule } from "@/utils/_experiment/dateRangeFilters";
+import { stripEmptyValueRules } from "@/utils/filters/advancedFilters";
 
 interface DocumentLabel {
   id: string;
@@ -171,7 +172,12 @@ function configureDocumentsFilters(
 
 export async function fetchSearchDocuments(params: SearchDocumentsParams = {}): Promise<SearchDocumentsResponse> {
   const url = new URL(searchDocumentsUrl());
-  const filters = configureDocumentsFilters(params.filters, params.includeDocumentsInSearch ?? false, params.excludeMergedDocuments ?? true);
+  let userFilters = params.filters;
+  if (userFilters) {
+    const stripped = stripEmptyValueRules(userFilters);
+    userFilters = isFilterGroupEmpty(stripped) ? undefined : stripped;
+  }
+  const filters = configureDocumentsFilters(userFilters, params.includeDocumentsInSearch ?? false, params.excludeMergedDocuments ?? true);
 
   // This enables `bolding` in vespa AKA highlighting, which highlights the matched terms in the results.
   url.searchParams.set("bolding", "true");
