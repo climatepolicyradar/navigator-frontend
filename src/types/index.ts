@@ -1,4 +1,3 @@
-export * from "./_experiment/shadowSearch";
 export * from "./api";
 export * from "./bff/collection";
 export * from "./bff/document";

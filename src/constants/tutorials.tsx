@@ -1,4 +1,3 @@
-import _ from "lodash";
 import Image from "next/image";
 
 import { PageLink } from "@/components/atoms/pageLink/PageLink";
