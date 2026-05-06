@@ -69,12 +69,16 @@ export const getFamilyData = async (slug: string, features: TFeatures): Promise<
   try {
     // max_hits_per_family=100 is set ensure we get all documents for a family
     // this should probably be done in the `backend-api`, but it currently does not work
-    const { data: vespaFamilyDataRaw } = await backendApiClient.get<TApiSearchResponse>(`/families/${family.import_id}?max_hits_per_family=100`);
-    vespaFamilyData = vespaFamilyDataRaw;
-  } catch (error) {
-    if (axios.isAxiosError(error) && error.response?.status === 500) {
-      errors.push(new Error("Failed to fetch Vespa families data", error));
+    const vespaResponse = await backendApiClient.get<TApiSearchResponse>(`/families/${family.import_id}?max_hits_per_family=100`);
+    // http-common's get() returns error.response rather than throwing for Axios errors,
+    // so we must check the status explicitly rather than relying on catch for non-2xx responses.
+    if (vespaResponse?.status === 200) {
+      vespaFamilyData = vespaResponse.data;
+    } else if (vespaResponse?.status === 500) {
+      errors.push(new Error("Failed to fetch Vespa families data"));
     }
+  } catch (error) {
+    errors.push(new Error("Failed to fetch Vespa families data", error));
   }
 
   // Package the family topics
