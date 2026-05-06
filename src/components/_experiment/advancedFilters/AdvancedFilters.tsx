@@ -280,6 +280,15 @@ const OPERATORS = [
   { value: "not_contains" as const, label: "is not" },
 ];
 
+const PUBLISHED_DATE_OPERATORS = [
+  { value: "eq" as const, label: "is on" },
+  { value: "not_eq" as const, label: "is not on" },
+  { value: "lt" as const, label: "is before" },
+  { value: "lte" as const, label: "is on or before" },
+  { value: "gt" as const, label: "is after" },
+  { value: "gte" as const, label: "is on or after" },
+];
+
 function OperatorSelect({ value, onChange }: { value: "contains" | "not_contains"; onChange: (op: "contains" | "not_contains") => void }) {
   return (
     <select
@@ -292,6 +301,32 @@ function OperatorSelect({ value, onChange }: { value: "contains" | "not_contains
       )}
     >
       {OPERATORS.map((op) => (
+        <option key={op.value} value={op.value}>
+          {op.label}
+        </option>
+      ))}
+    </select>
+  );
+}
+
+function PublishedDateOperatorSelect({
+  value,
+  onChange,
+}: {
+  value: "eq" | "not_eq" | "lt" | "lte" | "gt" | "gte";
+  onChange: (op: "eq" | "not_eq" | "lt" | "lte" | "gt" | "gte") => void;
+}) {
+  return (
+    <select
+      value={value}
+      onChange={(e) => onChange(e.target.value as "eq" | "not_eq" | "lt" | "lte" | "gt" | "gte")}
+      className={joinTailwindClasses(
+        "rounded border border-gray-300 bg-white px-2 py-1 text-sm font-medium text-gray-700",
+        "focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-200",
+        "cursor-pointer"
+      )}
+    >
+      {PUBLISHED_DATE_OPERATORS.map((op) => (
         <option key={op.value} value={op.value}>
           {op.label}
         </option>
@@ -330,19 +365,10 @@ function RuleRow({ rule, onUpdate, onDelete, isOnly, availableLabelIds }: RuleRo
   const isPublishedDateRule = rule.field === "attributes.published_date";
 
   if (isPublishedDateRule) {
-    const publishedDateOperatorLabel: Record<typeof rule.op, string> = {
-      eq: "is on",
-      not_eq: "is not on",
-      lt: "is before",
-      lte: "is on or before",
-      gt: "is after",
-      gte: "is on or after",
-    };
-
     return (
       <div className="flex items-center gap-2 group">
         <span className="rounded border border-gray-300 bg-white px-2 py-1 text-sm font-medium text-gray-700">Published date</span>
-        <span className="rounded border border-gray-300 bg-white px-2 py-1 text-sm text-gray-700">{publishedDateOperatorLabel[rule.op]}</span>
+        <PublishedDateOperatorSelect value={rule.op} onChange={(op) => onUpdate({ ...rule, op })} />
         <span className="rounded border border-gray-300 bg-white px-2 py-1 text-sm text-gray-700 truncate max-w-[360px]">{rule.value}</span>
         {!isOnly && (
           <button
