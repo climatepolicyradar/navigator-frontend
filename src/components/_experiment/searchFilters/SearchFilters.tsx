@@ -31,7 +31,7 @@ function hasActiveFilterOfType(filters: TLabelResult[], group: TQueryGroup | nul
   );
 }
 
-const PRIMARY_LABEL_TYPES = ["category", "published_date", "geography", "concept"] as const;
+const PRIMARY_LABEL_TYPES = ["category", "entity_type", "published_date", "geography", "concept"] as const;
 const OTHER_LABEL_TYPES = ["activity_status", "agent"] as const;
 export type TLabelType = (typeof PRIMARY_LABEL_TYPES)[number] | (typeof OTHER_LABEL_TYPES)[number];
 
