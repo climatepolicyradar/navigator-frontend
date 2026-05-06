@@ -29,7 +29,7 @@ import { addLabelRule, extractLabels, removeLabelRule } from "@/utils/filters/ad
 import { readConfigFile } from "@/utils/readConfigFile";
 import { joinTailwindClasses } from "@/utils/tailwind";
 
-const columnLayoutCss = "col-start-1 -col-end-1 cols-5:col-start-3 cols-5:-col-end-3";
+const columnLayoutCss = "col-start-1 -col-end-1 cols-5:col-start-2 cols-5:-col-end-2";
 
 type TProps = InferGetServerSidePropsType<typeof getServerSideProps>;
 
