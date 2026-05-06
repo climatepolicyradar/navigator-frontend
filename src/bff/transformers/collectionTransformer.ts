@@ -1,7 +1,6 @@
 import { oldCollectionTransformer } from "@/bff/transformers/oldCollectionTransformer";
+import { transformCollection } from "@/bff/transformers/partials/transformCollection";
 import { TCollectionApiNewData, TCollectionApiOldData, TCollectionPresentationalResponse } from "@/types";
-
-import { transformOldCollection } from "./partials/transformOldCollection";
 
 export const collectionTransformer = (
   collectionApiOldData: TCollectionApiOldData,
@@ -10,14 +9,13 @@ export const collectionTransformer = (
 ): TCollectionPresentationalResponse => {
   if (collectionApiOldData === null) return { data: null, errors };
 
-  if (collectionApiNewData) {
+  if (collectionApiNewData.collection && collectionApiNewData.families) {
     try {
       return {
         data: {
-          ...collectionApiOldData,
-          collection: transformOldCollection(collectionApiOldData.collection, {}),
+          collection: transformCollection(collectionApiNewData.collection, collectionApiNewData.families),
           debug: {
-            usesDataIn: false, // TODO
+            usesDataIn: true,
             newApiData: collectionApiNewData,
             originalCollection: collectionApiOldData.collection,
           },

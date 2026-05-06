@@ -8,7 +8,10 @@ export type TCollectionApiOldData = {
 };
 
 // TODO: fill this out when we are making new data model API calls
-export type TCollectionApiNewData = TDataInDocument | null;
+export type TCollectionApiNewData = {
+  collection: TDataInDocument | null;
+  families: TDataInDocument[] | null;
+};
 
 export type TCollectionPresentationalData = {
   collection: TCollectionPublicWithFamilies;

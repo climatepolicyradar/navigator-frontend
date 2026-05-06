@@ -1,10 +1,10 @@
 import { ApiClient } from "@/api/http-common";
+import { collectionTransformer } from "@/bff/transformers/collectionTransformer";
+import { TDataInDocument, validateDataInDocument } from "@/schemas";
 import { TApiCollectionPublicWithFamilies, TApiItemResponse, TApiSlugResponse, TCollectionPresentationalResponse, TFeatures } from "@/types";
 
-import { collectionTransformer } from "../transformers/collectionTransformer";
+import { getChildDocuments } from "./getRelations";
 
-// TODO: remove this ESLint disable when the features object is used for data source switching
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
 export const getCollectionData = async (slug: string, features: TFeatures): Promise<TCollectionPresentationalResponse> => {
   /* Make API requests */
 
@@ -36,7 +36,33 @@ export const getCollectionData = async (slug: string, features: TFeatures): Prom
     return { data: null, errors };
   }
 
+  // Get the new data-in document for this collection and its families or fall back to the older data
+  let dataInCollection: TDataInDocument | null = null;
+  let dataInFamilies: TDataInDocument[] | null = null;
+
+  if (features["new-data-model"]) {
+    try {
+      const { data: dataInCollectionResponse } = await apiClient.get<TApiItemResponse>(`/data-in/documents/${slugResponse.collection_import_id}`);
+      dataInCollection = validateDataInDocument(dataInCollectionResponse.data);
+    } catch (error) {
+      errors.push(error as Error);
+    }
+
+    const collectionFamilies = getChildDocuments(dataInCollection.documents, "Litigation");
+
+    try {
+      dataInFamilies = await Promise.all<TDataInDocument>(
+        collectionFamilies.map(async ({ value: collectionFamily }) => {
+          const { data: dataInFamilyResponse } = await apiClient.get<TApiItemResponse>(`/data-in/documents/${collectionFamily.id}`);
+          return validateDataInDocument(dataInFamilyResponse.data);
+        })
+      );
+    } catch (error) {
+      errors.push(error as Error);
+    }
+  }
+
   /* Transform API data for presentation */
 
-  return collectionTransformer({ collection }, null, errors);
+  return collectionTransformer({ collection }, { collection: dataInCollection, families: dataInFamilies }, errors);
 };
