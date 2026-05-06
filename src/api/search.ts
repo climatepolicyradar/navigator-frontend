@@ -1,4 +1,6 @@
-import { TQueryGroup } from "@/components/_experiment/advancedFilters/AdvancedFilters";
+import { isFilterGroupEmpty, TQueryGroup } from "@/components/_experiment/advancedFilters/AdvancedFilters";
+import { DATE_RANGE_MIN_YEAR, hasPublishedDateRule } from "@/utils/_experiment/dateRangeFilters";
+import { stripEmptyValueRules } from "@/utils/filters/advancedFilters";
 
 interface DocumentLabel {
   id: string;
@@ -96,7 +98,7 @@ function configureDocumentsFilters(
   includeDocumentsInSearch: boolean,
   excludeMergedDocuments: boolean
 ): TQueryGroup {
-  const notContainsMergedLabelFilter: TQueryGroup = {
+  const excludeMergedDocumentsFilter: TQueryGroup = {
     op: "and",
     filters: [
       {
@@ -116,7 +118,7 @@ function configureDocumentsFilters(
       },
     ],
   };
-  const containsAttributesPublishedFilter: TQueryGroup = {
+  const publishedStatusFilter: TQueryGroup = {
     op: "and",
     filters: [
       {
@@ -126,15 +128,36 @@ function configureDocumentsFilters(
       },
     ],
   };
+  const publishedDateBoundsFilter: TQueryGroup = {
+    op: "and",
+    filters: [
+      {
+        field: "attributes.published_date",
+        key: "published_date",
+        op: "gte",
+        value: `${DATE_RANGE_MIN_YEAR}-01-01T00:00:00.000Z`,
+      },
+      {
+        field: "attributes.published_date",
+        key: "published_date",
+        op: "lte",
+        value: new Date().toISOString(),
+      },
+    ],
+  };
 
-  // containsAttributesPublishedFilter by default
-  const filtersWithConditionals: TQueryGroup[] = [containsAttributesPublishedFilter];
+  // Always constrain document searches to published documents. Add default date
+  // bounds only when the user has not provided any published_date rule.
+  const filtersWithConditionals: TQueryGroup[] = [publishedStatusFilter];
+  if (!hasPublishedDateRule(filters)) {
+    filtersWithConditionals.push(publishedDateBoundsFilter);
+  }
   if (filters) {
     filtersWithConditionals.push(filters);
   }
 
   if (excludeMergedDocuments) {
-    filtersWithConditionals.push(notContainsMergedLabelFilter);
+    filtersWithConditionals.push(excludeMergedDocumentsFilter);
   }
 
   if (!includeDocumentsInSearch) {
@@ -149,7 +172,12 @@ function configureDocumentsFilters(
 
 export async function fetchSearchDocuments(params: SearchDocumentsParams = {}): Promise<SearchDocumentsResponse> {
   const url = new URL(searchDocumentsUrl());
-  const filters = configureDocumentsFilters(params.filters, params.includeDocumentsInSearch ?? false, params.excludeMergedDocuments ?? true);
+  let userFilters = params.filters;
+  if (userFilters) {
+    const stripped = stripEmptyValueRules(userFilters);
+    userFilters = isFilterGroupEmpty(stripped) ? undefined : stripped;
+  }
+  const filters = configureDocumentsFilters(userFilters, params.includeDocumentsInSearch ?? false, params.excludeMergedDocuments ?? true);
 
   // This enables `bolding` in vespa AKA highlighting, which highlights the matched terms in the results.
   url.searchParams.set("bolding", "true");

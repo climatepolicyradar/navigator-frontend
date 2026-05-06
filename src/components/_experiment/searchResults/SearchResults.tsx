@@ -121,10 +121,10 @@ export function SearchContainer({
   onTotalResultsChange?: (total: number | null) => void;
   onResultClicked?: (document: SearchDocument, event: React.MouseEvent<HTMLButtonElement>) => void;
 }) {
-  const filtersCheckedForEmpty = filtersDoesNotContainEmptyRule(filters) ? filters : undefined;
+  const nonEmptyFilters = filtersDoesNotContainEmptyRule(filters) ? filters : undefined;
 
   const searchPromise = useMemo(() => {
-    if (!query && !filtersCheckedForEmpty) return null;
+    if (!query && !nonEmptyFilters) return null;
 
     return fetchSearchDocuments({
       query,
@@ -132,10 +132,10 @@ export function SearchContainer({
       page_token,
       includeDocumentsInSearch,
       excludeMergedDocuments,
-      filters: filtersCheckedForEmpty,
+      filters: nonEmptyFilters,
       sort,
     });
-  }, [query, filtersCheckedForEmpty, page_token, page_size, includeDocumentsInSearch, sort, excludeMergedDocuments]);
+  }, [query, nonEmptyFilters, page_token, page_size, includeDocumentsInSearch, sort, excludeMergedDocuments]);
 
   return (
     <>
