@@ -122,6 +122,7 @@ jobs:
           AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           AWS_DEFAULT_REGION: eu-west-1
 
+  # Check if we have any infra changes
   changes:
     runs-on: ubuntu-latest
     outputs:
