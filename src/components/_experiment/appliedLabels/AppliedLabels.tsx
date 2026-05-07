@@ -84,9 +84,6 @@ export function AppliedLabels({
       )}
       {isFilterComplex(filters) ? (
         <>
-          {dateRangeValue && (
-            <AppliedDateRange value={dateRangeValue} onSelect={() => onSelectDateRange?.()} onRemove={() => onRemoveDateRange?.()} />
-          )}
           <button
             className="bg-white py-1 px-2 rounded-lg inline-flex gap-2 items-center border border-gray-300 hover:bg-gray-50"
             onClick={() => onAdvancedClick?.()}

@@ -26,7 +26,7 @@ import { findPublishedDateRangeValue, removePublishedDateRules, upsertPublishedD
 import { getAvailableLabelIdsFromAggregations } from "@/utils/_experiment/labelAggregationAvailability";
 import { getFeatureFlags } from "@/utils/featureFlags";
 import { getFeatures } from "@/utils/features";
-import { addLabelRule, extractLabels, removeLabelRule, stripEmptyValueRules } from "@/utils/filters/advancedFilters";
+import { addLabelRule, extractLabels, removeLabelRule } from "@/utils/filters/advancedFilters";
 import { readConfigFile } from "@/utils/readConfigFile";
 import { joinTailwindClasses } from "@/utils/tailwind";
 
@@ -72,8 +72,7 @@ const ShadowSearch = ({ theme, themeConfig, features }: TProps) => {
     (updater: SetStateAction<TQueryGroup>) => {
       let shouldClearAggregations = false;
       void setFiltersInUrl((prev) => {
-        const nextFiltersRaw = typeof updater === "function" ? (updater as (p: TQueryGroup) => TQueryGroup)(prev) : updater;
-        const nextFilters = stripEmptyValueRules(nextFiltersRaw);
+        const nextFilters = typeof updater === "function" ? (updater as (p: TQueryGroup) => TQueryGroup)(prev) : updater;
         if (!isEqual(prev, nextFilters) && isFilterGroupEmpty(nextFilters)) {
           shouldClearAggregations = true;
         }
