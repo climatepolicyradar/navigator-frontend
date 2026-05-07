@@ -25,6 +25,45 @@ jobs:
         with:
           arguments: --ci
 
+  # Unit tests
+  test:
+    timeout-minutes: 15
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v6
+      - uses: actions/setup-node@v6
+        with:
+          node-version: 22.13.0
+      - run: npm install
+      - run: cp .env.example .env
+      - name: Generate tsconfig.json
+        run: |
+          cp tsconfig.base.json tsconfig.json
+          sed -i "s/__THEME__/$THEME/g" tsconfig.json
+        env:
+          THEME: cpr
+      - name: Run vitest - core functionality
+        run: npm run test
+        # This is needed to pass the results on to the trunk-io/analytics-uploader
+        continue-on-error: true
+        env:
+          THEME: cpr
+
+      - name: Run vitest - new features
+        run: npm run test
+        # This is needed to pass the results on to the trunk-io/analytics-uploader
+        continue-on-error: true
+        env:
+          THEME: cpr
+          E2E_TEST_FEATURE_FLAGS: true
+
+      - name: Upload vitest results to Trunk.io
+        uses: trunk-io/analytics-uploader@v2
+        with:
+          junit-paths: "**/vitest.xml"
+          token: ${{ secrets.TRUNK_TOKEN }}
+          org-slug: ${{ secrets.TRUNK_ORG_SLUG }}
+
   # Release builds for each theme
   release:
     runs-on: ubuntu-latest
