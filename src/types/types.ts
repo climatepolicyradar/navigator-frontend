@@ -329,6 +329,10 @@ export type TCollectionPublic = {
   title: string;
 };
 
+export type TCollectionPublicWithFamilies = TCollectionPublic & {
+  families: TFamilyPublic[];
+};
+
 export type TCorpusPublic = {
   corpus_type_name: string;
   import_id: string;
@@ -399,15 +403,6 @@ export type TFamilyPublic = {
   published_date: string | null;
   slug: string;
   summary: string;
-  title: string;
-};
-
-export type TCollectionPublicWithFamilies = {
-  description: string;
-  families: TFamilyPublic[];
-  import_id: string;
-  metadata: TMetadata<"id">;
-  slug: string;
   title: string;
 };
 

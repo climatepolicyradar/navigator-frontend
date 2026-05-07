@@ -5,12 +5,15 @@ import { useState } from "react";
 
 import { getCollectionData } from "@/bff/methods/getCollectionData";
 import { FiveColumns } from "@/components/atoms/columns/FiveColumns";
+import { Debug } from "@/components/atoms/debug/Debug";
 import { EventsBlock } from "@/components/blocks/eventsBlock/EventsBlock";
 import { FamilyBlock } from "@/components/blocks/familyBlock/FamilyBlock";
 import { MetadataBlock } from "@/components/blocks/metadataBlock/MetadataBlock";
 import { TextBlock } from "@/components/blocks/textBlock/TextBlock";
 import { BreadCrumbs } from "@/components/breadcrumbs/Breadcrumbs";
+import { DataInDebug } from "@/components/debug/dataInDebug";
 import Layout from "@/components/layouts/Main";
+import { Section } from "@/components/molecules/section/Section";
 import { TToggleGroupToggle } from "@/components/molecules/toggleGroup/ToggleGroup";
 import { ContentsSideBar, ISideBarItem } from "@/components/organisms/contentsSideBar/ContentsSideBar";
 import { PageHeader } from "@/components/organisms/pageHeader/PageHeader";
@@ -27,7 +30,7 @@ import { readConfigFile } from "@/utils/readConfigFile";
 type TCollectionTabId = "about" | "cases" | "procedural history"; // Don't rename, add a label instead (else analytics break)
 const COLLECTION_TABS: TToggleGroupToggle<TCollectionTabId>[] = [{ id: "cases" }, { id: "procedural history" }, { id: "about" }];
 
-const CollectionPage = ({ collection, theme, themeConfig, features }: InferGetServerSidePropsType<typeof getServerSideProps>) => {
+const CollectionPage = ({ collection, debug, errors, theme, themeConfig, features }: InferGetServerSidePropsType<typeof getServerSideProps>) => {
   const [currentTab, setCurrentTab] = useState<TCollectionTabId>("cases");
   const onTabChange = (tab: TCollectionTabId) => setCurrentTab(tab);
 
@@ -43,6 +46,7 @@ const CollectionPage = ({ collection, theme, themeConfig, features }: InferGetSe
     <Layout title={collection.title} description={collection.description} theme={theme as TTheme} themeConfig={themeConfig}>
       <FeaturesContext.Provider value={features}>
         <BreadCrumbs dark label={collection.title} />
+        <DataInDebug usesDataIn={debug.usesDataIn} />
         <PageHeader<TCollectionTabId> dark title={collection.title} tabs={COLLECTION_TABS} currentTab={currentTab} onTabChange={onTabChange} />
         <FiveColumns>
           {currentTab === "cases" && (
@@ -66,9 +70,14 @@ const CollectionPage = ({ collection, theme, themeConfig, features }: InferGetSe
                   <div className="text-content" dangerouslySetInnerHTML={{ __html: collection.description }} />
                 </TextBlock>
                 <MetadataBlock block="metadata" metadata={getCollectionMetadata(collection)} />
-                {/* <Section block="debug" title="Debug">
-                  <Debug data={collection} title="Collection" />
-                </Section> */}
+                {features.debug && (
+                  <Section block="debug" title="Debug">
+                    <Debug data={errors.map((error) => JSON.parse(error))} title="Transformation errors" />
+                    <Debug data={collection} title={debug?.usesDataIn ? "Collection (Data-in API)" : "Collection (V2 API)"} />
+                    {debug?.originalCollection && <Debug data={debug?.originalCollection} title="Original collection (V2 API)" />}
+                    {debug?.newApiData && <Debug data={debug?.newApiData} title="Data-in API document response" />}
+                  </Section>
+                )}
               </main>
             </>
           )}
@@ -104,12 +113,13 @@ export const getServerSideProps = (async (context) => {
   }
 
   const { data: collectionData, errors } = await getCollectionData(slug, features);
-  errors.forEach(console.error); // eslint-disable-line no-console
+  errors.forEach(console.error);
   if (collectionData === null) return { notFound: true };
 
   return {
     props: withEnvConfig({
       ...collectionData,
+      errors: errors.map((error) => JSON.stringify(error, Object.getOwnPropertyNames(error))),
       theme,
       themeConfig,
       features,

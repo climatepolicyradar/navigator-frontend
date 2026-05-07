@@ -11,6 +11,10 @@ export const oldCollectionTransformer = (
       data: {
         ...collectionApiOldData,
         collection: transformOldCollection(collectionApiOldData.collection, {}),
+        debug: {
+          newApiData: collectionApiNewData,
+          usesDataIn: false,
+        },
       },
       errors,
     };
