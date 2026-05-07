@@ -4,7 +4,7 @@ import { Switch } from "@base-ui/react/switch";
 import isEqual from "lodash/isEqual";
 import { GetServerSideProps, InferGetServerSidePropsType } from "next";
 import { useQueryState, parseAsBoolean, parseAsString, parseAsJson } from "nuqs";
-import { startTransition, useCallback, useEffect, useMemo, useState, type SetStateAction } from "react";
+import { useCallback, useEffect, useMemo, useState, type SetStateAction } from "react";
 
 import { ApiClient } from "@/api/http-common";
 import { IAggregationLabel, normaliseSearchDocumentsSortKey, SearchDocument } from "@/api/search";
@@ -26,7 +26,7 @@ import { findPublishedDateRangeValue, removePublishedDateRules, upsertPublishedD
 import { getAvailableLabelIdsFromAggregations } from "@/utils/_experiment/labelAggregationAvailability";
 import { getFeatureFlags } from "@/utils/featureFlags";
 import { getFeatures } from "@/utils/features";
-import { addLabelRule, extractLabels, isFilterComplex, removeLabelRule } from "@/utils/filters/advancedFilters";
+import { addLabelRule, extractLabels, removeLabelRule, stripEmptyValueRules } from "@/utils/filters/advancedFilters";
 import { readConfigFile } from "@/utils/readConfigFile";
 import { joinTailwindClasses } from "@/utils/tailwind";
 
@@ -62,40 +62,28 @@ const ShadowSearch = ({ theme, themeConfig, features }: TProps) => {
   const [includeDocumentsInSearch, setIncludeDocumentsInSearch] = useQueryState("include_documents", parseAsBoolean.withDefault(true));
   const [excludeMergedDocuments, setExcludeMergedDocuments] = useQueryState("exclude_merged_documents", parseAsBoolean.withDefault(true));
 
-  // Once the user edits via the advanced dialog, keep the applied bar as one summary row.
-  const [appliedBarUsesAdvancedSummary, setAppliedBarUsesAdvancedSummary] = useState(false);
-
   /**
    * Drops aggregations only when the filter tree becomes empty so greyed options
    * from an old response are not kept with no filters. If at least one filter
    * stays active, previous aggregations are retained until the new search returns.
    * Skips no-op updates. Done here instead of an effect for set-state-in-effect.
-   *
-   * Empty-value rules are kept in the URL while the advanced filter builder is
-   * open. They are stripped in {@link fetchSearchDocuments} so new rule rows
-   * are not removed as soon as they are added.
    */
   const setFilters = useCallback(
     (updater: SetStateAction<TQueryGroup>) => {
       let shouldClearAggregations = false;
-      let shouldResetAppliedSummary = false;
       void setFiltersInUrl((prev) => {
         const nextFiltersRaw = typeof updater === "function" ? (updater as (p: TQueryGroup) => TQueryGroup)(prev) : updater;
-        const nextFilters = nextFiltersRaw;
+        const nextFilters = stripEmptyValueRules(nextFiltersRaw);
         if (!isEqual(prev, nextFilters) && isFilterGroupEmpty(nextFilters)) {
           shouldClearAggregations = true;
-          shouldResetAppliedSummary = true;
         }
         return nextFilters;
       });
       if (shouldClearAggregations) {
         setLabelAggregations(undefined);
       }
-      if (shouldResetAppliedSummary) {
-        setAppliedBarUsesAdvancedSummary(false);
-      }
     },
-    [setFiltersInUrl, setAppliedBarUsesAdvancedSummary]
+    [setFiltersInUrl]
   );
 
   // Derive selectedLabels from the filter tree
@@ -110,20 +98,6 @@ const ShadowSearch = ({ theme, themeConfig, features }: TProps) => {
 
   // Control Advanced Filters view
   const [advancedFiltersOpen, setAdvancedFiltersOpen] = useState(false);
-
-  /**
-   * nuqs can update `filters` from the URL (back/forward) without going through
-   * {@link setFilters}; reset the applied-bar mode in a transition to avoid
-   * synchronous set-state-in-effect (eslint-plugin-react-hooks).
-   */
-  useEffect(() => {
-    if (!isFilterGroupEmpty(filters)) return;
-    startTransition(() => {
-      setAppliedBarUsesAdvancedSummary(false);
-    });
-  }, [filters]);
-
-  const summariseAppliedBarAsAdvancedOnly = appliedBarUsesAdvancedSummary || isFilterComplex(filters);
 
   const handleSelectLabel = (label: string, type: string) => {
     setFilterSidebarCategory((type as TLabelType) || "agent");
@@ -240,9 +214,9 @@ const ShadowSearch = ({ theme, themeConfig, features }: TProps) => {
         {!isFilterGroupEmpty(filters) && (
           <div className={columnLayoutCss}>
             <AppliedLabels
+              filters={filters}
               availableFilters={availableFilters}
               labels={selectedLabels}
-              summariseAsAdvancedOnly={summariseAppliedBarAsAdvancedOnly}
               dateRangeValue={selectedPublishedDateRange}
               onClear={() => {
                 setFilters(createGroup());
@@ -322,9 +296,8 @@ const ShadowSearch = ({ theme, themeConfig, features }: TProps) => {
       {/* ADVANCED FILTERS */}
       <AdvancedFilters
         filters={filters}
-        setFilters={(next) => {
-          setAppliedBarUsesAdvancedSummary(true);
-          setFilters(next);
+        setFilters={(filters) => {
+          setFilters(filters);
           setCurrentPage("1");
         }}
         open={advancedFiltersOpen}
