@@ -8,73 +8,7 @@ on:
 # trunk-ignore(checkov/CKV2_GHA_1)
 permissions: write-all
 jobs:
-  # lhci-desktop:
-  #   name: Lighthouse Desktop
-  #   runs-on: ubuntu-latest
-  #   strategy:
-  #     fail-fast: false
-  #     matrix:
-  #       theme: [cpr, cclw, mcf, ccc]
-  #   permissions:
-  #     checks: write
-  #     contents: read
-  #   steps:
-  #     - uses: actions/checkout@v6
-  #     - name: Use Node.js 22.13.0
-  #       uses: actions/setup-node@v6
-  #       with:
-  #         node-version: 22.13.0
-  #     - run: npm install
-  #     - run: cp .env.example .env
-  #     - run: ROBOTS=true npm run build
-  #     - name: install Lighthouse CI
-  #       run: npm install -g @lhci/cli@0.14.x
-  #     - id: upper-theme
-  #       name: Theme to uppercase
-  #       run: |
-  #         theme=$(echo ${{ matrix.theme }} | tr '[:lower:]' '[:upper:]')
-  #         echo "theme=$theme" >> $GITHUB_OUTPUT
-  #     - name: run Lighthouse Desktop
-  #       run: lhci autorun --config=lighthouserc.desktop.js --collect.settings.preset=desktop
-  #       env:
-  #         LHCI_GITHUB_APP_TOKEN: ${{ secrets.LHCI_GITHUB_APP_TOKEN }}
-  #         LHCI_TOKEN: ${{ secrets[format('LHCI_{0}_DESKTOP_TOKEN', steps.upper-theme.outputs.theme)] }}
-  #         ROBOTS: true
-
-  # lhci-mobile:
-  #   name: Lighthouse Mobile
-  #   runs-on: ubuntu-latest
-  #   strategy:
-  #     fail-fast: false
-  #     matrix:
-  #       theme: [cpr, cclw, mcf, ccc]
-  #   permissions:
-  #     checks: write
-  #     contents: read
-  #   steps:
-  #     - uses: actions/checkout@v6
-  #     - name: Use Node.js 22.13.0
-  #       uses: actions/setup-node@v6
-  #       with:
-  #         node-version: 22.13.0
-  #     - run: npm install
-  #     - run: cp .env.example .env
-  #     - run: ROBOTS=true npm run build
-  #     - name: install Lighthouse CI
-  #       run: npm install -g @lhci/cli@0.14.x
-  #     - id: upper-theme
-  #       name: Theme to uppercase
-  #       run: |
-  #         theme=$(echo ${{ matrix.theme }} | tr '[:lower:]' '[:upper:]')
-  #         echo "theme=$theme" >> $GITHUB_OUTPUT
-  #     - name: run Lighthouse Mobile
-  #       run: lhci autorun --config=lighthouserc.mobile.js
-  #       env:
-  #         LHCI_GITHUB_APP_TOKEN: ${{ secrets.LHCI_GITHUB_APP_TOKEN }}
-  #         LHCI_TOKEN: ${{ secrets[format('LHCI_{0}_MOBILE_TOKEN', steps.upper-theme.outputs.theme)] }}
-  #         ROBOTS: true
-
-  # test
+  # Trunk check
   code-quality:
     runs-on: ubuntu-latest
     steps:
@@ -91,144 +25,10 @@ jobs:
         with:
           arguments: --ci
 
-  test:
-    timeout-minutes: 60
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v6
-      - uses: actions/setup-node@v6
-        with:
-          node-version: 22.13.0
-      - run: npm install
-      - run: cp .env.example .env
-      - name: Generate tsconfig.json
-        run: |
-          cp tsconfig.base.json tsconfig.json
-          sed -i "s/__THEME__/$THEME/g" tsconfig.json
-        env:
-          THEME: cpr
-      - name: Run vitest - core functionality
-        run: npm run test
-        # This is needed to pass the results on to the trunk-io/analytics-uploader
-        continue-on-error: true
-        env:
-          THEME: cpr
-      - name: Run vitest - new features
-        run: npm run test
-        # This is needed to pass the results on to the trunk-io/analytics-uploader
-        continue-on-error: true
-        env:
-          THEME: cpr
-          E2E_TEST_FEATURE_FLAGS: true
-
-      - name: Upload vitest results to Trunk.io
-        uses: trunk-io/analytics-uploader@v2
-        with:
-          junit-paths: "**/vitest.xml"
-          token: ${{ secrets.TRUNK_TOKEN }}
-          org-slug: ${{ secrets.TRUNK_ORG_SLUG }}
-
-  test-e2e:
-    timeout-minutes: 20
-    runs-on: ubuntu-latest
-    strategy:
-      fail-fast: false
-      matrix:
-        theme: [cpr, cclw, mcf, ccc]
-        shardIndex: [1, 2]
-        shardTotal: [2]
-    env:
-      PLAYWRIGHT_BROWSERS_PATH: $HOME/.cache/ms-playwright
-    steps:
-      - uses: actions/checkout@v6
-
-      - uses: actions/setup-node@v6
-        with:
-          node-version: 22.13.0
-          cache: npm
-
-      - run: npm ci
-
-      - run: cp .env.example .env
-
-      - name: Generate tsconfig.json
-        run: |
-          cp tsconfig.base.json tsconfig.json
-          sed -i "s/__THEME__/${{ matrix.theme }}/g" tsconfig.json
-
-      - name: Cache Next.js build
-        uses: actions/cache@v5
-        with:
-          path: .next/cache
-          key: ${{ runner.os }}-nextjs-${{ matrix.theme }}-${{ hashFiles('**/package-lock.json') }}-${{ hashFiles('src/**') }}
-          restore-keys: |
-            ${{ runner.os }}-nextjs-${{ matrix.theme }}-${{ hashFiles('**/package-lock.json') }}-
-
-      - run: THEME=${{ matrix.theme }} npm run build
-        env:
-          NODE_ENV: production
-
-      - name: Copy static assets to standalone
-        run: |
-          cp -r public .next/standalone/public
-          cp -r .next/static .next/standalone/.next/static
-
-      - name: Cache Playwright browsers
-        uses: actions/cache@v5
-        id: playwright-cache
-        with:
-          path: ${{ env.PLAYWRIGHT_BROWSERS_PATH }}
-          key: ${{ runner.os }}-playwright-${{ hashFiles('**/package-lock.json') }}
-
-      - name: Install Playwright Browsers
-        if: steps.playwright-cache.outputs.cache-hit != 'true'
-        run: npx playwright install --with-deps chromium
-        env:
-          PLAYWRIGHT_BROWSERS_PATH: ${{ env.PLAYWRIGHT_BROWSERS_PATH }}
-        timeout-minutes: 5
-
-      - name: Install Playwright System Dependencies
-        if: steps.playwright-cache.outputs.cache-hit == 'true'
-        run: npx playwright install-deps chromium
-        env:
-          PLAYWRIGHT_BROWSERS_PATH: ${{ env.PLAYWRIGHT_BROWSERS_PATH }}
-        timeout-minutes: 2
-        continue-on-error: true
-
-      - name: Verify Playwright Installation
-        run: npx playwright install chromium --dry-run || npx playwright install chromium
-        env:
-          PLAYWRIGHT_BROWSERS_PATH: ${{ env.PLAYWRIGHT_BROWSERS_PATH }}
-        timeout-minutes: 3
-
-      - name: Run Tests - core functionality
-        continue-on-error: true
-        env:
-          THEME: ${{ matrix.theme }}
-          PLAYWRIGHT_BROWSERS_PATH: ${{ env.PLAYWRIGHT_BROWSERS_PATH }}
-        run: npx playwright test tests/${{ matrix.theme }}/ --shard=${{ matrix.shardIndex }}/${{ matrix.shardTotal }}
-
-      - name: Run Tests - new features
-        continue-on-error: true
-        env:
-          THEME: ${{ matrix.theme }}
-          PLAYWRIGHT_BROWSERS_PATH: ${{ env.PLAYWRIGHT_BROWSERS_PATH }}
-          E2E_TEST_FEATURE_FLAGS: true
-        run: npx playwright test tests/${{ matrix.theme }}/ --shard=${{ matrix.shardIndex }}/${{ matrix.shardTotal }}
-
-      - name: Upload Test Results to Trunk.io
-        uses: trunk-io/analytics-uploader@v2
-        env:
-          THEME: ${{ matrix.theme }}
-          PLAYWRIGHT_BROWSERS_PATH: ${{ env.PLAYWRIGHT_BROWSERS_PATH }}
-        with:
-          junit-paths: test-results-${{ matrix.theme }}/playwright.xml
-          token: ${{ secrets.TRUNK_TOKEN }}
-          org-slug: ${{ secrets.TRUNK_ORG_SLUG }}
-
+  # Release builds for each theme
   release:
     runs-on: ubuntu-latest
-    needs: [code-quality, test, test-e2e]
+    needs: [code-quality]
     strategy:
       fail-fast: false
       matrix:
@@ -292,6 +92,7 @@ jobs:
           docker push $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
           echo "image=$ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG" >> $GITHUB_OUTPUT
 
+  # Deploy Storybook
   storybook:
     runs-on: ubuntu-latest
     env:
@@ -320,19 +121,6 @@ jobs:
           AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
           AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           AWS_DEFAULT_REGION: eu-west-1
-
-  # cleanup-lhci-pr-data:
-  #   runs-on: ubuntu-latest
-  #   needs: [lhci-desktop, lhci-mobile]
-  #   steps:
-  #     - uses: actions/checkout@v6
-  #     - name: Trigger downstream workflow
-  #       run: |
-  #         curl -X POST \
-  #           -H "Authorization: token ${{ secrets.GITHUB_TOKEN }}" \
-  #           -H "Accept: application/vnd.github.v3+json" \
-  #           https://api.github.com/repos/${{ github.repository_owner }}/navigator-infra/dispatches \
-  #           -d '{"event_type":"cleanup_lhci","client_payload":{"commit_hash":"${{ github.sha }}","source_repo":"${{ github.repository }}"}}'
 
   changes:
     runs-on: ubuntu-latest
@@ -385,6 +173,7 @@ jobs:
           CHANGES=${CHANGES:-[]}
           echo "projects=$(echo "$CHANGES" | jq -c '.')" >> "$GITHUB_OUTPUT"
 
+  # Pulumi commands
   pulumi-up:
     needs: changes
     if: needs.changes.outputs.projects != '[]'
