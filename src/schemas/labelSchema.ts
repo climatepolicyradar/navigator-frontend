@@ -4,6 +4,7 @@ import * as v from "valibot";
 
 // Strictly validate label types so they reliably grouped and found later
 export const LABEL_TYPES = [
+  "author",
   "activity_status",
   "category",
   "deprecated_category",
