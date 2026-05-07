@@ -85,10 +85,11 @@ export const getFamilyData = async (slug: string, features: TFeatures): Promise<
   let familyTopics: IApiFamilyDocumentTopics;
   if (vespaFamilyData) familyTopics = await processFamilyTopics(vespaFamilyData);
 
-  const configRaw = await backendApiClient.getConfig();
-  const response_geo = extractNestedData<TApiGeography>(configRaw.data.geographies);
+  const { config, error: configError } = await backendApiClient.getConfig();
+  if (configError) errors.push(configError);
+  const response_geo = extractNestedData<TApiGeography>(config.geographies);
   const countries = response_geo[1];
-  const corpusTypes: TCorpusTypeDictionary = configRaw.data.corpus_types;
+  const corpusTypes: TCorpusTypeDictionary = config.corpus_types;
 
   // This is because our family.geographies field isn't hydrated but rather a string[]
   const allSubdivisions = await Promise.all<TApiGeographySubdivision[]>(
