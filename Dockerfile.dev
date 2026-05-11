@@ -14,7 +14,7 @@ USER nextjs
 
 EXPOSE 3000
 # Regenerate tsconfig at runtime using THEME from mounted .env
-CMD ["sh", "-c", "npm ci && npm run dev"]
+CMD ["sh", "-c", "npm i && npm run dev"]
 
 HEALTHCHECK --interval=30s --timeout=3s --start-period=5s --retries=3 \
   CMD wget -qO- http://localhost:3000 >/dev/null 2>&1 || exit 1

@@ -1,7 +1,7 @@
 import { ApiClient } from "@/api/http-common";
 import { documentTransformer } from "@/bff/transformers/documentTransformer";
 import { TDataInDocument, validateDataInDocument } from "@/schemas";
-import { TApiItemResponse, TApiSearchResponse, TApiSlugResponse, TDocumentPresentationalResponse, TFeatures } from "@/types";
+import { TApiItemResponse, TApiSearchResponse, TApiSlugResponse, TDocumentPresentationalResponse, TFeatures, TTopics } from "@/types";
 import { extractTopicIds } from "@/utils/extractTopicIds";
 import { fetchAndProcessTopics } from "@/utils/fetchAndProcessTopics";
 
@@ -34,14 +34,20 @@ export const getDocumentData = async (slug: string, features: TFeatures): Promis
 
   let vespaDocumentData: TApiSearchResponse;
   try {
-    const { data } = await backendApiClient.get<TApiSearchResponse>(`/document/${document.id}`);
-    vespaDocumentData = data;
+    const vespaResponse = await backendApiClient.get<TApiSearchResponse>(`/document/${document.id}`);
+    // http-common's get() returns error.response rather than throwing for Axios errors,
+    // so we must check the status explicitly rather than relying on catch for non-2xx responses.
+    if (vespaResponse?.status === 200) {
+      vespaDocumentData = vespaResponse.data;
+    } else if (vespaResponse?.status === 500) {
+      errors.push(new Error("Failed to fetch Vespa document data"));
+    }
   } catch (error) {
-    errors.push(new Error("Failed to fetch data from Vespa", error));
-    return { data: null, errors };
+    errors.push(new Error("Failed to fetch Vespa document data", error));
   }
 
-  const topicsData = await fetchAndProcessTopics(extractTopicIds(vespaDocumentData));
+  let topicsData: TTopics;
+  if (vespaDocumentData) topicsData = await fetchAndProcessTopics(extractTopicIds(vespaDocumentData));
 
   /* Transform API data for presentation */
 
