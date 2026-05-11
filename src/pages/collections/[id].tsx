@@ -46,7 +46,7 @@ const CollectionPage = ({ collection, debug, errors, theme, themeConfig, feature
     <Layout title={collection.title} description={collection.description} theme={theme as TTheme} themeConfig={themeConfig}>
       <FeaturesContext.Provider value={features}>
         <BreadCrumbs dark label={collection.title} />
-        <DataInDebug usesDataIn={debug.usesDataIn} />
+        {features.debug && <DataInDebug usesDataIn={debug.usesDataIn} />}
         <PageHeader<TCollectionTabId> dark title={collection.title} tabs={COLLECTION_TABS} currentTab={currentTab} onTabChange={onTabChange} />
         <FiveColumns>
           {currentTab === "cases" && (
