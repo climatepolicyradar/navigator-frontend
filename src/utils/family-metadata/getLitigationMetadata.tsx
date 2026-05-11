@@ -25,9 +25,8 @@ export function getLitigationMetadata(
 
   // Structure concepts into a hierarchy we can use
   const hierarchy = buildConceptHierarchy(family.concepts);
-  const geosOrdered = sortBy(family.geographies, [(geo) => geo.length !== 3, (geo) => geo.toLowerCase()]);
 
-  const isUSA = geosOrdered.includes("USA");
+  const isUSA = family.geographies.some((geo) => geo.code === "USA");
 
   /* Filing year */
   let filingTimestamp = family.events.find((event) => FILING_DATE_EVENT_TYPES.includes(event.event_type))?.date;
@@ -45,19 +44,15 @@ export function getLitigationMetadata(
   });
 
   /* Geography */
-  if (geosOrdered.length > 0) {
+  if (family.geographies.length > 0) {
     metadata.push({
       label: "Geography",
-      value: geosOrdered.map((geo, index) => {
-        const geoSlug = getCountrySlug(geo, countries);
-        const geoName = geoSlug ? getCountryName(geo, countries) : getSubdivisionName(geo, subdivisions);
-        return (
-          <Fragment key={geo}>
-            {!isSystemGeo(geoName) ? <GeographyLink code={geo} name={geoName} slug={geoSlug || geo.toLowerCase()} /> : <span>{geoName}</span>}
-            {index + 1 < geosOrdered.length && hierarchyArrow}
-          </Fragment>
-        );
-      }),
+      value: family.geographies.map((geo, index) => (
+        <Fragment key={geo.slug}>
+          {!isSystemGeo(geo.name) ? <GeographyLink {...geo} /> : <span>{geo.name}</span>}
+          {index + 1 < family.geographies.length && hierarchyArrow}
+        </Fragment>
+      )),
     });
   }
 

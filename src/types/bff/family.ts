@@ -1,43 +1,28 @@
 import { TDataInDocument } from "@/schemas";
 
-import {
-  IApiFamilyDocumentTopics,
-  TApiCollectionPublicWithFamilies,
-  TApiCorpusTypeDictionary,
-  TApiFamilyPublic,
-  TApiGeography,
-  TApiGeographySubdivision,
-  TApiSearchResponse,
-  TApiTarget,
-} from "../api";
+import { IApiFamilyDocumentTopics, TApiCorpusTypeDictionary, TApiGeography, TApiSearchResponse, TApiTarget } from "../api";
 import { IFamilyDocumentTopics } from "../tables/familyDocumentTopics";
-import { TCollectionPublicWithFamilies, TFamilyPublic, TGeography, TGeographySubdivision, TSearchResponse, TTarget } from "../types";
+import { TCollectionPublicWithFamilies, TFamilyPublic, TGeographySubdivision, TSearchResponse, TTarget } from "../types";
 
-export type TFamilyApiOldData = {
-  collections: TApiCollectionPublicWithFamilies[];
+export type TFamilyApiData = {
+  collections: TDataInDocument[];
   corpusTypes: TApiCorpusTypeDictionary;
   countries: TApiGeography[];
-  family: TApiFamilyPublic;
+  family: TDataInDocument;
   familyTopics: IApiFamilyDocumentTopics | null;
-  subdivisions: TApiGeographySubdivision[];
   targets: TApiTarget[];
   vespaFamilyData: TApiSearchResponse | null;
 };
 
-export type TFamilyApiNewData = TDataInDocument | null;
-
 export type TFamilyPresentationalData = {
   collections: TCollectionPublicWithFamilies[];
-  countries: TGeography[];
   family: TFamilyPublic;
   familyTopics: IFamilyDocumentTopics | null;
   subdivisions: TGeographySubdivision[];
   targets: TTarget[];
   vespaFamilyData: TSearchResponse | null;
   debug?: {
-    usesDataIn: boolean;
-    newApiData?: TFamilyApiNewData;
-    originalFamily?: TFamilyPublic;
+    dataInDocument: TDataInDocument;
   };
 };
 

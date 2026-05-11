@@ -1,44 +1,24 @@
-import { oldFamilyTransformer } from "@/bff/transformers/oldFamilyTransformer";
-import { transformCountries } from "@/bff/transformers/partials/transformCountries";
+import { transformCollection } from "@/bff/transformers/partials/transformCollection";
 import { transformFamily } from "@/bff/transformers/partials/transformFamily";
-import { transformOldCollection } from "@/bff/transformers/partials/transformOldCollection";
-import { transformOldFamily } from "@/bff/transformers/partials/transformOldFamily";
-import { LABEL_TYPES, MANDATORY_FAMILY_LABEL_TYPES, TDataInLabel, TDataInLabelType } from "@/schemas";
-import { TFamilyApiNewData, TFamilyApiOldData, TFamilyPresentationalResponse } from "@/types";
-import { groupByType } from "@/utils/data-in/groupByType";
+import { TFamilyApiData, TFamilyPresentationalResponse } from "@/types";
 
-export const familyTransformer = (
-  familyApiOldData: TFamilyApiOldData,
-  familyApiNewData: TFamilyApiNewData,
-  errors: Error[]
-): TFamilyPresentationalResponse => {
-  if (familyApiOldData === null) return { data: null, errors };
-
-  if (familyApiNewData) {
-    try {
-      const { corpusTypes, ...oldData } = familyApiOldData;
-      const { labels } = familyApiNewData;
-      const groupedLabels = groupByType<TDataInLabel, TDataInLabelType>(labels, LABEL_TYPES, MANDATORY_FAMILY_LABEL_TYPES);
-      const family = transformFamily(familyApiNewData);
-
-      return {
-        data: {
-          ...oldData,
-          collections: familyApiOldData.collections.map((collection) => transformOldCollection(collection, corpusTypes)),
-          countries: transformCountries(familyApiOldData.countries, groupedLabels.geography),
-          family,
-          debug: {
-            originalFamily: transformOldFamily(familyApiOldData.family, corpusTypes),
-            newApiData: familyApiNewData,
-            usesDataIn: true,
-          },
+export const familyTransformer = (familyApiData: TFamilyApiData, errors: Error[]): TFamilyPresentationalResponse => {
+  try {
+    return {
+      data: {
+        collections: familyApiData.collections.map((collection) => transformCollection(collection)),
+        family: transformFamily(familyApiData.family),
+        familyTopics: familyApiData.familyTopics,
+        subdivisions: [], // TODO
+        targets: familyApiData.targets,
+        vespaFamilyData: familyApiData.vespaFamilyData,
+        debug: {
+          dataInDocument: familyApiData.family,
         },
-        errors,
-      };
-    } catch (error) {
-      return oldFamilyTransformer(familyApiOldData, familyApiNewData, [...errors, error as Error]);
-    }
-  } else {
-    return oldFamilyTransformer(familyApiOldData, familyApiNewData, errors);
+      },
+      errors,
+    };
+  } catch (error) {
+    return { data: null, errors: [...errors, error as Error] };
   }
 };

@@ -11,7 +11,6 @@ import { TargetsBlock } from "@/components/blocks/targetsBlock/TargetsBlock";
 import { TextBlock } from "@/components/blocks/textBlock/TextBlock";
 import { TopicsBlock } from "@/components/blocks/topicsBlock/TopicsBlock";
 import { BreadCrumbs } from "@/components/breadcrumbs/Breadcrumbs";
-import { DataInDebug } from "@/components/debug/dataInDebug";
 import Layout from "@/components/layouts/Main";
 import { Section } from "@/components/molecules/section/Section";
 import { BlocksLayout, TBlockDefinitions } from "@/components/organisms/blocksLayout/BlocksLayout";
@@ -23,6 +22,7 @@ import useConfig from "@/hooks/useConfig";
 import { useFamilyPageHeaderData } from "@/hooks/useFamilyPageHeaderData";
 import useSearch from "@/hooks/useSearch";
 import { useText } from "@/hooks/useText";
+import { TDataInDocument } from "@/schemas";
 import {
   IFamilyDocumentTopics,
   TCollectionPublicWithFamilies,
@@ -36,7 +36,6 @@ import {
   TTheme,
   TThemeConfig,
   TFeatures,
-  TFamilyApiNewData,
 } from "@/types";
 import { getFamilyBlocks } from "@/utils/blocks/getFamilyBlocks";
 import { getFamilyMetadata } from "@/utils/family-metadata/getFamilyMetadata";
@@ -59,9 +58,7 @@ export interface IProps {
   themeConfig: TThemeConfig;
   vespaFamilyData?: TSearchResponse | null;
   debug?: {
-    usesDataIn: boolean;
-    newApiData?: TFamilyApiNewData;
-    originalFamily?: TFamilyPublic;
+    dataInDocument: TDataInDocument;
   };
 }
 
@@ -115,9 +112,8 @@ export const FamilyPage = ({
         <Section key="debug" block="debug" title="Debug">
           <div className="col-start-1 -col-end-1 flex flex-col gap-2">
             <Debug data={errors.map((error) => JSON.parse(error))} title="Transformation errors" />
-            <Debug data={family} title={debug?.usesDataIn ? "Family (Data-in API)" : "Family (V2 API)"} />
-            {debug?.originalFamily && <Debug data={debug?.originalFamily} title="Family (V2 API)" />}
-            {debug?.newApiData && <Debug data={debug?.newApiData} title="Data-in API document response" />}
+            <Debug data={family} title="Family" />
+            {debug?.dataInDocument && <Debug data={debug.dataInDocument} title="Data-in API document response" />}
             <Debug data={collections} title="Collections" />
             <Debug data={countries} title="Countries" />
             <Debug data={subdivisions} title="Subdivisions" />
@@ -198,14 +194,13 @@ export const FamilyPage = ({
           isSubdivision={Boolean(breadcrumbParentGeography)}
           label={family.title}
         />
-        {features["new-data-model"] && features.debug && <DataInDebug usesDataIn={debug.usesDataIn} />}
         <PageHeader title={family.title} metadata={pageHeaderMetadata} />
         <BlocksLayout blockDefinitions={blockDefinitions} blocksToRender={blocksToRender} />
         <Head>
           <script
             type="application/ld+json"
             dangerouslySetInnerHTML={{
-              __html: JSON.stringify(getLitigationCaseJSONLD(family, countries, subdivisions)),
+              __html: JSON.stringify(getLitigationCaseJSONLD(family)),
             }}
           />
         </Head>

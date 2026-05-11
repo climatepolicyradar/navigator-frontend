@@ -1,3 +1,4 @@
+import { DEFAULT_DOCUMENT_TITLE } from "@/constants/document";
 import {
   ITEM_TYPES,
   LABEL_TYPES,
@@ -35,7 +36,7 @@ export const transformDocument = (document: TDataInDocument, events: TFamilyEven
     md5_sum: documentAttributes.md5_sum || null,
     slug: documentAttributes.deprecated_slug,
     source_url: groupedItems.source[0].url,
-    title: document.title,
+    title: document.title || DEFAULT_DOCUMENT_TITLE,
     variant_name: documentAttributes.variant || null,
     variant: documentAttributes.variant || null,
     // Not used:

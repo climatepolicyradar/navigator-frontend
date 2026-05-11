@@ -1,10 +1,7 @@
-import sortBy from "lodash/sortBy";
 import { Legislation, WithContext } from "schema-dts";
 
-import { getCountryName, getCountrySlug } from "@/helpers/getCountryFields";
-import { TFamilyPublic, TGeography, TGeographySubdivision } from "@/types";
-
-import { getAppUrlForJSONLD } from "./helpers";
+import { TFamilyPublic } from "@/types";
+import { getAppUrlForJSONLD } from "@/utils/json-ld/helpers";
 
 /**
  * Generates JSON-LD structured data for a litigation case.
@@ -21,7 +18,7 @@ import { getAppUrlForJSONLD } from "./helpers";
  * The schema can be validated here: https://validator.schema.org/
  */
 
-export const getLitigationCaseJSONLD = (familyCase: TFamilyPublic, countries: TGeography[], subdivisions: TGeographySubdivision[]) => {
+export const getLitigationCaseJSONLD = (familyCase: TFamilyPublic) => {
   const appUrl = getAppUrlForJSONLD();
 
   // Default JSON-LD legislation structure
@@ -51,28 +48,15 @@ export const getLitigationCaseJSONLD = (familyCase: TFamilyPublic, countries: TG
   }
 
   // Geography related JSON-LD
-  const geosOrdered = sortBy(familyCase.geographies, [(geo) => geo.length !== 3, (geo) => geo.toLowerCase()]);
 
-  if (geosOrdered.length > 0) {
+  if (familyCase.geographies.length > 0) {
     const spatialCoverage: any[] = []; // TODO: improve typing using schema-dts
-    geosOrdered.forEach((geo) => {
-      const countryName = getCountryName(geo, countries);
-      if (countryName) {
-        spatialCoverage.push({
-          "@type": "Place",
-          name: countryName,
-          url: `${appUrl}/geographies/${getCountrySlug(geo, countries)}`,
-        });
-      } else {
-        const subdivision = subdivisions.find((sub) => sub.code === geo);
-        if (subdivision) {
-          spatialCoverage.push({
-            "@type": "Place",
-            name: subdivision.name,
-            url: `${appUrl}/geographies/${subdivision.code}`,
-          });
-        }
-      }
+    familyCase.geographies.forEach((geo) => {
+      spatialCoverage.push({
+        "@type": "Place",
+        name: geo.name,
+        url: `${appUrl}/geographies/${geo.slug}`,
+      });
     });
     if (spatialCoverage.length > 0) {
       jsonLd.spatialCoverage = spatialCoverage;

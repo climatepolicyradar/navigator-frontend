@@ -11,7 +11,6 @@ import { FamilyBlock } from "@/components/blocks/familyBlock/FamilyBlock";
 import { MetadataBlock } from "@/components/blocks/metadataBlock/MetadataBlock";
 import { TextBlock } from "@/components/blocks/textBlock/TextBlock";
 import { BreadCrumbs } from "@/components/breadcrumbs/Breadcrumbs";
-import { DataInDebug } from "@/components/debug/dataInDebug";
 import Layout from "@/components/layouts/Main";
 import { Section } from "@/components/molecules/section/Section";
 import { TToggleGroupToggle } from "@/components/molecules/toggleGroup/ToggleGroup";
@@ -46,7 +45,6 @@ const CollectionPage = ({ collection, debug, errors, theme, themeConfig, feature
     <Layout title={collection.title} description={collection.description} theme={theme as TTheme} themeConfig={themeConfig}>
       <FeaturesContext.Provider value={features}>
         <BreadCrumbs dark label={collection.title} />
-        <DataInDebug usesDataIn={debug.usesDataIn} />
         <PageHeader<TCollectionTabId> dark title={collection.title} tabs={COLLECTION_TABS} currentTab={currentTab} onTabChange={onTabChange} />
         <FiveColumns>
           {currentTab === "cases" && (
@@ -73,9 +71,8 @@ const CollectionPage = ({ collection, debug, errors, theme, themeConfig, feature
                 {features.debug && (
                   <Section block="debug" title="Debug">
                     <Debug data={errors.map((error) => JSON.parse(error))} title="Transformation errors" />
-                    <Debug data={collection} title={debug?.usesDataIn ? "Collection (Data-in API)" : "Collection (V2 API)"} />
-                    {debug?.originalCollection && <Debug data={debug?.originalCollection} title="Original collection (V2 API)" />}
-                    {debug?.newApiData && <Debug data={debug?.newApiData} title="Data-in API document response" />}
+                    <Debug data={collection} title="Collection" />
+                    {debug?.dataInDocument && <Debug data={debug?.dataInDocument} title="Data-in API document response" />}
                   </Section>
                 )}
               </main>
@@ -112,7 +109,7 @@ export const getServerSideProps = (async (context) => {
     return { notFound: true };
   }
 
-  const { data: collectionData, errors } = await getCollectionData(slug, features);
+  const { data: collectionData, errors } = await getCollectionData(slug);
   errors.forEach(console.error);
   if (collectionData === null) return { notFound: true };
 
