@@ -196,7 +196,7 @@ jobs:
           node-version: 24.0.0
           cache: npm
 
-      - run: npm ci
+      - run: npm i
 
       - run: cp .env.example .env
 
