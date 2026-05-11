@@ -9,7 +9,6 @@ export const familyTransformer = (familyApiData: TFamilyApiData, errors: Error[]
         collections: familyApiData.collections.map((collection) => transformCollection(collection)),
         family: transformFamily(familyApiData.family),
         familyTopics: familyApiData.familyTopics,
-        subdivisions: [], // TODO
         targets: familyApiData.targets,
         vespaFamilyData: familyApiData.vespaFamilyData,
         debug: {

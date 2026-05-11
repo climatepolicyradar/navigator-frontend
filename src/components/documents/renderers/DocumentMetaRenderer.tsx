@@ -1,8 +1,7 @@
 import { McfFamilyMeta } from "@/components/document/McfFamilyMeta";
+import { DocumentMeta } from "@/components/documents/DocumentMeta";
 import { getApprovedYearFromEvents } from "@/helpers/getApprovedYearFromEvents";
 import { TFamilyDocumentPublic, TFamilyPublic } from "@/types";
-
-import { DocumentMeta } from "../DocumentMeta";
 
 export const DocumentMetaRenderer = ({ family, isMain, document }: { family: TFamilyPublic; isMain: boolean; document: TFamilyDocumentPublic }) => {
   const {
@@ -18,7 +17,7 @@ export const DocumentMetaRenderer = ({ family, isMain, document }: { family: TFa
     approval_date: getApprovedYearFromEvents(family.events),
     ...metadata,
     category,
-    document_type: document_type,
+    document_type: [document_type],
     fund,
   };
 

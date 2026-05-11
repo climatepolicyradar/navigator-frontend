@@ -29,8 +29,6 @@ import {
   TMatchedFamily,
   TFamilyPageBlock,
   TFamilyPublic,
-  TGeography,
-  TGeographySubdivision,
   TSearchResponse,
   TTarget,
   TTheme,
@@ -47,12 +45,10 @@ import { familyTopicsHasTopics } from "@/utils/topics/processFamilyTopics";
 
 export interface IProps {
   collections: TCollectionPublicWithFamilies[];
-  countries: TGeography[];
   errors: string[];
   family: TFamilyPublic;
   familyTopics: IFamilyDocumentTopics | null;
   features: TFeatures;
-  subdivisions: TGeographySubdivision[];
   targets: TTarget[];
   theme: TTheme;
   themeConfig: TThemeConfig;
@@ -62,19 +58,7 @@ export interface IProps {
   };
 }
 
-export const FamilyPage = ({
-  collections,
-  countries,
-  debug,
-  errors,
-  family,
-  familyTopics,
-  features,
-  targets,
-  subdivisions,
-  theme,
-  themeConfig,
-}: IProps) => {
+export const FamilyPage = ({ collections, debug, errors, family, familyTopics, features, targets, theme, themeConfig }: IProps) => {
   const configQuery = useConfig();
   const { data: { languages = {} } = {} } = configQuery;
   const { getCategoryTextLookup } = useText();
@@ -97,7 +81,7 @@ export const FamilyPage = ({
     });
   }
 
-  const { pageHeaderMetadata, breadcrumbGeography, breadcrumbParentGeography } = useFamilyPageHeaderData({ countries, family, subdivisions });
+  const { pageHeaderMetadata, breadcrumbGeography, breadcrumbParentGeography } = useFamilyPageHeaderData(family);
 
   /* Blocks */
 
@@ -115,8 +99,6 @@ export const FamilyPage = ({
             <Debug data={family} title="Family" />
             {debug?.dataInDocument && <Debug data={debug.dataInDocument} title="Data-in API document response" />}
             <Debug data={collections} title="Collections" />
-            <Debug data={countries} title="Countries" />
-            <Debug data={subdivisions} title="Subdivisions" />
           </div>
         </Section>
       ),
@@ -139,11 +121,11 @@ export const FamilyPage = ({
     },
     metadata: {
       render: useCallback(() => {
-        const metadata = getFamilyMetadata(family, familyTopics, countries, subdivisions);
+        const metadata = getFamilyMetadata(family, familyTopics);
         if (metadata.length === 0) return null;
 
         return <MetadataBlock key="metadata" block="metadata" title={`About this ${getCategoryText("familySingular")}`} metadata={metadata} />;
-      }, [countries, family, familyTopics, subdivisions, getCategoryText]),
+      }, [family, familyTopics, getCategoryText]),
       sideBarItem: { display: "About" },
     },
     note: {

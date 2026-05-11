@@ -1,13 +1,10 @@
-import sortBy from "lodash/sortBy";
 import { Fragment, ReactNode } from "react";
 
 import { ConceptHierarchy } from "@/components/molecules/conceptHierarchy/ConceptHierarchy";
 import { GeographyLink } from "@/components/molecules/geographyLink/GeographyLink";
 import { ARROW_RIGHT, EN_DASH } from "@/constants/chars";
 import { FILING_DATE_EVENT_TYPES } from "@/constants/events";
-import { getCountryName, getCountrySlug } from "@/helpers/getCountryFields";
-import { getSubdivisionName } from "@/helpers/getSubdivision";
-import { IFamilyDocumentTopics, IMetadata, TFamilyPublic, TGeography, TGeographySubdivision } from "@/types";
+import { IFamilyDocumentTopics, IMetadata, TFamilyPublic } from "@/types";
 import { buildConceptHierarchy } from "@/utils/buildConceptHierarchy";
 import { getTopicsMetadataItem } from "@/utils/family-metadata/getTopicsMetadataItem";
 import { isSystemGeo } from "@/utils/isSystemGeo";
@@ -15,12 +12,7 @@ import { familyTopicsHasTopics } from "@/utils/topics/processFamilyTopics";
 
 const hierarchyArrow = ` ${ARROW_RIGHT} `;
 
-export function getLitigationMetadata(
-  family: TFamilyPublic,
-  familyTopics: IFamilyDocumentTopics | null,
-  countries: TGeography[],
-  subdivisions: TGeographySubdivision[]
-): IMetadata[] {
+export function getLitigationMetadata(family: TFamilyPublic, familyTopics: IFamilyDocumentTopics | null): IMetadata[] {
   const metadata = [];
 
   // Structure concepts into a hierarchy we can use

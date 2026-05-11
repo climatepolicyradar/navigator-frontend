@@ -6,17 +6,14 @@ import { familyTransformer } from "@/bff/transformers/familyTransformer";
 import { LABEL_TYPES, TDataInDocument, TDataInLabel, TDataInLabelType, validateDataInDocument } from "@/schemas";
 import {
   IApiFamilyDocumentTopics,
-  TApiGeography,
   TApiItemResponse,
   TApiSearchResponse,
   TApiSlugResponse,
   TApiTarget,
   TAttributionCategory,
-  TCorpusTypeDictionary,
   TFamilyPresentationalResponse,
 } from "@/types";
 import { groupByType } from "@/utils/data-in/groupByType";
-import { extractNestedData } from "@/utils/extractNestedData";
 import { processFamilyTopics } from "@/utils/topics/processFamilyTopics";
 
 export const getFamilyData = async (slug: string): Promise<TFamilyPresentationalResponse> => {
@@ -79,11 +76,6 @@ export const getFamilyData = async (slug: string): Promise<TFamilyPresentational
   let familyTopics: IApiFamilyDocumentTopics;
   if (vespaFamilyData) familyTopics = await processFamilyTopics(vespaFamilyData);
 
-  const configRaw = await backendApiClient.getConfig();
-  const response_geo = extractNestedData<TApiGeography>(configRaw.data.geographies);
-  const countries = response_geo[1];
-  const corpusTypes: TCorpusTypeDictionary = configRaw.data.corpus_types;
-
   let targets: TApiTarget[] = [];
   try {
     const targetsRaw = await axios.get<TApiTarget[]>(`${process.env.TARGETS_URL}/families/${family.id}.json`);
@@ -101,8 +93,6 @@ export const getFamilyData = async (slug: string): Promise<TFamilyPresentational
   return familyTransformer(
     {
       collections,
-      corpusTypes,
-      countries,
       family,
       familyTopics: familyTopics || null,
       targets,
