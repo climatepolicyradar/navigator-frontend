@@ -24,8 +24,9 @@ const About = () => {
               <p className="text-content mb-6">
                 This revamped platform, developed in partnership with{" "}
                 <ExternalLink url="https://www.climatepolicyradar.org/">Climate Policy Radar</ExternalLink>, uses advanced machine learning and
-                natural language processing to improve search and analysis. Building on more than 15 years of work, it brings together the Sabin
-                Center's previously separate U.S. and Global databases into a single, unified resource.
+                natural language processing to improve search and analysis. Building on more than 15 years of work, it brings together the{" "}
+                <ExternalLink url="https://climate.law.columbia.edu/">Sabin Center's</ExternalLink> previously separate U.S. and Global databases into
+                a single, unified resource.
               </p>
               <Heading level={2} extraClasses="custom-header mb-4">
                 Litigation Newsletter and Updates
@@ -53,7 +54,7 @@ const About = () => {
               </Heading>
               <p className="text-content mb-6">
                 As part of its continual effort to update and maintain the Climate Litigation Database, the Sabin Center launched the{" "}
-                <ExternalLink url="https://climate.law.columbia.edu/content/global-network-peer-reviewers-climate-litigation">
+                <ExternalLink url="https://climate.law.columbia.edu/content/network-of-peer-reviewers-for-climate-litigation">
                   Peer Review Network of Global Climate Litigation
                 </ExternalLink>{" "}
                 (“the Network”) in December 2021. As of June 2025, the Network includes 175 practitioners and scholars who serve as national

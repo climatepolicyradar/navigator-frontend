@@ -17,7 +17,7 @@ export const FeatureDiscover = () => (
       </Feature>
       <Feature heading="Get the newsletter" subheading="Stay up to date" image="Newsletter-image.png" imageAlt="Climate Case Chart newsletter">
         <p className="text-lg leading-relaxed mb-6">
-          Subscribe to the Sabin Center Climate Litigation Newsletter for twice-monthly updates. Each issue includes the latest case updates, event
+          Subscribe to the Sabin Center Climate Litigation Newsletter for monthly updates. Each issue includes the latest case updates, event
           announcements, and publication highlights.
         </p>
         <ExternalLink url="https://mailchi.mp/law/sabin-center-litigation-newsletter" className="text-text-brand-darker text-lg font-bold">

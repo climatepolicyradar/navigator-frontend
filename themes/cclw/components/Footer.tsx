@@ -45,7 +45,7 @@ const Footer = () => {
                 <ul>
                   <li className="mb-2">
                     For media enquiries or queries about research and policy analysis contact{" "}
-                    <ExternalLink url="mailto:gri.cgl@lse.ac.uk">gri.cgl@lse.ac.uk</ExternalLink>
+                    <ExternalLink url="mailto:gri@lse.ac.uk">gri@lse.ac.uk</ExternalLink>
                   </li>
                 </ul>
               </div>

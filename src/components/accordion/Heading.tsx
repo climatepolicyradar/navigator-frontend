@@ -3,5 +3,5 @@ interface IProps {
 }
 
 export const Heading = ({ children }: IProps) => {
-  return <h3 className="text-[15px] font-medium text-textDark">{children}</h3>;
+  return <h3 className="text-[15px] font-medium text-textDark text-left">{children}</h3>;
 };
