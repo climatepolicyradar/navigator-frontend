@@ -119,9 +119,9 @@ const FrameworkLaws = () => {
               <p>
                 We are developing ways for users to better search for climate change framework laws on the database. Please get in touch with the
                 Climate Change Laws of the World team with any questions or comments by emailing{" "}
-                <ExternalLink url="mailto:gri.cgl@lse.ac.uk">gri.cgl@lse.ac.uk</ExternalLink>. We particularly welcome comments and inputs about the
-                content of the database, including climate change framework laws we may have missed. We are a small team, and rely on the
-                collaboration of our global stakeholders to support our efforts to keep the database up to date.
+                <ExternalLink url="mailto:gri@lse.ac.uk">gri@lse.ac.uk</ExternalLink>. We particularly welcome comments and inputs about the content
+                of the database, including climate change framework laws we may have missed. We are a small team, and rely on the collaboration of our
+                global stakeholders to support our efforts to keep the database up to date.
               </p>
               <p>
                 <em>This page was last updated on 10 December 2024</em>.
