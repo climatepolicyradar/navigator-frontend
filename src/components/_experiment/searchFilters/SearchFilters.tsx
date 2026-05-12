@@ -5,10 +5,12 @@ import { useMemo, useState } from "react";
 import { IAggregationLabel } from "@/api/search";
 import { Checkbox } from "@/components/checkbox/Checkbox";
 import { TLabelResult } from "@/hooks/useLabelSearch";
+import { hasPublishedDateRule } from "@/utils/_experiment/dateRangeFilters";
 import { getAvailableLabelIdsFromAggregations, partitionByAvailability } from "@/utils/_experiment/labelAggregationAvailability";
 import { labelTypeLabel } from "@/utils/_experiment/labelTypeLabel";
 import { joinTailwindClasses } from "@/utils/tailwind";
 
+import { PublishedDateFilterSection } from "./PublishedDateFilterSection";
 import { TQueryGroup } from "../advancedFilters/AdvancedFilters";
 
 function hasValue(group: TQueryGroup | null | undefined, value: string): boolean {
@@ -23,7 +25,7 @@ function hasActiveFilterOfType(filters: TLabelResult[], group: TQueryGroup | nul
   );
 }
 
-const PRIMARY_LABEL_TYPES = ["category", "entity_type", "geography", "concept"] as const;
+const PRIMARY_LABEL_TYPES = ["category", "entity_type", "published_date", "geography", "concept"] as const;
 const OTHER_LABEL_TYPES = ["activity_status", "agent"] as const;
 export type TLabelType = (typeof PRIMARY_LABEL_TYPES)[number] | (typeof OTHER_LABEL_TYPES)[number];
 
@@ -47,6 +49,8 @@ type TProps = {
    * any aggregation‑based disabling.
    */
   query?: string;
+  dateRangeValue?: string | null;
+  onDateRangeChange?: (value: string | null) => void;
 };
 
 export function SearchFilters({
@@ -60,6 +64,8 @@ export function SearchFilters({
   onChange,
   aggregations,
   query,
+  dateRangeValue,
+  onDateRangeChange,
 }: TProps) {
   const [openOther, setOpenOther] = useState(false);
   const availableLabelIds = useMemo(() => getAvailableLabelIdsFromAggregations(aggregations, query, filters), [aggregations, query, filters]);
@@ -123,13 +129,13 @@ export function SearchFilters({
                             onClick={() => onActiveLabelTypeChange(agg)}
                           >
                             <span className="text-inky-blue px-2">
-                              {hasActiveFilterOfType(availableFilters, filters, agg) ? (
+                              {(agg === "published_date" ? hasPublishedDateRule(filters) : hasActiveFilterOfType(availableFilters, filters, agg)) ? (
                                 <Circle width={8} height={8} fill="currentColor" />
                               ) : (
                                 <span>&nbsp;&nbsp;</span>
                               )}
                             </span>
-                            <span className="grow">{labelTypeLabel(agg)}</span>
+                            <span className="grow">{agg === "published_date" ? "Date" : labelTypeLabel(agg)}</span>
                             {activeLabelType === agg && (
                               <span className=" text-neutral-500">
                                 <ChevronRight width={20} height={20} />
@@ -204,21 +210,31 @@ export function SearchFilters({
                     </div>
                   </div>
                   <div className="max-h-[50vh] min-h-[50vh] grow p-4 overflow-y-auto text-sm flex flex-col gap-6">
-                    <div className="flex flex-col gap-2">
-                      <div className="border-b border-transparent-regular pb-2">
-                        <h4 className="text-sm text-inky-black font-medium">{labelTypeLabel(activeLabelType)}</h4>
-                      </div>
-                      {enabledFilters.length === 0 && <span>There are no available options</span>}
-                      <ul className="flex flex-col gap-1 text-inky-black">{enabledFilters.map((f) => renderCheckboxRow(f, true))}</ul>
-                    </div>
-                    {disabledFilters.length > 0 && <div className="h-0 w-full shrink-0 border-b border-transparent-regular" aria-hidden />}
-                    {disabledFilters.length > 0 && (
-                      <div className="flex flex-col gap-2">
-                        <div className="">
-                          <h4 className="text-sm text-inky-black font-medium">Not relevant to applied filters</h4>
+                    {activeLabelType === "published_date" ? (
+                      <PublishedDateFilterSection
+                        key={dateRangeValue ?? "no-date-range"}
+                        value={dateRangeValue}
+                        onChange={(nextValue) => onDateRangeChange?.(nextValue)}
+                      />
+                    ) : (
+                      <>
+                        <div className="flex flex-col gap-2">
+                          <div className="border-b border-transparent-regular pb-2">
+                            <h4 className="text-sm text-inky-black font-medium">{labelTypeLabel(activeLabelType)}</h4>
+                          </div>
+                          {enabledFilters.length === 0 && <span>There are no available options</span>}
+                          <ul className="flex flex-col gap-1 text-inky-black">{enabledFilters.map((f) => renderCheckboxRow(f, true))}</ul>
                         </div>
-                        <ul className="flex flex-col gap-1 text-inky-black">{disabledFilters.map((f) => renderCheckboxRow(f, false))}</ul>
-                      </div>
+                        {disabledFilters.length > 0 && <div className="h-0 w-full shrink-0 border-b border-transparent-regular" aria-hidden />}
+                        {disabledFilters.length > 0 && (
+                          <div className="flex flex-col gap-2">
+                            <div className="">
+                              <h4 className="text-sm text-inky-black font-medium">Not relevant to applied filters</h4>
+                            </div>
+                            <ul className="flex flex-col gap-1 text-inky-black">{disabledFilters.map((f) => renderCheckboxRow(f, false))}</ul>
+                          </div>
+                        )}
+                      </>
                     )}
                   </div>
                 </div>

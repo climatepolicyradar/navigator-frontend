@@ -12,11 +12,18 @@ export type TQueryGroup = {
   filters: (TQueryGroup | TQueryRule)[];
 };
 
-export type TQueryRule = {
-  field: "labels.value.id" | "attributes.status";
-  op: "contains" | "not_contains" | "eq";
-  value: string;
-};
+export type TQueryRule =
+  | {
+      field: "labels.value.id" | "attributes.status";
+      op: "contains" | "not_contains" | "eq";
+      value: string;
+    }
+  | {
+      field: "attributes.published_date";
+      key?: "published_date";
+      op: "eq" | "not_eq" | "lt" | "lte" | "gt" | "gte";
+      value: string;
+    };
 
 function isRule(node: TQueryGroup | TQueryRule): node is TQueryRule {
   return "field" in node;
@@ -25,7 +32,10 @@ function isRule(node: TQueryGroup | TQueryRule): node is TQueryRule {
 export function isFilterGroupEmpty(filters: TQueryGroup | null): boolean {
   if (!filters) return true;
   if (filters.filters.length === 0) return true;
-  return filters.filters.some((f) => isRule(f) && f.value === "");
+  return !filters.filters.some((filter) => {
+    if (isRule(filter)) return filter.value.trim().length > 0;
+    return !isFilterGroupEmpty(filter);
+  });
 }
 
 // ID helpers (stable keys for React lists)
@@ -270,11 +280,20 @@ const OPERATORS = [
   { value: "not_contains" as const, label: "is not" },
 ];
 
-function OperatorSelect({ value, onChange }: { value: TQueryRule["op"]; onChange: (op: TQueryRule["op"]) => void }) {
+const PUBLISHED_DATE_OPERATORS = [
+  { value: "eq" as const, label: "is on" },
+  { value: "not_eq" as const, label: "is not on" },
+  { value: "lt" as const, label: "is before" },
+  { value: "lte" as const, label: "is on or before" },
+  { value: "gt" as const, label: "is after" },
+  { value: "gte" as const, label: "is on or after" },
+];
+
+function OperatorSelect({ value, onChange }: { value: "contains" | "not_contains"; onChange: (op: "contains" | "not_contains") => void }) {
   return (
     <select
       value={value}
-      onChange={(e) => onChange(e.target.value as TQueryRule["op"])}
+      onChange={(e) => onChange(e.target.value as "contains" | "not_contains")}
       className={joinTailwindClasses(
         "rounded border border-gray-300 bg-white px-2 py-1 text-sm font-medium text-gray-700",
         "focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-200",
@@ -282,6 +301,32 @@ function OperatorSelect({ value, onChange }: { value: TQueryRule["op"]; onChange
       )}
     >
       {OPERATORS.map((op) => (
+        <option key={op.value} value={op.value}>
+          {op.label}
+        </option>
+      ))}
+    </select>
+  );
+}
+
+function PublishedDateOperatorSelect({
+  value,
+  onChange,
+}: {
+  value: "eq" | "not_eq" | "lt" | "lte" | "gt" | "gte";
+  onChange: (op: "eq" | "not_eq" | "lt" | "lte" | "gt" | "gte") => void;
+}) {
+  return (
+    <select
+      value={value}
+      onChange={(e) => onChange(e.target.value as "eq" | "not_eq" | "lt" | "lte" | "gt" | "gte")}
+      className={joinTailwindClasses(
+        "rounded border border-gray-300 bg-white px-2 py-1 text-sm font-medium text-gray-700",
+        "focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-200",
+        "cursor-pointer"
+      )}
+    >
+      {PUBLISHED_DATE_OPERATORS.map((op) => (
         <option key={op.value} value={op.value}>
           {op.label}
         </option>
@@ -316,18 +361,51 @@ interface RuleRowProps {
 }
 
 function RuleRow({ rule, onUpdate, onDelete, isOnly, availableLabelIds }: RuleRowProps) {
+  const isLabelRule = rule.field === "labels.value.id" || rule.field === "attributes.status";
+  const isPublishedDateRule = rule.field === "attributes.published_date";
+
+  if (isPublishedDateRule) {
+    return (
+      <div className="flex items-center gap-2 group">
+        <span className="rounded border border-gray-300 bg-white px-2 py-1 text-sm font-medium text-gray-700">Published date</span>
+        <PublishedDateOperatorSelect value={rule.op} onChange={(op) => onUpdate({ ...rule, op })} />
+        <span className="rounded border border-gray-300 bg-white px-2 py-1 text-sm text-gray-700 truncate max-w-[360px]">{rule.value}</span>
+        {!isOnly && (
+          <button
+            type="button"
+            onClick={onDelete}
+            className="justify-end p-1 rounded text-gray-400 hover:text-red-500 hover:bg-red-50 opacity-0 group-hover:opacity-100 transition-all"
+            aria-label="Remove rule"
+          >
+            <Trash2 className="h-3.5 w-3.5" />
+          </button>
+        )}
+      </div>
+    );
+  }
+
   return (
     <div className="flex items-center gap-2 group">
-      <span className="text-xs text-gray-500 font-medium shrink-0 w-10">Label</span>
-      <OperatorSelect value={rule.op} onChange={(op) => onUpdate({ ...rule, op })} />
-      <div className="min-w-45 min-h-7.5">
-        <LabelPicker
-          value={rule.value}
-          onChange={(value) => onUpdate({ ...rule, value })}
-          autoFocus={!rule.value}
-          availableLabelIds={availableLabelIds}
-        />
-      </div>
+      <select
+        value={rule.field}
+        onChange={() => onUpdate({ field: "labels.value.id", op: "contains", value: "" })}
+        className="rounded border border-gray-300 bg-white px-2 py-1 text-sm font-medium text-gray-700"
+      >
+        <option value="labels.value.id">Label</option>
+      </select>
+      {isLabelRule && (
+        <>
+          <OperatorSelect value={rule.op === "not_contains" ? "not_contains" : "contains"} onChange={(op) => onUpdate({ ...rule, op })} />
+          <div className="min-w-45 min-h-7.5">
+            <LabelPicker
+              value={rule.value}
+              onChange={(value) => onUpdate({ ...rule, value })}
+              autoFocus={!rule.value}
+              availableLabelIds={availableLabelIds}
+            />
+          </div>
+        </>
+      )}
       {!isOnly && (
         <button
           type="button"
