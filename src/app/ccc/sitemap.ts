@@ -27,11 +27,10 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   /* Geographies */
 
   const client = new ApiClient();
-  const {
-    data: { geographies: geographiesData },
-  } = await client.getConfig();
+  const { config, error: configError } = await client.getConfig();
+  if (configError) console.error(configError);
 
-  const geographySlugs = geographiesData.flatMap((item) => extractGeographySlugs(item));
+  const geographySlugs = config.geographies.flatMap((item) => extractGeographySlugs(item));
   const geographiesSiteMap = geographySlugs.map((slug) => ({
     url: `https://www.climatecasechart.com/geographies/${slug}`,
     lastModified: new Date(),

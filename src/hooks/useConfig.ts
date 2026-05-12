@@ -21,17 +21,18 @@ export default function useConfig() {
     queryFn: async () => {
       const { data } = await getEnvFromServer();
       const client = new ApiClient(data?.env?.api_url, data?.env?.app_token);
-      const query_response = await client.getConfig();
-      const geographies = query_response.data.geographies;
+      const { config, error: configError } = await client.getConfig();
+      if (configError) console.error(configError);
+      const geographies = config.geographies;
       const [regions, countries, subdivisions] = extractNestedData<TGeography>(geographies);
-      const corpus_types = query_response.data.corpus_types;
+      const corpus_types = config.corpus_types;
 
       const resp_end: TConfigQueryResponse = {
         geographies,
         regions,
         countries,
         subdivisions,
-        languages: query_response.data.languages,
+        languages: config.languages,
         corpus_types,
       };
       return resp_end;

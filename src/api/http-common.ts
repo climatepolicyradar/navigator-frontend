@@ -1,7 +1,7 @@
 import axios from "axios";
 import type { AxiosInstance, AxiosResponse } from "axios";
 
-import { TApiCorpusTypeDictionary, TApiDataNode, TApiGeography, TApiLanguages } from "@/types";
+import { TApiConfig } from "@/types";
 
 export async function getEnvFromServer() {
   return await axios.get("/api/env").then((res: any) => res);
@@ -72,12 +72,20 @@ class ApiClient {
       });
   }
 
-  getConfig() {
-    return this.get<{
-      geographies: TApiDataNode<TApiGeography>[];
-      corpus_types: TApiCorpusTypeDictionary;
-      languages: TApiLanguages;
-    }>("/config");
+  async getConfig(): Promise<{ config: TApiConfig; error: Error | null }> {
+    try {
+      const config = await this.get<TApiConfig>("/config");
+      return { config: config.data, error: null };
+    } catch (error) {
+      return {
+        config: {
+          geographies: [],
+          corpus_types: {},
+          languages: {},
+        },
+        error: error as Error,
+      };
+    }
   }
 }
 

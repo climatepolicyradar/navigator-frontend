@@ -238,6 +238,12 @@ interface IApiDictionary<T> {
 
 export type TApiCorpusTypeDictionary = IApiDictionary<TApiCorpusType>;
 
+export type TApiConfig = {
+  geographies: TApiDataNode<TApiGeography>[];
+  corpus_types: TApiCorpusTypeDictionary;
+  languages: TApiLanguages;
+};
+
 export type TApiFamilyConcept = {
   id: string;
   ids: string[];

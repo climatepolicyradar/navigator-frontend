@@ -43,8 +43,9 @@ export const getServerSideProps = (async (context) => {
   let countryNameFromConfig;
   try {
     let geographies: TGeography[] = [];
-    const configData = await backendApiClient.getConfig();
-    const response_geo = extractNestedData<TGeography>(configData.data?.geographies || []);
+    const { config, error: configError } = await backendApiClient.getConfig();
+    if (configError) console.error(configError);
+    const response_geo = extractNestedData<TGeography>(config.geographies || []);
     geographies = [...response_geo[1], ...response_geo[2]];
     const geography = getCountryCode(id as string, geographies);
 
@@ -69,7 +70,9 @@ export const getServerSideProps = (async (context) => {
       const parentGeographyV2Data = await apiClient.get<TApiItemResponse<GeographyV2>>(`/geographies/${geographyV2.subconcept_of[0].slug}`);
       parentGeographyV2 = parentGeographyV2Data.data.data;
     }
-  } catch {}
+  } catch {
+    // Do nothing
+  }
 
   if (countryNameFromConfig) {
     geographyV2.name = countryNameFromConfig;
@@ -101,7 +104,6 @@ export const getServerSideProps = (async (context) => {
       },
     })
     .then((response) => response.data)
-    /* eslint-disable-next-line no-console -- errors monitored and alerted on */
     .catch((err) => console.error(`Could not find search results for geography ${geographyV2.slug}:`, err));
 
   if (!vespaSearchResults) {
