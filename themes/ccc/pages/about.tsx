@@ -53,7 +53,7 @@ const About = () => {
               </Heading>
               <p className="text-content mb-6">
                 As part of its continual effort to update and maintain the Climate Litigation Database, the Sabin Center launched the{" "}
-                <ExternalLink url="https://climate.law.columbia.edu/content/global-network-peer-reviewers-climate-litigation">
+                <ExternalLink url="https://climate.law.columbia.edu/content/network-of-peer-reviewers-for-climate-litigation">
                   Peer Review Network of Global Climate Litigation
                 </ExternalLink>{" "}
                 (“the Network”) in December 2021. As of June 2025, the Network includes 175 practitioners and scholars who serve as national
