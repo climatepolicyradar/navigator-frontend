@@ -77,9 +77,7 @@ export function SearchContainer({
   filters,
   page_token,
   page_size,
-  includeDocumentsInSearch,
   sort,
-  excludeMergedDocuments,
   onAggregationsChange,
   onTotalResultsChange,
   onResultClicked,
@@ -89,9 +87,7 @@ export function SearchContainer({
   filters?: TQueryGroup;
   page_token?: string;
   page_size?: string;
-  includeDocumentsInSearch?: boolean;
   sort?: SearchDocumentsSortKey;
-  excludeMergedDocuments?: boolean;
   onAggregationsChange?: (labels: IAggregationLabel[] | undefined) => void;
   onTotalResultsChange?: (total: number | null) => void;
   onResultClicked?: (document: SearchDocument, event: React.MouseEvent<HTMLButtonElement>) => void;
@@ -105,12 +101,10 @@ export function SearchContainer({
       query,
       page_size,
       page_token,
-      includeDocumentsInSearch,
-      excludeMergedDocuments,
       filters: nonEmptyFilters,
       sort,
     });
-  }, [query, nonEmptyFilters, page_token, page_size, includeDocumentsInSearch, sort, excludeMergedDocuments]);
+  }, [query, nonEmptyFilters, page_token, page_size, sort]);
 
   return (
     <>
