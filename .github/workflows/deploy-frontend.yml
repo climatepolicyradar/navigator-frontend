@@ -41,7 +41,7 @@ jobs:
     steps:
       - uses: actions/checkout@v6
       - name: configure aws credentials
-        uses: aws-actions/configure-aws-credentials@v6.1.0
+        uses: aws-actions/configure-aws-credentials@v6.1.1
         with:
           role-to-assume: arn:aws:iam::${{ secrets.AWS_ACCOUNT_ID
             }}:role/navigator-infra-github-actions
