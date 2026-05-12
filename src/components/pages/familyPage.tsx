@@ -11,7 +11,6 @@ import { TargetsBlock } from "@/components/blocks/targetsBlock/TargetsBlock";
 import { TextBlock } from "@/components/blocks/textBlock/TextBlock";
 import { TopicsBlock } from "@/components/blocks/topicsBlock/TopicsBlock";
 import { BreadCrumbs } from "@/components/breadcrumbs/Breadcrumbs";
-import { DataInDebug } from "@/components/debug/dataInDebug";
 import Layout from "@/components/layouts/Main";
 import { Section } from "@/components/molecules/section/Section";
 import { BlocksLayout, TBlockDefinitions } from "@/components/organisms/blocksLayout/BlocksLayout";
@@ -23,20 +22,18 @@ import useConfig from "@/hooks/useConfig";
 import { useFamilyPageHeaderData } from "@/hooks/useFamilyPageHeaderData";
 import useSearch from "@/hooks/useSearch";
 import { useText } from "@/hooks/useText";
+import { TDataInDocument } from "@/schemas";
 import {
   IFamilyDocumentTopics,
   TCollectionPublicWithFamilies,
   TMatchedFamily,
   TFamilyPageBlock,
   TFamilyPublic,
-  TGeography,
-  TGeographySubdivision,
   TSearchResponse,
   TTarget,
   TTheme,
   TThemeConfig,
   TFeatures,
-  TFamilyApiNewData,
 } from "@/types";
 import { getFamilyBlocks } from "@/utils/blocks/getFamilyBlocks";
 import { getFamilyMetadata } from "@/utils/family-metadata/getFamilyMetadata";
@@ -48,36 +45,20 @@ import { familyTopicsHasTopics } from "@/utils/topics/processFamilyTopics";
 
 export interface IProps {
   collections: TCollectionPublicWithFamilies[];
-  countries: TGeography[];
   errors: string[];
   family: TFamilyPublic;
   familyTopics: IFamilyDocumentTopics | null;
   features: TFeatures;
-  subdivisions: TGeographySubdivision[];
   targets: TTarget[];
   theme: TTheme;
   themeConfig: TThemeConfig;
   vespaFamilyData?: TSearchResponse | null;
   debug?: {
-    usesDataIn: boolean;
-    newApiData?: TFamilyApiNewData;
-    originalFamily?: TFamilyPublic;
+    dataInDocument: TDataInDocument;
   };
 }
 
-export const FamilyPage = ({
-  collections,
-  countries,
-  debug,
-  errors,
-  family,
-  familyTopics,
-  features,
-  targets,
-  subdivisions,
-  theme,
-  themeConfig,
-}: IProps) => {
+export const FamilyPage = ({ collections, debug, errors, family, familyTopics, features, targets, theme, themeConfig }: IProps) => {
   const configQuery = useConfig();
   const { data: { languages = {} } = {} } = configQuery;
   const { getCategoryTextLookup } = useText();
@@ -100,7 +81,7 @@ export const FamilyPage = ({
     });
   }
 
-  const { pageHeaderMetadata, breadcrumbGeography, breadcrumbParentGeography } = useFamilyPageHeaderData({ countries, family, subdivisions });
+  const { pageHeaderMetadata, breadcrumbGeography, breadcrumbParentGeography } = useFamilyPageHeaderData(family);
 
   /* Blocks */
 
@@ -115,12 +96,9 @@ export const FamilyPage = ({
         <Section key="debug" block="debug" title="Debug">
           <div className="col-start-1 -col-end-1 flex flex-col gap-2">
             <Debug data={errors.map((error) => JSON.parse(error))} title="Transformation errors" />
-            <Debug data={family} title={debug?.usesDataIn ? "Family (Data-in API)" : "Family (V2 API)"} />
-            {debug?.originalFamily && <Debug data={debug?.originalFamily} title="Family (V2 API)" />}
-            {debug?.newApiData && <Debug data={debug?.newApiData} title="Data-in API document response" />}
+            <Debug data={family} title="Family" />
+            {debug?.dataInDocument && <Debug data={debug.dataInDocument} title="Data-in API document response" />}
             <Debug data={collections} title="Collections" />
-            <Debug data={countries} title="Countries" />
-            <Debug data={subdivisions} title="Subdivisions" />
           </div>
         </Section>
       ),
@@ -143,11 +121,11 @@ export const FamilyPage = ({
     },
     metadata: {
       render: useCallback(() => {
-        const metadata = getFamilyMetadata(family, familyTopics, countries, subdivisions);
+        const metadata = getFamilyMetadata(family, familyTopics);
         if (metadata.length === 0) return null;
 
         return <MetadataBlock key="metadata" block="metadata" title={`About this ${getCategoryText("familySingular")}`} metadata={metadata} />;
-      }, [countries, family, familyTopics, subdivisions, getCategoryText]),
+      }, [family, familyTopics, getCategoryText]),
       sideBarItem: { display: "About" },
     },
     note: {
@@ -198,14 +176,13 @@ export const FamilyPage = ({
           isSubdivision={Boolean(breadcrumbParentGeography)}
           label={family.title}
         />
-        {features["new-data-model"] && features.debug && <DataInDebug usesDataIn={debug.usesDataIn} />}
         <PageHeader title={family.title} metadata={pageHeaderMetadata} />
         <BlocksLayout blockDefinitions={blockDefinitions} blocksToRender={blocksToRender} />
         <Head>
           <script
             type="application/ld+json"
             dangerouslySetInnerHTML={{
-              __html: JSON.stringify(getLitigationCaseJSONLD(family, countries, subdivisions)),
+              __html: JSON.stringify(getLitigationCaseJSONLD(family)),
             }}
           />
         </Head>

@@ -1,10 +1,7 @@
-import sortBy from "lodash/sortBy";
 import { Legislation, WithContext } from "schema-dts";
 
-import { getCountryName, getCountrySlug } from "@/helpers/getCountryFields";
-import { TFamilyDocumentPublic, TFamilyPublic, TGeography } from "@/types";
-
-import { getAppUrlForJSONLD } from "./helpers";
+import { TFamilyDocumentPublic, TFamilyPublic } from "@/types";
+import { getAppUrlForJSONLD } from "@/utils/json-ld/helpers";
 
 /**
  * Generates JSON-LD structured data for a litigation collection.
@@ -19,7 +16,7 @@ import { getAppUrlForJSONLD } from "./helpers";
  * The schema can be validated here: https://validator.schema.org/
  */
 
-export const getLitigationDocumentJSONLD = (document: TFamilyDocumentPublic, family: TFamilyPublic, countries: TGeography[]) => {
+export const getLitigationDocumentJSONLD = (document: TFamilyDocumentPublic, family: TFamilyPublic) => {
   const appUrl = getAppUrlForJSONLD();
 
   // Default JSON-LD legislation structure
@@ -57,19 +54,15 @@ export const getLitigationDocumentJSONLD = (document: TFamilyDocumentPublic, fam
   }
 
   // Geography related JSON-LD
-  const geosOrdered = sortBy(family.geographies, [(geo) => geo.length !== 3, (geo) => geo.toLowerCase()]);
 
-  if (geosOrdered.length > 0) {
+  if (family.geographies.length > 0) {
     const spatialCoverage: any[] = []; // TODO: improve typing using schema-dts
-    geosOrdered.forEach((geo) => {
-      const countryName = getCountryName(geo, countries);
-      if (countryName) {
-        spatialCoverage.push({
-          "@type": "Place",
-          name: countryName,
-          url: `${appUrl}/geographies/${getCountrySlug(geo, countries)}`,
-        });
-      }
+    family.geographies.forEach(({ name, slug }) => {
+      spatialCoverage.push({
+        "@type": "Place",
+        name: name,
+        url: `${appUrl}/geographies/${slug}`,
+      });
       // TODO add subdivisions once document page references them
     });
     if (spatialCoverage.length > 0) {

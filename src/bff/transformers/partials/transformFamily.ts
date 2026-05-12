@@ -3,8 +3,9 @@ import { transformConcepts } from "@/bff/transformers/partials/transformConcepts
 import { transformFamilyCollections } from "@/bff/transformers/partials/transformFamilyCollections";
 import { transformFamilyDocuments } from "@/bff/transformers/partials/transformFamilyDocuments";
 import { transformFamilyEvents } from "@/bff/transformers/partials/transformFamilyEvents";
+import { transformFamilyGeographies } from "@/bff/transformers/partials/transformFamilyGeographies";
 import { transformFamilyMetadata } from "@/bff/transformers/partials/transformFamilyMetadata";
-import { ID_SEPARATOR } from "@/constants/chars";
+import { DEFAULT_DOCUMENT_TITLE } from "@/constants/document";
 import { LABEL_TYPES, MANDATORY_FAMILY_LABEL_TYPES, TDataInDocument, TDataInLabel, TDataInLabelType, validateFamilyAttributes } from "@/schemas";
 import { TFamilyPublic } from "@/types";
 import { groupByType } from "@/utils/data-in/groupByType";
@@ -23,13 +24,13 @@ export const transformFamily = (document: TDataInDocument): TFamilyPublic => {
     concepts: transformConcepts(groupedLabels.legal_concept),
     documents: transformFamilyDocuments(documents, documentEvents, attribution.category),
     events: familyEvents,
-    geographies: groupedLabels.geography.map((label) => label.value.id.split(ID_SEPARATOR)[1]),
+    geographies: transformFamilyGeographies(groupedLabels.geography),
     import_id: document.id,
     last_updated_date: familyAttributes.last_updated_date ?? null,
     metadata: transformFamilyMetadata(familyAttributes, groupedLabels, attribution.category),
     published_date: familyAttributes.published_date,
     slug: familyAttributes.deprecated_slug,
     summary: document.description,
-    title: document.title,
+    title: document.title || DEFAULT_DOCUMENT_TITLE,
   };
 };

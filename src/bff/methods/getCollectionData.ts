@@ -1,11 +1,11 @@
 import { ApiClient } from "@/api/http-common";
 import { collectionTransformer } from "@/bff/transformers/collectionTransformer";
 import { TDataInDocument, validateDataInDocument } from "@/schemas";
-import { TApiCollectionPublicWithFamilies, TApiItemResponse, TApiSlugResponse, TCollectionPresentationalResponse, TFeatures } from "@/types";
+import { TApiItemResponse, TApiSlugResponse, TAttributionCategory, TCollectionPresentationalResponse } from "@/types";
 
 import { getChildDocuments } from "./getRelations";
 
-export const getCollectionData = async (slug: string, features: TFeatures): Promise<TCollectionPresentationalResponse> => {
+export const getCollectionData = async (slug: string): Promise<TCollectionPresentationalResponse> => {
   /* Make API requests */
 
   const errors: Error[] = [];
@@ -20,49 +20,32 @@ export const getCollectionData = async (slug: string, features: TFeatures): Prom
     return { data: null, errors };
   }
 
-  let collection: TApiCollectionPublicWithFamilies;
+  let collection: TDataInDocument;
   try {
-    const { data: collectionResponse } = await apiClient.get<TApiItemResponse<TApiCollectionPublicWithFamilies>>(
-      `/families/collections/${slugResponse.collection_import_id}`
-    );
-    collection = collectionResponse.data;
+    const { data: dataInCollectionResponse } = await apiClient.get<TApiItemResponse>(`/data-in/documents/${slugResponse.collection_import_id}`);
+    collection = validateDataInDocument(dataInCollectionResponse.data);
   } catch (error) {
     errors.push(new Error("Failed to fetch collection data", error));
     return { data: null, errors };
   }
 
-  if (!collection) {
-    errors.push(new Error("No collection data found"));
+  let families: TDataInDocument[];
+  try {
+    const category: TAttributionCategory = "Litigation";
+
+    const collectionFamilies = getChildDocuments(collection.documents, category);
+    families = await Promise.all<TDataInDocument>(
+      collectionFamilies.map(async ({ value: collectionFamily }) => {
+        const { data: dataInFamilyResponse } = await apiClient.get<TApiItemResponse>(`/data-in/documents/${collectionFamily.id}`);
+        return validateDataInDocument(dataInFamilyResponse.data);
+      })
+    );
+  } catch (error) {
+    errors.push(new Error("Failed to fetch families data", error));
     return { data: null, errors };
-  }
-
-  // Get the new data-in document for this collection and its families or fall back to the older data
-  let dataInCollection: TDataInDocument | null = null;
-  let dataInFamilies: TDataInDocument[] | null = null;
-
-  if (features["new-data-model"]) {
-    try {
-      const { data: dataInCollectionResponse } = await apiClient.get<TApiItemResponse>(`/data-in/documents/${slugResponse.collection_import_id}`);
-      dataInCollection = validateDataInDocument(dataInCollectionResponse.data);
-    } catch (error) {
-      errors.push(error as Error);
-    }
-
-    const collectionFamilies = getChildDocuments(dataInCollection.documents, "Litigation");
-
-    try {
-      dataInFamilies = await Promise.all<TDataInDocument>(
-        collectionFamilies.map(async ({ value: collectionFamily }) => {
-          const { data: dataInFamilyResponse } = await apiClient.get<TApiItemResponse>(`/data-in/documents/${collectionFamily.id}`);
-          return validateDataInDocument(dataInFamilyResponse.data);
-        })
-      );
-    } catch (error) {
-      errors.push(error as Error);
-    }
   }
 
   /* Transform API data for presentation */
 
-  return collectionTransformer({ collection }, { collection: dataInCollection, families: dataInFamilies }, errors);
+  return collectionTransformer({ collection, families }, errors);
 };

@@ -1,15 +1,14 @@
-import orderBy from "lodash/orderBy";
+import partition from "lodash/partition";
 import { Fragment, ReactNode, useMemo } from "react";
 
 import { PageLink } from "@/components/atoms/pageLink/PageLink";
 import { TBreadcrumbLink } from "@/components/breadcrumbs/Breadcrumbs";
-import { GeographyLink, IProps as GeographyLinkProps } from "@/components/molecules/geographyLink/GeographyLink";
-import { getCountryName, getCountrySlug } from "@/helpers/getCountryFields";
-import { getSubdivisionName } from "@/helpers/getSubdivision";
+import { GeographyLink } from "@/components/molecules/geographyLink/GeographyLink";
 import { getSumUSD } from "@/helpers/getSumUSD";
 import { useText } from "@/hooks/useText";
-import { IMetadata, TFamilyPublic, TGeography, TGeographySubdivision } from "@/types";
+import { IMetadata, TFamilyPublic } from "@/types";
 import { scrollToBlock } from "@/utils/blocks/scrollToBlock";
+import { codeIsCountry } from "@/utils/geography";
 import { isSystemGeo } from "@/utils/isSystemGeo";
 import { pluralise } from "@/utils/pluralise";
 import { joinNodes } from "@/utils/reactNode";
@@ -17,19 +16,13 @@ import { convertDate } from "@/utils/timedate";
 
 const MAX_SHOWN_GEOGRAPHIES = 3;
 
-interface IProps {
-  countries: TGeography[];
-  family: TFamilyPublic;
-  subdivisions: TGeographySubdivision[];
-}
-
 type FamilyPageHeaderData = {
   pageHeaderMetadata: IMetadata[];
   breadcrumbGeography: TBreadcrumbLink | null;
   breadcrumbParentGeography: TBreadcrumbLink | null;
 };
 
-export const useFamilyPageHeaderData = ({ countries, family, subdivisions }: IProps): FamilyPageHeaderData => {
+export const useFamilyPageHeaderData = (family: TFamilyPublic): FamilyPageHeaderData => {
   const { getCategoryTextLookup } = useText();
   const getCategoryText = getCategoryTextLookup(family.attribution.category);
 
@@ -38,57 +31,35 @@ export const useFamilyPageHeaderData = ({ countries, family, subdivisions }: IPr
     const [year] = convertDate(family.published_date);
     const isLitigation = family.attribution.category === "Litigation";
     const isMCF = family.attribution.category === "Multilateral Climate Fund project";
-
-    /* Geographies data */
-
-    const codeIsCountry = (code: string) => !code.includes("-");
-
-    // TODO use the new geography endpoint + GeographyV2
-    const geographiesDisplayData: GeographyLinkProps[] = orderBy(
-      family.geographies
-        .map((code) => {
-          const isSubdivision = !codeIsCountry(code);
-          const name = isSubdivision ? getSubdivisionName(code, subdivisions) : getCountryName(code, countries);
-          const slug = isSubdivision ? code.toLowerCase() : getCountrySlug(code, countries);
-          return name && slug ? { code, name, slug: isSystemGeo(name) ? undefined : slug } : null;
-        })
-        .filter((data) => data),
-      [(data) => data.code.includes("-"), "name"],
-      ["asc", "asc"]
-    );
+    const { geographies } = family;
 
     /* Geographies breadcrumbs */
 
     let breadcrumbGeography: TBreadcrumbLink = null;
     let breadcrumbParentGeography: TBreadcrumbLink = null;
 
-    if (geographiesDisplayData.length > 0) {
-      if (geographiesDisplayData.some((geo) => !codeIsCountry(geo.code))) {
+    if (geographies.length > 0) {
+      const [countries, subdivisions] = partition(geographies, (geo) => codeIsCountry(geo.code));
+
+      if (subdivisions.length > 0) {
         // Includes a subdivision
-        const subdivision = geographiesDisplayData.find((geo) => !codeIsCountry(geo.code));
+        const subdivision = subdivisions[0];
         breadcrumbGeography = { label: subdivision.name, href: `/geographies/${subdivision.slug}` };
 
-        // Get the subdivision's parent country
-        const subdivisionData = subdivisions.find((sub) => sub.code === subdivision.code);
-        const parentCountryCode = subdivisionData.country_alpha_3;
-        if (subdivisionData) {
-          const countryName = getCountryName(parentCountryCode, countries);
-          const countrySlug = getCountrySlug(parentCountryCode, countries);
-          if (countryName && countrySlug && !isSystemGeo(countryName)) {
-            breadcrumbParentGeography = { label: countryName, href: `/geographies/${countrySlug}` };
-          }
-        }
+        // Currently our families only have one country when a subdivision is present
+        const country = countries[0];
+        if (country) breadcrumbParentGeography = { label: country.name, href: `/geographies${country.slug}` };
       } else {
         // Countries only
-        const country = geographiesDisplayData[0];
+        const country = countries[0];
         if (!isSystemGeo(country.name)) breadcrumbGeography = { label: country.name, href: `/geographies/${country.slug}` };
       }
     }
 
     /* Geographies in page header */
 
-    const visibleGeographiesData = geographiesDisplayData.slice(0, MAX_SHOWN_GEOGRAPHIES);
-    const hiddenGeographiesCount = Math.max(0, geographiesDisplayData.length - MAX_SHOWN_GEOGRAPHIES);
+    const visibleGeographiesData = geographies.slice(0, MAX_SHOWN_GEOGRAPHIES);
+    const hiddenGeographiesCount = Math.max(0, geographies.length - MAX_SHOWN_GEOGRAPHIES);
 
     const isGeographiesParentAndChild =
       visibleGeographiesData.length === 2 && !visibleGeographiesData[0].code.includes("-") && visibleGeographiesData[1].code.includes("-");
@@ -159,18 +130,18 @@ export const useFamilyPageHeaderData = ({ countries, family, subdivisions }: IPr
       });
     }
     if (isMCF) {
-      family.metadata?.project_value_fund_spend &&
-        family.metadata?.project_value_fund_spend[0] !== "0" &&
+      if (family.metadata?.project_value_fund_spend && family.metadata?.project_value_fund_spend[0] !== "0") {
         pageHeaderMetadata.push({
           label: "Fund Spend",
           value: getSumUSD(family.metadata?.project_value_fund_spend),
         });
-      family.metadata?.project_value_co_financing &&
-        family.metadata?.project_value_co_financing[0] !== "0" &&
+      }
+      if (family.metadata?.project_value_co_financing && family.metadata?.project_value_co_financing[0] !== "0") {
         pageHeaderMetadata.push({
           label: "Co-Financing",
           value: getSumUSD(family.metadata?.project_value_co_financing),
         });
+      }
     }
 
     return {
@@ -178,5 +149,5 @@ export const useFamilyPageHeaderData = ({ countries, family, subdivisions }: IPr
       breadcrumbGeography,
       breadcrumbParentGeography,
     };
-  }, [countries, family, subdivisions, getCategoryText]);
+  }, [family, getCategoryText]);
 };

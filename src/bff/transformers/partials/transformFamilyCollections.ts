@@ -1,6 +1,7 @@
 import { getParentDocuments } from "@/bff/methods/getRelations";
 import { transformCollection } from "@/bff/transformers/partials/transformCollection";
-import { TAttributionCategory, TCollectionPublic, TFamilyApiNewData } from "@/types";
+import { TDataInDocument } from "@/schemas";
+import { TAttributionCategory, TCollectionPublic } from "@/types";
 
-export const transformFamilyCollections = (document: TFamilyApiNewData, category: TAttributionCategory): TCollectionPublic[] =>
+export const transformFamilyCollections = (document: TDataInDocument, category: TAttributionCategory): TCollectionPublic[] =>
   getParentDocuments(document.documents, category).map(({ value: collection }) => transformCollection(collection));

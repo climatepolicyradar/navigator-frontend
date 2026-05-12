@@ -19,7 +19,6 @@ import { ROBOTS_BLOCKED_SLUGS, X_ROBOTS_TAG_NOINDEX_VALUE } from "@/constants/ro
 import { withEnvConfig } from "@/context/EnvConfig";
 import { FeaturesContext } from "@/context/FeaturesContext";
 import { TopicsContext } from "@/context/TopicsContext";
-import useConfig from "@/hooks/useConfig";
 import useSearch from "@/hooks/useSearch";
 import { TTheme } from "@/types";
 import { CleanRouterQuery } from "@/utils/cleanRouterQuery";
@@ -57,8 +56,6 @@ const DocumentPage = ({
   // exact match is default, so only instances where it is explicitly set to false do we check against
   const exactMatchQuery = router.query[QUERY_PARAMS.exact_match] === undefined || router.query[QUERY_PARAMS.exact_match] !== "false";
   const startingPageNumber = Number(router.query.page) || 0;
-  const configQuery = useConfig();
-  const { data: { countries = [] } = {} } = configQuery;
 
   // Note: only runs a fresh start if either a query string or concept data is provided
   const { status, families } = useSearch(router.query, null, document.import_id, !isEmptySearch(router.query), MAX_PASSAGES);
@@ -128,10 +125,8 @@ const DocumentPage = ({
             <DocumentHead
               document={document}
               family={family}
-              features={features}
               handleViewOtherDocsClick={handleViewOtherDocsClick}
               handleViewSourceClick={handleViewSourceClick}
-              usesDataIn={Boolean(debug?.usesDataIn)}
             />
 
             <ConceptsDocumentViewer
@@ -151,7 +146,7 @@ const DocumentPage = ({
             <Head>
               <script
                 type="application/ld+json"
-                dangerouslySetInnerHTML={{ __html: JSON.stringify(getLitigationDocumentJSONLD(document, family, countries)) }}
+                dangerouslySetInnerHTML={{ __html: JSON.stringify(getLitigationDocumentJSONLD(document, family)) }}
               />
             </Head>
           )}
@@ -161,10 +156,8 @@ const DocumentPage = ({
         <FiveColumns>
           <Section key="debug" block="debug" title="Debug">
             <Debug data={errors.map((error) => JSON.parse(error))} title="Transformation errors" />
-            <Debug data={document} title={debug?.usesDataIn ? "Document (Data-in API)" : "Document (V2 API)"} />
-            <Debug data={family} title={debug?.usesDataIn ? "Family (Data-in API)" : "Family (V2 API)"} />
-            {debug?.originalDocument && <Debug data={debug?.originalDocument} title="Original document (V2 API)" />}
-            {debug?.newApiData && <Debug data={debug?.newApiData} title="Data-in API document response" />}
+            <Debug data={document} title="Document" />
+            {debug?.dataInDocument && <Debug data={debug.dataInDocument} title="Data-in API document response" />}
           </Section>
         </FiveColumns>
       )}

@@ -86,7 +86,18 @@ export const FAMILY_NEW_STUB: TFamilyPublic = {
   },
   summary:
     "Action by young plaintiffs asserting that the federal government violated their constitutional rights by causing dangerous carbon dioxide concentrations. [Due to a technical issue, some documents are currently not available.]",
-  geographies: ["USA", "US-OR"],
+  geographies: [
+    {
+      code: "USA",
+      name: "United States",
+      slug: "united-states-of-america",
+    },
+    {
+      code: "USA-OR",
+      name: "Oregon",
+      slug: "us-or",
+    },
+  ],
   published_date: "2015-01-01T00:00:00Z",
   last_updated_date: "2024-04-19T00:00:00Z",
   slug: "juliana-v-united-states_83df",

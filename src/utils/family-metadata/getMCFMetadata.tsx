@@ -4,14 +4,13 @@ import { ExternalLink } from "@/components/ExternalLink";
 import { GeographyLink } from "@/components/molecules/geographyLink/GeographyLink";
 import { EN_DASH } from "@/constants/chars";
 import { getApprovedYearFromEvents } from "@/helpers/getApprovedYearFromEvents";
-import { getCountryName, getCountrySlug } from "@/helpers/getCountryFields";
 import { getSumUSD } from "@/helpers/getSumUSD";
-import { IFamilyDocumentTopics, IMetadata, TFamilyPublic, TGeography } from "@/types";
+import { IFamilyDocumentTopics, IMetadata, TFamilyPublic } from "@/types";
 import { getTopicsMetadataItem } from "@/utils/family-metadata/getTopicsMetadataItem";
 import { isSystemGeo } from "@/utils/isSystemGeo";
 import { familyTopicsHasTopics } from "@/utils/topics/processFamilyTopics";
 
-export function getMCFMetadata(family: TFamilyPublic, familyTopics: IFamilyDocumentTopics | null, countries: TGeography[]): IMetadata[] {
+export function getMCFMetadata(family: TFamilyPublic, familyTopics: IFamilyDocumentTopics | null): IMetadata[] {
   const metadata = [];
 
   const approvalYear = getApprovedYearFromEvents(family.events);
@@ -28,12 +27,10 @@ export function getMCFMetadata(family: TFamilyPublic, familyTopics: IFamilyDocum
     metadata.push({
       label: "Geography",
       value: family.geographies.map((geo, index) => {
-        const geoSlug = getCountrySlug(geo, countries);
-        const geoName = getCountryName(geo, countries);
         return (
-          <Fragment key={geo}>
+          <Fragment key={geo.slug}>
             {index > 0 && ", "}
-            {!isSystemGeo(geoName) ? <GeographyLink code={geo} name={geoName} slug={geoSlug || geo.toLowerCase()} /> : <span>{geoName}</span>}
+            {!isSystemGeo(geo.name) ? <GeographyLink {...geo} /> : <span>{geo.name}</span>}
           </Fragment>
         );
       }),
