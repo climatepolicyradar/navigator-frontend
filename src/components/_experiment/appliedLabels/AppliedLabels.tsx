@@ -63,7 +63,6 @@ export function AppliedLabels({
   onRemoveLabel,
   onAdvancedClick,
   dateRangeValue,
-  onSelectDateRange,
   onRemoveDateRange,
 }: {
   filters: TQueryGroup;
@@ -74,39 +73,34 @@ export function AppliedLabels({
   onSelectLabel?: (label: string, type: string) => void;
   onAdvancedClick?: () => void;
   dateRangeValue?: string | null;
-  onSelectDateRange?: () => void;
   onRemoveDateRange?: () => void;
 }) {
   return (
     <div className="flex flex-wrap gap-1 text-sm text-gray-700 rounded-lg bg-gray-100 p-2">
       {dateRangeValue && !isFilterComplex(filters) && (
-        <AppliedDateRange value={dateRangeValue} onSelect={() => onSelectDateRange?.()} onRemove={() => onRemoveDateRange?.()} />
+        <AppliedDateRange value={dateRangeValue} onSelect={() => onSelectLabel?.("", "published_date")} onRemove={() => onRemoveDateRange?.()} />
       )}
       {isFilterComplex(filters) ? (
-        <>
-          <button
-            className="bg-white py-1 px-2 rounded-lg inline-flex gap-2 items-center border border-gray-300 hover:bg-gray-50"
-            onClick={() => onAdvancedClick?.()}
-          >
-            <SlidersHorizontal className="text-neutral-400 h-4 w-4" />
-            Advanced filters applied
-          </button>
-        </>
+        <button
+          className="bg-white py-1 px-2 rounded-lg inline-flex gap-2 items-center border border-gray-300 hover:bg-gray-50"
+          onClick={() => onAdvancedClick?.()}
+        >
+          <SlidersHorizontal className="text-neutral-400 h-4 w-4" />
+          Advanced filters applied
+        </button>
       ) : (
-        <>
-          {labels.map((label, i) => {
-            const type = getTypeOfLabel(label, availableFilters);
-            return (
-              <AppliedLabel
-                key={i}
-                label={label}
-                type={type || ""}
-                onSelect={() => onSelectLabel?.(label, type || "")}
-                onRemove={() => onRemoveLabel?.(label)}
-              />
-            );
-          })}
-        </>
+        labels.map((label, i) => {
+          const type = getTypeOfLabel(label, availableFilters);
+          return (
+            <AppliedLabel
+              key={i}
+              label={label}
+              type={type || ""}
+              onSelect={() => onSelectLabel?.(label, type || "")}
+              onRemove={() => onRemoveLabel?.(label)}
+            />
+          );
+        })
       )}
       {onClear && (
         <button className="rounded-md px-2 ml-auto hover:bg-gray-200" onClick={onClear}>

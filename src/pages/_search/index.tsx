@@ -229,10 +229,6 @@ const ShadowSearch = ({ theme, themeConfig, features }: TProps) => {
                 setFilters((prev) => (prev ? removeLabelRule(prev, label) : createGroup()));
                 setCurrentPage("1");
               }}
-              onSelectDateRange={() => {
-                setFilterSidebarCategory("published_date");
-                setFiltersOpen(true);
-              }}
               onRemoveDateRange={() => {
                 setFilters((prev) => removePublishedDateRules(prev));
                 setCurrentPage("1");
