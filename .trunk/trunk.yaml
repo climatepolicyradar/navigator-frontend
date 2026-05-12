@@ -104,6 +104,7 @@ actions:
   disabled:
     - trunk-announce
     - trunk-check-pre-push
+    - npm-install
 
   definitions:
     - id: typescript-tsc-pre-push
@@ -121,4 +122,3 @@ actions:
     - trunk-check-pre-commit
     - trunk-upgrade-available
     - typescript-tsc-pre-push
-    - npm-install
