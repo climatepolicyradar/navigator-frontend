@@ -57,9 +57,6 @@ const ShadowSearch = ({ theme, themeConfig, features }: TProps) => {
   const [sortParam, setSortParam] = useQueryState("sort", parseAsString.withDefault("relevance"));
   const sortKey = normaliseSearchDocumentsSortKey(sortParam);
   const [totalNoOfResults, setTotalNoOfResults] = useState<number | null>(null);
-  // principal or documents
-  const [includeDocumentsInSearch, setIncludeDocumentsInSearch] = useQueryState("include_documents", parseAsBoolean.withDefault(true));
-  const [excludeMergedDocuments, setExcludeMergedDocuments] = useQueryState("exclude_merged_documents", parseAsBoolean.withDefault(true));
 
   /**
    * Drops aggregations only when the filter tree becomes empty so greyed options
@@ -168,25 +165,6 @@ const ShadowSearch = ({ theme, themeConfig, features }: TProps) => {
             }}
           />
           <div className="flex items-center gap-6 flex-wrap">
-            {/* EXPERIMENT CONTROLS */}
-            <div>
-              <button className="text-gray-300" onClick={() => setExcludeMergedDocuments(!excludeMergedDocuments)}>
-                {excludeMergedDocuments && "."}
-                {!excludeMergedDocuments && ":"}
-              </button>
-            </div>
-            <div>
-              <label className="flex items-center gap-2 text-neutral-600 text-sm font-medium cursor-pointer">
-                Show individual documents
-                <Switch.Root
-                  checked={includeDocumentsInSearch}
-                  onCheckedChange={(checked) => setIncludeDocumentsInSearch(checked)}
-                  className="relative flex h-4 w-7 p-0.5 rounded-full bg-neutral-200 transition data-checked:bg-inky-blue"
-                >
-                  <Switch.Thumb className="aspect-square h-full rounded-full bg-white transition-transform duration-150 data-checked:translate-x-3" />
-                </Switch.Root>
-              </label>
-            </div>
             {/* SORT */}
             <SearchSortSelect
               sortParam={sortKey}
@@ -227,9 +205,7 @@ const ShadowSearch = ({ theme, themeConfig, features }: TProps) => {
             filters={filters}
             page_token={currentPage}
             page_size={pageSize}
-            includeDocumentsInSearch={includeDocumentsInSearch}
             sort={sortKey}
-            excludeMergedDocuments={excludeMergedDocuments}
             onAggregationsChange={applyAggregationsFromSearch}
             onTotalResultsChange={setTotalNoOfResults}
             onResultClicked={(document, event) => {
