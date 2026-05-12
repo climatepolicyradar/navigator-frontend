@@ -54,9 +54,8 @@ const TermsOfUse = () => {
               <ul>
                 <li>
                   Climate Policy Radar is pleased to make the content of the CPR Database available as open data under the Creative Commons
-                  Attribution Licence 
-                  <ExternalLink url="https://creativecommons.org/licenses/by/4.0/">(CC-BY)</ExternalLink>. Under this Creative Commons licence you are
-                  free to:
+                  Attribution Licence <ExternalLink url="https://creativecommons.org/licenses/by/4.0/">(CC-BY)</ExternalLink>. Under this Creative
+                  Commons licence you are free to:
                   <ul>
                     <li>
                       <span className="font-medium">Adapt</span> — remix, transform, and build upon the material
@@ -379,6 +378,16 @@ const TermsOfUse = () => {
                     <td>October 2025</td>
                     <td>
                       <ExternalLink url="https://www.unccd.int/terms-of-use">View</ExternalLink>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td>
+                      <ExternalLink url="https://www.climatecouncils.org/">International Climate Councils Network (ICCN)</ExternalLink>
+                    </td>
+                    <td>Climate Council Reports</td>
+                    <td>April 2026</td>
+                    <td>
+                      <ExternalLink url="https://www.climatecouncils.org/tcs/">View</ExternalLink>
                     </td>
                   </tr>
                   <tr>
