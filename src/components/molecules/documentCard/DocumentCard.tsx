@@ -1,10 +1,9 @@
 import { LucideEarth, LucideTag } from "lucide-react";
 
 import { SearchDocument } from "@/api/search";
+import { TLabelType } from "@/components/_experiment/searchFilters/SearchFilters";
 import { documentRelationshipLabel } from "@/utils/_experiment/documentRelationshipLabel";
 import { labelTypeLabel } from "@/utils/_experiment/labelTypeLabel";
-
-import { TLabelType } from "../searchFilters/SearchFilters";
 
 const MAX_DESCRIPTION_LENGTH = 275;
 
@@ -29,29 +28,41 @@ function iconForLabelType(type: string) {
 const FILTER_AGGREGATIONS: TLabelType[] = ["geography", "concept"];
 const RELATIONSHIP_AGGREGATIONS = ["member_of", "has_member"];
 
-export function PrincipalSearchResult({ result }: { result: SearchDocument }) {
+type TProps = {
+  document: SearchDocument;
+  onClick?: (document: SearchDocument, event: React.MouseEvent<HTMLButtonElement>) => void;
+};
+
+export function DocumentCard({ document, onClick }: TProps) {
   return (
-    <>
-      <span className="font-medium">{result.labels.find((label) => label.type === "category")?.value.value}</span>
+    <button
+      type="button"
+      onClick={(e) => {
+        e.currentTarget.blur();
+        onClick(document, e);
+      }}
+      className="group text-left w-full p-4 rounded-md hover:bg-inky-blue/4 focus:bg-inky-blue/4 transition"
+    >
+      <span className="font-medium">{document.labels.find((label) => label.type === "category")?.value.value}</span>
       {/* CORE DETAILS */}
       <h3 className="font-semibold text-lg mb-3">
-        {linkHref(result) ? (
-          <span className="text-inky-blue group-hover:underline" dangerouslySetInnerHTML={{ __html: result.title }} />
+        {linkHref(document) ? (
+          <span className="text-inky-blue group-hover:underline group-focus:underline" dangerouslySetInnerHTML={{ __html: document.title }} />
         ) : (
-          <span dangerouslySetInnerHTML={{ __html: result.title }} />
+          <span dangerouslySetInnerHTML={{ __html: document.title }} />
         )}
       </h3>
-      {result.description && (
+      {document.description && (
         <p
           className="text-base text-inky-black mb-3"
           dangerouslySetInnerHTML={{
-            __html: result.description.slice(0, MAX_DESCRIPTION_LENGTH) + (result.description.length > MAX_DESCRIPTION_LENGTH ? "..." : ""),
+            __html: document.description.slice(0, MAX_DESCRIPTION_LENGTH) + (document.description.length > MAX_DESCRIPTION_LENGTH ? "..." : ""),
           }}
         />
       )}
       {/* DISPLAYING FILTERS */}
       {FILTER_AGGREGATIONS.map((agg) => {
-        const relationshipsOfType = result.labels.filter((label) => label.type === agg);
+        const relationshipsOfType = document.labels.filter((label) => label.type === agg);
         if (relationshipsOfType.length === 0) return null;
 
         return (
@@ -75,7 +86,7 @@ export function PrincipalSearchResult({ result }: { result: SearchDocument }) {
       })}
       {/* DISPLAYING RELATIONSHIPS */}
       {RELATIONSHIP_AGGREGATIONS.map((agg) => {
-        const relationshipsOfType = result.documents.filter((relationship) => relationship.type === agg);
+        const relationshipsOfType = document.documents.filter((relationship) => relationship.type === agg);
         if (relationshipsOfType.length === 0) return null;
 
         return (
@@ -92,6 +103,6 @@ export function PrincipalSearchResult({ result }: { result: SearchDocument }) {
           </div>
         );
       })}
-    </>
+    </button>
   );
 }
