@@ -22,6 +22,7 @@ import { withEnvConfig } from "@/context/EnvConfig";
 import { FeaturesContext } from "@/context/FeaturesContext";
 import { TLabelResult, loadLabels } from "@/hooks/useLabelSearch";
 import { FilterGroupSchema } from "@/schemas";
+import { findPublishedDateRangeValue, removePublishedDateRules, upsertPublishedDateRangeRules } from "@/utils/_experiment/dateRangeFilters";
 import { getAvailableLabelIdsFromAggregations } from "@/utils/_experiment/labelAggregationAvailability";
 import { getFeatureFlags } from "@/utils/featureFlags";
 import { getFeatures } from "@/utils/features";
@@ -71,11 +72,11 @@ const ShadowSearch = ({ theme, themeConfig, features }: TProps) => {
     (updater: SetStateAction<TQueryGroup>) => {
       let shouldClearAggregations = false;
       void setFiltersInUrl((prev) => {
-        const next = typeof updater === "function" ? (updater as (p: TQueryGroup) => TQueryGroup)(prev) : updater;
-        if (!isEqual(prev, next) && isFilterGroupEmpty(next)) {
+        const nextFilters = typeof updater === "function" ? (updater as (p: TQueryGroup) => TQueryGroup)(prev) : updater;
+        if (!isEqual(prev, nextFilters) && isFilterGroupEmpty(nextFilters)) {
           shouldClearAggregations = true;
         }
-        return next;
+        return nextFilters;
       });
       if (shouldClearAggregations) {
         setLabelAggregations(undefined);
@@ -115,6 +116,7 @@ const ShadowSearch = ({ theme, themeConfig, features }: TProps) => {
     () => getAvailableLabelIdsFromAggregations(labelAggregations, query, filters),
     [labelAggregations, query, filters]
   );
+  const selectedPublishedDateRange = useMemo(() => findPublishedDateRangeValue(filters), [filters]);
 
   return (
     <FeaturesContext.Provider value={features}>
@@ -166,6 +168,16 @@ const ShadowSearch = ({ theme, themeConfig, features }: TProps) => {
               setFiltersOpen(false);
               setAdvancedFiltersOpen(true);
             }}
+            dateRangeValue={selectedPublishedDateRange}
+            onDateRangeChange={(nextValue) => {
+              if (nextValue === null) {
+                setFilters((prev) => removePublishedDateRules(prev));
+                setCurrentPage("1");
+                return;
+              }
+              setFilters((prev) => upsertPublishedDateRangeRules(prev, nextValue));
+              setCurrentPage("1");
+            }}
           />
           <div className="flex items-center gap-6 flex-wrap">
             {/* EXPERIMENT CONTROLS */}
@@ -204,6 +216,7 @@ const ShadowSearch = ({ theme, themeConfig, features }: TProps) => {
               filters={filters}
               availableFilters={availableFilters}
               labels={selectedLabels}
+              dateRangeValue={selectedPublishedDateRange}
               onClear={() => {
                 setFilters(createGroup());
                 setQuery("");
@@ -214,6 +227,10 @@ const ShadowSearch = ({ theme, themeConfig, features }: TProps) => {
               onSelectLabel={handleSelectLabel}
               onRemoveLabel={(label) => {
                 setFilters((prev) => (prev ? removeLabelRule(prev, label) : createGroup()));
+                setCurrentPage("1");
+              }}
+              onRemoveDateRange={() => {
+                setFilters((prev) => removePublishedDateRules(prev));
                 setCurrentPage("1");
               }}
               onAdvancedClick={() => setAdvancedFiltersOpen(true)}

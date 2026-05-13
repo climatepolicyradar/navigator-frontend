@@ -96,7 +96,7 @@ lint:
     - shellcheck@0.10.0
     - shfmt@3.6.0
     - svgo@4.0.0
-    - trivy@0.64.1
+    - trivy@0.69.3
     - trufflehog@3.90.0
     - typos@1.36.2
     - yamllint@1.37.1
@@ -104,6 +104,7 @@ actions:
   disabled:
     - trunk-announce
     - trunk-check-pre-push
+    - npm-install
 
   definitions:
     - id: typescript-tsc-pre-push
@@ -121,4 +122,3 @@ actions:
     - trunk-check-pre-commit
     - trunk-upgrade-available
     - typescript-tsc-pre-push
-    - npm-install
