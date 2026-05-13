@@ -246,7 +246,7 @@ export const getEventTableRows = ({
 
   rowsData.forEach(({ family, event, document }) => {
     // Some document events don't have corresponding documents, so keep those even when documentEventsOnly
-    if (documentEventsOnly && FILING_DATE_EVENT_TYPES.includes(event.event_type)) return;
+    if (documentEventsOnly && event && FILING_DATE_EVENT_TYPES.includes(event.event_type)) return;
 
     const date = event ? new Date(event.date) : null;
 
