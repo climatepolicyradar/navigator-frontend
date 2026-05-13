@@ -178,22 +178,21 @@ const getDocumentLink = (document: TFamilyDocumentPublic, hasMatches: boolean, i
 
 const getDocumentCell = (
   isLitigation: boolean,
-  document: TFamilyDocumentPublic,
   isMainDocument: boolean,
   languages: TLanguages,
   hasMatches: boolean,
-  overrideViewMore: boolean,
+  document?: TFamilyDocumentPublic,
   event?: TFamilyEventPublic
 ): ReactNode => {
   return (
     <div className="flex flex-col gap-2">
       {isLitigation && (
         <>
-          <div>{getDocumentLink(document, hasMatches, isMainDocument, isLitigation)}</div>
+          {document && <div>{getDocumentLink(document, hasMatches, isMainDocument, isLitigation)}</div>}
           {event?.metadata.action_taken?.[0] && <div className="italic">{event.metadata.action_taken[0]}</div>}
           {event?.metadata.description?.[0] && (
-            <ViewMore context="event-table-document-cell" maxLines={4} onButtonClick={overrideViewMore ? () => {} : undefined}>
-              {event.metadata.description[0]}
+            <ViewMore context="event-table-document-cell" maxHeight={80}>
+              <div dangerouslySetInnerHTML={{ __html: event.metadata.description[0] }} />
             </ViewMore>
           )}
         </>
@@ -246,7 +245,8 @@ export const getEventTableRows = ({
   const rowsData = isLitigation ? families.map(getEventTableRowsData).flat() : families.map(getFamilyDocuments).flat();
 
   rowsData.forEach(({ family, event, document }) => {
-    if (documentEventsOnly && !document) return;
+    // Some document events don't have corresponding documents, so keep those even when documentEventsOnly
+    if (documentEventsOnly && event && FILING_DATE_EVENT_TYPES.includes(event.event_type)) return;
 
     const date = event ? new Date(event.date) : null;
 
@@ -342,18 +342,16 @@ export const getEventTableRows = ({
                 value: `${document.slug}:${matches}`,
               }
             : null,
-        document: document
-          ? {
-              label: getDocumentCell(isLitigation, document, isMainDocument, languages, matches > 0, Boolean(documentRowClick), event),
-              value: isMainDocument,
-            }
-          : null,
+        document: {
+          label: getDocumentCell(isLitigation, isMainDocument, languages, matches > 0, document, event),
+          value: isMainDocument,
+        },
         topics: { label: topicsDisplay, value: "" },
         type: event?.event_type || null,
       },
     };
 
-    if (documentEventsOnly && document && documentRowClick) {
+    if (documentEventsOnly && document) {
       row.onClick = (clickedRow) => documentRowClick(clickedRow.id);
     }
 
