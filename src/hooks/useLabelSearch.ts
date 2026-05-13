@@ -61,6 +61,11 @@ export const loadLabels = async (query: string): Promise<TLabelResult[]> => {
         op: "not_contains",
         value: "result_type",
       },
+      {
+        field: "type",
+        op: "not_contains",
+        value: "role",
+      },
     ],
   };
   const response = await client.get<TLabelsResponse>(
