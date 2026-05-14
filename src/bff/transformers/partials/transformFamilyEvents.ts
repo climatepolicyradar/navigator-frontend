@@ -62,7 +62,7 @@ export const transformFamilyEvents = (document: TFamilyApiNewData, category: TAt
     };
   }
 
-  const documentEvents: TDocumentEvents[] = getChildDocuments(document.documents, category)
+  const documentEvents: TDocumentEvents[] = getChildDocuments(document.documents)
     .map(({ value: doc }) => {
       const docAttributes = validateDocumentAttributes(doc.attributes);
       if (docAttributes.status !== "published") return null;

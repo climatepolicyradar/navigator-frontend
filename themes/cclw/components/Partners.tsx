@@ -4,7 +4,7 @@ const partners = [
   {
     link: "https://climate.law.columbia.edu",
     logo: "sabin-logo-full.jpg",
-    name: "The Sabin Centre for Climate Change Law at Columbia Law School",
+    name: "The Sabin Center for Climate Change Law at Columbia Law School",
   },
   {
     link: "https://www.filefoundation.org",
