@@ -11,7 +11,7 @@ test.describe("Collection page", () => {
     await genericPage.waitUntilLoaded(page, "Leon v. Exxon Mobil Corp");
 
     const tableOfDocuments = page.getByRole("table").first();
-    const documentLink = tableOfDocuments.getByRole("link").first();
+    const documentLink = tableOfDocuments.getByRole("link", { name: "Document link" }).first();
 
     await expect(documentLink).toBeVisible();
 
