@@ -19,9 +19,9 @@ export const transformFamily = (document: TDataInDocument): TFamilyPublic => {
 
   return {
     attribution,
-    collections: transformFamilyCollections(document, attribution.category),
+    collections: transformFamilyCollections(document),
     concepts: transformConcepts(groupedLabels.legal_concept),
-    documents: transformFamilyDocuments(documents, documentEvents, attribution.category),
+    documents: transformFamilyDocuments(documents, documentEvents),
     events: familyEvents,
     geographies: groupedLabels.geography.map((label) => label.value.id.split(ID_SEPARATOR)[1]),
     import_id: document.id,
