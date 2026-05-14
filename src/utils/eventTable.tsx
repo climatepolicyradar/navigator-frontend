@@ -138,7 +138,7 @@ export const getEventTableRowsData = (family: TFamilyPublic): TEventRowData[] =>
 };
 
 const getFamilyDocuments = (family: TFamilyPublic): TEventRowData[] =>
-  family.documents.filter((document) => document.document_status !== "deleted").map((document) => ({ family, document }));
+  family.documents.filter((document) => document.document_status === "published").map((document) => ({ family, document }));
 
 const linkClasses = "block text-brand underline underline-offset-4 decoration-gray-300 hover:decoration-gray-500";
 
