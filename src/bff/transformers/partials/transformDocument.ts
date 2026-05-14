@@ -15,7 +15,9 @@ import { groupByType } from "@/utils/data-in/groupByType";
 
 export const transformDocument = (document: TDataInDocument, events: TFamilyEventPublic[]): TFamilyDocumentPublic => {
   const documentAttributes = validateDocumentAttributes(document.attributes);
-  if (["published", "awaiting_source_file"].includes(documentAttributes.status)) return null;
+  const ALLOWED_STATUSES = ["published", "awaiting_source_file"];
+  const displayAllowed = ALLOWED_STATUSES.includes(documentAttributes.status);
+  if (!displayAllowed) return null;
 
   const groupedLabels = groupByType<TDataInLabel, TDataInLabelType>(document.labels, LABEL_TYPES, MANDATORY_DOCUMENT_LABEL_TYPES);
   const groupedItems = groupByType<TDataInItem, TDataInItemType>(document.items ?? [], ITEM_TYPES, MANDATORY_ITEM_TYPES);
