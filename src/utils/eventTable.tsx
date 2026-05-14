@@ -149,6 +149,7 @@ const getDocumentLink = (document: TFamilyDocumentPublic, hasMatches: boolean, i
   if (canPreview)
     return (
       <PageLink
+        aria-label="Document link"
         keepQuery
         href={`/documents/${document.slug}`}
         className={joinTailwindClasses(linkClasses, (isMainDocument || isLitigation) && "font-medium")}
