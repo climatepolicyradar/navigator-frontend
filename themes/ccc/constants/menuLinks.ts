@@ -38,7 +38,7 @@ export const MENU_LINKS: TMenuLink[] = [
     cy: "contact",
   },
   {
-    text: "Sabin Centre",
+    text: "Sabin Center",
     href: "https://climate.law.columbia.edu/",
     external: true,
     cy: "sabin-centre",
