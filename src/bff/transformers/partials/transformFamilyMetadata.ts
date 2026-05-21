@@ -1,7 +1,6 @@
 import { TDataInLabel, TDataInLabelType, TDataInFamilyAttributes } from "@/schemas";
 import { API_FAMILY_METADATA_KEY, TApiFamilyMetadata, TApiFamilyMetadataKey, TAttributionCategory } from "@/types";
 import { TItemsByType } from "@/utils/data-in/groupByType";
-import { firstCase } from "@/utils/text";
 
 // For labels and attributes that are now named differently to their corresponding metadata key
 const LABEL_TO_METADATA_MAP: Partial<Record<TDataInLabelType, TApiFamilyMetadataKey>> = {
@@ -43,10 +42,6 @@ export const transformFamilyMetadata = (
       familyMetadata[metadataKey] = labels.map((label) => label.value.value);
     }
   });
-
-  if (groupedLabels.author?.length > 0) {
-    familyMetadata.author_type = groupedLabels.author.map((author) => firstCase(author.value.type));
-  }
 
   if (category === "Litigation") {
     familyMetadata.concept_preferred_label = groupedLabels.legal_concept
