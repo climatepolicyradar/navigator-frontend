@@ -1,5 +1,3 @@
-from typing import Dict, Optional
-
 import pulumi
 import pulumi_aws as aws
 
@@ -21,8 +19,8 @@ class FrontendWebAcl(pulumi.ComponentResource):
     def __init__(
         self,
         name: str,
-        tags: Optional[Dict[str, str]] = None,
-        opts: Optional[pulumi.ResourceOptions] = None,
+        tags: dict[str, str] | None = None,
+        opts: pulumi.ResourceOptions | None = None,
     ):
         super().__init__("cpr:waf:FrontendWebAcl", name, None, opts)
 
@@ -44,7 +42,16 @@ class FrontendWebAcl(pulumi.ComponentResource):
             name="CountChrome125UserAgent",
             priority=0,
             action=aws.wafv2.WebAclRuleActionArgs(
-                count=aws.wafv2.WebAclRuleActionCountArgs(),
+                count=aws.wafv2.WebAclRuleActionCountArgs(
+                    custom_request_handling=aws.wafv2.WebAclRuleActionCountCustomRequestHandlingArgs(
+                        insert_headers=[
+                            aws.wafv2.WebAclRuleActionCountCustomRequestHandlingInsertHeaderArgs(
+                                name="waf-acl-detection",
+                                value="chrome125-user-agent",
+                            ),
+                        ],
+                    ),
+                ),
             ),
             statement=aws.wafv2.WebAclRuleStatementArgs(
                 byte_match_statement=aws.wafv2.WebAclRuleStatementByteMatchStatementArgs(
