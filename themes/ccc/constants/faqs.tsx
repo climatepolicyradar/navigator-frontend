@@ -221,6 +221,19 @@ export const FAQS: TFAQ[] = [
     ),
   },
   {
+    title: "How do I find an accurate case count?",
+    content: (
+      <p>
+        Users seeking an accurate count of U.S. and non-U.S. cases across the Climate Litigation Database should use the full database download. The
+        downloadable dataset includes information on related proceedings, collections, and jurisdictional distinctions that may affect case counts.
+        For more detail on how cases are structured and counted in the dataset, please refer to the{" "}
+        <ExternalLink url="https://climatepolicyradar.notion.site/Readme-for-Climate-Case-Chart-document-data-download-35f9109609a48003affdf86d97eb2ccd">
+          Readme for Climate Case Chart document data download.
+        </ExternalLink>
+      </p>
+    ),
+  },
+  {
     title: "What is the Sabin Center for Climate Change Law?",
     content: (
       <>
@@ -548,6 +561,13 @@ export const PLATFORM_FAQS: TFAQ[] = [
           of these proceedings is counted as a separate case. You can see these related proceedings together in the "Collection" view by clicking the
           link below the phrase "Part of" on each U.S. case page. The number of Collections in the Climate Litigation Database would correspond to the
           number of U.S. cases on the old platform.
+        </p>
+        <p>
+          Users seeking an accurate count of U.S. and non-U.S. cases across the database should use the full database download and refer to the{" "}
+          <ExternalLink url="https://climatepolicyradar.notion.site/Readme-for-Climate-Case-Chart-document-data-download-35f9109609a48003affdf86d97eb2ccd">
+            Readme for Climate Case Chart document data download
+          </ExternalLink>{" "}
+          for guidance on how cases and related proceedings are structured and counted in the dataset.
         </p>
       </>
     ),

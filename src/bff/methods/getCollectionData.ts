@@ -48,7 +48,7 @@ export const getCollectionData = async (slug: string, features: TFeatures): Prom
       errors.push(error as Error);
     }
 
-    const collectionFamilies = getChildDocuments(dataInCollection.documents, "Litigation");
+    const collectionFamilies = getChildDocuments(dataInCollection.documents);
 
     try {
       dataInFamilies = await Promise.all<TDataInDocument>(
