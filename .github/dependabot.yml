@@ -4,6 +4,9 @@ updates:
     directory: /
     schedule:
       interval: weekly
+    ignore:
+      # Manually decide when to update certain packages
+      - dependency-name: node
     groups:
       # Major updates will be raised as separate PRs by default
       minor-and-patch:
