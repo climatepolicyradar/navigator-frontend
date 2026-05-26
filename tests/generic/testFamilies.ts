@@ -25,7 +25,7 @@ export const TEST_FAMILIES: TTestFamily[] = [
   },
   {
     titleForTests: "Policy",
-    slug: "tunisian-national-strategy-and-action-plan-for-biodiversity-2018-2030_a1d7",
+    slug: "national-policy-on-biological-diversity_b248",
     withSearch: "biodiversity",
     withTopic: "target",
     availableOn: ["cpr", "cclw"],
@@ -45,8 +45,8 @@ export const TEST_FAMILIES: TTestFamily[] = [
     availableOn: ["cpr", "cclw"],
   },
   {
-    titleForTests: "Policy, 60 targets",
-    slug: "french-strategy-for-energy-and-climate_2d2e",
+    titleForTests: "Policy, 80 targets",
+    slug: "clean-electricity-regulations-sor-2024-263_3e84",
     withSearch: "fossil+fuel",
     withTopic: "fossil+fuel",
     availableOn: ["cpr", "cclw"],

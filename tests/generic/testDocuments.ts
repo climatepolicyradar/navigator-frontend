@@ -28,7 +28,7 @@ export const TEST_DOCUMENTS: TTestDocument[] = [
   },
   {
     titleForTests: "Policy",
-    slug: "national-strategy-and-action-plan-for-biodiversity-2018-2030_a435",
+    slug: "national-policy-on-biological-diversity-2016-2025_a752",
     withSearch: "biodiversity",
     withTopic: "Target",
     withParentTopic: "Target",
@@ -51,8 +51,8 @@ export const TEST_DOCUMENTS: TTestDocument[] = [
     availableOn: ["cpr", "cclw"],
   },
   {
-    titleForTests: "Policy, 60 targets",
-    slug: "french-strategy-for-energy-and-climate_4282",
+    titleForTests: "Policy, 70 targets",
+    slug: "clean-electricity-regulations-sor-2024-263_2747",
     withSearch: "fossil fuel",
     withTopic: "Fossil fuel",
     withParentTopic: "Fossil fuel",
