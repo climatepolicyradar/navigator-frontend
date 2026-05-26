@@ -3,9 +3,9 @@ import { formatDate } from "@/utils/timedate";
 
 const MAX_DESCRIPTION_LENGTH = 275;
 
-function getDocumentPublishedYear(doc: SearchDocument) {
+const getDocumentPublishedYear = (doc: SearchDocument) => {
   return doc.attributes.published_date ? formatDate(doc.attributes.published_date as string)[0] : undefined;
-}
+};
 
 type TDocumentAnalytics = {
   context?: string;
