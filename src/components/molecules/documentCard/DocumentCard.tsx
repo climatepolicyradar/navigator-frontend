@@ -18,7 +18,7 @@ function getDocumentPublishedYear(doc: SearchDocument) {
 
 type TDocumentAnalytics = {
   context?: string;
-  position?: number;
+  page?: number;
   positionOffset?: number;
 };
 
@@ -29,7 +29,7 @@ type TProps = {
 };
 
 export function DocumentCard({ document, onClick, analytics }: TProps) {
-  const { context, position, positionOffset } = analytics || {};
+  const { context, page, positionOffset } = analytics || {};
 
   return (
     <button
@@ -40,8 +40,8 @@ export function DocumentCard({ document, onClick, analytics }: TProps) {
       }}
       className="group text-left w-full p-4 py-5 flex gap-8 transition hocus:rounded-md hocus:bg-inky-blue/4 hocus:border-transparent"
       data-ph-capture-attribute-link-purpose={context ?? "document-card"}
-      data-ph-capture-attribute-position-page={position}
-      data-ph-capture-attribute-position-total={positionOffset + position}
+      data-ph-capture-attribute-position-page={page}
+      data-ph-capture-attribute-position-total={page !== undefined && positionOffset !== undefined ? positionOffset + page : undefined}
     >
       <span className="basis-12.5 grow-0 shrink-0">
         <span>{getDocumentPublishedYear(document)}</span>
