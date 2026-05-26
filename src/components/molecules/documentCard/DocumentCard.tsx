@@ -48,7 +48,7 @@ export function DocumentCard({ document, onClick, analytics }: TProps) {
       </span>
       <span>
         {/* CORE DETAILS */}
-        <h3 className="font-semibold text-lg mb-3">
+        <h3 className="font-semibold text-base mb-3">
           {linkHref(document) ? (
             <span className="text-inky-blue group-hover:underline group-focus:underline" dangerouslySetInnerHTML={{ __html: document.title }} />
           ) : (
