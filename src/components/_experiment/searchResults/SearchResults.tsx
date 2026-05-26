@@ -39,7 +39,7 @@ function SearchResults({
 
   return (
     <div>
-      <ul className="divide-y divide-neutral-100">
+      <ul className="">
         {data.results.map((result) => (
           <Fragment key={result.id}>
             {isPrincipal(result) && (
