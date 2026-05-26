@@ -27,7 +27,8 @@ export function DocumentCard({ document, onClick, analytics }: TProps) {
       type="button"
       onClick={(e) => {
         e.currentTarget.blur();
-        onClick(document, e);
+        e.preventDefault();
+        onClick?.(document, e);
       }}
       className="group text-left w-full p-4 py-5 flex gap-8 transition hocus:rounded-md hocus:bg-inky-blue/4 hocus:border-transparent"
       data-ph-capture-attribute-link-purpose={context ?? "document-card"}
