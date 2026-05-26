@@ -82,9 +82,7 @@ interface SearchDocumentsParams {
   filters?: TQueryGroup;
   page_size?: string;
   page_token?: string;
-  includeDocumentsInSearch?: boolean;
   sort?: SearchDocumentsSortKey;
-  excludeMergedDocuments?: boolean;
 }
 
 function searchDocumentsUrl(): string {
@@ -92,21 +90,9 @@ function searchDocumentsUrl(): string {
   return `${origin}/search/documents`;
 }
 
-function configureDocumentsFilters(
-  filters: TQueryGroup | undefined,
-  includeDocumentsInSearch: boolean,
-  excludeMergedDocuments: boolean
-): TQueryGroup {
-  const excludeMergedDocumentsFilter: TQueryGroup = {
-    op: "and",
-    filters: [
-      {
-        field: "labels.value.id",
-        op: "not_contains",
-        value: "status::Merged",
-      },
-    ],
-  };
+// Add default filters exclusive of searfh parameters to ensure they are always applied
+function configureDocumentsFilters(filters: TQueryGroup | undefined): TQueryGroup {
+  // Keep for now to ensure we only return principals
   const principalDocumentsFilter: TQueryGroup = {
     op: "and",
     filters: [
@@ -155,13 +141,7 @@ function configureDocumentsFilters(
     filtersWithConditionals.push(filters);
   }
 
-  if (excludeMergedDocuments) {
-    filtersWithConditionals.push(excludeMergedDocumentsFilter);
-  }
-
-  if (!includeDocumentsInSearch) {
-    filtersWithConditionals.push(principalDocumentsFilter);
-  }
+  filtersWithConditionals.push(principalDocumentsFilter);
 
   return {
     op: "and",
@@ -171,11 +151,10 @@ function configureDocumentsFilters(
 
 export async function fetchSearchDocuments(params: SearchDocumentsParams = {}): Promise<SearchDocumentsResponse> {
   const url = new URL(searchDocumentsUrl());
-  const filters = configureDocumentsFilters(params.filters, params.includeDocumentsInSearch ?? false, params.excludeMergedDocuments ?? true);
+  const filters = configureDocumentsFilters(params.filters);
 
   // This enables `bolding` in vespa AKA highlighting, which highlights the matched terms in the results.
   url.searchParams.set("bolding", "true");
-
   if (params.query) url.searchParams.set("query", params.query);
   if (filters) url.searchParams.set("filters", JSON.stringify(filters));
   if (params.page_size !== undefined) url.searchParams.set("page_size", params.page_size);
