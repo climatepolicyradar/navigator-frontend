@@ -3,15 +3,6 @@ import { formatDate } from "@/utils/timedate";
 
 const MAX_DESCRIPTION_LENGTH = 275;
 
-function linkHref(doc: SearchDocument): string | undefined {
-  if (doc.attributes.deprecated_slug)
-    if (doc.labels.find((label) => label.value.value === "Principal")) {
-      return `/document/${doc.attributes.deprecated_slug}`;
-    } else {
-      return `/documents/${doc.attributes.deprecated_slug}`;
-    }
-}
-
 function getDocumentPublishedYear(doc: SearchDocument) {
   return doc.attributes.published_date ? formatDate(doc.attributes.published_date as string)[0] : undefined;
 }
@@ -49,11 +40,7 @@ export function DocumentCard({ document, onClick, analytics }: TProps) {
       <span>
         {/* CORE DETAILS */}
         <h3 className="font-semibold text-base mb-3">
-          {linkHref(document) ? (
-            <span className="text-inky-blue group-hover:underline group-focus:underline" dangerouslySetInnerHTML={{ __html: document.title }} />
-          ) : (
-            <span dangerouslySetInnerHTML={{ __html: document.title }} />
-          )}
+          <span className="text-inky-blue group-hover:underline group-focus:underline" dangerouslySetInnerHTML={{ __html: document.title }} />
         </h3>
         {document.description && (
           <p
@@ -68,8 +55,7 @@ export function DocumentCard({ document, onClick, analytics }: TProps) {
           {/* DISPLAYING GEOS */}
           <ul className="flex flex-wrap gap-2 text-base text-neutral-600">
             {document.labels
-              .filter((label) => label.type === "geography")
-              .filter((label) => label.value.type === "country")
+              .filter((label) => label.type === "geography" && label.value.type === "country")
               .map((label) => (
                 <li key={label.value.value}>{label.value.value}</li>
               ))}
