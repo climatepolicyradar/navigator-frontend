@@ -89,7 +89,7 @@ describe("DocumentCard", () => {
   });
 
   it("sets analytics data attributes on the button", () => {
-    render(<DocumentCard document={baseDocument} onClick={() => {}} analytics={{ context: "search-results", position: 2, positionOffset: 10 }} />);
+    render(<DocumentCard document={baseDocument} onClick={() => {}} analytics={{ context: "search-results", page: 2, positionOffset: 10 }} />);
     const button = screen.getByRole("button");
     expect(button).toHaveAttribute("data-ph-capture-attribute-link-purpose", "search-results");
     expect(button).toHaveAttribute("data-ph-capture-attribute-position-page", "2");

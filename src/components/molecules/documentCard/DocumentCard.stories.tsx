@@ -76,8 +76,8 @@ export const WithAnalytics: TStory = {
     document: baseDocument,
     analytics: {
       context: "search-results",
-      position: 3,
-      positionOffset: 20,
+      page: 3,
+      positionOffset: 38,
     },
   },
 };
