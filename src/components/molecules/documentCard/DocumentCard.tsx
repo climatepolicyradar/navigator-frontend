@@ -1,4 +1,5 @@
 import { SearchDocument } from "@/api/search";
+import { formatDate } from "@/utils/timedate";
 
 const MAX_DESCRIPTION_LENGTH = 275;
 
@@ -11,12 +12,25 @@ function linkHref(doc: SearchDocument): string | undefined {
     }
 }
 
+function getDocumentPublishedYear(doc: SearchDocument) {
+  return doc.attributes.published_date ? formatDate(doc.attributes.published_date as string)[0] : undefined;
+}
+
+type TDocumentAnalytics = {
+  context?: string;
+  position?: number;
+  positionOffset?: number;
+};
+
 type TProps = {
   document: SearchDocument;
   onClick?: (document: SearchDocument, event: React.MouseEvent<HTMLButtonElement>) => void;
+  analytics?: TDocumentAnalytics;
 };
 
-export function DocumentCard({ document, onClick }: TProps) {
+export function DocumentCard({ document, onClick, analytics }: TProps) {
+  const { context, position, positionOffset } = analytics || {};
+
   return (
     <button
       type="button"
@@ -24,36 +38,44 @@ export function DocumentCard({ document, onClick }: TProps) {
         e.currentTarget.blur();
         onClick(document, e);
       }}
-      className="group text-left w-full p-4 py-5 transition hocus:rounded-md hocus:bg-inky-blue/4 hocus:border-transparent"
+      className="group text-left w-full p-4 py-5 flex gap-8 transition hocus:rounded-md hocus:bg-inky-blue/4 hocus:border-transparent"
+      data-ph-capture-attribute-link-purpose={context ?? "document-card"}
+      data-ph-capture-attribute-position-page={position}
+      data-ph-capture-attribute-position-total={positionOffset + position}
     >
-      <span className="font-medium">{document.labels.find((label) => label.type === "category")?.value.value}</span>
-      {/* CORE DETAILS */}
-      <h3 className="font-semibold text-lg mb-3">
-        {linkHref(document) ? (
-          <span className="text-inky-blue group-hover:underline group-focus:underline" dangerouslySetInnerHTML={{ __html: document.title }} />
-        ) : (
-          <span dangerouslySetInnerHTML={{ __html: document.title }} />
+      <span className="basis-12.5 grow-0 shrink-0">
+        <span>{getDocumentPublishedYear(document)}</span>
+      </span>
+      <span>
+        {/* CORE DETAILS */}
+        <h3 className="font-semibold text-lg mb-3">
+          {linkHref(document) ? (
+            <span className="text-inky-blue group-hover:underline group-focus:underline" dangerouslySetInnerHTML={{ __html: document.title }} />
+          ) : (
+            <span dangerouslySetInnerHTML={{ __html: document.title }} />
+          )}
+        </h3>
+        {document.description && (
+          <p
+            className="text-base text-neutral-600 mb-3"
+            dangerouslySetInnerHTML={{
+              __html: document.description.slice(0, MAX_DESCRIPTION_LENGTH) + (document.description.length > MAX_DESCRIPTION_LENGTH ? "..." : ""),
+            }}
+          />
         )}
-      </h3>
-      {document.description && (
-        <p
-          className="text-base text-neutral-600 mb-3"
-          dangerouslySetInnerHTML={{
-            __html: document.description.slice(0, MAX_DESCRIPTION_LENGTH) + (document.description.length > MAX_DESCRIPTION_LENGTH ? "..." : ""),
-          }}
-        />
-      )}
-      {/* DISPLAYING GEOS */}
-      <ul className="flex flex-wrap gap-2 text-base text-neutral-600">
-        {document.labels
-          .filter((label) => label.type === "geography")
-          .map((label, i) => (
-            <li key={label.value.value}>
-              {label.value.value}
-              {i < document.labels.filter((l) => l.type === "geography").length - 1 ? "," : ""}
-            </li>
-          ))}
-      </ul>
+        <span className="flex gap-4">
+          <span>{document.labels.find((label) => label.type === "category")?.value.value}</span>
+          {/* DISPLAYING GEOS */}
+          <ul className="flex flex-wrap gap-2 text-base text-neutral-600">
+            {document.labels
+              .filter((label) => label.type === "geography")
+              .filter((label) => label.value.type === "country")
+              .map((label) => (
+                <li key={label.value.value}>{label.value.value}</li>
+              ))}
+          </ul>
+        </span>
+      </span>
     </button>
   );
 }
