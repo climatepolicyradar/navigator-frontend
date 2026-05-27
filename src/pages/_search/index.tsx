@@ -244,7 +244,7 @@ const ShadowSearch = ({ theme, themeConfig, features }: TProps) => {
         {/* PAGINATION */}
         {totalNoOfResults !== null && totalNoOfResults > 0 && (query || !isFilterGroupEmpty(filters)) && (
           <div className={columnLayoutCss}>
-            <div className="flex justify-between items-center">
+            <div className="flex flex-wrap justify-between items-center gap-4">
               <Pagination
                 currentPage={parseInt(currentPage)}
                 totalPages={totalNoOfResults !== null ? Math.ceil(totalNoOfResults / parseInt(pageSize)) : 0}
