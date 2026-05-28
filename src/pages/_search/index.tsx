@@ -125,7 +125,6 @@ const ShadowSearch = ({ theme, themeConfig, features }: TProps) => {
           {/* SEARCH INPUT */}
           <IntelliSearch
             query={query}
-            availableLabelIds={availableLabelIds}
             selectedLabels={selectedLabels}
             onSelectSuggestion={(suggestion) => {
               if (suggestion && !selectedLabels.includes(suggestion)) {
