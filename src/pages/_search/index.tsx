@@ -1,13 +1,12 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 
-import { Switch } from "@base-ui/react/switch";
 import isEqual from "lodash/isEqual";
 import { GetServerSideProps, InferGetServerSidePropsType } from "next";
-import { useQueryState, parseAsBoolean, parseAsString, parseAsJson } from "nuqs";
+import { useQueryState, parseAsString, parseAsJson } from "nuqs";
 import { useCallback, useEffect, useMemo, useState, type SetStateAction } from "react";
 
 import { ApiClient } from "@/api/http-common";
-import { IAggregationLabel, normaliseSearchDocumentsSortKey, SearchDocument } from "@/api/search";
+import { normaliseSearchDocumentsSortKey, SearchDocument } from "@/api/search";
 import { createGroup, isFilterGroupEmpty, AdvancedFilters, TQueryGroup } from "@/components/_experiment/advancedFilters/AdvancedFilters";
 import { AppliedLabels } from "@/components/_experiment/appliedLabels/AppliedLabels";
 import { DocumentDrawer } from "@/components/_experiment/documentDrawer/DocumentDrawer";
@@ -23,7 +22,6 @@ import { FeaturesContext } from "@/context/FeaturesContext";
 import { TLabelResult, loadLabels } from "@/hooks/useLabelSearch";
 import { FilterGroupSchema } from "@/schemas";
 import { findPublishedDateRangeValue, removePublishedDateRules, upsertPublishedDateRangeRules } from "@/utils/_experiment/dateRangeFilters";
-import { getAvailableLabelIdsFromAggregations } from "@/utils/_experiment/labelAggregationAvailability";
 import { getFeatureFlags } from "@/utils/featureFlags";
 import { getFeatures } from "@/utils/features";
 import { addLabelRule, extractLabels, removeLabelRule } from "@/utils/filters/advancedFilters";
@@ -46,7 +44,6 @@ type TProps = InferGetServerSidePropsType<typeof getServerSideProps>;
  */
 const ShadowSearch = ({ theme, themeConfig, features }: TProps) => {
   const [availableFilters, setAvailableFilters] = useState<TLabelResult[]>([]);
-  const [labelAggregations, setLabelAggregations] = useState<IAggregationLabel[] | undefined>(undefined);
 
   // search query that is typed into the search box
   const [query, setQuery] = useQueryState("q", parseAsString.withDefault(""));
@@ -67,17 +64,10 @@ const ShadowSearch = ({ theme, themeConfig, features }: TProps) => {
    */
   const setFilters = useCallback(
     (updater: SetStateAction<TQueryGroup>) => {
-      let shouldClearAggregations = false;
       void setFiltersInUrl((prev) => {
         const nextFilters = typeof updater === "function" ? (updater as (p: TQueryGroup) => TQueryGroup)(prev) : updater;
-        if (!isEqual(prev, nextFilters) && isFilterGroupEmpty(nextFilters)) {
-          shouldClearAggregations = true;
-        }
         return nextFilters;
       });
-      if (shouldClearAggregations) {
-        setLabelAggregations(undefined);
-      }
     },
     [setFiltersInUrl]
   );
@@ -104,15 +94,6 @@ const ShadowSearch = ({ theme, themeConfig, features }: TProps) => {
     loadLabels("").then(setAvailableFilters);
   }, []);
 
-  /** Avoid re-renders when the search payload repeats the same aggregation list. */
-  const applyAggregationsFromSearch = useCallback((labels: IAggregationLabel[] | undefined) => {
-    setLabelAggregations((prev) => (isEqual(prev, labels) ? prev : labels));
-  }, []);
-
-  const availableLabelIds = useMemo(
-    () => getAvailableLabelIdsFromAggregations(labelAggregations, query, filters),
-    [labelAggregations, query, filters]
-  );
   const selectedPublishedDateRange = useMemo(() => findPublishedDateRangeValue(filters), [filters]);
 
   return (
@@ -125,7 +106,6 @@ const ShadowSearch = ({ theme, themeConfig, features }: TProps) => {
           {/* SEARCH INPUT */}
           <IntelliSearch
             query={query}
-            availableLabelIds={availableLabelIds}
             selectedLabels={selectedLabels}
             onSelectSuggestion={(suggestion) => {
               if (suggestion && !selectedLabels.includes(suggestion)) {
@@ -159,8 +139,6 @@ const ShadowSearch = ({ theme, themeConfig, features }: TProps) => {
                 setCurrentPage("1");
               }
             }}
-            aggregations={labelAggregations}
-            query={query}
             onAdvancedClick={() => {
               setFiltersOpen(false);
               setAdvancedFiltersOpen(true);
@@ -200,7 +178,6 @@ const ShadowSearch = ({ theme, themeConfig, features }: TProps) => {
                 setQuery("");
                 setTotalNoOfResults(null);
                 setCurrentPage("1");
-                setLabelAggregations(undefined); // belt & braces
               }}
               onSelectLabel={handleSelectLabel}
               onRemoveLabel={(label) => {
@@ -223,7 +200,6 @@ const ShadowSearch = ({ theme, themeConfig, features }: TProps) => {
             page_token={currentPage}
             page_size={pageSize}
             sort={sortKey}
-            onAggregationsChange={applyAggregationsFromSearch}
             onTotalResultsChange={setTotalNoOfResults}
             onResultClicked={(document, event) => {
               // If command or ctrl is clicked open document new tab
@@ -244,7 +220,7 @@ const ShadowSearch = ({ theme, themeConfig, features }: TProps) => {
         {/* PAGINATION */}
         {totalNoOfResults !== null && totalNoOfResults > 0 && (query || !isFilterGroupEmpty(filters)) && (
           <div className={columnLayoutCss}>
-            <div className="flex justify-between items-center">
+            <div className="flex flex-wrap justify-between items-center gap-4">
               <Pagination
                 currentPage={parseInt(currentPage)}
                 totalPages={totalNoOfResults !== null ? Math.ceil(totalNoOfResults / parseInt(pageSize)) : 0}
@@ -273,7 +249,6 @@ const ShadowSearch = ({ theme, themeConfig, features }: TProps) => {
         }}
         open={advancedFiltersOpen}
         onOpenChange={setAdvancedFiltersOpen}
-        availableLabelIds={availableLabelIds}
       />
       {/* DRAWER */}
       <DocumentDrawer document={selectedDocument} open={drawerOpen} onOpenChange={setDrawerOpen} />

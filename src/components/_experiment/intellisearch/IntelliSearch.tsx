@@ -5,7 +5,6 @@ import { useMemo, useRef, useState } from "react";
 
 import { TLabelResult, useLabelSearch } from "@/hooks/useLabelSearch";
 import { buildLabelSuggestionHtml, buildSearchForRowHtml } from "@/utils/_experiment/intellisearchLabelHtml";
-import { partitionByAvailability } from "@/utils/_experiment/labelAggregationAvailability";
 import { labelTypeLabel } from "@/utils/_experiment/labelTypeLabel";
 import { joinTailwindClasses } from "@/utils/tailwind";
 
@@ -27,7 +26,6 @@ function EnterHint() {
 
 export function IntelliSearch({
   query,
-  availableLabelIds,
   className,
   placeholder = "Search",
   debounceDelay = 50,
@@ -63,24 +61,18 @@ export function IntelliSearch({
     inputRef.current?.blur();
   }
 
-  const isSuggestionAvailable = (suggestion: TLabelResult) => !availableLabelIds || availableLabelIds.has(suggestion.id);
-
   const suggestions = useMemo(() => {
     const selectedSet = new Set(selectedLabels.map((s) => s.toLowerCase()));
     const candidateLabels: TLabelResult[] = [];
 
-    // Add label suggestions first. Unavailable ones stay visible but disabled.
     labelsResults.forEach((label) => {
       if (selectedSet.has(label.value.toLowerCase())) return; // Exclude if already selected as filter
       candidateLabels.push(label);
     });
 
-    const { enabled, disabled } = partitionByAvailability(candidateLabels, availableLabelIds);
-    const unified: TLabelResult[] = [...enabled, ...disabled];
-
     // Add search suggestion
     if (searchTerm.trim()) {
-      unified.unshift({
+      candidateLabels.unshift({
         id: "search",
         type: "search",
         value: searchTerm.trim(),
@@ -88,18 +80,12 @@ export function IntelliSearch({
     }
 
     // Apply max suggestions limit if specified
-    return maxSuggestions ? unified.slice(0, maxSuggestions) : unified;
-  }, [availableLabelIds, labelsResults, maxSuggestions, selectedLabels, searchTerm]);
-
-  const labelSuggestions = useMemo(() => suggestions.slice(1), [suggestions]);
-  const firstDisabledIndex = useMemo(
-    () => labelSuggestions.findIndex((s) => availableLabelIds && !availableLabelIds.has(s.id)),
-    [labelSuggestions, availableLabelIds]
-  );
+    return maxSuggestions ? candidateLabels.slice(0, maxSuggestions) : candidateLabels;
+  }, [labelsResults, maxSuggestions, selectedLabels, searchTerm]);
 
   return (
     <div ref={containerRef} className={joinTailwindClasses("relative w-full", className)}>
-      <Autocomplete.Root open items={suggestions} autoHighlight="always" keepHighlight>
+      <Autocomplete.Root open items={suggestions} filter={null} autoHighlight="always" keepHighlight>
         <div className="relative border border-transparent-regular rounded-xl">
           <div className="flex items-center gap-2 ml-6">
             <LucideSearch width={16} height={16} className="text-neutral-500" />
@@ -148,51 +134,38 @@ export function IntelliSearch({
                         {searchTerm.trim().length === 0 ? "Enter a search query to see suggestions" : "No suggestions found for your query"}
                       </Autocomplete.Empty>
                       {/* SUGGESTIONS */}
-                      {/* the first suggestion is always the search term, so we start from index 1 to show label suggestions first */}
                       {suggestions.length > 1 && (
-                        <Autocomplete.Group items={labelSuggestions} className="block pb-2">
+                        <Autocomplete.Group items={suggestions.slice(1, suggestions.length)} className="block pb-2">
                           <Autocomplete.GroupLabel className="sticky top-0 z-1 m-0 mr-2 bg-white px-4 py-2 text-xs text-neutral-500">
                             Suggestions
                           </Autocomplete.GroupLabel>
-                          {labelSuggestions.map((suggestion, idx) => {
-                            const isAvailable = isSuggestionAvailable(suggestion);
-                            return (
-                              <div key={suggestion.id}>
-                                {firstDisabledIndex > 0 && idx === firstDisabledIndex ? <div className="h-6" aria-hidden /> : null}
-                                <Autocomplete.Item
-                                  value={{ value: suggestion.value, type: "label" }}
-                                  onClick={() => {
-                                    if (!isAvailable) return;
-                                    handleSuggestionClick(suggestion.id);
+                          <Autocomplete.Collection>
+                            {(suggestion: TLabelResult) => (
+                              <Autocomplete.Item
+                                key={suggestion.id}
+                                value={{ value: suggestion.value, type: "label" }}
+                                onClick={() => {
+                                  handleSuggestionClick(suggestion.id);
+                                }}
+                                className={joinTailwindClasses(
+                                  suggestionRow,
+                                  "min-h-9 cursor-pointer text-inky-black data-highlighted:bg-neutral-200"
+                                )}
+                              >
+                                <span
+                                  className="truncate"
+                                  dangerouslySetInnerHTML={{
+                                    __html: buildLabelSuggestionHtml(suggestion.value, suggestion.alternative_labels, searchTerm),
                                   }}
-                                  className={joinTailwindClasses(
-                                    suggestionRow,
-                                    "min-h-9",
-                                    isAvailable
-                                      ? "cursor-pointer text-inky-black data-highlighted:bg-neutral-200"
-                                      : "cursor-not-allowed text-neutral-400"
-                                  )}
-                                >
-                                  <span
-                                    className="truncate"
-                                    dangerouslySetInnerHTML={{
-                                      __html: buildLabelSuggestionHtml(suggestion.value, suggestion.alternative_labels, searchTerm),
-                                    }}
-                                  />
-                                  <span className={isAvailable ? "text-gray-500" : "text-neutral-400"}>—</span>
-                                  <span
-                                    className={joinTailwindClasses(
-                                      "shrink-0 whitespace-nowrap",
-                                      isAvailable ? "text-neutral-500" : "text-neutral-400"
-                                    )}
-                                  >
-                                    {labelTypeLabel(suggestion.type)}
-                                  </span>
-                                  {isAvailable ? <EnterHint /> : <div className="ml-auto text-xs text-neutral-400">Unavailable</div>}
-                                </Autocomplete.Item>
-                              </div>
-                            );
-                          })}
+                                />
+                                <span className={"text-gray-500"}>—</span>
+                                <span className={joinTailwindClasses("shrink-0 whitespace-nowrap text-neutral-500")}>
+                                  {labelTypeLabel(suggestion.type)}
+                                </span>
+                                <EnterHint />
+                              </Autocomplete.Item>
+                            )}
+                          </Autocomplete.Collection>
                         </Autocomplete.Group>
                       )}
                     </Autocomplete.List>

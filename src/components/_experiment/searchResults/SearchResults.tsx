@@ -1,7 +1,7 @@
 import { LucideCog } from "lucide-react";
 import React, { Fragment, Suspense, use, useEffect, useMemo } from "react";
 
-import { fetchSearchDocuments, SearchDocument, SearchDocumentsResponse, IAggregationLabel, SearchDocumentsSortKey } from "@/api/search";
+import { fetchSearchDocuments, SearchDocument, SearchDocumentsResponse, SearchDocumentsSortKey } from "@/api/search";
 import { DocumentCard } from "@/components/molecules/documentCard/DocumentCard";
 
 import styles from "./SearchResults.module.css";
@@ -15,22 +15,14 @@ const isPrincipal = (result: SearchDocument): boolean => {
 
 function SearchResults({
   promise,
-  onAggregationsChange,
   onTotalResultsChange,
   onResultClicked,
 }: {
   promise: Promise<SearchDocumentsResponse>;
-  onAggregationsChange?: (labels: IAggregationLabel[] | undefined) => void;
   onTotalResultsChange?: (total: number | null) => void;
   onResultClicked?: (document: SearchDocument, event: React.MouseEvent<HTMLButtonElement>) => void;
 }) {
   const data = use(promise);
-  const labels = data.aggregations?.labels;
-
-  // notify parent of the aggregations for the current search results
-  useEffect(() => {
-    onAggregationsChange?.(labels);
-  }, [labels, onAggregationsChange]);
 
   // notify parent of the number of results
   useEffect(() => {
@@ -78,7 +70,6 @@ export function SearchContainer({
   page_token,
   page_size,
   sort,
-  onAggregationsChange,
   onTotalResultsChange,
   onResultClicked,
 }: {
@@ -88,7 +79,6 @@ export function SearchContainer({
   page_token?: string;
   page_size?: string;
   sort?: SearchDocumentsSortKey;
-  onAggregationsChange?: (labels: IAggregationLabel[] | undefined) => void;
   onTotalResultsChange?: (total: number | null) => void;
   onResultClicked?: (document: SearchDocument, event: React.MouseEvent<HTMLButtonElement>) => void;
 }) {
@@ -116,12 +106,7 @@ export function SearchContainer({
             </p>
           }
         >
-          <SearchResults
-            promise={searchPromise}
-            onAggregationsChange={onAggregationsChange}
-            onTotalResultsChange={onTotalResultsChange}
-            onResultClicked={onResultClicked}
-          />
+          <SearchResults promise={searchPromise} onTotalResultsChange={onTotalResultsChange} onResultClicked={onResultClicked} />
         </Suspense>
       ) : (
         <EmptySearch />

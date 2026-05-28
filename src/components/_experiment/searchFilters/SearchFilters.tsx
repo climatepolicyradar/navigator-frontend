@@ -2,11 +2,9 @@ import { Popover as BasePopover } from "@base-ui/react/popover";
 import { ChevronDown, ChevronRight, ChevronUp, Circle, ListFilter, SlidersHorizontal } from "lucide-react";
 import { useMemo, useState } from "react";
 
-import { IAggregationLabel } from "@/api/search";
 import { Checkbox } from "@/components/checkbox/Checkbox";
 import { TLabelResult } from "@/hooks/useLabelSearch";
 import { hasPublishedDateRule } from "@/utils/_experiment/dateRangeFilters";
-import { getAvailableLabelIdsFromAggregations, partitionByAvailability } from "@/utils/_experiment/labelAggregationAvailability";
 import { labelTypeLabel } from "@/utils/_experiment/labelTypeLabel";
 import { joinTailwindClasses } from "@/utils/tailwind";
 
@@ -38,17 +36,6 @@ type TProps = {
   open?: boolean;
   onOpenChange?: (open: boolean) => void;
   onChange?: (checked: boolean, label: string) => void;
-  /**
-   * Labels aggregations from search results.
-   * When present and there is an active query or filters, only labels whose
-   * id appears here remain enabled - others are disabled/greyed.
-   */
-  aggregations?: IAggregationLabel[] | undefined;
-  /**
-   * Current text query, used so that clearing the search box also resets
-   * any aggregation‑based disabling.
-   */
-  query?: string;
   dateRangeValue?: string | null;
   onDateRangeChange?: (value: string | null) => void;
 };
@@ -62,24 +49,15 @@ export function SearchFilters({
   open,
   onOpenChange,
   onChange,
-  aggregations,
-  query,
   dateRangeValue,
   onDateRangeChange,
 }: TProps) {
   const [openOther, setOpenOther] = useState(false);
-  const availableLabelIds = useMemo(() => getAvailableLabelIdsFromAggregations(aggregations, query, filters), [aggregations, query, filters]);
 
   const sortedForLabelType = useMemo(
     () => availableFilters.filter((filter) => filter.type === activeLabelType).sort((a, b) => a.value.localeCompare(b.value)),
     [availableFilters, activeLabelType]
   );
-
-  // Available (selectable) rows first - disabled aggregations at the bottom.
-  const { enabledFilters, disabledFilters } = useMemo(() => {
-    const { enabled, disabled } = partitionByAvailability(sortedForLabelType, availableLabelIds);
-    return { enabledFilters: enabled, disabledFilters: disabled };
-  }, [sortedForLabelType, availableLabelIds]);
 
   const renderCheckboxRow = (filter: TLabelResult, isAvailable: boolean) => {
     const checked = hasValue(filters, filter.id);
@@ -222,18 +200,8 @@ export function SearchFilters({
                           <div className="border-b border-transparent-regular pb-2">
                             <h4 className="text-sm text-inky-black font-medium">{labelTypeLabel(activeLabelType)}</h4>
                           </div>
-                          {enabledFilters.length === 0 && <span>There are no available options</span>}
-                          <ul className="flex flex-col gap-1 text-inky-black">{enabledFilters.map((f) => renderCheckboxRow(f, true))}</ul>
+                          <ul className="flex flex-col gap-1 text-inky-black">{sortedForLabelType.map((f) => renderCheckboxRow(f, true))}</ul>
                         </div>
-                        {disabledFilters.length > 0 && <div className="h-0 w-full shrink-0 border-b border-transparent-regular" aria-hidden />}
-                        {disabledFilters.length > 0 && (
-                          <div className="flex flex-col gap-2">
-                            <div className="">
-                              <h4 className="text-sm text-inky-black font-medium">Not relevant to applied filters</h4>
-                            </div>
-                            <ul className="flex flex-col gap-1 text-inky-black">{disabledFilters.map((f) => renderCheckboxRow(f, false))}</ul>
-                          </div>
-                        )}
                       </>
                     )}
                   </div>
