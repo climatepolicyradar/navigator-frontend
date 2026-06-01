@@ -18,5 +18,10 @@
     "title": "Rio submissions",
     "path": "rio-submissions",
     "contentPath": "rio-submissions"
+  },
+  {
+    "title": "ICCN",
+    "path": "iccn",
+    "contentPath": "iccn"
   }
 ]
