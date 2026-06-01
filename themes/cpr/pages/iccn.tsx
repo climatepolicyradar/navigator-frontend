@@ -43,28 +43,28 @@ export default function ICCNLandingPage() {
       button: {
         label: "Search progress reports",
         query: {
-          [QUERY_PARAMS.category]: "Climate Council Reports",
+          [QUERY_PARAMS.category]: "climate-council-reports",
         },
       },
       suggestions: [
         {
           label: "Grid capacity",
           query: {
-            [QUERY_PARAMS.category]: "Climate Council Reports",
+            [QUERY_PARAMS.category]: "climate-council-reports",
             [QUERY_PARAMS.query_string]: "Grid capacity",
           },
         },
         {
           label: "Agricultural systems",
           query: {
-            [QUERY_PARAMS.category]: "Climate Council Reports",
+            [QUERY_PARAMS.category]: "climate-council-reports",
             [QUERY_PARAMS.query_string]: "Agricultural systems",
           },
         },
         {
           label: "Emissions reductions pathways",
           query: {
-            [QUERY_PARAMS.category]: "Climate Council Reports",
+            [QUERY_PARAMS.category]: "climate-council-reports",
             [QUERY_PARAMS.query_string]: "Emissions reductions pathways",
           },
         },
