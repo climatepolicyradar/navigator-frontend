@@ -3,7 +3,6 @@ import { Plus, Trash2, X } from "lucide-react";
 import { Fragment, useCallback, useEffect, useRef, useState } from "react";
 
 import { useLabelSearch, TLabelResult } from "@/hooks/useLabelSearch";
-import { partitionByAvailability } from "@/utils/_experiment/labelAggregationAvailability";
 import { labelTypeLabel } from "@/utils/_experiment/labelTypeLabel";
 import { joinTailwindClasses } from "@/utils/tailwind";
 
@@ -119,11 +118,9 @@ interface LabelPickerProps {
   onChange: (label: string) => void;
   placeholder?: string;
   autoFocus?: boolean;
-  /** When set, labels not in the set are shown but disabled. */
-  availableLabelIds?: ReadonlySet<string> | undefined;
 }
 
-function LabelPicker({ value, onChange, placeholder = "Search...", autoFocus = false, availableLabelIds }: LabelPickerProps) {
+function LabelPicker({ value, onChange, placeholder = "Search...", autoFocus = false }: LabelPickerProps) {
   const [inputValue, setInputValue] = useState(value ? "" : "");
   const [isOpen, setIsOpen] = useState(autoFocus);
   const [activeIndex, setActiveIndex] = useState(-1);
@@ -132,10 +129,7 @@ function LabelPicker({ value, onChange, placeholder = "Search...", autoFocus = f
 
   const { results, isLoading } = useLabelSearch(inputValue);
 
-  const isResultAvailable = (label: TLabelResult) => !availableLabelIds || availableLabelIds.has(label.id);
-  const { enabled: enabledResults, disabled: disabledResults } = partitionByAvailability(results, availableLabelIds);
-  const orderedResults: TLabelResult[] = [...enabledResults, ...disabledResults];
-  const navIndex = activeIndex >= 0 && activeIndex < orderedResults.length ? activeIndex : -1;
+  const navIndex = activeIndex >= 0 && activeIndex < results.length ? activeIndex : -1;
 
   // Close dropdown on outside click
   useEffect(() => {
@@ -159,8 +153,8 @@ function LabelPicker({ value, onChange, placeholder = "Search...", autoFocus = f
   );
 
   const handleKeyDown = (e: React.KeyboardEvent) => {
-    if (!isOpen || orderedResults.length === 0) return;
-    const len = orderedResults.length;
+    if (!isOpen || results.length === 0) return;
+    const len = results.length;
     switch (e.key) {
       case "ArrowDown": {
         e.preventDefault();
@@ -176,8 +170,8 @@ function LabelPicker({ value, onChange, placeholder = "Search...", autoFocus = f
       }
       case "Enter":
         e.preventDefault();
-        if (navIndex >= 0 && orderedResults[navIndex] && isResultAvailable(orderedResults[navIndex])) {
-          handleSelect(orderedResults[navIndex]);
+        if (navIndex >= 0 && results[navIndex]) {
+          handleSelect(results[navIndex]);
         }
         break;
       case "Escape":
@@ -232,38 +226,24 @@ function LabelPicker({ value, onChange, placeholder = "Search...", autoFocus = f
           <div className="h-4 w-4 animate-spin rounded-full border-2 border-gray-300 border-t-blue-500" />
         </div>
       )}
-      {isOpen && orderedResults.length > 0 && (
+      {isOpen && results.length > 0 && (
         <ul className="absolute z-50 mt-1 max-h-48 w-75 overflow-y-auto rounded-md border border-gray-200 bg-white shadow-lg">
-          {orderedResults.map((label, idx) => {
-            const isAvailable = isResultAvailable(label);
+          {results.map((label, idx) => {
             return (
               <Fragment key={label.id}>
-                {disabledResults.length > 0 && enabledResults.length > 0 && idx === enabledResults.length ? (
-                  <div className="h-6" aria-hidden />
-                ) : null}
                 <li
                   onMouseDown={(e) => e.preventDefault()}
                   onClick={() => {
-                    if (!isAvailable) return;
                     handleSelect(label);
                   }}
                   onMouseEnter={() => setActiveIndex(idx)}
                   className={joinTailwindClasses(
-                    "px-3 py-1.5 text-sm",
-                    isAvailable ? "cursor-pointer" : "cursor-not-allowed",
-                    idx === navIndex
-                      ? isAvailable
-                        ? "bg-blue-50 text-blue-800"
-                        : "bg-gray-50 text-neutral-400"
-                      : isAvailable
-                        ? "text-gray-700 hover:bg-gray-50"
-                        : "text-neutral-400"
+                    "px-3 py-1.5 text-sm cursor-pointer",
+                    idx === navIndex ? "bg-blue-50 text-blue-800" : "text-gray-700 hover:bg-gray-50"
                   )}
                 >
                   <span className="font-medium">{label.value}</span>
-                  <span className={joinTailwindClasses("ml-2 text-xs", isAvailable ? "text-gray-400" : "text-neutral-400")}>
-                    - {labelTypeLabel(label.type)}
-                  </span>
+                  <span className={joinTailwindClasses("ml-2 text-xs text-gray-400")}>- {labelTypeLabel(label.type)}</span>
                 </li>
               </Fragment>
             );
@@ -360,7 +340,7 @@ interface RuleRowProps {
   availableLabelIds?: ReadonlySet<string> | undefined;
 }
 
-function RuleRow({ rule, onUpdate, onDelete, isOnly, availableLabelIds }: RuleRowProps) {
+function RuleRow({ rule, onUpdate, onDelete, isOnly }: RuleRowProps) {
   const isLabelRule = rule.field === "labels.value.id" || rule.field === "attributes.status";
   const isPublishedDateRule = rule.field === "attributes.published_date";
 
@@ -397,12 +377,7 @@ function RuleRow({ rule, onUpdate, onDelete, isOnly, availableLabelIds }: RuleRo
         <>
           <OperatorSelect value={rule.op === "not_contains" ? "not_contains" : "contains"} onChange={(op) => onUpdate({ ...rule, op })} />
           <div className="min-w-45 min-h-7.5">
-            <LabelPicker
-              value={rule.value}
-              onChange={(value) => onUpdate({ ...rule, value })}
-              autoFocus={!rule.value}
-              availableLabelIds={availableLabelIds}
-            />
+            <LabelPicker value={rule.value} onChange={(value) => onUpdate({ ...rule, value })} autoFocus={!rule.value} />
           </div>
         </>
       )}
@@ -428,10 +403,9 @@ interface GroupRendererProps {
   onChange: (newRoot: TQueryGroup) => void;
   depth: number;
   onDeleteGroup?: () => void;
-  availableLabelIds?: ReadonlySet<string> | undefined;
 }
 
-function GroupRenderer({ group, path, root, onChange, depth, onDeleteGroup, availableLabelIds }: GroupRendererProps) {
+function GroupRenderer({ group, path, root, onChange, depth, onDeleteGroup }: GroupRendererProps) {
   const borderColors = ["border-l-blue-200", "border-l-violet-200", "border-l-amber-200", "border-l-emerald-200", "border-l-rose-200"];
   const bgColors = ["bg-blue-50/30", "bg-violet-50/30", "bg-amber-50/30", "bg-emerald-50/30", "bg-rose-50/30"];
   const borderColor = borderColors[depth % borderColors.length];
@@ -505,7 +479,6 @@ function GroupRenderer({ group, path, root, onChange, depth, onDeleteGroup, avai
                   onUpdate={(updated) => handleUpdateNode(index, updated)}
                   onDelete={() => handleDeleteNode(index)}
                   isOnly={group.filters.length === 1}
-                  availableLabelIds={availableLabelIds}
                 />
               </div>
             );
@@ -528,7 +501,6 @@ function GroupRenderer({ group, path, root, onChange, depth, onDeleteGroup, avai
                 onChange={onChange}
                 depth={depth + 1}
                 onDeleteGroup={() => handleDeleteNode(index)}
-                availableLabelIds={availableLabelIds}
               />
             </div>
           );
@@ -563,10 +535,9 @@ type TProps = {
   setFilters?: (filters: TQueryGroup | null) => void;
   open?: boolean;
   onOpenChange?: (open: boolean) => void;
-  availableLabelIds?: ReadonlySet<string> | undefined;
 };
 
-export function AdvancedFilters({ filters, setFilters, open, onOpenChange, availableLabelIds }: TProps) {
+export function AdvancedFilters({ filters, setFilters, open, onOpenChange }: TProps) {
   return (
     <BaseDialog.Root open={open} onOpenChange={onOpenChange}>
       <BaseDialog.Portal>
@@ -582,7 +553,7 @@ export function AdvancedFilters({ filters, setFilters, open, onOpenChange, avail
 
           {/* Body */}
           <div className="max-h-[60vh] overflow-y-auto p-4">
-            <GroupRenderer group={filters} path={[]} root={filters} onChange={setFilters} depth={0} availableLabelIds={availableLabelIds} />
+            <GroupRenderer group={filters} path={[]} root={filters} onChange={setFilters} depth={0} />
           </div>
 
           {/* Footer */}

@@ -7,7 +7,7 @@ interface DocumentLabel {
   type: string;
 }
 
-interface DocumentLabelRelationship {
+export interface DocumentLabelRelationship {
   count: number | null;
   type: string;
   value: DocumentLabel;

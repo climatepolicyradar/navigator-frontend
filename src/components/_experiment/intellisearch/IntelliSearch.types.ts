@@ -39,11 +39,6 @@ export type TSuggestion =
  */
 export interface IntelliSearchProps {
   query: string;
-  /**
-   * When set (search context + aggregations), labels not in this set remain
-   * visible in suggestions but are disabled.
-   */
-  availableLabelIds?: ReadonlySet<string> | undefined;
   /** Optional className for custom styling */
   className?: string;
   /** Placeholder text for the input */

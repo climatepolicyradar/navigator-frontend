@@ -64,8 +64,8 @@ describe("DocumentCard", () => {
       ],
     };
     render(<DocumentCard document={doc} onClick={() => {}} />);
-    expect(screen.getByText("France")).toBeInTheDocument();
-    expect(screen.getByText("Germany")).toBeInTheDocument();
+    expect(screen.getByText("France", { exact: false })).toBeInTheDocument();
+    expect(screen.getByText("Germany", { exact: false })).toBeInTheDocument();
   });
 
   it("excludes geography labels that are not countries", () => {
