@@ -18,5 +18,10 @@
     "title": "Rio submissions",
     "path": "rio-submissions",
     "contentPath": "rio-submissions"
+  },
+  {
+    "title": "Climate Council Report Library",
+    "path": "iccn",
+    "contentPath": "iccn"
   }
 ]
