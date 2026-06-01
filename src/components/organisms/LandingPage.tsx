@@ -101,17 +101,22 @@ export const LandingPage = ({ config }: TProps) => {
             <div className="cols-5:min-w-50 px-5 py-4 mt-8 cols-4:mt-0 bg-white border border-border-light rounded-xl">
               <Image {...config.organisation.logoImage} alt={config.organisation.logoImage.alt} className="w-full max-w-85 mb-1" />
               <ul>
-                {config.organisation.links.map(({ externalHref, label }, linkIndex) => (
-                  <li key={linkIndex}>
-                    <PageLink
-                      external
-                      href={externalHref}
-                      className={joinTailwindClasses("block py-3 leading-5", linkIndex && "border-t border-t-border-light")}
-                    >
-                      {label}
-                    </PageLink>
-                  </li>
-                ))}
+                {config.organisation.links.map(({ externalHref, label }, linkIndex) => {
+                  const [pathname, hash] = externalHref.split("#");
+
+                  return (
+                    <li key={linkIndex}>
+                      <PageLink
+                        external
+                        href={pathname}
+                        hash={hash}
+                        className={joinTailwindClasses("block py-3 leading-5", linkIndex && "border-t border-t-border-light")}
+                      >
+                        {label}
+                      </PageLink>
+                    </li>
+                  );
+                })}
               </ul>
             </div>
           </aside>
