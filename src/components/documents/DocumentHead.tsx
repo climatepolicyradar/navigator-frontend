@@ -74,7 +74,7 @@ export const DocumentHead = ({ document, family, features, handleViewOtherDocsCl
             <Heading level={1}>{document.title}</Heading>
             <DocumentMetaRenderer family={family} isMain={isMain} document={document} />
 
-            <div className="text-content" dangerouslySetInnerHTML={{ __html: summary }} />
+            <div className="text-content" dangerouslySetInnerHTML={{ __html: summary.replace(/\r?\n/g, "<br/>") }} />
             {family.summary.length > MAX_FAMILY_SUMMARY_LENGTH_BRIEF && (
               <div className="mt-4">
                 <button onClick={() => setShowFullSummary(!showFullSummary)} className="anchor alt text-sm">
