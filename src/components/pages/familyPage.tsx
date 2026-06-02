@@ -159,7 +159,7 @@ export const FamilyPage = ({
 
         return (
           <TextBlock key="summary" context="summary-block" block="summary" title="Summary">
-            <div className="text-content" dangerouslySetInnerHTML={{ __html: family.summary }} />
+            <div className="text-content" dangerouslySetInnerHTML={{ __html: family.summary.replace(/\r?\n/g, "<br/>") }} />
           </TextBlock>
         );
       },
