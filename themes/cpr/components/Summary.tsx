@@ -1,5 +1,6 @@
+import { BookText } from "lucide-react";
+
 import { ExternalLink } from "@/components/ExternalLink";
-import { Icon } from "@/components/atoms/icon/Icon";
 import { SiteWidth } from "@/components/panels/SiteWidth";
 import { Heading } from "@/components/typography/Heading";
 
@@ -15,10 +16,10 @@ const Summary = () => {
         </div>
         <ExternalLink
           url="https://github.com/climatepolicyradar/methodology/blob/main/METHODOLOGY.md"
-          className="mt-4 md:mt-0 block w-full text-center bg-blue-500 text-white md:grow-0 p-2 rounded-xl md:w-48 transition duration-300 hover:text-white"
+          className="flex flex-col gap-2 mt-4 md:mt-0 w-full text-center bg-blue-500 text-white md:grow-0 p-2 rounded-xl md:w-48 transition duration-300 hover:text-white"
         >
           <div className="flex justify-center">
-            <Icon name="readMore" />
+            <BookText width={64} height={64} />
           </div>
           <span>Read more</span>
         </ExternalLink>

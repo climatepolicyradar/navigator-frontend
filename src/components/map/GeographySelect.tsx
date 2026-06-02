@@ -1,6 +1,6 @@
+import { Search } from "lucide-react";
 import { useEffect, useState } from "react";
 
-import { Icon } from "@/components/atoms/icon/Icon";
 import SuggestList from "@/components/filters/SuggestList";
 import { type TGeographyWithCoords, type TGeographiesWithCoords } from "@/components/map/WorldMap";
 import { sortData } from "@/utils/sorting";
@@ -39,11 +39,11 @@ const GeographySelect = ({ title, list, keyField, keyFieldDisplay, filterType, h
       <div className={`bg-white relative z-20 ${suggestList.length > 0 ? "rounded-b-none rounded-t-lg" : "rounded-full"}`}>
         <div className="absolute p-px pr-0 top-0 left-0 h-full flex items-center justify-start z-20">
           <div
-            className={`text-white py-1 px-2 pl-4 h-full transition duration-300 shrink-0 flex items-center ${
+            className={`text-gray-300 py-1 px-2 pl-4 h-full transition duration-300 shrink-0 flex items-center ${
               suggestList.length > 0 ? "rounded-tl-lg" : "rounded-l-full"
             }`}
           >
-            <Icon name="search" height="16" width="16" color="#475467" />
+            <Search width="20" height="20" />
           </div>
         </div>
         <input

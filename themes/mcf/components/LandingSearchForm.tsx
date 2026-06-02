@@ -1,8 +1,8 @@
+import { Search } from "lucide-react";
 import router from "next/router";
 import { useState, useEffect, useRef, ChangeEvent } from "react";
 
 import { Button } from "@/components/atoms/button/Button";
-import { Icon } from "@/components/atoms/icon/Icon";
 import { SearchDropdown } from "@/components/forms/SearchDropdown";
 import { QUERY_PARAMS } from "@/constants/queryParams";
 
@@ -91,7 +91,7 @@ const LandingSearchForm = ({ placeholder, input, handleSearchInput }: IProps) =>
           />
           <button className="custom-search-button" onClick={() => handleSearchInput(term)} aria-label="Search">
             <span className="block">
-              <Icon name="search2" height="24" width="24" />
+              <Search width={22} height={22} />
             </span>
           </button>
           <SearchDropdown term={term} show={formFocus} handleSearchClick={handleSearchInput} largeSpacing />

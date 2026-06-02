@@ -1,9 +1,8 @@
 import orderBy from "lodash/orderBy";
-import { LucideInfo } from "lucide-react";
+import { Loader, LucideInfo } from "lucide-react";
 import { ReactNode } from "react";
 
 import { Badge } from "@/components/atoms/badge/Badge";
-import { Icon } from "@/components/atoms/icon/Icon";
 import { LabelButton } from "@/components/atoms/labelButton/LabelButton";
 import { PageLink } from "@/components/atoms/pageLink/PageLink";
 import { Popover } from "@/components/atoms/popover/Popover";
@@ -312,7 +311,7 @@ export const getEventTableRows = ({
 
     let matchesDisplay: ReactNode = null;
     if (matchesStatus === "loading") {
-      matchesDisplay = <Icon name="loading" />;
+      matchesDisplay = <Loader height={20} width={20} className="animate-spin" />;
     } else if (document && matches > 0) {
       matchesDisplay = (
         <PageLink keepQuery href={`/documents/${document.slug}`} className={linkClasses}>

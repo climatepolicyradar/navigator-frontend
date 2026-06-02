@@ -1,7 +1,7 @@
+import { X } from "lucide-react";
 import { useRef, useEffect, JSX } from "react";
 
 import { Button } from "@/components/atoms/button/Button";
-import { Icon } from "@/components/atoms/icon/Icon";
 
 interface IProps {
   children: JSX.Element | string;
@@ -34,7 +34,7 @@ const Slideout = ({ children, show, setShow }: IProps) => {
     >
       <div className="flex absolute z-20 top-3 right-3">
         <Button content="icon" color="mono" variant="ghost" className="text-text-secondary" onClick={() => setShow(false)}>
-          <Icon name="close" />
+          <X width="20" height="20" />
         </Button>
       </div>
 

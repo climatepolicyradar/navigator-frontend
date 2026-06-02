@@ -1,7 +1,7 @@
+import { X, Search } from "lucide-react";
 import { useState, useEffect, useRef, ChangeEvent } from "react";
 
 import { Button } from "@/components/atoms/button/Button";
-import { Icon } from "@/components/atoms/icon/Icon";
 import { SearchDropdown } from "@/components/forms/SearchDropdown";
 
 export const CPR_DOCUMENT_COUNT = 30_000;
@@ -79,7 +79,7 @@ const LandingSearchForm = ({ placeholder, input, handleSearchInput }: IProps) =>
         />
         {showAnimation && term.length === 0 && <div className="search-animated-placeholder">{displayPlaceholder}</div>}
         {term.length > 0 && (
-          <div className="flex mx-2 shrink-0 absolute top-0 right-0 mr-11.5 z-20 h-full items-center">
+          <div className="flex mx-2 shrink-0 absolute top-0 right-0 mr-9 z-20 h-full items-center">
             <Button
               content="icon"
               color="mono"
@@ -88,13 +88,14 @@ const LandingSearchForm = ({ placeholder, input, handleSearchInput }: IProps) =>
               onClick={clearSearch}
               type="button"
             >
-              <Icon name="close" />
+              <X height={30} width={30} />
             </Button>
           </div>
         )}
         <button type="submit" className="absolute top-0 right-0 h-full" onClick={() => handleSearchInput(term)} aria-label="Search">
           <span className="block">
-            <Icon name="search" height="30" width="40" />
+            {/* <Icon name="search" height="30" width="40" /> */}
+            <Search height={30} width={30} />
           </span>
         </button>
         <SearchDropdown term={term} show={formFocus} handleSearchClick={handleSearchInput} largeSpacing />

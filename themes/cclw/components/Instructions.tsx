@@ -1,8 +1,6 @@
 import { useEffect, useState } from "react";
 
 import { INSTRUCTIONS } from "@/cclw/constants/instructions";
-import { Button } from "@/components/atoms/button/Button";
-import { Icon } from "@/components/atoms/icon/Icon";
 import { calculateTotalFamilies } from "@/helpers/getFamilyCounts";
 import useConfig from "@/hooks/useConfig";
 
@@ -43,7 +41,7 @@ const Instructions = () => {
         <Button content="both" rounded className="!bg-blueGray-800  hover:!bg-blueGray-700 border !border-blueGray-700" onClick={scrollToMap}>
           Or try exploring by country
           <span className={`hover:animate-none ${isAnimated ? "animate-bounce" : ""}`}>
-            <Icon name="downArrow" />
+            <MoveDown height={14} width={14} />
           </span>
         </Button>
       </div> */}
