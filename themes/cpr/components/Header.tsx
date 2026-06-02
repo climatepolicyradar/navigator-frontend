@@ -15,7 +15,7 @@ export const CPRLogo = (
 );
 
 export const CPRMenuButton = (
-  <div className="flex items-center gap-1 px-2 py-1 rounded-md text-gray-950 font-medium group-data-[popup-open]:bg-gray-100">
+  <div className="flex items-center gap-1 px-2 py-1 rounded-md text-gray-950 font-medium group-data-popup-open:bg-gray-100">
     <LucideMenu size={16} className="text-brand" /> Menu
   </div>
 );
@@ -28,7 +28,7 @@ export const Header = ({ landingPage = false }: IProps) => {
   const router = useRouter();
 
   const isHomepage = router.pathname === "/";
-  const showSearch = router.pathname !== "/" && !landingPage;
+  const showSearch = router.pathname !== "/" && !landingPage && router.pathname !== "/_search";
 
   const navBarClasses = joinTailwindClasses(isHomepage ? "!absolute top-0" : "bg-white", landingPage && "!static");
 
