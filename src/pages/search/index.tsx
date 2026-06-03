@@ -1,7 +1,7 @@
 import { ParsedUrlQuery } from "querystring";
 
 import { AnimatePresence, motion } from "framer-motion";
-import { ChevronDown } from "lucide-react";
+import { ChevronDown, Loader as LuLoader } from "lucide-react";
 import { GetServerSideProps, InferGetServerSidePropsType } from "next";
 import { useRouter } from "next/router";
 import { useEffect, useRef, useState } from "react";
@@ -12,7 +12,6 @@ import { LinkWithQuery } from "@/components/LinkWithQuery";
 import Loader from "@/components/Loader";
 import { SlideOut } from "@/components/atoms/SlideOut/SlideOut";
 import { Button } from "@/components/atoms/button/Button";
-import { Icon } from "@/components/atoms/icon/Icon";
 import { PageLink } from "@/components/atoms/pageLink/PageLink";
 import { BreadCrumbs } from "@/components/breadcrumbs/Breadcrumbs";
 import { FamilyMatchesDrawer } from "@/components/drawer/FamilyMatchesDrawer";
@@ -469,7 +468,7 @@ const Search = ({ familyConceptsData, features, theme, themeConfig, topicsData }
                         }}
                         aria-label="Download search results as CSV"
                       >
-                        {downloadCSVStatus === "loading" ? <Icon name="loading" /> : "this search"}
+                        {downloadCSVStatus === "loading" ? <LuLoader height="18" width="18" className="animate-spin" /> : "this search"}
                       </button>
                       {themeConfig.links.downloadDatabase && (
                         <>
@@ -512,7 +511,7 @@ const Search = ({ familyConceptsData, features, theme, themeConfig, topicsData }
                         </div>
 
                         {(topics || familyConceptsData || (regions && countries)) && (
-                          <SlideOut showCloseButton={false}>
+                          <SlideOut showCloseButton={true}>
                             {topics && currentSlideOut === "concepts" && <ConceptPicker title="Find mentions of topics" />}
                             {familyConceptsData && currentSlideOut === "categories" && (
                               <FamilyConceptPicker concepts={groupedFamilyConcepts.category} title="Case categories" isRootConceptExclusive={false} />

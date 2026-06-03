@@ -1,4 +1,5 @@
-import { Icon } from "@/components/atoms/icon/Icon";
+import { X } from "lucide-react";
+
 import { ToolTipSSR } from "@/components/tooltip/TooltipSSR";
 
 interface IProps {
@@ -21,15 +22,12 @@ const Pill = ({ children, onClick, extraClasses = "" }: IProps) => {
   return (
     <>
       <button
-        className={`bg-inputSelected/[.07] text-xs font-medium py-1 px-3 text-inputSelected rounded-full flex gap-2 text-left items-center transition hover:bg-inputSelected/[.1] active:bg-inputSelected/[.2] ${extraClasses}`}
+        className={`text-xs font-medium py-1 px-3 text-inputSelected rounded-full flex gap-1 text-left items-center transition bg-inputSelected/[.07] hover:bg-inputSelected/10 active:bg-inputSelected/20 ${extraClasses}`}
         onClick={handleClick}
         data-tooltip-id="tooltip"
         data-tooltip-content="Remove filter"
       >
-        {children}{" "}
-        <span className="">
-          <Icon name="close" width="8" height="8" />
-        </span>
+        {children} <X height="12" width="12" />
       </button>
       <ToolTipSSR id="tooltip" tooltip="Remove filter" />
     </>

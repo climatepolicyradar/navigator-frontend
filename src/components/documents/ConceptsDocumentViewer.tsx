@@ -7,7 +7,6 @@ import EmbeddedPDF from "@/components/EmbeddedPDF";
 import Loader from "@/components/Loader";
 import PassageMatches from "@/components/PassageMatches";
 import { Button } from "@/components/atoms/button/Button";
-import { Icon } from "@/components/atoms/icon/Icon";
 import { EmptyDocument } from "@/components/documents/EmptyDocument";
 import { EmptyPassages } from "@/components/documents/EmptyPassages";
 import { SearchSettings } from "@/components/filters/SearchSettings";
@@ -190,7 +189,7 @@ export const ConceptsDocumentViewer = ({
                 <Button content="both" onClick={handleToggleConcepts}>
                   <span>{showConcepts ? "Hide" : "Show"} topics</span>
                   <div className={showConcepts ? "rotate-180" : ""}>
-                    <Icon name="downChevron" />
+                    <ChevronDown height="18" width="18" />
                   </div>
                 </Button>
               </div>

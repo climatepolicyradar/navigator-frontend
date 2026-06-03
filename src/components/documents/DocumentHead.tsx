@@ -1,10 +1,9 @@
-import { MoveUpRight } from "lucide-react";
+import { CircleAlert, MoveUpRight } from "lucide-react";
 import { useEffect, useState } from "react";
 
 import { Alert } from "@/components/Alert";
 import { ExternalLink } from "@/components/ExternalLink";
 import { Button } from "@/components/atoms/button/Button";
-import { Icon } from "@/components/atoms/icon/Icon";
 import { BreadCrumbs } from "@/components/breadcrumbs/Breadcrumbs";
 import { DataInDebug } from "@/components/debug/dataInDebug";
 import { DocumentMetaRenderer } from "@/components/documents/renderers/DocumentMetaRenderer";
@@ -118,7 +117,7 @@ export const DocumentHead = ({ document, family, features, handleViewOtherDocsCl
                   </ExternalLink>
                 </>
               }
-              icon={<Icon name="alertCircle" height="16" width="16" />}
+              icon={<CircleAlert height="16" width="16" />}
             />
           </div>
         )}

@@ -1,11 +1,7 @@
-/* eslint-disable @typescript-eslint/no-unused-vars */
-
-import isEqual from "lodash/isEqual";
 import { GetServerSideProps, InferGetServerSidePropsType } from "next";
 import { useQueryState, parseAsString, parseAsJson } from "nuqs";
 import { useCallback, useEffect, useMemo, useState, type SetStateAction } from "react";
 
-import { ApiClient } from "@/api/http-common";
 import { normaliseSearchDocumentsSortKey, SearchDocument } from "@/api/search";
 import { createGroup, isFilterGroupEmpty, AdvancedFilters, TQueryGroup } from "@/components/_experiment/advancedFilters/AdvancedFilters";
 import { AppliedLabels } from "@/components/_experiment/appliedLabels/AppliedLabels";
@@ -17,10 +13,12 @@ import { SearchContainer } from "@/components/_experiment/searchResults/SearchRe
 import { SearchSortSelect } from "@/components/_experiment/searchSort/SearchSortSelect";
 import { SelectPerPage } from "@/components/_experiment/selectPerPage/SelectPerPage";
 import { FiveColumns } from "@/components/atoms/columns/FiveColumns";
+import Layout from "@/components/layouts/Main";
 import { withEnvConfig } from "@/context/EnvConfig";
 import { FeaturesContext } from "@/context/FeaturesContext";
 import { TLabelResult, loadLabels } from "@/hooks/useLabelSearch";
 import { FilterGroupSchema } from "@/schemas";
+import { TTheme } from "@/types";
 import { findPublishedDateRangeValue, removePublishedDateRules, upsertPublishedDateRangeRules } from "@/utils/_experiment/dateRangeFilters";
 import { getFeatureFlags } from "@/utils/featureFlags";
 import { getFeatures } from "@/utils/features";
@@ -97,162 +95,164 @@ const ShadowSearch = ({ theme, themeConfig, features }: TProps) => {
   const selectedPublishedDateRange = useMemo(() => findPublishedDateRangeValue(filters), [filters]);
 
   return (
-    <FeaturesContext.Provider value={features}>
-      <FiveColumns className="mt-4 gap-y-4 pb-12">
-        <div className={columnLayoutCss}>
-          <h1 className="text-5xl font-bold text-inky-black">Search</h1>
-        </div>
-        <div className={columnLayoutCss}>
-          {/* SEARCH INPUT */}
-          <IntelliSearch
-            query={query}
-            selectedLabels={selectedLabels}
-            onSelectSuggestion={(suggestion) => {
-              if (suggestion && !selectedLabels.includes(suggestion)) {
-                setFilters((prev) => addLabelRule(prev, suggestion));
-                setCurrentPage("1");
-              }
-            }}
-            setQuery={(query) => {
-              setQuery(query);
-              setCurrentPage("1");
-            }}
-            onAdvancedClick={() => setAdvancedFiltersOpen(true)}
-          />
-        </div>
-        {/* CONTROLS - FILTERS, SORT, etc */}
-        <div className={joinTailwindClasses(columnLayoutCss, "flex justify-between items-center")}>
-          {/* FILTERS */}
-          <SearchFilters
-            availableFilters={availableFilters}
-            filters={filters}
-            activeLabelType={filterSidebarCategory}
-            onActiveLabelTypeChange={setFilterSidebarCategory}
-            open={filtersOpen}
-            onOpenChange={setFiltersOpen}
-            onChange={(checked, label) => {
-              if (checked) {
-                setFilters((prev) => addLabelRule(prev, label));
-                setCurrentPage("1");
-              } else {
-                setFilters((prev) => (prev ? removeLabelRule(prev, label) : createGroup()));
-                setCurrentPage("1");
-              }
-            }}
-            onAdvancedClick={() => {
-              setFiltersOpen(false);
-              setAdvancedFiltersOpen(true);
-            }}
-            dateRangeValue={selectedPublishedDateRange}
-            onDateRangeChange={(nextValue) => {
-              if (nextValue === null) {
-                setFilters((prev) => removePublishedDateRules(prev));
-                setCurrentPage("1");
-                return;
-              }
-              setFilters((prev) => upsertPublishedDateRangeRules(prev, nextValue));
-              setCurrentPage("1");
-            }}
-          />
-          <div className="flex items-center gap-6 flex-wrap">
-            {/* SORT */}
-            <SearchSortSelect
-              sortParam={sortKey}
-              onChange={(next) => {
-                setSortParam(next);
-                setCurrentPage("1");
-              }}
-            />
+    <Layout theme={theme as TTheme} themeConfig={themeConfig} metadataKey="search">
+      <FeaturesContext.Provider value={features}>
+        <FiveColumns className="mt-4 gap-y-4 pb-12">
+          <div className={joinTailwindClasses(columnLayoutCss, "sr-only")}>
+            <h1 className="text-5xl font-bold text-inky-black">Search</h1>
           </div>
-        </div>
-        {/* APPLIED FILTERS */}
-        {!isFilterGroupEmpty(filters) && (
           <div className={columnLayoutCss}>
-            <AppliedLabels
-              filters={filters}
-              availableFilters={availableFilters}
-              labels={selectedLabels}
-              dateRangeValue={selectedPublishedDateRange}
-              onClear={() => {
-                setFilters(createGroup());
-                setQuery("");
-                setTotalNoOfResults(null);
-                setCurrentPage("1");
+            {/* SEARCH INPUT */}
+            <IntelliSearch
+              query={query}
+              selectedLabels={selectedLabels}
+              onSelectSuggestion={(suggestion) => {
+                if (suggestion && !selectedLabels.includes(suggestion)) {
+                  setFilters((prev) => addLabelRule(prev, suggestion));
+                  setCurrentPage("1");
+                }
               }}
-              onSelectLabel={handleSelectLabel}
-              onRemoveLabel={(label) => {
-                setFilters((prev) => (prev ? removeLabelRule(prev, label) : createGroup()));
-                setCurrentPage("1");
-              }}
-              onRemoveDateRange={() => {
-                setFilters((prev) => removePublishedDateRules(prev));
+              setQuery={(query) => {
+                setQuery(query);
                 setCurrentPage("1");
               }}
               onAdvancedClick={() => setAdvancedFiltersOpen(true)}
             />
           </div>
-        )}
-        {/* SEARCH RESULTS */}
-        <div className={columnLayoutCss}>
-          <SearchContainer
-            query={query}
-            filters={filters}
-            page_token={currentPage}
-            page_size={pageSize}
-            sort={sortKey}
-            onTotalResultsChange={setTotalNoOfResults}
-            onResultClicked={(document, event) => {
-              // If command or ctrl is clicked open document new tab
-              if (event.metaKey || event.ctrlKey) {
-                const slug = document.attributes.deprecated_slug;
-                if (slug) {
-                  const isPrincipal = document.labels.some((label) => label.value.value === "Principal");
-                  window.open(isPrincipal ? `/document/${slug}` : `/documents/${slug}`, "_blank", "noopener,noreferrer");
+          {/* CONTROLS - FILTERS, SORT, etc */}
+          <div className={joinTailwindClasses(columnLayoutCss, "flex justify-between items-center")}>
+            {/* FILTERS */}
+            <SearchFilters
+              availableFilters={availableFilters}
+              filters={filters}
+              activeLabelType={filterSidebarCategory}
+              onActiveLabelTypeChange={setFilterSidebarCategory}
+              open={filtersOpen}
+              onOpenChange={setFiltersOpen}
+              onChange={(checked, label) => {
+                if (checked) {
+                  setFilters((prev) => addLabelRule(prev, label));
+                  setCurrentPage("1");
+                } else {
+                  setFilters((prev) => (prev ? removeLabelRule(prev, label) : createGroup()));
+                  setCurrentPage("1");
                 }
-                return;
-              }
-              // otherwise open document in drawer
-              setSelectedDocument(document);
-              setDrawerOpen(true);
-            }}
-          />
-        </div>
-        {/* PAGINATION */}
-        {totalNoOfResults !== null && totalNoOfResults > 0 && (query || !isFilterGroupEmpty(filters)) && (
-          <div className={columnLayoutCss}>
-            <div className="flex flex-wrap justify-between items-center gap-4">
-              <Pagination
-                currentPage={parseInt(currentPage)}
-                totalPages={totalNoOfResults !== null ? Math.ceil(totalNoOfResults / parseInt(pageSize)) : 0}
-                onPageChange={(page) => {
-                  window.scrollTo(0, 0);
-                  setCurrentPage(page.toString());
-                }}
-              />
-              <SelectPerPage
-                value={pageSize}
-                onChange={(size) => {
-                  setPageSize(size);
+              }}
+              onAdvancedClick={() => {
+                setFiltersOpen(false);
+                setAdvancedFiltersOpen(true);
+              }}
+              dateRangeValue={selectedPublishedDateRange}
+              onDateRangeChange={(nextValue) => {
+                if (nextValue === null) {
+                  setFilters((prev) => removePublishedDateRules(prev));
+                  setCurrentPage("1");
+                  return;
+                }
+                setFilters((prev) => upsertPublishedDateRangeRules(prev, nextValue));
+                setCurrentPage("1");
+              }}
+            />
+            <div className="flex items-center gap-6 flex-wrap">
+              {/* SORT */}
+              <SearchSortSelect
+                sortParam={sortKey}
+                onChange={(next) => {
+                  setSortParam(next);
                   setCurrentPage("1");
                 }}
               />
             </div>
           </div>
-        )}
-      </FiveColumns>
-      {/* ADVANCED FILTERS */}
-      <AdvancedFilters
-        filters={filters}
-        setFilters={(filters) => {
-          setFilters(filters);
-          setCurrentPage("1");
-        }}
-        open={advancedFiltersOpen}
-        onOpenChange={setAdvancedFiltersOpen}
-      />
-      {/* DRAWER */}
-      <DocumentDrawer document={selectedDocument} open={drawerOpen} onOpenChange={setDrawerOpen} />
-    </FeaturesContext.Provider>
+          {/* APPLIED FILTERS */}
+          {!isFilterGroupEmpty(filters) && (
+            <div className={columnLayoutCss}>
+              <AppliedLabels
+                filters={filters}
+                availableFilters={availableFilters}
+                labels={selectedLabels}
+                dateRangeValue={selectedPublishedDateRange}
+                onClear={() => {
+                  setFilters(createGroup());
+                  setQuery("");
+                  setTotalNoOfResults(null);
+                  setCurrentPage("1");
+                }}
+                onSelectLabel={handleSelectLabel}
+                onRemoveLabel={(label) => {
+                  setFilters((prev) => (prev ? removeLabelRule(prev, label) : createGroup()));
+                  setCurrentPage("1");
+                }}
+                onRemoveDateRange={() => {
+                  setFilters((prev) => removePublishedDateRules(prev));
+                  setCurrentPage("1");
+                }}
+                onAdvancedClick={() => setAdvancedFiltersOpen(true)}
+              />
+            </div>
+          )}
+          {/* SEARCH RESULTS */}
+          <div className={columnLayoutCss}>
+            <SearchContainer
+              query={query}
+              filters={filters}
+              page_token={currentPage}
+              page_size={pageSize}
+              sort={sortKey}
+              onTotalResultsChange={setTotalNoOfResults}
+              onResultClicked={(document, event) => {
+                // If command or ctrl is clicked open document new tab
+                if (event.metaKey || event.ctrlKey) {
+                  const slug = document.attributes.deprecated_slug;
+                  if (slug) {
+                    const isPrincipal = document.labels.some((label) => label.value.value === "Principal");
+                    window.open(isPrincipal ? `/document/${slug}` : `/documents/${slug}`, "_blank", "noopener,noreferrer");
+                  }
+                  return;
+                }
+                // otherwise open document in drawer
+                setSelectedDocument(document);
+                setDrawerOpen(true);
+              }}
+            />
+          </div>
+          {/* PAGINATION */}
+          {totalNoOfResults !== null && totalNoOfResults > 0 && (query || !isFilterGroupEmpty(filters)) && (
+            <div className={columnLayoutCss}>
+              <div className="flex flex-wrap justify-between items-center gap-4">
+                <Pagination
+                  currentPage={parseInt(currentPage)}
+                  totalPages={totalNoOfResults !== null ? Math.ceil(totalNoOfResults / parseInt(pageSize)) : 0}
+                  onPageChange={(page) => {
+                    window.scrollTo(0, 0);
+                    setCurrentPage(page.toString());
+                  }}
+                />
+                <SelectPerPage
+                  value={pageSize}
+                  onChange={(size) => {
+                    setPageSize(size);
+                    setCurrentPage("1");
+                  }}
+                />
+              </div>
+            </div>
+          )}
+        </FiveColumns>
+        {/* ADVANCED FILTERS */}
+        <AdvancedFilters
+          filters={filters}
+          setFilters={(filters) => {
+            setFilters(filters);
+            setCurrentPage("1");
+          }}
+          open={advancedFiltersOpen}
+          onOpenChange={setAdvancedFiltersOpen}
+        />
+        {/* DRAWER */}
+        <DocumentDrawer document={selectedDocument} open={drawerOpen} onOpenChange={setDrawerOpen} />
+      </FeaturesContext.Provider>
+    </Layout>
   );
 };
 
@@ -265,8 +265,6 @@ export const getServerSideProps = (async (context) => {
   const themeConfig = await readConfigFile(theme);
   const featureFlags = getFeatureFlags(context.req.cookies);
   const features = getFeatures(themeConfig, featureFlags);
-
-  const client = new ApiClient(process.env.CONCEPTS_API_URL);
 
   return {
     props: withEnvConfig({

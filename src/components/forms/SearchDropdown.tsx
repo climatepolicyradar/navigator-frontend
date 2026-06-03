@@ -1,6 +1,6 @@
+import { Search } from "lucide-react";
 import { useRouter } from "next/router";
 
-import { Icon } from "@/components/atoms/icon/Icon";
 import { QUERY_PARAMS } from "@/constants/queryParams";
 import { SYSTEM_GEO_CODES } from "@/constants/systemGeos";
 import useConfig from "@/hooks/useConfig";
@@ -89,7 +89,7 @@ export const SearchDropdown = ({ show = false, term, handleSearchClick, largeSpa
     >
       <a href="#" className={anchorClasses(!geographiesFiltered.length)} onClick={handleClick}>
         <span className="mr-2 w-5">
-          <Icon name="search" />
+          <Search width="20" height="20" />
         </span>
         Search <span className="font-medium text-black mx-1">{term}</span> in all documents
       </a>
