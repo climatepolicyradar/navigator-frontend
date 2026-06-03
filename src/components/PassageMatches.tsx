@@ -1,9 +1,9 @@
+import { Copy } from "lucide-react";
 import { useEffect, useState } from "react";
 
 import { TPassage } from "@/types";
 
 import Loader from "./Loader";
-import { Icon } from "./atoms/icon/Icon";
 
 interface IProps {
   passages: TPassage[];
@@ -59,7 +59,7 @@ const PassageMatches = ({ passages, onClick, pageColour = "textDark", position, 
                 <div className={`text-sm flex justify-between ${"text-" + pageColour}`}>
                   <span className="font-medium">{item.text_block_page !== null && <>Page {item.text_block_page}</>}</span>
                   <div className={`text-blue-400 ${hasCopied === index && "text-green-700"}`} onClick={(e) => copyOnClick(e, index, item.text)}>
-                    {hasCopied === index ? "Copied" : <Icon name="copy" width="16" height="16" />}
+                    {hasCopied === index ? "Copied" : <Copy width="16" height="16" />}
                   </div>
                 </div>
                 <p className="mt-2 text-left wrap-break-word">{item.text}</p>

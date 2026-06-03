@@ -1,9 +1,9 @@
+import { Search } from "lucide-react";
 import Image from "next/image";
 import { useRouter } from "next/router";
 import { useState } from "react";
 
 import { ExternalLink } from "@/components/ExternalLink";
-import { Icon } from "@/components/atoms/icon/Icon";
 import { SingleCol } from "@/components/panels/SingleCol";
 import { SiteWidth } from "@/components/panels/SiteWidth";
 import { QUERY_PARAMS } from "@/constants/queryParams";
@@ -86,7 +86,7 @@ export const Hero = () => {
               <div className="relative z-1 mb-4">
                 <button className="h-full absolute left-0 px-4 text-textNormal" onClick={() => handleSubmit(term)} aria-label="Search">
                   <span className="block">
-                    <Icon name="search" height="20" width="20" />
+                    <Search height={24} width={24} />
                   </span>
                 </button>
                 <input
@@ -94,7 +94,7 @@ export const Hero = () => {
                   data-analytics="oep-searchInput"
                   data-cy="search-input"
                   type="search"
-                  className="w-full text-textDark py-5 pl-[52px] text-normal text-base bg-white rounded-xl shadow-oep border-[#f1f1f1] focus:border-oep-salmon focus:ring-0 placeholder:text-textNormal"
+                  className="w-full text-textDark py-5 pl-13 text-normal text-base bg-white rounded-xl shadow-oep border-[#f1f1f1] focus:border-oep-salmon focus:ring-0 placeholder:text-textNormal"
                   value={term}
                   onChange={(e) => setTerm(e.currentTarget.value)}
                   onKeyDown={handleKeydown}

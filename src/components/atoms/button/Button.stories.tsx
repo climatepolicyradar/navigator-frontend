@@ -1,7 +1,5 @@
 import { Meta, StoryObj } from "@storybook/nextjs-vite";
-import { MoveUpRight } from "lucide-react";
-
-import { Icon } from "@/components/atoms/icon/Icon";
+import { Download, MoveUpRight, Search, X } from "lucide-react";
 
 import { Button } from "./Button";
 
@@ -127,12 +125,11 @@ export const IconAndText: TStory = {
   },
   argTypes: {
     children: { control: false },
-    content: { control: false },
   },
-  render: ({ children, ...props }) => (
+  render: ({ ...props }) => (
     <div className="flex flex-row gap-6">
       <Button {...props}>
-        <Icon name="download" height="16" width="16" />
+        <Download width="16" height="16" />
         Download as PDF
       </Button>
       <Button {...props}>
@@ -145,7 +142,7 @@ export const IconAndText: TStory = {
 
 export const IconOnly: TStory = {
   args: {
-    children: <Icon name="search2" height="16" width="16" />,
+    children: <Search height="16" width="16" />,
     color: "brand",
     content: "icon",
     disabled: false,
@@ -161,7 +158,7 @@ export const IconOnly: TStory = {
 export const Close: TStory = {
   args: {
     content: "icon",
-    children: <Icon name="close" />,
+    children: <X />,
     color: "mono",
     disabled: false,
     size: "medium",

@@ -1,5 +1,3 @@
-import { ParsedUrlQuery } from "querystring";
-
 import sortBy from "lodash/sortBy";
 import { ArrowRight, CornerDownLeft, Search } from "lucide-react";
 import { useRouter } from "next/router";

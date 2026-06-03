@@ -1,7 +1,7 @@
+import { Loader } from "lucide-react";
 import { Fragment } from "react";
 
 import { Drawer } from "@/components/atoms/drawer/Drawer";
-import { Icon } from "@/components/atoms/icon/Icon";
 import { PageLink } from "@/components/atoms/pageLink/PageLink";
 import { ViewMore } from "@/components/molecules/viewMore/ViewMore";
 import { InteractiveTable } from "@/components/organisms/interactiveTable/InteractiveTable";
@@ -45,7 +45,7 @@ export const DocumentDrawer = ({ documentImportId, family, familyTopics, languag
   if (!document) {
     return (
       <Drawer open={open} onOpenChange={onOpenChange} title="Document">
-        <Icon name="loading" />
+        <Loader height="18" width="18" className="animate-spin" />
       </Drawer>
     );
   }

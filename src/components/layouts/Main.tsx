@@ -1,6 +1,6 @@
 import Head from "next/head";
 import { useRouter } from "next/router";
-import React, { FC, ReactNode, useContext } from "react";
+import { FC, ReactNode, useContext } from "react";
 
 import { Wrapper } from "@/components/Themed";
 import { ThemeContext } from "@/context/ThemeContext";
