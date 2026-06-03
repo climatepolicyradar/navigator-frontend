@@ -1,21 +1,19 @@
 import { Input as BaseInput } from "@base-ui/react";
+import { X } from "lucide-react";
 import { useMemo } from "react";
 
-import { Icon, TIconName, iconNames } from "@/components/atoms/icon/Icon";
 import { joinTailwindClasses } from "@/utils/tailwind";
 
 interface IProps extends Omit<React.InputHTMLAttributes<HTMLInputElement>, "size"> {
   clearable?: boolean;
   containerClasses?: string;
   color?: "brand" | "mono";
-  icon?: TIconName | React.ReactNode;
+  icon?: React.ReactNode;
   iconOnLeft?: boolean;
   inputClasses?: string;
   onClear?: () => void;
   size?: "small" | "medium" | "large";
 }
-
-const isIconName = (icon: unknown): icon is TIconName => iconNames.includes(icon as TIconName);
 
 export const Input = ({
   className: _className,
@@ -69,31 +67,20 @@ export const Input = ({
     };
   }, [color, containerClasses, inputClasses, size]);
 
-  let iconNode: React.ReactNode = null;
-  if (icon) {
-    iconNode = isIconName(icon) ? (
-      <div className={classes.icon}>
-        <Icon name={icon} height="16" width="16" />
-      </div>
-    ) : (
-      icon
-    );
-  }
-
   const handleClear = () => {
     onClear?.();
   };
 
   return (
     <div className={classes.container}>
-      {iconOnLeft && iconNode}
+      {iconOnLeft && icon}
       <BaseInput className={classes.input} value={value} {...props} />
       {clearable && (
         <button type="button" className={`${classes.button} ${value ? "" : "hidden"}`} onClick={handleClear}>
-          <Icon name="close" height="12" width="12" />
+          <X height="14" width="14" />
         </button>
       )}
-      {!iconOnLeft && iconNode}
+      {!iconOnLeft && icon}
     </div>
   );
 };

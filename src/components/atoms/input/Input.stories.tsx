@@ -1,7 +1,6 @@
 import { Meta, StoryObj } from "@storybook/nextjs-vite";
+import { Plus, Search } from "lucide-react";
 import { useState } from "react";
-
-import { iconNames } from "@/components/atoms/icon/Icon";
 
 import { Input } from "./Input";
 
@@ -9,10 +8,7 @@ const meta = {
   title: "Atoms/Input",
   component: Input,
   argTypes: {
-    icon: {
-      control: "select",
-      options: iconNames,
-    },
+    icon: { control: false },
     onClear: { control: false },
     placeholder: { control: "text" },
   },
@@ -37,8 +33,6 @@ export const Default: TStory = {
 export const Clearable: TStory = {
   args: {
     clearable: true,
-    icon: undefined,
-    iconOnLeft: false,
     placeholder: "Type something",
     size: "medium",
   },
@@ -48,7 +42,7 @@ export const Clearable: TStory = {
 export const IconRight: TStory = {
   args: {
     clearable: false,
-    icon: "search",
+    icon: <Search size={16} />,
     iconOnLeft: false,
     placeholder: "Search",
     size: "medium",
@@ -59,7 +53,7 @@ export const IconRight: TStory = {
 export const IconLeft: TStory = {
   args: {
     clearable: false,
-    icon: "add",
+    icon: <Plus size={16} />,
     iconOnLeft: true,
     placeholder: "Add...",
     size: "medium",
