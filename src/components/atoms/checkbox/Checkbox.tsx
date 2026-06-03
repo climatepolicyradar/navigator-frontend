@@ -1,7 +1,6 @@
 import { Checkbox as BaseCheckbox } from "@base-ui/react";
-import { Check } from "lucide-react";
+import { Check, Minus } from "lucide-react";
 
-import { HorizontalRuleIcon } from "@/components/icons/HorizontalRuleIcon";
 import { joinTailwindClasses } from "@/utils/tailwind";
 
 export type TCheckboxState = boolean | "indeterminate";
@@ -30,11 +29,13 @@ export const Checkbox = ({ className, label, ...rootProps }: IProps) => {
     rootProps.onCheckedChange?.(value);
   };
 
+  const IndicatorIcon = rootProps.indeterminate ? Minus : Check;
+
   return (
     <label className={labelClasses}>
       <BaseCheckbox.Root className={rootClasses} {...rootProps} aria-label={label} onCheckedChange={handleChange}>
         <BaseCheckbox.Indicator className="flex items-center justify-center text-white">
-          {rootProps.indeterminate ? <HorizontalRuleIcon aria-hidden={true} /> : <Check size={16} />}
+          <IndicatorIcon size={16} aria-hidden={true} />
         </BaseCheckbox.Indicator>
       </BaseCheckbox.Root>
       {label}

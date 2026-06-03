@@ -5,6 +5,11 @@ import { vi } from "vitest";
 import { Checkbox } from "./Checkbox";
 
 describe("Checkbox", () => {
+  it("displays the label", () => {
+    render(<Checkbox label="My label" onCheckedChange={vi.fn()} />);
+    expect(screen.getByText("My label")).toBeInTheDocument();
+  });
+
   it("does not call onCheckedChange when disabled and clicked", async () => {
     const onCheckedChange = vi.fn();
     render(<Checkbox label="Test" disabled onCheckedChange={onCheckedChange} />);
