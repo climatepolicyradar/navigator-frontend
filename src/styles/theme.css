@@ -1,4 +1,10 @@
 @theme {
+  /* CPR Design System variables (June 2026) */
+
+  --color-border-normal: #101a2429;
+  --color-border-light: #101a241f;
+  --color-border-checkbox: #101a2452;
+
   /* NEW SEARCH */
 
   --color-inky-blue: #1a4f8c;
