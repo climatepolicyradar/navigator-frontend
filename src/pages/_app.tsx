@@ -1,9 +1,12 @@
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
 import App, { AppProps } from "next/app";
+import dynamic from "next/dynamic";
 import Head from "next/head";
 import { NuqsAdapter } from "nuqs/adapters/next/pages";
 import { useEffect, useState } from "react";
+
+const PostHogInit = dynamic(() => import("@/context/PostHogProvider").then((m) => ({ default: m.PostHogInit })), { ssr: false });
 
 import { FrontendObservability } from "@/components/FrontendObservability";
 import ErrorBoundary from "@/components/error/ErrorBoundary";
@@ -101,7 +104,8 @@ function MyApp({ Component, pageProps, theme, adobeApiKey }: IProps) {
         <ThemeContext.Provider value={themeContext}>
           <TutorialContext.Provider value={tutorialContextProviderValue}>
             <AdobeContext.Provider value={dynamicAdobeKey}>
-              <PostHogProvider consent={consent} pageViewProps={pageProps?.posthogPageViewProps}>
+              <PostHogProvider>
+                <PostHogInit consent={consent} pageViewProps={pageProps?.posthogPageViewProps} />
                 <EnvConfigContext.Provider value={pageProps?.envConfig}>
                   <ErrorBoundary level="top">
                     <Head>

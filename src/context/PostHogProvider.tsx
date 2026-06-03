@@ -68,13 +68,17 @@ export function SuspendedPostHogPageView() {
   );
 }
 
-type TPostHogProviderProps = {
-  children: React.ReactNode;
+type TPostHogInitProps = {
   consent?: boolean;
   pageViewProps?: Record<string, unknown>;
 };
 
-export function PostHogProvider({ children, consent = false, pageViewProps = {} }: TPostHogProviderProps) {
+/**
+ * Handles PostHog initialisation and page view tracking.
+ * Dynamically imported (ssr: false) in _app.tsx so the posthog-js bundle
+ * is deferred until after the initial page load.
+ */
+export function PostHogInit({ consent = false, pageViewProps = {} }: TPostHogInitProps) {
   /**
    * The sessionStorage is read by tag manager to not re-init posthog
    * We don't use something like posthog.__loaded as posthog isn't available on the window
@@ -105,9 +109,16 @@ export function PostHogProvider({ children, consent = false, pageViewProps = {} 
   return (
     <PHProvider client={posthog}>
       <PostHogPageView consent={consent} pageViewProps={pageViewProps} />
-      {children}
     </PHProvider>
   );
+}
+
+type TPostHogProviderProps = {
+  children: React.ReactNode;
+};
+
+export function PostHogProvider({ children }: TPostHogProviderProps) {
+  return <>{children}</>;
 }
 
 /** @see: https://posthog.com/docs/product-analytics/best-practices#2-implement-a-naming-convention */
