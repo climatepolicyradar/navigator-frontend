@@ -7,7 +7,7 @@ import { joinTailwindClasses } from "@/utils/tailwind";
 export type TCheckboxState = boolean | "indeterminate";
 
 interface IProps extends BaseCheckbox.Root.Props {
-  className: string;
+  className?: string;
   label: string;
   onCheckedChange: (value: TCheckboxState) => void;
 }

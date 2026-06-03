@@ -2,7 +2,7 @@ import { Popover as BasePopover } from "@base-ui/react/popover";
 import { ChevronDown, ChevronRight, ChevronUp, Circle, ListFilter, SlidersHorizontal } from "lucide-react";
 import { useMemo, useState } from "react";
 
-import { Checkbox } from "@/components/checkbox/Checkbox";
+import { Checkbox } from "@/components/atoms/checkbox/Checkbox";
 import { TLabelResult } from "@/hooks/useLabelSearch";
 import { hasPublishedDateRule } from "@/utils/_experiment/dateRangeFilters";
 import { labelTypeLabel } from "@/utils/_experiment/labelTypeLabel";
@@ -67,9 +67,9 @@ export function SearchFilters({
           label={filter.value}
           checked={checked}
           disabled={!isAvailable}
-          onChange={(nextChecked) => {
+          onCheckedChange={(nextChecked) => {
             if (!isAvailable) return;
-            onChange?.(nextChecked, filter.id);
+            onChange?.(nextChecked === true, filter.id);
           }}
         />
       </li>
