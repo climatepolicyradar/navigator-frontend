@@ -79,7 +79,7 @@ export const getGeographyMetaData = (stats: NonNullable<GeographyV2["statistics"
           <div className="flex flex-col gap-4">
             <p>
               The share of global emissions data is from{" "}
-              <ExternalLink className="underline hover:text-blue-800 transition" url="https:www.climatewatchdata.org/">
+              <ExternalLink className="underline hover:text-blue-800 transition" url="https://www.climatewatchdata.org/">
                 Climate Watch
               </ExternalLink>
               , managed by the World Resources Institute.
