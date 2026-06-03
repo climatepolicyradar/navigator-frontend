@@ -6,7 +6,7 @@ import Head from "next/head";
 import { NuqsAdapter } from "nuqs/adapters/next/pages";
 import { useEffect, useState } from "react";
 
-const PostHogInit = dynamic(() => import("@/context/PostHogProvider").then((m) => ({ default: m.PostHogInit })), { ssr: false });
+const PostHogInit = dynamic(() => import("@/context/PostHogInit"), { ssr: false });
 
 import { FrontendObservability } from "@/components/FrontendObservability";
 import ErrorBoundary from "@/components/error/ErrorBoundary";
