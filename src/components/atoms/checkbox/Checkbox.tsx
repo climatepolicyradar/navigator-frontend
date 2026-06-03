@@ -19,7 +19,7 @@ export const Checkbox = ({ className, label, ...rootProps }: IProps) => {
     className
   );
   const rootClasses = joinTailwindClasses(
-    "box-border flex shrink-0 w-5 h-5 items-center justify-center  border border-border-checkbox rounded-xs",
+    "box-border flex shrink-0 w-5 h-5 items-center justify-center  border border-border-checkbox rounded-xs outline-inky-blue focus-visible:outline-2 outline-offset-2",
     rootProps.disabled
       ? "data-checked:bg-text-tertiary data-indeterminate:bg-text-tertiary"
       : "data-checked:bg-inky-blue data-indeterminate:bg-inky-blue"
@@ -32,9 +32,9 @@ export const Checkbox = ({ className, label, ...rootProps }: IProps) => {
 
   return (
     <label className={labelClasses}>
-      <BaseCheckbox.Root className={rootClasses} {...rootProps} onCheckedChange={handleChange}>
+      <BaseCheckbox.Root className={rootClasses} {...rootProps} aria-label={label} onCheckedChange={handleChange}>
         <BaseCheckbox.Indicator className="flex items-center justify-center text-white">
-          {rootProps.indeterminate ? <HorizontalRuleIcon /> : <Check size={16} />}
+          {rootProps.indeterminate ? <HorizontalRuleIcon aria-hidden={true} /> : <Check size={16} />}
         </BaseCheckbox.Indicator>
       </BaseCheckbox.Root>
       {label}

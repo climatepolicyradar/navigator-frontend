@@ -20,9 +20,6 @@ export default meta;
 export const Default: TStory = {
   args: {
     label: "Checkbox",
-    checked: false,
-    disabled: false,
-    indeterminate: false,
   },
 };
 
@@ -30,16 +27,12 @@ export const Checked: TStory = {
   args: {
     label: "Checkbox",
     checked: true,
-    disabled: false,
-    indeterminate: false,
   },
 };
 
 export const Indeterminate: TStory = {
   args: {
     label: "Checkbox",
-    checked: false,
-    disabled: false,
     indeterminate: true,
   },
 };
@@ -49,6 +42,5 @@ export const Disabled: TStory = {
     label: "Checkbox",
     checked: true,
     disabled: true,
-    indeterminate: false,
   },
 };
