@@ -32,7 +32,7 @@
   /* Color / UI / Border */
   --color-border-normal: #101a2429;
   --color-border-light: #101a241f;
-  --color-border-checkbox: #101a2452;
+  --color-border-input: #101a2452;
 
   /* Color / UI / Element */
   --color-elem-icon: var(--color-neutral-500);

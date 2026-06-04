@@ -18,7 +18,7 @@ export const Checkbox = ({ className, label, ...rootProps }: IProps) => {
     className
   );
   const rootClasses = joinTailwindClasses(
-    "box-border flex shrink-0 w-5 h-5 items-center justify-center  border border-border-checkbox rounded-xs outline-inky-blue focus-visible:outline-2 outline-offset-2",
+    "box-border flex shrink-0 w-5 h-5 items-center justify-center  border border-border-input rounded-xs outline-inky-blue focus-visible:outline-2 outline-offset-2",
     rootProps.disabled
       ? "data-checked:bg-text-tertiary data-indeterminate:bg-text-tertiary"
       : "data-checked:bg-inky-blue data-indeterminate:bg-inky-blue"
