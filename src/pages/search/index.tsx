@@ -443,54 +443,56 @@ const Search = ({ familyConceptsData, features, theme, themeConfig, topicsData }
           <SlideOutContext.Provider value={{ currentSlideOut, setCurrentSlideOut }}>
             <WikiBaseConceptsContext.Provider value={familyConceptsData || []}>
               <section>
-                <div className="md:flex justify-between items-center border-b border-gray-300">
-                  <BreadCrumbs label={"Search results"} />
-                  <div className="px-2 cols-2:px-4 cols-3:px-6 cols-4:px-8">
-                    <span className="text-sm mb-4 md:mb-0 text-right flex flex-wrap gap-x-2 md:justify-end">
-                      {themeConfig.links.emailAlerts && (
-                        <>
-                          <ExternalLink
-                            url={themeConfig.links.emailAlerts}
-                            className="mr-2 text-blue-600 hover:underline hover:text-blue-800"
-                            cy="download-entire-search-csv"
-                          >
-                            Email alerts
-                          </ExternalLink>
-                        </>
-                      )}
-                      <span>Download data (.csv): </span>
-                      <button
-                        className="flex gap-2 items-center justify-end text-blue-600 hover:underline hover:text-blue-800"
-                        data-cy="download-search-csv"
-                        onClick={(e) => {
-                          e.preventDefault();
-                          setShowCSVDownloadPopup(true);
-                        }}
-                        aria-label="Download search results as CSV"
-                      >
-                        {downloadCSVStatus === "loading" ? <LuLoader height="18" width="18" className="animate-spin" /> : "this search"}
-                      </button>
-                      {themeConfig.links.downloadDatabase && (
-                        <>
-                          <span>|</span>
-                          <ExternalLink
-                            url={themeConfig.links.downloadDatabase}
-                            className="text-blue-600 hover:underline hover:text-blue-800"
-                            cy="download-entire-search-csv"
-                            data-ph-capture-attribute-link-purpose="download-database"
-                          >
-                            whole database
-                          </ExternalLink>
-                        </>
-                      )}
-                    </span>
+                <div className="border-b border-gray-300">
+                  <div className="max-w-maxSiteWidth mx-auto md:flex justify-between items-center">
+                    <BreadCrumbs label={"Search results"} />
+                    <div className="px-2 cols-2:px-4 cols-3:px-6 cols-4:px-8">
+                      <span className="text-sm mb-4 md:mb-0 text-right flex flex-wrap gap-x-2 md:justify-end">
+                        {themeConfig.links.emailAlerts && (
+                          <>
+                            <ExternalLink
+                              url={themeConfig.links.emailAlerts}
+                              className="mr-2 text-blue-600 hover:underline hover:text-blue-800"
+                              cy="download-entire-search-csv"
+                            >
+                              Email alerts
+                            </ExternalLink>
+                          </>
+                        )}
+                        <span>Download data (.csv): </span>
+                        <button
+                          className="flex gap-2 items-center justify-end text-blue-600 hover:underline hover:text-blue-800"
+                          data-cy="download-search-csv"
+                          onClick={(e) => {
+                            e.preventDefault();
+                            setShowCSVDownloadPopup(true);
+                          }}
+                          aria-label="Download search results as CSV"
+                        >
+                          {downloadCSVStatus === "loading" ? <LuLoader height="18" width="18" className="animate-spin" /> : "this search"}
+                        </button>
+                        {themeConfig.links.downloadDatabase && (
+                          <>
+                            <span>|</span>
+                            <ExternalLink
+                              url={themeConfig.links.downloadDatabase}
+                              className="text-blue-600 hover:underline hover:text-blue-800"
+                              cy="download-entire-search-csv"
+                              data-ph-capture-attribute-link-purpose="download-database"
+                            >
+                              whole database
+                            </ExternalLink>
+                          </>
+                        )}
+                      </span>
+                    </div>
                   </div>
                 </div>
                 <MultiCol id="search">
                   <SideCol
                     extraClasses={`absolute z-99 top-0 w-screen duration-250 ease-[cubic-bezier(0.04, 0.62, 0.23, 0.98)] ${
                       showFilters ? "translate-y-[0%]" : "fixed translate-y-[100vh]"
-                    } cols-4:translate-y-[0%] cols-4:h-full cols-4:sticky cols-4:top-[72px] cols-4:z-50 bg-white`}
+                    } cols-4:translate-y-[0%] cols-4:h-full cols-4:sticky cols-4:top-[72px] cols-4:z-50 bg-white md:bg-transparent`}
                   >
                     {configQuery.isFetching ? (
                       <Loader size="20px" />
