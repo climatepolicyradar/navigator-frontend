@@ -1,39 +1,52 @@
 @theme {
   /* CPR Design System variables (June 2026) */
 
-  --color-border-normal: #101a2429;
-  --color-border-light: #101a241f;
-  --color-border-checkbox: #101a2452;
+  /* Color / ID Core */
+  --color-white: #FFFFFF;
+  --color-paper: #FBFBF9;
+  --color-recycled-paper: #E5E3DC;
+  --color-inky-blue: #1A4F8C;
+  --color-inky-navy: #133051;
+  --color-inky-black: #101A24;
 
-  /* NEW SEARCH */
+  /* Color / ID Extended */
+  --color-light-blue: #C6DDE8;
+  --color-mustard: #C8B500;
+  --color-green: #A0AF54;
+  --color-forest: #164F4A;
+  --color-cardboard: #B7AE8E;
 
-  --color-inky-blue: #1a4f8c;
-  --color-inky-black: #101a24;
-  --color-recycled-paper: #e5e3dc;
-  --color-transparent-regular: rgba(13, 26, 37, 0.16);
-  --color-transparent-light: rgba(13, 26, 37, 0.12);
-  --color-transparent-checkbox: rgba(13, 26, 37, 0.32);
+  /* Color / UI / Background */
+  --color-bg-primary: var(--color-white);
+  --color-bg-inverse: var(--color-inky-black);
+  --color-bg-flat: var(--color-neutral-100);
 
-  /* REFERENCES FROM FIGMA - BECAUSE THE VARIABLE SYSTEM IS DRIVING ME MAD */
-  /*
-  TEXT:
-  Primary: inky-black
-  Secondary: neutral-600
-  Tertiary: neutral-500
-  Inverse: white
-  Brand: inky-blue
-  Disabled: neutral-400
+  /* Color / UI / Text */
+  --color-text-primary: var(--color-inky-black);
+  --color-text-secondary: var(--color-neutral-600);
+  --color-text-tertiary: var(--color-neutral-500);
+  --color-text-inverse: var(--color-white);
+  --color-text-brand: var(--color-inky-blue);
+  --color-text-disabled: var(--color-neutral-400);
 
-  BACKGROUND:
-  Primary: white
-  Inverse: inky-black
-  Flat: neutral-100
+  /* Color / UI / Element */
+  --color-elem-icon: var(--color-neutral-500);
+  --color-elem-focus: var(--color-neutral-200);
 
-  ELEMENT:
-  Icon: neutral-500
-  Focus: neutral-200
+  /* Color / UI / Border */
+  --color-border-normal: #101A2429;
+  --color-border-light: #101A241F;
+  --color-border-checkbox: #101A2452;
 
-  */
+  /* Font / Weight */
+  --font-weight-normal: 400;
+  --font-weight-medium: 550;
+  --font-weight-heavy: 650;
+
+  /* Font / Size */
+  --text-table: 15px;
+
+  /* DEPRECATED BELOW THIS LINE --------------- */
 
   /* COLOURS */
 
@@ -135,12 +148,6 @@
     "greycliff-cf", "InterVariable", "Inter", "ui-sans-serif", "system-ui", "sans-serif", "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol",
     "Noto Color Emoji"; /* MCF */
   --font-display--font-feature-settings: "ss03", "cv05";
-
-  --text-table: 15px;
-
-  --font-weight-normal: 400;
-  --font-weight-medium: 550;
-  --font-weight-heavy: 650;
 
   /* SIZING */
 
