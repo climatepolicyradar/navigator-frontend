@@ -17,8 +17,8 @@ const LandingPageLinks = () => {
   };
 
   return (
-    <section className="mt-10 text-textDark">
-      <div className="text-textDark font-medium text-2xl mb-5">Try these searches</div>
+    <section className="mt-10 text-text-primary">
+      <div className="font-medium text-2xl mb-5">Try these searches</div>
       <ul className="flex flex-col gap-2">
         {SUGGESTED_SEARCHES.map((suggestedSearch, searchIndex) => (
           <li key={searchIndex}>

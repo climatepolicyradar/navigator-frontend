@@ -18,7 +18,7 @@ export const Feature = ({ heading, subheading, image, imageAlt, children }: IPro
     <Card
       heading={heading || ""}
       extraClasses="h-full w-full"
-      headingClasses="text-text-brand-darker text-2xl font-bold"
+      headingClasses="text-text-brand text-2xl font-bold"
       paddingClasses="p-4 md:p-6 lg:p-10"
     >
       {subheading && (

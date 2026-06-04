@@ -55,7 +55,7 @@ export const getButtonClasses = ({
   /* Shape */
 
   const border = variant === "outlined" ? "border border-border-light" : "";
-  const outlineColor = color === "brand" ? "outline-[#0049b8]" : "outline-surface-mono-dark";
+  const outlineColor = color === "brand" ? "outline-[#0049b8]" : "outline-inky-black";
   const roundness = rounded ? "rounded-full" : "rounded-md";
 
   /* Size */

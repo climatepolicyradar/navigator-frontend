@@ -8,7 +8,7 @@ interface IProps extends BaseMenu.Popup.Props {
 
 export const MenuPopup = ({ className, ...props }: IProps) => {
   const allClasses = joinTailwindClasses(
-    "min-w-37.5 p-1 bg-surface-light border border-border-light rounded-lg shadow-xs focus-visible:outline-none",
+    "min-w-37.5 p-1 bg-bg-primary border border-border-light rounded-lg shadow-xs focus-visible:outline-none",
     className
   );
 

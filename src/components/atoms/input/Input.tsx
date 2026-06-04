@@ -31,7 +31,7 @@ export const Input = ({
   const classes = useMemo(() => {
     /* Colour */
 
-    const outlineColor = color === "brand" ? "focus-within:outline-[#005eeb]" : "focus-within:outline-border-mono";
+    const outlineColor = color === "brand" ? "focus-within:outline-[#005eeb]" : "focus-within:outline-border-normal";
 
     /* Size */
 
@@ -51,7 +51,7 @@ export const Input = ({
     }
 
     return {
-      button: joinTailwindClasses("shrink-0 text-icon-standard", iconPadding),
+      button: joinTailwindClasses("shrink-0 text-elem-icon", iconPadding),
       container: joinTailwindClasses(
         "w-full px-2 flex flex-row justify-around items-center bg-[#f5f5f5] rounded-md focus-within:outline",
         outlineColor,

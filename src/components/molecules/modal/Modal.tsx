@@ -56,7 +56,7 @@ export const Modal = ({
 
   return (
     <div
-      className={`fixed inset-0 z-2000 flex flex-col justify-center items-center bg-surface-mono-dark/50 overflow-hidden transition duration-200 ${
+      className={`fixed inset-0 z-2000 flex flex-col justify-center items-center bg-bg-inverse/50 overflow-hidden transition duration-200 ${
         isOpen ? "opacity-100" : "opacity-0 pointer-events-none"
       }`}
       onClick={onModalClick}
@@ -66,7 +66,7 @@ export const Modal = ({
         <div className={allContentClasses}>
           <div className="mb-3 flex flex-row-reverse justify-between items-center gap-3">
             {showCloseButton && (
-              <button role="button" title="Dismiss modal" onClick={onClose} className="text-icon-standard">
+              <button role="button" title="Dismiss modal" onClick={onClose} className="text-elem-icon">
                 <X size="18" />
               </button>
             )}
