@@ -16,7 +16,7 @@ export const CPRLogo = (
 
 export const CPRMenuButton = (
   <div className="flex items-center gap-1 px-2 py-1 rounded-md text-gray-950 font-medium group-data-popup-open:bg-gray-100">
-    <LucideMenu size={16} className="text-brand" /> Menu
+    <LucideMenu size={16} className="text-text-brand" /> Menu
   </div>
 );
 
