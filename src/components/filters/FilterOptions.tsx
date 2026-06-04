@@ -62,7 +62,7 @@ export const FilterOptions = ({ filter, query, handleFilterChange, corpus_types,
           return (
             <Fragment key={filterGroup[0].group || "ungrouped"}>
               {groupedOptions.length > 1 && (
-                <span className="not-first:mt-3 text-xs text-gray-500 leading-none font-heavy cursor-default">{filterGroup[0].group}</span>
+                <span className="not-first:mt-3 text-xs text-[#6b7280] leading-none font-heavy cursor-default">{filterGroup[0].group}</span>
               )}
               {filterGroup.map((option) =>
                 filter.type === "radio" ? (

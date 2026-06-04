@@ -28,7 +28,7 @@ export const ToggleGroup = <ToggleId extends string>({
 }: IProps<ToggleId>) => {
   const allGroupClasses = joinTailwindClasses("inline-flex gap-1", groupClasses);
   const allButtonClasses = joinTailwindClasses(
-    "rounded-full text-base text-gray-700 font-heavy leading-none data-[pressed]:bg-gray-950 data-[pressed]:text-white",
+    "rounded-full text-base text-[#374151] font-heavy leading-none data-[pressed]:bg-[#030712] data-[pressed]:text-white",
     buttonSize === "medium" ? "px-3 py-2 text-base" : "px-4 py-2.5 text-lg",
     buttonClasses
   );

@@ -42,7 +42,7 @@ export const SlideOut = ({ children, showCloseButton = true }: IProps) => {
             transition: { duration: 0.25, ease: [0.04, 0.62, 0.23, 0.98] },
           }}
           exit={{ opacity: 0, transition: { duration: 0 } }}
-          className="absolute z-20 top-0 left-0 h-full bg-white p-5 pb-45 w-screen md:px-9 md:z-0 md:w-auto md:min-w-115 md:left-full md:pb-0 md:border-r md:border-gray-300"
+          className="absolute z-20 top-0 left-0 h-full bg-white p-5 pb-45 w-screen md:px-9 md:z-0 md:w-auto md:min-w-115 md:left-full md:pb-0 md:border-r md:border-[#d1d5db]"
         >
           {showCloseButton && (
             <button className="absolute z-20 top-5 right-5" onClick={() => setCurrentSlideOut("")}>

@@ -82,7 +82,7 @@ export const RecentFamiliesCategory = ({
     placeholder = (
       <p className="mt-4 mb-12 text-text-primary">
         Visit the{" "}
-        <PageLink external href="https://www.climatecasechart.com/" className="text-brand underline">
+        <PageLink external href="https://www.climatecasechart.com/" className="text-[#0038a9] underline">
           Climate Litigation Database
         </PageLink>{" "}
         to see litigation documents.

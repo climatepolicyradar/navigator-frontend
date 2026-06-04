@@ -40,7 +40,7 @@ type TProps = IPopoverElementProps | IPopoverChildrenProps;
 
 export const Popover = ({ children, description, link, onOpenChange, openOnHover = false, popupClasses = "", title, trigger }: TProps) => {
   const allPopupClasses = joinTailwindClasses(
-    "p-3 max-w-[350px] bg-white border border-gray-300 rounded-md shadow-md text-sm text-gray-700 leading-normal select-auto focus-visible:outline-0 z-[50]",
+    "p-3 max-w-[350px] bg-white border border-[#d1d5db] rounded-md shadow-md text-sm text-[#374151] leading-normal select-auto focus-visible:outline-0 z-[50]",
     popupClasses
   );
 
@@ -51,11 +51,11 @@ export const Popover = ({ children, description, link, onOpenChange, openOnHover
         <BasePopover.Positioner positionMethod="fixed" sideOffset={8} className="z-50">
           <BasePopover.Popup className={allPopupClasses}>
             <BasePopover.Arrow className="flex -top-2">
-              <BaseUIArrow fill="fill-white" stroke="fill-gray-300" />
+              <BaseUIArrow fill="fill-white" stroke="fill-[#d1d5db]" />
             </BasePopover.Arrow>
             {children || (
               <>
-                {title && <BasePopover.Title className="mb-2 text-gray-950 font-bold">{title}</BasePopover.Title>}
+                {title && <BasePopover.Title className="mb-2 text-[#030712] font-bold">{title}</BasePopover.Title>}
                 <BasePopover.Description>
                   <span className="block">{description}</span>
                   {link && (
@@ -63,7 +63,7 @@ export const Popover = ({ children, description, link, onOpenChange, openOnHover
                       external={link.external}
                       href={link.href}
                       hash={link.hash}
-                      className="block mt-2 underline underline-offset-4 decoration-gray-300 hover:decoration-gray-500"
+                      className="block mt-2 underline underline-offset-4 decoration-[#d1d5db] hover:decoration-[#6b7280]"
                     >
                       {link.text}
                     </PageLink>

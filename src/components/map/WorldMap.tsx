@@ -314,7 +314,7 @@ export default function WorldMap({ showLitigation = false, showCategorySelect = 
         {showCategorySelect && (
           <div>
             <select
-              className="border border-gray-300 small rounded-full pl-4!"
+              className="border border-[#d1d5db] small rounded-full pl-4!"
               onChange={(e) => {
                 setSelectedFamCategory(e.currentTarget.value as "lawsPolicies" | "unfccc" | "mcf" | "reports" | "litigation");
               }}
@@ -441,11 +441,11 @@ export default function WorldMap({ showLitigation = false, showCategorySelect = 
         {showEUCheckbox && (
           <div className="absolute top-0 right-0 p-4">
             <label
-              className="checkbox-input flex items-center p-2 px-4 rounded-full cursor-pointer border border-gray-300 bg-white"
+              className="checkbox-input flex items-center p-2 px-4 rounded-full cursor-pointer border border-[#d1d5db] bg-white"
               htmlFor="show_eu_aggregated"
             >
               <input
-                className="border-gray-300 cursor-pointer"
+                className="border-[#d1d5db] cursor-pointer"
                 id="show_eu_aggregated"
                 type="checkbox"
                 name="exact_match"

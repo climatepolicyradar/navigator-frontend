@@ -50,7 +50,7 @@ const PassageMatches = ({ passages, onClick, pageColour = "[#202020]", position,
             <li key={item.text_block_id} data-analytics="document-passage-result" id={`passage-${index}`} className="mb-2 hide-in-percy">
               <button
                 type="button"
-                className={`w-full p-4 cursor-pointer border border-gray-300 rounded-md bg-white hover:border-gray-500`}
+                className={`w-full p-4 cursor-pointer border border-[#d1d5db] rounded-md bg-white hover:border-[#6b7280]`}
                 onClick={() => onButtonClick(item)}
                 data-ph-capture-attribute-position-page={hasPosition ? position : undefined}
                 data-ph-capture-attribute-position-total={hasPosition ? positionOffset + position : undefined}

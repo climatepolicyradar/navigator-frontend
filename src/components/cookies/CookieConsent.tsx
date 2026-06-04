@@ -58,7 +58,7 @@ export const CookieConsent = ({ onConsentChange, themeConfig }: IProps) => {
   return (
     <>
       <div className={`flex justify-end ${hide ? "hidden" : ""}`}>
-        <Card color="mono" variant="outlined" className="m-3 sm:m-4 max-w-[550px] bg-surface-ui pointer-events-auto select-none">
+        <Card color="mono" variant="outlined" className="m-3 sm:m-4 max-w-[550px] bg-[#f5f5f5] pointer-events-auto select-none">
           <p className="text-base leading-normal font-semibold text-text-primary">Cookies and your privacy</p>
           <p className="mt-2 mb-4 text-sm leading-normal font-normal text-text-primary">
             We take your trust and privacy seriously. Climate Policy Radar uses cookies to make our site work optimally, analyse traffic to our

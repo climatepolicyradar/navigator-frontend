@@ -23,11 +23,11 @@ const DEFAULT_SORT_ICONS: Record<TTableOrder, LucideIcon> = {
 };
 
 const renderCellDisplay = (cell: TTableCell, showValues: boolean) => {
-  if (cell === null) return <span className="text-gray-500">{EN_DASH}</span>;
+  if (cell === null) return <span className="text-[#6b7280]">{EN_DASH}</span>;
 
   let content: ReactNode = `${cell}`;
   if (typeof cell === "object") content = showValues ? cell.value : cell.label;
-  return showValues ? <div className="inline-block bg-surface-ui text-sm text-text-tertiary font-mono">{`${content}`}</div> : content;
+  return showValues ? <div className="inline-block bg-[#f5f5f5] text-sm text-text-tertiary font-mono">{`${content}`}</div> : content;
 };
 
 interface IProps<ColumnKey extends string> {
@@ -90,7 +90,7 @@ export const InteractiveTable = <ColumnKey extends string>({
     const menuIsOpen = openSortMenu === column.id;
 
     const sortButtonClasses = joinTailwindClasses(
-      "p-1 rounded-sm focus-visible:outline-none text-gray-500",
+      "p-1 rounded-sm focus-visible:outline-none text-[#6b7280]",
       !columnIsSorted && !menuIsOpen && "invisible group-hover:visible"
     );
 
@@ -143,18 +143,18 @@ export const InteractiveTable = <ColumnKey extends string>({
     );
   };
 
-  const allTableClasses = joinTailwindClasses("grid text-table text-gray-700 leading-5 cursor-default", tableClasses);
+  const allTableClasses = joinTailwindClasses("grid text-table text-[#374151] leading-5 cursor-default", tableClasses);
   const gridTemplateColumns = columns.map((column) => `${column.fraction || 1}fr`).join(" ");
-  const commonCellClasses = "px-3 py-2 not-first:border-l border-gray-300";
+  const commonCellClasses = "px-3 py-2 not-first:border-l border-[#d1d5db]";
 
   return (
-    <div className="bg-white border border-gray-300 rounded-md overflow-x-auto">
+    <div className="bg-white border border-[#d1d5db] rounded-md overflow-x-auto">
       <div className={allTableClasses} style={{ gridTemplateColumns }} role="table">
         {/* Heading */}
         <div className="contents" role="row">
           {columns.map((column) => {
             const cellClasses = joinTailwindClasses(
-              "bg-gray-100 text-gray-900 font-medium group",
+              "bg-[#f3f4f6] text-gray-900 font-medium group",
               column.sortable && "pr-2",
               commonCellClasses,
               column.classes
@@ -166,7 +166,7 @@ export const InteractiveTable = <ColumnKey extends string>({
                   <span className="block">{column.name || firstCase(column.id)}</span>
                   {column.tooltip && (
                     <Tooltip content={column.tooltip} popupClasses="text-wrap max-w-62">
-                      <LucideInfo size={16} className="text-gray-500 leading-5" />
+                      <LucideInfo size={16} className="text-[#6b7280] leading-5" />
                     </Tooltip>
                   )}
                   {column.sortable === true && renderSortControls(column)}
@@ -186,7 +186,7 @@ export const InteractiveTable = <ColumnKey extends string>({
             const cellClasses = joinTailwindClasses(
               "border-t",
               commonCellClasses,
-              isClickable && "group-hover:bg-gray-100 cursor-pointer",
+              isClickable && "group-hover:bg-[#f3f4f6] cursor-pointer",
               column.classes,
               row.classes
             );

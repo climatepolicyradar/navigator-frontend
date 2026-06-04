@@ -19,8 +19,8 @@ export default meta;
 export const CPR: TStory = {
   args: {
     icon: (
-      <div className="flex items-center gap-1 px-2 py-1 rounded-md text-gray-950 font-medium group-data-[popup-open]:bg-gray-100">
-        <LucideMenu size={16} className="text-brand" /> Menu
+      <div className="flex items-center gap-1 px-2 py-1 rounded-md text-[#030712] font-medium group-data-[popup-open]:bg-[#f3f4f6]">
+        <LucideMenu size={16} className="text-[#0038a9]" /> Menu
       </div>
     ),
     links: CPR_MENU_LINKS,
@@ -29,7 +29,7 @@ export const CPR: TStory = {
 
 export const MCF: TStory = {
   args: {
-    icon: <LucideMenu size={24} className="text-gray-950" />,
+    icon: <LucideMenu size={24} className="text-[#030712]" />,
     links: MCF_MENU_LINKS,
   },
 };

@@ -41,7 +41,7 @@ export const getTopicsMetadataItem = (familyTopics: IFamilyDocumentTopics): IMet
         &ensp;
         <button
           role="button"
-          className="underline underline-offset-4 decoration-gray-300 hover:decoration-gray-500"
+          className="underline underline-offset-4 decoration-[#d1d5db] hover:decoration-[#6b7280]"
           onClick={scrollToBlock("topics")}
         >
           +{hiddenTopicsCount} {pluralise(hiddenTopicsCount, ["other", "others"])}

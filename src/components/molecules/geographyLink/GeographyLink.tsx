@@ -17,7 +17,7 @@ export const GeographyLink = ({ code, name, slug }: IProps) => {
   );
 
   return slug ? (
-    <PageLink href={`/geographies/${slug}`} className="hover:underline decoration-gray-500">
+    <PageLink href={`/geographies/${slug}`} className="hover:underline decoration-[#6b7280]">
       {content}
     </PageLink>
   ) : (

@@ -3,7 +3,7 @@ import { BookOpen } from "lucide-react";
 import { ExternalLink } from "@/components/ExternalLink";
 
 export const EmptyDocument = () => (
-  <div className="ml-4 mt-4 text-center text-gray-700">
+  <div className="ml-4 mt-4 text-center text-[#374151]">
     <div className="mb-2 flex justify-center">
       <BookOpen width="24" height="24" />
     </div>

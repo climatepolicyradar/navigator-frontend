@@ -122,7 +122,7 @@ export const FamilyConceptPicker = ({
     <div className={`relative flex flex-col max-h-full pb-4 ${containerClasses}`} ref={ref}>
       {/* HEADER */}
       <span className="text-base font-semibold text-text-primary pb-4">
-        <TextSearch size={20} className="inline mr-2 text-text-brand align-text-bottom" />
+        <TextSearch size={20} className="inline mr-2 text-text-[#0038a9] align-text-bottom" />
         {title}
         {showBadge && <Badge className="ml-2">Beta</Badge>}
       </span>

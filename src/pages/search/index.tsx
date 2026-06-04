@@ -443,7 +443,7 @@ const Search = ({ familyConceptsData, features, theme, themeConfig, topicsData }
           <SlideOutContext.Provider value={{ currentSlideOut, setCurrentSlideOut }}>
             <WikiBaseConceptsContext.Provider value={familyConceptsData || []}>
               <section>
-                <div className="md:flex justify-between items-center border-b border-gray-300">
+                <div className="md:flex justify-between items-center border-b border-[#d1d5db]">
                   <BreadCrumbs label={"Search results"} />
                   <div className="px-2 cols-2:px-4 cols-3:px-6 cols-4:px-8">
                     <span className="text-sm mb-4 md:mb-0 text-right flex flex-wrap gap-x-2 md:justify-end">
@@ -496,7 +496,7 @@ const Search = ({ familyConceptsData, features, theme, themeConfig, topicsData }
                       <Loader size="20px" />
                     ) : (
                       <>
-                        <div className="sticky cols-4:top-[72px] h-screen cols-4:h-[calc(100vh-72px)] px-5 cols-4:border-r border-gray-300 pt-5 pb-[180px] overflow-y-auto scrollbar-thumb-gray-200 scrollbar-thin scrollbar-track-white scrollbar-thumb-rounded-full hover:scrollbar-thumb-gray-500 cols-4:pb-4">
+                        <div className="sticky cols-4:top-[72px] h-screen cols-4:h-[calc(100vh-72px)] px-5 cols-4:border-r border-[#d1d5db] pt-5 pb-[180px] overflow-y-auto scrollbar-thumb-gray-200 scrollbar-thin scrollbar-track-white scrollbar-thumb-rounded-full hover:scrollbar-thumb-[#6b7280] cols-4:pb-4">
                           <SearchFilters
                             searchCriteria={searchQuery}
                             query={router.query}
@@ -602,7 +602,7 @@ const Search = ({ familyConceptsData, features, theme, themeConfig, topicsData }
                                             <PageLink
                                               external
                                               href="mailto:manager@climatecasechart.com"
-                                              className="underline underline-offset-4 decoration-gray-300 hover:decoration-gray-500"
+                                              className="underline underline-offset-4 decoration-[#d1d5db] hover:decoration-[#6b7280]"
                                             >
                                               manager@climatecasechart.com
                                             </PageLink>{" "}
@@ -624,7 +624,7 @@ const Search = ({ familyConceptsData, features, theme, themeConfig, topicsData }
                                 <div className="shrink-0 flex flex-col lg:flex-row gap-1 lg:gap-4">
                                   <div className="relative z-10 -top-0.5 flex justify-end">
                                     <button
-                                      className={`flex items-center gap-1 px-2 py-1 -mt-1 rounded-md text-sm text-text-primary font-normal ${showSearchOptions ? "bg-surface-ui" : ""}`}
+                                      className={`flex items-center gap-1 px-2 py-1 -mt-1 rounded-md text-sm text-text-primary font-normal ${showSearchOptions ? "bg-[#f5f5f5]" : ""}`}
                                       onClick={() => setShowSearchOptions(!showSearchOptions)}
                                       data-cy="search-options"
                                       ref={searchSettingsButtonRef}
@@ -658,7 +658,7 @@ const Search = ({ familyConceptsData, features, theme, themeConfig, topicsData }
                                   </div>
                                   <div className="relative z-8 -top-0.5 flex justify-end">
                                     <button
-                                      className={`flex items-center gap-1 px-2 py-1 -mt-1 rounded-md text-sm text-text-primary font-normal ${showSortOptions ? "bg-surface-ui" : ""}`}
+                                      className={`flex items-center gap-1 px-2 py-1 -mt-1 rounded-md text-sm text-text-primary font-normal ${showSortOptions ? "bg-[#f5f5f5]" : ""}`}
                                       onClick={() => setShowSortOptions(!showSortOptions)}
                                       data-cy="search-options"
                                       ref={sortSettingsButtonRef}
@@ -747,7 +747,7 @@ const Search = ({ familyConceptsData, features, theme, themeConfig, topicsData }
                               )}
                               {showSearchOnboarding(router.query) && (
                                 <Warning variant="info" hideableId="search-onboarding-info">
-                                  <p className="font-semibold text-text-brand">Get better results</p>
+                                  <p className="font-semibold text-text-[#0038a9]">Get better results</p>
                                   <p>
                                     {getAppText("searchOnboarding")}
                                     {features.knowledgeGraph && (

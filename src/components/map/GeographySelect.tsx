@@ -39,7 +39,7 @@ const GeographySelect = ({ title, list, keyField, keyFieldDisplay, filterType, h
       <div className={`bg-white relative z-20 ${suggestList.length > 0 ? "rounded-b-none rounded-t-lg" : "rounded-full"}`}>
         <div className="absolute p-px pr-0 top-0 left-0 h-full flex items-center justify-start z-20">
           <div
-            className={`text-gray-300 py-1 px-2 pl-4 h-full transition duration-300 shrink-0 flex items-center ${
+            className={`text-[#d1d5db] py-1 px-2 pl-4 h-full transition duration-300 shrink-0 flex items-center ${
               suggestList.length > 0 ? "rounded-tl-lg" : "rounded-l-full"
             }`}
           >
@@ -49,7 +49,7 @@ const GeographySelect = ({ title, list, keyField, keyFieldDisplay, filterType, h
         <input
           data-analytics="map-searchInput"
           data-cy="map-input"
-          className={`w-full bg-white appearance-none py-2 pl-12 pr-2 z-10 leading-snug relative grow border-gray-300 placeholder:text-grey-300 ${
+          className={`w-full bg-white appearance-none py-2 pl-12 pr-2 z-10 leading-snug relative grow border-[#d1d5db] placeholder:text-grey-300 ${
             suggestList.length > 0 ? "rounded-b-none rounded-t-lg" : "rounded-full"
           }`}
           type="search"

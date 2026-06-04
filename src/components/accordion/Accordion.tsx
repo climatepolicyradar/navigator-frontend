@@ -66,7 +66,7 @@ export const Accordion = ({
               className={`relative max-h-[${fixedHeight}] ${
                 overflowOverride
                   ? "overflow-visible"
-                  : "overflow-y-scroll scrollbar-thumb-gray-200 scrollbar-thin scrollbar-track-white scrollbar-thumb-rounded-full hover:scrollbar-thumb-gray-500"
+                  : "overflow-y-scroll scrollbar-thumb-gray-200 scrollbar-thin scrollbar-track-white scrollbar-thumb-rounded-full hover:scrollbar-thumb-[#6b7280]"
               } `}
             >
               <>

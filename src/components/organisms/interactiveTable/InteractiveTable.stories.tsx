@@ -19,7 +19,7 @@ export default meta;
 type TWainwrightColumns = "height" | "link" | "number" | "region" | "summited" | "wainwright";
 const linkToCell = (link: string): TTableCell => ({
   label: (
-    <a href={link} className="underline decoration-gray-300">
+    <a href={link} className="underline decoration-[#d1d5db]">
       View
     </a>
   ),

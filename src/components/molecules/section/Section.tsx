@@ -37,15 +37,15 @@ export const Section = ({ badge, block, children, count, Icon, id, title, wide =
   return (
     <section className={sectionClasses} id={sectionId} role="region">
       {title && (
-        <h2 className="block col-start-1 -col-end-1 mb-5 text-2xl text-gray-950 font-heavy leading-tight">
+        <h2 className="block col-start-1 -col-end-1 mb-5 text-2xl text-[#030712] font-heavy leading-tight">
           {Icon && (
             <span>
-              <Icon size={22} className="inline mb-1.5 text-brand" />
+              <Icon size={22} className="inline mb-1.5 text-[#0038a9]" />
               &nbsp;
             </span>
           )}
           <span>{title}</span>
-          {count !== undefined && <span className="text-gray-500 font-normal">&nbsp;&nbsp;{count}</span>}
+          {count !== undefined && <span className="text-[#6b7280] font-normal">&nbsp;&nbsp;{count}</span>}
           {badge && (
             <span>
               &nbsp;&nbsp;<Badge className="align-middle">{badge}</Badge>

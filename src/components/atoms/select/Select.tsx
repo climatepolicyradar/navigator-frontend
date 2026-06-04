@@ -23,7 +23,7 @@ export function Select({ defaultValue, value, options, onValueChange, container,
 
   return (
     <BaseSelect.Root defaultValue={defaultValue} onValueChange={handleValueChange} value={value} id={id}>
-      <BaseSelect.Trigger className="flex items-center justify-between gap-1 px-1 h-[30px] rounded-sm text-sm text-text-primary m-0 outline-0 select-none cursor-default hover:border-[#005eeb] active:bg-surface-ui data-popup-open:bg-surface-ui focus:border-[#005eeb]">
+      <BaseSelect.Trigger className="flex items-center justify-between gap-1 px-1 h-[30px] rounded-sm text-sm text-text-primary m-0 outline-0 select-none cursor-default hover:border-[#005eeb] active:bg-[#f5f5f5] data-popup-open:bg-[#f5f5f5] focus:border-[#005eeb]">
         <BaseSelect.Value />
         <BaseSelect.Icon className="flex">
           <ChevronsUpDown height="12" width="12" />

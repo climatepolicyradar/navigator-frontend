@@ -172,13 +172,17 @@ export const NavSearch = () => {
               {/* Geographies */}
               {geographyResults.length > 0 && (
                 <div>
-                  <h3 className="px-2.5 py-1.5 mb-1 text-text-brand text-sm font-medium select-none">Geographies</h3>
+                  <h3 className="px-2.5 py-1.5 mb-1 text-text-[#0038a9] text-sm font-medium select-none">Geographies</h3>
                   {geographyResults.map((geography) => (
                     <NavSearchSuggestion
                       key={geography.id}
                       href={`/geographies/${geography.slug}`}
                       Icon={
-                        <ArrowRight height="16" width="16" className="opacity-0 group-hover:opacity-100 text-text-brand transition duration-200" />
+                        <ArrowRight
+                          height="16"
+                          width="16"
+                          className="opacity-0 group-hover:opacity-100 text-text-[#0038a9] transition duration-200"
+                        />
                       }
                       onClick={handleSuggestionClick}
                     >
@@ -194,7 +198,7 @@ export const NavSearch = () => {
                 Icon={<Search height="16" width="16" />}
                 hint={
                   <div className="text-xs text-text-tertiary font-[440]">
-                    Press <CornerDownLeft height="12" width="12" className="inline group-hover:text-text-brand transition duration-200" /> ENTER
+                    Press <CornerDownLeft height="12" width="12" className="inline group-hover:text-text-[#0038a9] transition duration-200" /> ENTER
                   </div>
                 }
                 onClick={handleSuggestionClick}

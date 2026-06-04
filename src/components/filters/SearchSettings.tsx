@@ -109,7 +109,7 @@ export const SearchSettings = ({
                     <span>{SEARCH_SETTINGS.semantic}</span>
                     <span className="block text-text-secondary">
                       Temporarily unavailable.{" "}
-                      <PageLink external href="https://form.jotform.com/260824503109350" className="text-brand underline">
+                      <PageLink external href="https://form.jotform.com/260824503109350" className="text-[#0038a9] underline">
                         Get notified
                       </PageLink>{" "}
                       when this is available.

@@ -42,13 +42,13 @@ export const getButtonClasses = ({
         break;
       case "outlined":
       case "ghost":
-        bgColor = "bg-transparent hover:bg-surface-ui";
+        bgColor = "bg-transparent hover:bg-[#f5f5f5]";
         textColor = color === "brand" ? "text-[#005eeb]" : "text-text-primary";
         break;
     }
 
   if (disabled) {
-    bgColor = "bg-surface-ui";
+    bgColor = "bg-[#f5f5f5]";
     textColor = "text-text-tertiary";
   }
 
