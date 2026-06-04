@@ -14,9 +14,10 @@ interface IProps {
   onValueChange?: (value: string) => void;
   options?: TSelectOption[];
   value?: string;
+  placeholder?: string;
 }
 
-export function Select({ defaultValue, value, options, onValueChange, container, id }: IProps) {
+export function Select({ defaultValue, value, options, onValueChange, container, id, placeholder }: IProps) {
   const handleValueChange = (value: string) => {
     onValueChange?.(value);
   };
@@ -24,7 +25,7 @@ export function Select({ defaultValue, value, options, onValueChange, container,
   return (
     <BaseSelect.Root defaultValue={defaultValue} onValueChange={handleValueChange} value={value} id={id}>
       <BaseSelect.Trigger className="flex items-center justify-between gap-1 px-1 h-7.5 rounded-sm text-sm text-text-primary m-0 select-none cursor-default border border-transparent active:bg-[#f5f5f5] data-popup-open:bg-[#f5f5f5] data-highlighted:outline-[#005eeb]">
-        <BaseSelect.Value />
+        <BaseSelect.Value placeholder={placeholder || "Select an option..."} />
         <BaseSelect.Icon className="flex">
           <ChevronsUpDown height="12" width="12" />
         </BaseSelect.Icon>
