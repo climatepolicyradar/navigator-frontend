@@ -45,7 +45,7 @@ export const SearchDropdown = ({ show = false, term, handleSearchClick, largeSpa
   };
 
   const anchorClasses = (last: boolean) =>
-    `flex flex-wrap items-center cursor-pointer py-2 px-4 block text-cpr-dark hover:no-underline hover:bg-gray-200 focus:bg-gray-200 ${
+    `flex flex-wrap items-center cursor-pointer py-2 px-4 block text-[#071e4a] hover:no-underline hover:bg-gray-200 focus:bg-gray-200 ${
       last ? "rounded-b-lg" : ""
     }`;
 
@@ -83,7 +83,7 @@ export const SearchDropdown = ({ show = false, term, handleSearchClick, largeSpa
 
   return (
     <div
-      className={`search-dropdown absolute bg-gray-50 text-cpr-dark border-t-transparent border border-gray-300 w-full rounded-b-lg max-h-[300px] overflow-y-auto z-10 shadow-inner ${
+      className={`search-dropdown absolute bg-[#f9fafb] text-[#071e4a] border-t-transparent border border-[#d1d5db] w-full rounded-b-lg max-h-[300px] overflow-y-auto z-10 shadow-inner ${
         largeSpacing ? "search-dropdown_large" : ""
       }`}
     >

@@ -66,7 +66,7 @@ export const RecentFamiliesCategory = ({
     onAccordionClick?.();
   };
 
-  const accordionIconClasses = joinTailwindClasses("text-text-brand-darker", isExpanded && "rotate-180");
+  const accordionIconClasses = joinTailwindClasses("text-[#002ca3]", isExpanded && "rotate-180");
 
   const viewAllUrlQuery = {
     [QUERY_PARAMS.country]: geography.slug,
@@ -82,7 +82,7 @@ export const RecentFamiliesCategory = ({
     placeholder = (
       <p className="mt-4 mb-12 text-text-primary">
         Visit the{" "}
-        <PageLink external href="https://www.climatecasechart.com/" className="text-brand underline">
+        <PageLink external href="https://www.climatecasechart.com/" className="text-[#0038a9] underline">
           Climate Litigation Database
         </PageLink>{" "}
         to see litigation documents.
@@ -125,7 +125,7 @@ export const RecentFamiliesCategory = ({
                       pathname: "/search",
                       query: { ...viewAllUrlQuery },
                     }}
-                    className="min-w-16 max-w-25 flex-1 flex justify-center items-center bg-surface-brand-darker/8 text-text-brand-darker font-semibold leading-tight"
+                    className="min-w-16 max-w-25 flex-1 flex justify-center items-center bg-[#002ca3]/8 text-[#002ca3] font-semibold leading-tight"
                     data-ph-capture-attribute-link-purpose="all-recents"
                     data-ph-capture-attribute-category={id}
                   >

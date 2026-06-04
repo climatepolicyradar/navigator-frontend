@@ -19,7 +19,7 @@ export const ConceptLink = ({ concept, label, onClick, triggerClasses = "", chil
 
   const allTriggerClasses = joinTailwindClasses(
     "inline underline underline-offset-4",
-    isOpen ? "decoration-gray-500" : "decoration-gray-300 hover:decoration-gray-500",
+    isOpen ? "decoration-[#6b7280]" : "decoration-[#d1d5db] hover:decoration-[#6b7280]",
     onClick ? "" : "!cursor-help",
     triggerClasses
   );

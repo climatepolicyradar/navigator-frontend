@@ -66,7 +66,7 @@ export function PublishedDateFilterSection({ value, onChange }: TProps) {
             type="radio"
             checked={selectedPreset === preset.value}
             onChange={() => applyPresetDateRange(preset.value)}
-            className="h-4 w-4 shrink-0 cursor-pointer appearance-none rounded-full border border-gray-300 bg-white checked:border-4 checked:border-inky-black"
+            className="h-4 w-4 shrink-0 cursor-pointer appearance-none rounded-full border border-[#d1d5db] bg-white checked:border-4 checked:border-inky-black"
           />
           <span>{preset.label}</span>
         </label>
@@ -84,7 +84,7 @@ export function PublishedDateFilterSection({ value, onChange }: TProps) {
             value={startYearInput}
             onChange={(event) => setStartYearInput(event.target.value)}
             onBlur={applyCustomDateRange}
-            className="rounded border border-gray-300 bg-white px-2 py-1.5 text-sm text-inky-black"
+            className="rounded border border-[#d1d5db] bg-white px-2 py-1.5 text-sm text-inky-black"
           />
         </div>
         <div className="flex flex-col gap-1">
@@ -96,7 +96,7 @@ export function PublishedDateFilterSection({ value, onChange }: TProps) {
             value={endYearInput}
             onChange={(event) => setEndYearInput(event.target.value)}
             onBlur={applyCustomDateRange}
-            className="rounded border border-gray-300 bg-white px-2 py-1.5 text-sm text-inky-black"
+            className="rounded border border-[#d1d5db] bg-white px-2 py-1.5 text-sm text-inky-black"
           />
         </div>
       </div>

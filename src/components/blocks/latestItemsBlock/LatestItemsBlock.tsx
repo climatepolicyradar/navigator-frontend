@@ -8,8 +8,8 @@ interface IProps {
 
 export const LatestItemsBlock = ({ latestItems }: IProps) => {
   return (
-    <aside aria-labelledby="latest" className="bg-surface-heavy p-5 flex flex-col space-y-4 text-text-primary h-full">
-      <h2 id="latest" className="font-bold border-b border-border-semi-transparent pb-4">
+    <aside aria-labelledby="latest" className="bg-[#e5e5e5] p-5 flex flex-col space-y-4 text-text-primary h-full">
+      <h2 id="latest" className="font-bold border-b border-[#0000001a] pb-4">
         Latest
       </h2>
 
@@ -17,7 +17,7 @@ export const LatestItemsBlock = ({ latestItems }: IProps) => {
         {latestItems.map((item) => {
           const [year, day, month] = formatDate(item.date);
           return (
-            <li key={item.url} className="border-b border-border-semi-transparent pb-4">
+            <li key={item.url} className="border-b border-[#0000001a] pb-4">
               <p className="text-sm text-text-tertiary">
                 {day} {month} {year}
               </p>

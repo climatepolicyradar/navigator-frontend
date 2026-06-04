@@ -26,7 +26,7 @@ export const CountryLinks = ({ geographies, countries, showFlag = true }: TCount
           )}
           {!isSystemGeo(geography) && (
             <span className="flex gap-1">
-              <CountryLink countryCode={geography} showFlag={showFlag} className="text-textDark no-underline">
+              <CountryLink countryCode={geography} showFlag={showFlag} className="text-[#202020] no-underline">
                 <span>{countryName}</span>
               </CountryLink>
             </span>

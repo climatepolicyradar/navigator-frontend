@@ -11,7 +11,7 @@ export const FeatureDiscover = () => (
           The Sabin Center for Climate Change Law's Climate Litigation Database is the most comprehensive resource tracking climate change litigation
           worldwide. It contains more than 3,000 cases that address climate change law, policy, and science.
         </p>
-        <LinkWithQuery href="/about" className="text-text-brand-darker text-lg font-bold">
+        <LinkWithQuery href="/about" className="text-text-brand text-lg font-bold">
           Read more →
         </LinkWithQuery>
       </Feature>
@@ -20,7 +20,7 @@ export const FeatureDiscover = () => (
           Subscribe to the Sabin Center Climate Litigation Newsletter for monthly updates. Each issue includes the latest case updates, event
           announcements, and publication highlights.
         </p>
-        <ExternalLink url="https://mailchi.mp/law/sabin-center-litigation-newsletter" className="text-text-brand-darker text-lg font-bold">
+        <ExternalLink url="https://mailchi.mp/law/sabin-center-litigation-newsletter" className="text-text-brand text-lg font-bold">
           Subscribe →
         </ExternalLink>
       </Feature>

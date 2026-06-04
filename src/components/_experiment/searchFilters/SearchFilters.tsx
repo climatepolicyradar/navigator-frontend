@@ -80,11 +80,11 @@ export function SearchFilters({
     <BasePopover.Root open={open} onOpenChange={(value) => onOpenChange?.(value)}>
       <BasePopover.Trigger
         className={joinTailwindClasses(
-          "inline-flex items-center gap-2 rounded-full border border-transparent-regular bg-white px-3 py-2 text-sm font-medium text-gray-700 shadow-sm hover:bg-neutral-100 transition-colors focus:outline-none focus:ring-2 focus:ring-blue-200 focus:border-blue-500",
+          "inline-flex items-center gap-2 rounded-full border border-transparent-regular bg-white px-3 py-2 text-sm font-medium text-[#374151] shadow-sm hover:bg-neutral-100 transition-colors focus:outline-none focus:ring-2 focus:ring-blue-200 focus:border-blue-500",
           open ? "bg-inky-black! text-white!" : ""
         )}
       >
-        <ListFilter className="text-neutral-400 h-4 w-4" />
+        <ListFilter className="text-[#a3a3a3] h-4 w-4" />
         Filters
       </BasePopover.Trigger>
 
@@ -92,7 +92,7 @@ export function SearchFilters({
         <BasePopover.Positioner positionMethod="fixed" sideOffset={8} side="bottom" align="start" className="z-50">
           <BasePopover.Popup className="w-160 rounded-xl border border-transparent-regular bg-white shadow-xl focus-visible:outline-none">
             <div className="">
-              {!availableFilters.length && <p className="text-sm text-gray-500 p-2">No filter options found, please refresh the page.</p>}
+              {!availableFilters.length && <p className="text-sm text-[#6b7280] p-2">No filter options found, please refresh the page.</p>}
               {availableFilters.length > 0 && (
                 <div className="flex gap-2">
                   <div className="basis-60 shrink-0 p-2 border-r border-transparent-regular flex flex-col gap-2">

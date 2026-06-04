@@ -191,7 +191,7 @@ function LabelPicker({ value, onChange, placeholder = "Search...", autoFocus = f
           setIsOpen(true);
           setTimeout(() => inputRef.current?.focus(), 0);
         }}
-        className="text-left inline-flex items-center gap-1 rounded bg-gray-100 text-gray-700 px-2 py-2 text-xs font-medium hover:bg-red-100 transition-colors"
+        className="text-left inline-flex items-center gap-1 rounded bg-[#f3f4f6] text-[#374151] px-2 py-2 text-xs font-medium hover:bg-red-100 transition-colors"
       >
         {value}
         <X className="h-3 w-3" />
@@ -215,7 +215,7 @@ function LabelPicker({ value, onChange, placeholder = "Search...", autoFocus = f
         placeholder={placeholder}
         autoFocus={autoFocus}
         className={joinTailwindClasses(
-          "w-full rounded border border-gray-300 bg-white px-2 py-1 text-sm text-gray-800",
+          "w-full rounded border border-[#d1d5db] bg-white px-2 py-1 text-sm text-[#1d2939]",
           "placeholder:text-gray-400",
           "focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-200"
         )}
@@ -223,7 +223,7 @@ function LabelPicker({ value, onChange, placeholder = "Search...", autoFocus = f
       />
       {isLoading && (
         <div className="absolute right-2 top-1.5">
-          <div className="h-4 w-4 animate-spin rounded-full border-2 border-gray-300 border-t-blue-500" />
+          <div className="h-4 w-4 animate-spin rounded-full border-2 border-[#d1d5db] border-t-blue-500" />
         </div>
       )}
       {isOpen && results.length > 0 && (
@@ -239,7 +239,7 @@ function LabelPicker({ value, onChange, placeholder = "Search...", autoFocus = f
                   onMouseEnter={() => setActiveIndex(idx)}
                   className={joinTailwindClasses(
                     "px-3 py-1.5 text-sm cursor-pointer",
-                    idx === navIndex ? "bg-blue-50 text-blue-800" : "text-gray-700 hover:bg-gray-50"
+                    idx === navIndex ? "bg-blue-50 text-blue-800" : "text-[#374151] hover:bg-[#f9fafb]"
                   )}
                 >
                   <span className="font-medium">{label.value}</span>
@@ -275,7 +275,7 @@ function OperatorSelect({ value, onChange }: { value: "contains" | "not_contains
       value={value}
       onChange={(e) => onChange(e.target.value as "contains" | "not_contains")}
       className={joinTailwindClasses(
-        "rounded border border-gray-300 bg-white px-2 py-1 text-sm font-medium text-gray-700",
+        "rounded border border-[#d1d5db] bg-white px-2 py-1 text-sm font-medium text-[#374151]",
         "focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-200",
         "cursor-pointer"
       )}
@@ -301,7 +301,7 @@ function PublishedDateOperatorSelect({
       value={value}
       onChange={(e) => onChange(e.target.value as "eq" | "not_eq" | "lt" | "lte" | "gt" | "gte")}
       className={joinTailwindClasses(
-        "rounded border border-gray-300 bg-white px-2 py-1 text-sm font-medium text-gray-700",
+        "rounded border border-[#d1d5db] bg-white px-2 py-1 text-sm font-medium text-[#374151]",
         "focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-200",
         "cursor-pointer"
       )}
@@ -347,9 +347,9 @@ function RuleRow({ rule, onUpdate, onDelete, isOnly }: RuleRowProps) {
   if (isPublishedDateRule) {
     return (
       <div className="flex items-center gap-2 group">
-        <span className="rounded border border-gray-300 bg-white px-2 py-1 text-sm font-medium text-gray-700">Published date</span>
+        <span className="rounded border border-[#d1d5db] bg-white px-2 py-1 text-sm font-medium text-[#374151]">Published date</span>
         <PublishedDateOperatorSelect value={rule.op} onChange={(op) => onUpdate({ ...rule, op })} />
-        <span className="rounded border border-gray-300 bg-white px-2 py-1 text-sm text-gray-700 truncate max-w-[360px]">{rule.value}</span>
+        <span className="rounded border border-[#d1d5db] bg-white px-2 py-1 text-sm text-[#374151] truncate max-w-[360px]">{rule.value}</span>
         {!isOnly && (
           <button
             type="button"
@@ -369,7 +369,7 @@ function RuleRow({ rule, onUpdate, onDelete, isOnly }: RuleRowProps) {
       <select
         value={rule.field}
         onChange={() => onUpdate({ field: "labels.value.id", op: "contains", value: "" })}
-        className="rounded border border-gray-300 bg-white px-2 py-1 text-sm font-medium text-gray-700"
+        className="rounded border border-[#d1d5db] bg-white px-2 py-1 text-sm font-medium text-[#374151]"
       >
         <option value="labels.value.id">Label</option>
       </select>
@@ -444,7 +444,7 @@ function GroupRenderer({ group, path, root, onChange, depth, onDeleteGroup }: Gr
       {/* Group header */}
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-2">
-          <span className="text-xs text-gray-500 font-medium">Group</span>
+          <span className="text-xs text-[#6b7280] font-medium">Group</span>
           <ConnectorPill value={group.op} onChange={handleChangeOp} />
         </div>
         {onDeleteGroup && (
@@ -512,7 +512,7 @@ function GroupRenderer({ group, path, root, onChange, depth, onDeleteGroup }: Gr
         <button
           type="button"
           onClick={handleAddRule}
-          className="inline-flex items-center gap-1 rounded-md border border-dashed border-gray-300 px-2 py-1 text-xs text-gray-500 hover:border-gray-400 hover:text-gray-700 hover:bg-white transition-colors"
+          className="inline-flex items-center gap-1 rounded-md border border-dashed border-[#d1d5db] px-2 py-1 text-xs text-[#6b7280] hover:border-gray-400 hover:text-[#374151] hover:bg-white transition-colors"
         >
           <Plus className="h-3 w-3" />
           Rule
@@ -520,7 +520,7 @@ function GroupRenderer({ group, path, root, onChange, depth, onDeleteGroup }: Gr
         <button
           type="button"
           onClick={handleAddGroup}
-          className="inline-flex items-center gap-1 rounded-md border border-dashed border-gray-300 px-2 py-1 text-xs text-gray-500 hover:border-gray-400 hover:text-gray-700 hover:bg-white transition-colors"
+          className="inline-flex items-center gap-1 rounded-md border border-dashed border-[#d1d5db] px-2 py-1 text-xs text-[#6b7280] hover:border-gray-400 hover:text-[#374151] hover:bg-white transition-colors"
         >
           <Plus className="h-3 w-3" />
           Group
@@ -544,9 +544,9 @@ export function AdvancedFilters({ filters, setFilters, open, onOpenChange }: TPr
         <BaseDialog.Backdrop className="fixed inset-0 min-h-dvh bg-inky-black opacity-20 transition-all duration-150 data-ending-style:opacity-0 data-starting-style:opacity-0 dark:opacity-70 supports-[-webkit-touch-callout:none]:absolute" />
         <BaseDialog.Popup className="w-3/4 max-w-4xl fixed top-1/5 left-1/2 -translate-x-1/2 rounded-xl border border-transparent-regular bg-white shadow-2xl focus-visible:outline-none  transition-all duration-150 data-ending-style:scale-90 data-ending-style:opacity-0 ">
           {/* Header */}
-          <div className="flex items-center justify-between border-b border-gray-100 px-4 py-3">
+          <div className="flex items-center justify-between border-b border-[#f3f4f6] px-4 py-3">
             <h3 className="text-sm font-semibold text-gray-900">Advanced Filters</h3>
-            <BaseDialog.Close className="rounded p-1 text-gray-400 hover:text-gray-600 hover:bg-gray-100 transition-colors" aria-label="Close">
+            <BaseDialog.Close className="rounded p-1 text-gray-400 hover:text-gray-600 hover:bg-[#f3f4f6] transition-colors" aria-label="Close">
               <X className="h-4 w-4" />
             </BaseDialog.Close>
           </div>
@@ -557,8 +557,8 @@ export function AdvancedFilters({ filters, setFilters, open, onOpenChange }: TPr
           </div>
 
           {/* Footer */}
-          <div className="flex items-center justify-between border-t border-gray-100 px-4 py-3">
-            <button type="button" onClick={() => setFilters(createGroup())} className="text-xs text-gray-500 hover:text-gray-700 transition-colors">
+          <div className="flex items-center justify-between border-t border-[#f3f4f6] px-4 py-3">
+            <button type="button" onClick={() => setFilters(createGroup())} className="text-xs text-[#6b7280] hover:text-[#374151] transition-colors">
               Reset all
             </button>
             <div className="text-[10px] text-gray-400">

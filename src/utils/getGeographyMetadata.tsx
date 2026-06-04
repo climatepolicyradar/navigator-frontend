@@ -26,7 +26,7 @@ export const getGeographyMetaData = (stats: NonNullable<GeographyV2["statistics"
         <Popover
           openOnHover
           trigger={
-            <button className="underline underline-offset-4 decoration-gray-300 hover:decoration-gray-500 cursor-help!">
+            <button className="underline underline-offset-4 decoration-[#d1d5db] hover:decoration-[#6b7280] cursor-help!">
               {stats.climate_risk_index}
             </button>
           }
@@ -71,7 +71,7 @@ export const getGeographyMetaData = (stats: NonNullable<GeographyV2["statistics"
         <Popover
           openOnHover
           trigger={
-            <button className="underline underline-offset-4 decoration-gray-300 hover:decoration-gray-500 cursor-help!">
+            <button className="underline underline-offset-4 decoration-[#d1d5db] hover:decoration-[#6b7280] cursor-help!">
               {stats.global_emissions_percent + "%"}
             </button>
           }

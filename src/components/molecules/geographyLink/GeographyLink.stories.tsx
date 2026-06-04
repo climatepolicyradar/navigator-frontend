@@ -8,7 +8,7 @@ const meta = {
   parameters: { layout: "centered" },
   argTypes: {},
   render: (props) => (
-    <div className="text-sm text-gray-700">
+    <div className="text-sm text-[#374151]">
       <GeographyLink {...props} />
     </div>
   ),

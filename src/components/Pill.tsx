@@ -22,7 +22,7 @@ const Pill = ({ children, onClick, extraClasses = "" }: IProps) => {
   return (
     <>
       <button
-        className={`text-xs font-medium py-1 px-3 text-inputSelected rounded-full flex gap-1 text-left items-center transition bg-inputSelected/[.07] hover:bg-inputSelected/10 active:bg-inputSelected/20 ${extraClasses}`}
+        className={`text-xs font-medium py-1 px-3 text-[#005eeb] rounded-full flex gap-1 text-left items-center transition bg-[#005eeb]/[.07] hover:bg-[#005eeb]/10 active:bg-[#005eeb]/20 ${extraClasses}`}
         onClick={handleClick}
         data-tooltip-id="tooltip"
         data-tooltip-content="Remove filter"

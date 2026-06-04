@@ -43,7 +43,7 @@ export const EventsBlock = ({ families }: IProps) => {
           <button
             type="button"
             onClick={toggleShowAll}
-            className="p-2 mt-3 hover:bg-gray-50 active:bg-gray-100 border border-gray-300 rounded-md text-sm text-gray-700 leading-4 font-medium"
+            className="p-2 mt-3 hover:bg-[#f9fafb] active:bg-[#f3f4f6] border border-[#d1d5db] rounded-md text-sm text-[#374151] leading-4 font-medium"
           >
             {showAllEntries ? "View less" : "View more"}
           </button>

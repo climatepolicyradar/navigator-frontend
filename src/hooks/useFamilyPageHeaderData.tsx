@@ -107,7 +107,7 @@ export const useFamilyPageHeaderData = ({ countries, family, subdivisions }: IPr
           &ensp;
           <button
             role="button"
-            className="underline underline-offset-4 decoration-gray-300 hover:decoration-gray-500"
+            className="underline underline-offset-4 decoration-[#d1d5db] hover:decoration-[#6b7280]"
             onClick={scrollToBlock("metadata")}
           >
             +{hiddenGeographiesCount} {pluralise(hiddenGeographiesCount, ["other", "others"])}
@@ -148,7 +148,7 @@ export const useFamilyPageHeaderData = ({ countries, family, subdivisions }: IPr
                 <button
                   key={collection.import_id}
                   role="button"
-                  className="underline underline-offset-4 decoration-gray-300 hover:decoration-gray-500"
+                  className="underline underline-offset-4 decoration-[#d1d5db] hover:decoration-[#6b7280]"
                   onClick={scrollToBlock("collections")}
                 >
                   {collection.title}

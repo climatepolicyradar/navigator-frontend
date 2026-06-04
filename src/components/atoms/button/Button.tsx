@@ -31,31 +31,31 @@ export const getButtonClasses = ({
 
   /* Colour */
 
-  let bgColor = color === "brand" ? "bg-surface-brand hocus:bg-surface-brand-dark" : "bg-surface-mono hocus:bg-surface-mono-dark";
-  let textColor = "text-text-light";
+  let bgColor = color === "brand" ? "bg-[#005eeb] hocus:bg-[#0049b8]" : "bg-bg-inverse";
+  let textColor = "text-text-inverse";
 
   if (variant)
     switch (variant) {
       case "faded":
-        bgColor = color === "brand" ? "bg-surface-brand/16 hocus:bg-surface-brand/32" : "bg-surface-mono/8 hocus:bg-surface-mono/16";
-        textColor = color === "brand" ? "text-cpr-blue" : "text-text-primary";
+        bgColor = color === "brand" ? "bg-[#005eeb]/16 hocus:bg-[#005eeb]/32" : "bg-bg-inverse/8 hocus:bg-bg-inverse/16";
+        textColor = color === "brand" ? "text-[#005eeb]" : "text-text-primary";
         break;
       case "outlined":
       case "ghost":
-        bgColor = "bg-transparent hover:bg-surface-ui";
-        textColor = color === "brand" ? "text-cpr-blue" : "text-text-primary";
+        bgColor = "bg-transparent hover:bg-[#f5f5f5]";
+        textColor = color === "brand" ? "text-[#005eeb]" : "text-text-primary";
         break;
     }
 
   if (disabled) {
-    bgColor = "bg-surface-ui";
+    bgColor = "bg-[#f5f5f5]";
     textColor = "text-text-tertiary";
   }
 
   /* Shape */
 
   const border = variant === "outlined" ? "border border-border-light" : "";
-  const outlineColor = color === "brand" ? "outline-surface-brand-dark" : "outline-surface-mono-dark";
+  const outlineColor = color === "brand" ? "outline-[#0049b8]" : "outline-inky-black";
   const roundness = rounded ? "rounded-full" : "rounded-md";
 
   /* Size */

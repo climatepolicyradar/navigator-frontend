@@ -42,12 +42,12 @@ export const FamilyBlock = ({ family }: IProps) => {
     <Section id={`section-${family.slug}`} wide>
       <div className="col-start-1 -col-end-1">
         <PageLink keepQuery href={`/document/${family.slug}`}>
-          <h2 className="text-2xl text-gray-950 font-heavy leading-tight hover:underline underline-offset-6">
+          <h2 className="text-2xl text-[#030712] font-heavy leading-tight hover:underline underline-offset-6">
             {family.title}&nbsp;
-            <span className="text-brand">{ARROW_UP_RIGHT}</span>
+            <span className="text-[#0038a9]">{ARROW_UP_RIGHT}</span>
           </h2>
         </PageLink>
-        <div className="mt-2 mb-3 flex gap-4 flex-wrap text-sm text-gray-500 leading-none">
+        <div className="mt-2 mb-3 flex gap-4 flex-wrap text-sm text-[#6b7280] leading-none">
           {caseNumbers && <span>{caseNumbers}</span>}
           {courts && <span>{courts}</span>}
           <span>
@@ -64,7 +64,7 @@ export const FamilyBlock = ({ family }: IProps) => {
           <button
             type="button"
             onClick={toggleShowAll}
-            className="p-2 mt-2 hover:bg-gray-50 active:bg-gray-100 border border-gray-300 rounded-md text-sm text-gray-700 leading-4 font-medium"
+            className="p-2 mt-2 hover:bg-[#f9fafb] active:bg-[#f3f4f6] border border-[#d1d5db] rounded-md text-sm text-[#374151] leading-4 font-medium"
           >
             {showAllEntries ? "Show less" : "Show all"}
           </button>

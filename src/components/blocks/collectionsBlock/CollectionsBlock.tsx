@@ -17,13 +17,13 @@ export const CollectionsBlock = ({ collections }: IProps) => {
       <div className="col-start-1 -col-end-1 flex flex-col gap-4">
         {collections.map((collection) => (
           <div key={collection.import_id}>
-            <h3 className="text-gray-950 font-medium">{collection.title}</h3>
+            <h3 className="text-[#030712] font-medium">{collection.title}</h3>
             <ul className="list-disc pl-4">
               {collection.families.map((family) => (
                 <li key={family.import_id}>
                   <PageLink
                     href={`/document/${family.slug}`}
-                    className="text-gray-700 underline underline-offset-4 decoration-gray-300 hover:decoration-gray-500"
+                    className="text-[#374151] underline underline-offset-4 decoration-[#d1d5db] hover:decoration-[#6b7280]"
                   >
                     {family.title}
                   </PageLink>

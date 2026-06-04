@@ -205,7 +205,7 @@ export const ConceptsDocumentViewer = ({
           {/* Preview */}
           <div
             id="document-preview"
-            className={`flex-1 relative order-last border-t border-t-gray-200 h-[600px] basis-full lg:basis-auto lg:border-t-0 lg:order-none lg:h-full md:border-gray-300 ${hasConcepts ? "lg:border-x" : "lg:border-r"}`}
+            className={`flex-1 relative order-last border-t border-t-gray-200 h-[600px] basis-full lg:basis-auto lg:border-t-0 lg:order-none lg:h-full md:border-[#d1d5db] ${hasConcepts ? "lg:border-x" : "lg:border-r"}`}
           >
             {canPreview && (
               <EmbeddedPDF
@@ -236,13 +236,13 @@ export const ConceptsDocumentViewer = ({
                   id="document-search"
                   role="region"
                   aria-label="Passage matches"
-                  className="flex flex-col gap-2 md:pl-4 pb-4 border-b border-gray-300"
+                  className="flex flex-col gap-2 md:pl-4 pb-4 border-b border-[#d1d5db]"
                 >
                   <p className="text-text-primary">Passage matches</p>
                   <div className="relative z-10 flex gap-4">
                     <div className="relative">
                       <button
-                        className={`flex items-center gap-1 px-2 py-1 -mt-1 -ml-2 rounded-md text-sm text-text-primary font-normal ${showSearchOptions ? "bg-surface-ui" : ""}`}
+                        className={`flex items-center gap-1 px-2 py-1 -mt-1 -ml-2 rounded-md text-sm text-text-primary font-normal ${showSearchOptions ? "bg-[#f5f5f5]" : ""}`}
                         onClick={() => setShowSearchOptions(!showSearchOptions)}
                       >
                         <span className="font-bold">Search:</span>{" "}
@@ -264,7 +264,7 @@ export const ConceptsDocumentViewer = ({
                     </div>
                     <div className="relative">
                       <button
-                        className={`flex items-center gap-1 px-2 py-1 -mt-1 -ml-2 rounded-md text-sm text-text-primary font-normal ${showSortOptions ? "bg-surface-ui" : ""}`}
+                        className={`flex items-center gap-1 px-2 py-1 -mt-1 -ml-2 rounded-md text-sm text-text-primary font-normal ${showSortOptions ? "bg-[#f5f5f5]" : ""}`}
                         onClick={() => setShowSortOptions(!showSortOptions)}
                       >
                         <span className="font-bold">Order:</span>{" "}
@@ -312,7 +312,7 @@ export const ConceptsDocumentViewer = ({
                 {hasQuery && state.totalNoOfMatches > 0 && (
                   <div
                     id="document-passage-matches"
-                    className="relative overflow-y-scroll scrollbar-thumb-gray-200 scrollbar-thin scrollbar-track-white scrollbar-thumb-rounded-full hover:scrollbar-thumb-gray-500 md:pl-4"
+                    className="relative overflow-y-scroll scrollbar-thumb-gray-200 scrollbar-thin scrollbar-track-white scrollbar-thumb-rounded-full hover:scrollbar-thumb-[#6b7280] md:pl-4"
                   >
                     {/* Removing active passage index for now as we don't use indexes any more //activeIndex={pageNumber ?? startingPassage} */}
                     <PassageMatches passages={state.passageMatches} onClick={handlePassageClick} />

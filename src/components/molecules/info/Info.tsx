@@ -14,7 +14,7 @@ interface IProps {
 export const Info = ({ className, description, link, title }: IProps) => {
   const [isOpen, setIsOpen] = useState(false);
 
-  const infoClasses = joinTailwindClasses("!cursor-help", isOpen ? "text-text-brand" : "text-text-secondary", className);
+  const infoClasses = joinTailwindClasses("!cursor-help", isOpen ? "text-[#0038a9]" : "text-text-secondary", className);
 
   return (
     <Popover

@@ -109,7 +109,7 @@ export function IntelliSearch({
           </div>
           {isLoadingLabels && (
             <div className="absolute right-4 top-4">
-              <div className="h-5 w-5 animate-spin rounded-full border-2 border-gray-300 border-t-blue-500" />
+              <div className="h-5 w-5 animate-spin rounded-full border-2 border-[#d1d5db] border-t-blue-500" />
             </div>
           )}
         </div>
@@ -158,7 +158,7 @@ export function IntelliSearch({
                                     __html: buildLabelSuggestionHtml(suggestion.value, suggestion.alternative_labels, searchTerm),
                                   }}
                                 />
-                                <span className={"text-gray-500"}>—</span>
+                                <span className={"text-[#6b7280]"}>—</span>
                                 <span className={joinTailwindClasses("shrink-0 whitespace-nowrap text-neutral-500")}>
                                   {labelTypeLabel(suggestion.type)}
                                 </span>
@@ -172,7 +172,7 @@ export function IntelliSearch({
                   </ScrollArea.Content>
                 </ScrollArea.Viewport>
                 <ScrollArea.Scrollbar className="-mr-1 flex w-6 justify-center py-2">
-                  <ScrollArea.Thumb className="flex w-full justify-center before:block before:h-full before:w-1 before:rounded-sm before:bg-neutral-400 before:content-['']" />
+                  <ScrollArea.Thumb className="flex w-full justify-center before:block before:h-full before:w-1 before:rounded-sm before:bg-[#a3a3a3] before:content-['']" />
                 </ScrollArea.Scrollbar>
               </ScrollArea.Root>
 

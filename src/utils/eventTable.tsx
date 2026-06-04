@@ -44,7 +44,7 @@ const topicsColumnName = (
       openOnHover
       trigger={
         <button type="button">
-          <LucideInfo size={16} className="inline-block align-text-bottom text-gray-500 hover:text-gray-700 cursor-help" />
+          <LucideInfo size={16} className="inline-block align-text-bottom text-[#6b7280] hover:text-[#374151] cursor-help" />
         </button>
       }
       description="This table shows the most frequently mentioned topics in this document. Click to view the document and see the specific passages mentioning each topic highlighted. Accuracy is not 100%."
@@ -141,7 +141,7 @@ const getFamilyDocuments = (family: TFamilyPublic): TEventRowData[] =>
     .filter((document) => ["awaiting_source_file", "published"].includes(document.document_status))
     .map((document) => ({ family, document }));
 
-const linkClasses = "block text-brand underline underline-offset-4 decoration-gray-300 hover:decoration-gray-500";
+const linkClasses = "block text-[#0038a9] underline underline-offset-4 decoration-[#d1d5db] hover:decoration-[#6b7280]";
 
 const getDocumentLink = (document: TFamilyDocumentPublic, hasMatches: boolean, isMainDocument: boolean, isLitigation: boolean): React.ReactNode => {
   const canPreview = hasMatches || (!!document.cdn_object && document.cdn_object.toLowerCase().endsWith(".pdf"));
@@ -169,7 +169,7 @@ const getDocumentLink = (document: TFamilyDocumentPublic, hasMatches: boolean, i
       {document.title} <br />{" "}
       <span className="text-sm">
         (We do not have this document in our database.{" "}
-        <PageLink href="/contact" className="underline hover:text-brand">
+        <PageLink href="/contact" className="underline hover:text-[#0038a9]">
           Contact us
         </PageLink>{" "}
         if you can help us find it)
@@ -290,7 +290,7 @@ export const getEventTableRows = ({
             <button
               type="button"
               role="link"
-              className="p-2 hover:bg-gray-50 active:bg-gray-100 border border-gray-300 rounded-md text-sm text-gray-700 leading-4 font-medium"
+              className="p-2 hover:bg-[#f9fafb] active:bg-[#f3f4f6] border border-[#d1d5db] rounded-md text-sm text-[#374151] leading-4 font-medium"
             >
               + {sortedTopics.length - MAX_TOPICS_PER_DOCUMENT} more
             </button>

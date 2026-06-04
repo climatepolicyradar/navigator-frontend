@@ -21,7 +21,7 @@ const trigger = <Button>Open drawer</Button>;
 
 export const RightSide: TStory = {
   args: {
-    children: <h1 className="text-2xl text-gray-950 font-heavy leading-tight">This is a drawer</h1>,
+    children: <h1 className="text-2xl text-[#030712] font-heavy leading-tight">This is a drawer</h1>,
     trigger,
   },
 };

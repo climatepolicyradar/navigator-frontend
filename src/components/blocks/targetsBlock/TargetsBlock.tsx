@@ -50,12 +50,12 @@ export const TargetsBlock = ({ targets }: IProps) => {
               data-ph-capture-attribute-link-purpose="target"
               data-ph-capture-attribute-target={target.ID}
             >
-              <h3 className="text-gray-950 font-medium" dangerouslySetInnerHTML={{ __html: target.Description }} />
+              <h3 className="text-[#030712] font-medium" dangerouslySetInnerHTML={{ __html: target.Description }} />
               <span className="block text-sm">{getMetadata(target).join(`, `)}</span>
               {showSourceLink(target) && (
                 <span className="block text-sm">
                   Source:{" "}
-                  <span className="underline underline-offset-4 decoration-gray-300 group-hover:decoration-gray-500">{target["family-name"]}</span>
+                  <span className="underline underline-offset-4 decoration-[#d1d5db] group-hover:decoration-[#6b7280]">{target["family-name"]}</span>
                 </span>
               )}
             </PageLink>
@@ -65,7 +65,7 @@ export const TargetsBlock = ({ targets }: IProps) => {
           <button
             type="button"
             onClick={toggleShowAll}
-            className="p-2 hover:bg-gray-50 active:bg-gray-100 border border-gray-300 rounded-md text-sm text-gray-700 leading-4 font-medium"
+            className="p-2 hover:bg-[#f9fafb] active:bg-[#f3f4f6] border border-[#d1d5db] rounded-md text-sm text-[#374151] leading-4 font-medium"
           >
             {showAllEntries ? "View less" : "View more"}
           </button>

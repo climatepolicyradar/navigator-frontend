@@ -19,7 +19,7 @@ const Radio = ({ checked, onChange, onClick, name }: IProps) => {
 export const InputRadio = ({ label, checked, onChange, onClick, name, additionalInfo, learnMoreUrl, learnMoreExternal, className }: IProps) => {
   return (
     <>
-      <label className={`flex gap-2 cursor-pointer ${checked ? "font-medium text-textDark" : ""} ${className}`}>
+      <label className={`flex gap-2 cursor-pointer ${checked ? "font-medium text-[#202020]" : ""} ${className}`}>
         <Radio checked={checked} onChange={onChange} onClick={onClick} name={name} />
         <span className="flex items-center">{label}</span>
       </label>

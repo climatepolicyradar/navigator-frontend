@@ -8,7 +8,7 @@ interface IProps {
 }
 
 // Dev note: because we have dynamic content that we may not have control over, please update the style.css with the corresponding html heading tags
-const coreClasses = "text-textDark font-medium";
+const coreClasses = "text-[#202020] font-medium";
 const h1Classes = "text-4xl";
 const h2Classes = "text-2xl mb-5";
 const h3Classes = "text-xl mb-5";

@@ -11,7 +11,7 @@ type TProps = {
 
 const sharedPaginationButtonClasses = "h-8 min-w-8 px-1 border border-transparent-regular rounded transition hover:bg-inky-black hover:text-white";
 const prevNextButtonClasses =
-  "px-2.5 flex items-center disabled:cursor-not-allowed! disabled:text-neutral-400 disabled:hover:bg-transparent disabled:hover:text-neutral-400";
+  "px-2.5 flex items-center disabled:cursor-not-allowed! disabled:text-[#a3a3a3] disabled:hover:bg-transparent disabled:hover:text-[#a3a3a3]";
 
 export function Pagination({ currentPage, totalPages, onPageChange }: TProps) {
   const handlePageChange = (page: number) => {

@@ -47,7 +47,7 @@ export const Accordion = ({
           <Heading>{title}</Heading>
           {headContent}
         </div>
-        <span className="text-textDark opacity-40 group-hover:opacity-100">{isOpen ? <ChevronUp /> : <ChevronDown />}</span>
+        <span className="text-[#202020] opacity-40 group-hover:opacity-100">{isOpen ? <ChevronUp /> : <ChevronDown />}</span>
       </button>
       <AnimatePresence initial={false}>
         {isOpen && (
@@ -66,7 +66,7 @@ export const Accordion = ({
               className={`relative max-h-[${fixedHeight}] ${
                 overflowOverride
                   ? "overflow-visible"
-                  : "overflow-y-scroll scrollbar-thumb-gray-200 scrollbar-thin scrollbar-track-white scrollbar-thumb-rounded-full hover:scrollbar-thumb-gray-500"
+                  : "overflow-y-scroll scrollbar-thumb-gray-200 scrollbar-thin scrollbar-track-white scrollbar-thumb-rounded-full hover:scrollbar-thumb-[#6b7280]"
               } `}
             >
               <>

@@ -29,7 +29,7 @@ const SearchResultList = ({ category, families, activeFamilyIndex, onClick, offs
       <>
         <p className="my-4 md:mt-0">
           Visit the{" "}
-          <PageLink external href="https://www.climatecasechart.com/" className="text-brand underline">
+          <PageLink external href="https://www.climatecasechart.com/" className="text-[#0038a9] underline">
             Climate Litigation Database
           </PageLink>{" "}
           to see litigation documents.
