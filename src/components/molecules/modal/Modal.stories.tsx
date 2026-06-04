@@ -48,7 +48,7 @@ export const DownloadCSV: TStory = {
         <p>
           Please read our <LinkWithQuery href="/terms-of-use">terms of use</LinkWithQuery>, including any specific terms relevant to commercial use.
           Please contact{" "}
-          <ExternalLink url="mailto:partners@climatepolicyradar.org" className="text-text-[#0038a9] underline">
+          <ExternalLink url="mailto:partners@climatepolicyradar.org" className="text-[#0038a9] underline">
             partners@climatepolicyradar.org
           </ExternalLink>{" "}
           with any questions. Note that the actual number of entries returned may be 1 or 2 below the total indicated on the search results page.

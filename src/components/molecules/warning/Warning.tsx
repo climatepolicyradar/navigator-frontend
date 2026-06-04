@@ -49,7 +49,7 @@ export const Warning = ({ className, variant = "info", hideableId, children }: T
   return (
     <div className={joinTailwindClasses(baseClasses, bgColor, textColor, spacing, className)}>
       {hideableId && (
-        <button onClick={onHideClick} className="text-text-[#0038a9] absolute top-4 right-4 hover:opacity-80 transition-opacity">
+        <button onClick={onHideClick} className="text-[#0038a9] absolute top-4 right-4 hover:opacity-80 transition-opacity">
           <X size="16" />
         </button>
       )}{" "}

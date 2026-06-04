@@ -118,7 +118,7 @@ export const ConceptPicker = ({ containerClasses = "", startingSort = "Grouped",
       {/* HEADER */}
       {showKnowledgeGraphTutorial && <TutorialCard name="knowledgeGraph" card={TUTORIALS.knowledgeGraph.card} />}
       <span className="text-base font-semibold text-text-primary">
-        <TextSearch size={20} className="inline mr-2 text-text-[#0038a9] align-text-bottom" />
+        <TextSearch size={20} className="inline mr-2 text-[#0038a9] align-text-bottom" />
         {title}
         {!showKnowledgeGraphTutorial && showBadge && <Badge className="ml-2">Beta</Badge>}
       </span>

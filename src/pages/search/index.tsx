@@ -747,7 +747,7 @@ const Search = ({ familyConceptsData, features, theme, themeConfig, topicsData }
                               )}
                               {showSearchOnboarding(router.query) && (
                                 <Warning variant="info" hideableId="search-onboarding-info">
-                                  <p className="font-semibold text-text-[#0038a9]">Get better results</p>
+                                  <p className="font-semibold text-[#0038a9]">Get better results</p>
                                   <p>
                                     {getAppText("searchOnboarding")}
                                     {features.knowledgeGraph && (

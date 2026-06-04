@@ -31,13 +31,13 @@ export const getButtonClasses = ({
 
   /* Colour */
 
-  let bgColor = color === "brand" ? "bg-[#005eeb] hocus:bg-[#0049b8]" : "bg-surface-mono hocus:bg-surface-mono-dark";
-  let textColor = "text-text-light";
+  let bgColor = color === "brand" ? "bg-[#005eeb] hocus:bg-[#0049b8]" : "bg-bg-inverse";
+  let textColor = "text-text-inverse";
 
   if (variant)
     switch (variant) {
       case "faded":
-        bgColor = color === "brand" ? "bg-[#005eeb]/16 hocus:bg-[#005eeb]/32" : "bg-surface-mono/8 hocus:bg-surface-mono/16";
+        bgColor = color === "brand" ? "bg-[#005eeb]/16 hocus:bg-[#005eeb]/32" : "bg-bg-inverse/8 hocus:bg-bg-inverse/16";
         textColor = color === "brand" ? "text-[#005eeb]" : "text-text-primary";
         break;
       case "outlined":

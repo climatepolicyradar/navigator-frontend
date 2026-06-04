@@ -43,7 +43,7 @@ const SearchResult = ({ family, active, onClick, position, positionOffset }: IPr
           <button
             type="button"
             onClick={onClick}
-            className="text-text-[#0038a9] flex items-center"
+            className="text-[#0038a9] flex items-center"
             aria-label={matchesText}
             data-analytics="search-result-matches-button"
             data-slug={family_slug}

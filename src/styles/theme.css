@@ -16,11 +16,6 @@
   --color-forest: #164f4a;
   --color-cardboard: #b7ae8e;
 
-  /* Color / UI / Background */
-  --color-bg-primary: var(--color-white);
-  --color-bg-inverse: var(--color-inky-black);
-  --color-bg-flat: var(--color-neutral-100);
-
   /* Color / UI / Text */
   --color-text-primary: var(--color-inky-black);
   --color-text-secondary: var(--color-neutral-600);
@@ -29,14 +24,19 @@
   --color-text-brand: var(--color-inky-blue);
   --color-text-disabled: #a3a3a3;
 
-  /* Color / UI / Element */
-  --color-elem-icon: var(--color-neutral-500);
-  --color-elem-focus: var(--color-neutral-200);
+  /* Color / UI / Background */
+  --color-bg-primary: var(--color-white);
+  --color-bg-inverse: var(--color-inky-black);
+  --color-bg-flat: var(--color-neutral-100);
 
   /* Color / UI / Border */
   --color-border-normal: #101a2429;
   --color-border-light: #101a241f;
   --color-border-checkbox: #101a2452;
+
+  /* Color / UI / Element */
+  --color-elem-icon: var(--color-neutral-500);
+  --color-elem-focus: var(--color-neutral-200);
 
   /* Font / Weight */
   --font-weight-normal: 400;
