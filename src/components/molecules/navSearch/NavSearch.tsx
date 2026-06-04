@@ -166,7 +166,7 @@ export const NavSearch = () => {
 
       {/* Results */}
       {isFocused && (
-        <div className="absolute top-0 left-0 z-20 right-0 min-h-[56px] outline -outline-offset-1 outline-border-lighter rounded-xl bg-surface-light shadow-lg">
+        <div className="absolute top-0 left-0 z-20 right-0 min-h-[56px] outline -outline-offset-1 outline-[#ececec] rounded-xl bg-surface-light shadow-lg">
           {showResults && (
             <div className="flex flex-col gap-3 p-2 pt-[56px]">
               {/* Geographies */}

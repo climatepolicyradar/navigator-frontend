@@ -31,7 +31,7 @@ export const Input = ({
   const classes = useMemo(() => {
     /* Colour */
 
-    const outlineColor = color === "brand" ? "focus-within:outline-border-brand" : "focus-within:outline-border-mono";
+    const outlineColor = color === "brand" ? "focus-within:outline-[#005eeb]" : "focus-within:outline-border-mono";
 
     /* Size */
 

@@ -59,7 +59,7 @@ export const NavSearchDropdown = ({ contextualSearchName, isEverything, setIsEve
     <div className="h-[40px] overflow-visible">
       <div
         ref={ref}
-        className={`flex flex-col bg-surface-light -outline-offset-1 outline-border-lighter rounded-md ${isOpen ? "p-1 gap-0.5 outline" : ""}`}
+        className={`flex flex-col bg-surface-light -outline-offset-1 outline-[#ececec] rounded-md ${isOpen ? "p-1 gap-0.5 outline" : ""}`}
       >
         {dropdownOptions.map((option, optionIndex) => (
           <button

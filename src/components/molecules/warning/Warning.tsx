@@ -21,7 +21,7 @@ export const Warning = ({ className, variant = "info", hideableId, children }: T
   if (variant)
     switch (variant) {
       case "info":
-        bgColor = "bg-surface-brand/16";
+        bgColor = "bg-[#005eeb]/16";
         textColor = "text-black";
         break;
       case "error":

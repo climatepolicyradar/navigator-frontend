@@ -47,7 +47,7 @@ export const Accordion = ({
           <Heading>{title}</Heading>
           {headContent}
         </div>
-        <span className="text-textDark opacity-40 group-hover:opacity-100">{isOpen ? <ChevronUp /> : <ChevronDown />}</span>
+        <span className="text-[#202020] opacity-40 group-hover:opacity-100">{isOpen ? <ChevronUp /> : <ChevronDown />}</span>
       </button>
       <AnimatePresence initial={false}>
         {isOpen && (

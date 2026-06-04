@@ -18,7 +18,7 @@ export const TutorialBanner = ({ name, banner: { buttonPrimary, buttonSecondary,
   };
 
   return (
-    <div className="flex gap-x-4 gap-y-3 justify-center items-center flex-wrap p-3 bg-surface-brand pointer-events-auto select-none">
+    <div className="flex gap-x-4 gap-y-3 justify-center items-center flex-wrap p-3 bg-[#005eeb] pointer-events-auto select-none">
       <span className="text-sm leading-normal text-text-light">{text}</span>
       <div className="flex gap-2">
         <TutorialButton

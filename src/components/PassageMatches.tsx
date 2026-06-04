@@ -15,7 +15,7 @@ interface IProps {
 
 const COPY_TIMEOUT = 1000;
 
-const PassageMatches = ({ passages, onClick, pageColour = "textDark", position, positionOffset }: IProps) => {
+const PassageMatches = ({ passages, onClick, pageColour = "[#202020]", position, positionOffset }: IProps) => {
   const [hasCopied, setHasCopied] = useState<number | null>(null);
 
   const copyOnClick = (e: React.MouseEvent<HTMLDivElement>, index: number, text: string) => {

@@ -19,7 +19,7 @@ const CheckBox = ({ checked, onChange, name }: IProps) => {
 export const InputCheck = ({ label, checked, onChange, name, additionalInfo, learnMoreUrl, learnMoreExternal, className }: IProps) => {
   return (
     <>
-      <label className={`flex gap-2 cursor-pointer ${checked ? "font-medium text-textDark" : ""} ${className}`}>
+      <label className={`flex gap-2 cursor-pointer ${checked ? "font-medium text-[#202020]" : ""} ${className}`}>
         <CheckBox checked={checked} onChange={onChange} name={name} />
         <span className="flex items-center">{label}</span>
       </label>

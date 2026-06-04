@@ -4,20 +4,20 @@
   [type="text"],
   [type="search"],
   [type="number"] {
-    @apply rounded border-borderNormal text-sm;
+    @apply rounded border-[#dedede] text-sm;
 
     &:hover {
-      @apply border-inputSelected;
+      @apply border-[#005eeb];
     }
 
     &:focus {
-      @apply outline-none outline-transparent ring-offset-0 ring-0 border-inputSelected;
+      @apply outline-none outline-transparent ring-offset-0 ring-0 border-[#005eeb];
     }
   }
 
   [type="checkbox"],
   [type="radio"] {
-    @apply text-inputSelected cursor-pointer;
+    @apply text-[#005eeb] cursor-pointer;
   }
 
   [type="text"],
@@ -66,16 +66,16 @@
   [type="checkbox"]:checked:focus {
     background: none;
     background-image: url("data:image/svg+xml,%3csvg viewBox='0 0 16 16' fill='%23ffffff' xmlns='http://www.w3.org/2000/svg'%3e%3cpath d='M12.207 4.793a1 1 0 010 1.414l-5 5a1 1 0 01-1.414 0l-2-2a1 1 0 011.414-1.414L6.5 9.086l4.293-4.293a1 1 0 011.414 0z'/%3e%3c/svg%3e");
-    @apply bg-inputSelected;
+    @apply bg-[#005eeb];
   }
 
   [type="radio"]:checked,
   [type="radio"]:checked:focus {
     background: none;
-    @apply bg-white border-[8px] border-inputSelected;
+    @apply bg-white border-[8px] border-[#005eeb];
 
     &:hover {
-      @apply border-inputSelected bg-white;
+      @apply border-[#005eeb] bg-white;
     }
   }
 
@@ -105,7 +105,7 @@
   .semi-checked [type="checkbox"]:checked:focus {
     background: none;
     background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16' fill='none'%3e%3cpath d='M3.33331 8H12.6666' stroke='white' stroke-width='2'/%3e%3c/svg%3e");
-    @apply bg-inputSelected;
+    @apply bg-[#005eeb];
   }
 }
 
@@ -121,7 +121,7 @@ html,
 }
 
 body {
-  @apply text-textNormal font-inter;
+  @apply text-[#505050] font-inter;
 }
 
 input[type="text"],
@@ -141,7 +141,7 @@ a,
 
 a.alt,
 .anchor.alt {
-  @apply underline text-textNormal hover:text-blue-800;
+  @apply underline text-[#505050] hover:text-blue-800;
 }
 
 a.button {
@@ -166,7 +166,7 @@ hr {
   @apply my-6;
 }
 .form-row__border {
-  @apply border-b border-cpr-dark py-6;
+  @apply border-b border-[#071e4a] py-6;
 }
 
 select {
@@ -267,7 +267,7 @@ input[type="search"]::-webkit-search-results-decoration {
 
 /* Tooltips styles to override the default */
 .customTooltip {
-  @apply z-50! text-sm! bg-nearBlack! border-nearBlack! rounded-lg! leading-5! max-w-[300px]! opacity-100! pointer-events-auto!;
+  @apply z-50! text-sm! bg-[#101010]! border-[#101010]! rounded-lg! leading-5! max-w-[300px]! opacity-100! pointer-events-auto!;
 }
 .customTooltip:hover {
   visibility: visible !important;
@@ -280,7 +280,7 @@ input[type="search"]::-webkit-search-results-decoration {
   filter: drop-shadow(2px 1px 2px rgba(0, 0, 0, 0.2)) !important;
 }
 .customTooltip.place-top:after {
-  border-top-color: cpr-dark !important;
+  border-top-color: #071e4a !important;
   border-top-style: solid !important;
   border-top-width: 6px !important;
 }
@@ -288,7 +288,7 @@ input[type="search"]::-webkit-search-results-decoration {
   filter: drop-shadow(2px 1px 2px rgba(0, 0, 0, 0.2)) !important;
 }
 .customTooltip.place-left:after {
-  border-left-color: cpr-dark !important;
+  border-left-color: #071e4a !important;
   border-left-style: solid !important;
   border-left-width: 6px !important;
 }
@@ -296,7 +296,7 @@ input[type="search"]::-webkit-search-results-decoration {
   filter: drop-shadow(2px 1px 2px rgba(0, 0, 0, 0.2)) !important;
 }
 .customTooltip.place-right:after {
-  border-right-color: cpr-dark !important;
+  border-right-color: #071e4a !important;
   border-right-style: solid !important;
   border-right-width: 6px !important;
 }
@@ -304,7 +304,7 @@ input[type="search"]::-webkit-search-results-decoration {
   filter: drop-shadow(2px 1px 2px rgba(0, 0, 0, 0.2)) !important;
 }
 .customTooltip.place-bottom:after {
-  border-bottom-color: cpr-dark !important;
+  border-bottom-color: #071e4a !important;
   border-bottom-style: solid !important;
   border-bottom-width: 6px !important;
 }
@@ -359,7 +359,7 @@ ul li.selected {
 .search-results b,
 .search-results strong,
 .search-results .bold {
-  @apply font-medium text-textDark;
+  @apply font-medium text-[#202020];
 }
 .text-content i,
 .text-content em,
@@ -369,7 +369,7 @@ ul li.selected {
 }
 .text-content a.accordion-item,
 .search-results a.accordion-item {
-  @apply text-textNormal text-lg cursor-pointer flex items-center no-underline hover:no-underline md:text-xl;
+  @apply text-[#505050] text-lg cursor-pointer flex items-center no-underline hover:no-underline md:text-xl;
 }
 .text-content a {
   @apply text-blue-600 underline hover:text-blue-800;
@@ -399,7 +399,7 @@ ul li.selected {
 }
 .text-content .m-table .row.heading,
 .search-results .m-table .row.heading {
-  @apply text-textDark font-medium;
+  @apply text-[#202020] font-medium;
 }
 .text-content .m-table .row .term,
 .search-results .m-table .row .term {
@@ -445,7 +445,7 @@ ul li.selected {
 .search-results h4,
 .search-results h5,
 .search-results h6 {
-  @apply font-medium text-textDark;
+  @apply font-medium text-[#202020];
 }
 .text-content h1,
 .search-results h1 {
@@ -540,7 +540,7 @@ ul li.selected {
   }
 }
 .family-document:hover .matches-button {
-  @apply bg-cpr-dark;
+  @apply bg-[#071e4a];
 }
 
 .arrow {
@@ -585,7 +585,7 @@ ul li.selected {
 }
 
 #mapToolTip {
-  @apply text-textNormal bg-white p-4 rounded-lg drop-shadow border border-gray-300 opacity-100;
+  @apply text-[#505050] bg-white p-4 rounded-lg drop-shadow border border-gray-300 opacity-100;
 }
 
 .middot-between > span:after {

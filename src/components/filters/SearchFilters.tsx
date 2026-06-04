@@ -131,7 +131,7 @@ const SearchFilters = ({
               </Badge>
             </Heading>
             <span
-              className={`text-textDark opacity-40 group-hover:opacity-100 transition-transform pointer-events-none ${
+              className={`text-[#202020] opacity-40 group-hover:opacity-100 transition-transform pointer-events-none ${
                 currentSlideOut === "concepts" ? "transform rotate-180" : ""
               }`}
             >
@@ -151,7 +151,7 @@ const SearchFilters = ({
           >
             <Heading>Case categories</Heading>
             <span
-              className={`text-textDark opacity-40 group-hover:opacity-100 transition-transform pointer-events-none ${
+              className={`text-[#202020] opacity-40 group-hover:opacity-100 transition-transform pointer-events-none ${
                 currentSlideOut === "categories" ? "transform rotate-180" : ""
               }`}
             >
@@ -166,7 +166,7 @@ const SearchFilters = ({
           >
             <Heading>Principal laws</Heading>
             <span
-              className={`text-textDark opacity-40 group-hover:opacity-100 transition-transform pointer-events-none ${
+              className={`text-[#202020] opacity-40 group-hover:opacity-100 transition-transform pointer-events-none ${
                 currentSlideOut === "principalLaws" ? "transform rotate-180" : ""
               }`}
             >
@@ -181,7 +181,7 @@ const SearchFilters = ({
           >
             <Heading>Jurisdictions</Heading>
             <span
-              className={`text-textDark opacity-40 group-hover:opacity-100 transition-transform pointer-events-none ${
+              className={`text-[#202020] opacity-40 group-hover:opacity-100 transition-transform pointer-events-none ${
                 currentSlideOut === "jurisdictions" ? "transform rotate-180" : ""
               }`}
             >
@@ -240,7 +240,7 @@ const SearchFilters = ({
         >
           <Heading>Geography</Heading>
           <span
-            className={`text-textDark opacity-40 group-hover:opacity-100 transition-transform pointer-events-none ${
+            className={`text-[#202020] opacity-40 group-hover:opacity-100 transition-transform pointer-events-none ${
               currentSlideOut === "geographies" ? "transform rotate-180" : ""
             }`}
           >

@@ -179,7 +179,7 @@ export const ConceptPicker = ({ containerClasses = "", startingSort = "Grouped",
                   fixedHeight="100%"
                   startOpen={startOpen}
                   open={search === "" ? undefined : true}
-                  className="py-3 border-b border-border-lighter"
+                  className="py-3 border-b border-[#ececec]"
                 >
                   <div className="flex flex-col gap-2 pb-2">
                     {filteredTopics

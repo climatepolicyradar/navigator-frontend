@@ -72,7 +72,7 @@ export const SubDivisionBlock = ({ subdivisions, title = "Geographic sub-divisio
               {subdivision.has_data ? (
                 <LinkWithQuery
                   href={`/geographies/${subdivision.slug}`}
-                  className="underline text-text-primary hover:text-text-brand-darker"
+                  className="underline text-text-primary hover:text-[#002ca3]"
                   data-ph-capture-attribute-link-purpose="subdivision"
                   data-ph-capture-attribute-subdivision={subdivision.id}
                 >

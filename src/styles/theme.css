@@ -2,19 +2,19 @@
   /* -- CPR Design System variables (June 2026) -- */
 
   /* Color / ID Core */
-  --color-white: #FFFFFF;
-  --color-paper: #FBFBF9;
-  --color-recycled-paper: #E5E3DC;
-  --color-inky-blue: #1A4F8C;
+  --color-white: #ffffff;
+  --color-paper: #fbfbf9;
+  --color-recycled-paper: #e5e3dc;
+  --color-inky-blue: #1a4f8c;
   --color-inky-navy: #133051;
-  --color-inky-black: #101A24;
+  --color-inky-black: #101a24;
 
   /* Color / ID Extended */
-  --color-light-blue: #C6DDE8;
-  --color-mustard: #C8B500;
-  --color-green: #A0AF54;
-  --color-forest: #164F4A;
-  --color-cardboard: #B7AE8E;
+  --color-light-blue: #c6dde8;
+  --color-mustard: #c8b500;
+  --color-green: #a0af54;
+  --color-forest: #164f4a;
+  --color-cardboard: #b7ae8e;
 
   /* Color / UI / Background */
   --color-bg-primary: var(--color-white);
@@ -34,9 +34,9 @@
   --color-elem-focus: var(--color-neutral-200);
 
   /* Color / UI / Border */
-  --color-border-normal: #101A2429;
-  --color-border-light: #101A241F;
-  --color-border-checkbox: #101A2452;
+  --color-border-normal: #101a2429;
+  --color-border-light: #101a241f;
+  --color-border-checkbox: #101a2452;
 
   /* Font / Weight */
   --font-weight-normal: 400;
@@ -105,63 +105,6 @@
   --color-gray-950: #030712; /* Dark text & headings */
 
   --color-neutral-400: #a3a3a3; /* Muted / disabled label text */
-
-  /* Deprecated colours */
-
-  --color-nearBlack: #101010;
-  --color-transparent: transparent;
-  --color-textDark: #202020;
-  --color-textNormal: #505050;
-  --color-borderNormal: #dedede;
-  --color-input: #f5f5f5;
-  --color-inputSelected: #005eeb;
-
-  --color-cpr-dark: #071e4a;
-  --color-cpr-banner: #00244d;
-
-  --color-blue-50: #e9f4ff;
-  --color-blue-100: #d2e9ff;
-  --color-blue-200: #a5d4ff;
-  --color-blue-300: #79beff;
-  --color-blue-400: #1f93ff;
-  --color-blue-500: #1f93ff;
-  --color-blue-600: #1f93ff;
-  --color-blue-700: #0075e3;
-  --color-blue-800: #005cb2;
-  --color-blue-900: #00417d;
-  --color-blueGray-700: #394b6e;
-  --color-blueGray-800: #071e4a;
-  --color-red-600: #d92d20;
-  --color-green-50: #ecfdf3;
-  --color-green-100: #d1fadf;
-  --color-green-500: #6ce9a6;
-  --color-green-600: #039855;
-  --color-green-700: #027a48;
-
-  --color-cpr-blue: #005eeb;
-
-  --color-text-quaternary: #858585;
-  --color-text-light: #ffffff;
-  --color-text-brand-darker: #002ca3;
-
-  --color-icon-standard: #707070;
-
-  --color-border-lighter: #ececec;
-  --color-border-brand: #005eeb;
-  --color-border-mono: #202020;
-  --color-border-semi-transparent: #0000001a;
-
-  --color-scrollbar: #e4e7ec;
-  --color-scrollbar-darker: #707070;
-
-  --color-surface-light: #ffffff;
-  --color-surface-ui: #f5f5f5;
-  --color-surface-heavy: #e5e5e5;
-  --color-surface-brand: #005eeb;
-  --color-surface-brand-dark: #0049b8;
-  --color-surface-brand-darker: #002ca3;
-  --color-surface-mono: #202020;
-  --color-surface-mono-dark: #000000;
 
   /* Last TODO */
   --container-1/2-gap-4: calc(50% - (1 / 2 * 1rem));

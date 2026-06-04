@@ -21,7 +21,7 @@ const getCardClasses = ({ className = "", color = "brand", variant = "solid" }: 
   let bgColor = "bg-surface-light";
 
   if (isSolid) {
-    bgColor = color === "brand" ? "bg-surface-brand" : "bg-surface-mono";
+    bgColor = color === "brand" ? "bg-[#005eeb]" : "bg-surface-mono";
   }
 
   return joinTailwindClasses(baseClasses, bgColor, border, textColor, className);

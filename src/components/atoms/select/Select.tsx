@@ -23,7 +23,7 @@ export function Select({ defaultValue, value, options, onValueChange, container,
 
   return (
     <BaseSelect.Root defaultValue={defaultValue} onValueChange={handleValueChange} value={value} id={id}>
-      <BaseSelect.Trigger className="flex items-center justify-between gap-1 px-1 h-[30px] rounded-sm text-sm text-text-primary m-0 outline-0 select-none cursor-default hover:border-inputSelected active:bg-surface-ui data-popup-open:bg-surface-ui focus:border-inputSelected">
+      <BaseSelect.Trigger className="flex items-center justify-between gap-1 px-1 h-[30px] rounded-sm text-sm text-text-primary m-0 outline-0 select-none cursor-default hover:border-[#005eeb] active:bg-surface-ui data-popup-open:bg-surface-ui focus:border-[#005eeb]">
         <BaseSelect.Value />
         <BaseSelect.Icon className="flex">
           <ChevronsUpDown height="12" width="12" />
@@ -40,7 +40,7 @@ export function Select({ defaultValue, value, options, onValueChange, container,
                 <BaseSelect.Item
                   key={option.value}
                   value={option.value}
-                  className="text-text-primary bg-white-ui p-1 rounded-sm cursor-default data-highlighted:bg-surface-mono data-highlighted:text-white data-highlighted:outline-inputSelected"
+                  className="text-text-primary bg-white-ui p-1 rounded-sm cursor-default data-highlighted:bg-surface-mono data-highlighted:text-white data-highlighted:outline-[#005eeb]"
                 >
                   <BaseSelect.ItemText className="">{option.label}</BaseSelect.ItemText>
                 </BaseSelect.Item>

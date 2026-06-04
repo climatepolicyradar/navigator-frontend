@@ -130,7 +130,7 @@ const GeographyDetail = ({ geo, geographies }: { geo: any; geographies: TGeograp
   }
   return (
     <>
-      <p className="text-textDark font-medium">{geography.display_value}</p>
+      <p className="text-[#202020] font-medium">{geography.display_value}</p>
       {(geography.familyCounts?.EXECUTIVE > 0 || geography.familyCounts?.LEGISLATIVE > 0) && (
         <p>Laws and policies: {(geography.familyCounts?.EXECUTIVE || 0) + (geography.familyCounts?.LEGISLATIVE || 0)}</p>
       )}

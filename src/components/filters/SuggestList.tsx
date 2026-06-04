@@ -72,7 +72,7 @@ const SuggestList: React.FC<SuggestListProps> = ({ list, setList, keyField, keyF
   }, [handleKeyDown]);
 
   return (
-    <ul ref={ulRef} className="bg-white rounded-b-xl border border-borderNormal border-t-0 m-0">
+    <ul ref={ulRef} className="bg-white rounded-b-xl border border-[#dedede] border-t-0 m-0">
       {list.map(
         (item: SuggestListItem, idx: number) =>
           idx < 10 && (
@@ -81,7 +81,7 @@ const SuggestList: React.FC<SuggestListProps> = ({ list, setList, keyField, keyF
               onClick={() => {
                 handleClick(item);
               }}
-              className="cursor-pointer p-2 hover:text-textDark hover:font-medium hover:bg-blue-100 last:rounded-b-xl"
+              className="cursor-pointer p-2 hover:text-[#202020] hover:font-medium hover:bg-blue-100 last:rounded-b-xl"
             >
               {item[keyFieldDisplay ?? keyField]}
             </li>

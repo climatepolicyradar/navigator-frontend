@@ -13,7 +13,7 @@ const Tooltip = ({ id, tooltip, icon = "?", place, interactableContent, colour }
   let colourCss = "";
   switch (colour) {
     case "grey":
-      colourCss = "text-textNormal border-gray-500";
+      colourCss = "text-[#505050] border-gray-500";
       break;
     default:
       colourCss = "text-blue-600 border-blue-600";
