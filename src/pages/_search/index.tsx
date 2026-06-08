@@ -5,6 +5,8 @@ import { useCallback, useEffect, useMemo, useState, type SetStateAction } from "
 import { normaliseSearchDocumentsSortKey, SearchDocument } from "@/api/search";
 import { createGroup, isFilterGroupEmpty, AdvancedFilters, TQueryGroup } from "@/components/_experiment/advancedFilters/AdvancedFilters";
 import { AppliedLabels } from "@/components/_experiment/appliedLabels/AppliedLabels";
+import { CategorySpecificFilters } from "@/components/_experiment/categorySpecificFilters/CategorySpecificFilters";
+import { FILTER_DATA_STUB } from "@/components/_experiment/categorySpecificFilters/filterData.stub";
 import { DocumentDrawer } from "@/components/_experiment/documentDrawer/DocumentDrawer";
 import { IntelliSearch } from "@/components/_experiment/intellisearch";
 import { Pagination } from "@/components/_experiment/pagination/Pagination";
@@ -238,6 +240,8 @@ const ShadowSearch = ({ theme, themeConfig, features }: TProps) => {
               </div>
             </div>
           )}
+          {/* CATEGORY SPECIFIC FILTERS */}
+          <CategorySpecificFilters labels={FILTER_DATA_STUB} />
         </FiveColumns>
         {/* ADVANCED FILTERS */}
         <AdvancedFilters
