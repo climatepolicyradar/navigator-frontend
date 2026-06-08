@@ -1,10 +1,11 @@
 import { TextSearch } from "lucide-react";
 import { NextRouter, useRouter } from "next/router";
-import { useContext, useRef, useState } from "react";
+import { useContext, useState } from "react";
 
 import { ExternalLink } from "@/components/ExternalLink";
 import { Accordion } from "@/components/accordion/Accordion";
 import { Badge } from "@/components/atoms/badge/Badge";
+import { Input } from "@/components/atoms/input/Input";
 import { Select } from "@/components/atoms/select/Select";
 import { InputCheck } from "@/components/forms/Checkbox";
 import { TutorialCard } from "@/components/molecules/tutorials/TutorialCard";
@@ -92,7 +93,6 @@ const onConceptChange = (router: NextRouter, concept: TTopic) => {
 
 export const ConceptPicker = ({ containerClasses = "", startingSort = "Grouped", showBadge = false, showSearch = true, title }: IProps) => {
   const router = useRouter();
-  const ref = useRef(null);
 
   const { completedTutorials } = useContext(TutorialContext);
   const { theme, themeConfig } = useContext(ThemeContext);
@@ -101,6 +101,7 @@ export const ConceptPicker = ({ containerClasses = "", startingSort = "Grouped",
 
   const [search, setSearch] = useState("");
   const [sort, setSort] = useState<TSort>(startingSort);
+  const [container, setContainer] = useState<HTMLDivElement | null>(null);
 
   const rootTopics = removeUnusableConcepts(allRootTopics, theme);
   const topics = removeUnusableConcepts(allTopics, theme);
@@ -114,7 +115,7 @@ export const ConceptPicker = ({ containerClasses = "", startingSort = "Grouped",
   const showKnowledgeGraphTutorial = getIncompleteTutorialNames(completedTutorials, themeConfig, features).includes("knowledgeGraph");
 
   return (
-    <div className={`relative flex flex-col gap-5 max-h-full pb-5 ${containerClasses}`} ref={ref}>
+    <div className={`relative flex flex-col gap-5 max-h-full pb-5 ${containerClasses}`}>
       {/* HEADER */}
       {showKnowledgeGraphTutorial && <TutorialCard name="knowledgeGraph" card={TUTORIALS.knowledgeGraph.card} />}
       <span className="text-base font-semibold text-text-primary">
@@ -135,17 +136,18 @@ export const ConceptPicker = ({ containerClasses = "", startingSort = "Grouped",
         )}
         <div className="flex gap-2 items-center justify-between">
           {showSearch && (
-            <input
+            <Input
+              clearable
               name="Topic quick search"
-              type="text"
               placeholder="Quick search"
               value={search}
-              onChange={(e) => setSearch(e.target.value)}
-              className="py-1 text-xs h-[30px]"
+              onChange={(e) => setSearch(e.currentTarget.value)}
+              onClear={() => setSearch("")}
+              size="small"
             />
           )}
-          <div className="basis-3/10 shrink-0 relative flex items-center">
-            <label className="text-sm text-text-tertiary" htmlFor="sort-select">
+          <div className="basis-3/10 shrink-0 relative flex items-center" ref={setContainer}>
+            <label className="text-sm text-text-tertiary mr-0.5" htmlFor="sort-select">
               Sort:
             </label>
             <Select
@@ -153,7 +155,7 @@ export const ConceptPicker = ({ containerClasses = "", startingSort = "Grouped",
               value={sort}
               onValueChange={(value) => setSort(value as TSort)}
               options={selectOptions}
-              container={ref.current}
+              container={container}
               id="sort-select"
             />
           </div>
@@ -216,7 +218,7 @@ export const ConceptPicker = ({ containerClasses = "", startingSort = "Grouped",
                 />
               ))}
 
-          <div className="h-[34px] sticky block bottom-0 w-full bg-linear-to-b from-transparent to-white">&nbsp;</div>
+          <div className="h-8.5 sticky block bottom-0 w-full bg-linear-to-b from-transparent to-white">&nbsp;</div>
         </div>
       </div>
     </div>
