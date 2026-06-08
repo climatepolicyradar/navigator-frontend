@@ -27,7 +27,7 @@ import { SearchContainer } from "./SearchResults";
 describe("SearchContainer", () => {
   afterEach(() => vi.clearAllMocks());
 
-  it("triggers a search when only a date filter is applied with no text query", () => {
+  it("triggers a search when only a date filter is applied with no text query or other filters", () => {
     const filtersWithDate = upsertPublishedDateRangeRules(createGroup(), "2020:2025");
 
     render(
