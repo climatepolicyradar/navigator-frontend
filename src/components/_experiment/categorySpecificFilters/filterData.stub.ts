@@ -5,6 +5,10 @@ export type TSearchLabel = {
   labels: TRelatedSearchLabel[];
 };
 
+export type TNestedSearchLabel = TSearchLabel & {
+  children: TNestedSearchLabel[];
+};
+
 export type TRelatedSearchLabel = {
   type: "subconcept_of";
   value: TSearchLabel;

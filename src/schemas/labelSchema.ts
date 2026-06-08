@@ -63,5 +63,3 @@ export const LabelSchema: v.GenericSchema<TDataInLabel> = v.object({
   passages_id: v.optional(v.null()), // TODO
   count: v.optional(v.null()), // TODO
 });
-
-export const validateLabel = (data: unknown): TDataInLabel => v.parse(LabelSchema, data);
