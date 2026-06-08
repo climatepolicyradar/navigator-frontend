@@ -3,9 +3,10 @@ import React, { Fragment, Suspense, use, useEffect, useMemo } from "react";
 
 import { fetchSearchDocuments, SearchDocument, SearchDocumentsResponse, SearchDocumentsSortKey } from "@/api/search";
 import { DocumentCard } from "@/components/molecules/documentCard/DocumentCard";
+import { stripEmptyValueRules } from "@/utils/filters/advancedFilters";
 
 import styles from "./SearchResults.module.css";
-import { TQueryGroup } from "../advancedFilters/AdvancedFilters";
+import { isFilterGroupEmpty, TQueryGroup } from "../advancedFilters/AdvancedFilters";
 import { EmptySearch } from "../emptySearch/EmptySearch";
 
 // Principal = Family in old model
@@ -52,18 +53,6 @@ function SearchResults({
   );
 }
 
-// If any of the values are empty strings, the filters are considered invalid and will not be sent to the API
-const filtersDoesNotContainEmptyRule = (filters: TQueryGroup): boolean => {
-  if (!filters || !filters.filters || filters.filters.length === 0) return false;
-
-  for (const filter of filters.filters) {
-    if ("value" in filter && filter.value.trim() === "") {
-      return false;
-    }
-  }
-  return true;
-};
-
 export function SearchContainer({
   query,
   filters,
@@ -82,7 +71,12 @@ export function SearchContainer({
   onTotalResultsChange?: (total: number | null) => void;
   onResultClicked?: (document: SearchDocument, event: React.MouseEvent<HTMLButtonElement>) => void;
 }) {
-  const nonEmptyFilters = filtersDoesNotContainEmptyRule(filters) ? filters : undefined;
+  // Drop placeholder rules (e.g. default empty label row) so date-only filters still fetch.
+  const nonEmptyFilters = useMemo(() => {
+    if (!filters) return undefined;
+    const sanitised = stripEmptyValueRules(filters);
+    return isFilterGroupEmpty(sanitised) ? undefined : sanitised;
+  }, [filters]);
 
   const searchPromise = useMemo(() => {
     if (!query && !nonEmptyFilters) return null;
