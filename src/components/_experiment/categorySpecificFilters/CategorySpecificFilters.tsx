@@ -2,9 +2,7 @@ import { Checkbox } from "@/components/atoms/checkbox/Checkbox";
 
 import { TNestedSearchLabel, TSearchLabel } from "./filterData.stub";
 
-interface IProps {
-  labels: TSearchLabel[];
-}
+type TFilterPathLabel = Omit<TSearchLabel, "labels">;
 
 const nestSearchLabels = (labels: TSearchLabel[]): TNestedSearchLabel[] => {
   const labelsMap = new Map<string, TNestedSearchLabel>(labels.map((label) => [label.id, { ...label, children: [] as TNestedSearchLabel[] }]));
@@ -30,27 +28,46 @@ const nestSearchLabels = (labels: TSearchLabel[]): TNestedSearchLabel[] => {
   return rootLabels;
 };
 
-const NestedLabel = ({ label }: { label: TNestedSearchLabel }) => (
-  <li>
-    <Checkbox label={label.value} onCheckedChange={() => {}} className="my-2" />
-    {label.children.length > 0 && (
-      <ul className="ml-8">
-        {label.children.map((child) => (
-          <NestedLabel key={child.id} label={child} />
-        ))}
-      </ul>
-    )}
-  </li>
-);
+type TNestedLabelProps = {
+  label: TNestedSearchLabel;
+  onFilterToggle: (path: TFilterPathLabel[], checked: boolean | "indeterminate") => void;
+  ancestorPath: TFilterPathLabel[];
+};
 
-export const CategorySpecificFilters = ({ labels }: IProps) => {
+const NestedLabel = ({ label, onFilterToggle, ancestorPath }: TNestedLabelProps) => {
+  const filterPathLabel: TFilterPathLabel = {
+    id: label.id,
+    type: label.type,
+    value: label.value,
+  };
+
+  return (
+    <li>
+      <Checkbox label={label.value} onCheckedChange={(checked) => onFilterToggle([filterPathLabel, ...ancestorPath], checked)} className="my-2" />
+      {label.children.length > 0 && (
+        <ul className="ml-8">
+          {label.children.map((child) => (
+            <NestedLabel key={child.id} label={child} onFilterToggle={onFilterToggle} ancestorPath={[filterPathLabel, ...ancestorPath]} />
+          ))}
+        </ul>
+      )}
+    </li>
+  );
+};
+
+interface IProps {
+  labels: TSearchLabel[];
+  onFilterToggle: (path: TFilterPathLabel[], checked: boolean | "indeterminate") => void;
+}
+
+export const CategorySpecificFilters = ({ labels, onFilterToggle }: IProps) => {
   const nested = nestSearchLabels(labels);
 
   return (
     <div className="col-start-1 -col-end-1">
       <ul className="ml-8">
         {nested.map((label) => (
-          <NestedLabel key={label.id} label={label} />
+          <NestedLabel key={label.id} label={label} onFilterToggle={onFilterToggle} ancestorPath={[]} />
         ))}
       </ul>
     </div>

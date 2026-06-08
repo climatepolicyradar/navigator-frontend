@@ -241,7 +241,7 @@ const ShadowSearch = ({ theme, themeConfig, features }: TProps) => {
             </div>
           )}
           {/* CATEGORY SPECIFIC FILTERS */}
-          <CategorySpecificFilters labels={FILTER_DATA_STUB} />
+          <CategorySpecificFilters labels={FILTER_DATA_STUB} onFilterToggle={(tree, checked) => console.log({ tree, checked })} />
         </FiveColumns>
         {/* ADVANCED FILTERS */}
         <AdvancedFilters
