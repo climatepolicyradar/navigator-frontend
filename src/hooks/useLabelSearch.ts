@@ -16,7 +16,7 @@ interface UseLabelSearchOptions {
 export const loadLabels = async (query: string): Promise<TSearchLabel[]> => {
   const apiUrl = process.env.NEXT_PUBLIC_API_URL || "https://api.climatepolicyradar.org";
   const client = new ApiClient(apiUrl);
-  // We exclude these types as it is legacy data, but still used elsewhere.
+  // Exclude these types as it is legacy data, or not relevant to the search UI.
   const defaultFilter = {
     op: "and",
     filters: [
@@ -59,6 +59,31 @@ export const loadLabels = async (query: string): Promise<TSearchLabel[]> => {
         field: "type",
         op: "not_contains",
         value: "role",
+      },
+      {
+        field: "type",
+        op: "not_contains",
+        value: "language",
+      },
+      {
+        field: "type",
+        op: "not_contains",
+        value: "sector",
+      },
+      {
+        field: "type",
+        op: "not_contains",
+        value: "deprecated_category",
+      },
+      {
+        field: "type",
+        op: "not_contains",
+        value: "domain",
+      },
+      {
+        field: "type",
+        op: "not_contains",
+        value: "process",
       },
     ],
   };
