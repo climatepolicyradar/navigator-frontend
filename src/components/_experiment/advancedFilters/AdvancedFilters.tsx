@@ -2,7 +2,8 @@ import { Dialog as BaseDialog } from "@base-ui/react/dialog";
 import { Plus, Trash2, X } from "lucide-react";
 import { Fragment, useCallback, useEffect, useRef, useState } from "react";
 
-import { useLabelSearch, TLabelResult } from "@/hooks/useLabelSearch";
+import { useLabelSearch } from "@/hooks/useLabelSearch";
+import { TSearchLabel } from "@/types";
 import { labelTypeLabel } from "@/utils/_experiment/labelTypeLabel";
 import { joinTailwindClasses } from "@/utils/tailwind";
 
@@ -143,7 +144,7 @@ function LabelPicker({ value, onChange, placeholder = "Search...", autoFocus = f
   }, []);
 
   const handleSelect = useCallback(
-    (label: TLabelResult) => {
+    (label: TSearchLabel) => {
       onChange(label.value);
       setInputValue("");
       setIsOpen(false);

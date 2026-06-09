@@ -3,7 +3,8 @@ import { ScrollArea } from "@base-ui/react/scroll-area";
 import { CornerDownLeft, LucideSearch, SlidersHorizontal } from "lucide-react";
 import { useMemo, useRef, useState } from "react";
 
-import { TLabelResult, useLabelSearch } from "@/hooks/useLabelSearch";
+import { useLabelSearch } from "@/hooks/useLabelSearch";
+import { TSearchLabel } from "@/types";
 import { buildLabelSuggestionHtml, buildSearchForRowHtml } from "@/utils/_experiment/intellisearchLabelHtml";
 import { labelTypeLabel } from "@/utils/_experiment/labelTypeLabel";
 import { joinTailwindClasses } from "@/utils/tailwind";
@@ -63,7 +64,7 @@ export function IntelliSearch({
 
   const suggestions = useMemo(() => {
     const selectedSet = new Set(selectedLabels.map((s) => s.toLowerCase()));
-    const candidateLabels: TLabelResult[] = [];
+    const candidateLabels: TSearchLabel[] = [];
 
     labelsResults.forEach((label) => {
       if (selectedSet.has(label.value.toLowerCase())) return; // Exclude if already selected as filter
@@ -76,6 +77,7 @@ export function IntelliSearch({
         id: "search",
         type: "search",
         value: searchTerm.trim(),
+        labels: [],
       });
     }
 
@@ -140,7 +142,7 @@ export function IntelliSearch({
                             Suggestions
                           </Autocomplete.GroupLabel>
                           <Autocomplete.Collection>
-                            {(suggestion: TLabelResult) => (
+                            {(suggestion: TSearchLabel) => (
                               <Autocomplete.Item
                                 key={suggestion.id}
                                 value={{ value: suggestion.value, type: "label" }}

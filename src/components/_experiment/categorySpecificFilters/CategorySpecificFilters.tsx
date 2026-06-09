@@ -1,8 +1,7 @@
 import sortBy from "lodash/sortBy";
 
 import { Checkbox } from "@/components/atoms/checkbox/Checkbox";
-
-import { TNestedSearchLabel, TSearchLabel } from "./filterData.stub";
+import { TNestedSearchLabel, TSearchLabel } from "@/types";
 
 type TFilterPathLabel = Omit<TSearchLabel, "labels">;
 
@@ -67,14 +66,15 @@ interface IProps {
 }
 
 export const CategorySpecificFilters = ({ labels, onFilterToggle }: IProps) => {
-  const nested = nestSearchLabels(labels);
-
-  const sortedLabels = sortBy(nested, "id");
+  const labelsToDisplay = sortBy(
+    nestSearchLabels(labels).filter((rootLabel) => rootLabel.type === "category"),
+    "id"
+  );
 
   return (
     <div className="col-start-1 -col-end-1">
       <ul className="ml-8">
-        {sortedLabels.map((label) => (
+        {labelsToDisplay.map((label) => (
           <NestedLabel key={label.id} label={label} onFilterToggle={onFilterToggle} ancestorPath={[]} />
         ))}
       </ul>

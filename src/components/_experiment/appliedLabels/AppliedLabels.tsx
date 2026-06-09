@@ -1,10 +1,10 @@
 import { LucideX, SlidersHorizontal } from "lucide-react";
 
-import { TLabelResult } from "@/hooks/useLabelSearch";
+import { TSearchLabel } from "@/types";
 
 import { TQueryGroup } from "../advancedFilters/AdvancedFilters";
 
-function getTypeOfLabel(label: string, availableFilters: TLabelResult[]): string | null {
+function getTypeOfLabel(label: string, availableFilters: TSearchLabel[]): string | null {
   const found = availableFilters.find((f) => f.id === label);
   return found ? found.type : null;
 }
@@ -66,7 +66,7 @@ export function AppliedLabels({
   onRemoveDateRange,
 }: {
   filters: TQueryGroup;
-  availableFilters: TLabelResult[];
+  availableFilters: TSearchLabel[];
   labels: string[];
   onClear?: () => void;
   onRemoveLabel?: (label: string) => void;

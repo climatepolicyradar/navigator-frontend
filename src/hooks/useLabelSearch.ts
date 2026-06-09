@@ -2,16 +2,10 @@ import debounce from "lodash/debounce";
 import { useEffect, useMemo, useState } from "react";
 
 import { ApiClient } from "@/api/http-common";
-
-export type TLabelResult = {
-  id: string;
-  type: string;
-  value: string;
-  alternative_labels?: string[];
-};
+import { TSearchLabel } from "@/types";
 
 type TLabelsResponse = {
-  results: TLabelResult[];
+  results: TSearchLabel[];
 };
 
 interface UseLabelSearchOptions {
@@ -19,7 +13,7 @@ interface UseLabelSearchOptions {
   debounceDelay?: number;
 }
 
-export const loadLabels = async (query: string): Promise<TLabelResult[]> => {
+export const loadLabels = async (query: string): Promise<TSearchLabel[]> => {
   const apiUrl = process.env.NEXT_PUBLIC_API_URL || "https://api.climatepolicyradar.org";
   const client = new ApiClient(apiUrl);
   // We exclude these types as it is legacy data, but still used elsewhere.
@@ -69,7 +63,7 @@ export const loadLabels = async (query: string): Promise<TLabelResult[]> => {
     ],
   };
   const response = await client.get<TLabelsResponse>(
-    `/search/labels?query=${encodeURIComponent(query)}&page_size=5000&filters=${encodeURIComponent(JSON.stringify(defaultFilter))}`,
+    `/search/labels?query=${encodeURIComponent(query)}&page_size=10000&filters=${encodeURIComponent(JSON.stringify(defaultFilter))}`,
     null
   );
   return response.data.results || [];
@@ -89,7 +83,7 @@ export const loadLabels = async (query: string): Promise<TLabelResult[]> => {
 export function useLabelSearch(query: string, options: UseLabelSearchOptions = {}) {
   const { debounceDelay = 300 } = options;
 
-  const [results, setResults] = useState<TLabelResult[]>([]);
+  const [results, setResults] = useState<TSearchLabel[]>([]);
   const [isLoading, setIsLoading] = useState(false);
 
   const debouncedSearch = useMemo(

@@ -6,7 +6,6 @@ import { normaliseSearchDocumentsSortKey, SearchDocument } from "@/api/search";
 import { createGroup, isFilterGroupEmpty, AdvancedFilters, TQueryGroup } from "@/components/_experiment/advancedFilters/AdvancedFilters";
 import { AppliedLabels } from "@/components/_experiment/appliedLabels/AppliedLabels";
 import { CategorySpecificFilters } from "@/components/_experiment/categorySpecificFilters/CategorySpecificFilters";
-import { FILTER_DATA_STUB } from "@/components/_experiment/categorySpecificFilters/filterData.stub";
 import { DocumentDrawer } from "@/components/_experiment/documentDrawer/DocumentDrawer";
 import { IntelliSearch } from "@/components/_experiment/intellisearch";
 import { Pagination } from "@/components/_experiment/pagination/Pagination";
@@ -18,9 +17,9 @@ import { FiveColumns } from "@/components/atoms/columns/FiveColumns";
 import Layout from "@/components/layouts/Main";
 import { withEnvConfig } from "@/context/EnvConfig";
 import { FeaturesContext } from "@/context/FeaturesContext";
-import { TLabelResult, loadLabels } from "@/hooks/useLabelSearch";
+import { loadLabels } from "@/hooks/useLabelSearch";
 import { FilterGroupSchema } from "@/schemas";
-import { TTheme } from "@/types";
+import { TSearchLabel, TTheme } from "@/types";
 import { findPublishedDateRangeValue, removePublishedDateRules, upsertPublishedDateRangeRules } from "@/utils/_experiment/dateRangeFilters";
 import { getFeatureFlags } from "@/utils/featureFlags";
 import { getFeatures } from "@/utils/features";
@@ -43,7 +42,7 @@ type TProps = InferGetServerSidePropsType<typeof getServerSideProps>;
  * - Result drawer
  */
 const ShadowSearch = ({ theme, themeConfig, features }: TProps) => {
-  const [availableFilters, setAvailableFilters] = useState<TLabelResult[]>([]);
+  const [availableFilters, setAvailableFilters] = useState<TSearchLabel[]>([]);
 
   // search query that is typed into the search box
   const [query, setQuery] = useQueryState("q", parseAsString.withDefault(""));
@@ -241,7 +240,7 @@ const ShadowSearch = ({ theme, themeConfig, features }: TProps) => {
             </div>
           )}
           {/* CATEGORY SPECIFIC FILTERS */}
-          <CategorySpecificFilters labels={FILTER_DATA_STUB} onFilterToggle={(tree, checked) => console.log({ tree, checked })} />
+          <CategorySpecificFilters labels={availableFilters} onFilterToggle={(tree, checked) => console.log({ tree, checked })} />
         </FiveColumns>
         {/* ADVANCED FILTERS */}
         <AdvancedFilters
