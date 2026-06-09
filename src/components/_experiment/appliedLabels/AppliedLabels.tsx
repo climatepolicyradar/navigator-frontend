@@ -9,6 +9,11 @@ function getTypeOfLabel(label: string, availableFilters: TLabelResult[]): string
   return found ? found.type : null;
 }
 
+function getLabelDisplayName(label: string, availableFilters: TLabelResult[]): string {
+  const found = availableFilters.find((f) => f.id === label);
+  return found ? found.value : (label.split("::")?.[1] ?? label);
+}
+
 // determine if any of the current filters contain any groups, or have any of the settings set to "or", or contain a "not_contains" op rule
 function isFilterComplex(filters: TQueryGroup | null | undefined): boolean {
   if (!filters) return false;
@@ -19,14 +24,14 @@ function isFilterComplex(filters: TQueryGroup | null | undefined): boolean {
   return filters.filters.some((f) => "filters" in f && isFilterComplex(f));
 }
 
-function AppliedLabel({ label, type, onSelect, onRemove }: { label: string; type?: string; onSelect: () => void; onRemove: () => void }) {
+function AppliedLabel({ displayName, type, onSelect, onRemove }: { displayName: string; type?: string; onSelect: () => void; onRemove: () => void }) {
   return (
     <span className="bg-white rounded-lg inline-flex items-center border border-[#d1d5db] hover:bg-[#f9fafb]">
       <button className="py-1 px-2 border-r border-[#d1d5db]" onClick={onSelect}>
         <span>{type.slice(0, 1).toUpperCase() + type.replace("_", " ").slice(1)}</span>
       </button>
       <button className="py-1 px-2 border-r border-[#d1d5db]" onClick={onSelect}>
-        <span>{label.split("::")?.[1]}</span>
+        <span>{displayName}</span>
       </button>
       <button className="px-2 rounded-r-lg h-7 hover:bg-gray-200" onClick={onRemove}>
         <LucideX width={16} height={16} />
@@ -91,10 +96,11 @@ export function AppliedLabels({
       ) : (
         labels.map((label, i) => {
           const type = getTypeOfLabel(label, availableFilters);
+          const displayName = getLabelDisplayName(label, availableFilters);
           return (
             <AppliedLabel
               key={i}
-              label={label}
+              displayName={displayName}
               type={type || ""}
               onSelect={() => onSelectLabel?.(label, type || "")}
               onRemove={() => onRemoveLabel?.(label)}
