@@ -1,3 +1,5 @@
+import sortBy from "lodash/sortBy";
+
 import { Checkbox } from "@/components/atoms/checkbox/Checkbox";
 
 import { TNestedSearchLabel, TSearchLabel } from "./filterData.stub";
@@ -10,18 +12,20 @@ const nestSearchLabels = (labels: TSearchLabel[]): TNestedSearchLabel[] => {
 
   for (const label of labels) {
     const node = labelsMap.get(label.id)!;
-    const parentRelation = label.labels.find((lbl) => lbl.type === "subconcept_of");
+    const parentRelations = label.labels.filter((lbl) => lbl.type === "subconcept_of");
 
-    if (parentRelation) {
-      const parent = labelsMap.get(parentRelation.value.id);
-
-      if (parent) {
-        parent.children.push(node);
-      } else {
-        rootLabels.push(node);
-      }
-    } else {
+    if (parentRelations.length === 0) {
       rootLabels.push(node);
+    } else {
+      let addedToParent = false;
+      for (const parentRelation of parentRelations) {
+        const parent = labelsMap.get(parentRelation.value.id);
+        if (parent) {
+          parent.children.push(node);
+          addedToParent = true;
+        }
+      }
+      if (!addedToParent) rootLabels.push(node);
     }
   }
 
@@ -41,12 +45,14 @@ const NestedLabel = ({ label, onFilterToggle, ancestorPath }: TNestedLabelProps)
     value: label.value,
   };
 
+  const sortedChildren = sortBy(label.children, "id");
+
   return (
-    <li>
-      <Checkbox label={label.value} onCheckedChange={(checked) => onFilterToggle([filterPathLabel, ...ancestorPath], checked)} className="my-2" />
-      {label.children.length > 0 && (
+    <li className="pl-1 border-l">
+      <Checkbox label={label.id} onCheckedChange={(checked) => onFilterToggle([filterPathLabel, ...ancestorPath], checked)} className="py-1" />
+      {sortedChildren.length > 0 && (
         <ul className="ml-8">
-          {label.children.map((child) => (
+          {sortedChildren.map((child) => (
             <NestedLabel key={child.id} label={child} onFilterToggle={onFilterToggle} ancestorPath={[filterPathLabel, ...ancestorPath]} />
           ))}
         </ul>
@@ -63,10 +69,12 @@ interface IProps {
 export const CategorySpecificFilters = ({ labels, onFilterToggle }: IProps) => {
   const nested = nestSearchLabels(labels);
 
+  const sortedLabels = sortBy(nested, "id");
+
   return (
     <div className="col-start-1 -col-end-1">
       <ul className="ml-8">
-        {nested.map((label) => (
+        {sortedLabels.map((label) => (
           <NestedLabel key={label.id} label={label} onFilterToggle={onFilterToggle} ancestorPath={[]} />
         ))}
       </ul>
