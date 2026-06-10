@@ -85,6 +85,11 @@ export const loadLabels = async (query: string): Promise<TSearchLabel[]> => {
         op: "not_contains",
         value: "process",
       },
+      {
+        field: "type",
+        op: "not_contains",
+        value: "external_id",
+      },
     ],
   };
   const response = await client.get<TLabelsResponse>(
