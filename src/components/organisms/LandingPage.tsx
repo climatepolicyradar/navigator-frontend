@@ -7,6 +7,7 @@ import { ComponentProps, ReactNode } from "react";
 import { Button } from "@/components/atoms/button/Button";
 import { FiveColumns } from "@/components/atoms/columns/FiveColumns";
 import { PageLink } from "@/components/atoms/pageLink/PageLink";
+import Footer from "@/components/footer/Footer";
 import Layout from "@/components/layouts/LandingPage";
 import { Header } from "@/cpr/components/Header";
 import { joinTailwindClasses } from "@/utils/tailwind";
@@ -122,6 +123,7 @@ export const LandingPage = ({ config }: TProps) => {
           </aside>
         </FiveColumns>
       </div>
+      <Footer />
     </Layout>
   );
 };
