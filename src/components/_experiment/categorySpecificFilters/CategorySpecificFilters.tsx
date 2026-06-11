@@ -5,7 +5,7 @@ import startCase from "lodash/startCase";
 import { useState } from "react";
 
 import { Checkbox } from "@/components/atoms/checkbox/Checkbox";
-import { TFilterPathLabel, TNestedSearchLabel, TSearchLabel, TSearchQueryGroup, TSearchQueryRule } from "@/types";
+import { TFilterPathLabel, TNestedSearchLabel, TSearchLabel, TSearchQueryGroup } from "@/types";
 import { buildFilterGroup } from "@/utils/search/buildFilterGroup";
 
 const nestSearchLabels = (labels: TSearchLabel[]): TNestedSearchLabel[] => {
@@ -94,13 +94,14 @@ const NestedLabel = ({ label, onFilterToggle, ancestorPath }: TNestedLabelProps)
 
 interface IProps {
   labels: TSearchLabel[];
-  onFiltersChange: (group: TSearchQueryGroup | TSearchQueryRule) => void;
+  onFiltersChange: (group: TSearchQueryGroup) => void;
 }
 
 const getPathLabelsSignature = (pathLabels: TFilterPathLabel[]) => pathLabels.map((label) => label.id).join("/");
 
 export const CategorySpecificFilters = ({ labels, onFiltersChange }: IProps) => {
-  const [pathLabels, setPathLabels] = useState<TFilterPathLabel[][]>([]);
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  const [_pathLabels, setPathLabels] = useState<TFilterPathLabel[][]>([]);
 
   const labelsToDisplay = sortBy(
     nestSearchLabels(labels).filter((rootLabel) => rootLabel.type === "category"),
@@ -120,7 +121,6 @@ export const CategorySpecificFilters = ({ labels, onFiltersChange }: IProps) => 
 
   return (
     <div className="col-start-1 -col-end-1">
-      <pre>{JSON.stringify(pathLabels, null, 2)}</pre>
       <ul className="ml-8">
         {labelsToDisplay.map((label) => (
           <NestedLabel key={label.id} label={label} onFilterToggle={onFilterToggle} ancestorPath={[]} />

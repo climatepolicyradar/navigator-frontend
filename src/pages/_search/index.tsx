@@ -240,7 +240,7 @@ const ShadowSearch = ({ theme, themeConfig, features }: TProps) => {
             </div>
           )}
           {/* CATEGORY SPECIFIC FILTERS */}
-          <CategorySpecificFilters labels={availableFilters} onFiltersChange={(group) => console.log(JSON.stringify(group, null, 2))} />
+          <CategorySpecificFilters labels={availableFilters} onFiltersChange={(group) => setFiltersInUrl(group)} />
         </FiveColumns>
         {/* ADVANCED FILTERS */}
         <AdvancedFilters

@@ -6,6 +6,9 @@ const makeRule = (id: string): TSearchQueryRule => ({
   value: id,
 });
 
+const wrapInGroup = (result: TSearchQueryGroup | TSearchQueryRule): TSearchQueryGroup =>
+  "field" in result ? { op: "or", filters: [result] } : result;
+
 const buildGroupFromPaths = (paths: TFilterPathLabel[][]): TSearchQueryGroup | TSearchQueryRule => {
   const byRootId = new Map<string, TFilterPathLabel[][]>();
   for (const path of paths) {
@@ -45,10 +48,10 @@ const buildGroupFromPaths = (paths: TFilterPathLabel[][]): TSearchQueryGroup | T
   return { op: "and", filters: typeGroupResults };
 };
 
-export const buildFilterGroup = (allPathLabels: TFilterPathLabel[][]): TSearchQueryGroup | TSearchQueryRule => {
+export const buildFilterGroup = (allPathLabels: TFilterPathLabel[][]): TSearchQueryGroup => {
   const reversed = allPathLabels.map((path) => [...path].reverse());
   const deduplicated = reversed.filter(
     (path) => !reversed.some((other) => other !== path && other.length > path.length && path.every((label, i) => label.id === other[i].id))
   );
-  return buildGroupFromPaths(deduplicated);
+  return wrapInGroup(buildGroupFromPaths(deduplicated));
 };
