@@ -1,43 +1,49 @@
 @reference "../../../styles/main.css";
 
 .Viewport {
-  @apply fixed inset-0 flex items-stretch justify-end p-4 max-md:p-2;
+  @apply fixed inset-0 flex p-4;
+
+  /* Direction sets which edge the panel attaches to */
+  &[data-direction="right"] {
+    @apply flex-row items-stretch justify-end;
+  }
+  &[data-direction="left"] {
+    @apply flex-row items-stretch justify-start;
+  }
+  &[data-direction="bottom"] {
+    @apply flex-col items-stretch justify-end;
+  }
+  &[data-direction="top"] {
+    @apply flex-col items-stretch justify-start;
+  }
+
+  @media (width < theme(--breakpoint-md)) {
+    @apply p-2;
+  }
 }
 
 .Popup {
   /* Stacking animation variables — consumed by transform/scale below.
      --drawer-swipe-* and --nested-drawers are injected by Base UI at runtime. */
-  --panel-width: min(70vw, 800px);
-
-  @media (width < theme(--breakpoint-md)) {
-    --panel-width: 100%;
-  }
-  --bleed: 3rem;
-  --peek: 10rem;
   --screen-gap: 16px;
+  --peek: 10rem;
   --stack-progress: clamp(0, var(--drawer-swipe-progress), 1);
   --stack-step: 0.05;
   --stack-peek-offset: max(0px, calc((var(--nested-drawers) - var(--stack-progress)) * var(--peek)));
   --stack-scale-base: max(0, calc(1 - (var(--nested-drawers) * var(--stack-step))));
   --stack-scale: calc(var(--stack-scale-base) + (var(--stack-step) * var(--stack-progress)));
   --stack-shrink: calc(1 - var(--stack-scale));
-  /* Visible portion of the panel (excludes off-screen bleed) */
-  --stack-width: max(0px, calc(var(--panel-width) - var(--bleed)));
-  --translate-x: calc(var(--drawer-swipe-movement-x) - var(--stack-peek-offset) - (var(--stack-shrink) * var(--stack-width)));
 
-  @apply box-border relative h-full bg-white overflow-y-auto overscroll-contain will-change-transform flex flex-col gap-4 rounded-2xl;
+  @apply box-border relative bg-white overflow-y-auto overscroll-contain will-change-transform flex flex-col gap-4 rounded-2xl;
 
-  width: var(--panel-width);
-  padding: 1.5rem 1.5rem 1.5rem 1rem;
+  padding: 1.5rem;
   /* Accounts for iOS safe area on the right edge */
   padding-right: calc(1.5rem + env(safe-area-inset-right, 0px));
-  /* Scale origin sits at the screen right edge, not the panel right edge */
-  transform-origin: calc(100% + var(--screen-gap)) 50%;
+
   transition:
     transform 250ms cubic-bezier(0.32, 0.72, 0, 1),
     width 180ms cubic-bezier(0.32, 0.72, 0, 1),
     opacity 180ms cubic-bezier(0.32, 0.72, 0, 1);
-  transform: translateX(var(--translate-x)) scale(var(--stack-scale));
 
   &[data-swiping],
   &[data-nested-drawer-swiping] {
@@ -48,10 +54,6 @@
     @apply select-none;
   }
 
-  @media (prefers-color-scheme: dark) {
-    outline: 1px solid #d1d5db;
-  }
-
   /* Overlay that darkens the panel when a nested drawer is open */
   &::after {
     content: "";
@@ -60,19 +62,80 @@
   }
 
   &[data-nested-drawer-open] {
-    /* Shrink to show the nested drawer peeking behind */
     @apply overflow-hidden;
-    width: calc(var(--stack-width) + var(--bleed));
 
     &::after {
       background-color: rgb(0 0 0 / 0.05);
     }
   }
 
-  /* Enter/exit: translate fully off-screen (panel width + screen gap) */
-  &[data-starting-style],
-  &[data-ending-style] {
-    transform: translateX(calc(100% + var(--screen-gap) + 2px));
+  /* Horizontal drawers */
+  &[data-direction="right"],
+  &[data-direction="left"] {
+    --panel-width: min(70vw, 800px);
+
+    @apply h-full;
+    width: var(--panel-width);
+
+    @media (width < theme(--breakpoint-md)) {
+      --panel-width: 100%;
+    }
+  }
+
+  /* Vertical drawers */
+  &[data-direction="top"],
+  &[data-direction="bottom"] {
+    --panel-height: min(70vh, 600px);
+
+    @apply w-full;
+    /* We have to make the panels default to panel height otherwise the bleed over doesn't work correctly */
+    height: var(--panel-height);
+
+    @media (width < theme(--breakpoint-md)) {
+      --panel-height: 100%;
+    }
+  }
+
+  /* Per-direction swipe tracking, stacking, and enter/exit animation.
+     transform-origin is anchored to the screen edge so scale pivots from there. */
+  &[data-direction="right"] {
+    --translate-x: calc(var(--drawer-swipe-movement-x, 0px) - var(--stack-peek-offset) - (var(--stack-shrink) * var(--panel-width)));
+    transform-origin: calc(100% + var(--screen-gap)) 50%;
+    transform: translateX(var(--translate-x)) scale(var(--stack-scale));
+    &[data-starting-style],
+    &[data-ending-style] {
+      transform: translateX(calc(100% + var(--screen-gap) + 2px));
+    }
+  }
+
+  &[data-direction="left"] {
+    --translate-x: calc(var(--drawer-swipe-movement-x, 0px) + var(--stack-peek-offset) + (var(--stack-shrink) * var(--panel-width)));
+    transform-origin: calc(-1 * var(--screen-gap)) 50%;
+    transform: translateX(var(--translate-x)) scale(var(--stack-scale));
+    &[data-starting-style],
+    &[data-ending-style] {
+      transform: translateX(calc(-100% - var(--screen-gap) - 2px));
+    }
+  }
+
+  &[data-direction="bottom"] {
+    --translate-y: calc(var(--drawer-swipe-movement-y, 0px) - var(--stack-peek-offset) - (var(--stack-shrink) * var(--panel-height)));
+    transform-origin: 50% calc(100% + var(--screen-gap));
+    transform: translateY(var(--translate-y)) scale(var(--stack-scale));
+    &[data-starting-style],
+    &[data-ending-style] {
+      transform: translateY(calc(100% + var(--screen-gap) + 2px));
+    }
+  }
+
+  &[data-direction="top"] {
+    --translate-y: calc(var(--drawer-swipe-movement-y, 0px) + var(--stack-peek-offset) + (var(--stack-shrink) * var(--panel-height)));
+    transform-origin: 50% calc(-1 * var(--screen-gap));
+    transform: translateY(var(--translate-y)) scale(var(--stack-scale));
+    &[data-starting-style],
+    &[data-ending-style] {
+      transform: translateY(calc(-100% - var(--screen-gap) - 2px));
+    }
   }
 
   &[data-ending-style] {

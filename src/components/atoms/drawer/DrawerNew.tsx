@@ -5,19 +5,29 @@ import { joinTailwindClasses } from "@/utils/tailwind";
 
 import styles from "./DrawerNew.module.css";
 
-type TProps = DrawerRootProps & {
+type TDirection = "left" | "right" | "top" | "bottom";
+
+type TProps = Omit<DrawerRootProps, "swipeDirection"> & {
   children?: React.ReactNode;
   title?: React.ReactNode;
   className?: string;
+  direction?: TDirection;
 };
 
-export const Drawer = ({ children, title, className, ...rootProps }: TProps) => {
+const swipeDirectionMap: Record<TDirection, "left" | "right" | "up" | "down"> = {
+  left: "left",
+  right: "right",
+  top: "up",
+  bottom: "down",
+};
+
+export const Drawer = ({ children, title, className, direction = "right", ...rootProps }: TProps) => {
   return (
-    <BaseDrawer.Root {...rootProps}>
+    <BaseDrawer.Root {...rootProps} swipeDirection={swipeDirectionMap[direction]}>
       <BaseDrawer.Portal>
-        <BaseDrawer.Backdrop className="fixed inset-0 bg-inky-black duration-200 [--backdrop-opacity:0.2] min-h-dvh opacity-[calc(var(--backdrop-opacity)*(1-var(--drawer-swipe-progress)))] transition-opacity ease-[cubic-bezier(0.32,0.72,0,1)] data-swiping:duration-0 data-ending-style:opacity-0 data-starting-style:opacity-0 " />
-        <BaseDrawer.Viewport className={joinTailwindClasses(styles.Viewport, className)}>
-          <BaseDrawer.Popup className={joinTailwindClasses(styles.Popup, className)}>
+        <BaseDrawer.Backdrop className="fixed inset-0 bg-inky-black duration-200 [--backdrop-opacity:0.2] min-h-dvh opacity-[calc(var(--backdrop-opacity)*(1-var(--drawer-swipe-progress)))] transition-opacity ease-[cubic-bezier(0.32,0.72,0,1)] data-swiping:duration-0 data-ending-style:opacity-0 data-starting-style:opacity-0" />
+        <BaseDrawer.Viewport className={joinTailwindClasses(styles.Viewport, className)} data-direction={direction}>
+          <BaseDrawer.Popup className={styles.Popup} data-direction={direction}>
             <div className="flex items-start justify-between">
               {!!title && <BaseDrawer.Title className="text-xl font-semibold flex-1 mr-4">{title}</BaseDrawer.Title>}
               <BaseDrawer.Close className="text-neutral-500 hover:text-neutral-800 shrink-0 justify-end">
