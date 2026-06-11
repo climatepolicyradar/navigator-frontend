@@ -25,18 +25,25 @@
 .Popup {
   /* Stacking animation variables — consumed by transform/scale below.
      --drawer-swipe-* and --nested-drawers are injected by Base UI at runtime. */
+
+  /* gap between drawer and screen edge */
   --screen-gap: 16px;
+  /* how much of the previous drawer peeks out when stacking */
   --peek: 10rem;
   --stack-progress: clamp(0, var(--drawer-swipe-progress), 1);
+  /* how much each nested drawer scales down compared to the previous one */
   --stack-step: 0.05;
+  /* how much the current drawer is offset to reveal the peek of the previous drawer */
   --stack-peek-offset: max(0px, calc((var(--nested-drawers) - var(--stack-progress)) * var(--peek)));
+  /* the base scale of the current drawer when fully stacked */
   --stack-scale-base: max(0, calc(1 - (var(--nested-drawers) * var(--stack-step))));
+  /* the actual scale of the current drawer, which increases as you swipe to stack more */
   --stack-scale: calc(var(--stack-scale-base) + (var(--stack-step) * var(--stack-progress)));
+  /* how much the current drawer has shrunk compared to its original size, used to further offset the drawer as it scales down to maintain the visual gap between stacked drawers */
   --stack-shrink: calc(1 - var(--stack-scale));
 
-  @apply box-border relative bg-white overflow-y-auto overscroll-contain will-change-transform flex flex-col gap-4 rounded-2xl;
+  @apply box-border relative bg-white overflow-y-auto overscroll-contain will-change-transform flex flex-col gap-4 rounded-2xl p-4;
 
-  padding: 1.5rem;
   /* Accounts for iOS safe area on the right edge */
   padding-right: calc(1.5rem + env(safe-area-inset-right, 0px));
 
