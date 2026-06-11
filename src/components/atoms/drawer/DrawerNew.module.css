@@ -1,16 +1,17 @@
-.Viewport {
-  --screen-gap: 16px;
+@reference "../../../styles/main.css";
 
-  position: fixed;
-  inset: 0;
-  display: flex;
-  align-items: stretch;
-  justify-content: flex-end;
-  padding: var(--screen-gap);
+.Viewport {
+  @apply fixed inset-0 flex items-stretch justify-end p-4 max-md:p-2;
 }
 
 .Popup {
+  /* Stacking animation variables — consumed by transform/scale below.
+     --drawer-swipe-* and --nested-drawers are injected by Base UI at runtime. */
   --panel-width: min(70vw, 800px);
+
+  @media (width < theme(--breakpoint-md)) {
+    --panel-width: 100%;
+  }
   --bleed: 3rem;
   --peek: 10rem;
   --screen-gap: 16px;
@@ -20,65 +21,55 @@
   --stack-scale-base: max(0, calc(1 - (var(--nested-drawers) * var(--stack-step))));
   --stack-scale: calc(var(--stack-scale-base) + (var(--stack-step) * var(--stack-progress)));
   --stack-shrink: calc(1 - var(--stack-scale));
+  /* Visible portion of the panel (excludes off-screen bleed) */
   --stack-width: max(0px, calc(var(--panel-width) - var(--bleed)));
   --translate-x: calc(var(--drawer-swipe-movement-x) - var(--stack-peek-offset) - (var(--stack-shrink) * var(--stack-width)));
 
-  box-sizing: border-box;
-  position: relative;
-  height: 100%;
+  @apply box-border relative h-full bg-white overflow-y-auto overscroll-contain will-change-transform flex flex-col gap-4 rounded-2xl;
+
   width: var(--panel-width);
-  margin-right: 0;
-  /* margin-right: calc(-1 * var(--bleed)); */
   padding: 1.5rem 1.5rem 1.5rem 1rem;
+  /* Accounts for iOS safe area on the right edge */
   padding-right: calc(1.5rem + env(safe-area-inset-right, 0px));
-  /* padding-right: calc(1.5rem + env(safe-area-inset-right, 0px) + var(--bleed)); */
-  border-radius: 1rem;
-  background-color: white;
-  overflow-y: auto;
-  overscroll-behavior: contain;
+  /* Scale origin sits at the screen right edge, not the panel right edge */
   transform-origin: calc(100% + var(--screen-gap)) 50%;
   transition:
-    transform 450ms cubic-bezier(0.32, 0.72, 0, 1),
+    transform 250ms cubic-bezier(0.32, 0.72, 0, 1),
     width 180ms cubic-bezier(0.32, 0.72, 0, 1),
     opacity 180ms cubic-bezier(0.32, 0.72, 0, 1);
-  will-change: transform;
   transform: translateX(var(--translate-x)) scale(var(--stack-scale));
-  display: flex;
-  flex-direction: column;
-  gap: 1rem;
 
   &[data-swiping],
   &[data-nested-drawer-swiping] {
-    transition-duration: 0ms;
+    @apply duration-0;
   }
 
   &[data-swiping] {
-    user-select: none;
+    @apply select-none;
   }
 
   @media (prefers-color-scheme: dark) {
     outline: 1px solid #d1d5db;
   }
 
+  /* Overlay that darkens the panel when a nested drawer is open */
   &::after {
     content: "";
-    inset: 0;
-    position: absolute;
-    border-radius: inherit;
-    background-color: transparent;
-    pointer-events: none;
+    @apply inset-0 absolute rounded-[inherit] bg-transparent pointer-events-none;
     transition: background-color 220ms cubic-bezier(0.32, 0.72, 0, 1);
   }
 
   &[data-nested-drawer-open] {
+    /* Shrink to show the nested drawer peeking behind */
+    @apply overflow-hidden;
     width: calc(var(--stack-width) + var(--bleed));
-    overflow: hidden;
 
     &::after {
       background-color: rgb(0 0 0 / 0.05);
     }
   }
 
+  /* Enter/exit: translate fully off-screen (panel width + screen gap) */
   &[data-starting-style],
   &[data-ending-style] {
     transform: translateX(calc(100% + var(--screen-gap) + 2px));

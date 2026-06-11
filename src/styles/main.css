@@ -39,3 +39,9 @@
     visibility: hidden;
   }
 }
+
+.highlights {
+  :global(hi) {
+    @apply bg-yellow-200;
+  }
+}
