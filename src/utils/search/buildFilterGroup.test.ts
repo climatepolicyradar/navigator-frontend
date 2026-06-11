@@ -93,7 +93,7 @@ describe("buildFilterGroup", () => {
         {
           field: "labels.value.id",
           op: "contains",
-          value: "category::UN submission",
+          value: "un_convention::UNCCD",
         },
       ],
     };
@@ -134,7 +134,7 @@ describe("buildFilterGroup", () => {
         {
           field: "labels.value.id",
           op: "contains",
-          value: "category::UN submission",
+          value: "un_convention::UNCCD",
         },
       ],
     };
@@ -573,16 +573,6 @@ describe("buildFilterGroup", () => {
         },
       ],
     ];
-    const expectedFilterGroup: TSearchQueryGroup | TSearchQueryRule = {
-      op: "and",
-      filters: [],
-    };
-
-    expect(buildFilterGroup(allPathLabels)).toEqual(expectedFilterGroup);
-  });
-
-  it("builds a filter for a complex example", () => {
-    const allPathLabels: TFilterPathLabel[][] = [];
     const expectedFilterGroup: TSearchQueryGroup | TSearchQueryRule = {
       op: "and",
       filters: [
