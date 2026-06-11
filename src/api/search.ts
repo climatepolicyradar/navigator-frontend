@@ -1,4 +1,4 @@
-import { TQueryGroup } from "@/components/_experiment/advancedFilters/AdvancedFilters";
+import { TSearchQueryGroup } from "@/types";
 import { DATE_RANGE_MIN_YEAR, hasPublishedDateRule } from "@/utils/_experiment/dateRangeFilters";
 
 interface DocumentLabel {
@@ -79,7 +79,7 @@ export function normaliseSearchDocumentsSortKey(raw: string | null | undefined):
 
 interface SearchDocumentsParams {
   query?: string;
-  filters?: TQueryGroup;
+  filters?: TSearchQueryGroup;
   page_size?: string;
   page_token?: string;
   sort?: SearchDocumentsSortKey;
@@ -91,9 +91,9 @@ function searchDocumentsUrl(): string {
 }
 
 // Add default filters exclusive of searfh parameters to ensure they are always applied
-function configureDocumentsFilters(filters: TQueryGroup | undefined): TQueryGroup {
+function configureDocumentsFilters(filters: TSearchQueryGroup | undefined): TSearchQueryGroup {
   // Keep for now to ensure we only return principals
-  const principalDocumentsFilter: TQueryGroup = {
+  const principalDocumentsFilter: TSearchQueryGroup = {
     op: "and",
     filters: [
       {
@@ -103,7 +103,7 @@ function configureDocumentsFilters(filters: TQueryGroup | undefined): TQueryGrou
       },
     ],
   };
-  const publishedStatusFilter: TQueryGroup = {
+  const publishedStatusFilter: TSearchQueryGroup = {
     op: "and",
     filters: [
       {
@@ -113,7 +113,7 @@ function configureDocumentsFilters(filters: TQueryGroup | undefined): TQueryGrou
       },
     ],
   };
-  const publishedDateBoundsFilter: TQueryGroup = {
+  const publishedDateBoundsFilter: TSearchQueryGroup = {
     op: "and",
     filters: [
       {
@@ -133,7 +133,7 @@ function configureDocumentsFilters(filters: TQueryGroup | undefined): TQueryGrou
 
   // Always constrain document searches to published documents. Add default date
   // bounds only when the user has not provided any published_date rule.
-  const filtersWithConditionals: TQueryGroup[] = [publishedStatusFilter];
+  const filtersWithConditionals: TSearchQueryGroup[] = [publishedStatusFilter];
   if (!hasPublishedDateRule(filters)) {
     filtersWithConditionals.push(publishedDateBoundsFilter);
   }

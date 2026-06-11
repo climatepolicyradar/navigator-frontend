@@ -3,20 +3,19 @@ import { ChevronDown, ChevronRight, ChevronUp, Circle, ListFilter, SlidersHorizo
 import { useMemo, useState } from "react";
 
 import { Checkbox } from "@/components/atoms/checkbox/Checkbox";
-import { TSearchLabel } from "@/types";
+import { TSearchLabel, TSearchQueryGroup } from "@/types";
 import { hasPublishedDateRule } from "@/utils/_experiment/dateRangeFilters";
 import { labelTypeLabel } from "@/utils/_experiment/labelTypeLabel";
 import { joinTailwindClasses } from "@/utils/tailwind";
 
 import { PublishedDateFilterSection } from "./PublishedDateFilterSection";
-import { TQueryGroup } from "../advancedFilters/AdvancedFilters";
 
-function hasValue(group: TQueryGroup | null | undefined, value: string): boolean {
+function hasValue(group: TSearchQueryGroup | null | undefined, value: string): boolean {
   if (!group) return false;
   return group.filters.some((f) => ("value" in f ? f.value === value : hasValue(f, value)));
 }
 
-function hasActiveFilterOfType(filters: TSearchLabel[], group: TQueryGroup | null | undefined, type: TLabelType): boolean {
+function hasActiveFilterOfType(filters: TSearchLabel[], group: TSearchQueryGroup | null | undefined, type: TLabelType): boolean {
   if (!group) return false;
   return group.filters.some((f) =>
     "value" in f ? filters.some((label) => label.id === f.value && label.type === type) : hasActiveFilterOfType(filters, f, type)
@@ -29,7 +28,7 @@ export type TLabelType = (typeof PRIMARY_LABEL_TYPES)[number] | (typeof OTHER_LA
 
 type TProps = {
   availableFilters: TSearchLabel[];
-  filters?: TQueryGroup | null;
+  filters?: TSearchQueryGroup | null;
   activeLabelType: TLabelType;
   onActiveLabelTypeChange: (labelType: TLabelType) => void;
   onAdvancedClick?: () => void;

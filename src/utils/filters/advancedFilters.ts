@@ -1,7 +1,8 @@
-import { createGroup, TQueryGroup, TQueryRule } from "@/components/_experiment/advancedFilters/AdvancedFilters";
+import { createGroup } from "@/components/_experiment/advancedFilters/AdvancedFilters";
+import { TSearchQueryGroup, TSearchQueryRule } from "@/types";
 
 /** Extract all label values from "contains" rules in the filter tree. */
-export function extractLabels(group: TQueryGroup | null): string[] {
+export function extractLabels(group: TSearchQueryGroup | null): string[] {
   if (!group) return [];
   const labels: string[] = [];
   for (const filter of group.filters) {
@@ -14,10 +15,10 @@ export function extractLabels(group: TQueryGroup | null): string[] {
   return labels;
 }
 
-export function stripEmptyValueRules(group: TQueryGroup): TQueryGroup {
+export function stripEmptyValueRules(group: TSearchQueryGroup): TSearchQueryGroup {
   // Recursively remove empty-value rules and empty nested groups from a filter tree.
-  const stripGroup = (node: TQueryGroup): TQueryGroup | null => {
-    const filters: Array<TQueryGroup | TQueryRule> = [];
+  const stripGroup = (node: TSearchQueryGroup): TSearchQueryGroup | null => {
+    const filters: Array<TSearchQueryGroup | TSearchQueryRule> = [];
 
     for (const filter of node.filters) {
       if ("field" in filter) {
@@ -39,21 +40,21 @@ export function stripEmptyValueRules(group: TQueryGroup): TQueryGroup {
   return stripGroup(group) ?? createGroup();
 }
 
-function groupIsEmpty(group: TQueryGroup | null): boolean {
+function groupIsEmpty(group: TSearchQueryGroup | null): boolean {
   if (!group) return true;
   return group.filters.length === 0 || group.filters.every((f) => "field" in f && f.op === "contains" && !f.value);
 }
 
 /** Add a label as a new "contains" rule to the root filter group. */
-export function addLabelRule(group: TQueryGroup | null, label: string): TQueryGroup {
-  const rule: TQueryRule = { field: "labels.value.id", op: "contains", value: label };
+export function addLabelRule(group: TSearchQueryGroup | null, label: string): TSearchQueryGroup {
+  const rule: TSearchQueryRule = { field: "labels.value.id", op: "contains", value: label };
   if (groupIsEmpty(group)) return { op: "and", filters: [rule] };
   return { ...group, filters: [...group.filters, rule] };
 }
 
 /** Remove the first "contains" rule matching a label value from the filter tree. */
-export function removeLabelRule(group: TQueryGroup, label: string): TQueryGroup | null {
-  const newFilters: (TQueryGroup | TQueryRule)[] = [];
+export function removeLabelRule(group: TSearchQueryGroup, label: string): TSearchQueryGroup | null {
+  const newFilters: (TSearchQueryGroup | TSearchQueryRule)[] = [];
   let removed = false;
 
   for (const filter of group.filters) {

@@ -6,6 +6,7 @@ export * from "./display";
 export * from "./features";
 export * from "./search";
 export * from "./search/labels";
+export * from "./search/query";
 export * from "./table";
 export * from "./tables/familyDocumentTopics";
 export * from "./theme";

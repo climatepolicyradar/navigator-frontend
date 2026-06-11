@@ -6,6 +6,8 @@ export type TSearchLabel = {
   alternative_labels?: string[];
 };
 
+export type TFilterPathLabel = Omit<TSearchLabel, "labels">;
+
 export type TSearchLabelRelation = {
   type: "subconcept_of";
   value: TSearchLabel;

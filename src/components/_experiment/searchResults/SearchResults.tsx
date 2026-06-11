@@ -3,9 +3,9 @@ import React, { Fragment, Suspense, use, useEffect, useMemo } from "react";
 
 import { fetchSearchDocuments, SearchDocument, SearchDocumentsResponse, SearchDocumentsSortKey } from "@/api/search";
 import { DocumentCard } from "@/components/molecules/documentCard/DocumentCard";
+import { TSearchQueryGroup } from "@/types";
 
 import styles from "./SearchResults.module.css";
-import { TQueryGroup } from "../advancedFilters/AdvancedFilters";
 import { EmptySearch } from "../emptySearch/EmptySearch";
 
 // Principal = Family in old model
@@ -53,7 +53,7 @@ function SearchResults({
 }
 
 // If any of the values are empty strings, the filters are considered invalid and will not be sent to the API
-const filtersDoesNotContainEmptyRule = (filters: TQueryGroup): boolean => {
+const filtersDoesNotContainEmptyRule = (filters: TSearchQueryGroup): boolean => {
   if (!filters || !filters.filters || filters.filters.length === 0) return false;
 
   for (const filter of filters.filters) {
@@ -75,7 +75,7 @@ export function SearchContainer({
 }: {
   selectedLabels?: string[];
   query?: string;
-  filters?: TQueryGroup;
+  filters?: TSearchQueryGroup;
   page_token?: string;
   page_size?: string;
   sort?: SearchDocumentsSortKey;

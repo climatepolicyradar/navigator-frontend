@@ -2,11 +2,11 @@ import { Accordion } from "@base-ui/react/accordion";
 import groupBy from "lodash/groupBy";
 import sortBy from "lodash/sortBy";
 import startCase from "lodash/startCase";
+import { useState } from "react";
 
 import { Checkbox } from "@/components/atoms/checkbox/Checkbox";
-import { TNestedSearchLabel, TSearchLabel } from "@/types";
-
-type TFilterPathLabel = Omit<TSearchLabel, "labels">;
+import { TFilterPathLabel, TNestedSearchLabel, TSearchLabel, TSearchQueryGroup, TSearchQueryRule } from "@/types";
+import { buildFilterGroup } from "@/utils/search/buildFilterGroup";
 
 const nestSearchLabels = (labels: TSearchLabel[]): TNestedSearchLabel[] => {
   const labelsMap = new Map<string, TNestedSearchLabel>(labels.map((label) => [label.id, { ...label, children: [] as TNestedSearchLabel[] }]));
@@ -36,7 +36,7 @@ const nestSearchLabels = (labels: TSearchLabel[]): TNestedSearchLabel[] => {
 
 type TNestedLabelProps = {
   label: TNestedSearchLabel;
-  onFilterToggle: (path: TFilterPathLabel[], checked: boolean | "indeterminate") => void;
+  onFilterToggle: (group: TFilterPathLabel[], checked: boolean) => void;
   ancestorPath: TFilterPathLabel[];
 };
 
@@ -48,15 +48,13 @@ const NestedLabel = ({ label, onFilterToggle, ancestorPath }: TNestedLabelProps)
   };
 
   const sortedChildren = sortBy(label.children, "id");
+  const pathLabels = [filterPathLabel, ...ancestorPath];
+  const onCheckedChange = (value: boolean | "indeterminate") => onFilterToggle(pathLabels, value === true);
 
   if (sortedChildren.length === 0) {
     return (
       <li className="pl-1 border-l">
-        <Checkbox
-          label={label.value}
-          onCheckedChange={(checked) => onFilterToggle([filterPathLabel, ...ancestorPath], checked)}
-          className="inline-flex py-1"
-        />
+        <Checkbox label={label.id} onCheckedChange={onCheckedChange} className="inline-flex py-1" />
       </li>
     );
   }
@@ -65,19 +63,15 @@ const NestedLabel = ({ label, onFilterToggle, ancestorPath }: TNestedLabelProps)
 
   return (
     <li className="pl-1 border-l">
-      <Checkbox
-        label={label.value}
-        onCheckedChange={(checked) => onFilterToggle([filterPathLabel, ...ancestorPath], checked)}
-        className="inline-flex py-1"
-      />
+      <Checkbox label={label.id} onCheckedChange={onCheckedChange} className="inline-flex py-1" />
       {groups.length === 1 ? (
         <ul className="ml-8">
           {sortedChildren.map((child) => (
-            <NestedLabel key={child.id} label={child} onFilterToggle={onFilterToggle} ancestorPath={[filterPathLabel, ...ancestorPath]} />
+            <NestedLabel key={child.id} label={child} onFilterToggle={onFilterToggle} ancestorPath={pathLabels} />
           ))}
         </ul>
       ) : (
-        <Accordion.Root multiple defaultValue={groups.map(([type]) => type)} className="ml-12 border-l">
+        <Accordion.Root multiple className="ml-12 border-l">
           {groups.map(([type, children]) => (
             <Accordion.Item key={type} value={type}>
               <Accordion.Header>
@@ -86,7 +80,7 @@ const NestedLabel = ({ label, onFilterToggle, ancestorPath }: TNestedLabelProps)
               <Accordion.Panel>
                 <ul className="ml-8">
                   {children.map((child) => (
-                    <NestedLabel key={child.id} label={child} onFilterToggle={onFilterToggle} ancestorPath={[filterPathLabel, ...ancestorPath]} />
+                    <NestedLabel key={child.id} label={child} onFilterToggle={onFilterToggle} ancestorPath={pathLabels} />
                   ))}
                 </ul>
               </Accordion.Panel>
@@ -100,17 +94,33 @@ const NestedLabel = ({ label, onFilterToggle, ancestorPath }: TNestedLabelProps)
 
 interface IProps {
   labels: TSearchLabel[];
-  onFilterToggle: (path: TFilterPathLabel[], checked: boolean | "indeterminate") => void;
+  onFiltersChange: (group: TSearchQueryGroup | TSearchQueryRule) => void;
 }
 
-export const CategorySpecificFilters = ({ labels, onFilterToggle }: IProps) => {
+const getPathLabelsSignature = (pathLabels: TFilterPathLabel[]) => pathLabels.map((label) => label.id).join("/");
+
+export const CategorySpecificFilters = ({ labels, onFiltersChange }: IProps) => {
+  const [pathLabels, setPathLabels] = useState<TFilterPathLabel[][]>([]);
+
   const labelsToDisplay = sortBy(
     nestSearchLabels(labels).filter((rootLabel) => rootLabel.type === "category"),
     "id"
   );
 
+  const onFilterToggle = (pathLabels: TFilterPathLabel[], checked: boolean) => {
+    setPathLabels((existingPathLabels) => {
+      const updatedPathLabels = checked
+        ? [...existingPathLabels, pathLabels]
+        : existingPathLabels.filter((labels) => getPathLabelsSignature(labels) !== getPathLabelsSignature(pathLabels));
+
+      onFiltersChange(updatedPathLabels.length > 0 ? buildFilterGroup(updatedPathLabels) : null);
+      return updatedPathLabels;
+    });
+  };
+
   return (
     <div className="col-start-1 -col-end-1">
+      <pre>{JSON.stringify(pathLabels, null, 2)}</pre>
       <ul className="ml-8">
         {labelsToDisplay.map((label) => (
           <NestedLabel key={label.id} label={label} onFilterToggle={onFilterToggle} ancestorPath={[]} />

@@ -1,6 +1,6 @@
 import * as v from "valibot";
 
-import { TQueryGroup } from "@/components/_experiment/advancedFilters/AdvancedFilters";
+import { TSearchQueryGroup } from "@/types";
 
 export const FilterSchema = v.union([
   v.object({
@@ -16,7 +16,7 @@ export const FilterSchema = v.union([
   }),
 ]);
 
-export const FilterGroupSchema: v.GenericSchema<TQueryGroup> = v.object({
+export const FilterGroupSchema: v.GenericSchema<TSearchQueryGroup> = v.object({
   op: v.picklist(["and", "or"]),
   filters: v.array(v.union([FilterSchema, v.lazy(() => FilterGroupSchema)])),
 });
