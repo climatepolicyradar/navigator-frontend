@@ -46,12 +46,12 @@ export const getTopicDrawerDocumentTableRows = (
                 <PageLink
                   href={"/documents/" + document.slug}
                   query={{ [QUERY_PARAMS.concept_name]: topic.preferred_label }}
-                  className="block text-[#0038a9] font-medium hover:underline shrink"
+                  className="block text-inky-blue font-medium hover:underline shrink"
                 >
                   {document.title}
                 </PageLink>
                 {contextLines && (
-                  <div className="flex flex-col gap-1 text-sm text-[#6b7280] leading-4">
+                  <div className="flex flex-col gap-1 text-sm text-text-tertiary leading-4">
                     {contextLines.map((line, lineIndex) => (
                       <span key={lineIndex} className="block">
                         {line}
