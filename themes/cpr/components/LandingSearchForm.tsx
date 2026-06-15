@@ -4,7 +4,7 @@ import { useState, useEffect, useRef, ChangeEvent } from "react";
 import { Button } from "@/components/atoms/button/Button";
 import { SearchDropdown } from "@/components/forms/SearchDropdown";
 
-export const CPR_DOCUMENT_COUNT = 30_000;
+export const CPR_DOCUMENT_COUNT = 35_000;
 
 interface IProps {
   placeholder?: string;
