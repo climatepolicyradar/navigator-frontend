@@ -33,7 +33,11 @@ export function DocumentDrawer({ document, open, onOpenChange }: TDocumentDrawer
       title={
         document ? (
           linkHref(document) ? (
-            <a href={linkHref(document)!} className="text-inky-blue hover:underline" dangerouslySetInnerHTML={{ __html: document.title }} />
+            <a
+              href={linkHref(document)!}
+              className="text-inky-blue underline-offset-5 hover:underline"
+              dangerouslySetInnerHTML={{ __html: document.title }}
+            />
           ) : (
             <span dangerouslySetInnerHTML={{ __html: document.title }} />
           )
@@ -83,7 +87,7 @@ export function DocumentDrawer({ document, open, onOpenChange }: TDocumentDrawer
                 linkHref(nestedDocument) ? (
                   <a
                     href={linkHref(nestedDocument)!}
-                    className="text-inky-blue hover:underline"
+                    className="text-inky-blue underline-offset-5 hover:underline"
                     dangerouslySetInnerHTML={{ __html: nestedDocument.title }}
                   />
                 ) : (
