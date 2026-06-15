@@ -1,4 +1,4 @@
-import { TQueryGroup, TQueryRule } from "@/components/_experiment/advancedFilters/AdvancedFilters";
+import { TSearchQueryGroup, TSearchQueryRule } from "@/types";
 
 export const DATE_RANGE_VALUE_SEPARATOR = ":";
 export const DATE_RANGE_MIN_YEAR = 1900;
@@ -46,7 +46,7 @@ function parseIsoYear(value: string): number | null {
   return Number.isInteger(year) ? year : null;
 }
 
-export function hasPublishedDateRule(group: TQueryGroup | null | undefined): boolean {
+export function hasPublishedDateRule(group: TSearchQueryGroup | null | undefined): boolean {
   if (!group) return false;
   return group.filters.some((filter) => {
     if ("field" in filter) return filter.field === "attributes.published_date";
@@ -54,7 +54,7 @@ export function hasPublishedDateRule(group: TQueryGroup | null | undefined): boo
   });
 }
 
-export function buildPublishedDateRangeRules(startYear: number, endYear: number): TQueryRule[] {
+export function buildPublishedDateRangeRules(startYear: number, endYear: number): TSearchQueryRule[] {
   return [
     {
       field: "attributes.published_date",
@@ -71,12 +71,13 @@ export function buildPublishedDateRangeRules(startYear: number, endYear: number)
   ];
 }
 
-export function findPublishedDateRangeValue(group: TQueryGroup): string | null {
+export function findPublishedDateRangeValue(group: TSearchQueryGroup): string | null {
   for (const filter of group.filters) {
     if ("field" in filter) {
       if (filter.field === "attributes.published_date" && filter.op === "gte") {
         const endRule = group.filters.find(
-          (candidate): candidate is TQueryRule => "field" in candidate && candidate.field === "attributes.published_date" && candidate.op === "lte"
+          (candidate): candidate is TSearchQueryRule =>
+            "field" in candidate && candidate.field === "attributes.published_date" && candidate.op === "lte"
         );
         if (endRule) {
           const startYear = parseIsoYear(filter.value);
@@ -94,7 +95,7 @@ export function findPublishedDateRangeValue(group: TQueryGroup): string | null {
   return null;
 }
 
-export function upsertPublishedDateRangeRules(group: TQueryGroup, value: string): TQueryGroup {
+export function upsertPublishedDateRangeRules(group: TSearchQueryGroup, value: string): TSearchQueryGroup {
   const parsedRange = parseYearRange(value);
   if (!parsedRange) return group;
 
@@ -105,8 +106,8 @@ export function upsertPublishedDateRangeRules(group: TQueryGroup, value: string)
   };
 }
 
-export function removePublishedDateRules(group: TQueryGroup): TQueryGroup {
-  const filters: Array<TQueryGroup | TQueryRule> = [];
+export function removePublishedDateRules(group: TSearchQueryGroup): TSearchQueryGroup {
+  const filters: Array<TSearchQueryGroup | TSearchQueryRule> = [];
   for (const filter of group.filters) {
     if ("field" in filter) {
       if (filter.field === "attributes.published_date") {

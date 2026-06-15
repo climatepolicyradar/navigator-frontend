@@ -1,4 +1,4 @@
-import type { TQueryGroup } from "@/components/_experiment/advancedFilters/AdvancedFilters";
+import { TSearchQueryGroup } from "@/types";
 
 type TAggregationRow = {
   value?: { id?: string } | null;
@@ -6,7 +6,7 @@ type TAggregationRow = {
 
 type TWithId = { id: string };
 
-function isFilterTreeEmpty(group: TQueryGroup | null | undefined): boolean {
+function isFilterTreeEmpty(group: TSearchQueryGroup | null | undefined): boolean {
   if (!group || !group.filters || group.filters.length === 0) return true;
 
   for (const f of group.filters) {
@@ -34,7 +34,7 @@ function isFilterTreeEmpty(group: TQueryGroup | null | undefined): boolean {
 export function getAvailableLabelIdsFromAggregations(
   aggregations: TAggregationRow[] | undefined,
   query: string | undefined,
-  filters: TQueryGroup | null | undefined
+  filters: TSearchQueryGroup | null | undefined
 ): Set<string> | undefined {
   const hasQuery = !!(query && query.trim().length > 0);
   const hasAnyFilters = !isFilterTreeEmpty(filters);

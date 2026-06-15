@@ -5,14 +5,14 @@
  * 2. Concepts - local data with definitions and alternative labels
  */
 
-import { TLabelResult } from "@/hooks/useLabelSearch";
+import { TSearchLabel } from "@/types";
 import { TTopic } from "@/types";
 
 /**
  * Response structure from /search/labels API
  */
 export type TLabelsResponse = {
-  results: TLabelResult[];
+  results: TSearchLabel[];
 };
 
 /**
@@ -27,7 +27,7 @@ export type TConcept = TTopic;
 export type TSuggestion =
   | {
       type: "label";
-      data: TLabelResult;
+      data: TSearchLabel;
     }
   | {
       type: "search";

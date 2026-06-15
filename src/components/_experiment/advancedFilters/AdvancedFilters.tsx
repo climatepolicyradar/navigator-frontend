@@ -2,33 +2,12 @@ import { Dialog as BaseDialog } from "@base-ui/react/dialog";
 import { Plus, Trash2, X } from "lucide-react";
 import { Fragment, useCallback, useEffect, useRef, useState } from "react";
 
-import { useLabelSearch, TLabelResult } from "@/hooks/useLabelSearch";
+import { useLabelSearch } from "@/hooks/useLabelSearch";
+import { isRule, TSearchLabel, TSearchQueryGroup, TSearchQueryRule } from "@/types";
 import { labelTypeLabel } from "@/utils/_experiment/labelTypeLabel";
 import { joinTailwindClasses } from "@/utils/tailwind";
 
-export type TQueryGroup = {
-  op: "and" | "or";
-  filters: (TQueryGroup | TQueryRule)[];
-};
-
-export type TQueryRule =
-  | {
-      field: "labels.value.id" | "attributes.status";
-      op: "contains" | "not_contains" | "eq";
-      value: string;
-    }
-  | {
-      field: "attributes.published_date";
-      key?: "published_date";
-      op: "eq" | "not_eq" | "lt" | "lte" | "gt" | "gte";
-      value: string;
-    };
-
-function isRule(node: TQueryGroup | TQueryRule): node is TQueryRule {
-  return "field" in node;
-}
-
-export function isFilterGroupEmpty(filters: TQueryGroup | null): boolean {
+export function isFilterGroupEmpty(filters: TSearchQueryGroup | null): boolean {
   if (!filters) return true;
   if (filters.filters.length === 0) return true;
   return !filters.filters.some((filter) => {
@@ -40,7 +19,7 @@ export function isFilterGroupEmpty(filters: TQueryGroup | null): boolean {
 // ID helpers (stable keys for React lists)
 let _nextId = 1;
 const nodeIds = new WeakMap<object, number>();
-function nodeId(node: TQueryGroup | TQueryRule): number {
+function nodeId(node: TSearchQueryGroup | TSearchQueryRule): number {
   let id = nodeIds.get(node);
   if (id === undefined) {
     id = _nextId++;
@@ -51,20 +30,20 @@ function nodeId(node: TQueryGroup | TQueryRule): number {
 
 // Immutable tree helpers (produce new references on every change)
 
-function createRule(): TQueryRule {
+function createRule(): TSearchQueryRule {
   return { field: "labels.value.id", op: "contains", value: "" };
 }
 
-export function createGroup(): TQueryGroup {
+export function createGroup(): TSearchQueryGroup {
   return { op: "and", filters: [createRule()] };
 }
 
 /** Deep-clone + replace a node at a specific path. */
 function updateAtPath(
-  root: TQueryGroup,
+  root: TSearchQueryGroup,
   path: number[],
-  updater: (node: TQueryGroup | TQueryRule) => TQueryGroup | TQueryRule | null
-): TQueryGroup | null {
+  updater: (node: TSearchQueryGroup | TSearchQueryRule) => TSearchQueryGroup | TSearchQueryRule | null
+): TSearchQueryGroup | null {
   if (path.length === 0) {
     const result = updater(root);
     return result && !isRule(result) ? result : root;
@@ -98,7 +77,7 @@ function updateAtPath(
   return { ...root, filters: newFilters };
 }
 
-function addAtPath(root: TQueryGroup, path: number[], item: TQueryGroup | TQueryRule): TQueryGroup {
+function addAtPath(root: TSearchQueryGroup, path: number[], item: TSearchQueryGroup | TSearchQueryRule): TSearchQueryGroup {
   if (path.length === 0) {
     return { ...root, filters: [...root.filters, item] };
   }
@@ -143,7 +122,7 @@ function LabelPicker({ value, onChange, placeholder = "Search...", autoFocus = f
   }, []);
 
   const handleSelect = useCallback(
-    (label: TLabelResult) => {
+    (label: TSearchLabel) => {
       onChange(label.value);
       setInputValue("");
       setIsOpen(false);
@@ -333,8 +312,8 @@ function ConnectorPill({ value, onChange }: { value: "and" | "or"; onChange: (v:
 
 // Rule row
 interface RuleRowProps {
-  rule: TQueryRule;
-  onUpdate: (updated: TQueryRule) => void;
+  rule: TSearchQueryRule;
+  onUpdate: (updated: TSearchQueryRule) => void;
   onDelete: () => void;
   isOnly: boolean;
   availableLabelIds?: ReadonlySet<string> | undefined;
@@ -397,10 +376,10 @@ function RuleRow({ rule, onUpdate, onDelete, isOnly }: RuleRowProps) {
 
 // Group renderer (recursive)
 interface GroupRendererProps {
-  group: TQueryGroup;
+  group: TSearchQueryGroup;
   path: number[];
-  root: TQueryGroup;
-  onChange: (newRoot: TQueryGroup) => void;
+  root: TSearchQueryGroup;
+  onChange: (newRoot: TSearchQueryGroup) => void;
   depth: number;
   onDeleteGroup?: () => void;
 }
@@ -411,7 +390,7 @@ function GroupRenderer({ group, path, root, onChange, depth, onDeleteGroup }: Gr
   const borderColor = borderColors[depth % borderColors.length];
   const bgColor = bgColors[depth % bgColors.length];
 
-  const handleUpdateNode = (index: number, updatedNode: TQueryGroup | TQueryRule) => {
+  const handleUpdateNode = (index: number, updatedNode: TSearchQueryGroup | TSearchQueryRule) => {
     const updated = updateAtPath(root, [...path, index], () => updatedNode);
     if (updated) onChange(updated);
   };
@@ -531,8 +510,8 @@ function GroupRenderer({ group, path, root, onChange, depth, onDeleteGroup }: Gr
 }
 
 type TProps = {
-  filters?: TQueryGroup | null;
-  setFilters?: (filters: TQueryGroup | null) => void;
+  filters?: TSearchQueryGroup | null;
+  setFilters?: (filters: TSearchQueryGroup | null) => void;
   open?: boolean;
   onOpenChange?: (open: boolean) => void;
 };
@@ -571,7 +550,7 @@ export function AdvancedFilters({ filters, setFilters, open, onOpenChange }: TPr
   );
 }
 
-function countRules(node: TQueryGroup | TQueryRule): number {
+function countRules(node: TSearchQueryGroup | TSearchQueryRule): number {
   if (isRule(node)) return 1;
   return node.filters.reduce((sum, child) => sum + countRules(child), 0);
 }

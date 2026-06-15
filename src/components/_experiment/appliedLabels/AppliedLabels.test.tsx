@@ -2,15 +2,16 @@ import { render, screen } from "@testing-library/react";
 import { describe, it, expect } from "vitest";
 
 import { createGroup } from "@/components/_experiment/advancedFilters/AdvancedFilters";
-import { TLabelResult } from "@/hooks/useLabelSearch";
+import { TSearchLabel } from "@/types";
 import { addLabelRule } from "@/utils/filters/advancedFilters";
 
 import { AppliedLabels } from "./AppliedLabels";
 
-const conceptLabel: TLabelResult = {
+const conceptLabel: TSearchLabel = {
   id: "concept::Q567",
   type: "concept",
   value: "renewable energy",
+  labels: [],
 };
 
 const filters = addLabelRule(createGroup(), "concept::Q567");

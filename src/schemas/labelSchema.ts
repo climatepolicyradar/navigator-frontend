@@ -30,7 +30,7 @@ export const LABEL_TYPES = [
 
 // Allows Valibot to approve any string but type it as a string union for DX
 // This prevents Valibot failing when new label types are introduced to the API and not yet listed above
-const LabelTypeSchema = v.custom<(typeof LABEL_TYPES)[number]>((value) => typeof value === "string");
+export const LabelTypeSchema = v.custom<(typeof LABEL_TYPES)[number]>((value) => typeof value === "string");
 export type TDataInLabelType = v.InferOutput<typeof LabelTypeSchema>;
 
 export const MANDATORY_FAMILY_LABEL_TYPES: TDataInLabelType[] = ["activity_status", "category", "provider"];
@@ -45,7 +45,9 @@ export type TDataInLabel = {
     labels: TDataInLabel[];
     attributes?: Record<string, string>;
   };
-  timestamp: string | null;
+  timestamp?: string | null;
+  passages_id?: null; // TODO
+  count?: null; // TODO
 };
 
 export const LabelSchema: v.GenericSchema<TDataInLabel> = v.object({
@@ -57,5 +59,7 @@ export const LabelSchema: v.GenericSchema<TDataInLabel> = v.object({
     labels: v.array(v.lazy(() => LabelSchema)), // v.lazy allows for a recursive type. v.GenericSchema keeps TS happy
     attributes: v.optional(v.any()),
   }),
-  timestamp: v.nullable(v.string()),
+  timestamp: v.optional(v.nullable(v.string())),
+  passages_id: v.optional(v.null()), // TODO
+  count: v.optional(v.null()), // TODO
 });

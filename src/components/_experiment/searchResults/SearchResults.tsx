@@ -3,10 +3,11 @@ import React, { Fragment, Suspense, use, useEffect, useMemo } from "react";
 
 import { fetchSearchDocuments, SearchDocument, SearchDocumentsResponse, SearchDocumentsSortKey } from "@/api/search";
 import { DocumentCard } from "@/components/molecules/documentCard/DocumentCard";
+import { TSearchQueryGroup } from "@/types";
 import { stripEmptyValueRules } from "@/utils/filters/advancedFilters";
 
 import styles from "./SearchResults.module.css";
-import { isFilterGroupEmpty, TQueryGroup } from "../advancedFilters/AdvancedFilters";
+import { isFilterGroupEmpty } from "../advancedFilters/AdvancedFilters";
 import { EmptySearch } from "../emptySearch/EmptySearch";
 
 // Principal = Family in old model
@@ -64,7 +65,7 @@ export function SearchContainer({
 }: {
   selectedLabels?: string[];
   query?: string;
-  filters?: TQueryGroup;
+  filters?: TSearchQueryGroup;
   page_token?: string;
   page_size?: string;
   sort?: SearchDocumentsSortKey;

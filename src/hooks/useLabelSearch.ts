@@ -2,16 +2,10 @@ import debounce from "lodash/debounce";
 import { useEffect, useMemo, useState } from "react";
 
 import { ApiClient } from "@/api/http-common";
-
-export type TLabelResult = {
-  id: string;
-  type: string;
-  value: string;
-  alternative_labels?: string[];
-};
+import { TSearchLabel } from "@/types";
 
 type TLabelsResponse = {
-  results: TLabelResult[];
+  results: TSearchLabel[];
 };
 
 interface UseLabelSearchOptions {
@@ -19,10 +13,10 @@ interface UseLabelSearchOptions {
   debounceDelay?: number;
 }
 
-export const loadLabels = async (query: string): Promise<TLabelResult[]> => {
+export const loadLabels = async (query: string): Promise<TSearchLabel[]> => {
   const apiUrl = process.env.NEXT_PUBLIC_API_URL || "https://api.climatepolicyradar.org";
   const client = new ApiClient(apiUrl);
-  // We exclude these types as it is legacy data, but still used elsewhere.
+  // Exclude these types as it is legacy data, or not relevant to the search UI.
   const defaultFilter = {
     op: "and",
     filters: [
@@ -66,6 +60,36 @@ export const loadLabels = async (query: string): Promise<TLabelResult[]> => {
         op: "not_contains",
         value: "role",
       },
+      {
+        field: "type",
+        op: "not_contains",
+        value: "language",
+      },
+      {
+        field: "type",
+        op: "not_contains",
+        value: "sector",
+      },
+      {
+        field: "type",
+        op: "not_contains",
+        value: "deprecated_category",
+      },
+      {
+        field: "type",
+        op: "not_contains",
+        value: "domain",
+      },
+      {
+        field: "type",
+        op: "not_contains",
+        value: "process",
+      },
+      {
+        field: "type",
+        op: "not_contains",
+        value: "external_id",
+      },
     ],
   };
   const response = await client.get<TLabelsResponse>(
@@ -89,7 +113,7 @@ export const loadLabels = async (query: string): Promise<TLabelResult[]> => {
 export function useLabelSearch(query: string, options: UseLabelSearchOptions = {}) {
   const { debounceDelay = 300 } = options;
 
-  const [results, setResults] = useState<TLabelResult[]>([]);
+  const [results, setResults] = useState<TSearchLabel[]>([]);
   const [isLoading, setIsLoading] = useState(false);
 
   const debouncedSearch = useMemo(

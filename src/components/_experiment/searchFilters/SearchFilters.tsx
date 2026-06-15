@@ -3,20 +3,19 @@ import { ChevronDown, ChevronRight, ChevronUp, Circle, ListFilter, SlidersHorizo
 import { useMemo, useState } from "react";
 
 import { Checkbox } from "@/components/atoms/checkbox/Checkbox";
-import { TLabelResult } from "@/hooks/useLabelSearch";
+import { TSearchLabel, TSearchQueryGroup } from "@/types";
 import { hasPublishedDateRule } from "@/utils/_experiment/dateRangeFilters";
 import { labelTypeLabel } from "@/utils/_experiment/labelTypeLabel";
 import { joinTailwindClasses } from "@/utils/tailwind";
 
 import { PublishedDateFilterSection } from "./PublishedDateFilterSection";
-import { TQueryGroup } from "../advancedFilters/AdvancedFilters";
 
-function hasValue(group: TQueryGroup | null | undefined, value: string): boolean {
+function hasValue(group: TSearchQueryGroup | null | undefined, value: string): boolean {
   if (!group) return false;
   return group.filters.some((f) => ("value" in f ? f.value === value : hasValue(f, value)));
 }
 
-function hasActiveFilterOfType(filters: TLabelResult[], group: TQueryGroup | null | undefined, type: TLabelType): boolean {
+function hasActiveFilterOfType(filters: TSearchLabel[], group: TSearchQueryGroup | null | undefined, type: TLabelType): boolean {
   if (!group) return false;
   return group.filters.some((f) =>
     "value" in f ? filters.some((label) => label.id === f.value && label.type === type) : hasActiveFilterOfType(filters, f, type)
@@ -28,8 +27,8 @@ const OTHER_LABEL_TYPES = ["activity_status", "agent"] as const;
 export type TLabelType = (typeof PRIMARY_LABEL_TYPES)[number] | (typeof OTHER_LABEL_TYPES)[number];
 
 type TProps = {
-  availableFilters: TLabelResult[];
-  filters?: TQueryGroup | null;
+  availableFilters: TSearchLabel[];
+  filters?: TSearchQueryGroup | null;
   activeLabelType: TLabelType;
   onActiveLabelTypeChange: (labelType: TLabelType) => void;
   onAdvancedClick?: () => void;
@@ -59,7 +58,7 @@ export function SearchFilters({
     [availableFilters, activeLabelType]
   );
 
-  const renderCheckboxRow = (filter: TLabelResult, isAvailable: boolean) => {
+  const renderCheckboxRow = (filter: TSearchLabel, isAvailable: boolean) => {
     const checked = hasValue(filters, filter.id);
     return (
       <li key={filter.id}>

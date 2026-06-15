@@ -1,21 +1,19 @@
 import { LucideX, SlidersHorizontal } from "lucide-react";
 
-import { TLabelResult } from "@/hooks/useLabelSearch";
+import { TSearchLabel, TSearchQueryGroup } from "@/types";
 
-import { TQueryGroup } from "../advancedFilters/AdvancedFilters";
-
-function getTypeOfLabel(label: string, availableFilters: TLabelResult[]): string | null {
+function getTypeOfLabel(label: string, availableFilters: TSearchLabel[]): string | null {
   const found = availableFilters.find((f) => f.id === label);
   return found ? found.type : null;
 }
 
-function getLabelDisplayName(label: string, availableFilters: TLabelResult[]): string {
+function getLabelDisplayName(label: string, availableFilters: TSearchLabel[]): string {
   const found = availableFilters.find((f) => f.id === label);
   return found ? found.value : (label.split("::")?.[1] ?? label);
 }
 
 // determine if any of the current filters contain any groups, or have any of the settings set to "or", or contain a "not_contains" op rule
-function isFilterComplex(filters: TQueryGroup | null | undefined): boolean {
+function isFilterComplex(filters: TSearchQueryGroup | null | undefined): boolean {
   if (!filters) return false;
   if (filters.op === "or") return true; // using or operator at top level
   if (filters.filters.some((f) => "filters" in f)) return true; // has a subgroup
@@ -70,8 +68,8 @@ export function AppliedLabels({
   dateRangeValue,
   onRemoveDateRange,
 }: {
-  filters: TQueryGroup;
-  availableFilters: TLabelResult[];
+  filters: TSearchQueryGroup;
+  availableFilters: TSearchLabel[];
   labels: string[];
   onClear?: () => void;
   onRemoveLabel?: (label: string) => void;
