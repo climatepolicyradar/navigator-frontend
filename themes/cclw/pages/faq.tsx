@@ -32,7 +32,7 @@ const FAQ: React.FC = () => {
               </Heading>
               <p>You can use this resource to:</p>
               <ul>
-                <li>Search the full text of over 8000 laws, policies and UNFCCC submissions from every country.</li>
+                <li>Search the full text of over 9000 laws, policies and UNFCCC submissions from every country.</li>
                 <li>See exact matches and related phrases highlighted in the text.</li>
                 <li>Find documents from all languages translated to English to increase accessibility.</li>
               </ul>
