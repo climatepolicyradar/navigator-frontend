@@ -9,7 +9,7 @@ type TPartialRecord<Key extends string, Value> = Partial<Record<Key, Value>>;
 
 // All of the possible block names used in TThemeConfig.pageBlocks to specify which blocks to render on each page
 // Adding a new block to a page? Add a new string to the page's type here, then add the new key to the TBlockDefinitions declaration on the page
-export type TFamilyPageBlock = "collections" | "debug" | "documents" | "metadata" | "note" | "summary" | "topics" | "targets";
+export type TFamilyPageBlock = "collections" | "debug" | "documents" | "metadata" | "note" | "summary" | "topics";
 type TCollectionPageBlock = "events";
 export type TGeographyPageBlock = "debug" | "intro" | "legislativeProcess" | "recents" | "statistics" | "subdivisions";
 export type TBlock = TFamilyPageBlock | TCollectionPageBlock | TGeographyPageBlock;

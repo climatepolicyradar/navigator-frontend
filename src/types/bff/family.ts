@@ -8,10 +8,9 @@ import {
   TApiGeography,
   TApiGeographySubdivision,
   TApiSearchResponse,
-  TApiTarget,
 } from "../api";
 import { IFamilyDocumentTopics } from "../tables/familyDocumentTopics";
-import { TCollectionPublicWithFamilies, TFamilyPublic, TGeography, TGeographySubdivision, TSearchResponse, TTarget } from "../types";
+import { TCollectionPublicWithFamilies, TFamilyPublic, TGeography, TGeographySubdivision, TSearchResponse } from "../types";
 
 export type TFamilyApiOldData = {
   collections: TApiCollectionPublicWithFamilies[];
@@ -20,7 +19,6 @@ export type TFamilyApiOldData = {
   family: TApiFamilyPublic;
   familyTopics: IApiFamilyDocumentTopics | null;
   subdivisions: TApiGeographySubdivision[];
-  targets: TApiTarget[];
   vespaFamilyData: TApiSearchResponse | null;
 };
 
@@ -32,7 +30,6 @@ export type TFamilyPresentationalData = {
   family: TFamilyPublic;
   familyTopics: IFamilyDocumentTopics | null;
   subdivisions: TGeographySubdivision[];
-  targets: TTarget[];
   vespaFamilyData: TSearchResponse | null;
   debug?: {
     usesDataIn: boolean;
