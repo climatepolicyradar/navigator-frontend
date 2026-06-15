@@ -8,7 +8,7 @@ import { LOREM_IPSUM } from "@/constants/stories";
 import { Drawer } from "./Drawer";
 
 const meta = {
-  title: "Atoms/DrawerNew",
+  title: "Atoms/Drawer",
   component: Drawer,
   argTypes: {
     children: { control: false },
