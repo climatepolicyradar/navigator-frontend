@@ -1,7 +1,7 @@
 import { Loader } from "lucide-react";
 import { Fragment } from "react";
 
-import { Drawer } from "@/components/atoms/drawer/DrawerNew";
+import { Drawer } from "@/components/atoms/drawer/Drawer";
 import { PageLink } from "@/components/atoms/pageLink/PageLink";
 import { ViewMore } from "@/components/molecules/viewMore/ViewMore";
 import { InteractiveTable } from "@/components/organisms/interactiveTable/InteractiveTable";

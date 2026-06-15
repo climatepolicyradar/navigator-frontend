@@ -2,7 +2,7 @@ import { FamilyMeta } from "@/components/document/FamilyMeta";
 import { Heading } from "@/components/typography/Heading";
 import { TMatchedFamily } from "@/types";
 
-export const FamilyMatchesTitle = ({ family }: { family?: TMatchedFamily }) => {
+export const SearchResultDrawerTitle = ({ family }: { family?: TMatchedFamily }) => {
   if (!family) return null;
   const { family_name, family_category, family_date, corpus_import_id, corpus_type_name, family_geographies } = family;
 

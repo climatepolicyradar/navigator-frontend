@@ -2,7 +2,7 @@ import { LucideFileText } from "lucide-react";
 import { useState } from "react";
 
 import { SearchDocument } from "@/api/search";
-import { Drawer } from "@/components/atoms/drawer/DrawerNew";
+import { Drawer } from "@/components/atoms/drawer/Drawer";
 
 function linkHref(doc: SearchDocument): string | undefined {
   if (doc.attributes.deprecated_slug)

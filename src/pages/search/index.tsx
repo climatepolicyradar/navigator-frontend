@@ -12,11 +12,11 @@ import { LinkWithQuery } from "@/components/LinkWithQuery";
 import Loader from "@/components/Loader";
 import { SlideOut } from "@/components/atoms/SlideOut/SlideOut";
 import { Button } from "@/components/atoms/button/Button";
-import { Drawer } from "@/components/atoms/drawer/DrawerNew";
+import { Drawer } from "@/components/atoms/drawer/Drawer";
 import { PageLink } from "@/components/atoms/pageLink/PageLink";
 import { BreadCrumbs } from "@/components/breadcrumbs/Breadcrumbs";
-import { FamilyMatchesDrawer } from "@/components/drawer/FamilyMatchesDrawer";
-import { FamilyMatchesTitle } from "@/components/drawer/FamilyMatchesTitle";
+import { SearchResultDrawer } from "@/components/drawers/searchResult/SearchResultDrawer";
+import { SearchResultDrawerTitle } from "@/components/drawers/searchResult/SearchResultDrawerTitle";
 import SearchFilters from "@/components/filters/SearchFilters";
 import { SearchSettings } from "@/components/filters/SearchSettings";
 import Layout from "@/components/layouts/Main";
@@ -803,9 +803,9 @@ const Search = ({ familyConceptsData, features, theme, themeConfig, topicsData }
               <Drawer
                 open={drawerFamily !== false}
                 onOpenChange={setDrawerFamily}
-                title={<FamilyMatchesTitle family={drawerFamily !== false && families[drawerFamily as number]} />}
+                title={<SearchResultDrawerTitle family={drawerFamily !== false && families[drawerFamily as number]} />}
               >
-                <FamilyMatchesDrawer
+                <SearchResultDrawer
                   family={drawerFamily !== false && families[drawerFamily as number]}
                   position={(drawerFamily as number) + 1}
                   positionOffset={offset}

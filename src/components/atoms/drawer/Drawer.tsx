@@ -3,7 +3,7 @@ import { LucideX } from "lucide-react";
 
 import { joinTailwindClasses } from "@/utils/tailwind";
 
-import styles from "./DrawerNew.module.css";
+import styles from "./Drawer.module.css";
 
 type TDirection = "left" | "right" | "top" | "bottom";
 

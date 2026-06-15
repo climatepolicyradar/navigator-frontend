@@ -18,7 +18,7 @@ interface IProps {
   positionOffset: number;
 }
 
-export const FamilyMatchesDrawer = ({ family, position, positionOffset }: IProps) => {
+export const SearchResultDrawer = ({ family, position, positionOffset }: IProps) => {
   const router = useRouter();
   const features = useContext(FeaturesContext);
 

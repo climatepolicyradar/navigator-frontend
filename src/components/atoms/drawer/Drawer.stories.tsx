@@ -5,7 +5,7 @@ import { useState } from "react";
 import { Button } from "@/components/atoms/button/Button";
 import { LOREM_IPSUM } from "@/constants/stories";
 
-import { Drawer } from "./DrawerNew";
+import { Drawer } from "./Drawer";
 
 const meta = {
   title: "Atoms/DrawerNew",

@@ -1,6 +1,6 @@
 import { useMemo } from "react";
 
-import { Drawer } from "@/components/atoms/drawer/DrawerNew";
+import { Drawer } from "@/components/atoms/drawer/Drawer";
 import { PageLink } from "@/components/atoms/pageLink/PageLink";
 import { InteractiveTable } from "@/components/organisms/interactiveTable/InteractiveTable";
 import { ARROW_UP_RIGHT } from "@/constants/chars";
