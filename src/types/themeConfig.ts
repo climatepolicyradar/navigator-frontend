@@ -12,7 +12,9 @@ type TPartialRecord<Key extends string, Value> = Partial<Record<Key, Value>>;
 export type TFamilyPageBlock = "collections" | "debug" | "documents" | "metadata" | "note" | "summary" | "topics";
 type TCollectionPageBlock = "events";
 export type TGeographyPageBlock = "debug" | "intro" | "legislativeProcess" | "recents" | "statistics" | "subdivisions";
-export type TBlock = TFamilyPageBlock | TCollectionPageBlock | TGeographyPageBlock;
+// blocks that are currently only used on any page but may be added to the theme config in future
+type TOtherBlocks = "targets";
+export type TBlock = TFamilyPageBlock | TCollectionPageBlock | TGeographyPageBlock | TOtherBlocks;
 
 type TThemePageBlocks = {
   family: TFamilyPageBlock[];
