@@ -60,3 +60,17 @@ export const IconLeft: TStory = {
   },
   render: useInputContext,
 };
+
+export const Sizes: TStory = {
+  args: {
+    clearable: true,
+    placeholder: "Type something",
+  },
+  render: (args) => (
+    <div className="flex flex-col gap-4">
+      <Input {...args} size="small" placeholder="Small size" />
+      <Input {...args} size="medium" placeholder="Medium size" />
+      <Input {...args} size="large" placeholder="Large size" />
+    </div>
+  ),
+};

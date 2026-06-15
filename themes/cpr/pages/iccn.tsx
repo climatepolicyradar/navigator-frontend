@@ -48,24 +48,24 @@ export default function ICCNLandingPage() {
       },
       suggestions: [
         {
-          label: "Grid capacity",
+          label: "Adaptation/resilience",
           query: {
             [QUERY_PARAMS.category]: "climate-council-reports",
-            [QUERY_PARAMS.query_string]: "Grid capacity",
+            [QUERY_PARAMS.concept_name]: "adaptation/resilience",
           },
         },
         {
-          label: "Agricultural systems",
+          label: "Health adaptation",
           query: {
             [QUERY_PARAMS.category]: "climate-council-reports",
-            [QUERY_PARAMS.query_string]: "Agricultural systems",
+            [QUERY_PARAMS.concept_name]: "health adaptation",
           },
         },
         {
-          label: "Emissions reductions pathways",
+          label: "Our emissions reduction target topic",
           query: {
             [QUERY_PARAMS.category]: "climate-council-reports",
-            [QUERY_PARAMS.query_string]: "Emissions reductions pathways",
+            [QUERY_PARAMS.concept_name]: "emissions reduction target",
           },
         },
       ],
