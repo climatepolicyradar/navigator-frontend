@@ -41,7 +41,7 @@
 }
 
 .highlights {
-  :global(hi) {
+  ::global(hi) {
     @apply bg-yellow-200;
   }
 }

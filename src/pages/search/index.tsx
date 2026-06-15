@@ -12,10 +12,11 @@ import { LinkWithQuery } from "@/components/LinkWithQuery";
 import Loader from "@/components/Loader";
 import { SlideOut } from "@/components/atoms/SlideOut/SlideOut";
 import { Button } from "@/components/atoms/button/Button";
+import { Drawer } from "@/components/atoms/drawer/DrawerNew";
 import { PageLink } from "@/components/atoms/pageLink/PageLink";
 import { BreadCrumbs } from "@/components/breadcrumbs/Breadcrumbs";
 import { FamilyMatchesDrawer } from "@/components/drawer/FamilyMatchesDrawer";
-import Slideout from "@/components/drawer/Slideout";
+import { FamilyMatchesTitle } from "@/components/drawer/FamilyMatchesTitle";
 import SearchFilters from "@/components/filters/SearchFilters";
 import { SearchSettings } from "@/components/filters/SearchSettings";
 import Layout from "@/components/layouts/Main";
@@ -799,13 +800,17 @@ const Search = ({ familyConceptsData, features, theme, themeConfig, topicsData }
                   </div>
                 </MultiCol>
               </section>
-              <Slideout show={drawerFamily !== false} setShow={setDrawerFamily}>
+              <Drawer
+                open={drawerFamily !== false}
+                onOpenChange={setDrawerFamily}
+                title={<FamilyMatchesTitle family={drawerFamily !== false && families[drawerFamily as number]} />}
+              >
                 <FamilyMatchesDrawer
                   family={drawerFamily !== false && families[drawerFamily as number]}
                   position={(drawerFamily as number) + 1}
                   positionOffset={offset}
                 />
-              </Slideout>
+              </Drawer>
               <DownloadCsvPopup isOpen={showCSVDownloadPopup} onClose={() => setShowCSVDownloadPopup(false)} onDownload={handleDownloadCsvClick} />
             </WikiBaseConceptsContext.Provider>
           </SlideOutContext.Provider>
