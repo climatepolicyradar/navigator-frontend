@@ -3,7 +3,7 @@ import { TFamilyPageBlock, TFeatures, TTheme } from "@/types";
 import { getFamilyBlocks } from "./getFamilyBlocks";
 
 describe("getFamilyBlocks", () => {
-  const familyBlocks: TFamilyPageBlock[] = ["summary", "documents", "metadata", "topics", "collections", "targets", "note"];
+  const familyBlocks: TFamilyPageBlock[] = ["summary", "documents", "metadata", "topics", "collections", "note"];
   const features = {
     "ab-family-topic-block": false,
   } as TFeatures;
@@ -26,14 +26,6 @@ describe("getFamilyBlocks", () => {
       "ab-family-topic-block": true,
     };
 
-    expect(getFamilyBlocks(familyBlocks, featuresWithABTest, "cclw")).toEqual([
-      "summary",
-      "topics",
-      "documents",
-      "metadata",
-      "collections",
-      "targets",
-      "note",
-    ]);
+    expect(getFamilyBlocks(familyBlocks, featuresWithABTest, "cclw")).toEqual(["summary", "topics", "documents", "metadata", "collections", "note"]);
   });
 });

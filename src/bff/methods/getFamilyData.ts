@@ -14,7 +14,6 @@ import {
   TApiItemResponse,
   TApiSearchResponse,
   TApiSlugResponse,
-  TApiTarget,
   TCorpusTypeDictionary,
   TFamilyPresentationalResponse,
   TFeatures,
@@ -121,18 +120,6 @@ export const getFamilyData = async (slug: string, features: TFeatures): Promise<
   );
   const collections = allCollections.flat().filter((collection) => collection !== undefined);
 
-  let targets: TApiTarget[] = [];
-  try {
-    const targetsRaw = await axios.get<TApiTarget[]>(`${process.env.TARGETS_URL}/families/${family.import_id}.json`);
-    targets = targetsRaw.data;
-  } catch (error) {
-    // Targets store in S3 are not available for the majority of families, so we fail silently
-    // Otherwise the logs are flooded with 404s and 403s
-    if (axios.isAxiosError(error) && error.response?.status === 500) {
-      errors.push(new Error("Failed to fetch target data", error));
-    }
-  }
-
   // Check the family is in the "allowed_corpora"
   if (family.corpus_id && !isCorpusIdAllowed(process.env.BACKEND_API_TOKEN, family.corpus_id)) {
     errors.push(new Error("Family is not in an allowed corpora"));
@@ -149,7 +136,6 @@ export const getFamilyData = async (slug: string, features: TFeatures): Promise<
       family,
       familyTopics: familyTopics || null,
       subdivisions,
-      targets,
       vespaFamilyData: vespaFamilyData || null,
     },
     dataInDocument,

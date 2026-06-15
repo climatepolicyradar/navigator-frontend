@@ -7,7 +7,6 @@ import { CollectionsBlock } from "@/components/blocks/collectionsBlock/Collectio
 import { DocumentsBlock } from "@/components/blocks/documentsBlock/DocumentsBlock";
 import { MetadataBlock } from "@/components/blocks/metadataBlock/MetadataBlock";
 import { NoteBlock } from "@/components/blocks/noteBlock/NoteBlock";
-import { TargetsBlock } from "@/components/blocks/targetsBlock/TargetsBlock";
 import { TextBlock } from "@/components/blocks/textBlock/TextBlock";
 import { TopicsBlock } from "@/components/blocks/topicsBlock/TopicsBlock";
 import { BreadCrumbs } from "@/components/breadcrumbs/Breadcrumbs";
@@ -32,7 +31,6 @@ import {
   TGeography,
   TGeographySubdivision,
   TSearchResponse,
-  TTarget,
   TTheme,
   TThemeConfig,
   TFeatures,
@@ -43,7 +41,6 @@ import { getFamilyMetadata } from "@/utils/family-metadata/getFamilyMetadata";
 import { getFamilyMetaDescription } from "@/utils/getFamilyMetaDescription";
 import { getLitigationCaseJSONLD } from "@/utils/json-ld/getLitigationCaseJSONLD";
 import { pluralise } from "@/utils/pluralise";
-import { sortFilterTargets } from "@/utils/sortFilterTargets";
 import { familyTopicsHasTopics } from "@/utils/topics/processFamilyTopics";
 
 export interface IProps {
@@ -54,7 +51,6 @@ export interface IProps {
   familyTopics: IFamilyDocumentTopics | null;
   features: TFeatures;
   subdivisions: TGeographySubdivision[];
-  targets: TTarget[];
   theme: TTheme;
   themeConfig: TThemeConfig;
   vespaFamilyData?: TSearchResponse | null;
@@ -65,19 +61,7 @@ export interface IProps {
   };
 }
 
-export const FamilyPage = ({
-  collections,
-  countries,
-  debug,
-  errors,
-  family,
-  familyTopics,
-  features,
-  targets,
-  subdivisions,
-  theme,
-  themeConfig,
-}: IProps) => {
+export const FamilyPage = ({ collections, countries, debug, errors, family, familyTopics, features, subdivisions, theme, themeConfig }: IProps) => {
   const configQuery = useConfig();
   const { data: { languages = {} } = {} } = configQuery;
   const { getCategoryTextLookup } = useText();
@@ -169,12 +153,6 @@ export const FamilyPage = ({
         if (!familyTopicsHasTopics(familyTopics)) return null;
         return <TopicsBlock key="topics" family={family} familyTopics={familyTopics} getCategoryText={getCategoryText} />;
       }, [family, familyTopics, getCategoryText]),
-    },
-    targets: {
-      render: useCallback(() => {
-        const publishedTargets = sortFilterTargets(targets);
-        return <TargetsBlock key="targets" targets={publishedTargets} />;
-      }, [targets]),
     },
   };
 
