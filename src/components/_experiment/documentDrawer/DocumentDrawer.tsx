@@ -41,7 +41,7 @@ export function DocumentDrawer({ document, open, onOpenChange }: TDocumentDrawer
       }
     >
       {document && (
-        <>
+        <div className="flex flex-col gap-4">
           {document.description && <p className="text-sm highlights" dangerouslySetInnerHTML={{ __html: document.description }} />}
           {document.documents.length > 0 && (
             <div>
@@ -107,7 +107,7 @@ export function DocumentDrawer({ document, open, onOpenChange }: TDocumentDrawer
               </>
             )}
           </Drawer>
-        </>
+        </div>
       )}
     </Drawer>
   );
