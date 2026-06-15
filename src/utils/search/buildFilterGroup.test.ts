@@ -1,4 +1,4 @@
-import { TFilterPathLabel, TSearchQueryGroup, TSearchQueryRule } from "@/types";
+import { TFilterPathLabel, TSearchQueryGroup } from "@/types";
 
 import { buildFilterGroup } from "./buildFilterGroup";
 
@@ -22,10 +22,15 @@ describe("buildFilterGroup", () => {
         },
       ],
     ];
-    const expectedFilterGroup: TSearchQueryGroup | TSearchQueryRule = {
-      field: "labels.value.id",
-      op: "contains",
-      value: "category::Multilateral Climate Fund project",
+    const expectedFilterGroup: TSearchQueryGroup = {
+      op: "or",
+      filters: [
+        {
+          field: "labels.value.id",
+          op: "contains",
+          value: "category::Multilateral Climate Fund project",
+        },
+      ],
     };
 
     expect(buildFilterGroup(allPathLabels)).toEqual(expectedFilterGroup);
@@ -48,7 +53,7 @@ describe("buildFilterGroup", () => {
         },
       ],
     ];
-    const expectedFilterGroup: TSearchQueryGroup | TSearchQueryRule = {
+    const expectedFilterGroup: TSearchQueryGroup = {
       op: "or",
       filters: [
         {
@@ -82,7 +87,7 @@ describe("buildFilterGroup", () => {
         },
       ],
     ];
-    const expectedFilterGroup: TSearchQueryGroup | TSearchQueryRule = {
+    const expectedFilterGroup: TSearchQueryGroup = {
       op: "and",
       filters: [
         {
@@ -123,7 +128,7 @@ describe("buildFilterGroup", () => {
         },
       ],
     ];
-    const expectedFilterGroup: TSearchQueryGroup | TSearchQueryRule = {
+    const expectedFilterGroup: TSearchQueryGroup = {
       op: "and",
       filters: [
         {
@@ -170,7 +175,7 @@ describe("buildFilterGroup", () => {
       ],
     ];
 
-    const expectedFilterGroup: TSearchQueryGroup | TSearchQueryRule = {
+    const expectedFilterGroup: TSearchQueryGroup = {
       op: "and",
       filters: [
         {
@@ -227,7 +232,7 @@ describe("buildFilterGroup", () => {
       ],
     ];
 
-    const expectedFilterGroup: TSearchQueryGroup | TSearchQueryRule = {
+    const expectedFilterGroup: TSearchQueryGroup = {
       op: "and",
       filters: [
         {
@@ -296,7 +301,7 @@ describe("buildFilterGroup", () => {
       ],
     ];
 
-    const expectedFilterGroup: TSearchQueryGroup | TSearchQueryRule = {
+    const expectedFilterGroup: TSearchQueryGroup = {
       op: "and",
       filters: [
         {
@@ -355,7 +360,7 @@ describe("buildFilterGroup", () => {
         },
       ],
     ];
-    const expectedFilterGroup: TSearchQueryGroup | TSearchQueryRule = {
+    const expectedFilterGroup: TSearchQueryGroup = {
       op: "and",
       filters: [
         {
@@ -421,7 +426,7 @@ describe("buildFilterGroup", () => {
         },
       ],
     ];
-    const expectedFilterGroup: TSearchQueryGroup | TSearchQueryRule = {
+    const expectedFilterGroup: TSearchQueryGroup = {
       op: "and",
       filters: [
         {
@@ -502,7 +507,7 @@ describe("buildFilterGroup", () => {
         },
       ],
     ];
-    const expectedFilterGroup: TSearchQueryGroup | TSearchQueryRule = {
+    const expectedFilterGroup: TSearchQueryGroup = {
       op: "and",
       filters: [
         {
@@ -573,7 +578,7 @@ describe("buildFilterGroup", () => {
         },
       ],
     ];
-    const expectedFilterGroup: TSearchQueryGroup | TSearchQueryRule = {
+    const expectedFilterGroup: TSearchQueryGroup = {
       op: "and",
       filters: [
         {
