@@ -69,10 +69,6 @@ export const getServerSideProps = (async (context) => {
     // Do nothing
   }
 
-  if (countryNameFromConfig) {
-    geographyV2.name = countryNameFromConfig;
-  }
-
   // If we don't have a geography - 404
   if (!geographyV2) {
     return { notFound: true };
@@ -81,6 +77,10 @@ export const getServerSideProps = (async (context) => {
   // We don't currently support regions - 404
   if (geographyV2.type === "region") {
     return { notFound: true };
+  }
+
+  if (countryNameFromConfig) {
+    geographyV2.name = countryNameFromConfig;
   }
 
   let vespaSearchResults: TSearch = null;
