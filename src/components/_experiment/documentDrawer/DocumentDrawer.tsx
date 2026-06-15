@@ -30,7 +30,6 @@ export function DocumentDrawer({ document, open, onOpenChange }: TDocumentDrawer
         if (!isOpen) setNestedDrawerOpen(false);
         onOpenChange(isOpen);
       }}
-      direction="bottom"
       title={
         document ? (
           linkHref(document) ? (
@@ -79,7 +78,6 @@ export function DocumentDrawer({ document, open, onOpenChange }: TDocumentDrawer
           <Drawer
             open={nestedDrawerOpen}
             onOpenChange={setNestedDrawerOpen}
-            direction="bottom"
             title={
               nestedDocument ? (
                 linkHref(nestedDocument) ? (
