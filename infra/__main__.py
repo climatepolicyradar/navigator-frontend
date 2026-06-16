@@ -133,20 +133,14 @@ if not is_review_stack_or_template:
     pulumi.export("ecr_repository_url", repository_url)
 
 # Review stack: use the shared ECR repo from frontend-platform.
-shared_resources_review_stack = pulumi.StackReference(
-    "climatepolicyradar/frontend-platform/staging"
-)
-
-shared_ecs_resources_stack = pulumi.StackReference(
+shared_resources_stack = pulumi.StackReference(
     f"climatepolicyradar/frontend-platform/{env}"
 )
 
 review_ecr_url = None
 frontend_image: docker_build.Image | None = None
-if is_review_stack:
-    review_ecr_url = shared_resources_review_stack.get_output(
-        "cpr_review_ecr_repository_url"
-    )
+if is_review_stack and env == "staging":
+    review_ecr_url = shared_resources_stack.get_output("cpr_review_ecr_repository_url")
 
     # Build and push the Docker image as part of the Pulumi deployment so that
     # the App Runner service has a valid image to pull.
@@ -200,8 +194,8 @@ shared_access_role_arn = None
 if not is_review_template:
     # For review stacks, use the shared ECR access role created in frontend-platform
     # to avoid the 64-character IAM role name limit on ephemeral PR stacks.
-    if is_review_stack:
-        shared_access_role_arn = shared_resources_review_stack.get_output(
+    if is_review_stack and env == "staging":
+        shared_access_role_arn = shared_resources_stack.get_output(
             "apprunner_ecr_access_role_arn"
         )
 
@@ -259,17 +253,15 @@ if not is_review_template:
             health_check_path="/",
         ),
         image_identifier=cast(str, image_identifier),
-        cluster_arn=shared_ecs_resources_stack.get_output("frontend_ecs_cluster_arn"),
-        task_execution_role_arn=shared_ecs_resources_stack.get_output(
+        cluster_arn=shared_resources_stack.get_output("frontend_ecs_cluster_arn"),
+        task_execution_role_arn=shared_resources_stack.get_output(
             "frontend_ecs_cluster_task_execution_role_arn"
         ),
-        infrastructure_role_arn=shared_ecs_resources_stack.get_output(
+        infrastructure_role_arn=shared_resources_stack.get_output(
             "frontend_ecs_cluster_infrastructure_role_arn"
         ),
         security_group_ids=[
-            shared_ecs_resources_stack.get_output(
-                "frontend_ecs_cluster_security_group_id"
-            )
+            shared_resources_stack.get_output("frontend_ecs_cluster_security_group_id")
         ],
         subnets=[
             eu_west_1a_public_subnet_id,
