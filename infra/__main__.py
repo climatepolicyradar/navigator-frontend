@@ -19,10 +19,6 @@ from resources.cloudfront_distribution import (
 from resources.cors_policy import CloudFrontCORSPolicy, CORSPolicyConfig
 from resources.dns import DNS, DNSConfig
 from resources.ecr_repository import ECRRepository, ECRRepositoryConfig
-from resources.ecs_cluster import (
-    EcsCluster,
-    EcsClusterConfig,
-)
 from resources.ecs_express_service import (
     ExpressGatewayConfig,
     ExpressGatewayServiceComponent,
@@ -141,6 +137,10 @@ shared_resources_review_stack = pulumi.StackReference(
     "climatepolicyradar/frontend-platform/staging"
 )
 
+shared_ecs_resources_stack = pulumi.StackReference(
+    f"climatepolicyradar/frontend-platform/{env}"
+)
+
 review_ecr_url = None
 frontend_image: docker_build.Image | None = None
 if is_review_stack:
@@ -183,7 +183,7 @@ if is_review_stack:
     pulumi.export("ecr_repository_url", repository_url)
 
 
-# Vpc ID, public subnet IDs and CloudFront origin prefix list ID are required for the ECS FrontendCluster.
+# public subnet IDs  are required for the ECS FrontendCluster.
 vpc_id = aws_env_stack.get_output("vpc_id")
 cloudfront_origin_prefix_list_id = aws_env_stack.get_output(
     "cloudfront_origin_prefix_list_id"
@@ -253,25 +253,24 @@ if not is_review_template:
         ),
     )
 
-    frontend_ecs_cluster = EcsCluster(
-        name="frontend",
-        config=EcsClusterConfig(
-            vpc_id=vpc_id,
-            cloudfront_origin_prefix_list_id=cloudfront_origin_prefix_list_id,
-            environment=env,
-        ),
-    )
-
     ecs_frontend_service = ExpressGatewayServiceComponent(
         name=name_prefix,
         config=ExpressGatewayConfig(
             health_check_path="/",
         ),
         image_identifier=cast(str, image_identifier),
-        cluster_arn=frontend_ecs_cluster.cluster_arn,
-        task_execution_role_arn=frontend_ecs_cluster.task_execution_role_arn,
-        infrastructure_role_arn=frontend_ecs_cluster.infrastructure_role_arn,
-        security_group_ids=[frontend_ecs_cluster.security_group_id],
+        cluster_arn=shared_ecs_resources_stack.get_output("frontend_ecs_cluster_arn"),
+        task_execution_role_arn=shared_ecs_resources_stack.get_output(
+            "frontend_ecs_cluster_task_execution_role_arn"
+        ),
+        infrastructure_role_arn=shared_ecs_resources_stack.get_output(
+            "frontend_ecs_cluster_infrastructure_role_arn"
+        ),
+        security_group_ids=[
+            shared_ecs_resources_stack.get_output(
+                "frontend_ecs_cluster_security_group_id"
+            )
+        ],
         subnets=[
             eu_west_1a_public_subnet_id,
             eu_west_1b_public_subnet_id,
