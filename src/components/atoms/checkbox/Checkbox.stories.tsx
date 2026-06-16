@@ -11,6 +11,7 @@ const meta = {
   argTypes: {
     disabled: { control: "boolean" },
     indeterminate: { control: "boolean" },
+    label: { control: "text" },
   },
 } satisfies Meta<typeof Checkbox>;
 type TStory = StoryObj<typeof Checkbox>;

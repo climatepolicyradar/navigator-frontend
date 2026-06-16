@@ -1,5 +1,4 @@
 import { Meta, StoryObj } from "@storybook/nextjs-vite";
-import { Plus, Search } from "lucide-react";
 import { useState } from "react";
 
 import { Input } from "./Input";
@@ -8,7 +7,6 @@ const meta = {
   title: "Atoms/Input",
   component: Input,
   argTypes: {
-    icon: { control: false },
     onClear: { control: false },
     placeholder: { control: "text" },
   },
@@ -30,47 +28,9 @@ export const Default: TStory = {
   render: useInputContext,
 };
 
-export const Clearable: TStory = {
+export const Placeholder: TStory = {
   args: {
-    clearable: true,
-    placeholder: "Type something",
-    size: "medium",
+    placeholder: "Type something...",
   },
   render: useInputContext,
-};
-
-export const IconRight: TStory = {
-  args: {
-    clearable: false,
-    icon: <Search size={16} />,
-    iconOnLeft: false,
-    placeholder: "Search",
-    size: "medium",
-  },
-  render: useInputContext,
-};
-
-export const IconLeft: TStory = {
-  args: {
-    clearable: false,
-    icon: <Plus size={16} />,
-    iconOnLeft: true,
-    placeholder: "Add...",
-    size: "medium",
-  },
-  render: useInputContext,
-};
-
-export const Sizes: TStory = {
-  args: {
-    clearable: true,
-    placeholder: "Type something",
-  },
-  render: (args) => (
-    <div className="flex flex-col gap-4">
-      <Input {...args} size="small" placeholder="Small size" />
-      <Input {...args} size="medium" placeholder="Medium size" />
-      <Input {...args} size="large" placeholder="Large size" />
-    </div>
-  ),
 };

@@ -7,18 +7,18 @@ export type TCheckboxState = boolean | "indeterminate";
 
 interface IProps extends BaseCheckbox.Root.Props {
   className?: string;
-  label: string;
+  label: string | null;
   onCheckedChange: (value: TCheckboxState) => void;
 }
 
 export const Checkbox = ({ className, label, ...rootProps }: IProps) => {
   const labelClasses = joinTailwindClasses(
-    "flex gap-3 items-center text-table leading-5",
+    "flex gap-3 items-center text-sm font-normal leading-5",
     rootProps.disabled ? "text-text-tertiary cursor-not-allowed" : "text-text-primary cursor-pointer",
     className
   );
   const rootClasses = joinTailwindClasses(
-    "box-border flex shrink-0 w-5 h-5 items-center justify-center  border border-border-input rounded-xs outline-inky-blue focus-visible:outline-2 outline-offset-2",
+    "box-border flex shrink-0 w-5 h-5 items-center justify-center border border-border-input rounded-xs outline-inky-blue focus-visible:outline-2 outline-offset-2",
     rootProps.disabled
       ? "data-checked:bg-text-tertiary data-indeterminate:bg-text-tertiary"
       : "data-checked:bg-inky-blue data-indeterminate:bg-inky-blue"
