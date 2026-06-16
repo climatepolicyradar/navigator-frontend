@@ -100,14 +100,14 @@ export const DocumentDrawer = ({ documentImportId, family, familyTopics, languag
         <PageLink
           keepQuery
           href={"/documents/" + document.slug}
-          className="underline text-[#0038a9] underline-offset-5 decoration-[#d1d5db] hover:decoration-[#0038a9]"
+          className="text-inky-blue underline-offset-5 hover:underline hover:decoration-inky-blue"
         >
           {document.title}
         </PageLink>
       }
     >
       {metadata.length > 0 && (
-        <div className="grid grid-cols-[120px_auto] gap-x-3 gap-y-2 mb-6 text-sm text-[#374151] leading-5" data-vaul-no-drag={true}>
+        <div className="grid grid-cols-[120px_auto] gap-x-3 gap-y-2 mb-6 text-sm text-text-secondary leading-5">
           {metadata.map((item, itemIndex) => (
             <Fragment key={itemIndex}>
               <div className="font-medium">{item.label}</div>
@@ -119,7 +119,7 @@ export const DocumentDrawer = ({ documentImportId, family, familyTopics, languag
 
       {topicRows.length > 0 && (
         <div className="mt-9">
-          <h3 className="mt-6 mb-2 text-lg text-[#030712] font-heavy leading-6">Topics mentioned</h3>
+          <h3 className="mt-6 mb-2 text-lg text-text-primary font-heavy leading-6">Topics mentioned</h3>
           <p className="mb-4">See exactly where a topic is mentioned in this document.</p>
           <InteractiveTable<TTopicTableColumnId> columns={DOCUMENT_DRAWER_TOPICS_TABLE_COLUMNS} rows={topicRows} />
         </div>
