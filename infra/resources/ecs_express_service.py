@@ -17,7 +17,7 @@ from .util import tag_name
 
 @dataclass
 class ExpressGatewayConfig:
-    port: int = 3000
+    port: int = 8080
     health_check_path: str = "/"
     cpu: str = "1024"
     memory: str = "2048"
