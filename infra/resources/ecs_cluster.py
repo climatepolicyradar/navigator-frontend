@@ -13,6 +13,7 @@ class EcsClusterConfig:
     cloudfront_origin_prefix_list_id: pulumi.Input[str]
     cluster_name: str = "frontend"
     alb_ingress_port: int = 80
+    environment: str = "staging"
 
 
 class EcsCluster(pulumi.ComponentResource):
@@ -44,8 +45,8 @@ class EcsCluster(pulumi.ComponentResource):
         self.tags = default_tags | (tags or {})
 
         cluster = aws.ecs.Cluster(
-            f"{config.cluster_name}-{self.stack}-ecs-cluster",
-            name=f"{config.cluster_name}-{self.stack}",
+            f"{config.cluster_name}-{config.environment}-ecs-cluster",
+            name=f"{config.cluster_name}-{config.environment}",
             settings=[
                 aws.ecs.ClusterSettingArgs(
                     name="containerInsights",
@@ -57,8 +58,8 @@ class EcsCluster(pulumi.ComponentResource):
 
         # Execution role: pulls images, injects secrets, writes logs
         self.task_execution_role = aws.iam.Role(
-            f"{config.cluster_name}-{self.stack}-ecs-task-execution-role",
-            name=f"{config.cluster_name}-{self.stack}-ecs-task-execution-role",
+            f"{config.cluster_name}-{config.environment}-ecs-task-execution-role",
+            name=f"{config.cluster_name}-{config.environment}-ecs-task-execution-role",
             assume_role_policy=aws.iam.get_policy_document(
                 statements=[
                     aws.iam.GetPolicyDocumentStatementArgs(
@@ -81,8 +82,8 @@ class EcsCluster(pulumi.ComponentResource):
 
         # Infrastructure role: manages ALB registrations and networking
         self.infrastructure_role = aws.iam.Role(
-            f"{config.cluster_name}-{self.stack}-ecs-task-infrastructure-role",
-            name=f"{config.cluster_name}-{self.stack}-ecs-task-infrastructure-role",
+            f"{config.cluster_name}-{config.environment}-ecs-task-infrastructure-role",
+            name=f"{config.cluster_name}-{config.environment}-ecs-task-infrastructure-role",
             assume_role_policy=aws.iam.get_policy_document(
                 statements=[
                     aws.iam.GetPolicyDocumentStatementArgs(
@@ -105,8 +106,8 @@ class EcsCluster(pulumi.ComponentResource):
         )
 
         self.alb_security_group = aws.ec2.SecurityGroup(
-            f"{config.cluster_name}-{self.stack}-ecs-alb-sg",
-            name=f"{config.cluster_name}-{self.stack}-ecs-alb-sg",
+            f"{config.cluster_name}-{config.environment}-ecs-alb-sg",
+            name=f"{config.cluster_name}-{config.environment}-ecs-alb-sg",
             description="HTTP from CloudFront to the frontend Express Gateway ALBs",
             vpc_id=config.vpc_id,
             ingress=[

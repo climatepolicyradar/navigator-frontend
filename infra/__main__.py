@@ -258,6 +258,7 @@ if not is_review_template:
         config=EcsClusterConfig(
             vpc_id=vpc_id,
             cloudfront_origin_prefix_list_id=cloudfront_origin_prefix_list_id,
+            environment=env,
         ),
     )
 
