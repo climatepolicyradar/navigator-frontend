@@ -9,9 +9,9 @@ const meta = {
     layout: "centered",
   },
   argTypes: {
+    children: { control: "text" },
     disabled: { control: "boolean" },
     indeterminate: { control: "boolean" },
-    label: { control: "text" },
   },
 } satisfies Meta<typeof Checkbox>;
 type TStory = StoryObj<typeof Checkbox>;
@@ -20,28 +20,28 @@ export default meta;
 
 export const Default: TStory = {
   args: {
-    label: "Checkbox",
+    children: "Checkbox",
   },
 };
 
 export const Checked: TStory = {
   args: {
-    label: "Checkbox",
     checked: true,
+    children: "Checkbox",
   },
 };
 
 export const Indeterminate: TStory = {
   args: {
-    label: "Checkbox",
+    children: "Checkbox",
     indeterminate: true,
   },
 };
 
 export const Disabled: TStory = {
   args: {
-    label: "Checkbox",
     checked: true,
+    children: "Checkbox",
     disabled: true,
   },
 };

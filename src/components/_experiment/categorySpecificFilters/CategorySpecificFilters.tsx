@@ -1,7 +1,8 @@
 import sortBy from "lodash/sortBy";
 import { useState } from "react";
 
-import { NestedLabel } from "@/components/_experiment/categorySpecificFilters/NestedLabel";
+import { SearchFilterLevel } from "@/components/organisms/searchFilterLevel/SearchFilterLevel";
+import { FiltersContext, TToggleFilterCallback } from "@/context/FiltersContext";
 import { TFilterPathLabel, TNestedSearchLabel, TSearchLabel, TSearchQueryGroup } from "@/types";
 import { buildFilterGroup } from "@/utils/search/buildFilterGroup";
 
@@ -42,15 +43,14 @@ interface IProps {
 }
 
 export const CategorySpecificFilters = ({ labels, onFiltersChange }: IProps) => {
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  const [_checkedLabelPaths, setCheckedLabelPaths] = useState<TFilterPathLabel[][]>([]);
+  const [checkedLabelPaths, setCheckedLabelPaths] = useState<TFilterPathLabel[][]>([]);
 
   const labelsToDisplay = sortBy(
     nestSearchLabels(labels).filter((rootLabel) => rootLabel.type === "category"),
     "id"
   );
 
-  const onFilterToggle = (labelPath: TFilterPathLabel[], checked: boolean) => {
+  const toggleFilter: TToggleFilterCallback = (labelPath, checked) => {
     setCheckedLabelPaths((existingCheckedLabelPaths) => {
       const updatedCheckedLabelPaths = checked
         ? [...existingCheckedLabelPaths, labelPath]
@@ -62,12 +62,12 @@ export const CategorySpecificFilters = ({ labels, onFiltersChange }: IProps) => 
   };
 
   return (
-    <div className="col-start-1 -col-end-1">
-      <ul className="ml-8">
-        {labelsToDisplay.map((label) => (
-          <NestedLabel key={label.id} label={label} onFilterToggle={onFilterToggle} ancestorPath={[]} />
-        ))}
-      </ul>
-    </div>
+    <FiltersContext value={{ checkedLabelPaths, toggleFilter }}>
+      <div className="col-start-1 -col-end-1">
+        <div className="max-w-125 p-8 border border-black rounded-lg">
+          <SearchFilterLevel ancestorPath={[]} labels={labelsToDisplay} />
+        </div>
+      </div>
+    </FiltersContext>
   );
 };

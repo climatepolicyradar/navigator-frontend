@@ -192,6 +192,8 @@ const ShadowSearch = ({ theme, themeConfig, features }: TProps) => {
               />
             </div>
           )}
+          {/* CATEGORY SPECIFIC FILTERS */}
+          <CategorySpecificFilters labels={availableFilters} onFiltersChange={(group) => setFiltersInUrl(group)} />
           {/* SEARCH RESULTS */}
           <div className={columnLayoutCss}>
             <SearchContainer
@@ -239,8 +241,6 @@ const ShadowSearch = ({ theme, themeConfig, features }: TProps) => {
               </div>
             </div>
           )}
-          {/* CATEGORY SPECIFIC FILTERS */}
-          <CategorySpecificFilters labels={availableFilters} onFiltersChange={(group) => setFiltersInUrl(group)} />
         </FiveColumns>
         {/* ADVANCED FILTERS */}
         <AdvancedFilters

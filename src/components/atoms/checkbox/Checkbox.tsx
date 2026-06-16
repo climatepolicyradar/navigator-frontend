@@ -1,17 +1,18 @@
 import { Checkbox as BaseCheckbox } from "@base-ui/react";
 import { Check, Minus } from "lucide-react";
+import { ReactNode } from "react";
 
 import { joinTailwindClasses } from "@/utils/tailwind";
 
 export type TCheckboxState = boolean | "indeterminate";
 
 interface IProps extends BaseCheckbox.Root.Props {
+  children: ReactNode;
   className?: string;
-  label: string | null;
   onCheckedChange: (value: TCheckboxState) => void;
 }
 
-export const Checkbox = ({ className, label, ...rootProps }: IProps) => {
+export const Checkbox = ({ children: label, className, ...rootProps }: IProps) => {
   const labelClasses = joinTailwindClasses(
     "flex gap-3 items-center text-sm font-normal leading-5",
     rootProps.disabled ? "text-text-tertiary cursor-not-allowed" : "text-text-primary cursor-pointer",
@@ -33,7 +34,7 @@ export const Checkbox = ({ className, label, ...rootProps }: IProps) => {
 
   return (
     <label className={labelClasses}>
-      <BaseCheckbox.Root className={rootClasses} {...rootProps} aria-label={label} onCheckedChange={handleChange}>
+      <BaseCheckbox.Root className={rootClasses} {...rootProps} onCheckedChange={handleChange}>
         <BaseCheckbox.Indicator className="flex items-center justify-center text-white">
           <IndicatorIcon size={16} aria-hidden={true} />
         </BaseCheckbox.Indicator>

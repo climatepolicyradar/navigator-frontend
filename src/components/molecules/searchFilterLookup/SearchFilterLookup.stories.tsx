@@ -1,20 +1,27 @@
 import { Meta, StoryObj } from "@storybook/nextjs-vite";
 
+import { FiltersContext } from "@/context/FiltersContext";
 import { TNestedSearchLabel } from "@/types";
 
-import { FilterSearch } from "./FilterSearch";
+import { SearchFilterLookup } from "./SearchFilterLookup";
 
 const meta = {
-  title: "Molecules/FilterSearch",
-  component: FilterSearch,
+  title: "Molecules/SearchFilterLookup",
+  component: SearchFilterLookup,
   parameters: {
     layout: "centered",
   },
   argTypes: {},
-} satisfies Meta<typeof FilterSearch>;
-type TStory = StoryObj<typeof FilterSearch>;
+  render: (props) => (
+    // eslint-disable-next-line no-console
+    <FiltersContext value={{ checkedLabelPaths: [], toggleFilter: (labelPath, checked) => console.info({ labelPath, checked }) }}>
+      <SearchFilterLookup {...props} />
+    </FiltersContext>
+  ),
+} satisfies Meta<typeof SearchFilterLookup>;
+type TStory = StoryObj<typeof SearchFilterLookup>;
 
-const options: TNestedSearchLabel[] = [
+const labels: TNestedSearchLabel[] = [
   "2026 Swedish Climate Policy Council Annual Report",
   "BVG Associates",
   "Blue Marine Foundation",
@@ -86,6 +93,7 @@ export default meta;
 
 export const Default: TStory = {
   args: {
-    options,
+    ancestorPath: [],
+    labels,
   },
 };
