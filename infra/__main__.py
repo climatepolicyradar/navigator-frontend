@@ -254,6 +254,7 @@ if not is_review_template:
     )
 
     frontend_ecs_cluster = EcsCluster(
+        name="frontend",
         config=EcsClusterConfig(
             vpc_id=vpc_id,
             cloudfront_origin_prefix_list_id=cloudfront_origin_prefix_list_id,

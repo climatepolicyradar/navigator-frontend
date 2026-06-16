@@ -22,11 +22,12 @@ class EcsCluster(pulumi.ComponentResource):
 
     def __init__(
         self,
+        name: str,
         config: EcsClusterConfig,
         tags: Optional[Dict[str, Any]] = None,
         opts: Optional[pulumi.ResourceOptions] = None,
     ):
-        super().__init__("pkg:index:EcsCluster", None, opts)
+        super().__init__("pkg:index:EcsCluster", name, opts)
 
         self.opts = self._get_opts(opts)
         self.stack = pulumi.get_stack()
