@@ -20,7 +20,7 @@ type TProps = {
   options?: TSearchLabel[];
 };
 
-export const TopicsFilterPanel = ({ options, activeFilters, onFiltersChange }: TProps) => {
+export const FilterPanel = ({ options, activeFilters, onFiltersChange }: TProps) => {
   const [search, setSearch] = useState("");
 
   const checkedIds = useMemo(() => new Set(getCheckedIds(activeFilters)), [activeFilters]);
@@ -52,7 +52,7 @@ export const TopicsFilterPanel = ({ options, activeFilters, onFiltersChange }: T
         containerClasses="mb-4"
         onChange={(e) => setSearch(e.currentTarget.value)}
         onClear={() => setSearch("")}
-        name="Topic quick search"
+        name="Quick search"
         placeholder="Quick search"
         size="small"
         value={search}

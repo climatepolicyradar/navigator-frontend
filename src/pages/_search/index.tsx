@@ -11,8 +11,8 @@ import { CategorySpecificFilters } from "@/components/_experiment/categorySpecif
 import { DocumentDrawer } from "@/components/_experiment/documentDrawer/DocumentDrawer";
 import { IntelliSearch } from "@/components/_experiment/intellisearch";
 import { Pagination } from "@/components/_experiment/pagination/Pagination";
+import { FilterPanel } from "@/components/_experiment/searchFilters/FilterPanel";
 import { SearchFilters, TLabelType } from "@/components/_experiment/searchFilters/SearchFilters";
-import { TopicsFilterPanel } from "@/components/_experiment/searchFilters/TopicsFilterPanel";
 import { SearchContainer } from "@/components/_experiment/searchResults/SearchResults";
 import { SearchSortSelect } from "@/components/_experiment/searchSort/SearchSortSelect";
 import { SelectPerPage } from "@/components/_experiment/selectPerPage/SelectPerPage";
@@ -182,7 +182,16 @@ const ShadowSearch = ({ theme, themeConfig, features }: TProps) => {
                     "data-popup-open:bg-bg-flat!"
                   )}
                   handle={searchFiltersHandle}
-                  payload={<p>Geography filter panel coming soon</p>}
+                  payload={
+                    <FilterPanel
+                      activeFilters={topics}
+                      options={availableFilters.filter((label) => label.type === "country").sort((a, b) => a.value.localeCompare(b.value))}
+                      onFiltersChange={(group) => {
+                        // console.log("geography filter changed", group);
+                        return group;
+                      }}
+                    />
+                  }
                 >
                   Geography
                   <ChevronDown className="text-elem-icon h-4 w-4" />
@@ -195,9 +204,9 @@ const ShadowSearch = ({ theme, themeConfig, features }: TProps) => {
                   )}
                   handle={searchFiltersHandle}
                   payload={
-                    <TopicsFilterPanel
+                    <FilterPanel
                       activeFilters={topics}
-                      options={availableFilters.filter((label) => label.type === "concept")}
+                      options={availableFilters.filter((label) => label.type === "concept").sort((a, b) => a.value.localeCompare(b.value))}
                       onFiltersChange={(group) => setTopicsInUrl(group)}
                     />
                   }
