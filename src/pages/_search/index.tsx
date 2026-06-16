@@ -1,3 +1,5 @@
+import { Popover as BasePopover } from "@base-ui/react/popover";
+import { ChevronDown } from "lucide-react";
 import { GetServerSideProps, InferGetServerSidePropsType } from "next";
 import { useQueryState, parseAsString, parseAsJson } from "nuqs";
 import { useCallback, useEffect, useMemo, useState, type SetStateAction } from "react";
@@ -10,6 +12,7 @@ import { DocumentDrawer } from "@/components/_experiment/documentDrawer/Document
 import { IntelliSearch } from "@/components/_experiment/intellisearch";
 import { Pagination } from "@/components/_experiment/pagination/Pagination";
 import { SearchFilters, TLabelType } from "@/components/_experiment/searchFilters/SearchFilters";
+import { TopicsFilterPanel } from "@/components/_experiment/searchFilters/TopicsFilterPanel";
 import { SearchContainer } from "@/components/_experiment/searchResults/SearchResults";
 import { SearchSortSelect } from "@/components/_experiment/searchSort/SearchSortSelect";
 import { SelectPerPage } from "@/components/_experiment/selectPerPage/SelectPerPage";
@@ -28,6 +31,8 @@ import { readConfigFile } from "@/utils/readConfigFile";
 import { joinTailwindClasses } from "@/utils/tailwind";
 
 const columnLayoutCss = "col-start-1 -col-end-1 cols-5:col-start-2 cols-5:-col-end-2";
+
+const searchFiltersHandle = BasePopover.createHandle<React.ReactNode>();
 
 type TProps = InferGetServerSidePropsType<typeof getServerSideProps>;
 
@@ -48,6 +53,7 @@ const ShadowSearch = ({ theme, themeConfig, features }: TProps) => {
   const [query, setQuery] = useQueryState("q", parseAsString.withDefault(""));
   // structured filters built in QueryBuilder
   const [filters, setFiltersInUrl] = useQueryState("filters", parseAsJson<TSearchQueryGroup>(FilterGroupSchema).withDefault(createGroup()));
+  const [topics, setTopicsInUrl] = useQueryState("topics", parseAsJson<TSearchQueryGroup>(FilterGroupSchema).withDefault(createGroup()));
   // pagination state
   const [currentPage, setCurrentPage] = useQueryState("page_token", parseAsString.withDefault("1"));
   const [pageSize, setPageSize] = useQueryState("page_size", parseAsString.withDefault("10"));
@@ -78,6 +84,7 @@ const ShadowSearch = ({ theme, themeConfig, features }: TProps) => {
   const [selectedDocument, setSelectedDocument] = useState<SearchDocument | null>(null);
   const [drawerOpen, setDrawerOpen] = useState(false);
 
+  const [filterOpen, setFilterOpen] = useState("");
   const [filtersOpen, setFiltersOpen] = useState(false);
   const [filterSidebarCategory, setFilterSidebarCategory] = useState<TLabelType>("category");
 
@@ -123,37 +130,139 @@ const ShadowSearch = ({ theme, themeConfig, features }: TProps) => {
           {/* CONTROLS - FILTERS, SORT, etc */}
           <div className={joinTailwindClasses(columnLayoutCss, "flex justify-between items-center")}>
             {/* FILTERS */}
-            <SearchFilters
-              availableFilters={availableFilters}
-              filters={filters}
-              activeLabelType={filterSidebarCategory}
-              onActiveLabelTypeChange={setFilterSidebarCategory}
-              open={filtersOpen}
-              onOpenChange={setFiltersOpen}
-              onChange={(checked, label) => {
-                if (checked) {
-                  setFilters((prev) => addLabelRule(prev, label));
+            <div className="flex items-center gap-2">
+              <SearchFilters
+                availableFilters={availableFilters}
+                filters={filters}
+                activeLabelType={filterSidebarCategory}
+                onActiveLabelTypeChange={setFilterSidebarCategory}
+                open={filtersOpen}
+                onOpenChange={setFiltersOpen}
+                onChange={(checked, label) => {
+                  if (checked) {
+                    setFilters((prev) => addLabelRule(prev, label));
+                    setCurrentPage("1");
+                  } else {
+                    setFilters((prev) => (prev ? removeLabelRule(prev, label) : createGroup()));
+                    setCurrentPage("1");
+                  }
+                }}
+                onAdvancedClick={() => {
+                  setFiltersOpen(false);
+                  setAdvancedFiltersOpen(true);
+                }}
+                dateRangeValue={selectedPublishedDateRange}
+                onDateRangeChange={(nextValue) => {
+                  if (nextValue === null) {
+                    setFilters((prev) => removePublishedDateRules(prev));
+                    setCurrentPage("1");
+                    return;
+                  }
+                  setFilters((prev) => upsertPublishedDateRangeRules(prev, nextValue));
                   setCurrentPage("1");
-                } else {
-                  setFilters((prev) => (prev ? removeLabelRule(prev, label) : createGroup()));
-                  setCurrentPage("1");
-                }
-              }}
-              onAdvancedClick={() => {
-                setFiltersOpen(false);
-                setAdvancedFiltersOpen(true);
-              }}
-              dateRangeValue={selectedPublishedDateRange}
-              onDateRangeChange={(nextValue) => {
-                if (nextValue === null) {
-                  setFilters((prev) => removePublishedDateRules(prev));
-                  setCurrentPage("1");
-                  return;
-                }
-                setFilters((prev) => upsertPublishedDateRangeRules(prev, nextValue));
-                setCurrentPage("1");
-              }}
-            />
+                }}
+              />
+
+              {/* NEW FILTERS */}
+              <div className="flex gap-1">
+                <BasePopover.Trigger
+                  className={joinTailwindClasses(
+                    "inline-flex items-center gap-1 rounded-full border border-border-normal bg-white px-3 py-2 text-sm font-medium text-text-primary hover:bg-bg-flat",
+                    filterOpen === "date" ? "bg-bg-flat!" : ""
+                  )}
+                  handle={searchFiltersHandle}
+                  payload={<p>Date filter panel coming soon</p>}
+                >
+                  Date
+                  <ChevronDown className="text-elem-icon h-4 w-4" />
+                </BasePopover.Trigger>
+
+                <BasePopover.Trigger
+                  className={joinTailwindClasses(
+                    "inline-flex items-center gap-1 rounded-full border border-border-normal bg-white px-3 py-2 text-sm font-medium text-text-primary hover:bg-bg-flat",
+                    filterOpen === "geography" ? "bg-bg-flat!" : ""
+                  )}
+                  handle={searchFiltersHandle}
+                  payload={<p>Geography filter panel coming soon</p>}
+                >
+                  Geography
+                  <ChevronDown className="text-elem-icon h-4 w-4" />
+                </BasePopover.Trigger>
+
+                <BasePopover.Trigger
+                  className={joinTailwindClasses(
+                    "inline-flex items-center gap-1 rounded-full border border-border-normal bg-white px-3 py-2 text-sm font-medium text-text-primary hover:bg-bg-flat",
+                    filterOpen === "topic" ? "bg-bg-flat!" : ""
+                  )}
+                  handle={searchFiltersHandle}
+                  payload={
+                    <TopicsFilterPanel
+                      activeFilters={topics}
+                      options={availableFilters.filter((label) => label.type === "concept")}
+                      onFiltersChange={(group) => setTopicsInUrl(group)}
+                      open={filterOpen === "topic"}
+                      onOpenChange={(open) => {
+                        setFilterOpen("topic");
+                        if (!open) {
+                          setFilterOpen("");
+                        }
+                      }}
+                    />
+                  }
+                >
+                  Topic
+                  <ChevronDown className="text-elem-icon h-4 w-4" />
+                </BasePopover.Trigger>
+
+                <BasePopover.Root handle={searchFiltersHandle}>
+                  {({ payload }) => (
+                    <BasePopover.Portal>
+                      <BasePopover.Positioner
+                        align="start"
+                        className="h-(--positioner-height) w-(--positioner-width) max-w-(--available-width) transition-[top,left,right,bottom,transform] duration-150 ease-[cubic-bezier(0.22,1,0.36,1)] data-instant:transition-none"
+                        positionMethod="fixed"
+                        side="bottom"
+                        sideOffset={8}
+                      >
+                        <BasePopover.Popup
+                          className={joinTailwindClasses(
+                            "relative flex h-(--popup-height,auto) w-(--popup-width,auto) max-w-100 flex-col origin-(--transform-origin) transition-[width,height,opacity,scale] duration-150 ease-[cubic-bezier(0.22,1,0.36,1)] data-ending-style:scale-100 data-ending-style:opacity-0 data-instant:transition-none data-starting-style:scale-95 data-starting-style:opacity-0",
+                            "rounded-xl border border-border-normal bg-white shadow-xl p-5 text-sm focus-visible:outline-none"
+                          )}
+                        >
+                          <BasePopover.Viewport
+                            className={`
+                    relative h-full w-full
+                    [&_[data-current]]:w-[calc(var(--popup-width)-1rem)]
+                    [&_[data-current]]:translate-x-0
+                    [&_[data-current]]:opacity-100
+                    [&_[data-current]]:transition-[translate,opacity]
+                    [&_[data-current]]:duration-[150ms,150ms]
+                    [&_[data-current]]:ease-[cubic-bezier(0.22,1,0.36,1)]
+                    data-[activation-direction~='left']:[&_[data-current][data-starting-style]]:-translate-x-1/2
+                    data-[activation-direction~='left']:[&_[data-current][data-starting-style]]:opacity-0
+                    data-[activation-direction~='right']:[&_[data-current][data-starting-style]]:translate-x-1/2
+                    data-[activation-direction~='right']:[&_[data-current][data-starting-style]]:opacity-0
+                    [&_[data-previous]]:w-[calc(var(--popup-width)-1rem)]
+                    [&_[data-previous]]:translate-x-0
+                    [&_[data-previous]]:opacity-100
+                    [&_[data-previous]]:transition-[translate,opacity]
+                    [&_[data-previous]]:duration-[150ms,150ms]
+                    [&_[data-previous]]:ease-[cubic-bezier(0.22,1,0.36,1)]
+                    data-[activation-direction~='left']:[&_[data-previous][data-ending-style]]:translate-x-1/2
+                    data-[activation-direction~='left']:[&_[data-previous][data-ending-style]]:opacity-0
+                    data-[activation-direction~='right']:[&_[data-previous][data-ending-style]]:-translate-x-1/2
+                    data-[activation-direction~='right']:[&_[data-previous][data-ending-style]]:opacity-0`}
+                          >
+                            {payload}
+                          </BasePopover.Viewport>
+                        </BasePopover.Popup>
+                      </BasePopover.Positioner>
+                    </BasePopover.Portal>
+                  )}
+                </BasePopover.Root>
+              </div>
+            </div>
             <div className="flex items-center gap-6 flex-wrap">
               {/* SORT */}
               <SearchSortSelect
