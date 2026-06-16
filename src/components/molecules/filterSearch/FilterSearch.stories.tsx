@@ -79,7 +79,7 @@ const options: TNestedSearchLabel[] = [
   id: `author::${value}`,
   type: "author",
   value,
-  children: [],
+  children: [] as TNestedSearchLabel[],
 }));
 
 export default meta;

@@ -24,7 +24,7 @@ export const FilterSearch = ({ options }: IProps) => {
 
   return (
     <div className="w-full flex flex-col gap-2">
-      <Input placeholder="Quick search..." value={searchText} onChange={(event) => setSearchText(event.target.value)} size="small" />
+      <Input placeholder="Quick search..." value={searchText} onChange={(event) => setSearchText(event.target.value)} />
       {clippedOptions.map((option) => (
         <Checkbox key={option.id} label={option.value} onCheckedChange={() => {}} />
       ))}
