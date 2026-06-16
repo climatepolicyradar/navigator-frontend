@@ -84,7 +84,6 @@ const ShadowSearch = ({ theme, themeConfig, features }: TProps) => {
   const [selectedDocument, setSelectedDocument] = useState<SearchDocument | null>(null);
   const [drawerOpen, setDrawerOpen] = useState(false);
 
-  const [filterOpen, setFilterOpen] = useState("");
   const [filtersOpen, setFiltersOpen] = useState(false);
   const [filterSidebarCategory, setFilterSidebarCategory] = useState<TLabelType>("category");
 
@@ -168,7 +167,7 @@ const ShadowSearch = ({ theme, themeConfig, features }: TProps) => {
                 <BasePopover.Trigger
                   className={joinTailwindClasses(
                     "inline-flex items-center gap-1 rounded-full border border-border-normal bg-white px-3 py-2 text-sm font-medium text-text-primary hover:bg-bg-flat",
-                    filterOpen === "date" ? "bg-bg-flat!" : ""
+                    "data-popup-open:bg-bg-flat!"
                   )}
                   handle={searchFiltersHandle}
                   payload={<p>Date filter panel coming soon</p>}
@@ -180,7 +179,7 @@ const ShadowSearch = ({ theme, themeConfig, features }: TProps) => {
                 <BasePopover.Trigger
                   className={joinTailwindClasses(
                     "inline-flex items-center gap-1 rounded-full border border-border-normal bg-white px-3 py-2 text-sm font-medium text-text-primary hover:bg-bg-flat",
-                    filterOpen === "geography" ? "bg-bg-flat!" : ""
+                    "data-popup-open:bg-bg-flat!"
                   )}
                   handle={searchFiltersHandle}
                   payload={<p>Geography filter panel coming soon</p>}
@@ -192,7 +191,7 @@ const ShadowSearch = ({ theme, themeConfig, features }: TProps) => {
                 <BasePopover.Trigger
                   className={joinTailwindClasses(
                     "inline-flex items-center gap-1 rounded-full border border-border-normal bg-white px-3 py-2 text-sm font-medium text-text-primary hover:bg-bg-flat",
-                    filterOpen === "topic" ? "bg-bg-flat!" : ""
+                    "data-popup-open:bg-bg-flat!"
                   )}
                   handle={searchFiltersHandle}
                   payload={
@@ -200,13 +199,6 @@ const ShadowSearch = ({ theme, themeConfig, features }: TProps) => {
                       activeFilters={topics}
                       options={availableFilters.filter((label) => label.type === "concept")}
                       onFiltersChange={(group) => setTopicsInUrl(group)}
-                      open={filterOpen === "topic"}
-                      onOpenChange={(open) => {
-                        setFilterOpen("topic");
-                        if (!open) {
-                          setFilterOpen("");
-                        }
-                      }}
                     />
                   }
                 >
@@ -237,7 +229,7 @@ const ShadowSearch = ({ theme, themeConfig, features }: TProps) => {
                     [&_[data-current]]:translate-x-0
                     [&_[data-current]]:opacity-100
                     [&_[data-current]]:transition-[translate,opacity]
-                    [&_[data-current]]:duration-[150ms,150ms]
+                    [&_[data-current]]:duration-[150ms,100ms]
                     [&_[data-current]]:ease-[cubic-bezier(0.22,1,0.36,1)]
                     data-[activation-direction~='left']:[&_[data-current][data-starting-style]]:-translate-x-1/2
                     data-[activation-direction~='left']:[&_[data-current][data-starting-style]]:opacity-0
@@ -247,7 +239,7 @@ const ShadowSearch = ({ theme, themeConfig, features }: TProps) => {
                     [&_[data-previous]]:translate-x-0
                     [&_[data-previous]]:opacity-100
                     [&_[data-previous]]:transition-[translate,opacity]
-                    [&_[data-previous]]:duration-[150ms,150ms]
+                    [&_[data-previous]]:duration-[150ms,100ms]
                     [&_[data-previous]]:ease-[cubic-bezier(0.22,1,0.36,1)]
                     data-[activation-direction~='left']:[&_[data-previous][data-ending-style]]:translate-x-1/2
                     data-[activation-direction~='left']:[&_[data-previous][data-ending-style]]:opacity-0
