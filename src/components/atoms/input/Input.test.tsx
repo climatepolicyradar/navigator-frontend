@@ -17,21 +17,42 @@ describe("Input", () => {
     expect(input).toBeDisabled();
   });
 
-  it("hides the clear button when the value is empty", () => {
-    render(<Input value="" onChange={vi.fn()} />);
+  it("does not render a clear button when clearable is false", () => {
+    render(<Input clearable={false} value="some text" onChange={vi.fn()} />);
+    expect(screen.queryByRole("button")).not.toBeInTheDocument();
+  });
+
+  it("hides the clear button when clearable is true but value is empty", () => {
+    render(<Input clearable value="" onChange={vi.fn()} />);
     expect(screen.getByRole("button")).toHaveClass("hidden");
   });
 
-  it("shows the clear button when a value is set", () => {
-    render(<Input value="some text" onChange={vi.fn()} />);
+  it("shows the clear button when clearable is true and value is set", () => {
+    render(<Input clearable value="some text" onChange={vi.fn()} />);
     expect(screen.getByRole("button")).not.toHaveClass("hidden");
   });
 
   it("calls onClear when the clear button is clicked", async () => {
     const onClear = vi.fn();
-    render(<Input value="some text" onChange={vi.fn()} onClear={onClear} />);
+    render(<Input clearable value="some text" onChange={vi.fn()} onClear={onClear} />);
     await userEvent.click(screen.getByRole("button"));
     expect(onClear).toHaveBeenCalledTimes(1);
+  });
+
+  it("renders icon before the input by default", () => {
+    const icon = <span data-cy="icon">icon</span>;
+    render(<Input icon={icon} />);
+    const input = screen.getByRole("textbox");
+    const renderedIcon = screen.getByTestId("icon");
+    expect(input.compareDocumentPosition(renderedIcon)).toBe(Node.DOCUMENT_POSITION_PRECEDING);
+  });
+
+  it("renders icon after the input when iconSide is right", () => {
+    const icon = <span data-cy="icon">icon</span>;
+    render(<Input icon={icon} iconSide="right" />);
+    const input = screen.getByRole("textbox");
+    const renderedIcon = screen.getByTestId("icon");
+    expect(input.compareDocumentPosition(renderedIcon)).toBe(Node.DOCUMENT_POSITION_FOLLOWING);
   });
 
   it("calls onChange when the user types", async () => {

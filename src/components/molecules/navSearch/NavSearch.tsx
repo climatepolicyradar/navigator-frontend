@@ -141,7 +141,14 @@ export const NavSearch = () => {
           {/* Search field */}
           <Input
             autoComplete="off"
+            clearable
             containerClasses={`h-[40px] focus-within:!outline-0`}
+            icon={
+              <button type="submit">
+                <Search size={14} />
+              </button>
+            }
+            iconSide="left"
             inputClasses="text-sm"
             onChange={(event) => setSearchText(event.target.value)}
             onClear={handleClear}

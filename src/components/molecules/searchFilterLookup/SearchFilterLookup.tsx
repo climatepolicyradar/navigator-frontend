@@ -26,6 +26,7 @@ export const SearchFilterLookup = ({ ancestorPath, labels }: IProps) => {
   return (
     <div className="w-full flex flex-col gap-2">
       <Input
+        clearable
         placeholder="Quick search..."
         value={searchText}
         onChange={(event) => setSearchText(event.target.value)}
