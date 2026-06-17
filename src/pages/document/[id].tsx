@@ -18,7 +18,7 @@ import { getFamilyData } from "../../bff/methods/getFamilyData";
 */
 
 const FamilyPage = ({ ...props }: InferGetServerSidePropsType<typeof getServerSideProps>) => {
-  return <FamilyPageUI {...props} />;
+  return <FamilyPageUI key={props.family.slug} {...props} />;
 };
 
 export default FamilyPage;

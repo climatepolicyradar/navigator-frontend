@@ -1,5 +1,5 @@
 import sortBy from "lodash/fp/sortBy";
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useState } from "react";
 
 import { ApiClient } from "@/api/http-common";
 import { LinkWithQuery } from "@/components/LinkWithQuery";
@@ -8,7 +8,6 @@ import { INTRO_BLOCK_TITLE, IntroBlock } from "@/components/blocks/introBlock/In
 import { MetadataBlock } from "@/components/blocks/metadataBlock/MetadataBlock";
 import { RecentFamiliesBlock } from "@/components/blocks/recentFamiliesBlock/RecentFamiliesBlock";
 import { SubDivisionBlock } from "@/components/blocks/subDivisionBlock/SubDivisionBlock";
-import { TargetsBlock } from "@/components/blocks/targetsBlock/TargetsBlock";
 import { TextBlock } from "@/components/blocks/textBlock/TextBlock";
 import { BreadCrumbs } from "@/components/breadcrumbs/Breadcrumbs";
 import Layout from "@/components/layouts/Main";
@@ -19,23 +18,21 @@ import { TPublicEnvConfig } from "@/context/EnvConfig";
 import { FeaturesContext } from "@/context/FeaturesContext";
 import { GeographiesContext } from "@/context/GeographiesContext";
 import { useText } from "@/hooks/useText";
-import { TSearch, TGeographyPageBlock, IMetadata, GeographyV2, TTheme, TThemeConfig, TTarget, TFeatures, TApiSearch } from "@/types";
+import { TSearch, TGeographyPageBlock, IMetadata, GeographyV2, TTheme, TThemeConfig, TFeatures, TApiSearch } from "@/types";
 import buildSearchQuery from "@/utils/buildSearchQuery";
 import { getGeographyMetaData } from "@/utils/getGeographyMetadata";
-import { sortFilterTargets } from "@/utils/sortFilterTargets";
 
 export interface IProps {
   features: TFeatures;
   geographyV2: GeographyV2;
   parentGeographyV2?: GeographyV2;
-  targets: TTarget[];
   theme: string;
   themeConfig: TThemeConfig;
   vespaSearchResults?: TSearch;
   envConfig: TPublicEnvConfig;
 }
 
-export const GeographyPage = ({ geographyV2, parentGeographyV2, targets, theme, themeConfig, features, vespaSearchResults, envConfig }: IProps) => {
+export const GeographyPage = ({ geographyV2, parentGeographyV2, theme, themeConfig, features, vespaSearchResults, envConfig }: IProps) => {
   const { getAppText } = useText();
 
   const isCountry = geographyV2.type === "country";
@@ -63,11 +60,6 @@ export const GeographyPage = ({ geographyV2, parentGeographyV2, targets, theme, 
   const [searchResultsByCategory, setSearchResultsByCategory] = useState<{ [categorySlug: string]: TSearch }>({
     All: vespaSearchResults,
   });
-  useEffect(() => {
-    setSearchResultsByCategory({
-      All: vespaSearchResults,
-    });
-  }, [vespaSearchResults]);
 
   /* Blocks */
 
@@ -79,7 +71,6 @@ export const GeographyPage = ({ geographyV2, parentGeographyV2, targets, theme, 
           <div className="col-start-1 -col-end-1">
             <Debug data={geographyV2} title="Geography V2" />
             <Debug data={parentGeographyV2} title="Parent geography V2" />
-            <Debug data={targets} title="Targets" />
           </div>
         </Section>
       ),
@@ -183,12 +174,6 @@ export const GeographyPage = ({ geographyV2, parentGeographyV2, targets, theme, 
         return <SubDivisionBlock key="subdivisions" subdivisions={subdivisions} title={subdivisionsTitle} />;
       }, [geographyV2, isCountry, parentGeographyV2, subdivisionsTitle]),
       sideBarItem: { display: subdivisionsTitle },
-    },
-    targets: {
-      render: useCallback(() => {
-        const publishedTargets = sortFilterTargets(targets);
-        return <TargetsBlock key="targets" targets={publishedTargets} />;
-      }, [targets]),
     },
   };
 

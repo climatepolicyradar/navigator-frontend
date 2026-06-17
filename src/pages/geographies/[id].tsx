@@ -1,4 +1,3 @@
-import axios from "axios";
 import { GetServerSideProps, InferGetServerSidePropsType } from "next";
 
 import { ApiClient } from "@/api/http-common";
@@ -6,7 +5,7 @@ import { GeographyPage } from "@/components/pages/geographyPage";
 import { SYSTEM_GEO_NAMES } from "@/constants/systemGeos";
 import { withEnvConfig } from "@/context/EnvConfig";
 import { getCountryCode, getCountryName } from "@/helpers/getCountryFields";
-import { TApiItemResponse, GeographyV2, TSearch, TTarget, TGeography } from "@/types";
+import { TApiItemResponse, GeographyV2, TSearch, TGeography } from "@/types";
 import buildSearchQuery from "@/utils/buildSearchQuery";
 import { extractNestedData } from "@/utils/extractNestedData";
 import { getFeatureFlags } from "@/utils/featureFlags";
@@ -14,7 +13,7 @@ import { getFeatures } from "@/utils/features";
 import { readConfigFile } from "@/utils/readConfigFile";
 
 const CountryPage = ({ ...props }: InferGetServerSidePropsType<typeof getServerSideProps>) => {
-  return <GeographyPage {...props} />;
+  return <GeographyPage key={props.geographyV2.slug} {...props} />;
 };
 
 export default CountryPage;
@@ -38,8 +37,6 @@ export const getServerSideProps = (async (context) => {
   const backendApiClient = new ApiClient();
   const apiClient = new ApiClient(process.env.CONCEPTS_API_URL);
 
-  let targetsData: TTarget[] = [];
-
   let countryNameFromConfig;
   try {
     let geographies: TGeography[] = [];
@@ -50,8 +47,6 @@ export const getServerSideProps = (async (context) => {
     const geography = getCountryCode(id as string, geographies);
 
     if (geography) {
-      const targetsRaw = await axios.get<TTarget[]>(`${process.env.TARGETS_URL}/geographies/${geography.toLowerCase()}.json`);
-      targetsData = targetsRaw.data;
       countryNameFromConfig = getCountryName(id as string, geographies);
     }
   } catch {
@@ -74,10 +69,6 @@ export const getServerSideProps = (async (context) => {
     // Do nothing
   }
 
-  if (countryNameFromConfig) {
-    geographyV2.name = countryNameFromConfig;
-  }
-
   // If we don't have a geography - 404
   if (!geographyV2) {
     return { notFound: true };
@@ -86,6 +77,10 @@ export const getServerSideProps = (async (context) => {
   // We don't currently support regions - 404
   if (geographyV2.type === "region") {
     return { notFound: true };
+  }
+
+  if (countryNameFromConfig) {
+    geographyV2.name = countryNameFromConfig;
   }
 
   let vespaSearchResults: TSearch = null;
@@ -115,7 +110,6 @@ export const getServerSideProps = (async (context) => {
       features,
       geographyV2,
       parentGeographyV2,
-      targets: targetsData,
       theme,
       themeConfig,
       vespaSearchResults: vespaSearchResults,

@@ -380,7 +380,7 @@ jobs:
             echo "value=frontend/${theme}-${environment}" >> "$GITHUB_OUTPUT"
           elif [[ "$project" =~ ^(staging|production)-shared-resources$ ]]; then
             environment="${BASH_REMATCH[1]}"
-            echo "value=platform/${environment}" >> "$GITHUB_OUTPUT"
+            echo "value=frontend-platform/${environment}" >> "$GITHUB_OUTPUT"
           else
             echo "Unsupported project format: ${project}" >&2
             exit 1
