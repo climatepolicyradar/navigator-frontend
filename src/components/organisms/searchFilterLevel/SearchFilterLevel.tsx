@@ -43,7 +43,11 @@ export const SearchFilterLevel = ({ ancestorPath, indented, labels }: IProps) =>
 
   // Searchable checkboxes
   if (isLongShallowList) {
-    return <SearchFilterLookup ancestorPath={ancestorPath} labels={sortedLabels} />;
+    return (
+      <li className={indentedClasses}>
+        <SearchFilterLookup ancestorPath={ancestorPath} labels={sortedLabels} />
+      </li>
+    );
   }
 
   // Checkboxes (default)

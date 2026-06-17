@@ -31,11 +31,13 @@ export const SearchFilterLookup = ({ ancestorPath, labels }: IProps) => {
         onChange={(event) => setSearchText(event.target.value)}
         onClear={() => setSearchText("")}
       />
-      {clippedOptions.map((option) => {
-        const pathLabels = [getFilterPathLabel(option), ...ancestorPath];
+      <ul className="flex flex-col gap-2 list-none">
+        {clippedOptions.map((option) => {
+          const pathLabels = [getFilterPathLabel(option), ...ancestorPath];
 
-        return <SearchFilter key={option.id} ancestorPath={pathLabels} label={option} />;
-      })}
+          return <SearchFilter key={option.id} ancestorPath={pathLabels} label={option} />;
+        })}
+      </ul>
       {isOverflowing && (
         <button
           type="button"
