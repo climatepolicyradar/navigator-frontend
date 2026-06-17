@@ -9,7 +9,6 @@ import { CategorySpecificFilters } from "@/components/_experiment/categorySpecif
 import { DocumentDrawer } from "@/components/_experiment/documentDrawer/DocumentDrawer";
 import { IntelliSearch } from "@/components/_experiment/intellisearch";
 import { Pagination } from "@/components/_experiment/pagination/Pagination";
-import { SearchFilters, TLabelType } from "@/components/_experiment/searchFilters/SearchFilters";
 import { SearchContainer } from "@/components/_experiment/searchResults/SearchResults";
 import { SearchSortSelect } from "@/components/_experiment/searchSort/SearchSortSelect";
 import { SelectPerPage } from "@/components/_experiment/selectPerPage/SelectPerPage";
@@ -20,7 +19,7 @@ import { FeaturesContext } from "@/context/FeaturesContext";
 import { loadLabels } from "@/hooks/useLabelSearch";
 import { FilterGroupSchema } from "@/schemas";
 import { TSearchLabel, TSearchQueryGroup, TTheme } from "@/types";
-import { findPublishedDateRangeValue, removePublishedDateRules, upsertPublishedDateRangeRules } from "@/utils/_experiment/dateRangeFilters";
+import { findPublishedDateRangeValue, removePublishedDateRules } from "@/utils/_experiment/dateRangeFilters";
 import { getFeatureFlags } from "@/utils/featureFlags";
 import { getFeatures } from "@/utils/features";
 import { addLabelRule, extractLabels, removeLabelRule } from "@/utils/filters/advancedFilters";
@@ -78,16 +77,8 @@ const ShadowSearch = ({ theme, themeConfig, features }: TProps) => {
   const [selectedDocument, setSelectedDocument] = useState<SearchDocument | null>(null);
   const [drawerOpen, setDrawerOpen] = useState(false);
 
-  const [filtersOpen, setFiltersOpen] = useState(false);
-  const [filterSidebarCategory, setFilterSidebarCategory] = useState<TLabelType>("category");
-
   // Control Advanced Filters view
   const [advancedFiltersOpen, setAdvancedFiltersOpen] = useState(false);
-
-  const handleSelectLabel = (label: string, type: string) => {
-    setFilterSidebarCategory((type as TLabelType) || "agent");
-    setFiltersOpen(true);
-  };
 
   useEffect(() => {
     loadLabels("").then(setAvailableFilters);
@@ -123,37 +114,7 @@ const ShadowSearch = ({ theme, themeConfig, features }: TProps) => {
           {/* CONTROLS - FILTERS, SORT, etc */}
           <div className={joinTailwindClasses(columnLayoutCss, "flex justify-between items-center")}>
             {/* FILTERS */}
-            <SearchFilters
-              availableFilters={availableFilters}
-              filters={filters}
-              activeLabelType={filterSidebarCategory}
-              onActiveLabelTypeChange={setFilterSidebarCategory}
-              open={filtersOpen}
-              onOpenChange={setFiltersOpen}
-              onChange={(checked, label) => {
-                if (checked) {
-                  setFilters((prev) => addLabelRule(prev, label));
-                  setCurrentPage("1");
-                } else {
-                  setFilters((prev) => (prev ? removeLabelRule(prev, label) : createGroup()));
-                  setCurrentPage("1");
-                }
-              }}
-              onAdvancedClick={() => {
-                setFiltersOpen(false);
-                setAdvancedFiltersOpen(true);
-              }}
-              dateRangeValue={selectedPublishedDateRange}
-              onDateRangeChange={(nextValue) => {
-                if (nextValue === null) {
-                  setFilters((prev) => removePublishedDateRules(prev));
-                  setCurrentPage("1");
-                  return;
-                }
-                setFilters((prev) => upsertPublishedDateRangeRules(prev, nextValue));
-                setCurrentPage("1");
-              }}
-            />
+            <CategorySpecificFilters labels={availableFilters} onFiltersChange={(group) => setFiltersInUrl(group)} />
             <div className="flex items-center gap-6 flex-wrap">
               {/* SORT */}
               <SearchSortSelect
@@ -179,7 +140,6 @@ const ShadowSearch = ({ theme, themeConfig, features }: TProps) => {
                   setTotalNoOfResults(null);
                   setCurrentPage("1");
                 }}
-                onSelectLabel={handleSelectLabel}
                 onRemoveLabel={(label) => {
                   setFilters((prev) => (prev ? removeLabelRule(prev, label) : createGroup()));
                   setCurrentPage("1");
@@ -192,8 +152,6 @@ const ShadowSearch = ({ theme, themeConfig, features }: TProps) => {
               />
             </div>
           )}
-          {/* CATEGORY SPECIFIC FILTERS */}
-          <CategorySpecificFilters labels={availableFilters} onFiltersChange={(group) => setFiltersInUrl(group)} />
           {/* SEARCH RESULTS */}
           <div className={columnLayoutCss}>
             <SearchContainer

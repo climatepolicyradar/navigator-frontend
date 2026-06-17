@@ -1,6 +1,8 @@
 import sortBy from "lodash/sortBy";
+import { ListFilter } from "lucide-react";
 import { useState } from "react";
 
+import { Drawer } from "@/components/atoms/drawer/Drawer";
 import { SearchFilterLevel } from "@/components/organisms/searchFilterLevel/SearchFilterLevel";
 import { FiltersContext, TToggleFilterCallback } from "@/context/FiltersContext";
 import { TFilterPathLabel, TNestedSearchLabel, TSearchLabel, TSearchQueryGroup } from "@/types";
@@ -44,6 +46,7 @@ interface IProps {
 
 export const CategorySpecificFilters = ({ labels, onFiltersChange }: IProps) => {
   const [checkedLabelPaths, setCheckedLabelPaths] = useState<TFilterPathLabel[][]>([]);
+  const [isOpen, setIsOpen] = useState(false);
 
   const labelsToDisplay = sortBy(
     nestSearchLabels(labels).filter((rootLabel) => rootLabel.type === "category"),
@@ -62,12 +65,20 @@ export const CategorySpecificFilters = ({ labels, onFiltersChange }: IProps) => 
   };
 
   return (
-    <FiltersContext value={{ checkedLabelPaths, toggleFilter }}>
-      <div className="col-start-1 -col-end-1">
-        <div className="max-w-125 p-8 border border-black rounded-lg">
+    <>
+      <button
+        type="button"
+        className="flex gap-2 items-center px-3 py-2 text-sm text-text-primary font-medium leading-5 border border-border-normal rounded-full"
+        onClick={() => setIsOpen((current) => !current)}
+      >
+        <ListFilter size={16} className="text-elem-icon" />
+        <span>Filters</span>
+      </button>
+      <Drawer direction="left" open={isOpen} onOpenChange={(open) => setIsOpen(open)} title="Filters">
+        <FiltersContext value={{ checkedLabelPaths, toggleFilter }}>
           <SearchFilterLevel ancestorPath={[]} labels={labelsToDisplay} />
-        </div>
-      </div>
-    </FiltersContext>
+        </FiltersContext>
+      </Drawer>
+    </>
   );
 };
