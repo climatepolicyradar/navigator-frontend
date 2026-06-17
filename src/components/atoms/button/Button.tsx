@@ -42,8 +42,8 @@ export const getButtonClasses = ({
         break;
       case "outlined":
       case "ghost":
-        bgColor = "bg-transparent hover:bg-[#f5f5f5]";
-        textColor = color === "brand" ? "text-[#005eeb]" : "text-text-primary";
+        bgColor = "bg-transparent hocus:bg-paper";
+        textColor = color === "brand" ? "text-inky-blue" : "text-text-primary";
         break;
     }
 
@@ -55,7 +55,7 @@ export const getButtonClasses = ({
   /* Shape */
 
   const border = variant === "outlined" ? "border border-border-light" : "";
-  const outlineColor = color === "brand" ? "outline-[#0049b8]" : "outline-inky-black";
+  const outlineColor = color === "brand" ? "outline-inky-blue" : "outline-inky-black";
   const roundness = rounded ? "rounded-full" : "rounded-md";
 
   /* Size */
