@@ -19,8 +19,11 @@ from resources.cloudfront_distribution import (
 from resources.cors_policy import CloudFrontCORSPolicy, CORSPolicyConfig
 from resources.dns import DNS, DNSConfig
 from resources.ecr_repository import ECRRepository, ECRRepositoryConfig
+from resources.ecs_express_service import (
+    ExpressGatewayConfig,
+    ExpressGatewayServiceComponent,
+)
 from resources.github_actions_role import GitHubActionsRole
-from resources.waf import FrontendWebAcl
 from resources.util import (
     BehaviourOptions,
     CookieConfig,
@@ -30,6 +33,7 @@ from resources.util import (
     validate_aws_account,
     validate_stack_and_branch,
 )
+from resources.waf import FrontendWebAcl
 
 validate_aws_account()
 validate_stack_and_branch()
@@ -80,7 +84,9 @@ else:
 if is_review_stack:
     _review_tags = {"Environment": "review", "PRNumber": pr_number}
 
-    def _add_review_tags(args: pulumi.ResourceTransformArgs) -> pulumi.ResourceTransformResult | None:
+    def _add_review_tags(
+        args: pulumi.ResourceTransformArgs,
+    ) -> pulumi.ResourceTransformResult | None:
         if not args.type_.startswith("aws:"):
             return None
         existing_tags = args.props.get("tags") or {}
@@ -99,10 +105,12 @@ if "staging" in stack or is_review_stack_or_template:
 if "production" in stack:
     env = "production"
 
+
 # ECR repository setup.
 # Review stacks use a shared ECR repo managed by frontend-platform to avoid
 # creating/destroying repos per PR and hitting RepositoryAlreadyExistsException.
 # Non-review stacks create their own dedicated ECR repo as before.
+aws_env_stack = pulumi.StackReference(f"climatepolicyradar/aws_env/{env}")
 docker_tag = config.require("docker_tag")
 pulumi.info(f"Docker tag: {docker_tag}")
 
@@ -125,12 +133,14 @@ if not is_review_stack_or_template:
     pulumi.export("ecr_repository_url", repository_url)
 
 # Review stack: use the shared ECR repo from frontend-platform.
-shared_resources_review_stack = pulumi.StackReference("climatepolicyradar/frontend-platform/staging")
+shared_resources_stack = pulumi.StackReference(
+    f"climatepolicyradar/frontend-platform/{env}"
+)
 
 review_ecr_url = None
 frontend_image: docker_build.Image | None = None
-if is_review_stack:
-    review_ecr_url = shared_resources_review_stack.get_output("cpr_review_ecr_repository_url")
+if is_review_stack and env == "staging":
+    review_ecr_url = shared_resources_stack.get_output("cpr_review_ecr_repository_url")
 
     # Build and push the Docker image as part of the Pulumi deployment so that
     # the App Runner service has a valid image to pull.
@@ -167,15 +177,27 @@ if is_review_stack:
     pulumi.export("ecr_repository_url", repository_url)
 
 
+# public subnet IDs  are required for the ECS FrontendCluster.
+vpc_id = aws_env_stack.get_output("vpc_id")
+cloudfront_origin_prefix_list_id = aws_env_stack.get_output(
+    "cloudfront_origin_prefix_list_id"
+)
+eu_west_1a_public_subnet_id = aws_env_stack.get_output("eu_west_1a_public_subnet_id")
+eu_west_1b_public_subnet_id = aws_env_stack.get_output("eu_west_1b_public_subnet_id")
+eu_west_1c_public_subnet_id = aws_env_stack.get_output("eu_west_1c_public_subnet_id")
+
+
 if ecr_repo:
     pulumi.export("ecr_repository_name", ecr_repo.repository.name)
 
-shared_access_role_arn= None
+shared_access_role_arn = None
 if not is_review_template:
     # For review stacks, use the shared ECR access role created in frontend-platform
     # to avoid the 64-character IAM role name limit on ephemeral PR stacks.
-    if is_review_stack:
-        shared_access_role_arn = shared_resources_review_stack.get_output("apprunner_ecr_access_role_arn")
+    if is_review_stack and env == "staging":
+        shared_access_role_arn = shared_resources_stack.get_output(
+            "apprunner_ecr_access_role_arn"
+        )
 
     # Configure AppRunner settings (using current account)
     is_cpr_stack = stack in ["cpr-production", "cpr-staging"]
@@ -211,15 +233,48 @@ if not is_review_template:
         image_identifier=cast(str, image_identifier),
         env_vars=FRONTEND_ENV,
         auto_scaling_config_arn=(
-            config.require("auto_scaling_config_arn")
-            if not is_cpr_stack
-            else None
+            config.require("auto_scaling_config_arn") if not is_cpr_stack else None
         ),
         access_role_arn=shared_access_role_arn,
         opts=pulumi.ResourceOptions(
             depends_on=(
-                [frontend_image] if frontend_image is not None
-                else [ecr_repo.repository] if ecr_repo
+                [frontend_image]
+                if frontend_image is not None
+                else [ecr_repo.repository]
+                if ecr_repo
+                else []
+            ),
+        ),
+    )
+
+    ecs_frontend_service = ExpressGatewayServiceComponent(
+        name=name_prefix,
+        config=ExpressGatewayConfig(
+            health_check_path="/",
+        ),
+        image_identifier=cast(str, image_identifier),
+        cluster_arn=shared_resources_stack.get_output("frontend_ecs_cluster_arn"),
+        task_execution_role_arn=shared_resources_stack.get_output(
+            "frontend_ecs_cluster_task_execution_role_arn"
+        ),
+        infrastructure_role_arn=shared_resources_stack.get_output(
+            "frontend_ecs_cluster_infrastructure_role_arn"
+        ),
+        security_group_ids=[
+            shared_resources_stack.get_output("frontend_ecs_cluster_security_group_id")
+        ],
+        subnets=[
+            eu_west_1a_public_subnet_id,
+            eu_west_1b_public_subnet_id,
+            eu_west_1c_public_subnet_id,
+        ],
+        env_vars=FRONTEND_ENV,
+        opts=pulumi.ResourceOptions(
+            depends_on=(
+                [frontend_image]
+                if frontend_image is not None
+                else [ecr_repo.repository]
+                if ecr_repo
                 else []
             ),
         ),
@@ -229,6 +284,7 @@ if not is_review_template:
     pulumi.export("frontend service name", frontend.service.service_name)
     pulumi.export("frontend arn", frontend.service.arn)
     pulumi.export("apprunner_service_url", frontend.service.service_url)
+    pulumi.export("ecs_service_url", ecs_frontend_service.url)
 
 ########################################################################
 # Create old GitHub Actions role
@@ -352,7 +408,6 @@ if not is_review_stack_or_template:
         ),
     )
 
-
     ########################################################################
     # Create Route 53 records & certificate
     ########################################################################
@@ -369,7 +424,6 @@ if not is_review_stack_or_template:
     # elif theme == "mcf":
     #     domain_name = "climateprojectexplorer.org"
 
-    aws_env_stack = pulumi.StackReference(f"climatepolicyradar/aws_env/{env}")
     hosted_zone_id = aws_env_stack.get_output("root_zone_id")
 
     # First create the CloudFront distribution with the correct domain
@@ -388,13 +442,13 @@ if not is_review_stack_or_template:
         config=dns_config,
     )
 
-
     ########################################################################
     # Create CloudFront distribution
     ########################################################################
 
     # Get backend stack reference
     backend_stack = pulumi.StackReference(f"climatepolicyradar/backend/{env}")
+    ## Will need to change the backend stack to get ecs service url instead of app runner service url
     backend_service_url = backend_stack.get_output("new_apprunner_service_url")
 
     frontend.service.service_url.apply(
@@ -490,12 +544,10 @@ if not is_review_stack_or_template:
             )
         )
 
-
     # Create the CloudFront distribution
     class DomainVisibility(Enum):
         INTERNAL = "internal"
         EXTERNAL = "public facing"
-
 
     frontend_web_acl = FrontendWebAcl(
         name=f"{theme}-{env}-frontend-waf",
@@ -579,7 +631,6 @@ if not is_review_stack_or_template:
                 )
             ],
         )
-
 
     #######################################################################################
     # Create CCC redirects?
