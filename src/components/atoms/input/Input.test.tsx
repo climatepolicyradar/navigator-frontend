@@ -39,20 +39,20 @@ describe("Input", () => {
     expect(onClear).toHaveBeenCalledTimes(1);
   });
 
-  it("renders icon after the input by default", () => {
+  it("renders icon before the input by default", () => {
     const icon = <span data-cy="icon">icon</span>;
     render(<Input icon={icon} />);
     const input = screen.getByRole("textbox");
     const renderedIcon = screen.getByTestId("icon");
-    expect(input.compareDocumentPosition(renderedIcon)).toBe(Node.DOCUMENT_POSITION_FOLLOWING);
+    expect(input.compareDocumentPosition(renderedIcon)).toBe(Node.DOCUMENT_POSITION_PRECEDING);
   });
 
-  it("renders icon before the input when iconOnLeft is true", () => {
+  it("renders icon after the input when iconSide is right", () => {
     const icon = <span data-cy="icon">icon</span>;
-    render(<Input icon={icon} iconOnLeft />);
+    render(<Input icon={icon} iconSide="right" />);
     const input = screen.getByRole("textbox");
     const renderedIcon = screen.getByTestId("icon");
-    expect(input.compareDocumentPosition(renderedIcon)).toBe(Node.DOCUMENT_POSITION_PRECEDING);
+    expect(input.compareDocumentPosition(renderedIcon)).toBe(Node.DOCUMENT_POSITION_FOLLOWING);
   });
 
   it("calls onChange when the user types", async () => {

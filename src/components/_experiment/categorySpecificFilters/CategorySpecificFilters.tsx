@@ -1,7 +1,10 @@
 import sortBy from "lodash/sortBy";
+import { ListFilter } from "lucide-react";
 import { useState } from "react";
 
-import { NestedLabel } from "@/components/_experiment/categorySpecificFilters/NestedLabel";
+import { Drawer } from "@/components/atoms/drawer/Drawer";
+import { SearchFilterLevel } from "@/components/organisms/searchFilterLevel/SearchFilterLevel";
+import { FiltersContext, TToggleFilterCallback } from "@/context/FiltersContext";
 import { TFilterPathLabel, TNestedSearchLabel, TSearchLabel, TSearchQueryGroup } from "@/types";
 import { buildFilterGroup } from "@/utils/search/buildFilterGroup";
 
@@ -42,15 +45,15 @@ interface IProps {
 }
 
 export const CategorySpecificFilters = ({ labels, onFiltersChange }: IProps) => {
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  const [_checkedLabelPaths, setCheckedLabelPaths] = useState<TFilterPathLabel[][]>([]);
+  const [checkedLabelPaths, setCheckedLabelPaths] = useState<TFilterPathLabel[][]>([]);
+  const [isOpen, setIsOpen] = useState(false);
 
   const labelsToDisplay = sortBy(
     nestSearchLabels(labels).filter((rootLabel) => rootLabel.type === "category"),
     "id"
   );
 
-  const onFilterToggle = (labelPath: TFilterPathLabel[], checked: boolean) => {
+  const toggleFilter: TToggleFilterCallback = (labelPath, checked) => {
     setCheckedLabelPaths((existingCheckedLabelPaths) => {
       const updatedCheckedLabelPaths = checked
         ? [...existingCheckedLabelPaths, labelPath]
@@ -62,12 +65,20 @@ export const CategorySpecificFilters = ({ labels, onFiltersChange }: IProps) => 
   };
 
   return (
-    <div className="col-start-1 -col-end-1">
-      <ul className="ml-8">
-        {labelsToDisplay.map((label) => (
-          <NestedLabel key={label.id} label={label} onFilterToggle={onFilterToggle} ancestorPath={[]} />
-        ))}
-      </ul>
-    </div>
+    <>
+      <button
+        type="button"
+        className="flex gap-2 items-center px-3 py-2 text-sm text-text-primary font-medium leading-5 border border-border-normal rounded-full"
+        onClick={() => setIsOpen((current) => !current)}
+      >
+        <ListFilter size={16} className="text-elem-icon" />
+        <span>Filters</span>
+      </button>
+      <Drawer direction="left" open={isOpen} onOpenChange={(open) => setIsOpen(open)} title="Filters">
+        <FiltersContext value={{ checkedLabelPaths, toggleFilter }}>
+          <SearchFilterLevel ancestorPath={[]} labels={labelsToDisplay} />
+        </FiltersContext>
+      </Drawer>
+    </>
   );
 };

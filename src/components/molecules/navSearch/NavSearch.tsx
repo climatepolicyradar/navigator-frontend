@@ -144,11 +144,11 @@ export const NavSearch = () => {
             clearable
             containerClasses={`h-[40px] focus-within:!outline-0`}
             icon={
-              <button type="submit" className="w-4 h-4 ml-0.5 shrink-0">
-                <Search height="16" width="16" />
+              <button type="submit">
+                <Search size={14} />
               </button>
             }
-            iconOnLeft
+            iconSide="left"
             inputClasses="text-sm"
             onChange={(event) => setSearchText(event.target.value)}
             onClear={handleClear}
