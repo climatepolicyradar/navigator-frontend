@@ -6,20 +6,24 @@ import { Checkbox } from "./Checkbox";
 
 describe("Checkbox", () => {
   it("displays the label", () => {
-    render(<Checkbox label="My label" onCheckedChange={vi.fn()} />);
+    render(<Checkbox onCheckedChange={vi.fn()}>My label</Checkbox>);
     expect(screen.getByText("My label")).toBeInTheDocument();
   });
 
   it("does not call onCheckedChange when disabled and clicked", async () => {
     const onCheckedChange = vi.fn();
-    render(<Checkbox label="Test" disabled onCheckedChange={onCheckedChange} />);
+    render(
+      <Checkbox disabled onCheckedChange={onCheckedChange}>
+        Test
+      </Checkbox>
+    );
     await userEvent.click(screen.getByRole("checkbox"));
     expect(onCheckedChange).not.toHaveBeenCalled();
   });
 
   it("calls onCheckedChange when clicked and not disabled", async () => {
     const onCheckedChange = vi.fn();
-    render(<Checkbox label="Test" onCheckedChange={onCheckedChange} />);
+    render(<Checkbox onCheckedChange={onCheckedChange}>Test</Checkbox>);
     await userEvent.click(screen.getByRole("checkbox"));
     expect(onCheckedChange).toHaveBeenCalledTimes(1);
   });

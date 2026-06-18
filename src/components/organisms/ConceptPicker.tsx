@@ -137,13 +137,11 @@ export const ConceptPicker = ({ containerClasses = "", startingSort = "Grouped",
         <div className="flex gap-2 items-center justify-between">
           {showSearch && (
             <Input
-              clearable
               name="Topic quick search"
               placeholder="Quick search"
               value={search}
               onChange={(e) => setSearch(e.currentTarget.value)}
               onClear={() => setSearch("")}
-              size="small"
             />
           )}
           <div className="basis-3/10 shrink-0 relative flex items-center" ref={setContainer}>
