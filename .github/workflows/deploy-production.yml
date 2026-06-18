@@ -57,3 +57,42 @@ jobs:
           docker build --build-arg THEME=${THEME} --build-arg GITHUB_SHA=$(git rev-parse HEAD) -t $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG .
           docker push $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
           echo "image=$ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG" >> $GITHUB_OUTPUT
+
+      # @see: https://github.com/marketplace/actions/amazon-ecs-deploy-express-service-action-for-github-actions#complete-example-with-all-options
+      - name: Deploy to ECS (production)
+        id: deploy-production
+        uses: aws-actions/amazon-ecs-deploy-express-service@v1
+        with:
+          cluster: frontend-production
+          service-name: ${{ inputs.theme }}-frontend-production
+          image: ${{ steps.build-image.outputs.image }}
+          execution-role-arn: arn:aws:iam::${{ secrets.AWS_ACCOUNT_ID }}:role/${{ inputs.theme }}-frontend-production-ecs-task-execution-role
+          infrastructure-role-arn: arn:aws:iam::${{ secrets.AWS_ACCOUNT_ID }}:role/${{ inputs.theme }}-frontend-production-ecs-infrastructure-role
+
+      - name: Verify production deployment outcome
+        env:
+          SERVICE_ARN: ${{ steps.deploy-production.outputs.service-arn }}
+        run: |
+          set -euo pipefail
+          if [[ -z "${SERVICE_ARN}" ]]; then
+            echo "::error::deploy step did not emit a service-arn output"
+            exit 1
+          fi
+          DEPLOY_ARN=$(aws ecs list-service-deployments \
+            --cluster frontend-production \
+            --service "${SERVICE_ARN}" \
+            --query 'serviceDeployments[0].serviceDeploymentArn' \
+            --output text)
+          if [[ -z "${DEPLOY_ARN}" || "${DEPLOY_ARN}" == "None" ]]; then
+            echo "::error::Could not find a service deployment for ${SERVICE_ARN}"
+            exit 1
+          fi
+          STATUS=$(aws ecs describe-service-deployments \
+            --service-deployment-arns "${DEPLOY_ARN}" \
+            --query 'serviceDeployments[0].status' \
+            --output text)
+          echo "Deployment ${DEPLOY_ARN} final status: ${STATUS}"
+          if [[ "${STATUS}" != "SUCCESSFUL" ]]; then
+            echo "::error::Deployment did not succeed (status=${STATUS})"
+            exit 1
+          fi
