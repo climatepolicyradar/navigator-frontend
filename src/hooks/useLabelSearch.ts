@@ -93,7 +93,7 @@ export const loadLabels = async (query: string): Promise<TSearchLabel[]> => {
     ],
   };
   const response = await client.get<TLabelsResponse>(
-    `/search/labels?query=${encodeURIComponent(query)}&page_size=400&filters=${encodeURIComponent(JSON.stringify(defaultFilter))}`,
+    `/search/labels?query=${encodeURIComponent(query)}&page_size=10000&filters=${encodeURIComponent(JSON.stringify(defaultFilter))}`,
     null
   );
   return response.data.results || [];
