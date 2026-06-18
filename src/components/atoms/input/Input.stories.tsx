@@ -34,7 +34,6 @@ export const Clearable: TStory = {
   args: {
     clearable: true,
     placeholder: "Type something",
-    size: "medium",
   },
   render: useInputContext,
 };
@@ -42,10 +41,9 @@ export const Clearable: TStory = {
 export const IconRight: TStory = {
   args: {
     clearable: false,
-    icon: <Search size={16} />,
-    iconOnLeft: false,
+    icon: <Search size={14} />,
+    iconSide: "right",
     placeholder: "Search",
-    size: "medium",
   },
   render: useInputContext,
 };
@@ -53,24 +51,9 @@ export const IconRight: TStory = {
 export const IconLeft: TStory = {
   args: {
     clearable: false,
-    icon: <Plus size={16} />,
-    iconOnLeft: true,
+    icon: <Plus size={14} />,
+    iconSide: "left",
     placeholder: "Add...",
-    size: "medium",
   },
   render: useInputContext,
-};
-
-export const Sizes: TStory = {
-  args: {
-    clearable: true,
-    placeholder: "Type something",
-  },
-  render: (args) => (
-    <div className="flex flex-col gap-4">
-      <Input {...args} size="small" placeholder="Small size" />
-      <Input {...args} size="medium" placeholder="Medium size" />
-      <Input {...args} size="large" placeholder="Large size" />
-    </div>
-  ),
 };

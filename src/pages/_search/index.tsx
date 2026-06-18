@@ -127,8 +127,9 @@ const ShadowSearch = ({ theme, themeConfig, features }: TProps) => {
           <div className={joinTailwindClasses(columnLayoutCss, "flex justify-between items-center")}>
             {/* FILTERS */}
             <div className="flex items-center gap-2">
+              <CategorySpecificFilters labels={availableFilters} onFiltersChange={(group) => setFiltersInUrl(group)} />
               {/* NEW FILTERS */}
-              <div className="flex gap-1">
+              <div className="flex gap-1 border-l border-border-light pl-2">
                 <BasePopover.Trigger className={filterButtonCss} handle={searchFiltersHandle} payload={<p>Date filter panel coming soon</p>}>
                   Date
                   <ChevronDown className="text-elem-icon h-4 w-4" />
@@ -254,8 +255,6 @@ const ShadowSearch = ({ theme, themeConfig, features }: TProps) => {
               </div>
             </div>
           )}
-          {/* CATEGORY SPECIFIC FILTERS */}
-          <CategorySpecificFilters labels={availableFilters} onFiltersChange={(group) => setFiltersInUrl(group)} />
         </FiveColumns>
         {/* ADVANCED FILTERS */}
         <AdvancedFilters

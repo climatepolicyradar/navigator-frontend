@@ -63,14 +63,15 @@ export function SearchFilters({
     return (
       <li key={filter.id}>
         <Checkbox
-          label={filter.value}
           checked={checked}
           disabled={!isAvailable}
           onCheckedChange={(nextChecked) => {
             if (!isAvailable) return;
             onChange?.(nextChecked === true, filter.id);
           }}
-        />
+        >
+          {filter.value}
+        </Checkbox>
       </li>
     );
   };

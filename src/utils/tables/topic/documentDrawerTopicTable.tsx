@@ -14,7 +14,7 @@ export const DOCUMENT_DRAWER_TOPICS_TABLE_COLUMNS: TTableColumn<TTopicTableColum
     id: "topics",
     name: (
       <>
-        Topics <span className="text-[#6b7280] font-normal">(Most frequent)</span>
+        Topics <span className="text-text-tertiary font-normal">(Most frequent)</span>
       </>
     ),
     fraction: 2,

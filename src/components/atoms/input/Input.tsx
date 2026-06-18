@@ -1,86 +1,54 @@
 import { Input as BaseInput } from "@base-ui/react";
 import { X } from "lucide-react";
-import { useMemo } from "react";
+import { ReactNode } from "react";
 
 import { joinTailwindClasses } from "@/utils/tailwind";
 
 interface IProps extends Omit<React.InputHTMLAttributes<HTMLInputElement>, "size"> {
   clearable?: boolean;
   containerClasses?: string;
-  color?: "brand" | "mono";
-  icon?: React.ReactNode;
-  iconOnLeft?: boolean;
+  icon?: ReactNode;
+  iconSide?: "left" | "right";
   inputClasses?: string;
   onClear?: () => void;
-  size?: "small" | "medium" | "large";
 }
 
 export const Input = ({
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   className: _className,
   clearable = false,
-  color = "brand",
   containerClasses = "",
   icon,
-  iconOnLeft = false,
+  iconSide = "left",
   inputClasses = "",
-  size = "medium",
   onClear,
   value,
   ...props
 }: IProps) => {
-  const classes = useMemo(() => {
-    /* Colour */
+  const allContainerClasses = joinTailwindClasses(
+    "w-full px-2 flex flex-row justify-around items-center bg-bg-flat rounded-md outline-inky-blue focus-within:outline",
+    containerClasses
+  );
+  const allInputClasses = joinTailwindClasses(
+    "flex-1 p-1 bg-transparent border-none text-xs text-text-primary font-medium leading-6 placeholder:text-text-tertiary caret-text-inky-blue focus:shadow-[none]",
+    inputClasses
+  );
+  const iconClasses = "flex items-center shrink-0 text-elem-icon";
+  const clearButtonClasses = joinTailwindClasses(iconClasses, !value && "hidden", icon && iconSide === "right" && "mr-1");
+  const iconWrapper = icon ? <div className={iconClasses}>{icon}</div> : null;
 
-    const outlineColor = color === "brand" ? "focus-within:outline-inky-blue" : "focus-within:outline-border-normal";
-
-    /* Size */
-
-    let textSize = "text-sm";
-    let inputPadding = "px-1.5 py-2.5";
-    let iconPadding = "p-1.5";
-
-    switch (size) {
-      case "small":
-        textSize = "text-xs";
-        break;
-      case "large":
-        textSize = "text-base";
-        inputPadding = "px-2 py-3.5";
-        iconPadding = "p-2";
-        break;
-    }
-
-    return {
-      button: joinTailwindClasses("shrink-0 text-elem-icon", iconPadding),
-      container: joinTailwindClasses(
-        "w-full px-2 flex flex-row justify-around items-center bg-bg-flat rounded-md focus-within:outline",
-        outlineColor,
-        containerClasses
-      ),
-      icon: joinTailwindClasses("shrink-0", iconPadding),
-      input: joinTailwindClasses(
-        "w-full block bg-transparent border-none focus:shadow-[none] leading-none font-medium text-text-primary placeholder:text-text-tertiary caret-text-inky-blue",
-        inputPadding,
-        textSize,
-        inputClasses
-      ),
-    };
-  }, [color, containerClasses, inputClasses, size]);
-
-  const handleClear = () => {
-    onClear?.();
-  };
+  const handleClear = () => onClear?.();
 
   return (
-    <div className={classes.container}>
-      {iconOnLeft && icon}
-      <BaseInput className={classes.input} value={value} {...props} />
+    <div className={allContainerClasses}>
+      {iconSide === "left" && iconWrapper}
+      <BaseInput className={allInputClasses} value={value} {...props} />
       {clearable && (
-        <button type="button" className={`${classes.button} ${value ? "" : "hidden"}`} onClick={handleClear}>
+        <button type="button" className={clearButtonClasses} onClick={handleClear}>
           <X height="14" width="14" />
         </button>
       )}
-      {!iconOnLeft && icon}
+      {iconSide === "right" && iconWrapper}
     </div>
   );
 };

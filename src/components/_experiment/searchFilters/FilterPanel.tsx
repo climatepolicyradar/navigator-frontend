@@ -33,13 +33,14 @@ export const FilterPanel = ({ options, activeFilters, onFiltersChange }: TProps)
   const renderCheckboxRow = (option: TSearchLabel) => (
     <li key={option.id}>
       <Checkbox
-        label={option.value}
         checked={checkedIds.has(option.id)}
         onCheckedChange={(nextChecked) => {
           const updatedIds = nextChecked === true ? [...checkedIds, option.id] : [...checkedIds].filter((id) => id !== option.id);
           onFiltersChange(updatedIds.length > 0 ? buildFilterGroup(updatedIds) : null);
         }}
-      />
+      >
+        {option.value}
+      </Checkbox>
     </li>
   );
 
@@ -54,7 +55,6 @@ export const FilterPanel = ({ options, activeFilters, onFiltersChange }: TProps)
         onClear={() => setSearch("")}
         name="Quick search"
         placeholder="Quick search"
-        size="small"
         value={search}
       />
       <div className="max-h-[60dvh] overflow-y-auto">
