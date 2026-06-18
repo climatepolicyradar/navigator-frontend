@@ -1,3 +1,5 @@
+import { Popover as BasePopover } from "@base-ui/react/popover";
+import { ChevronDown } from "lucide-react";
 import { GetServerSideProps, InferGetServerSidePropsType } from "next";
 import { useQueryState, parseAsString, parseAsJson } from "nuqs";
 import { useCallback, useEffect, useMemo, useState, type SetStateAction } from "react";
@@ -9,6 +11,8 @@ import { CategorySpecificFilters } from "@/components/_experiment/categorySpecif
 import { DocumentDrawer } from "@/components/_experiment/documentDrawer/DocumentDrawer";
 import { IntelliSearch } from "@/components/_experiment/intellisearch";
 import { Pagination } from "@/components/_experiment/pagination/Pagination";
+import { FilterPanel } from "@/components/_experiment/searchFilters/FilterPanel";
+import { FilterPopover } from "@/components/_experiment/searchFilters/FilterPopover";
 import { SearchContainer } from "@/components/_experiment/searchResults/SearchResults";
 import { SearchSortSelect } from "@/components/_experiment/searchSort/SearchSortSelect";
 import { SelectPerPage } from "@/components/_experiment/selectPerPage/SelectPerPage";
@@ -27,6 +31,13 @@ import { readConfigFile } from "@/utils/readConfigFile";
 import { joinTailwindClasses } from "@/utils/tailwind";
 
 const columnLayoutCss = "col-start-1 -col-end-1 cols-5:col-start-2 cols-5:-col-end-2";
+
+const filterButtonCss = joinTailwindClasses(
+  "inline-flex items-center gap-1 rounded-full border border-border-normal bg-white px-3 py-2 text-sm font-medium text-text-primary hover:bg-bg-flat",
+  "data-popup-open:bg-bg-flat!"
+);
+
+const searchFiltersHandle = BasePopover.createHandle<React.ReactNode>();
 
 type TProps = InferGetServerSidePropsType<typeof getServerSideProps>;
 
@@ -47,6 +58,7 @@ const ShadowSearch = ({ theme, themeConfig, features }: TProps) => {
   const [query, setQuery] = useQueryState("q", parseAsString.withDefault(""));
   // structured filters built in QueryBuilder
   const [filters, setFiltersInUrl] = useQueryState("filters", parseAsJson<TSearchQueryGroup>(FilterGroupSchema).withDefault(createGroup()));
+  const [topics, setTopicsInUrl] = useQueryState("topics", parseAsJson<TSearchQueryGroup>(FilterGroupSchema).withDefault(createGroup()));
   // pagination state
   const [currentPage, setCurrentPage] = useQueryState("page_token", parseAsString.withDefault("1"));
   const [pageSize, setPageSize] = useQueryState("page_size", parseAsString.withDefault("10"));
@@ -114,7 +126,51 @@ const ShadowSearch = ({ theme, themeConfig, features }: TProps) => {
           {/* CONTROLS - FILTERS, SORT, etc */}
           <div className={joinTailwindClasses(columnLayoutCss, "flex justify-between items-center")}>
             {/* FILTERS */}
-            <CategorySpecificFilters labels={availableFilters} onFiltersChange={(group) => setFiltersInUrl(group)} />
+            <div className="flex items-center gap-2">
+              <CategorySpecificFilters labels={availableFilters} onFiltersChange={(group) => setFiltersInUrl(group)} />
+              {/* NEW FILTERS */}
+              <div className="flex gap-1 border-l border-border-light pl-2">
+                <BasePopover.Trigger className={filterButtonCss} handle={searchFiltersHandle} payload={<p>Date filter panel coming soon</p>}>
+                  Date
+                  <ChevronDown className="text-elem-icon h-4 w-4" />
+                </BasePopover.Trigger>
+
+                <BasePopover.Trigger
+                  className={filterButtonCss}
+                  handle={searchFiltersHandle}
+                  payload={
+                    <FilterPanel
+                      activeFilters={topics}
+                      options={availableFilters.filter((label) => label.type === "country").sort((a, b) => a.value.localeCompare(b.value))}
+                      onFiltersChange={(group) => {
+                        // console.log("geography filter changed", group);
+                        return group;
+                      }}
+                    />
+                  }
+                >
+                  Geography
+                  <ChevronDown className="text-elem-icon h-4 w-4" />
+                </BasePopover.Trigger>
+
+                <BasePopover.Trigger
+                  className={filterButtonCss}
+                  handle={searchFiltersHandle}
+                  payload={
+                    <FilterPanel
+                      activeFilters={topics}
+                      options={availableFilters.filter((label) => label.type === "concept").sort((a, b) => a.value.localeCompare(b.value))}
+                      onFiltersChange={(group) => setTopicsInUrl(group)}
+                    />
+                  }
+                >
+                  Topic
+                  <ChevronDown className="text-elem-icon h-4 w-4" />
+                </BasePopover.Trigger>
+
+                <BasePopover.Root handle={searchFiltersHandle}>{({ payload }) => <FilterPopover>{payload}</FilterPopover>}</BasePopover.Root>
+              </div>
+            </div>
             <div className="flex items-center gap-6 flex-wrap">
               {/* SORT */}
               <SearchSortSelect
