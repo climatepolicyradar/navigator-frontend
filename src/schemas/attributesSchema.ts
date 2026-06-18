@@ -27,13 +27,22 @@ export const FamilyAttributesSchema = v.object({
 export type TDataInFamilyAttributes = v.InferOutput<typeof FamilyAttributesSchema>;
 export const validateFamilyAttributes = (attributes: TDataInAttributes): TDataInFamilyAttributes => v.parse(FamilyAttributesSchema, attributes);
 
-export const DocumentAttributesSchema = v.object({
-  action_taken: v.optional(v.string()),
-  deprecated_slug: v.string(),
-  md5_sum: v.optional(v.string()),
-  variant: v.optional(v.string()),
-  status: toLiteralUnion(["created", "deleted", "published"]),
-});
+export const DocumentAttributesSchema = v.pipe(
+  v.object({
+    action_taken: v.optional(v.string()),
+    deprecated_slug: v.optional(v.string()),
+    md5_sum: v.optional(v.string()),
+    variant: v.optional(v.string()),
+    status: toLiteralUnion(["created", "deleted", "published", "awaiting_source_file"]),
+  }),
+  v.forward(
+    v.check(
+      (input) => input.status === "awaiting_source_file" || input.deprecated_slug !== undefined,
+      "deprecated_slug is required unless status is 'awaiting_source_file'."
+    ),
+    ["deprecated_slug"]
+  )
+);
 export type TDataInDocumentAttributes = v.InferOutput<typeof DocumentAttributesSchema>;
 export const validateDocumentAttributes = (attributes: TDataInAttributes): TDataInDocumentAttributes => v.parse(DocumentAttributesSchema, attributes);
 
