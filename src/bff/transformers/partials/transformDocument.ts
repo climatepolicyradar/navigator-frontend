@@ -20,7 +20,9 @@ export const transformDocument = (document: TDataInDocument, events: TFamilyEven
   if (!displayAllowed) return null;
 
   const groupedLabels = groupByType<TDataInLabel, TDataInLabelType>(document.labels, LABEL_TYPES, MANDATORY_DOCUMENT_LABEL_TYPES);
-  const groupedItems = groupByType<TDataInItem, TDataInItemType>(document.items ?? [], ITEM_TYPES, MANDATORY_ITEM_TYPES);
+
+  const itemsMandatory = documentAttributes.status === "awaiting_source_file" ? [] : MANDATORY_ITEM_TYPES;
+  const groupedItems = groupByType<TDataInItem, TDataInItemType>(document.items ?? [], ITEM_TYPES, itemsMandatory);
 
   const languages = groupedLabels.language.map((label) => label.value.value);
 
