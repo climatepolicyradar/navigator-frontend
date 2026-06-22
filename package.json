@@ -52,7 +52,7 @@
     "vaul": "^1.1.2"
   },
   "devDependencies": {
-    "@babel/core": "^7.29.7",
+    "@babel/core": "^8.0.1",
     "@babel/preset-env": "^7.29.7",
     "@eslint/js": "^9.39.4",
     "@next/bundle-analyzer": "^16.2.9",
