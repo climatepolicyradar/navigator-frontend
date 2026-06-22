@@ -3,9 +3,11 @@ import { ListFilter } from "lucide-react";
 import { useState } from "react";
 
 import { Drawer } from "@/components/atoms/drawer/Drawer";
+import { AppliedFilters } from "@/components/molecules/appliedFilters/AppliedFilters";
 import { SearchFilterLevel } from "@/components/organisms/searchFilterLevel/SearchFilterLevel";
 import { FiltersContext, TToggleFilterCallback } from "@/context/FiltersContext";
 import { TFilterPathLabel, TNestedSearchLabel, TSearchLabel, TSearchQueryGroup } from "@/types";
+import { getLabelPathSignature } from "@/utils/filters/filterPaths";
 import { buildFilterGroup } from "@/utils/search/buildFilterGroup";
 
 const nestSearchLabels = (labels: TSearchLabel[]): TNestedSearchLabel[] => {
@@ -37,8 +39,6 @@ const nestSearchLabels = (labels: TSearchLabel[]): TNestedSearchLabel[] => {
   return rootLabels;
 };
 
-const getLabelPathSignature = (labelPath: TFilterPathLabel[]) => labelPath.map((label) => label.id).join("/");
-
 interface IProps {
   labels: TSearchLabel[];
   onFiltersChange: (group: TSearchQueryGroup) => void;
@@ -64,6 +64,11 @@ export const CategorySpecificFilters = ({ labels, onFiltersChange }: IProps) => 
     });
   };
 
+  const resetFilters = () => {
+    setCheckedLabelPaths([]);
+    onFiltersChange(null);
+  };
+
   return (
     <>
       <button
@@ -75,7 +80,8 @@ export const CategorySpecificFilters = ({ labels, onFiltersChange }: IProps) => 
         <span>Filters</span>
       </button>
       <Drawer direction="left" open={isOpen} onOpenChange={(open) => setIsOpen(open)} title="Filters">
-        <FiltersContext value={{ checkedLabelPaths, toggleFilter }}>
+        <FiltersContext value={{ checkedLabelPaths, resetFilters, toggleFilter }}>
+          <AppliedFilters />
           <SearchFilterLevel ancestorPath={[]} labels={labelsToDisplay} />
         </FiltersContext>
       </Drawer>
