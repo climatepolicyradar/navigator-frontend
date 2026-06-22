@@ -22,7 +22,7 @@ export const PoweredBy = () => (
         <div className="flex flex-col gap-4">
           <p className="text-text-secondary text-base leading-normal pb-4">
             Visit{" "}
-            <ExternalLink className="underline" url="https://www.climatepolicyradar.org">
+            <ExternalLink className="underline" url="https://climate.law.columbia.edu/">
               climate.law.columbia.edu
             </ExternalLink>
           </p>
