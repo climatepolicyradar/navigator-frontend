@@ -57,7 +57,7 @@ jobs:
       # @see: https://github.com/marketplace/actions/amazon-ecs-deploy-express-service-action-for-github-actions#complete-example-with-all-options
       - name: Deploy to ECS (staging)
         id: deploy-staging
-        uses: aws-actions/amazon-ecs-deploy-express-service@v1
+        uses: aws-actions/amazon-ecs-deploy-express-service@v1.2.1
         with:
           cluster: frontend-staging
           service-name: ${{ matrix.theme }}-staging-frontend
