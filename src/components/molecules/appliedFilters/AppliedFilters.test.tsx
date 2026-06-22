@@ -13,9 +13,9 @@ const nestedPath: TFilterPathLabel[] = [
   { id: "france", type: "country", value: "France" },
 ];
 
-const renderWithFiltersContext = (checkedLabelPaths: TFilterPathLabel[][], resetFilters = vi.fn(), toggleFilter = vi.fn()) =>
+const renderWithFiltersContext = (checkedLabelPaths: TFilterPathLabel[][], clearFilters = vi.fn(), toggleFilter = vi.fn()) =>
   render(
-    <FiltersContext.Provider value={{ checkedLabelPaths, resetFilters, toggleFilter }}>
+    <FiltersContext.Provider value={{ checkedLabelPaths, clearFilters, toggleFilter }}>
       <AppliedFilters />
     </FiltersContext.Provider>
   );
@@ -38,10 +38,10 @@ describe("AppliedFilters", () => {
     expect(toggleFilter).toHaveBeenCalledWith(topLevelPath, false);
   });
 
-  it("calls resetFilters when clicking 'Clear all'", async () => {
-    const resetFilters = vi.fn();
-    renderWithFiltersContext([topLevelPath], resetFilters);
+  it("calls clearFilters when clicking 'Clear all'", async () => {
+    const clearFilters = vi.fn();
+    renderWithFiltersContext([topLevelPath], clearFilters);
     await userEvent.click(screen.getByRole("button", { name: "Clear all filters" }));
-    expect(resetFilters).toHaveBeenCalledOnce();
+    expect(clearFilters).toHaveBeenCalledOnce();
   });
 });

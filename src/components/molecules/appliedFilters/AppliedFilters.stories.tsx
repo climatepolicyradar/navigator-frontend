@@ -66,7 +66,7 @@ const useFiltersContext = (checkedLabelPaths: TFilterPathLabel[][]) => {
       value={{
         checkedLabelPaths,
         // eslint-disable-next-line no-console
-        resetFilters: () => console.info("resetFilters"),
+        clearFilters: () => console.info("clearFilters"),
         // eslint-disable-next-line no-console
         toggleFilter: (labelPath, checked) => console.info({ labelPath, checked }),
       }}

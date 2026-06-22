@@ -6,7 +6,7 @@ import { FiltersContext } from "@/context/FiltersContext";
 import { getLabelPathSignature } from "@/utils/filters/filterPaths";
 
 export const AppliedFilters = () => {
-  const { checkedLabelPaths, resetFilters, toggleFilter } = useContext(FiltersContext);
+  const { checkedLabelPaths, clearFilters, toggleFilter } = useContext(FiltersContext);
 
   const labels = useMemo(
     () =>
@@ -39,7 +39,7 @@ export const AppliedFilters = () => {
           type="button"
           className="px-3 py-1 text-sm text-text-primary font-normal leading-5"
           aria-label="Clear all filters"
-          onClick={() => resetFilters()}
+          onClick={() => clearFilters()}
         >
           Clear all
         </button>

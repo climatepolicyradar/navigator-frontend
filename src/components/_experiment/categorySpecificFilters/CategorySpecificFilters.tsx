@@ -64,7 +64,7 @@ export const CategorySpecificFilters = ({ labels, onFiltersChange }: IProps) => 
     });
   };
 
-  const resetFilters = () => {
+  const clearFilters = () => {
     setCheckedLabelPaths([]);
     onFiltersChange(null);
   };
@@ -80,7 +80,7 @@ export const CategorySpecificFilters = ({ labels, onFiltersChange }: IProps) => 
         <span>Filters</span>
       </button>
       <Drawer direction="left" open={isOpen} onOpenChange={(open) => setIsOpen(open)} title="Filters">
-        <FiltersContext value={{ checkedLabelPaths, resetFilters, toggleFilter }}>
+        <FiltersContext value={{ checkedLabelPaths, clearFilters, toggleFilter }}>
           <AppliedFilters />
           <SearchFilterLevel ancestorPath={[]} labels={labelsToDisplay} />
         </FiltersContext>

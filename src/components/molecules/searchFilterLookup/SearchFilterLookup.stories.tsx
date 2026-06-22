@@ -15,7 +15,7 @@ const meta = {
   render: (props) => (
     <FiltersContext
       // eslint-disable-next-line no-console
-      value={{ checkedLabelPaths: [], resetFilters: () => {}, toggleFilter: (labelPath, checked) => console.info({ labelPath, checked }) }}
+      value={{ checkedLabelPaths: [], clearFilters: () => {}, toggleFilter: (labelPath, checked) => console.info({ labelPath, checked }) }}
     >
       <SearchFilterLookup {...props} />
     </FiltersContext>
