@@ -62,7 +62,7 @@ export default function ICCNLandingPage() {
           },
         },
         {
-          label: "Our emissions reduction target topic",
+          label: "Emissions reduction target",
           query: {
             [QUERY_PARAMS.category]: "climate-council-reports",
             [QUERY_PARAMS.concept_name]: "emissions reduction target",
