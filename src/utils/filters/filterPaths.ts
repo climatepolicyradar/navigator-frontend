@@ -5,3 +5,5 @@ export const getFilterPathLabel = (nestedSearchLabel: TNestedSearchLabel): TFilt
   type: nestedSearchLabel.type,
   value: nestedSearchLabel.value,
 });
+
+export const getLabelPathSignature = (labelPath: TFilterPathLabel[]) => labelPath.map((label) => label.id).join("/");
