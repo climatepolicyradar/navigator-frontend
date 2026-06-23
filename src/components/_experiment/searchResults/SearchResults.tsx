@@ -6,7 +6,6 @@ import { DocumentCard } from "@/components/molecules/documentCard/DocumentCard";
 import { TSearchQueryGroup } from "@/types";
 import { stripEmptyValueRules } from "@/utils/filters/advancedFilters";
 
-import styles from "./SearchResults.module.css";
 import { isFilterGroupEmpty } from "../advancedFilters/AdvancedFilters";
 import { EmptySearch } from "../emptySearch/EmptySearch";
 
@@ -37,13 +36,13 @@ function SearchResults({
         {data.results.map((result) => (
           <Fragment key={result.id}>
             {isPrincipal(result) && (
-              <li className={`flex flex-col ${styles["highlights"]}`}>
+              <li className={`flex flex-col highlights`}>
                 <DocumentCard document={result} onClick={onResultClicked} />
               </li>
             )}
             {/* TODO: remove non-principal results */}
             {!isPrincipal(result) && (
-              <li className={`flex gap-2 border border-transparent rounded-md py-2 pr-6 ${styles["highlights"]}`}>
+              <li className={`flex gap-2 border border-transparent rounded-md py-2 pr-6 highlights`}>
                 <p>Shouldn't be showing a non-principle doc here</p>
               </li>
             )}
