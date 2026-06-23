@@ -34,12 +34,6 @@
   }
 }
 
-@media only percy {
-  .hide-in-percy {
-    visibility: hidden;
-  }
-}
-
 .highlights:has(hi) hi {
   @apply bg-yellow-200;
 }

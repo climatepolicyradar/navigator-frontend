@@ -55,7 +55,6 @@
     "@eslint/js": "^9.39.4",
     "@next/bundle-analyzer": "^16.2.9",
     "@next/eslint-plugin-next": "^16.2.9",
-    "@percy/cli": "^1.32.2",
     "@playwright/test": "^1.61.0",
     "@size-limit/file": "^12.1.0",
     "@size-limit/webpack": "^12.1.0",
@@ -107,6 +106,7 @@
     "vitest": "^4.1.9"
   },
   "overrides": {
+    "uuid": ">=11.1.1",
     "react-simple-maps": {
       "d3-geo": "^3.1.0",
       "d3-color": "^3.1.0",
