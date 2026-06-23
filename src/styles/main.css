@@ -40,8 +40,6 @@
   }
 }
 
-.highlights {
-  ::global(hi) {
-    @apply bg-yellow-200;
-  }
+.highlights:has(hi) hi {
+  @apply bg-yellow-200;
 }
