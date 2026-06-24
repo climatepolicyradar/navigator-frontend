@@ -43,7 +43,7 @@ class ExpressGatewayServiceComponent(pulumi.ComponentResource):
         opts: Optional[pulumi.ResourceOptions] = None,
     ):
         super().__init__("pkg:index:ExpressGatewayService", name, None, opts)
-        self._prefix = prefix_name()
+        self._prefix = name if pulumi.get_stack().startswith("pr-") else prefix_name()
         self._opts = self._get_opts(opts)
 
         ecs_task_role = aws.iam.Role(
