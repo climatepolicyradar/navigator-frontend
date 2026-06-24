@@ -15,7 +15,7 @@ jobs:
       - uses: actions/checkout@v7
       - uses: actions/setup-node@v6
         with:
-          node-version: 22.13.0
+          node-version: 24.x
       - name: Generate tsconfig.json
         run: |
           cp tsconfig.base.json tsconfig.json
@@ -33,7 +33,7 @@ jobs:
       - uses: actions/checkout@v7
       - uses: actions/setup-node@v6
         with:
-          node-version: 22.13.0
+          node-version: 24.x
       - run: npm install
       - run: cp .env.example .env
       - name: Generate tsconfig.json
@@ -76,7 +76,7 @@ jobs:
       - uses: actions/checkout@v7
       - uses: actions/setup-node@v6
         with:
-          node-version: 22.13.0
+          node-version: 24.x
 
       # build
       - run: |
@@ -140,7 +140,7 @@ jobs:
       - uses: actions/checkout@v7
       - uses: actions/setup-node@v6
         with:
-          node-version: 22.13.0
+          node-version: 24.x
       - name: Configure AWS credentials
         uses: aws-actions/configure-aws-credentials@v6.2.0
         with:

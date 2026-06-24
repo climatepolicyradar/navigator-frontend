@@ -60,7 +60,7 @@ minimal `.env` file.
 
 ### 2. Node.js Version
 
-The workflow uses Node.js 22.13.0. Ensure your local environment matches or act
+The workflow uses Node.js 24.x. Ensure your local environment matches or act
 will use the container.
 
 ### 3. Dependencies
