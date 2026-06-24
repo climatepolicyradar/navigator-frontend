@@ -13,7 +13,7 @@ interface IProps {
   label: TNestedSearchLabel;
 }
 
-export const SearchFilterCategory = ({ ancestorPath, label }: IProps) => {
+export const SearchFilterParent = ({ ancestorPath, label }: IProps) => {
   const { toggleFilter } = useContext(FiltersContext);
   const [expanded, setExpanded] = useState(false);
 
