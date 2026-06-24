@@ -7,7 +7,6 @@ import { useCallback, useEffect, useMemo, useState, type SetStateAction } from "
 import { normaliseSearchDocumentsSortKey, SearchDocument } from "@/api/search";
 import { createGroup, isFilterGroupEmpty, AdvancedFilters } from "@/components/_experiment/advancedFilters/AdvancedFilters";
 import { AppliedLabels } from "@/components/_experiment/appliedLabels/AppliedLabels";
-import { CategorySpecificFilters } from "@/components/_experiment/categorySpecificFilters/CategorySpecificFilters";
 import { DocumentDrawer } from "@/components/_experiment/documentDrawer/DocumentDrawer";
 import { IntelliSearch } from "@/components/_experiment/intellisearch";
 import { Pagination } from "@/components/_experiment/pagination/Pagination";
@@ -18,6 +17,7 @@ import { SearchSortSelect } from "@/components/_experiment/searchSort/SearchSort
 import { SelectPerPage } from "@/components/_experiment/selectPerPage/SelectPerPage";
 import { FiveColumns } from "@/components/atoms/columns/FiveColumns";
 import Layout from "@/components/layouts/Main";
+import { FiltersAndSort } from "@/components/organisms/filtersAndSort/FiltersAndSort";
 import { withEnvConfig } from "@/context/EnvConfig";
 import { FeaturesContext } from "@/context/FeaturesContext";
 import { loadLabels } from "@/hooks/useLabelSearch";
@@ -124,10 +124,10 @@ const ShadowSearch = ({ theme, themeConfig, features }: TProps) => {
             />
           </div>
           {/* CONTROLS - FILTERS, SORT, etc */}
+          <FiltersAndSort labels={availableFilters} onFiltersChange={(group) => setFiltersInUrl(group)} />
           <div className={joinTailwindClasses(columnLayoutCss, "flex justify-between items-center")}>
             {/* FILTERS */}
             <div className="flex items-center gap-2">
-              <CategorySpecificFilters labels={availableFilters} onFiltersChange={(group) => setFiltersInUrl(group)} />
               {/* NEW FILTERS */}
               <div className="flex gap-1 border-l border-border-light pl-2">
                 <BasePopover.Trigger className={filterButtonCss} handle={searchFiltersHandle} payload={<p>Date filter panel coming soon</p>}>

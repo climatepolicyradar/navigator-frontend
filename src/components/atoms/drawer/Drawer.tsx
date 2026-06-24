@@ -38,7 +38,7 @@ export const Drawer = ({ children, title, className, direction = "right", ...roo
                 <LucideX width={20} height={20} />
               </BaseDrawer.Close>
             </div>
-            <div data-base-ui-swipe-ignore className="overflow-y-auto">
+            <div data-base-ui-swipe-ignore className="overflow-y-none">
               {children}
             </div>
           </BaseDrawer.Popup>
