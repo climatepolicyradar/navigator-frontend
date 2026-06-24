@@ -23,7 +23,7 @@ export function Pagination({ currentPage, totalPages, onPageChange }: TProps) {
   const pageItems = getPaginationPages(currentPage, totalPages);
 
   return (
-    <div className="flex flex-nowrap gap-6 font-medium text-inky-black text-sm">
+    <div className="flex flex-wrap gap-6 font-medium text-inky-black text-sm">
       <button
         onClick={() => handlePageChange(currentPage - 1)}
         disabled={currentPage === 1}

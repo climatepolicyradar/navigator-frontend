@@ -55,7 +55,16 @@ export function DocumentDrawer({ document, open, onOpenChange }: TDocumentDrawer
     >
       {document && (
         <div className="flex flex-col gap-4">
-          {document.description && <p className="text-sm highlights" dangerouslySetInnerHTML={{ __html: document.description }} />}
+          {document.description && (
+            <div className="flex flex-col lg:flex-row gap-4 justify-between">
+              <div>
+                <h3 className="text-base font-heavy leading-6 text-inky-black">Summary</h3>
+              </div>
+              <div className="lg:basis-3/4">
+                <p className="text-content text-sm highlights" dangerouslySetInnerHTML={{ __html: document.description }} />
+              </div>
+            </div>
+          )}
           {document.documents.length > 0 && (
             <div>
               <h4 className="text-sm font-semibold mb-2">
