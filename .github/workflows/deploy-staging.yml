@@ -60,7 +60,7 @@ jobs:
         uses: aws-actions/amazon-ecs-deploy-express-service@v1.2.1
         with:
           cluster: frontend-staging
-          service-name: ${{ matrix.theme }}-staging-frontend
+          service-name: ${{ matrix.theme }}-frontend-staging
           image: ${{ steps.build-image.outputs.image }}
           execution-role-arn: arn:aws:iam::${{ secrets.AWS_ACCOUNT_ID }}:role/frontend-staging-ecs-task-execution-role
           infrastructure-role-arn: arn:aws:iam::${{ secrets.AWS_ACCOUNT_ID }}:role/frontend-staging-ecs-task-infrastructure-role

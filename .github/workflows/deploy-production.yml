@@ -64,7 +64,7 @@ jobs:
         uses: aws-actions/amazon-ecs-deploy-express-service@v1.2.1
         with:
           cluster: frontend-production
-          service-name: ${{ inputs.theme }}-production-frontend
+          service-name: ${{ inputs.theme }}-frontend-production
           image: ${{ steps.build-image.outputs.image }}
           execution-role-arn: arn:aws:iam::${{ secrets.AWS_ACCOUNT_ID }}:role/frontend-production-ecs-task-execution-role
           infrastructure-role-arn: arn:aws:iam::${{ secrets.AWS_ACCOUNT_ID }}:role/frontend-production-ecs-task-infrastructure-role
