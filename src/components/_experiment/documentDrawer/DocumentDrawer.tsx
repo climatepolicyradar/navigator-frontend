@@ -1,4 +1,4 @@
-import { LucideFileText } from "lucide-react";
+import { LucideExternalLink, LucideFileText } from "lucide-react";
 import { useState } from "react";
 
 import { SearchDocument } from "@/api/search";
@@ -33,14 +33,23 @@ export function DocumentDrawer({ document, open, onOpenChange }: TDocumentDrawer
       title={
         document ? (
           linkHref(document) ? (
-            <a
-              href={linkHref(document)!}
-              className="text-inky-blue underline-offset-5 hover:underline"
-              dangerouslySetInnerHTML={{ __html: document.title }}
-            />
+            <span className="block pt-5">
+              <a
+                href={linkHref(document)!}
+                className="text-3xl text-inky-blue underline-offset-5 hover:underline"
+                dangerouslySetInnerHTML={{ __html: document.title }}
+              />
+            </span>
           ) : (
             <span dangerouslySetInnerHTML={{ __html: document.title }} />
           )
+        ) : undefined
+      }
+      titleExtras={
+        document && linkHref(document) ? (
+          <a target="_blank" href={linkHref(document)!} className="text-neutral-500 hover:text-neutral-800 justify-end">
+            <LucideExternalLink width={20} height={20} />
+          </a>
         ) : undefined
       }
     >
