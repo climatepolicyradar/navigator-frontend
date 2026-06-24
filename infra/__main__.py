@@ -247,8 +247,9 @@ if not is_review_template:
         ),
     )
 
+    ecs_name_prefix = stack
     ecs_frontend_service = ExpressGatewayServiceComponent(
-        name=name_prefix,
+        name=ecs_name_prefix,
         config=ExpressGatewayConfig(
             health_check_path="/",
         ),
