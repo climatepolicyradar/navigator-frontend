@@ -94,7 +94,9 @@ export function DocumentDrawer({ document, open, onOpenChange }: TDocumentDrawer
             </TextBlock>
           )}
           {metadata.length > 0 && <MetadataBlock block="metadata" title="About" metadata={metadata} />}
-          <DocumentsBlock family={familyData.family} familyTopics={familyData.familyTopics} languages={languages} />
+          <div className="grid grid-cols-1">
+            <DocumentsBlock family={familyData.family} familyTopics={familyData.familyTopics} languages={languages} />
+          </div>
         </>
       )}
     </Drawer>
