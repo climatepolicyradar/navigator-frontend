@@ -13,6 +13,7 @@ import { FILING_DATE_EVENT_TYPES } from "@/constants/events";
 import { QUERY_PARAMS } from "@/constants/queryParams";
 import { getLanguage } from "@/helpers/getLanguage";
 import { getMainDocuments } from "@/helpers/getMainDocuments";
+import { DISPLAY_ALLOWED_STATUSES } from "@/schemas";
 import {
   IFamilyDocumentTopics,
   TFamilyDocumentPublic,
@@ -137,9 +138,7 @@ export const getEventTableRowsData = (family: TFamilyPublic): TEventRowData[] =>
 };
 
 const getFamilyDocuments = (family: TFamilyPublic): TEventRowData[] =>
-  family.documents
-    .filter((document) => ["awaiting_source_file", "published"].includes(document.document_status))
-    .map((document) => ({ family, document }));
+  family.documents.filter((document) => DISPLAY_ALLOWED_STATUSES.includes(document.document_status)).map((document) => ({ family, document }));
 
 const linkClasses = "block text-[#0038a9] underline underline-offset-4 decoration-[#d1d5db] hover:decoration-[#6b7280]";
 

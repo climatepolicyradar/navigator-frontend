@@ -9,6 +9,7 @@ import {
   validateDocumentAttributes,
   TDataInDocument,
   TDataInDocumentAttributes,
+  DISPLAY_ALLOWED_STATUSES,
 } from "@/schemas";
 import { TAttributionCategory, TFamilyApiNewData, TFamilyEventPublic } from "@/types";
 import { groupByType, TItemsByType } from "@/utils/data-in/groupByType";
@@ -65,7 +66,8 @@ export const transformFamilyEvents = (document: TFamilyApiNewData, category: TAt
   const documentEvents: TDocumentEvents[] = getChildDocuments(document.documents)
     .map(({ value: doc }) => {
       const docAttributes = validateDocumentAttributes(doc.attributes);
-      if (docAttributes.status !== "published") return null;
+      const displayAllowed = DISPLAY_ALLOWED_STATUSES.includes(docAttributes.status);
+      if (!displayAllowed) return null;
 
       const groupedDocLabels = groupByType<TDataInLabel, TDataInLabelType>(doc.labels, LABEL_TYPES, MANDATORY_DOCUMENT_LABEL_TYPES);
       const events: TFamilyEventPublic[] = [];

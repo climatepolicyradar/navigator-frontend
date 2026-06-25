@@ -9,14 +9,14 @@ import {
   TDataInLabel,
   TDataInLabelType,
   validateDocumentAttributes,
+  DISPLAY_ALLOWED_STATUSES,
 } from "@/schemas";
 import { TDocumentContentType, TFamilyDocumentPublic, TFamilyEventPublic } from "@/types";
 import { groupByType } from "@/utils/data-in/groupByType";
 
 export const transformDocument = (document: TDataInDocument, events: TFamilyEventPublic[]): TFamilyDocumentPublic => {
   const documentAttributes = validateDocumentAttributes(document.attributes);
-  const ALLOWED_STATUSES = ["published", "awaiting_source_file"];
-  const displayAllowed = ALLOWED_STATUSES.includes(documentAttributes.status);
+  const displayAllowed = DISPLAY_ALLOWED_STATUSES.includes(documentAttributes.status);
   if (!displayAllowed) return null;
 
   const groupedLabels = groupByType<TDataInLabel, TDataInLabelType>(document.labels, LABEL_TYPES, MANDATORY_DOCUMENT_LABEL_TYPES);
