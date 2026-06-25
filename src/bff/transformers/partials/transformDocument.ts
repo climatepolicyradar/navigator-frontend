@@ -9,14 +9,14 @@ import {
   TDataInLabel,
   TDataInLabelType,
   validateDocumentAttributes,
+  DISPLAY_ALLOWED_STATUSES,
 } from "@/schemas";
 import { TDocumentContentType, TFamilyDocumentPublic, TFamilyEventPublic } from "@/types";
 import { groupByType } from "@/utils/data-in/groupByType";
 
 export const transformDocument = (document: TDataInDocument, events: TFamilyEventPublic[]): TFamilyDocumentPublic => {
   const documentAttributes = validateDocumentAttributes(document.attributes);
-  const ALLOWED_STATUSES = ["published", "awaiting_source_file"];
-  const displayAllowed = ALLOWED_STATUSES.includes(documentAttributes.status);
+  const displayAllowed = DISPLAY_ALLOWED_STATUSES.includes(documentAttributes.status);
   if (!displayAllowed) return null;
 
   const groupedLabels = groupByType<TDataInLabel, TDataInLabelType>(document.labels, LABEL_TYPES, MANDATORY_DOCUMENT_LABEL_TYPES);
@@ -27,8 +27,8 @@ export const transformDocument = (document: TDataInDocument, events: TFamilyEven
   const languages = groupedLabels.language.map((label) => label.value.value);
 
   return {
-    cdn_object: groupedItems.cdn[0].url,
-    content_type: groupedItems.cdn[0].content_type as TDocumentContentType,
+    cdn_object: groupedItems.cdn[0]?.url || "",
+    content_type: (groupedItems.cdn[0]?.content_type as TDocumentContentType) || null,
     document_role: groupedLabels.role[0]?.value.value.toUpperCase() || "",
     document_status: documentAttributes.status,
     document_type: groupedLabels.entity_type[0]?.value.value || null,
@@ -37,8 +37,8 @@ export const transformDocument = (document: TDataInDocument, events: TFamilyEven
     language: languages[0] ?? "",
     languages,
     md5_sum: documentAttributes.md5_sum || null,
-    slug: documentAttributes.deprecated_slug,
-    source_url: groupedItems.source[0].url,
+    slug: documentAttributes.deprecated_slug || null,
+    source_url: groupedItems.source[0]?.url || "",
     title: document.title,
     variant_name: documentAttributes.variant || null,
     variant: documentAttributes.variant || null,
