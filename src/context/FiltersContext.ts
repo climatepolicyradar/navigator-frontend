@@ -6,10 +6,12 @@ export type TToggleFilterCallback = (labelPath: TFilterPathLabel[], checked: boo
 
 interface IFiltersContext {
   checkedLabelPaths: TFilterPathLabel[][];
+  clearFilters: () => void;
   toggleFilter: TToggleFilterCallback;
 }
 
 export const FiltersContext = createContext<IFiltersContext>({
   checkedLabelPaths: [],
+  clearFilters: () => {},
   toggleFilter: () => {},
 });

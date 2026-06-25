@@ -13,8 +13,10 @@ const meta = {
   },
   argTypes: {},
   render: (props) => (
-    // eslint-disable-next-line no-console
-    <FiltersContext value={{ checkedLabelPaths: [], toggleFilter: (labelPath, checked) => console.info({ labelPath, checked }) }}>
+    <FiltersContext
+      // eslint-disable-next-line no-console
+      value={{ checkedLabelPaths: [], clearFilters: () => {}, toggleFilter: (labelPath, checked) => console.info({ labelPath, checked }) }}
+    >
       <SearchFilterCategory {...props} />
     </FiltersContext>
   ),

@@ -12,10 +12,10 @@ jobs:
   code-quality:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v6
+      - uses: actions/checkout@v7
       - uses: actions/setup-node@v6
         with:
-          node-version: 22.13.0
+          node-version-file: .nvmrc
       - name: Generate tsconfig.json
         run: |
           cp tsconfig.base.json tsconfig.json
@@ -30,10 +30,10 @@ jobs:
     timeout-minutes: 15
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v6
+      - uses: actions/checkout@v7
       - uses: actions/setup-node@v6
         with:
-          node-version: 22.13.0
+          node-version-file: .nvmrc
       - run: npm install
       - run: cp .env.example .env
       - name: Generate tsconfig.json
@@ -73,10 +73,10 @@ jobs:
       matrix:
         theme: [cpr, cclw, mcf, ccc]
     steps:
-      - uses: actions/checkout@v6
+      - uses: actions/checkout@v7
       - uses: actions/setup-node@v6
         with:
-          node-version: 22.13.0
+          node-version-file: .nvmrc
 
       # build
       - run: |
@@ -137,10 +137,10 @@ jobs:
     env:
       THEME: cpr
     steps:
-      - uses: actions/checkout@v6
+      - uses: actions/checkout@v7
       - uses: actions/setup-node@v6
         with:
-          node-version: 22.13.0
+          node-version-file: .nvmrc
       - name: Configure AWS credentials
         uses: aws-actions/configure-aws-credentials@v6.2.0
         with:
@@ -167,7 +167,7 @@ jobs:
     outputs:
       projects: ${{ steps.parse.outputs.projects }}
     steps:
-      - uses: actions/checkout@v6
+      - uses: actions/checkout@v7
       - uses: dorny/paths-filter@v4
         id: filter
         with:
@@ -223,7 +223,7 @@ jobs:
       matrix:
         project: ${{ fromJSON(needs.changes.outputs.projects) }}
     steps:
-      - uses: actions/checkout@v6
+      - uses: actions/checkout@v7
       - uses: astral-sh/setup-uv@v7
 
       - name: Determine project directory

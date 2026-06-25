@@ -10,8 +10,22 @@ export const ROOT_TOPICS = {
   Q567: "Renewable energy",
   Q557: "Adaptation",
   Q1337: "Finance",
+  Q32: "Climate justice",
 } satisfies Record<string, string>;
 
 type TRootTopicId = keyof typeof ROOT_TOPICS;
 
-export const ORDERED_ROOT_TOPIC_IDS: TRootTopicId[] = ["Q1651", "Q1171", "Q975", "Q672", "Q47", "Q567", "Q638", "Q218", "Q709", "Q557", "Q1337"];
+export const ORDERED_ROOT_TOPIC_IDS: TRootTopicId[] = [
+  "Q1651",
+  "Q1171",
+  "Q975",
+  "Q672",
+  "Q47",
+  "Q32",
+  "Q567",
+  "Q638",
+  "Q218",
+  "Q709",
+  "Q557",
+  "Q1337",
+];
