@@ -79,6 +79,7 @@ export function DocumentDrawer({ document, open, onOpenChange }: TDocumentDrawer
           </a>
         ) : undefined
       }
+      wide
     >
       {isLoading && (
         <div className="flex justify-center py-12">
