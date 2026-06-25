@@ -87,17 +87,21 @@ export function DocumentDrawer({ document, open, onOpenChange }: TDocumentDrawer
         </div>
       )}
       {!isLoading && familyData && (
-        <>
+        <div className="flex flex-col gap-8">
           {familyData.family.summary && (
             <TextBlock block="summary" title="Summary" context="drawer-summary">
               <div className="text-content" dangerouslySetInnerHTML={{ __html: familyData.family.summary.replace(/\r?\n/g, "<br/>") }} />
             </TextBlock>
           )}
-          {metadata.length > 0 && <MetadataBlock block="metadata" title="About" metadata={metadata} />}
+          {metadata.length > 0 && (
+            <div className="grid grid-cols-8">
+              <MetadataBlock block="metadata" title="About" metadata={metadata} />
+            </div>
+          )}
           <div className="grid grid-cols-1">
             <DocumentsBlock family={familyData.family} familyTopics={familyData.familyTopics} languages={languages} />
           </div>
-        </>
+        </div>
       )}
     </Drawer>
   );
