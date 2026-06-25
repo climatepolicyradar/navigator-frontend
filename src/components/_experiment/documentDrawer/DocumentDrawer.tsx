@@ -1,8 +1,14 @@
-import { LucideExternalLink, LucideFileText } from "lucide-react";
-import { useState } from "react";
+import { LucideExternalLink } from "lucide-react";
+import { useEffect, useState } from "react";
 
 import { SearchDocument } from "@/api/search";
 import { Drawer } from "@/components/atoms/drawer/Drawer";
+import { DocumentsBlock } from "@/components/blocks/documentsBlock/DocumentsBlock";
+import { MetadataBlock } from "@/components/blocks/metadataBlock/MetadataBlock";
+import { TextBlock } from "@/components/blocks/textBlock/TextBlock";
+import useConfig from "@/hooks/useConfig";
+import { TFamilyPresentationalData } from "@/types";
+import { getFamilyMetadata } from "@/utils/family-metadata/getFamilyMetadata";
 
 function linkHref(doc: SearchDocument): string | undefined {
   if (doc.attributes.deprecated_slug)
@@ -20,16 +26,37 @@ type TDocumentDrawerProps = {
 };
 
 export function DocumentDrawer({ document, open, onOpenChange }: TDocumentDrawerProps) {
-  const [nestedDocument, setNestedDocument] = useState<SearchDocument | null>(null);
-  const [nestedDrawerOpen, setNestedDrawerOpen] = useState(false);
+  const { data: { languages = {} } = {} } = useConfig();
+  const [familyData, setFamilyData] = useState<TFamilyPresentationalData | null>(null);
+  const [fetchedId, setFetchedId] = useState<string | null>(null);
+
+  const importId = document?.id as string | undefined;
+  const isLoading = Boolean(importId && importId !== fetchedId);
+
+  useEffect(() => {
+    if (!importId) return;
+    let cancelled = false;
+
+    fetch(`/api/family/${importId}`)
+      .then((res) => (res.ok ? res.json() : null))
+      .then((data) => {
+        if (!cancelled) {
+          setFamilyData(data);
+          setFetchedId(importId);
+        }
+      });
+
+    return () => {
+      cancelled = true;
+    };
+  }, [importId]);
+
+  const metadata = familyData ? getFamilyMetadata(familyData.family, familyData.familyTopics, familyData.countries, familyData.subdivisions) : [];
 
   return (
     <Drawer
       open={open}
-      onOpenChange={(isOpen) => {
-        if (!isOpen) setNestedDrawerOpen(false);
-        onOpenChange(isOpen);
-      }}
+      onOpenChange={onOpenChange}
       title={
         document ? (
           linkHref(document) ? (
@@ -53,83 +80,21 @@ export function DocumentDrawer({ document, open, onOpenChange }: TDocumentDrawer
         ) : undefined
       }
     >
-      {document && (
-        <div className="flex flex-col gap-4">
-          {document.description && (
-            <div className="flex flex-col lg:flex-row gap-4 justify-between">
-              <div>
-                <h3 className="text-base font-heavy leading-6 text-inky-black">Summary</h3>
-              </div>
-              <div className="lg:basis-3/4">
-                <p className="text-content text-sm highlights" dangerouslySetInnerHTML={{ __html: document.description }} />
-              </div>
-            </div>
-          )}
-          {document.documents.length > 0 && (
-            <div>
-              <h4 className="text-sm font-semibold mb-2">
-                Documents in this {document.labels.filter((label) => label.type === "category")[0].value.value} ({document.documents.length})
-              </h4>
-              <ul className="space-y-1">
-                {document.documents.map((rel, i) => (
-                  <li key={i}>
-                    <button
-                      className="text-left w-full text-sm flex items-start gap-2 py-1 hover:text-inky-blue hover:underline"
-                      onClick={() => {
-                        setNestedDocument(rel.value);
-                        setNestedDrawerOpen(true);
-                      }}
-                    >
-                      <LucideFileText width={14} height={14} className="shrink-0 mt-0.5" />
-                      <span dangerouslySetInnerHTML={{ __html: rel.value.title }} />
-                    </button>
-                  </li>
-                ))}
-              </ul>
-            </div>
-          )}
-          <div className="flex flex-wrap gap-1">
-            {document.labels.map((label, i) => (
-              <span key={i} className="inline-flex items-center gap-1 text-xs bg-neutral-100 rounded px-2 py-1">
-                <span className="font-medium">{label.type}:</span> {label.value.value}
-              </span>
-            ))}
-          </div>
-
-          {/* Nested drawer lives inside the parent Popup so Base UI can track nesting */}
-          <Drawer
-            open={nestedDrawerOpen}
-            onOpenChange={setNestedDrawerOpen}
-            title={
-              nestedDocument ? (
-                linkHref(nestedDocument) ? (
-                  <a
-                    href={linkHref(nestedDocument)!}
-                    className="text-inky-blue underline-offset-5 hover:underline"
-                    dangerouslySetInnerHTML={{ __html: nestedDocument.title }}
-                  />
-                ) : (
-                  <span dangerouslySetInnerHTML={{ __html: nestedDocument.title }} />
-                )
-              ) : undefined
-            }
-          >
-            {nestedDocument && (
-              <>
-                {nestedDocument.description && (
-                  <p className="text-sm text-neutral-700 mb-4" dangerouslySetInnerHTML={{ __html: nestedDocument.description }} />
-                )}
-                <div className="flex flex-wrap gap-1">
-                  {nestedDocument.labels.map((label, i) => (
-                    <span key={i} className="inline-flex items-center gap-1 text-xs bg-neutral-100 rounded px-2 py-1">
-                      <span className="font-medium">{label.type}:</span> {label.value.value}
-                    </span>
-                  ))}
-                </div>
-              </>
-            )}
-          </Drawer>
+      {isLoading && (
+        <div className="flex justify-center py-12">
+          <span className="h-8 w-8 animate-spin rounded-full border-4 border-neutral-200 border-t-inky-blue" />
         </div>
+      )}
+      {!isLoading && familyData && (
+        <>
+          {familyData.family.summary && (
+            <TextBlock block="summary" title="Summary" context="drawer-summary">
+              <div className="text-content" dangerouslySetInnerHTML={{ __html: familyData.family.summary.replace(/\r?\n/g, "<br/>") }} />
+            </TextBlock>
+          )}
+          {metadata.length > 0 && <MetadataBlock block="metadata" title="About" metadata={metadata} />}
+          <DocumentsBlock family={familyData.family} familyTopics={familyData.familyTopics} languages={languages} />
+        </>
       )}
     </Drawer>
   );

@@ -22,27 +22,30 @@ import { isCorpusIdAllowed } from "@/utils/checkCorpusAccess";
 import { extractNestedData } from "@/utils/extractNestedData";
 import { processFamilyTopics } from "@/utils/topics/processFamilyTopics";
 
-export const getFamilyData = async (slug: string, features: TFeatures): Promise<TFamilyPresentationalResponse> => {
+export const getFamilyData = async (slug: string, features: TFeatures, importId?: string): Promise<TFamilyPresentationalResponse> => {
   /* Make API requests */
 
   const errors: Error[] = [];
   const backendApiClient = new ApiClient(process.env.BACKEND_API_URL);
   const apiClient = new ApiClient(process.env.CONCEPTS_API_URL);
 
-  let slugResponse: TApiSlugResponse;
-  try {
-    // As the families API cannot be queried by slugs, we need to get the slugResponse
-    const { data: slugData } = await apiClient.get<TApiItemResponse<TApiSlugResponse>>(`/families/slugs/${slug}`);
-    slugResponse = slugData.data;
-  } catch (error) {
-    errors.push(new Error("Failed to query family slug", error));
-    return { data: null, errors };
+  // If we are passing an importId in - we can skip calling the slugs endpoint to get it
+  let familyImportId = importId;
+  if (slug.length > 0) {
+    try {
+      // As the families API cannot be queried by slugs, we need to get the slugResponse
+      const { data: slugData } = await apiClient.get<TApiItemResponse<TApiSlugResponse>>(`/families/slugs/${slug}`);
+      familyImportId = slugData.data.family_import_id;
+    } catch (error) {
+      errors.push(new Error("Failed to query family slug", error));
+      return { data: null, errors };
+    }
   }
 
   let family: TApiFamilyPublic;
   try {
     // and then query the families API by the returned family_import_id
-    const { data: familyResponse } = await apiClient.get<TApiItemResponse<TApiFamilyPublic>>(`/families/${slugResponse.family_import_id}`);
+    const { data: familyResponse } = await apiClient.get<TApiItemResponse<TApiFamilyPublic>>(`/families/${familyImportId}`);
     family = familyResponse.data;
     family.documents.forEach((document) => {
       if (document.title === "") document.title = DEFAULT_DOCUMENT_TITLE;
