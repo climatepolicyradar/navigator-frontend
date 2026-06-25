@@ -166,13 +166,15 @@ const getDocumentLink = (document: TFamilyDocumentPublic, hasMatches: boolean, i
   return (
     <>
       {document.title} <br />{" "}
-      <span className="text-sm">
-        (We do not have this document in our database.{" "}
-        <PageLink href="/contact" className="underline hover:text-[#0038a9]">
-          Contact us
-        </PageLink>{" "}
-        if you can help us find it)
-      </span>
+      {!isLitigation && (
+        <span className="text-sm">
+          (We do not have this document in our database.{" "}
+          <PageLink href="/contact" className="underline hover:text-[#0038a9]">
+            Contact us
+          </PageLink>{" "}
+          if you can help us find it)
+        </span>
+      )}
     </>
   );
 };
