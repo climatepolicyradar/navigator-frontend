@@ -463,7 +463,9 @@ if not is_review_stack_or_template:
             domain_name=cast(
                 str,
                 ecs_frontend_service.service.ingress_paths.apply(
-                    lambda url: cast(str, url).replace("https://", "")
+                    lambda paths: (
+                    paths[0].endpoint.replace("https://", "") if paths else None
+                )
                 ),
             ),
         )
