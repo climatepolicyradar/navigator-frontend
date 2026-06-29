@@ -1,6 +1,6 @@
 import { TFilterPathLabel, TSearchQueryGroup } from "@/types";
 
-import { buildFilterGroup } from "./buildFilterGroup";
+import { filterPathsToQueryGroup } from "./filterPathsToQueryGroup";
 
 /**
  * RULES:
@@ -620,11 +620,11 @@ export const FILTER_TEST_CASES: TFilterTestCase[] = [
   },
 ];
 
-describe("buildFilterGroup", () => {
+describe("filterPathsToQueryGroup", () => {
   it.each(FILTER_TEST_CASES.map(({ name, filterPathLabels, searchQueryGroup }) => [name, filterPathLabels, searchQueryGroup]))(
     "builds a filter for %s",
     (_name, filterPathLabels, expectedFilterGroup) => {
-      expect(buildFilterGroup(filterPathLabels)).toEqual(expectedFilterGroup);
+      expect(filterPathsToQueryGroup(filterPathLabels)).toEqual(expectedFilterGroup);
     }
   );
 });

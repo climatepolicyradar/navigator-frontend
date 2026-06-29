@@ -1,10 +1,10 @@
 import { ChevronDown } from "lucide-react";
 import { MouseEvent, useContext, useState } from "react";
 
-import { Checkbox, TCheckboxState } from "@/components/atoms/checkbox/Checkbox";
+import { Checkbox } from "@/components/atoms/checkbox/Checkbox";
 import { SearchFilterLevel } from "@/components/organisms/searchFilterLevel/SearchFilterLevel";
 import { FiltersContext } from "@/context/FiltersContext";
-import { TFilterPathLabel, TNestedSearchLabel } from "@/types";
+import { TCheckboxState, TFilterPathLabel, TNestedSearchLabel } from "@/types";
 import { getFilterPathLabel } from "@/utils/filters/filterPaths";
 import { joinTailwindClasses } from "@/utils/tailwind";
 
@@ -21,7 +21,7 @@ export const SearchFilterParent = ({ ancestorPath, label }: IProps) => {
 
   const onToggleCheckbox = (value: TCheckboxState) => {
     setExpanded(value === true);
-    toggleFilter(pathLabels, value === true);
+    toggleFilter(pathLabels, value);
   };
 
   const onToggleAccordion = (event: MouseEvent<HTMLButtonElement>) => {

@@ -1,8 +1,8 @@
 import { createContext } from "react";
 
-import { TFilterPathLabel } from "@/types";
+import { TCheckboxState, TFilterPathLabel } from "@/types";
 
-export type TToggleFilterCallback = (labelPath: TFilterPathLabel[], checked: boolean) => void;
+export type TToggleFilterCallback = (labelPath: TFilterPathLabel[], checked: TCheckboxState) => void;
 
 interface IFiltersContext {
   checkedLabelPaths: TFilterPathLabel[][];

@@ -1,18 +1,20 @@
 import uniqBy from "lodash/uniqBy";
 import { parseAsJson, useQueryState } from "nuqs";
-import { useMemo, useState } from "react";
+import { useMemo } from "react";
 
-import { createGroup } from "@/components/_experiment/advancedFilters/AdvancedFilters";
 import { CategorySpecificFilters } from "@/components/_experiment/categorySpecificFilters/CategorySpecificFilters";
 import { AppliedFilters } from "@/components/molecules/appliedFilters/AppliedFilters";
 import { FILTER_GROUPS } from "@/constants/filters";
 import { FiltersContext, TToggleFilterCallback } from "@/context/FiltersContext";
 import { FilterGroupSchema } from "@/schemas";
-import { TFilterPathLabel, TSearchLabel, TSearchQueryGroup } from "@/types";
+import { TSearchLabel, TSearchQueryGroup } from "@/types";
 import { getLabelPathSignature, sortFilterPathLabels } from "@/utils/filters/filterPaths";
 import { groupSearchLabels } from "@/utils/filters/groupSearchLabels";
 import { nestSearchLabels } from "@/utils/filters/nestSearchLabels";
-import { buildFilterGroup } from "@/utils/search/buildFilterGroup";
+import { filterPathsToQueryGroup } from "@/utils/search/filterPathsToQueryGroup";
+import { queryGroupToFilterPaths } from "@/utils/search/queryGroupToFilterPaths";
+
+const DEFAULT_SEARCH_QUERY_GROUP: TSearchQueryGroup = { op: "and", filters: [{ field: "labels.value.id", op: "contains", value: "" }] };
 
 interface IProps {
   labels: TSearchLabel[];
@@ -27,28 +29,26 @@ interface IProps {
  */
 
 export const FiltersAndSort = ({ labels }: IProps) => {
-  // TODO does this all make sense?
-  const [filterParam, setFilterParam] = useQueryState("filters", parseAsJson<TSearchQueryGroup>(FilterGroupSchema).withDefault(createGroup()));
+  const [filterParam, setFilterParam] = useQueryState(
+    "filters",
+    parseAsJson<TSearchQueryGroup>(FilterGroupSchema).withDefault(DEFAULT_SEARCH_QUERY_GROUP)
+  );
 
-  // TODO: query -> filters as a memoised function, wrapping a new fn to turn URL into label paths
-  const [checkedLabelPaths, setCheckedLabelPaths] = useState<TFilterPathLabel[][]>([]);
-
+  const checkedLabelPaths = useMemo(() => sortFilterPathLabels(queryGroupToFilterPaths(filterParam)), [filterParam]);
   const filterGroups = useMemo(() => groupSearchLabels(nestSearchLabels(labels), FILTER_GROUPS), [labels]);
 
   const toggleFilter: TToggleFilterCallback = (labelPath, checked) => {
     const updatedCheckedLabelPaths = sortFilterPathLabels(
-      checked
+      checked === true // indeterminate is treated as unchecked
         ? uniqBy([...checkedLabelPaths, labelPath], getLabelPathSignature)
         : checkedLabelPaths.filter((labels) => getLabelPathSignature(labels) !== getLabelPathSignature(labelPath))
     );
 
-    setFilterParam(buildFilterGroup(updatedCheckedLabelPaths));
-    setCheckedLabelPaths(updatedCheckedLabelPaths); // TODO remove
+    setFilterParam(filterPathsToQueryGroup(updatedCheckedLabelPaths));
   };
 
   const clearFilters = () => {
     setFilterParam(null);
-    setCheckedLabelPaths([]); // TODO remove
   };
 
   return (

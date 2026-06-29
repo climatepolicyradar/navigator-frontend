@@ -18,7 +18,7 @@ export const SearchFilter = ({ ancestorPath, label }: IProps) => {
 
   return (
     <li>
-      <Checkbox onCheckedChange={(value) => toggleFilter(pathLabels, value === true)}>{label.value}</Checkbox>
+      <Checkbox onCheckedChange={(value) => toggleFilter(pathLabels, value)}>{label.value}</Checkbox>
       {label.children.length > 0 && <SearchFilterLevel ancestorPath={pathLabels} labels={label.children} indented />}
     </li>
   );

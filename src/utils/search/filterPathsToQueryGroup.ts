@@ -50,7 +50,7 @@ const buildGroupFromPaths = (labelPaths: TFilterPathLabel[][], checkedIds: Set<s
   return { op: "and", filters: typeGroupResults };
 };
 
-export const buildFilterGroup = (allLabelPaths: TFilterPathLabel[][]): TSearchQueryGroup => {
+export const filterPathsToQueryGroup = (allLabelPaths: TFilterPathLabel[][]): TSearchQueryGroup => {
   // Keep track of which actual checkboxes were checked by the user
   const checkedIds = new Set(allLabelPaths.map((path) => path[0].id));
 
