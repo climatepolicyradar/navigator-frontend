@@ -11,9 +11,16 @@ import { buildFilterGroup } from "./buildFilterGroup";
  * 5. there are no redundant AND or OR TSearchQueryGroup - each must contain 2 or more filters
  */
 
-describe("buildFilterGroup", () => {
-  it("builds a filter for one first level filter", () => {
-    const allPathLabels: TFilterPathLabel[][] = [
+type TFilterTestCase = {
+  name: string;
+  filterPathLabels: TFilterPathLabel[][];
+  searchQueryGroup: TSearchQueryGroup;
+};
+
+export const FILTER_TEST_CASES: TFilterTestCase[] = [
+  {
+    name: "one first level filter",
+    filterPathLabels: [
       [
         {
           id: "category::Multilateral Climate Fund project",
@@ -21,8 +28,8 @@ describe("buildFilterGroup", () => {
           value: "Multilateral Climate Fund project",
         },
       ],
-    ];
-    const expectedFilterGroup: TSearchQueryGroup = {
+    ],
+    searchQueryGroup: {
       op: "or",
       filters: [
         {
@@ -32,13 +39,11 @@ describe("buildFilterGroup", () => {
           checked: true,
         },
       ],
-    };
-
-    expect(buildFilterGroup(allPathLabels)).toEqual(expectedFilterGroup);
-  });
-
-  it("builds a filter for multiple first level filters", () => {
-    const allPathLabels: TFilterPathLabel[][] = [
+    },
+  },
+  {
+    name: "multiple first level filters",
+    filterPathLabels: [
       [
         {
           id: "category::Multilateral Climate Fund project",
@@ -53,8 +58,8 @@ describe("buildFilterGroup", () => {
           value: "UN submission",
         },
       ],
-    ];
-    const expectedFilterGroup: TSearchQueryGroup = {
+    ],
+    searchQueryGroup: {
       op: "or",
       filters: [
         {
@@ -70,13 +75,11 @@ describe("buildFilterGroup", () => {
           checked: true,
         },
       ],
-    };
-
-    expect(buildFilterGroup(allPathLabels)).toEqual(expectedFilterGroup);
-  });
-
-  it("builds a filter for one second level filter", () => {
-    const allPathLabels: TFilterPathLabel[][] = [
+    },
+  },
+  {
+    name: "one second level filter",
+    filterPathLabels: [
       [
         {
           id: "un_convention::UNCCD",
@@ -89,8 +92,8 @@ describe("buildFilterGroup", () => {
           value: "UN submission",
         },
       ],
-    ];
-    const expectedFilterGroup: TSearchQueryGroup = {
+    ],
+    searchQueryGroup: {
       op: "and",
       filters: [
         {
@@ -105,13 +108,11 @@ describe("buildFilterGroup", () => {
           checked: true,
         },
       ],
-    };
-
-    expect(buildFilterGroup(allPathLabels)).toEqual(expectedFilterGroup);
-  });
-
-  it("builds a filter for one second level filter and its parent", () => {
-    const allPathLabels: TFilterPathLabel[][] = [
+    },
+  },
+  {
+    name: "one second level filter and its parent",
+    filterPathLabels: [
       [
         {
           id: "category::UN submission",
@@ -131,8 +132,8 @@ describe("buildFilterGroup", () => {
           value: "UN submission",
         },
       ],
-    ];
-    const expectedFilterGroup: TSearchQueryGroup = {
+    ],
+    searchQueryGroup: {
       op: "and",
       filters: [
         {
@@ -148,13 +149,11 @@ describe("buildFilterGroup", () => {
           checked: true,
         },
       ],
-    };
-
-    expect(buildFilterGroup(allPathLabels)).toEqual(expectedFilterGroup);
-  });
-
-  it("builds a filter for multiple second level filters, siblings + same type", () => {
-    const allPathLabels: TFilterPathLabel[][] = [
+    },
+  },
+  {
+    name: "multiple second level filters, siblings + same type",
+    filterPathLabels: [
       [
         {
           id: "author_type::Corporate",
@@ -179,9 +178,8 @@ describe("buildFilterGroup", () => {
           value: "Report",
         },
       ],
-    ];
-
-    const expectedFilterGroup: TSearchQueryGroup = {
+    ],
+    searchQueryGroup: {
       op: "and",
       filters: [
         {
@@ -207,13 +205,11 @@ describe("buildFilterGroup", () => {
           ],
         },
       ],
-    };
-
-    expect(buildFilterGroup(allPathLabels)).toEqual(expectedFilterGroup);
-  });
-
-  it("builds a filter for multiple second level filters, siblings + different types (1+1)", () => {
-    const allPathLabels: TFilterPathLabel[][] = [
+    },
+  },
+  {
+    name: "multiple second level filters, siblings + different types (1+1)",
+    filterPathLabels: [
       [
         {
           id: "author_type::Corporate",
@@ -238,9 +234,8 @@ describe("buildFilterGroup", () => {
           value: "Report",
         },
       ],
-    ];
-
-    const expectedFilterGroup: TSearchQueryGroup = {
+    ],
+    searchQueryGroup: {
       op: "and",
       filters: [
         {
@@ -266,13 +261,11 @@ describe("buildFilterGroup", () => {
           ],
         },
       ],
-    };
-
-    expect(buildFilterGroup(allPathLabels)).toEqual(expectedFilterGroup);
-  });
-
-  it("builds a filter for multiple second level filters, siblings + different types (2+1)", () => {
-    const allPathLabels: TFilterPathLabel[][] = [
+    },
+  },
+  {
+    name: "multiple second level filters, siblings + different types (2+1)",
+    filterPathLabels: [
       [
         {
           id: "author_type::Corporate",
@@ -309,9 +302,8 @@ describe("buildFilterGroup", () => {
           value: "Report",
         },
       ],
-    ];
-
-    const expectedFilterGroup: TSearchQueryGroup = {
+    ],
+    searchQueryGroup: {
       op: "and",
       filters: [
         {
@@ -348,13 +340,11 @@ describe("buildFilterGroup", () => {
           ],
         },
       ],
-    };
-
-    expect(buildFilterGroup(allPathLabels)).toEqual(expectedFilterGroup);
-  });
-
-  it("builds a filter for one third level filter", () => {
-    const allPathLabels: TFilterPathLabel[][] = [
+    },
+  },
+  {
+    name: "one third level filter",
+    filterPathLabels: [
       [
         {
           id: "document_type::Country Report (CR)",
@@ -372,8 +362,8 @@ describe("buildFilterGroup", () => {
           value: "UN submission",
         },
       ],
-    ];
-    const expectedFilterGroup: TSearchQueryGroup = {
+    ],
+    searchQueryGroup: {
       op: "and",
       filters: [
         {
@@ -398,13 +388,11 @@ describe("buildFilterGroup", () => {
           ],
         },
       ],
-    };
-
-    expect(buildFilterGroup(allPathLabels)).toEqual(expectedFilterGroup);
-  });
-
-  it("builds a filter for two third level filters with different parents", () => {
-    const allPathLabels: TFilterPathLabel[][] = [
+    },
+  },
+  {
+    name: "two third level filters with different parents",
+    filterPathLabels: [
       [
         {
           id: "document_type::Country Report (CR)",
@@ -439,8 +427,8 @@ describe("buildFilterGroup", () => {
           value: "UN submission",
         },
       ],
-    ];
-    const expectedFilterGroup: TSearchQueryGroup = {
+    ],
+    searchQueryGroup: {
       op: "and",
       filters: [
         {
@@ -486,13 +474,11 @@ describe("buildFilterGroup", () => {
           ],
         },
       ],
-    };
-
-    expect(buildFilterGroup(allPathLabels)).toEqual(expectedFilterGroup);
-  });
-
-  it("builds a filter for second and third level filters with the same sibling types", () => {
-    const allPathLabels: TFilterPathLabel[][] = [
+    },
+  },
+  {
+    name: "second and third level filters with the same sibling types",
+    filterPathLabels: [
       [
         {
           id: "jurisdiction::Argentina",
@@ -522,8 +508,8 @@ describe("buildFilterGroup", () => {
           value: "Litigation",
         },
       ],
-    ];
-    const expectedFilterGroup: TSearchQueryGroup = {
+    ],
+    searchQueryGroup: {
       op: "and",
       filters: [
         {
@@ -559,13 +545,11 @@ describe("buildFilterGroup", () => {
           ],
         },
       ],
-    };
-
-    expect(buildFilterGroup(allPathLabels)).toEqual(expectedFilterGroup);
-  });
-
-  it("builds a filter for second and third level filters with different sibling types", () => {
-    const allPathLabels: TFilterPathLabel[][] = [
+    },
+  },
+  {
+    name: "second and third level filters with different sibling types",
+    filterPathLabels: [
       [
         {
           id: "case_category::Adaptation (US)",
@@ -595,8 +579,8 @@ describe("buildFilterGroup", () => {
           value: "Litigation",
         },
       ],
-    ];
-    const expectedFilterGroup: TSearchQueryGroup = {
+    ],
+    searchQueryGroup: {
       op: "and",
       filters: [
         {
@@ -632,8 +616,15 @@ describe("buildFilterGroup", () => {
           ],
         },
       ],
-    };
+    },
+  },
+];
 
-    expect(buildFilterGroup(allPathLabels)).toEqual(expectedFilterGroup);
-  });
+describe("buildFilterGroup", () => {
+  it.each(FILTER_TEST_CASES.map(({ name, filterPathLabels, searchQueryGroup }) => [name, filterPathLabels, searchQueryGroup]))(
+    "builds a filter for %s",
+    (_name, filterPathLabels, expectedFilterGroup) => {
+      expect(buildFilterGroup(filterPathLabels)).toEqual(expectedFilterGroup);
+    }
+  );
 });
