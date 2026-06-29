@@ -1,14 +1,18 @@
+import { useQuery } from "@tanstack/react-query";
 import { LucideExternalLink } from "lucide-react";
-import { useEffect, useState } from "react";
 
 import { SearchDocument } from "@/api/search";
 import { Drawer } from "@/components/atoms/drawer/Drawer";
 import { DocumentsBlock } from "@/components/blocks/documentsBlock/DocumentsBlock";
 import { MetadataBlock } from "@/components/blocks/metadataBlock/MetadataBlock";
+import { NoteBlock } from "@/components/blocks/noteBlock/NoteBlock";
 import { TextBlock } from "@/components/blocks/textBlock/TextBlock";
+import { TopicsBlock } from "@/components/blocks/topicsBlock/TopicsBlock";
 import useConfig from "@/hooks/useConfig";
+import { useText } from "@/hooks/useText";
 import { TFamilyPresentationalData } from "@/types";
 import { getFamilyMetadata } from "@/utils/family-metadata/getFamilyMetadata";
+import { familyTopicsHasTopics } from "@/utils/topics/processFamilyTopics";
 
 function linkHref(doc: SearchDocument): string | undefined {
   if (doc.attributes.deprecated_slug)
@@ -27,31 +31,18 @@ type TDocumentDrawerProps = {
 
 export function DocumentDrawer({ document, open, onOpenChange }: TDocumentDrawerProps) {
   const { data: { languages = {} } = {} } = useConfig();
-  const [familyData, setFamilyData] = useState<TFamilyPresentationalData | null>(null);
-  const [fetchedId, setFetchedId] = useState<string | null>(null);
+  const { getCategoryTextLookup } = useText();
 
   const importId = document?.id as string | undefined;
-  const isLoading = Boolean(importId && importId !== fetchedId);
 
-  useEffect(() => {
-    if (!importId) return;
-    let cancelled = false;
-
-    fetch(`/api/family/${importId}`)
-      .then((res) => (res.ok ? res.json() : null))
-      .then((data) => {
-        if (!cancelled) {
-          setFamilyData(data);
-          setFetchedId(importId);
-        }
-      });
-
-    return () => {
-      cancelled = true;
-    };
-  }, [importId]);
+  const { data: familyData, isLoading } = useQuery<TFamilyPresentationalData | null>({
+    queryKey: ["family", importId],
+    queryFn: () => fetch(`/api/family/${importId}`).then((res) => (res.ok ? res.json() : null)),
+    enabled: !!importId,
+  });
 
   const metadata = familyData ? getFamilyMetadata(familyData.family, familyData.familyTopics, familyData.countries, familyData.subdivisions) : [];
+  const getCategoryText = familyData ? getCategoryTextLookup(familyData.family.attribution.category) : undefined;
 
   return (
     <Drawer
@@ -101,6 +92,10 @@ export function DocumentDrawer({ document, open, onOpenChange }: TDocumentDrawer
           <div className="grid grid-cols-1">
             <DocumentsBlock family={familyData.family} familyTopics={familyData.familyTopics} languages={languages} />
           </div>
+          {familyTopicsHasTopics(familyData.familyTopics) && (
+            <TopicsBlock key="topics" family={familyData.family} familyTopics={familyData.familyTopics} getCategoryText={getCategoryText} />
+          )}
+          <NoteBlock key="note" attribution={familyData.family.attribution} />
         </div>
       )}
     </Drawer>
