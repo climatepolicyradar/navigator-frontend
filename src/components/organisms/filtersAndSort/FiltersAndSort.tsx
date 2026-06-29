@@ -1,17 +1,21 @@
+import uniqBy from "lodash/uniqBy";
+import { parseAsJson, useQueryState } from "nuqs";
 import { useMemo, useState } from "react";
 
+import { createGroup } from "@/components/_experiment/advancedFilters/AdvancedFilters";
 import { CategorySpecificFilters } from "@/components/_experiment/categorySpecificFilters/CategorySpecificFilters";
+import { AppliedFilters } from "@/components/molecules/appliedFilters/AppliedFilters";
 import { FILTER_GROUPS } from "@/constants/filters";
 import { FiltersContext, TToggleFilterCallback } from "@/context/FiltersContext";
+import { FilterGroupSchema } from "@/schemas";
 import { TFilterPathLabel, TSearchLabel, TSearchQueryGroup } from "@/types";
-import { getLabelPathSignature } from "@/utils/filters/filterPaths";
+import { getLabelPathSignature, sortFilterPathLabels } from "@/utils/filters/filterPaths";
 import { groupSearchLabels } from "@/utils/filters/groupSearchLabels";
 import { nestSearchLabels } from "@/utils/filters/nestSearchLabels";
 import { buildFilterGroup } from "@/utils/search/buildFilterGroup";
 
 interface IProps {
   labels: TSearchLabel[];
-  onFiltersChange: (group: TSearchQueryGroup) => void;
 }
 
 /**
@@ -22,48 +26,30 @@ interface IProps {
  * - Encapsulates the logic for filters <-> URL
  */
 
-export const FiltersAndSort = ({ labels, onFiltersChange }: IProps) => {
-  // const [query, setQuery] = useQueryState("q", parseAsString.withDefault(""));
+export const FiltersAndSort = ({ labels }: IProps) => {
+  // TODO does this all make sense?
+  const [filterParam, setFilterParam] = useQueryState("filters", parseAsJson<TSearchQueryGroup>(FilterGroupSchema).withDefault(createGroup()));
+
+  // TODO: query -> filters as a memoised function, wrapping a new fn to turn URL into label paths
+  const [checkedLabelPaths, setCheckedLabelPaths] = useState<TFilterPathLabel[][]>([]);
 
   const filterGroups = useMemo(() => groupSearchLabels(nestSearchLabels(labels), FILTER_GROUPS), [labels]);
 
-  // TODO: query -> filters as a memoised function, wrapping a new fn to turn URL into label paths
-
-  // --- TEMP ----------
-
-  const [checkedLabelPaths, setCheckedLabelPaths] = useState<TFilterPathLabel[][]>([]);
-
   const toggleFilter: TToggleFilterCallback = (labelPath, checked) => {
-    setCheckedLabelPaths((existingCheckedLabelPaths) => {
-      const updatedCheckedLabelPaths = checked
-        ? [...existingCheckedLabelPaths, labelPath]
-        : existingCheckedLabelPaths.filter((labels) => getLabelPathSignature(labels) !== getLabelPathSignature(labelPath));
+    const updatedCheckedLabelPaths = sortFilterPathLabels(
+      checked
+        ? uniqBy([...checkedLabelPaths, labelPath], getLabelPathSignature)
+        : checkedLabelPaths.filter((labels) => getLabelPathSignature(labels) !== getLabelPathSignature(labelPath))
+    );
 
-      onFiltersChange(updatedCheckedLabelPaths.length > 0 ? buildFilterGroup(updatedCheckedLabelPaths) : null);
-      return updatedCheckedLabelPaths;
-    });
+    setFilterParam(buildFilterGroup(updatedCheckedLabelPaths));
+    setCheckedLabelPaths(updatedCheckedLabelPaths); // TODO remove
   };
 
   const clearFilters = () => {
-    setCheckedLabelPaths([]);
-    onFiltersChange(null);
+    setFilterParam(null);
+    setCheckedLabelPaths([]); // TODO remove
   };
-
-  // -------------------
-
-  /**
-   * TODO:
-   * Blanks what is in the URL
-   */
-  // const clearFilters = () => {};
-
-  /**
-   * TODO:
-   * Does nothing if there is actually no diff
-   * Reconstructs the URL param
-   * Sets the URL param
-   */
-  // const toggleFilter: TToggleFilterCallback = (labelPath, checked) => {};
 
   return (
     <FiltersContext value={{ checkedLabelPaths, clearFilters, toggleFilter }}>
@@ -75,6 +61,7 @@ export const FiltersAndSort = ({ labels, onFiltersChange }: IProps) => {
           </>
         ))}
       </div>
+      <AppliedFilters />
     </FiltersContext>
   );
 };

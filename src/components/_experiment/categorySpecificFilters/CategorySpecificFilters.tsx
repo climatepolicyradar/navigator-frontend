@@ -1,7 +1,6 @@
 import { useState } from "react";
 
 import { Drawer } from "@/components/atoms/drawer/Drawer";
-import { AppliedFilters } from "@/components/molecules/appliedFilters/AppliedFilters";
 import { SearchFilterLevel } from "@/components/organisms/searchFilterLevel/SearchFilterLevel";
 import { TFiltersGroup } from "@/types";
 
@@ -24,7 +23,6 @@ export const CategorySpecificFilters = ({ filterGroup }: IProps) => {
         <span>{title}</span>
       </button>
       <Drawer direction="left" open={isOpen} onOpenChange={(open) => setIsOpen(open)} title={title}>
-        <AppliedFilters />
         <SearchFilterLevel ancestorPath={[]} labels={nestedLabels} />
       </Drawer>
     </>
