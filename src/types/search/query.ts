@@ -3,6 +3,7 @@ export type TSearchQueryRule =
       field: "labels.value.id" | "attributes.status";
       op: "contains" | "not_contains" | "eq";
       value: string;
+      checked?: true;
     }
   | {
       field: "attributes.published_date";
