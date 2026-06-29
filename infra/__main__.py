@@ -462,7 +462,7 @@ if not is_review_stack_or_template:
             origin_id="frontend",
             domain_name=cast(
                 str,
-                frontend.service.service_url.apply(
+                ecs_frontend_service.service.ingress_paths.apply(
                     lambda url: cast(str, url).replace("https://", "")
                 ),
             ),
