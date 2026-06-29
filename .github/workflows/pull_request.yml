@@ -206,7 +206,7 @@ jobs:
           sed -i "s/__THEME__/${{ matrix.theme }}/g" tsconfig.json
 
       - name: Cache Next.js build
-        uses: actions/cache@v5
+        uses: actions/cache@v6
         with:
           path: .next/cache
           key: ${{ runner.os }}-nextjs-${{ matrix.theme }}-${{ hashFiles('**/package-lock.json') }}-${{ hashFiles('src/**') }}
@@ -223,7 +223,7 @@ jobs:
           cp -r .next/static .next/standalone/.next/static
 
       - name: Cache Playwright browsers
-        uses: actions/cache@v5
+        uses: actions/cache@v6
         id: playwright-cache
         with:
           path: ${{ env.PLAYWRIGHT_BROWSERS_PATH }}
@@ -352,7 +352,7 @@ jobs:
       - uses: actions/checkout@v7
 
       - name: configure aws credentials
-        uses: aws-actions/configure-aws-credentials@v6.2.0
+        uses: aws-actions/configure-aws-credentials@v6.2.1
         with:
           role-to-assume: arn:aws:iam::${{ secrets.AWS_ACCOUNT_ID }}:role/navigator-infra-github-actions
           role-session-name: GitHub_to_AWS_via_FederatedOIDC
