@@ -10,14 +10,19 @@ const ruleToLabel = (rule: TLabelRule): TFilterPathLabel => {
 };
 
 const extractPaths = (node: TSearchQueryGroup | TSearchQueryRule, ancestors: TFilterPathLabel[]): TFilterPathLabel[][] => {
+  /* Rules */
+
   if (isLabelRule(node)) {
     if (node.checked) return [[ruleToLabel(node), ...ancestors]];
     return [];
   }
+  if (isRule(node)) return []; // TODO likely needs changing when applying date filtering
 
-  if (isRule(node)) return [];
+  /* Siblings */
 
   if (node.op === "or") return node.filters.flatMap((filters) => extractPaths(filters, ancestors));
+
+  /* More complex nesting */
 
   const [firstFilter, ...otherFilters] = node.filters;
 
