@@ -11,12 +11,12 @@ jobs:
       CI_JOB_NUMBER: 1
       THEME: cpr
     steps:
-      - uses: actions/checkout@v6
+      - uses: actions/checkout@v7
         with:
           fetch-depth: 0
       - uses: actions/setup-node@v6
         with:
-          node-version: 22.13.0
+          node-version-file: .nvmrc
       - name: Generate tsconfig.json
         run: |
           cp tsconfig.base.json tsconfig.json
@@ -36,11 +36,11 @@ jobs:
   #     checks: write
   #     contents: read
   #   steps:
-  #     - uses: actions/checkout@v6
-  #     - name: Use Node.js 22.13.0
+  #     - uses: actions/checkout@v7
+  #     - name: Use Node.js 24.x
   #       uses: actions/setup-node@v6
   #       with:
-  #         node-version: 22.13.0
+  #         node-version-file: .nvmrc
   #     - run: npm install
   #     - run: cp .env.example .env
   #     - run: THEME=${{ matrix.theme }} ROBOTS=true npm run build
@@ -80,11 +80,11 @@ jobs:
   #     checks: write
   #     contents: read
   #   steps:
-  #     - uses: actions/checkout@v6
-  #     - name: Use Node.js 22.13.0
+  #     - uses: actions/checkout@v7
+  #     - name: Use Node.js 24.x
   #       uses: actions/setup-node@v6
   #       with:
-  #         node-version: 22.13.0
+  #         node-version-file: .nvmrc
   #     - run: npm install
   #     - run: cp .env.example .env
   #     - run: THEME=${{ matrix.theme }} ROBOTS=true npm run build
@@ -119,10 +119,10 @@ jobs:
     env:
       THEME: cpr
     steps:
-      - uses: actions/checkout@v6
+      - uses: actions/checkout@v7
       - uses: actions/setup-node@v6
         with:
-          node-version: 22.13.0
+          node-version-file: .nvmrc
       - run: npm install
       - name: Generate tsconfig.json
         run: |
@@ -143,10 +143,10 @@ jobs:
     timeout-minutes: 15
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v6
+      - uses: actions/checkout@v7
       - uses: actions/setup-node@v6
         with:
-          node-version: 22.13.0
+          node-version-file: .nvmrc
       - run: npm install
       - run: cp .env.example .env
       - name: Generate tsconfig.json
@@ -189,11 +189,11 @@ jobs:
         shardIndex: [1, 2]
         shardTotal: [2]
     steps:
-      - uses: actions/checkout@v6
+      - uses: actions/checkout@v7
 
       - uses: actions/setup-node@v6
         with:
-          node-version: 24.0.0
+          node-version-file: .nvmrc
           cache: npm
 
       - run: npm i
@@ -206,7 +206,7 @@ jobs:
           sed -i "s/__THEME__/${{ matrix.theme }}/g" tsconfig.json
 
       - name: Cache Next.js build
-        uses: actions/cache@v5
+        uses: actions/cache@v6
         with:
           path: .next/cache
           key: ${{ runner.os }}-nextjs-${{ matrix.theme }}-${{ hashFiles('**/package-lock.json') }}-${{ hashFiles('src/**') }}
@@ -223,7 +223,7 @@ jobs:
           cp -r .next/static .next/standalone/.next/static
 
       - name: Cache Playwright browsers
-        uses: actions/cache@v5
+        uses: actions/cache@v6
         id: playwright-cache
         with:
           path: ${{ env.PLAYWRIGHT_BROWSERS_PATH }}
@@ -349,10 +349,10 @@ jobs:
       AWS_REGION: eu-west-1
       DEPLOY_TO_PROD_STACK_ALLOWED: true
     steps:
-      - uses: actions/checkout@v6
+      - uses: actions/checkout@v7
 
       - name: configure aws credentials
-        uses: aws-actions/configure-aws-credentials@v6.2.0
+        uses: aws-actions/configure-aws-credentials@v6.2.1
         with:
           role-to-assume: arn:aws:iam::${{ secrets.AWS_ACCOUNT_ID }}:role/navigator-infra-github-actions
           role-session-name: GitHub_to_AWS_via_FederatedOIDC

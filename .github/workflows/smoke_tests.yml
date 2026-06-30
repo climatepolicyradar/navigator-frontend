@@ -32,11 +32,11 @@ jobs:
     env:
       PLAYWRIGHT_BROWSERS_PATH: $HOME/.cache/ms-playwright
     steps:
-      - uses: actions/checkout@v6
+      - uses: actions/checkout@v7
 
       - uses: actions/setup-node@v6
         with:
-          node-version: 22.13.0
+          node-version-file: .nvmrc
           cache: npm
 
       - run: npm ci
@@ -49,7 +49,7 @@ jobs:
           sed -i "s/__THEME__/${{ github.event.inputs.theme }}/g" tsconfig.json
 
       - name: Cache Next.js build
-        uses: actions/cache@v5
+        uses: actions/cache@v6
         with:
           path: .next/cache
           key: ${{ runner.os }}-nextjs-${{ github.event.inputs.theme }}-${{ hashFiles('**/package-lock.json') }}-${{ hashFiles('src/**') }}
@@ -61,7 +61,7 @@ jobs:
           NODE_ENV: production
 
       - name: Cache Playwright browsers
-        uses: actions/cache@v5
+        uses: actions/cache@v6
         id: playwright-cache
         with:
           path: ${{ env.PLAYWRIGHT_BROWSERS_PATH }}

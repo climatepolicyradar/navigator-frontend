@@ -39,9 +39,9 @@ jobs:
       github.event.inputs.stack }}@${{ github.event.inputs.docker-tag }}]
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v6
+      - uses: actions/checkout@v7
       - name: configure aws credentials
-        uses: aws-actions/configure-aws-credentials@v6.2.0
+        uses: aws-actions/configure-aws-credentials@v6.2.1
         with:
           role-to-assume: arn:aws:iam::${{ secrets.AWS_ACCOUNT_ID
             }}:role/navigator-infra-github-actions

@@ -12,8 +12,6 @@ from pulumi_aws.ecs.express_gateway_service import (
     ExpressGatewayServiceScalingTargetArgs,
 )
 
-from .util import tag_name
-
 
 @dataclass
 class ExpressGatewayConfig:
@@ -21,6 +19,12 @@ class ExpressGatewayConfig:
     health_check_path: str = "/"
     cpu: str = "1024"
     memory: str = "2048"
+
+
+def prefix_name() -> str:
+    stack = pulumi.get_stack()  # e.g. "mcf-staging" or "mcf-production"
+    app, env = stack.rsplit("-", 1)
+    return f"{app}-frontend-{env}"
 
 
 class ExpressGatewayServiceComponent(pulumi.ComponentResource):
@@ -39,7 +43,7 @@ class ExpressGatewayServiceComponent(pulumi.ComponentResource):
         opts: Optional[pulumi.ResourceOptions] = None,
     ):
         super().__init__("pkg:index:ExpressGatewayService", name, None, opts)
-        self._prefix = name if pulumi.get_stack().startswith("pr-") else tag_name()
+        self._prefix = name if pulumi.get_stack().startswith("pr-") else prefix_name()
         self._opts = self._get_opts(opts)
 
         ecs_task_role = aws.iam.Role(

@@ -47,7 +47,7 @@ const PassageMatches = ({ passages, onClick, pageColour = "[#202020]", position,
       ) : (
         <ul className="my-5" id="passage-matches" aria-label="Passage matches">
           {passages.map((item, index: number) => (
-            <li key={item.text_block_id} data-analytics="document-passage-result" id={`passage-${index}`} className="mb-2 hide-in-percy">
+            <li key={item.text_block_id} data-analytics="document-passage-result" id={`passage-${index}`} className="mb-2">
               <button
                 type="button"
                 className={`w-full p-4 cursor-pointer border border-[#d1d5db] rounded-md bg-white hover:border-[#6b7280]`}

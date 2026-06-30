@@ -1,4 +1,3 @@
-# copy/paste of deploy-production.yml
 name: Deploy all to production
 on:
   workflow_dispatch: {}
@@ -21,9 +20,9 @@ jobs:
         run: |
           echo "This workflow can only be run from main."
           exit 1
-      - uses: actions/checkout@v6
+      - uses: actions/checkout@v7
       - name: Configure AWS credentials
-        uses: aws-actions/configure-aws-credentials@v6.2.0
+        uses: aws-actions/configure-aws-credentials@v6.2.1
         with:
           role-to-assume: arn:aws:iam::${{ secrets.AWS_ACCOUNT_ID }}:role/navigator-new-frontend-github-actions
           role-session-name: GitHub_to_AWS_via_FederatedOIDC
@@ -46,3 +45,42 @@ jobs:
           docker build --build-arg THEME=${THEME} --build-arg GITHUB_SHA=$(git rev-parse HEAD) -t $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG .
           docker push $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
           echo "image=$ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG" >> $GITHUB_OUTPUT
+
+      # @see: https://github.com/marketplace/actions/amazon-ecs-deploy-express-service-action-for-github-actions#complete-example-with-all-options
+      - name: Deploy to ECS (production)
+        id: deploy-production
+        uses: aws-actions/amazon-ecs-deploy-express-service@v1.2.1
+        with:
+          cluster: frontend-production
+          service-name: ${{ matrix.theme }}-frontend-production
+          image: ${{ steps.build-image.outputs.image }}
+          execution-role-arn: arn:aws:iam::${{ secrets.AWS_ACCOUNT_ID }}:role/frontend-production-ecs-task-execution-role
+          infrastructure-role-arn: arn:aws:iam::${{ secrets.AWS_ACCOUNT_ID }}:role/frontend-production-ecs-task-infrastructure-role
+
+      - name: Verify production deployment outcome
+        env:
+          SERVICE_ARN: ${{ steps.deploy-production.outputs.service-arn }}
+        run: |
+          set -euo pipefail
+          if [[ -z "${SERVICE_ARN}" ]]; then
+            echo "::error::deploy step did not emit a service-arn output"
+            exit 1
+          fi
+          DEPLOY_ARN=$(aws ecs list-service-deployments \
+            --cluster frontend-production \
+            --service "${SERVICE_ARN}" \
+            --query 'serviceDeployments[0].serviceDeploymentArn' \
+            --output text)
+          if [[ -z "${DEPLOY_ARN}" || "${DEPLOY_ARN}" == "None" ]]; then
+            echo "::error::Could not find a service deployment for ${SERVICE_ARN}"
+            exit 1
+          fi
+          STATUS=$(aws ecs describe-service-deployments \
+            --service-deployment-arns "${DEPLOY_ARN}" \
+            --query 'serviceDeployments[0].status' \
+            --output text)
+          echo "Deployment ${DEPLOY_ARN} final status: ${STATUS}"
+          if [[ "${STATUS}" != "SUCCESSFUL" ]]; then
+            echo "::error::Deployment did not succeed (status=${STATUS})"
+            exit 1
+          fi
