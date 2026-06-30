@@ -36,7 +36,6 @@ type TDrawerContentProps = {
   languages: Record<string, string>;
 };
 
-// The content to display within the Drawer - relies on familyData being loaded
 function DrawerContent({ familyData, languages }: TDrawerContentProps) {
   const { countries, family, familyTopics, subdivisions } = familyData;
   const { getCategoryTextLookup } = useText();
@@ -124,6 +123,7 @@ export function DocumentDrawer({ document, open, onOpenChange }: TDocumentDrawer
         </div>
       )}
       {!isLoading && familyData && <DrawerContent familyData={familyData} languages={languages} />}
+      {!isLoading && !familyData && <p>Sorry, this document has failed to load.</p>}
     </Drawer>
   );
 }
