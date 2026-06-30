@@ -1,11 +1,12 @@
 import { ChevronDown } from "lucide-react";
 import { MouseEvent, useContext, useState } from "react";
 
-import { Checkbox, TCheckboxState } from "@/components/atoms/checkbox/Checkbox";
+import { Checkbox } from "@/components/atoms/checkbox/Checkbox";
 import { SearchFilterLevel } from "@/components/organisms/searchFilterLevel/SearchFilterLevel";
 import { FiltersContext } from "@/context/FiltersContext";
-import { TFilterPathLabel, TNestedSearchLabel } from "@/types";
+import { TCheckboxState, TFilterPathLabel, TNestedSearchLabel } from "@/types";
 import { getFilterPathLabel } from "@/utils/filters/filterPaths";
+import { getFilterStatus } from "@/utils/filters/getFilterStatus";
 import { joinTailwindClasses } from "@/utils/tailwind";
 
 interface IProps {
@@ -13,15 +14,16 @@ interface IProps {
   label: TNestedSearchLabel;
 }
 
-export const SearchFilterCategory = ({ ancestorPath, label }: IProps) => {
-  const { toggleFilter } = useContext(FiltersContext);
+export const SearchFilterParent = ({ ancestorPath, label }: IProps) => {
+  const { checkedLabelPaths, toggleFilter } = useContext(FiltersContext);
   const [expanded, setExpanded] = useState(false);
 
   const pathLabels = [getFilterPathLabel(label), ...ancestorPath];
+  const checked = getFilterStatus(pathLabels, checkedLabelPaths);
 
   const onToggleCheckbox = (value: TCheckboxState) => {
     setExpanded(value === true);
-    toggleFilter(pathLabels, value === true);
+    toggleFilter(pathLabels, value);
   };
 
   const onToggleAccordion = (event: MouseEvent<HTMLButtonElement>) => {
@@ -31,7 +33,7 @@ export const SearchFilterCategory = ({ ancestorPath, label }: IProps) => {
 
   return (
     <li className="py-4 group">
-      <Checkbox onCheckedChange={onToggleCheckbox} className="flex-1 gap-4!">
+      <Checkbox checked={checked === true} indeterminate={checked === "indeterminate"} onCheckedChange={onToggleCheckbox} className="flex-1 gap-4!">
         <div className="w-full flex items-center justify-between gap-1">
           <span className="text-base text-text-primary font-medium leading-5">{label.value}</span>
           <button role="button" onClick={onToggleAccordion} className="-m-1 p-1">

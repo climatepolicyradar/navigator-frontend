@@ -3,11 +3,11 @@ import { Meta, StoryObj } from "@storybook/nextjs-vite";
 import { FiltersContext } from "@/context/FiltersContext";
 import { TNestedSearchLabel } from "@/types";
 
-import { SearchFilterCategory } from "./SearchFilterCategory";
+import { SearchFilterParent } from "./SearchFilterParent";
 
 const meta = {
-  title: "Molecules/SearchFilterCategory",
-  component: SearchFilterCategory,
+  title: "Molecules/SearchFilterParent",
+  component: SearchFilterParent,
   parameters: {
     layout: "centered",
   },
@@ -17,11 +17,11 @@ const meta = {
       // eslint-disable-next-line no-console
       value={{ checkedLabelPaths: [], clearFilters: () => {}, toggleFilter: (labelPath, checked) => console.info({ labelPath, checked }) }}
     >
-      <SearchFilterCategory {...props} />
+      <SearchFilterParent {...props} />
     </FiltersContext>
   ),
-} satisfies Meta<typeof SearchFilterCategory>;
-type TStory = StoryObj<typeof SearchFilterCategory>;
+} satisfies Meta<typeof SearchFilterParent>;
+type TStory = StoryObj<typeof SearchFilterParent>;
 
 const generateLabel = (value: string): TNestedSearchLabel => ({
   id: `category::${value}`,

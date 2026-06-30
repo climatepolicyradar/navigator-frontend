@@ -1,15 +1,19 @@
 import { TFilterPathLabel, TSearchQueryGroup, TSearchQueryRule } from "@/types";
 
-const makeRule = (value: string): TSearchQueryRule => ({
+export const DEFAULT_SEARCH_QUERY_GROUP: TSearchQueryGroup = { op: "and", filters: [{ field: "labels.value.id", op: "contains", value: "" }] };
+
+const makeRule = (value: string, checked?: true): TSearchQueryRule => ({
   field: "labels.value.id",
   op: "contains",
   value,
+  // Encode whether the label was checked by the user so it can be reverse-engineered
+  ...(checked && { checked }),
 });
 
 const wrapInGroup = (result: TSearchQueryGroup | TSearchQueryRule): TSearchQueryGroup =>
   "field" in result ? { op: "or", filters: [result] } : result;
 
-const buildGroupFromPaths = (labelPaths: TFilterPathLabel[][]): TSearchQueryGroup | TSearchQueryRule => {
+const buildGroupFromPaths = (labelPaths: TFilterPathLabel[][], checkedIds: Set<string>): TSearchQueryGroup | TSearchQueryRule => {
   const rootLabelsById = new Map<string, TFilterPathLabel[][]>();
   for (const labelPath of labelPaths) {
     const key = labelPath[0].id;
@@ -22,13 +26,13 @@ const buildGroupFromPaths = (labelPaths: TFilterPathLabel[][]): TSearchQueryGrou
   for (const [rootId, rootPaths] of rootLabelsById) {
     const rootType = rootPaths[0][0].type;
     const childPaths = rootPaths.map((path) => path.slice(1)).filter((path) => path.length > 0);
-    const rootRule = makeRule(rootId);
+    const rootRule = makeRule(rootId, checkedIds.has(rootId) ? true : undefined);
 
     if (childPaths.length === 0) {
       rootResults.push([rootType, rootRule]);
     } else {
-      const childResult = buildGroupFromPaths(childPaths);
-      rootResults.push([rootType, { op: "and", filters: [rootRule, childResult] }]);
+      const childResult = buildGroupFromPaths(childPaths, checkedIds);
+      rootResults.push([rootType, { op: "and", filters: [rootRule, wrapInGroup(childResult)] }]);
     }
   }
 
@@ -48,7 +52,12 @@ const buildGroupFromPaths = (labelPaths: TFilterPathLabel[][]): TSearchQueryGrou
   return { op: "and", filters: typeGroupResults };
 };
 
-export const buildFilterGroup = (allLabelPaths: TFilterPathLabel[][]): TSearchQueryGroup => {
+export const filterPathsToQueryGroup = (allLabelPaths: TFilterPathLabel[][]): TSearchQueryGroup => {
+  if (allLabelPaths.length === 0) return DEFAULT_SEARCH_QUERY_GROUP;
+
+  // Keep track of which actual checkboxes were checked by the user
+  const checkedIds = new Set(allLabelPaths.map((path) => path[0].id));
+
   // Build from least to most specific label in the path
   const reversedLabelPaths = allLabelPaths.map((labelPath) => [...labelPath].reverse());
   const deduplicatedLabelPaths = reversedLabelPaths.filter(
@@ -61,5 +70,5 @@ export const buildFilterGroup = (allLabelPaths: TFilterPathLabel[][]): TSearchQu
       )
   );
 
-  return wrapInGroup(buildGroupFromPaths(deduplicatedLabelPaths));
+  return wrapInGroup(buildGroupFromPaths(deduplicatedLabelPaths, checkedIds));
 };

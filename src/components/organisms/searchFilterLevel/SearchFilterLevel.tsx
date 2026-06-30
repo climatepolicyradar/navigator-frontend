@@ -2,9 +2,9 @@ import sortBy from "lodash/sortBy";
 import { useMemo } from "react";
 
 import { SearchFilter } from "@/components/molecules/searchFilter/SearchFilter";
-import { SearchFilterCategory } from "@/components/molecules/searchFilterCategory/SearchFilterCategory";
 import { SearchFilterGroups } from "@/components/molecules/searchFilterGroups/SearchFilterGroups";
 import { SearchFilterLookup } from "@/components/molecules/searchFilterLookup/SearchFilterLookup";
+import { SearchFilterParent } from "@/components/molecules/searchFilterParent/SearchFilterParent";
 import { TFilterPathLabel, TNestedSearchLabel } from "@/types";
 import { joinTailwindClasses } from "@/utils/tailwind";
 
@@ -29,7 +29,7 @@ export const SearchFilterLevel = ({ ancestorPath, indented, labels }: IProps) =>
     return (
       <ul className={joinTailwindClasses("list-none", indentedClasses)}>
         {sortedLabels.map((label) => (
-          <SearchFilterCategory key={label.id} ancestorPath={ancestorPath} label={label} />
+          <SearchFilterParent key={label.id} ancestorPath={ancestorPath} label={label} />
         ))}
       </ul>
     );

@@ -25,7 +25,7 @@ function triggerLabel(value: SearchDocumentsSortKey): string {
 }
 
 const triggerClassName =
-  "inline-flex h-9 max-w-full min-w-0 items-center justify-between gap-2 rounded-full border border-transparent-regular bg-[canvas] px-4 py-1.5 text-left text-sm font-medium text-neutral-600 select-none transition-colors hover:border-inky-black focus-visible:outline-2 focus-visible:-outline-offset-1 focus-visible:outline-blue-800 data-popup-open:border-inky-black";
+  "col-start-1 cols-5:col-start-2 inline-flex h-9 max-w-full min-w-0 items-center justify-between gap-2 rounded-full border border-transparent-regular bg-[canvas] px-4 py-1.5 text-left text-sm font-medium text-neutral-600 select-none transition-colors hover:border-inky-black focus-visible:outline-2 focus-visible:-outline-offset-1 focus-visible:outline-blue-800 data-popup-open:border-inky-black";
 
 const popupClassName =
   "max-h-(--available-height) min-w-(--anchor-width) origin-(--transform-origin) overflow-y-auto rounded-lg border border-transparent-regular bg-[canvas] py-1 shadow-lg outline-none transition-[transform,scale,opacity] data-ending-style:scale-95 data-ending-style:opacity-0";

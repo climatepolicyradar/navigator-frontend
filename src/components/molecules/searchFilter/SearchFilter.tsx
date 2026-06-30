@@ -5,6 +5,7 @@ import { SearchFilterLevel } from "@/components/organisms/searchFilterLevel/Sear
 import { FiltersContext } from "@/context/FiltersContext";
 import { TFilterPathLabel, TNestedSearchLabel } from "@/types";
 import { getFilterPathLabel } from "@/utils/filters/filterPaths";
+import { getFilterStatus } from "@/utils/filters/getFilterStatus";
 
 interface IProps {
   ancestorPath: TFilterPathLabel[];
@@ -12,13 +13,16 @@ interface IProps {
 }
 
 export const SearchFilter = ({ ancestorPath, label }: IProps) => {
-  const { toggleFilter } = useContext(FiltersContext);
+  const { checkedLabelPaths, toggleFilter } = useContext(FiltersContext);
 
   const pathLabels = [getFilterPathLabel(label), ...ancestorPath];
+  const checked = getFilterStatus(pathLabels, checkedLabelPaths);
 
   return (
     <li>
-      <Checkbox onCheckedChange={(value) => toggleFilter(pathLabels, value === true)}>{label.value}</Checkbox>
+      <Checkbox checked={checked === true} indeterminate={checked === "indeterminate"} onCheckedChange={(value) => toggleFilter(pathLabels, value)}>
+        {label.value}
+      </Checkbox>
       {label.children.length > 0 && <SearchFilterLevel ancestorPath={pathLabels} labels={label.children} indented />}
     </li>
   );

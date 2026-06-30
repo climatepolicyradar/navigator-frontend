@@ -38,11 +38,6 @@ export const loadLabels = async (query: string): Promise<TSearchLabel[]> => {
       {
         field: "type",
         op: "not_contains",
-        value: "keyword",
-      },
-      {
-        field: "type",
-        op: "not_contains",
         value: "instrument",
       },
       {

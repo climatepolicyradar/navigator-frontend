@@ -4,7 +4,7 @@ import React, { Fragment, Suspense, use, useEffect, useMemo } from "react";
 import { fetchSearchDocuments, SearchDocument, SearchDocumentsResponse, SearchDocumentsSortKey } from "@/api/search";
 import { DocumentCard } from "@/components/molecules/documentCard/DocumentCard";
 import { TSearchQueryGroup } from "@/types";
-import { stripEmptyValueRules } from "@/utils/filters/advancedFilters";
+import { sanitiseSearchQueryGroup } from "@/utils/filters/advancedFilters";
 
 import { isFilterGroupEmpty } from "../advancedFilters/AdvancedFilters";
 import { EmptySearch } from "../emptySearch/EmptySearch";
@@ -74,7 +74,7 @@ export function SearchContainer({
   // Drop placeholder rules (e.g. default empty label row) so date-only filters still fetch.
   const nonEmptyFilters = useMemo(() => {
     if (!filters) return undefined;
-    const sanitised = stripEmptyValueRules(filters);
+    const sanitised = sanitiseSearchQueryGroup(filters);
     return isFilterGroupEmpty(sanitised) ? undefined : sanitised;
   }, [filters]);
 

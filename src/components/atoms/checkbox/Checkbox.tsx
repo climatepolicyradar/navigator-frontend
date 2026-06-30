@@ -2,9 +2,8 @@ import { Checkbox as BaseCheckbox } from "@base-ui/react";
 import { Check, Minus } from "lucide-react";
 import { ReactNode } from "react";
 
+import { TCheckboxState } from "@/types";
 import { joinTailwindClasses } from "@/utils/tailwind";
-
-export type TCheckboxState = boolean | "indeterminate";
 
 interface IProps extends BaseCheckbox.Root.Props {
   children: ReactNode;
