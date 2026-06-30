@@ -88,7 +88,7 @@ export function IntelliSearch({
   return (
     <div ref={containerRef} className={joinTailwindClasses("relative w-full", className)}>
       <Autocomplete.Root open items={suggestions} filter={null} autoHighlight="always" keepHighlight>
-        <div className="relative border border-transparent-regular rounded-xl">
+        <div className="relative border border-border-normal rounded-xl">
           <div className="flex items-center gap-2 ml-6">
             <LucideSearch width={16} height={16} className="text-neutral-500" />
             <Autocomplete.Input
@@ -117,7 +117,7 @@ export function IntelliSearch({
         </div>
         <Autocomplete.Portal hidden={!inputFocused || searchTerm.trim() === ""}>
           <Autocomplete.Positioner className="outline-hidden" align="start" anchor={containerRef}>
-            <Autocomplete.Popup className="mt-1 w-(--anchor-width) border bg-white border-transparent-regular rounded-xl">
+            <Autocomplete.Popup className="mt-1 w-(--anchor-width) border bg-white border-border-normal rounded-xl">
               <ScrollArea.Root className="flex max-h-[60dvh] min-h-0 flex-[0_1_auto] overflow-hidden rounded-top-xl">
                 <ScrollArea.Viewport className="min-h-0 flex-1 overscroll-contain scroll-py-2 focus-visible:outline-1 focus-visible:-outline-offset-1 focus-visible:outline-blue-800">
                   <ScrollArea.Content className="min-w-full">
@@ -178,7 +178,7 @@ export function IntelliSearch({
                 </ScrollArea.Scrollbar>
               </ScrollArea.Root>
 
-              <div className="flex items-center justify-between border-t border-transparent-regular p-4 text-sm text-inky-black">
+              <div className="flex items-center justify-between border-t border-border-normal p-4 text-sm text-inky-black">
                 <button
                   className="flex items-center gap-2 hover:bg-neutral-200 rounded-md p-1"
                   onMouseDown={(e) => e.preventDefault()}
