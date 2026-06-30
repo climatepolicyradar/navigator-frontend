@@ -520,8 +520,8 @@ export function AdvancedFilters({ filters, setFilters, open, onOpenChange }: TPr
   return (
     <BaseDialog.Root open={open} onOpenChange={onOpenChange}>
       <BaseDialog.Portal>
-        <BaseDialog.Backdrop className="fixed inset-0 min-h-dvh bg-inky-black opacity-20 transition-all duration-150 data-ending-style:opacity-0 data-starting-style:opacity-0 dark:opacity-70 supports-[-webkit-touch-callout:none]:absolute" />
-        <BaseDialog.Popup className="w-3/4 max-w-4xl fixed top-1/5 left-1/2 -translate-x-1/2 rounded-xl border border-transparent-regular bg-white shadow-2xl focus-visible:outline-none  transition-all duration-150 data-ending-style:scale-90 data-ending-style:opacity-0 ">
+        <BaseDialog.Backdrop className="fixed inset-0 min-h-dvh bg-inky-black opacity-20 transition-opacity duration-50 data-ending-style:opacity-0 data-starting-style:opacity-0 dark:opacity-70 supports-[-webkit-touch-callout:none]:absolute" />
+        <BaseDialog.Popup className="w-3/4 max-w-4xl fixed top-1/5 left-1/2 -translate-x-1/2 rounded-xl border border-border-normal bg-white shadow-2xl focus-visible:outline-none  transition-all duration-120 data-ending-style:scale-90 data-ending-style:opacity-0 ">
           {/* Header */}
           <div className="flex items-center justify-between border-b border-[#f3f4f6] px-4 py-3">
             <h3 className="text-sm font-semibold text-gray-900">Advanced Filters</h3>
