@@ -90,22 +90,18 @@ export const DocumentDrawer = ({ documentImportId, family, familyTopics, languag
   let topicRows: TTopicTableRow[] = [];
   if (familyTopics) topicRows = getDocumentDrawerTopicTableRows(familyTopics, documentImportId);
 
+  const title = document.slug ? (
+    <PageLink keepQuery href={"/documents/" + document.slug} className="text-inky-blue underline-offset-5 hover:underline hover:decoration-inky-blue">
+      {document.title}
+    </PageLink>
+  ) : (
+    document.title
+  );
+
   /* Render */
 
   return (
-    <Drawer
-      open={open}
-      onOpenChange={onOpenChange}
-      title={
-        <PageLink
-          keepQuery
-          href={"/documents/" + document.slug}
-          className="text-inky-blue underline-offset-5 hover:underline hover:decoration-inky-blue"
-        >
-          {document.title}
-        </PageLink>
-      }
-    >
+    <Drawer open={open} onOpenChange={onOpenChange} title={title}>
       {metadata.length > 0 && (
         <div className="grid grid-cols-[120px_auto] gap-x-3 gap-y-2 mb-6 text-sm text-text-secondary leading-5">
           {metadata.map((item, itemIndex) => (
