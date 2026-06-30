@@ -1,21 +1,14 @@
 import orderBy from "lodash/orderBy";
-import { Fragment, ReactNode, useMemo } from "react";
+import { useMemo } from "react";
 
-import { PageLink } from "@/components/atoms/pageLink/PageLink";
 import { TBreadcrumbLink } from "@/components/breadcrumbs/Breadcrumbs";
-import { GeographyLink, IProps as GeographyLinkProps } from "@/components/molecules/geographyLink/GeographyLink";
+import { IProps as GeographyLinkProps } from "@/components/molecules/geographyLink/GeographyLink";
 import { getCountryName, getCountrySlug } from "@/helpers/getCountryFields";
 import { getSubdivisionName } from "@/helpers/getSubdivision";
-import { getSumUSD } from "@/helpers/getSumUSD";
 import { useText } from "@/hooks/useText";
 import { IMetadata, TFamilyPublic, TGeography, TGeographySubdivision } from "@/types";
-import { scrollToBlock } from "@/utils/blocks/scrollToBlock";
+import { getFamilyHeader } from "@/utils/family-header/getFamilyHeader";
 import { isSystemGeo } from "@/utils/isSystemGeo";
-import { pluralise } from "@/utils/pluralise";
-import { joinNodes } from "@/utils/reactNode";
-import { convertDate } from "@/utils/timedate";
-
-const MAX_SHOWN_GEOGRAPHIES = 3;
 
 interface IProps {
   countries: TGeography[];
@@ -34,13 +27,6 @@ export const useFamilyPageHeaderData = ({ countries, family, subdivisions }: IPr
   const getCategoryText = getCategoryTextLookup(family.attribution.category);
 
   return useMemo(() => {
-    /* Misc */
-    const [year] = convertDate(family.published_date);
-    const isLitigation = family.attribution.category === "Litigation";
-    const isMCF = family.attribution.category === "Multilateral Climate Fund project";
-
-    /* Geographies data */
-
     const codeIsCountry = (code: string) => !code.includes("-");
 
     // TODO use the new geography endpoint + GeographyV2
@@ -85,96 +71,8 @@ export const useFamilyPageHeaderData = ({ countries, family, subdivisions }: IPr
       }
     }
 
-    /* Geographies in page header */
-
-    const visibleGeographiesData = geographiesDisplayData.slice(0, MAX_SHOWN_GEOGRAPHIES);
-    const hiddenGeographiesCount = Math.max(0, geographiesDisplayData.length - MAX_SHOWN_GEOGRAPHIES);
-
-    const isGeographiesParentAndChild =
-      visibleGeographiesData.length === 2 && !visibleGeographiesData[0].code.includes("-") && visibleGeographiesData[1].code.includes("-");
-
-    const geographiesNode: ReactNode[] = joinNodes(
-      visibleGeographiesData.map(({ code, name, slug }) => {
-        return <GeographyLink key={code} code={code} name={name} slug={isSystemGeo(name) ? null : slug} />;
-      }),
-      isGeographiesParentAndChild ? <span className="text-gray-400"> / </span> : <>&ensp;</>
-    );
-
-    // Scroll to metadata to show hidden geographies
-    if (hiddenGeographiesCount > 0) {
-      geographiesNode.push(
-        <Fragment key="others">
-          &ensp;
-          <button
-            role="button"
-            className="underline underline-offset-4 decoration-[#d1d5db] hover:decoration-[#6b7280]"
-            onClick={scrollToBlock("metadata")}
-          >
-            +{hiddenGeographiesCount} {pluralise(hiddenGeographiesCount, ["other", "others"])}
-          </button>
-        </Fragment>
-      );
-    }
-
-    /* Metadata */
-
-    const pageHeaderMetadata: IMetadata[] = [
-      {
-        label: "Geography",
-        value: geographiesNode,
-      },
-      { label: `${getCategoryText("familyDate")}`, value: isNaN(year) ? "" : year },
-      {
-        label: getCategoryText("familyType"),
-        value: family.attribution.taxonomy,
-      },
-    ];
-    if (family.collections.length) {
-      pageHeaderMetadata.push({
-        label: "Part of",
-        value: isLitigation
-          ? // litigation collections links
-            joinNodes(
-              family.collections.map((collection) => (
-                <PageLink key={collection.import_id} keepQuery href={`/collections/${collection.slug}`} className="hover:underline">
-                  {collection.title}
-                </PageLink>
-              )),
-              ", "
-            )
-          : // non-litigation collections scroll to block
-            joinNodes(
-              family.collections.map((collection) => (
-                <button
-                  key={collection.import_id}
-                  role="button"
-                  className="underline underline-offset-4 decoration-[#d1d5db] hover:decoration-[#6b7280]"
-                  onClick={scrollToBlock("collections")}
-                >
-                  {collection.title}
-                </button>
-              )),
-              ", "
-            ),
-      });
-    }
-    if (isMCF) {
-      family.metadata?.project_value_fund_spend &&
-        family.metadata?.project_value_fund_spend[0] !== "0" &&
-        pageHeaderMetadata.push({
-          label: "Fund Spend",
-          value: getSumUSD(family.metadata?.project_value_fund_spend),
-        });
-      family.metadata?.project_value_co_financing &&
-        family.metadata?.project_value_co_financing[0] !== "0" &&
-        pageHeaderMetadata.push({
-          label: "Co-Financing",
-          value: getSumUSD(family.metadata?.project_value_co_financing),
-        });
-    }
-
     return {
-      pageHeaderMetadata,
+      pageHeaderMetadata: getFamilyHeader({ countries, family, subdivisions, getCategoryText }),
       breadcrumbGeography,
       breadcrumbParentGeography,
     };

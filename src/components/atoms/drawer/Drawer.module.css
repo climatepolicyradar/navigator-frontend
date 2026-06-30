@@ -78,11 +78,15 @@
   &[data-direction="left"] {
     --panel-width: min(70vw, 800px);
 
+    &.DrawerContentWide {
+      --panel-width: min(100vw, 1200px);
+    }
+
     @apply h-full;
     width: var(--panel-width);
 
     @media (width < theme(--breakpoint-md)) {
-      --panel-width: 100%;
+      --panel-width: 100% !important;
     }
   }
 
