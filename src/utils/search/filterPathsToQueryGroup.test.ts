@@ -1,6 +1,6 @@
 import { TFilterPathLabel, TSearchQueryGroup } from "@/types";
 
-import { filterPathsToQueryGroup } from "./filterPathsToQueryGroup";
+import { DEFAULT_SEARCH_QUERY_GROUP, filterPathsToQueryGroup } from "./filterPathsToQueryGroup";
 
 /**
  * RULES:
@@ -8,7 +8,7 @@ import { filterPathsToQueryGroup } from "./filterPathsToQueryGroup";
  * 2. TFilterPathLabel that are children of another TFilterPathLabel are surrounded by an AND
  * 3. sibling TFilterPathLabel with the same type are surrounded by an OR
  * 4. sibling TFilterPathLabel with different types are surrounded by an AND
- * 5. there are no redundant AND or OR TSearchQueryGroup - each must contain 2 or more filters
+ * 5. nested TFilterPathLabel are separated from each other by at least one TSearchQueryGroup
  */
 
 type TFilterTestCase = {
@@ -18,6 +18,11 @@ type TFilterTestCase = {
 };
 
 export const FILTER_TEST_CASES: TFilterTestCase[] = [
+  {
+    name: "no filters",
+    filterPathLabels: [],
+    searchQueryGroup: DEFAULT_SEARCH_QUERY_GROUP,
+  },
   {
     name: "one first level filter",
     filterPathLabels: [
@@ -102,10 +107,15 @@ export const FILTER_TEST_CASES: TFilterTestCase[] = [
           value: "category::UN submission",
         },
         {
-          field: "labels.value.id",
-          op: "contains",
-          value: "un_convention::UNCCD",
-          checked: true,
+          op: "or",
+          filters: [
+            {
+              field: "labels.value.id",
+              op: "contains",
+              value: "un_convention::UNCCD",
+              checked: true,
+            },
+          ],
         },
       ],
     },
@@ -143,10 +153,15 @@ export const FILTER_TEST_CASES: TFilterTestCase[] = [
           checked: true,
         },
         {
-          field: "labels.value.id",
-          op: "contains",
-          value: "un_convention::UNCCD",
-          checked: true,
+          op: "or",
+          filters: [
+            {
+              field: "labels.value.id",
+              op: "contains",
+              value: "un_convention::UNCCD",
+              checked: true,
+            },
+          ],
         },
       ],
     },
@@ -380,10 +395,81 @@ export const FILTER_TEST_CASES: TFilterTestCase[] = [
               value: "un_convention::UNCCD",
             },
             {
+              op: "or",
+              filters: [
+                {
+                  field: "labels.value.id",
+                  op: "contains",
+                  value: "document_type::Country Report (CR)",
+                  checked: true,
+                },
+              ],
+            },
+          ],
+        },
+      ],
+    },
+  },
+  {
+    name: "one third level filter and its parent",
+    filterPathLabels: [
+      [
+        {
+          id: "un_convention::UNCCD",
+          type: "un_convention",
+          value: "UNCCD",
+        },
+        {
+          id: "category::UN submission",
+          type: "category",
+          value: "UN submission",
+        },
+      ],
+      [
+        {
+          id: "document_type::Country Report (CR)",
+          type: "document_type",
+          value: "Country Report (CR)",
+        },
+        {
+          id: "un_convention::UNCCD",
+          type: "un_convention",
+          value: "UNCCD",
+        },
+        {
+          id: "category::UN submission",
+          type: "category",
+          value: "UN submission",
+        },
+      ],
+    ],
+    searchQueryGroup: {
+      op: "and",
+      filters: [
+        {
+          field: "labels.value.id",
+          op: "contains",
+          value: "category::UN submission",
+        },
+        {
+          op: "and",
+          filters: [
+            {
               field: "labels.value.id",
               op: "contains",
-              value: "document_type::Country Report (CR)",
+              value: "un_convention::UNCCD",
               checked: true,
+            },
+            {
+              op: "or",
+              filters: [
+                {
+                  field: "labels.value.id",
+                  op: "contains",
+                  value: "document_type::Country Report (CR)",
+                  checked: true,
+                },
+              ],
             },
           ],
         },
@@ -448,10 +534,15 @@ export const FILTER_TEST_CASES: TFilterTestCase[] = [
                   value: "un_convention::UNCCD",
                 },
                 {
-                  field: "labels.value.id",
-                  op: "contains",
-                  value: "document_type::Country Report (CR)",
-                  checked: true,
+                  op: "or",
+                  filters: [
+                    {
+                      field: "labels.value.id",
+                      op: "contains",
+                      value: "document_type::Country Report (CR)",
+                      checked: true,
+                    },
+                  ],
                 },
               ],
             },
@@ -464,10 +555,15 @@ export const FILTER_TEST_CASES: TFilterTestCase[] = [
                   value: "un_convention::UNFCCC",
                 },
                 {
-                  field: "labels.value.id",
-                  op: "contains",
-                  value: "entity_type::Adaptation Communication (AC)",
-                  checked: true,
+                  op: "or",
+                  filters: [
+                    {
+                      field: "labels.value.id",
+                      op: "contains",
+                      value: "entity_type::Adaptation Communication (AC)",
+                      checked: true,
+                    },
+                  ],
                 },
               ],
             },
@@ -535,10 +631,15 @@ export const FILTER_TEST_CASES: TFilterTestCase[] = [
                   value: "jurisdiction::Australia",
                 },
                 {
-                  field: "labels.value.id",
-                  op: "contains",
-                  value: "jurisdiction::Australian Capital Territory",
-                  checked: true,
+                  op: "or",
+                  filters: [
+                    {
+                      field: "labels.value.id",
+                      op: "contains",
+                      value: "jurisdiction::Australian Capital Territory",
+                      checked: true,
+                    },
+                  ],
                 },
               ],
             },
@@ -606,10 +707,15 @@ export const FILTER_TEST_CASES: TFilterTestCase[] = [
                   value: "jurisdiction::United States",
                 },
                 {
-                  field: "labels.value.id",
-                  op: "contains",
-                  value: "jurisdiction::Massachusetts District Court (Mass. Dist. Ct.)",
-                  checked: true,
+                  op: "or",
+                  filters: [
+                    {
+                      field: "labels.value.id",
+                      op: "contains",
+                      value: "jurisdiction::Massachusetts District Court (Mass. Dist. Ct.)",
+                      checked: true,
+                    },
+                  ],
                 },
               ],
             },

@@ -7,6 +7,7 @@ export const FilterSchema = v.union([
     field: v.literal("labels.value.id"),
     op: v.picklist(["contains", "not_contains"]),
     value: v.string(),
+    checked: v.optional(v.literal(true)),
   }),
   v.object({
     field: v.literal("attributes.published_date"),

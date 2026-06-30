@@ -11,22 +11,12 @@ import { TSearchLabel, TSearchQueryGroup } from "@/types";
 import { getLabelPathSignature, sortFilterPathLabels } from "@/utils/filters/filterPaths";
 import { groupSearchLabels } from "@/utils/filters/groupSearchLabels";
 import { nestSearchLabels } from "@/utils/filters/nestSearchLabels";
-import { filterPathsToQueryGroup } from "@/utils/search/filterPathsToQueryGroup";
+import { DEFAULT_SEARCH_QUERY_GROUP, filterPathsToQueryGroup } from "@/utils/search/filterPathsToQueryGroup";
 import { queryGroupToFilterPaths } from "@/utils/search/queryGroupToFilterPaths";
-
-const DEFAULT_SEARCH_QUERY_GROUP: TSearchQueryGroup = { op: "and", filters: [{ field: "labels.value.id", op: "contains", value: "" }] };
 
 interface IProps {
   labels: TSearchLabel[];
 }
-
-/**
- * TODO:
- * - Renders the filter buttons and their respective modals/popovers
- * - Renders the sort button and its popover
- * - Renders active filters below
- * - Encapsulates the logic for filters <-> URL
- */
 
 export const FiltersAndSort = ({ labels }: IProps) => {
   const [filterParam, setFilterParam] = useQueryState(

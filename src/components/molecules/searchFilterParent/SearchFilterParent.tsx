@@ -6,6 +6,7 @@ import { SearchFilterLevel } from "@/components/organisms/searchFilterLevel/Sear
 import { FiltersContext } from "@/context/FiltersContext";
 import { TCheckboxState, TFilterPathLabel, TNestedSearchLabel } from "@/types";
 import { getFilterPathLabel } from "@/utils/filters/filterPaths";
+import { getFilterStatus } from "@/utils/filters/getFilterStatus";
 import { joinTailwindClasses } from "@/utils/tailwind";
 
 interface IProps {
@@ -14,10 +15,11 @@ interface IProps {
 }
 
 export const SearchFilterParent = ({ ancestorPath, label }: IProps) => {
-  const { toggleFilter } = useContext(FiltersContext);
+  const { checkedLabelPaths, toggleFilter } = useContext(FiltersContext);
   const [expanded, setExpanded] = useState(false);
 
   const pathLabels = [getFilterPathLabel(label), ...ancestorPath];
+  const checked = getFilterStatus(pathLabels, checkedLabelPaths);
 
   const onToggleCheckbox = (value: TCheckboxState) => {
     setExpanded(value === true);
@@ -31,7 +33,7 @@ export const SearchFilterParent = ({ ancestorPath, label }: IProps) => {
 
   return (
     <li className="py-4 group">
-      <Checkbox onCheckedChange={onToggleCheckbox} className="flex-1 gap-4!">
+      <Checkbox checked={checked === true} indeterminate={checked === "indeterminate"} onCheckedChange={onToggleCheckbox} className="flex-1 gap-4!">
         <div className="w-full flex items-center justify-between gap-1">
           <span className="text-base text-text-primary font-medium leading-5">{label.value}</span>
           <button role="button" onClick={onToggleAccordion} className="-m-1 p-1">

@@ -25,9 +25,15 @@ const extractPaths = (node: TSearchQueryGroup | TSearchQueryRule, ancestors: TFi
     return otherFilters.flatMap((filters) => extractPaths(filters, [ruleToLabel(firstFilter), ...ancestors]));
   }
 
-  if (isLabelRule(firstFilter) && firstFilter.checked && ancestors.length === 0) {
-    // Root-level AND with a checked first rule: firstFilter is a selected parent with a child filter
-    return [[ruleToLabel(firstFilter)], ...otherFilters.flatMap((filter) => extractPaths(filter, [ruleToLabel(firstFilter)]))];
+  if (isLabelRule(firstFilter) && firstFilter.checked) {
+    const firstLabel = ruleToLabel(firstFilter);
+    const childAncestors = [firstLabel, ...ancestors];
+    return [
+      [firstLabel, ...ancestors],
+      ...otherFilters.flatMap((filter) =>
+        !isRule(filter) && filter.op === "or" ? extractPaths(filter, childAncestors) : extractPaths(filter, ancestors)
+      ),
+    ];
   }
 
   return node.filters.flatMap((filter) => extractPaths(filter, ancestors));

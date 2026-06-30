@@ -1,5 +1,7 @@
 import { TFilterPathLabel, TSearchQueryGroup, TSearchQueryRule } from "@/types";
 
+export const DEFAULT_SEARCH_QUERY_GROUP: TSearchQueryGroup = { op: "and", filters: [{ field: "labels.value.id", op: "contains", value: "" }] };
+
 const makeRule = (value: string, checked?: true): TSearchQueryRule => ({
   field: "labels.value.id",
   op: "contains",
@@ -30,7 +32,7 @@ const buildGroupFromPaths = (labelPaths: TFilterPathLabel[][], checkedIds: Set<s
       rootResults.push([rootType, rootRule]);
     } else {
       const childResult = buildGroupFromPaths(childPaths, checkedIds);
-      rootResults.push([rootType, { op: "and", filters: [rootRule, childResult] }]);
+      rootResults.push([rootType, { op: "and", filters: [rootRule, wrapInGroup(childResult)] }]);
     }
   }
 
@@ -51,6 +53,8 @@ const buildGroupFromPaths = (labelPaths: TFilterPathLabel[][], checkedIds: Set<s
 };
 
 export const filterPathsToQueryGroup = (allLabelPaths: TFilterPathLabel[][]): TSearchQueryGroup => {
+  if (allLabelPaths.length === 0) return DEFAULT_SEARCH_QUERY_GROUP;
+
   // Keep track of which actual checkboxes were checked by the user
   const checkedIds = new Set(allLabelPaths.map((path) => path[0].id));
 
