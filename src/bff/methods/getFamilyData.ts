@@ -31,7 +31,7 @@ export const getFamilyData = async (slug: string, features: TFeatures, importId?
 
   // If we are passing an importId in - we can skip calling the slugs endpoint to get it
   let familyImportId = importId;
-  if (slug.length > 0) {
+  if (slug) {
     try {
       // As the families API cannot be queried by slugs, we need to get the slugResponse
       const { data: slugData } = await apiClient.get<TApiItemResponse<TApiSlugResponse>>(`/families/slugs/${slug}`);
