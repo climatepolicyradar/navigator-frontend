@@ -10,9 +10,9 @@ import { NoteBlock } from "@/components/blocks/noteBlock/NoteBlock";
 import { TextBlock } from "@/components/blocks/textBlock/TextBlock";
 import { TopicsBlock } from "@/components/blocks/topicsBlock/TopicsBlock";
 import useConfig from "@/hooks/useConfig";
-import { useFamilyPageHeaderData } from "@/hooks/useFamilyPageHeaderData";
 import { useText } from "@/hooks/useText";
 import { TFamilyPresentationalData } from "@/types";
+import { getFamilyHeader } from "@/utils/family-header/getFamilyHeader";
 import { getFamilyMetadata } from "@/utils/family-metadata/getFamilyMetadata";
 import { familyTopicsHasTopics } from "@/utils/topics/processFamilyTopics";
 
@@ -38,11 +38,11 @@ type TDrawerContentProps = {
 
 // The content to display within the Drawer - relies on familyData being loaded
 function DrawerContent({ familyData, languages }: TDrawerContentProps) {
+  const { countries, family, familyTopics, subdivisions } = familyData;
   const { getCategoryTextLookup } = useText();
-  const { countries, family, subdivisions } = familyData;
-  const { pageHeaderMetadata } = useFamilyPageHeaderData({ countries, family, subdivisions });
-  const metadata = getFamilyMetadata(family, familyData.familyTopics, countries, subdivisions);
   const getCategoryText = getCategoryTextLookup(family.attribution.category);
+  const pageHeaderMetadata = getFamilyHeader({ countries, family, subdivisions, getCategoryText });
+  const metadata = getFamilyMetadata(family, familyTopics, countries, subdivisions);
 
   return (
     <div className="flex flex-col gap-8">
@@ -69,10 +69,10 @@ function DrawerContent({ familyData, languages }: TDrawerContentProps) {
         </div>
       )}
       <div className="grid grid-cols-1">
-        <DocumentsBlock family={family} familyTopics={familyData.familyTopics} languages={languages} />
+        <DocumentsBlock family={family} familyTopics={familyTopics} languages={languages} />
       </div>
-      {familyTopicsHasTopics(familyData.familyTopics) && (
-        <TopicsBlock key="topics" family={family} familyTopics={familyData.familyTopics} getCategoryText={getCategoryText} />
+      {familyTopicsHasTopics(familyTopics) && (
+        <TopicsBlock key="topics" family={family} familyTopics={familyTopics} getCategoryText={getCategoryText} />
       )}
       <NoteBlock key="note" attribution={family.attribution} />
     </div>
