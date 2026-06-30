@@ -10,7 +10,7 @@ import { joinTailwindClasses } from "@/utils/tailwind";
 
 export const CPRLogo = (
   <PageLink href="/" data-cy="cpr-logo">
-    <Image src="/images/cpr-logo-horizontal-new.svg" width={228} height={35} alt="Climate Policy Radar logo" data-cy="cpr-logo" />
+    <Image src="/images/cpr-logo-horizontal-new.svg" width={228} height={35} alt="Climate Policy Radar logo" data-cy="cpr-logo" loading="eager" />
   </PageLink>
 );
 

@@ -124,9 +124,9 @@ const ShadowSearch = ({ theme, themeConfig, features }: TProps) => {
             />
           </div>
           {/* CONTROLS - FILTERS, SORT, etc */}
-          <div className={joinTailwindClasses(columnLayoutCss, "flex justify-between items-center")}>
+          <div className={joinTailwindClasses(columnLayoutCss, "flex flex-wrap justify-between items-center")}>
             {/* FILTERS */}
-            <div className="flex items-center gap-2">
+            <div className="flex items-center gap-2 flex-wrap">
               <CategorySpecificFilters labels={availableFilters} onFiltersChange={(group) => setFiltersInUrl(group)} />
               {/* NEW FILTERS */}
               <div className="flex gap-1 border-l border-border-light pl-2">

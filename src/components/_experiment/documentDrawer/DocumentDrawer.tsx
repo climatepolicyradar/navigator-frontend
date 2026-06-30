@@ -1,8 +1,20 @@
-import { LucideExternalLink, LucideFileText } from "lucide-react";
-import { useState } from "react";
+import { useQuery } from "@tanstack/react-query";
+import { LucideExternalLink } from "lucide-react";
+import { Fragment } from "react";
 
 import { SearchDocument } from "@/api/search";
 import { Drawer } from "@/components/atoms/drawer/Drawer";
+import { DocumentsBlock } from "@/components/blocks/documentsBlock/DocumentsBlock";
+import { MetadataBlock } from "@/components/blocks/metadataBlock/MetadataBlock";
+import { NoteBlock } from "@/components/blocks/noteBlock/NoteBlock";
+import { TextBlock } from "@/components/blocks/textBlock/TextBlock";
+import { TopicsBlock } from "@/components/blocks/topicsBlock/TopicsBlock";
+import useConfig from "@/hooks/useConfig";
+import { useText } from "@/hooks/useText";
+import { TFamilyPresentationalData } from "@/types";
+import { getFamilyHeader } from "@/utils/family-header/getFamilyHeader";
+import { getFamilyMetadata } from "@/utils/family-metadata/getFamilyMetadata";
+import { familyTopicsHasTopics } from "@/utils/topics/processFamilyTopics";
 
 function linkHref(doc: SearchDocument): string | undefined {
   if (doc.attributes.deprecated_slug)
@@ -19,17 +31,68 @@ type TDocumentDrawerProps = {
   onOpenChange: (open: boolean) => void;
 };
 
+type TDrawerContentProps = {
+  familyData: TFamilyPresentationalData;
+  languages: Record<string, string>;
+};
+
+function DrawerContent({ familyData, languages }: TDrawerContentProps) {
+  const { countries, family, familyTopics, subdivisions } = familyData;
+  const { getCategoryTextLookup } = useText();
+  const getCategoryText = getCategoryTextLookup(family.attribution.category);
+  const pageHeaderMetadata = getFamilyHeader({ countries, family, subdivisions, getCategoryText });
+  const metadata = getFamilyMetadata(family, familyTopics, countries, subdivisions);
+
+  return (
+    <div className="flex flex-col gap-8">
+      <div>
+        {pageHeaderMetadata.length > 0 && (
+          <div className="grid grid-cols-[min-content_auto] gap-x-8 gap-y-2 text-sm">
+            {pageHeaderMetadata.map((property, index) => (
+              <Fragment key={index}>
+                <div className="text-[#030712] font-medium whitespace-nowrap">{property.label}</div>
+                <div className="text-[#374151]">{property.value}</div>
+              </Fragment>
+            ))}
+          </div>
+        )}
+      </div>
+      {family.summary && (
+        <TextBlock block="summary" title="Summary" context="drawer-summary">
+          <div className="text-content" dangerouslySetInnerHTML={{ __html: family.summary.replace(/\r?\n/g, "<br/>") }} />
+        </TextBlock>
+      )}
+      {metadata.length > 0 && (
+        <div className="grid grid-cols-8">
+          <MetadataBlock block="metadata" title="About" metadata={metadata} />
+        </div>
+      )}
+      <div className="grid grid-cols-1">
+        <DocumentsBlock family={family} familyTopics={familyTopics} languages={languages} />
+      </div>
+      {familyTopicsHasTopics(familyTopics) && (
+        <TopicsBlock key="topics" family={family} familyTopics={familyTopics} getCategoryText={getCategoryText} />
+      )}
+      <NoteBlock key="note" attribution={family.attribution} />
+    </div>
+  );
+}
+
 export function DocumentDrawer({ document, open, onOpenChange }: TDocumentDrawerProps) {
-  const [nestedDocument, setNestedDocument] = useState<SearchDocument | null>(null);
-  const [nestedDrawerOpen, setNestedDrawerOpen] = useState(false);
+  const { data: { languages = {} } = {} } = useConfig();
+
+  const importId = document?.id as string | undefined;
+
+  const { data: familyData, isLoading } = useQuery<TFamilyPresentationalData | null>({
+    queryKey: ["family", importId],
+    queryFn: () => fetch(`/api/family/${importId}`).then((res) => (res.ok ? res.json() : null)),
+    enabled: !!importId,
+  });
 
   return (
     <Drawer
       open={open}
-      onOpenChange={(isOpen) => {
-        if (!isOpen) setNestedDrawerOpen(false);
-        onOpenChange(isOpen);
-      }}
+      onOpenChange={onOpenChange}
       title={
         document ? (
           linkHref(document) ? (
@@ -52,76 +115,15 @@ export function DocumentDrawer({ document, open, onOpenChange }: TDocumentDrawer
           </a>
         ) : undefined
       }
+      wide
     >
-      {document && (
-        <div className="flex flex-col gap-4">
-          {document.description && <p className="text-sm highlights" dangerouslySetInnerHTML={{ __html: document.description }} />}
-          {document.documents.length > 0 && (
-            <div>
-              <h4 className="text-sm font-semibold mb-2">
-                Documents in this {document.labels.filter((label) => label.type === "category")[0].value.value} ({document.documents.length})
-              </h4>
-              <ul className="space-y-1">
-                {document.documents.map((rel, i) => (
-                  <li key={i}>
-                    <button
-                      className="text-left w-full text-sm flex items-start gap-2 py-1 hover:text-inky-blue hover:underline"
-                      onClick={() => {
-                        setNestedDocument(rel.value);
-                        setNestedDrawerOpen(true);
-                      }}
-                    >
-                      <LucideFileText width={14} height={14} className="shrink-0 mt-0.5" />
-                      <span dangerouslySetInnerHTML={{ __html: rel.value.title }} />
-                    </button>
-                  </li>
-                ))}
-              </ul>
-            </div>
-          )}
-          <div className="flex flex-wrap gap-1">
-            {document.labels.map((label, i) => (
-              <span key={i} className="inline-flex items-center gap-1 text-xs bg-neutral-100 rounded px-2 py-1">
-                <span className="font-medium">{label.type}:</span> {label.value.value}
-              </span>
-            ))}
-          </div>
-
-          {/* Nested drawer lives inside the parent Popup so Base UI can track nesting */}
-          <Drawer
-            open={nestedDrawerOpen}
-            onOpenChange={setNestedDrawerOpen}
-            title={
-              nestedDocument ? (
-                linkHref(nestedDocument) ? (
-                  <a
-                    href={linkHref(nestedDocument)!}
-                    className="text-inky-blue underline-offset-5 hover:underline"
-                    dangerouslySetInnerHTML={{ __html: nestedDocument.title }}
-                  />
-                ) : (
-                  <span dangerouslySetInnerHTML={{ __html: nestedDocument.title }} />
-                )
-              ) : undefined
-            }
-          >
-            {nestedDocument && (
-              <>
-                {nestedDocument.description && (
-                  <p className="text-sm text-neutral-700 mb-4" dangerouslySetInnerHTML={{ __html: nestedDocument.description }} />
-                )}
-                <div className="flex flex-wrap gap-1">
-                  {nestedDocument.labels.map((label, i) => (
-                    <span key={i} className="inline-flex items-center gap-1 text-xs bg-neutral-100 rounded px-2 py-1">
-                      <span className="font-medium">{label.type}:</span> {label.value.value}
-                    </span>
-                  ))}
-                </div>
-              </>
-            )}
-          </Drawer>
+      {isLoading && (
+        <div className="flex justify-center py-12">
+          <span className="h-8 w-8 animate-spin rounded-full border-4 border-neutral-200 border-t-inky-blue" />
         </div>
       )}
+      {!isLoading && familyData && <DrawerContent familyData={familyData} languages={languages} />}
+      {!isLoading && !familyData && <p>Sorry, this document has failed to load.</p>}
     </Drawer>
   );
 }
