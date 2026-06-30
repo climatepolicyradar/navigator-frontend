@@ -370,7 +370,7 @@ export type TFamilyDocumentPublic = {
   language: string | null;
   languages: string[];
   md5_sum: string | null;
-  slug: string;
+  slug: string | null;
   source_url: string | null;
   title: string;
   valid_metadata: TMetadata<"id">;

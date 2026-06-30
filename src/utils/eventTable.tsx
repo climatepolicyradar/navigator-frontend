@@ -13,6 +13,7 @@ import { FILING_DATE_EVENT_TYPES } from "@/constants/events";
 import { QUERY_PARAMS } from "@/constants/queryParams";
 import { getLanguage } from "@/helpers/getLanguage";
 import { getMainDocuments } from "@/helpers/getMainDocuments";
+import { DISPLAY_ALLOWED_STATUSES } from "@/schemas";
 import {
   IFamilyDocumentTopics,
   TFamilyDocumentPublic,
@@ -137,9 +138,7 @@ export const getEventTableRowsData = (family: TFamilyPublic): TEventRowData[] =>
 };
 
 const getFamilyDocuments = (family: TFamilyPublic): TEventRowData[] =>
-  family.documents
-    .filter((document) => ["awaiting_source_file", "published"].includes(document.document_status))
-    .map((document) => ({ family, document }));
+  family.documents.filter((document) => DISPLAY_ALLOWED_STATUSES.includes(document.document_status)).map((document) => ({ family, document }));
 
 const linkClasses = "block text-[#0038a9] underline underline-offset-4 decoration-[#d1d5db] hover:decoration-[#6b7280]";
 
@@ -167,13 +166,15 @@ const getDocumentLink = (document: TFamilyDocumentPublic, hasMatches: boolean, i
   return (
     <>
       {document.title} <br />{" "}
-      <span className="text-sm">
-        (We do not have this document in our database.{" "}
-        <PageLink href="/contact" className="underline hover:text-[#0038a9]">
-          Contact us
-        </PageLink>{" "}
-        if you can help us find it)
-      </span>
+      {!isLitigation && (
+        <span className="text-sm">
+          (We do not have this document in our database.{" "}
+          <PageLink href="/contact" className="underline hover:text-[#0038a9]">
+            Contact us
+          </PageLink>{" "}
+          if you can help us find it)
+        </span>
+      )}
     </>
   );
 };

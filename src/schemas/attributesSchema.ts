@@ -2,6 +2,8 @@ import * as v from "valibot";
 
 import { toLiteralUnion } from "@/utils/schemas/toLiteralUnion";
 
+export const DISPLAY_ALLOWED_STATUSES = ["published", "awaiting_source_file"];
+
 /* Generic */
 
 // Using unknown for generic attributes prevents most properties from being stripped by v.validate
