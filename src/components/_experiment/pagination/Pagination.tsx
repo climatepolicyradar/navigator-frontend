@@ -9,7 +9,7 @@ type TProps = {
   onPageChange: (page: number) => void;
 };
 
-const sharedPaginationButtonClasses = "h-8 min-w-8 px-1 border border-transparent-regular rounded transition hover:bg-inky-black hover:text-white";
+const sharedPaginationButtonClasses = "h-8 min-w-8 px-1 rounded-lg transition hover:bg-bg-flat";
 const prevNextButtonClasses =
   "px-2.5 flex items-center disabled:cursor-not-allowed! disabled:text-[#a3a3a3] disabled:hover:bg-transparent disabled:hover:text-[#a3a3a3]";
 
@@ -23,7 +23,7 @@ export function Pagination({ currentPage, totalPages, onPageChange }: TProps) {
   const pageItems = getPaginationPages(currentPage, totalPages);
 
   return (
-    <div className="flex flex-wrap gap-6 font-medium text-inky-black text-sm">
+    <div className="flex flex-wrap gap-6 font-medium text-inky-blue text-sm">
       <button
         onClick={() => handlePageChange(currentPage - 1)}
         disabled={currentPage === 1}
@@ -32,7 +32,7 @@ export function Pagination({ currentPage, totalPages, onPageChange }: TProps) {
         <LucideArrowLeft width={16} height={16} className="mr-2" />
         Back
       </button>
-      <ul className="flex items-center gap-1">
+      <ul className="flex items-center gap-2">
         {pageItems.map((item) =>
           item.type === "ellipsis" ? (
             <li key={item.key} className="min-h-8 min-w-8 flex items-center justify-center">
@@ -41,7 +41,10 @@ export function Pagination({ currentPage, totalPages, onPageChange }: TProps) {
           ) : (
             <li key={item.page}>
               <button
-                className={joinTailwindClasses(sharedPaginationButtonClasses, item.page === currentPage ? "bg-inky-black text-white" : "")}
+                className={joinTailwindClasses(
+                  sharedPaginationButtonClasses,
+                  item.page === currentPage ? "bg-inky-blue text-white hover:bg-inky-blue" : ""
+                )}
                 onClick={() => handlePageChange(item.page)}
                 disabled={item.page === currentPage}
               >
