@@ -18,7 +18,7 @@ export const FILTER_GROUPS: TFiltersGroupConfig[] = [
   {
     title: "Topic",
     container: "popover",
-    rootLabelTypes: ["topic"],
+    rootLabelTypes: ["concept"],
     afterPartition: true,
   },
 ];
