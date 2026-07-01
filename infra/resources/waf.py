@@ -19,6 +19,7 @@ class FrontendWebAcl(pulumi.ComponentResource):
     def __init__(
         self,
         name: str,
+        enable_bot_control: bool = False,
         tags: dict[str, str] | None = None,
         opts: pulumi.ResourceOptions | None = None,
     ):
@@ -77,6 +78,74 @@ class FrontendWebAcl(pulumi.ComponentResource):
             ),
         )
 
+        rules = [count_chrome_125]
+
+        # Bot Control is a paid managed rule group (~$10/mo per WebACL + a
+        # per-request fee), so only enable it in production.
+        if enable_bot_control:
+            # Common level, count-only: overriding to count still emits labels
+            # for later rules to match - it just never blocks or challenges.
+            bot_control = aws.wafv2.WebAclRuleArgs(
+                name="BotControlCommon",
+                priority=1,
+                override_action=aws.wafv2.WebAclRuleOverrideActionArgs(
+                    count=aws.wafv2.WebAclRuleOverrideActionCountArgs(),
+                ),
+                statement=aws.wafv2.WebAclRuleStatementArgs(
+                    managed_rule_group_statement=aws.wafv2.WebAclRuleStatementManagedRuleGroupStatementArgs(
+                        vendor_name="AWS",
+                        name="AWSManagedRulesBotControlRuleSet",
+                        managed_rule_group_configs=[
+                            aws.wafv2.WebAclRuleStatementManagedRuleGroupStatementManagedRuleGroupConfigArgs(
+                                aws_managed_rules_bot_control_rule_set=aws.wafv2.WebAclRuleStatementManagedRuleGroupStatementManagedRuleGroupConfigAwsManagedRulesBotControlRuleSetArgs(
+                                    inspection_level="COMMON",
+                                    # ML is Targeted-level only; off here avoids TGT_ML_* charges.
+                                    enable_machine_learning=False,
+                                ),
+                            ),
+                        ],
+                    ),
+                ),
+                visibility_config=aws.wafv2.WebAclRuleVisibilityConfigArgs(
+                    cloudwatch_metrics_enabled=True,
+                    metric_name="BotControlCommon",
+                    sampled_requests_enabled=True,
+                ),
+            )
+
+            # Flag bots for the origin. WAF prefixes inserted headers, so this
+            # arrives as `x-amzn-waf-is-bot: true`. Priority 2 runs after Bot
+            # Control so its labels exist.
+            flag_bot_traffic = aws.wafv2.WebAclRuleArgs(
+                name="FlagBotTraffic",
+                priority=2,
+                action=aws.wafv2.WebAclRuleActionArgs(
+                    count=aws.wafv2.WebAclRuleActionCountArgs(
+                        custom_request_handling=aws.wafv2.WebAclRuleActionCountCustomRequestHandlingArgs(
+                            insert_headers=[
+                                aws.wafv2.WebAclRuleActionCountCustomRequestHandlingInsertHeaderArgs(
+                                    name="is-bot",
+                                    value="true",
+                                ),
+                            ],
+                        ),
+                    ),
+                ),
+                statement=aws.wafv2.WebAclRuleStatementArgs(
+                    label_match_statement=aws.wafv2.WebAclRuleStatementLabelMatchStatementArgs(
+                        scope="NAMESPACE",
+                        key="awswaf:managed:aws:bot-control:",
+                    ),
+                ),
+                visibility_config=aws.wafv2.WebAclRuleVisibilityConfigArgs(
+                    cloudwatch_metrics_enabled=True,
+                    metric_name="FlagBotTraffic",
+                    sampled_requests_enabled=True,
+                ),
+            )
+
+            rules += [bot_control, flag_bot_traffic]
+
         self.web_acl = aws.wafv2.WebAcl(
             name,
             name=name,
@@ -85,7 +154,7 @@ class FrontendWebAcl(pulumi.ComponentResource):
             default_action=aws.wafv2.WebAclDefaultActionArgs(
                 allow=aws.wafv2.WebAclDefaultActionAllowArgs(),
             ),
-            rules=[count_chrome_125],
+            rules=rules,
             visibility_config=aws.wafv2.WebAclVisibilityConfigArgs(
                 cloudwatch_metrics_enabled=True,
                 metric_name=f"{name}-web-acl",

@@ -384,6 +384,7 @@ if not is_review_stack_or_template:
                     "Accept",
                     "Access-Control-Request-Method",
                     "Access-Control-Request-Headers",
+                    "x-amzn-waf-is-bot",
                 ],
             ),
             cookies=CookieConfig(
@@ -553,6 +554,8 @@ if not is_review_stack_or_template:
 
     frontend_web_acl = FrontendWebAcl(
         name=f"{theme}-{env}-frontend-waf",
+        # Bot Control is a paid add-on; only run it in production.
+        enable_bot_control=env == "production",
         tags={"CUSTOM_APP_THEME": theme, "Environment": env},
     )
 
