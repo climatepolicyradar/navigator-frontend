@@ -41,6 +41,7 @@ export const Default: TStory = {
   args: {
     filterGroup: {
       title: "Category",
+      subtitle: "Choose themes and specific filters to refine your search",
       Icon: ListFilter,
       container: "drawer",
       rootLabelTypes: ["category"],

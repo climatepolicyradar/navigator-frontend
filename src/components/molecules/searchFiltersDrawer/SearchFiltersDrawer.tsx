@@ -10,7 +10,9 @@ interface IProps {
 
 export const SearchFiltersDrawer = ({ filterGroup }: IProps) => {
   const [isOpen, setIsOpen] = useState(false);
-  const { Icon, nestedLabels, title } = filterGroup;
+
+  if (filterGroup.container !== "drawer") return null;
+  const { Icon, nestedLabels, subtitle, title } = filterGroup;
 
   return (
     <>
@@ -22,7 +24,17 @@ export const SearchFiltersDrawer = ({ filterGroup }: IProps) => {
         {Icon && <Icon size={16} className="text-elem-icon" />}
         <span>{title}</span>
       </button>
-      <Drawer direction="left" open={isOpen} onOpenChange={(open) => setIsOpen(open)} title={title}>
+      <Drawer
+        direction="left"
+        open={isOpen}
+        onOpenChange={(open) => setIsOpen(open)}
+        title={
+          <>
+            <span>{title}</span>
+            {subtitle && <span className="block mt-3 text-base text-text-secondary font-normal leading-6">{subtitle}</span>}
+          </>
+        }
+      >
         <SearchFilterLevel ancestorPath={[]} labels={nestedLabels} inDrawer />
       </Drawer>
     </>

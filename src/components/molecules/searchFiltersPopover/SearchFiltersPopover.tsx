@@ -9,6 +9,7 @@ interface IProps {
 }
 
 export const SearchFiltersPopover = ({ filterGroup }: IProps) => {
+  if (filterGroup.container !== "popover") return null;
   const { nestedLabels, title } = filterGroup;
 
   return (
