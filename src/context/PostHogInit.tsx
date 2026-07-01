@@ -5,6 +5,8 @@ import posthog from "posthog-js";
 import { PostHogProvider as PHProvider, usePostHog } from "posthog-js/react";
 import { Suspense, useEffect } from "react";
 
+import { getCookie } from "@/utils/cookies";
+
 type TPostHogPageViewProps = {
   consent?: boolean;
   pageViewProps?: Record<string, unknown>;
@@ -75,6 +77,9 @@ export default function PostHogInit({ consent = false, pageViewProps = {} }: TPo
       capture_pageview: true,
       capture_pageleave: true,
     });
+    // Tag every event with the WAF bot signal (set as a cookie by middleware.ts)
+    // so suspected bot traffic can be filtered out in PostHog.
+    posthog.register({ is_bot: getCookie("is_bot") === "true" });
     window.sessionStorage.setItem("posthogLoaded", "true");
   }, []);
 
