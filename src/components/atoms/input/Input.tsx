@@ -26,7 +26,7 @@ export const Input = ({
   ...props
 }: IProps) => {
   const allContainerClasses = joinTailwindClasses(
-    "w-full px-2 flex flex-row justify-around items-center bg-bg-flat rounded-md outline-inky-blue focus-within:outline",
+    "w-full px-2 flex flex-row justify-around items-center bg-bg-flat rounded-md outline-inky-blue -outline-offset-1 focus-within:outline",
     containerClasses
   );
   const allInputClasses = joinTailwindClasses(

@@ -13,19 +13,21 @@ const LOOKUP_THRESHOLD = 8;
 interface IProps {
   ancestorPath: TFilterPathLabel[];
   indented?: boolean;
+  inDrawer?: boolean; // Top level SearchFilterLevel inside a drawer component
   labels: TNestedSearchLabel[];
 }
 
 // Render a set of label peers depending on content and composition
-export const SearchFilterLevel = ({ ancestorPath, indented, labels }: IProps) => {
+export const SearchFilterLevel = ({ ancestorPath, indented, inDrawer, labels }: IProps) => {
   const isLongShallowList = useMemo(() => labels.length > LOOKUP_THRESHOLD && labels.every((label) => label.children.length === 0), [labels]);
-  const sortedLabels = useMemo(() => sortBy(labels, "id"), [labels]);
+  const sortedLabels = useMemo(() => sortBy(labels, "value"), [labels]);
 
   const indentedClasses = indented && "ml-8 mt-2 not-last:mb-2";
+  const labelTypes = new Set(labels.map((label) => label.type));
 
   // Categories
-  const labelsAreCategories = ancestorPath.length === 0 && labels.every((label) => label.type === "category");
-  if (labelsAreCategories) {
+  const levelIsParents = inDrawer && ancestorPath.length === 0 && labelTypes.size === 1;
+  if (levelIsParents) {
     return (
       <ul className={joinTailwindClasses("list-none", indentedClasses)}>
         {sortedLabels.map((label) => (
@@ -36,7 +38,6 @@ export const SearchFilterLevel = ({ ancestorPath, indented, labels }: IProps) =>
   }
 
   // Grouped by type
-  const labelTypes = new Set(labels.map((label) => label.type));
   if (labelTypes.size > 1) {
     return <SearchFilterGroups ancestorPath={ancestorPath} labels={labels} />;
   }
@@ -44,9 +45,9 @@ export const SearchFilterLevel = ({ ancestorPath, indented, labels }: IProps) =>
   // Searchable checkboxes
   if (isLongShallowList) {
     return (
-      <li className={indentedClasses}>
+      <div className={joinTailwindClasses(indentedClasses, "max-h-full overflow-y-auto")}>
         <SearchFilterLookup ancestorPath={ancestorPath} labels={sortedLabels} />
-      </li>
+      </div>
     );
   }
 
