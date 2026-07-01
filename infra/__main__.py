@@ -448,8 +448,7 @@ if not is_review_stack_or_template:
 
     # Get backend stack reference
     backend_stack = pulumi.StackReference(f"climatepolicyradar/backend/{env}")
-    ## Will need to change the backend stack to get ecs service url instead of app runner service url
-    backend_service_url = backend_stack.get_output("new_apprunner_service_url")
+    backend_service_url = backend_stack.get_output("ecs_express_service_url")
 
     frontend.service.service_url.apply(
         lambda url: pulumi.info(f"Frontend app runner URL: {url}")
@@ -464,8 +463,8 @@ if not is_review_stack_or_template:
                 str,
                 ecs_frontend_service.service.ingress_paths.apply(
                     lambda paths: (
-                    paths[0].endpoint.replace("https://", "") if paths else None
-                )
+                        paths[0].endpoint.replace("https://", "") if paths else None
+                    )
                 ),
             ),
         )
