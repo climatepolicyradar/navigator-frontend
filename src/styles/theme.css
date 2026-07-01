@@ -84,6 +84,7 @@
   --breakpoint-cols-4: 900px;
   --breakpoint-cols-5: 1100px;
 
+  --shadow-2xl: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
   --shadow-lg: 0px 4px 48px 0px rgba(0, 0, 0, 0.08);
   --shadow-md: 0px 4px 16px 0px rgba(0, 0, 0, 0.08);
   --shadow-xs: 0px 2px 2px 0px rgba(0, 0, 0, 0.08);

@@ -1,5 +1,6 @@
 import { Drawer as BaseDrawer, DrawerRootProps } from "@base-ui/react/drawer";
 import { LucideX } from "lucide-react";
+import { ReactNode } from "react";
 
 import { joinTailwindClasses } from "@/utils/tailwind";
 
@@ -8,10 +9,10 @@ import styles from "./Drawer.module.css";
 type TDirection = "left" | "right" | "top" | "bottom";
 
 type TProps = Omit<DrawerRootProps, "swipeDirection"> & {
-  children?: React.ReactNode;
+  children?: ReactNode;
   childrenClassName?: string;
-  title?: React.ReactNode;
-  titleExtras?: React.ReactNode;
+  title?: ReactNode;
+  titleExtras?: ReactNode;
   direction?: TDirection;
   wide?: boolean;
 };
