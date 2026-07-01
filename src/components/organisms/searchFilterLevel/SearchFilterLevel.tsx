@@ -20,7 +20,7 @@ interface IProps {
 // Render a set of label peers depending on content and composition
 export const SearchFilterLevel = ({ ancestorPath, indented, inDrawer, labels }: IProps) => {
   const isLongShallowList = useMemo(() => labels.length > LOOKUP_THRESHOLD && labels.every((label) => label.children.length === 0), [labels]);
-  const sortedLabels = useMemo(() => sortBy(labels, "id"), [labels]);
+  const sortedLabels = useMemo(() => sortBy(labels, "value"), [labels]);
 
   const indentedClasses = indented && "ml-8 mt-2 not-last:mb-2";
   const labelTypes = new Set(labels.map((label) => label.type));

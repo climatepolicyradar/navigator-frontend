@@ -19,7 +19,7 @@ export const SearchFiltersPopover = ({ filterGroup }: IProps) => {
       </BasePopover.Trigger>
       <BasePopover.Portal>
         <BasePopover.Positioner positionMethod="fixed" side="bottom" sideOffset={8} align="start" className="">
-          <BasePopover.Popup className="w-83 max-h-[calc(100dvh-12px)] px-6 py-5 bg-bg-primary border border-border-normal rounded-xl shadow-2xl">
+          <BasePopover.Popup className="w-83 max-h-[calc(100dvh-12px)] px-6 py-5 bg-bg-primary border border-border-normal rounded-xl shadow-2xl overflow-y-auto">
             <SearchFilterLevel ancestorPath={[]} labels={nestedLabels} />
           </BasePopover.Popup>
         </BasePopover.Positioner>
