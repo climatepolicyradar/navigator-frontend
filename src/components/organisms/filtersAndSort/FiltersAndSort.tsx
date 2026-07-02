@@ -1,9 +1,10 @@
 import uniqBy from "lodash/uniqBy";
 import { parseAsJson, useQueryState } from "nuqs";
-import { useMemo } from "react";
+import { Fragment, useMemo } from "react";
 
-import { CategorySpecificFilters } from "@/components/_experiment/categorySpecificFilters/CategorySpecificFilters";
 import { AppliedFilters } from "@/components/molecules/appliedFilters/AppliedFilters";
+import { SearchFiltersDrawer } from "@/components/molecules/searchFiltersDrawer/SearchFiltersDrawer";
+import { SearchFiltersPopover } from "@/components/molecules/searchFiltersPopover/SearchFiltersPopover";
 import { FILTER_GROUPS } from "@/constants/filters";
 import { FiltersContext, TToggleFilterCallback } from "@/context/FiltersContext";
 import { FilterGroupSchema } from "@/schemas";
@@ -44,12 +45,16 @@ export const FiltersAndSort = ({ labels }: IProps) => {
   return (
     <FiltersContext value={{ checkedLabelPaths, clearFilters, toggleFilter }}>
       <div className="col-start-1 -col-end-1 cols-5:col-start-2 cols-5:-col-end-2 flex flex-wrap gap-1">
-        {filterGroups.map((group) => (
-          <>
-            {group.afterPartition && <div className="w-px h-full mx-3 bg-border-normal" />}
-            <CategorySpecificFilters key={group.title} filterGroup={group} />
-          </>
-        ))}
+        {filterGroups.map((group) => {
+          const SearchFilters = group.container === "drawer" ? SearchFiltersDrawer : SearchFiltersPopover;
+
+          return (
+            <Fragment key={group.title}>
+              {group.afterPartition && <div className="w-px h-full mx-3 bg-border-normal" />}
+              <SearchFilters filterGroup={group} />
+            </Fragment>
+          );
+        })}
       </div>
       <AppliedFilters />
     </FiltersContext>

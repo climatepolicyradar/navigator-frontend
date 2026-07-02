@@ -6,6 +6,7 @@ import { FiltersContext } from "@/context/FiltersContext";
 import { TFilterPathLabel, TNestedSearchLabel } from "@/types";
 import { getFilterPathLabel } from "@/utils/filters/filterPaths";
 import { getFilterStatus } from "@/utils/filters/getFilterStatus";
+import { firstCase } from "@/utils/text";
 
 interface IProps {
   ancestorPath: TFilterPathLabel[];
@@ -21,7 +22,7 @@ export const SearchFilter = ({ ancestorPath, label }: IProps) => {
   return (
     <li>
       <Checkbox checked={checked === true} indeterminate={checked === "indeterminate"} onCheckedChange={(value) => toggleFilter(pathLabels, value)}>
-        {label.value}
+        {firstCase(label.value)}
       </Checkbox>
       {label.children.length > 0 && <SearchFilterLevel ancestorPath={pathLabels} labels={label.children} indented />}
     </li>

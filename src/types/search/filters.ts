@@ -4,13 +4,25 @@ import { TNestedSearchLabel } from "./labels";
 
 export type TCheckboxState = boolean | "indeterminate";
 
-export type TFiltersGroupConfig = {
+type TFiltersGroupDrawerConfig = {
   title: string;
-  Icon?: LucideIcon;
-  container: "drawer" | "popover";
+  subtitle?: string;
+  Icon: LucideIcon;
+  container: "drawer";
   rootLabelTypes: string[];
   afterPartition?: boolean;
 };
+
+type TFiltersGroupPopoverConfig = {
+  title: string;
+  subtitle?: never;
+  Icon?: never;
+  container: "popover";
+  rootLabelTypes: string[];
+  afterPartition?: boolean;
+};
+
+export type TFiltersGroupConfig = TFiltersGroupDrawerConfig | TFiltersGroupPopoverConfig;
 
 export type TFiltersGroup = TFiltersGroupConfig & {
   nestedLabels: TNestedSearchLabel[];

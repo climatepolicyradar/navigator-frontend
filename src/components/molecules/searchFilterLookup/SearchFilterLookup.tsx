@@ -3,7 +3,6 @@ import { useMemo, useState } from "react";
 import { Input } from "@/components/atoms/input/Input";
 import { SearchFilter } from "@/components/molecules/searchFilter/SearchFilter";
 import { TFilterPathLabel, TNestedSearchLabel } from "@/types";
-import { getFilterPathLabel } from "@/utils/filters/filterPaths";
 
 const MAX_OPTIONS = 8;
 
@@ -33,11 +32,9 @@ export const SearchFilterLookup = ({ ancestorPath, labels }: IProps) => {
         onClear={() => setSearchText("")}
       />
       <ul className="flex flex-col gap-2 list-none">
-        {clippedOptions.map((option) => {
-          const pathLabels = [getFilterPathLabel(option), ...ancestorPath];
-
-          return <SearchFilter key={option.id} ancestorPath={pathLabels} label={option} />;
-        })}
+        {clippedOptions.map((option) => (
+          <SearchFilter key={option.id} ancestorPath={ancestorPath} label={option} />
+        ))}
       </ul>
       {isOverflowing && (
         <button
