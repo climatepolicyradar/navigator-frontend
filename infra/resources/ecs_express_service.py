@@ -17,8 +17,8 @@ from pulumi_aws.ecs.express_gateway_service import (
 class ExpressGatewayConfig:
     port: int = 8080
     health_check_path: str = "/"
-    cpu: str = "1024"
-    memory: str = "2048"
+    cpu: str = "4096"
+    memory: str = "8192"
 
 
 def prefix_name() -> str:
