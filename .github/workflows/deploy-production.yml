@@ -61,7 +61,7 @@ jobs:
       # @see: https://github.com/marketplace/actions/amazon-ecs-deploy-express-service-action-for-github-actions#complete-example-with-all-options
       - name: Deploy to ECS (production)
         id: deploy-production
-        uses: aws-actions/amazon-ecs-deploy-express-service@v1.2.1
+        uses: aws-actions/amazon-ecs-deploy-express-service@v1.2.2
         with:
           cluster: frontend-production
           service-name: ${{ inputs.theme }}-frontend-production
