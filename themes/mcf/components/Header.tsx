@@ -21,7 +21,7 @@ export const Header = () => {
 
   return (
     <NavBar
-      headerClasses={`bg-surface-light min-h-20 ${showBorder ? "border-b border-gray-300 border-solid" : ""}`}
+      headerClasses={`bg-white min-h-20 ${showBorder ? "border-b border-gray-300 border-solid" : ""}`}
       logo={MCFLogo}
       menu={<MainMenu icon={<LucideMenu size={24} className="text-gray-950" />} links={MENU_LINKS} />}
       showSearch={showSearch}
