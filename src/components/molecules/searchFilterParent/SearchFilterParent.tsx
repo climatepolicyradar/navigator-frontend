@@ -3,6 +3,7 @@ import { MouseEvent, useContext, useState } from "react";
 
 import { Checkbox } from "@/components/atoms/checkbox/Checkbox";
 import { SearchFilterLevel } from "@/components/organisms/searchFilterLevel/SearchFilterLevel";
+import { FILTER_DISPLAY } from "@/constants/filters";
 import { FiltersContext } from "@/context/FiltersContext";
 import { TCheckboxState, TFilterPathLabel, TNestedSearchLabel } from "@/types";
 import { getFilterPathLabel } from "@/utils/filters/filterPaths";
@@ -31,11 +32,21 @@ export const SearchFilterParent = ({ ancestorPath, label }: IProps) => {
     setExpanded((current) => !current);
   };
 
+  const filterDescription = FILTER_DISPLAY[label.id]?.description;
+
   return (
     <li className="py-4 group">
-      <Checkbox checked={checked === true} indeterminate={checked === "indeterminate"} onCheckedChange={onToggleCheckbox} className="flex-1 gap-4!">
-        <div className="w-full flex items-center justify-between gap-1">
-          <span className="text-base text-text-primary font-medium leading-5">{label.value}</span>
+      <Checkbox
+        checked={checked === true}
+        indeterminate={checked === "indeterminate"}
+        onCheckedChange={onToggleCheckbox}
+        className="flex-1 gap-4! items-start!"
+      >
+        <div className="w-full flex items-start justify-between gap-1">
+          <div>
+            <span className="text-base text-text-primary font-medium leading-5">{label.value}</span>
+            {filterDescription && <span className="block mt-1 text-sm text-text-secondary font-normal leading-5">{filterDescription}</span>}
+          </div>
           <button role="button" onClick={onToggleAccordion} className="-m-1 p-1">
             <ChevronDown
               size={16}
