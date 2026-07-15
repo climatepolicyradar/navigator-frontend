@@ -16,7 +16,7 @@ const nestedPath: TFilterPathLabel[] = [
 const renderWithFiltersContext = (checkedLabelPaths: TFilterPathLabel[][], clearFilters = vi.fn(), toggleFilter = vi.fn()) =>
   render(
     <FiltersContext.Provider value={{ checkedLabelPaths, clearFilters, labelValues: {}, toggleFilter }}>
-      <AppliedFilters />
+      <AppliedFilters showClearAll />
     </FiltersContext.Provider>
   );
 
