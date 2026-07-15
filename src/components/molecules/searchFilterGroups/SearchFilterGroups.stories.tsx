@@ -14,8 +14,13 @@ const meta = {
   argTypes: {},
   render: (props) => (
     <FiltersContext
-      // eslint-disable-next-line no-console
-      value={{ checkedLabelPaths: [], clearFilters: () => {}, toggleFilter: (labelPath, checked) => console.info({ labelPath, checked }) }}
+      value={{
+        checkedLabelPaths: [],
+        clearFilters: () => {},
+        labelValues: {},
+        // eslint-disable-next-line no-console
+        toggleFilter: (labelPath, checked) => console.info({ labelPath, checked }),
+      }}
     >
       <SearchFilterGroups {...props} />
     </FiltersContext>

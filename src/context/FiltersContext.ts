@@ -7,11 +7,13 @@ export type TToggleFilterCallback = (labelPath: TFilterPathLabel[], checked: TCh
 interface IFiltersContext {
   checkedLabelPaths: TFilterPathLabel[][];
   clearFilters: () => void;
+  labelValues: Record<string, string>;
   toggleFilter: TToggleFilterCallback;
 }
 
 export const FiltersContext = createContext<IFiltersContext>({
   checkedLabelPaths: [],
   clearFilters: () => {},
+  labelValues: {},
   toggleFilter: () => {},
 });

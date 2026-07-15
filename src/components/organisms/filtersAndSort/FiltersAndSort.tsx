@@ -10,6 +10,7 @@ import { FiltersContext, TToggleFilterCallback } from "@/context/FiltersContext"
 import { FilterGroupSchema } from "@/schemas";
 import { TSearchLabel, TSearchQueryGroup } from "@/types";
 import { getLabelPathSignature, sortFilterPathLabels } from "@/utils/filters/filterPaths";
+import { getSearchLabelValues } from "@/utils/filters/getSearchLabelValues";
 import { groupSearchLabels } from "@/utils/filters/groupSearchLabels";
 import { nestSearchLabels } from "@/utils/filters/nestSearchLabels";
 import { DEFAULT_SEARCH_QUERY_GROUP, filterPathsToQueryGroup } from "@/utils/search/filterPathsToQueryGroup";
@@ -25,6 +26,7 @@ export const FiltersAndSort = ({ labels }: IProps) => {
     parseAsJson<TSearchQueryGroup>(FilterGroupSchema).withDefault(DEFAULT_SEARCH_QUERY_GROUP)
   );
 
+  const labelValues = useMemo(() => getSearchLabelValues(labels), [labels]);
   const checkedLabelPaths = useMemo(() => sortFilterPathLabels(queryGroupToFilterPaths(filterParam)), [filterParam]);
   const filterGroups = useMemo(() => groupSearchLabels(nestSearchLabels(labels), FILTER_GROUPS), [labels]);
 
@@ -43,7 +45,7 @@ export const FiltersAndSort = ({ labels }: IProps) => {
   };
 
   return (
-    <FiltersContext value={{ checkedLabelPaths, clearFilters, toggleFilter }}>
+    <FiltersContext value={{ checkedLabelPaths, clearFilters, labelValues, toggleFilter }}>
       <div className="col-start-1 -col-end-1 cols-5:col-start-2 cols-5:-col-end-2 flex flex-wrap gap-1">
         {filterGroups.map((group) => {
           const SearchFilters = group.container === "drawer" ? SearchFiltersDrawer : SearchFiltersPopover;
@@ -56,7 +58,7 @@ export const FiltersAndSort = ({ labels }: IProps) => {
           );
         })}
       </div>
-      <AppliedFilters />
+      <AppliedFilters showClearAll />
     </FiltersContext>
   );
 };

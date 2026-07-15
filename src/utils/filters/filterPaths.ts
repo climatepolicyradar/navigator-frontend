@@ -11,7 +11,7 @@ export const getFilterPathLabel = (nestedSearchLabel: TNestedSearchLabel): TFilt
 
 export const getLabelPathSignature = (labelPath: TFilterPathLabel[]) =>
   labelPath
-    .map((label) => [label.type, label.value].join("+"))
+    .map((label) => label.id)
     .reverse()
     .join("/");
 

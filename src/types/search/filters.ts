@@ -11,6 +11,7 @@ type TFiltersGroupDrawerConfig = {
   container: "drawer";
   rootLabelTypes: string[];
   afterPartition?: boolean;
+  showAppliedFilters?: boolean;
 };
 
 type TFiltersGroupPopoverConfig = {
@@ -20,6 +21,7 @@ type TFiltersGroupPopoverConfig = {
   container: "popover";
   rootLabelTypes: string[];
   afterPartition?: boolean;
+  showAppliedFilters?: never;
 };
 
 export type TFiltersGroupConfig = TFiltersGroupDrawerConfig | TFiltersGroupPopoverConfig;
