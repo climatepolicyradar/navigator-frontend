@@ -56,7 +56,7 @@ export const FiltersAndSort = ({ labels }: IProps) => {
           );
         })}
       </div>
-      <AppliedFilters />
+      <AppliedFilters showClearAll />
     </FiltersContext>
   );
 };

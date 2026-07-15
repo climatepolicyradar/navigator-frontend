@@ -16,6 +16,7 @@ export const FILTER_GROUPS: TFiltersGroupConfig[] = [
     Icon: Earth,
     container: "drawer",
     rootLabelTypes: ["region"],
+    showAppliedFilters: true,
   },
   {
     title: "Topic",
@@ -31,25 +32,13 @@ type TFilterDisplay = {
 };
 
 export const FILTER_DISPLAY: Record<string, TFilterDisplay> = {
-  "category::Corporate Disclosure": {
-    description: "Incl. type and author",
-  },
-  "category::Law": {
-    description: "Incl. response area and framework",
-  },
-  "category::Litigation": {
-    description: "Incl. case category, jurisdiction, and principal law",
-  },
-  "category::Multilateral Climate Fund project": {
-    description: "",
-  },
-  "category::Policy": {
-    description: "Incl. response area",
-  },
-  "category::Report": {
-    description: "Incl. climate council and industry reports",
-  },
-  "category::UN submission": {
-    description: "Incl. convention and type",
-  },
+  "category::Corporate Disclosure": { description: "Incl. type and author" },
+  "category::Law": { description: "Incl. response area and framework" },
+  "category::Litigation": { description: "Incl. case category, jurisdiction, and principal law" },
+  "category::Policy": { description: "Incl. response area" },
+  "category::Report": { description: "Incl. climate council and industry reports" },
+  "category::UN submission": { description: "Incl. convention and type" },
+  "region::LCN": { description: "Central America, South America and Caribbean islands" },
+  "region::MEA": { description: "Incl. Afghanistan and Pakistan" },
+  "region::NAC": { description: "Canada and the United States" },
 };

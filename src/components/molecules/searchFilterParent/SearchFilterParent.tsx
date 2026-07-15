@@ -2,6 +2,7 @@ import { ChevronDown } from "lucide-react";
 import { MouseEvent, useContext, useState } from "react";
 
 import { Checkbox } from "@/components/atoms/checkbox/Checkbox";
+import { AppliedFilters } from "@/components/molecules/appliedFilters/AppliedFilters";
 import { SearchFilterLevel } from "@/components/organisms/searchFilterLevel/SearchFilterLevel";
 import { FILTER_DISPLAY } from "@/constants/filters";
 import { FiltersContext } from "@/context/FiltersContext";
@@ -13,9 +14,10 @@ import { joinTailwindClasses } from "@/utils/tailwind";
 interface IProps {
   ancestorPath: TFilterPathLabel[];
   label: TNestedSearchLabel;
+  showAppliedFilters?: boolean;
 }
 
-export const SearchFilterParent = ({ ancestorPath, label }: IProps) => {
+export const SearchFilterParent = ({ ancestorPath, label, showAppliedFilters }: IProps) => {
   const { checkedLabelPaths, toggleFilter } = useContext(FiltersContext);
   const [expanded, setExpanded] = useState(false);
 
@@ -46,6 +48,7 @@ export const SearchFilterParent = ({ ancestorPath, label }: IProps) => {
           <div>
             <span className="text-base text-text-primary font-medium leading-5">{label.value}</span>
             {filterDescription && <span className="block mt-1 text-sm text-text-secondary font-normal leading-5">{filterDescription}</span>}
+            {showAppliedFilters && <AppliedFilters ancestorPath={pathLabels} className="mt-2" />}
           </div>
           <button role="button" onClick={onToggleAccordion} className="-m-1 p-1">
             <ChevronDown
