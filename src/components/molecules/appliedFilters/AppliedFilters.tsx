@@ -13,7 +13,7 @@ interface IProps {
 }
 
 export const AppliedFilters = ({ ancestorPath = [], className, showClearAll }: IProps) => {
-  const { checkedLabelPaths, clearFilters, toggleFilter } = useContext(FiltersContext);
+  const { checkedLabelPaths, clearFilters, labelValues, toggleFilter } = useContext(FiltersContext);
 
   const labels = useMemo(() => {
     const ancestorSignature = getLabelPathSignature(ancestorPath);
@@ -38,7 +38,7 @@ export const AppliedFilters = ({ ancestorPath = [], className, showClearAll }: I
 
         return (
           <li key={label.id} className="flex flex-nowrap gap-1 pl-3 pr-2 py-1 bg-bg-flat rounded-full">
-            <span className="block text-sm text-text-primary text-nowrap font-medium leading-5">{label.value}</span>
+            <span className="block text-sm text-text-primary text-nowrap font-medium leading-5">{labelValues[label.id] || label.value}</span>
             <button
               type="button"
               className="p-1 -m-1 text-inky-blue"

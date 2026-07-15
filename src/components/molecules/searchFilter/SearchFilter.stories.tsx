@@ -29,7 +29,7 @@ const meta = {
     };
 
     return (
-      <FiltersContext value={{ checkedLabelPaths, clearFilters: () => {}, toggleFilter }}>
+      <FiltersContext value={{ checkedLabelPaths, clearFilters: () => {}, labelValues: {}, toggleFilter }}>
         <ul className="list-none w-100">
           <SearchFilter {...props} />
         </ul>
