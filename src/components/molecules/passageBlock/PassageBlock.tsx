@@ -54,7 +54,7 @@ export const PassageBlock = ({ passage, onCopyClick, onDocumentLinkClick, onPass
   return (
     <div
       className={`bg-bg-primary border border-border-normal rounded-xl overflow-clip transition ${
-        isClickable ? "hover:shadow-md hover:bg-bg-flat/60 focus-within:shadow-md focus-within:bg-bg-flat/60" : "shadow-xs"
+        isClickable ? "hocus:shadow-sm hocus:bg-paper" : "shadow-xs"
       }`}
     >
       <div className="px-8 py-7">
@@ -66,7 +66,7 @@ export const PassageBlock = ({ passage, onCopyClick, onDocumentLinkClick, onPass
           <p className="text-base text-text-primary">{passage.content}</p>
         )}
       </div>
-      <div className="bg-bg-flat px-8 py-3 flex gap-16 items-start">
+      <div className="bg-paper px-8 py-3 flex gap-16 items-start">
         <div className="flex-1 min-w-0 flex flex-col gap-2.5">
           <div className="flex gap-2 items-center">
             <File size={16} className="text-elem-icon shrink-0" />
@@ -94,7 +94,7 @@ export const PassageBlock = ({ passage, onCopyClick, onDocumentLinkClick, onPass
             <ExternalLink size={16} />
           </button>
           <button type="button" onClick={handleCopyClick} aria-label="Copy passage text" className="text-elem-icon hocus:text-inky-blue">
-            {hasCopied ? <Check size={16} /> : <Copy size={16} />}
+            {hasCopied ? <Check size={16} className="text-inky-blue" /> : <Copy size={16} />}
           </button>
         </div>
       </div>
