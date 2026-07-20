@@ -16,6 +16,13 @@ container.
 - When generating code keep all code within the same file unless specifically
   instructed not to.
 
+### Styling and CSS
+
+- We use Tailwind and our file: styles/theme.css contains our theme colours. Use
+  the colours and styles defined in this file. Flag to the user if there are
+  styles that we need that are not defined in this file. Do not update this
+  file.
+
 ### Components
 
 - Use the appropriate Base-UI component where necessary, see here for a list of
