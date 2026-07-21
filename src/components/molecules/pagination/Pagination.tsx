@@ -7,13 +7,14 @@ type TProps = {
   currentPage: number;
   totalPages: number;
   onPageChange: (page: number) => void;
+  showNextPrevButtons?: boolean;
 };
 
 const sharedPaginationButtonClasses = "h-8 min-w-8 px-1 rounded-lg transition hover:bg-bg-flat";
 const prevNextButtonClasses =
   "px-2.5 flex items-center disabled:cursor-not-allowed! disabled:text-[#a3a3a3] disabled:hover:bg-transparent disabled:hover:text-[#a3a3a3]";
 
-export function Pagination({ currentPage, totalPages, onPageChange }: TProps) {
+export function Pagination({ currentPage, totalPages, onPageChange, showNextPrevButtons }: TProps) {
   const handlePageChange = (page: number) => {
     if (page >= 1 && page <= totalPages) {
       onPageChange(page);
@@ -24,14 +25,16 @@ export function Pagination({ currentPage, totalPages, onPageChange }: TProps) {
 
   return (
     <div className="flex flex-wrap gap-6 font-medium text-inky-blue text-sm">
-      <button
-        onClick={() => handlePageChange(currentPage - 1)}
-        disabled={currentPage === 1}
-        className={joinTailwindClasses(sharedPaginationButtonClasses, prevNextButtonClasses)}
-      >
-        <LucideArrowLeft width={16} height={16} className="mr-2" />
-        Back
-      </button>
+      {showNextPrevButtons && (
+        <button
+          onClick={() => handlePageChange(currentPage - 1)}
+          disabled={currentPage === 1}
+          className={joinTailwindClasses(sharedPaginationButtonClasses, prevNextButtonClasses)}
+        >
+          <LucideArrowLeft width={16} height={16} className="mr-2" />
+          Back
+        </button>
+      )}
       <ul className="flex items-center gap-2">
         {pageItems.map((item) =>
           item.type === "ellipsis" ? (
@@ -54,14 +57,16 @@ export function Pagination({ currentPage, totalPages, onPageChange }: TProps) {
           )
         )}
       </ul>
-      <button
-        onClick={() => handlePageChange(currentPage + 1)}
-        disabled={currentPage === totalPages}
-        className={joinTailwindClasses(sharedPaginationButtonClasses, prevNextButtonClasses)}
-      >
-        Next
-        <LucideArrowRight width={16} height={16} className="ml-2" />
-      </button>
+      {showNextPrevButtons && (
+        <button
+          onClick={() => handlePageChange(currentPage + 1)}
+          disabled={currentPage === totalPages}
+          className={joinTailwindClasses(sharedPaginationButtonClasses, prevNextButtonClasses)}
+        >
+          Next
+          <LucideArrowRight width={16} height={16} className="ml-2" />
+        </button>
+      )}
     </div>
   );
 }
