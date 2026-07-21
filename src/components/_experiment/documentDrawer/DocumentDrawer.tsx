@@ -1,9 +1,10 @@
 import { useQuery } from "@tanstack/react-query";
-import { LucideExternalLink } from "lucide-react";
-import { Fragment } from "react";
+import { LucideExternalLink, Search } from "lucide-react";
+import { Fragment, useState } from "react";
 
 import { SearchDocument } from "@/api/search";
 import { Drawer } from "@/components/atoms/drawer/Drawer";
+import { Tabs } from "@/components/atoms/tabs/Tabs";
 import { DocumentsBlock } from "@/components/blocks/documentsBlock/DocumentsBlock";
 import { MetadataBlock } from "@/components/blocks/metadataBlock/MetadataBlock";
 import { NoteBlock } from "@/components/blocks/noteBlock/NoteBlock";
@@ -36,7 +37,7 @@ type TDrawerContentProps = {
   languages: Record<string, string>;
 };
 
-function DrawerContent({ familyData, languages }: TDrawerContentProps) {
+const DrawerContent = ({ familyData, languages }: TDrawerContentProps) => {
   const { countries, family, familyTopics, subdivisions } = familyData;
   const { getCategoryTextLookup } = useText();
   const getCategoryText = getCategoryTextLookup(family.attribution.category);
@@ -76,10 +77,12 @@ function DrawerContent({ familyData, languages }: TDrawerContentProps) {
       <NoteBlock key="note" attribution={family.attribution} />
     </div>
   );
-}
+};
 
 export function DocumentDrawer({ document, open, onOpenChange }: TDocumentDrawerProps) {
   const { data: { languages = {} } = {} } = useConfig();
+  const [activeTab, setActiveTab] = useState<string>("about");
+  const changeTab = (newValue: string) => setActiveTab(newValue);
 
   const importId = document?.id as string | undefined;
 
@@ -122,7 +125,27 @@ export function DocumentDrawer({ document, open, onOpenChange }: TDocumentDrawer
           <span className="h-8 w-8 animate-spin rounded-full border-4 border-neutral-200 border-t-inky-blue" />
         </div>
       )}
-      {!isLoading && familyData && <DrawerContent familyData={familyData} languages={languages} />}
+      {!isLoading && familyData && (
+        <Tabs
+          onValueChange={changeTab}
+          value={activeTab}
+          className="-mx-8"
+          panelClassName="pt-8"
+          tabs={[
+            { id: "about", label: "About", panel: <DrawerContent familyData={familyData} languages={languages} /> },
+            {
+              id: "search",
+              label: (
+                <>
+                  <Search size={20} />
+                  Search in documents
+                </>
+              ),
+              panel: <div>Search to go here.</div>,
+            },
+          ]}
+        />
+      )}
       {!isLoading && !familyData && <p>Sorry, this document has failed to load.</p>}
     </Drawer>
   );
