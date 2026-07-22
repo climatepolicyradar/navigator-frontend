@@ -12,7 +12,7 @@ interface IProps {
   menuButtons?: ReactNode;
   showLogo?: boolean;
   showSearch?: boolean;
-  topContent?: ReactNode[];
+  topContent?: ReactNode;
 }
 
 export const NavBar = ({ headerClasses = "", logo, menu, menuButtons, showLogo = true, showSearch = true, topContent }: IProps) => {
@@ -28,13 +28,7 @@ export const NavBar = ({ headerClasses = "", logo, menu, menuButtons, showLogo =
 
   return (
     <header data-cy="header" className={allHeaderClasses}>
-      {topContent && topContent.length > 0 && (
-        <>
-          {topContent.map((content, index) => (
-            <Fragment key={index}>{content}</Fragment>
-          ))}
-        </>
-      )}
+      {topContent && <>{topContent}</>}
       <FiveColumns
         className={allColumnClasses}
         columnOverrides={["grid-cols-[1fr_auto]", "cols-2:grid-cols-[1fr_auto]", "cols-3:grid-cols-[1fr_auto]"]}
