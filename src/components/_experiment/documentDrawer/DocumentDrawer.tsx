@@ -88,7 +88,7 @@ export function DocumentDrawer({ document, open, onOpenChange }: TDocumentDrawer
 
   const { data: familyData, isLoading } = useQuery<TFamilyPresentationalData | null>({
     queryKey: ["family", importId],
-    queryFn: () => fetch(`/api/family/${importId}`).then((res) => (res.ok ? res.json() : null)),
+    queryFn: () => fetch(`/api/document/${importId}`).then((res) => (res.ok ? res.json() : null)),
     enabled: !!importId,
   });
 
