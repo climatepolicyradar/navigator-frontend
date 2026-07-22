@@ -1,4 +1,4 @@
-import { Fragment, ReactNode, useContext } from "react";
+import { Fragment, ReactNode, useContext, useEffect, useState } from "react";
 
 import { FiveColumns } from "@/components/atoms/columns/FiveColumns";
 import { NavSearch } from "@/components/molecules/navSearch/NavSearch";
@@ -19,9 +19,18 @@ export const NavBar = ({ headerClasses = "", logo, menu, menuButtons, showLogo =
   const features = useContext(FeaturesContext);
   const newSearch = features["new-search"];
 
+  const [isScrolled, setIsScrolled] = useState(false);
+
+  useEffect(() => {
+    const handleScroll = () => setIsScrolled(window.scrollY > 0);
+    window.addEventListener("scroll", handleScroll);
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, []);
+
   const allHeaderClasses = joinTailwindClasses(
     "sticky top-0 z-60 w-full cols-4:min-h-[72px] flex flex-col justify-center",
     showSearch ? "min-h-[128px]" : "min-h-[72px]",
+    isScrolled && "shadow-md",
     headerClasses
   );
   const allColumnClasses = joinTailwindClasses("py-2", showLogo && showSearch && "grid-rows-2 cols-4:grid-rows-[initial]");
