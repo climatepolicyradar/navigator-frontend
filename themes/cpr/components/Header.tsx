@@ -60,6 +60,27 @@ const OtherAppsBar = () => (
   </div>
 );
 
+const MENU_BUTTONS = [
+  { url: "/search", label: "Search", external: false },
+  { url: "https://climatepolicyradar.org", label: "About", external: true },
+  { url: "/faq", label: "FAQs", external: false },
+];
+
+const MenuButtons = () => (
+  <div className="flex items-center gap-1">
+    {MENU_BUTTONS.map(({ url, label, external }) => (
+      <PageLink
+        key={label}
+        href={url}
+        external={external}
+        className="px-3 py-2 rounded-md text-sm font-medium text-text-primary bg-white hover:bg-bg-flat"
+      >
+        {label}
+      </PageLink>
+    ))}
+  </div>
+);
+
 export const Header = ({ landingPage = false }: IProps) => {
   const router = useRouter();
   const features = useContext(FeaturesContext);
@@ -77,9 +98,10 @@ export const Header = ({ landingPage = false }: IProps) => {
       headerClasses={navBarClasses}
       logo={CPRLogo}
       menu={<MainMenu icon={menuIcon} links={MENU_LINKS} />}
+      menuButtons={<MenuButtons />}
       showLogo={!isHomepage}
       showSearch={showSearch}
-      topContent={newSearch ? [OtherAppsBar()] : undefined}
+      topContent={newSearch ? <OtherAppsBar /> : undefined}
     />
   );
 };
