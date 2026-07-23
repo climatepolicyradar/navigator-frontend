@@ -39,14 +39,14 @@ describe("Pagination", () => {
 
   it("calls onPageChange with the next page when Next is clicked", () => {
     const onPageChange = vi.fn();
-    render(<Pagination currentPage={3} totalPages={5} onPageChange={onPageChange} />);
+    render(<Pagination currentPage={3} totalPages={5} onPageChange={onPageChange} showNextPrevButtons={true} />);
     fireEvent.click(screen.getByRole("button", { name: /next/i }));
     expect(onPageChange).toHaveBeenCalledWith(4);
   });
 
   it("calls onPageChange with the previous page when Back is clicked", () => {
     const onPageChange = vi.fn();
-    render(<Pagination currentPage={3} totalPages={5} onPageChange={onPageChange} />);
+    render(<Pagination currentPage={3} totalPages={5} onPageChange={onPageChange} showNextPrevButtons={true} />);
     fireEvent.click(screen.getByRole("button", { name: /back/i }));
     expect(onPageChange).toHaveBeenCalledWith(2);
   });
