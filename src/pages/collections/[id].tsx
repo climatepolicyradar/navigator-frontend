@@ -43,8 +43,8 @@ const CollectionPage = ({ collection, debug, errors, theme, themeConfig, feature
   }));
 
   return (
-    <Layout title={collection.title} description={collection.description} theme={theme as TTheme} themeConfig={themeConfig}>
-      <FeaturesContext.Provider value={features}>
+    <FeaturesContext.Provider value={features}>
+      <Layout title={collection.title} description={collection.description} theme={theme as TTheme} themeConfig={themeConfig}>
         <BreadCrumbs dark label={collection.title} />
         {features.debug && <DataInDebug usesDataIn={debug.usesDataIn} />}
         <PageHeader<TCollectionTabId> dark title={collection.title} tabs={COLLECTION_TABS} currentTab={currentTab} onTabChange={onTabChange} />
@@ -91,8 +91,8 @@ const CollectionPage = ({ collection, debug, errors, theme, themeConfig, feature
             }}
           />
         </Head>
-      </FeaturesContext.Provider>
-    </Layout>
+      </Layout>
+    </FeaturesContext.Provider>
   );
 };
 

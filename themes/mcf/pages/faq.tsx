@@ -5,13 +5,11 @@ import { BreadCrumbs } from "@/components/breadcrumbs/Breadcrumbs";
 import Layout from "@/components/layouts/Main";
 import { SiteWidth } from "@/components/panels/SiteWidth";
 import { CONCEPTS_FAQS } from "@/constants/conceptsFaqs";
-import { FeatureFlagsContext } from "@/context/FeatureFlagsContext";
-import { useFeatures } from "@/hooks/useFeatures";
+import { FeaturesContext } from "@/context/FeaturesContext";
 import { FAQS, PLATFORM_FAQS } from "@/mcf/constants/faqs";
 
 const FAQ: React.FC = () => {
-  const featureFlags = useContext(FeatureFlagsContext);
-  const { features } = useFeatures(featureFlags);
+  const features = useContext(FeaturesContext);
 
   return (
     <Layout
