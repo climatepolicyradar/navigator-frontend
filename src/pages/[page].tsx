@@ -34,26 +34,6 @@ interface IProps {
   };
 }
 
-// Cached per contentPath so re-renders of the same page (e.g. feature flag/theme state updates)
-// reuse the same component identity instead of remounting it via a fresh dynamic() call.
-const dynamicComponentCache = new Map<string, React.ComponentType>();
-
-function getDynamicComponent(contentPath: string) {
-  if (!dynamicComponentCache.has(contentPath)) {
-    dynamicComponentCache.set(
-      contentPath,
-      dynamic(
-        () =>
-          import(`../../themes/${process.env.THEME}/pages/${contentPath}`).catch((): { default: React.ComponentType } => ({ default: () => null })),
-        {
-          ssr: true,
-        }
-      )
-    );
-  }
-  return dynamicComponentCache.get(contentPath);
-}
-
 export default function Page({ page }: InferGetStaticPropsType<typeof getStaticProps>) {
   // const [configFeatures, setConfigFeatures] = useState<TConfigFeatures>(DEFAULT_CONFIG_FEATURES);
   const [featureFlags, setFeatureFlags] = useState<TFeatureFlags>(DEFAULT_FEATURE_FLAGS);
@@ -90,15 +70,21 @@ export default function Page({ page }: InferGetStaticPropsType<typeof getStaticP
     return window.location.replace("/not-found");
   }
 
-  const DynamicComponent = getDynamicComponent(page.contentPath);
+  const DynamicComponent = dynamic(
+    () =>
+      import(`../../themes/${process.env.THEME}/pages/${page.contentPath}`).catch((): { default: React.ComponentType } => ({ default: () => null })),
+    {
+      ssr: true,
+    }
+  );
 
   return (
     <ThemeContext.Provider value={themeContext}>
       <FeatureFlagsContext.Provider value={featureFlags}>
         <FeaturesContext.Provider value={features}>
-          {/* getDynamicComponent caches by contentPath, so identity is stable across re-renders of the same page */}
+          {/* We accept this limitation as our static pages are very limited in their interactivity - i.e. there is very little remounting */}
           {/* eslint-disable-next-line react-hooks/static-components */}
-          {DynamicComponent && <DynamicComponent />}
+          <DynamicComponent />
         </FeaturesContext.Provider>
       </FeatureFlagsContext.Provider>
     </ThemeContext.Provider>
