@@ -98,7 +98,7 @@ export const Header = ({ landingPage = false }: IProps) => {
       headerClasses={navBarClasses}
       logo={CPRLogo}
       menu={<MainMenu icon={menuIcon} links={MENU_LINKS} />}
-      menuButtons={isHomepage ? undefined : <MenuButtons />}
+      menuButtons={isHomepage ? undefined : newSearch ? <MenuButtons /> : undefined}
       showLogo={!isHomepage}
       showSearch={showSearch}
       topContent={newSearch ? <OtherAppsBar /> : undefined}
