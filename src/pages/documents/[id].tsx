@@ -109,14 +109,14 @@ const DocumentPage = ({
   );
 
   return (
-    <Layout
-      title={`${document.title}`}
-      description={getDocumentDescription(document.title)}
-      theme={theme as TTheme}
-      themeConfig={themeConfig}
-      attributionUrl={family.attribution.url}
-    >
-      <FeaturesContext.Provider value={features}>
+    <FeaturesContext.Provider value={features}>
+      <Layout
+        title={`${document.title}`}
+        description={getDocumentDescription(document.title)}
+        theme={theme as TTheme}
+        themeConfig={themeConfig}
+        attributionUrl={family.attribution.url}
+      >
         <TopicsContext.Provider value={topicsData}>
           <section
             className="pb-8 flex-1 flex flex-col"
@@ -156,19 +156,19 @@ const DocumentPage = ({
             </Head>
           )}
         </TopicsContext.Provider>
-      </FeaturesContext.Provider>
-      {features.debug && (
-        <FiveColumns>
-          <Section key="debug" block="debug" title="Debug">
-            <Debug data={errors.map((error) => JSON.parse(error))} title="Transformation errors" />
-            <Debug data={document} title={debug?.usesDataIn ? "Document (Data-in API)" : "Document (V2 API)"} />
-            <Debug data={family} title={debug?.usesDataIn ? "Family (Data-in API)" : "Family (V2 API)"} />
-            {debug?.originalDocument && <Debug data={debug?.originalDocument} title="Original document (V2 API)" />}
-            {debug?.newApiData && <Debug data={debug?.newApiData} title="Data-in API document response" />}
-          </Section>
-        </FiveColumns>
-      )}
-    </Layout>
+        {features.debug && (
+          <FiveColumns>
+            <Section key="debug" block="debug" title="Debug">
+              <Debug data={errors.map((error) => JSON.parse(error))} title="Transformation errors" />
+              <Debug data={document} title={debug?.usesDataIn ? "Document (Data-in API)" : "Document (V2 API)"} />
+              <Debug data={family} title={debug?.usesDataIn ? "Family (Data-in API)" : "Family (V2 API)"} />
+              {debug?.originalDocument && <Debug data={debug?.originalDocument} title="Original document (V2 API)" />}
+              {debug?.newApiData && <Debug data={debug?.newApiData} title="Data-in API document response" />}
+            </Section>
+          </FiveColumns>
+        )}
+      </Layout>
+    </FeaturesContext.Provider>
   );
 };
 
