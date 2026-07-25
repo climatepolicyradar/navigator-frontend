@@ -44,7 +44,7 @@ export const GeographyPage = ({ geographyV2, parentGeographyV2, theme, themeConf
   /* Page header */
 
   const pageHeaderMetadata: IMetadata[] = [];
-  if (!isCountry) {
+  if (!isCountry && parentGeographyV2) {
     pageHeaderMetadata.push({
       label: "Part of",
       value: (

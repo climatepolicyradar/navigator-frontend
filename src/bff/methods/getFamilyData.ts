@@ -100,6 +100,12 @@ export const getFamilyData = async (slug: string, features: TFeatures, importId?
       .map(async (country) => {
         try {
           const { data: subDivisionResponse } = await apiClient.get<TApiGeographySubdivision[]>(`/geographies/subdivisions/${country}`);
+          // http-common's get() returns error.response rather than throwing for Axios errors,
+          // so a non-2xx response resolves here with an error body instead of an array.
+          if (!Array.isArray(subDivisionResponse)) {
+            errors.push(new Error(`Failed to fetch subdivisions data for country: ${country}`));
+            return [];
+          }
           return subDivisionResponse;
         } catch (error) {
           const status = axios.isAxiosError(error) ? error.response?.status : "unknown";
