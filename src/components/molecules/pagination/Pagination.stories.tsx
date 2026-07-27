@@ -15,9 +15,18 @@ type TStory = StoryObj<typeof Pagination>;
 
 export default meta;
 
-const usePaginationRender = ({ totalPages, currentPage: initialPage }: React.ComponentProps<typeof Pagination>) => {
+const usePaginationRender = ({ totalPages, currentPage: initialPage, showNextPrevButtons }: React.ComponentProps<typeof Pagination>) => {
   const [currentPage, setCurrentPage] = useState(initialPage);
-  return <Pagination currentPage={currentPage} totalPages={totalPages} onPageChange={setCurrentPage} />;
+  return <Pagination currentPage={currentPage} totalPages={totalPages} onPageChange={setCurrentPage} showNextPrevButtons={showNextPrevButtons} />;
+};
+
+export const WithNextPrevButtons: TStory = {
+  args: {
+    currentPage: 1,
+    totalPages: 20,
+    showNextPrevButtons: true,
+  },
+  render: usePaginationRender,
 };
 
 export const FirstPage: TStory = {

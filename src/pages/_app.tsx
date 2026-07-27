@@ -11,7 +11,7 @@ const PostHogInit = dynamic(() => import("@/context/PostHogInit"), { ssr: false 
 import { FrontendObservability } from "@/components/FrontendObservability";
 import ErrorBoundary from "@/components/error/ErrorBoundary";
 import { Overlays } from "@/components/organisms/overlays/Overlays";
-import { COOKIE_TUTORIALS_NAME } from "@/constants/cookies";
+import { COOKIE_CONSENT_NAME, COOKIE_TUTORIALS_NAME } from "@/constants/cookies";
 import { DEFAULT_THEME_CONFIG } from "@/constants/themeConfig";
 import { AdobeContext } from "@/context/AdobeContext";
 import { EnvConfigContext } from "@/context/EnvConfig";
@@ -67,7 +67,7 @@ function MyApp({ Component, pageProps, theme, adobeApiKey }: IProps) {
     if (dynamicTheme) getThemeConfig();
   }, [dynamicTheme]);
 
-  const [consent, setConsent] = useState(false);
+  const [consent, setConsent] = useState(() => (typeof document !== "undefined" ? getCookie(COOKIE_CONSENT_NAME) === "true" : false));
   const onConsentChange = (consent: boolean) => {
     setConsent(consent);
   };

@@ -158,18 +158,18 @@ export const FamilyPage = ({ collections, countries, debug, errors, family, fami
 
   /* Render */
   return (
-    <Layout
-      title={family.title}
-      description={getFamilyMetaDescription(
-        family?.metadata?.core_object?.[0] ?? family.summary,
-        family.geographies.join(", "),
-        family.attribution.taxonomy
-      )}
-      theme={theme as TTheme}
-      themeConfig={themeConfig}
-      attributionUrl={family.attribution.url}
-    >
-      <FeaturesContext.Provider value={features}>
+    <FeaturesContext.Provider value={features}>
+      <Layout
+        title={family.title}
+        description={getFamilyMetaDescription(
+          family?.metadata?.core_object?.[0] ?? family.summary,
+          family.geographies.join(", "),
+          family.attribution.taxonomy
+        )}
+        theme={theme as TTheme}
+        themeConfig={themeConfig}
+        attributionUrl={family.attribution.url}
+      >
         <BreadCrumbs
           geography={breadcrumbGeography}
           parentGeography={breadcrumbParentGeography}
@@ -187,7 +187,7 @@ export const FamilyPage = ({ collections, countries, debug, errors, family, fami
             }}
           />
         </Head>
-      </FeaturesContext.Provider>
-    </Layout>
+      </Layout>
+    </FeaturesContext.Provider>
   );
 };

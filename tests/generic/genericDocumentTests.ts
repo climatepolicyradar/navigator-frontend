@@ -11,6 +11,9 @@ export const runGenericDocumentTests = (theme: TTheme): void => {
 
   documentsToTest.forEach(({ titleForTests, slug, withSearch, withTopic, withParentTopic }) => {
     test(`adding a search query generates passage matches - ${titleForTests}`, async ({ page }) => {
+      // NavBar hides the header search input with no replacement when new-search is on (NavBar.tsx) - no inline search UI exists yet to test
+      test.skip(process.env.E2E_TEST_FEATURE_FLAGS === "true", "No inline document search UI exists yet under the new-search feature flag");
+
       // Load the document page
 
       await documentPage.goToDocument(page, slug);

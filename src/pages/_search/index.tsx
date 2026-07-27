@@ -84,8 +84,8 @@ const ShadowSearch = ({ theme, themeConfig, features }: TProps) => {
   }, []);
 
   return (
-    <Layout theme={theme as TTheme} themeConfig={themeConfig} metadataKey="search">
-      <FeaturesContext.Provider value={features}>
+    <FeaturesContext.Provider value={features}>
+      <Layout theme={theme as TTheme} themeConfig={themeConfig} metadataKey="search">
         <FiveColumns className="mt-4 gap-y-4 pb-12">
           <div className={joinTailwindClasses(columnLayoutCss, "sr-only")}>
             <h1 className="text-5xl font-bold text-inky-black">Search</h1>
@@ -183,8 +183,8 @@ const ShadowSearch = ({ theme, themeConfig, features }: TProps) => {
         />
         {/* DRAWER */}
         <DocumentDrawer document={selectedDocument} open={drawerOpen} onOpenChange={setDrawerOpen} />
-      </FeaturesContext.Provider>
-    </Layout>
+      </Layout>
+    </FeaturesContext.Provider>
   );
 };
 

@@ -8,7 +8,9 @@ import React, { useEffect, useState } from "react";
 import { DEFAULT_FEATURE_FLAGS } from "@/constants/features";
 import { DEFAULT_THEME_CONFIG } from "@/constants/themeConfig";
 import { FeatureFlagsContext } from "@/context/FeatureFlagsContext";
+import { FeaturesContext } from "@/context/FeaturesContext";
 import { ThemeContext, IProps as IThemeContextProps } from "@/context/ThemeContext";
+import { useFeatures } from "@/hooks/useFeatures";
 import { TFeatureFlags, TTheme } from "@/types";
 import { getAllCookies } from "@/utils/cookies";
 import { getFeatureFlags } from "@/utils/featureFlags";
@@ -35,6 +37,7 @@ interface IProps {
 export default function Page({ page }: InferGetStaticPropsType<typeof getStaticProps>) {
   // const [configFeatures, setConfigFeatures] = useState<TConfigFeatures>(DEFAULT_CONFIG_FEATURES);
   const [featureFlags, setFeatureFlags] = useState<TFeatureFlags>(DEFAULT_FEATURE_FLAGS);
+  const { features } = useFeatures(featureFlags);
   const [themeContext, setThemeContext] = useState<IThemeContextProps>({
     theme: process.env.THEME as TTheme,
     themeConfig: DEFAULT_THEME_CONFIG,
@@ -55,6 +58,7 @@ export default function Page({ page }: InferGetStaticPropsType<typeof getStaticP
 
   // TODO: once dynamic imports are no longer needed, both of these are synchronous
   useEffect(() => {
+    // eslint-disable-next-line react-hooks/set-state-in-effect
     loadFeatureFlags();
     loadThemeConfig();
   }, []);
@@ -77,7 +81,11 @@ export default function Page({ page }: InferGetStaticPropsType<typeof getStaticP
   return (
     <ThemeContext.Provider value={themeContext}>
       <FeatureFlagsContext.Provider value={featureFlags}>
-        <DynamicComponent />
+        <FeaturesContext.Provider value={features}>
+          {/* We accept this limitation as our static pages are very limited in their interactivity - i.e. there is very little remounting */}
+          {/* eslint-disable-next-line react-hooks/static-components */}
+          <DynamicComponent />
+        </FeaturesContext.Provider>
       </FeatureFlagsContext.Provider>
     </ThemeContext.Provider>
   );

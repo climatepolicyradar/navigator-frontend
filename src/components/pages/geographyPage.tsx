@@ -180,8 +180,8 @@ export const GeographyPage = ({ geographyV2, parentGeographyV2, theme, themeConf
   /* Render */
 
   return (
-    <Layout metadataKey="geography" theme={theme as TTheme} themeConfig={themeConfig} title={geographyV2.name} text={geographyV2.name}>
-      <FeaturesContext.Provider value={features}>
+    <FeaturesContext.Provider value={features}>
+      <Layout metadataKey="geography" theme={theme as TTheme} themeConfig={themeConfig} title={geographyV2.name} text={geographyV2.name}>
         <GeographiesContext.Provider value={allGeographies}>
           <BreadCrumbs
             dark
@@ -192,7 +192,7 @@ export const GeographyPage = ({ geographyV2, parentGeographyV2, theme, themeConf
           <PageHeader dark label="Geography" title={geographyV2.name} metadata={pageHeaderMetadata} />
           <BlocksLayout blockDefinitions={blockDefinitions} blocksToRender={blocksToRender} />
         </GeographiesContext.Provider>
-      </FeaturesContext.Provider>
-    </Layout>
+      </Layout>
+    </FeaturesContext.Provider>
   );
 };
