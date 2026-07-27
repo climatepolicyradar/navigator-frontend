@@ -135,7 +135,7 @@ export const NavSearch = () => {
   };
 
   return (
-    <div className="relative flex-1 -mx-2" ref={ref}>
+    <div className="relative flex-1 -m-2 p-2" ref={ref}>
       <div className="relative z-21">
         <form onSubmit={handleSubmit} className="flex flex-row gap-2" data-ph-capture-attribute-form-type="search">
           {/* Search field */}
