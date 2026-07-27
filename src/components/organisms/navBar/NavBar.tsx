@@ -33,7 +33,7 @@ export const NavBar = ({ headerClasses = "", logo, menu, menuButtons, showLogo =
     isScrolled && "shadow-md",
     headerClasses
   );
-  const allColumnClasses = joinTailwindClasses("py-2", showLogo && showSearch && "grid-rows-2 cols-4:grid-rows-[initial]");
+  const allColumnClasses = joinTailwindClasses("py-2 gap-y-2", showLogo && showSearch && "grid-rows-2 cols-4:grid-rows-[initial]");
 
   return (
     <header data-cy="header" className={allHeaderClasses}>
@@ -44,7 +44,7 @@ export const NavBar = ({ headerClasses = "", logo, menu, menuButtons, showLogo =
       >
         {showLogo && <div className="flex items-center col-start-1 -col-end-1 cols-3:col-end-3">{logo}</div>}
         {showSearch && !newSearch && (
-          <div className="cols-4:col-start-3 cols-4:-col-end-2 cols-5:-col-end-3">
+          <div className="flex items-center cols-4:col-start-3 cols-4:-col-end-2 cols-5:-col-end-3">
             <NavSearch />
           </div>
         )}
