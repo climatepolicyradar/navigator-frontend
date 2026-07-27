@@ -56,8 +56,8 @@ export const useFamilyPageHeaderData = ({ countries, family, subdivisions }: IPr
 
         // Get the subdivision's parent country
         const subdivisionData = subdivisions.find((sub) => sub.code === subdivision.code);
-        const parentCountryCode = subdivisionData.country_alpha_3;
         if (subdivisionData) {
+          const parentCountryCode = subdivisionData.country_alpha_3;
           const countryName = getCountryName(parentCountryCode, countries);
           const countrySlug = getCountrySlug(parentCountryCode, countries);
           if (countryName && countrySlug && !isSystemGeo(countryName)) {
