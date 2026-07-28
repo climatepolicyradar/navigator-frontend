@@ -197,7 +197,8 @@ export const DocumentPassageViewer = ({ document, vespaDocumentData }: TProps) =
     (passage: TPassageBlock) => {
       const page = passage.pages?.[0]?.page_number;
       if (!canPreview || page === undefined) return;
-      setPageNumber(page);
+      // `page_number` is 0-indexed in the passage model; the PDF viewer is 1-indexed.
+      setPageNumber(page + 1);
     },
     [canPreview]
   );

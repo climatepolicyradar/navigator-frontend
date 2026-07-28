@@ -194,7 +194,7 @@ describe("DocumentPassageViewer", () => {
       renderViewer("renewable");
 
       expect(await screen.findByText(/Certain ecological/)).toBeInTheDocument();
-      expect(screen.getByText("Pg. 16")).toBeInTheDocument();
+      expect(screen.getByText("Pg. 17")).toBeInTheDocument();
       expect(screen.getByText("Section 4: National Target 16")).toBeInTheDocument();
       // The reader is already on this document, so its title is not repeated per passage.
       expect(screen.queryByText(document.title)).not.toBeInTheDocument();
@@ -213,7 +213,7 @@ describe("DocumentPassageViewer", () => {
 
       await userEvent.click(passage);
 
-      expect(await screen.findByText("page:16")).toBeInTheDocument();
+      expect(await screen.findByText("page:17")).toBeInTheDocument();
     });
 
     it("shows the no results state when nothing matches", async () => {

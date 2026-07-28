@@ -46,8 +46,10 @@ export const PassageBlock = ({ passage, onCopyClick, onDocumentLinkClick, onPass
   }, [hasCopied]);
 
   const isClickable = !!onPassageClick;
-  const pageNumber = passage.pages?.[0]?.page_number;
-  const hasContext = pageNumber !== undefined || !!passage.headingText;
+  // `page_number` is 0-indexed in the passage model, so is shifted for display.
+  const pageNumbers = passage.pages?.map(({ page_number }) => page_number + 1) ?? [];
+  const hasPages = pageNumbers.length > 0;
+  const hasContext = hasPages || !!passage.headingText;
   const hasFooter = showDocument || hasContext;
 
   const handleCopyClick = () => {
@@ -82,15 +84,17 @@ export const PassageBlock = ({ passage, onCopyClick, onDocumentLinkClick, onPass
             )}
             {hasContext && (
               <div className="flex gap-4 items-center">
-                {pageNumber !== undefined && (
+                {hasPages && (
                   <div className="flex gap-2 items-center shrink-0">
                     <LocateFixed size={16} className="text-elem-icon" />
-                    <p className="text-sm text-text-primary whitespace-nowrap">Pg. {pageNumber}</p>
+                    <p className="text-sm text-text-primary whitespace-nowrap">
+                      {pageNumbers.length === 1 ? "Pg." : "Pgs."} {pageNumbers.join(",")}
+                    </p>
                   </div>
                 )}
                 {passage.headingText && (
                   <>
-                    {pageNumber !== undefined && <span className="w-px h-3 bg-border-normal shrink-0" />}
+                    {hasPages && <span className="w-px h-3 bg-border-normal shrink-0" />}
                     <p className="text-sm text-text-primary truncate">{passage.headingText}</p>
                   </>
                 )}
