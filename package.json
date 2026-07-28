@@ -56,7 +56,7 @@
     "@next/bundle-analyzer": "^16.2.12",
     "@next/eslint-plugin-next": "^16.2.12",
     "@playwright/test": "^1.62.0",
-    "@size-limit/file": "^12.1.0",
+    "@size-limit/file": "^13.0.1",
     "@size-limit/webpack": "^12.1.0",
     "@size-limit/webpack-why": "^12.1.0",
     "@storybook/addon-docs": "10.5.5",
