@@ -1,4 +1,4 @@
-import { keepPreviousData, useQuery } from "@tanstack/react-query";
+import { keepPreviousData, useInfiniteQuery } from "@tanstack/react-query";
 import { FileSearch2, ScanSearch, Search } from "lucide-react";
 import { parseAsString, useQueryState } from "nuqs";
 import { memo, useCallback, useContext, useMemo, useState } from "react";
@@ -6,11 +6,12 @@ import { memo, useCallback, useContext, useMemo, useState } from "react";
 import { fetchSearchPassages, type SearchPassage } from "@/api/passages";
 import EmbeddedPDF from "@/components/EmbeddedPDF";
 import Loader from "@/components/Loader";
+import { Button } from "@/components/atoms/button/Button";
 import { Input } from "@/components/atoms/input/Input";
 import { EmptyDocument } from "@/components/documents/EmptyDocument";
 import { PassageBlock, TPassage as TPassageBlock } from "@/components/molecules/passageBlock/PassageBlock";
 import { FullWidth } from "@/components/panels/FullWidth";
-import { PASSAGES_PER_DOC } from "@/constants/paging";
+import { RESULTS_PER_PAGE } from "@/constants/paging";
 import { QUERY_PARAMS } from "@/constants/queryParams";
 import { TopicsContext } from "@/context/TopicsContext";
 import { TFamilyDocumentPublic, TPassage, TSearchResponse, TTopic } from "@/types";
@@ -152,9 +153,21 @@ export const DocumentPassageViewer = ({ document, vespaDocumentData }: TProps) =
 
   const canPreview = !!document.cdn_object && document.cdn_object.toLowerCase().endsWith(".pdf");
 
-  const { data, isError, isFetching } = useQuery({
+  const { data, isError, isFetching, fetchNextPage, hasNextPage, isFetchingNextPage } = useInfiniteQuery({
     queryKey: ["document-passages", document.import_id, query],
-    queryFn: ({ signal }) => fetchSearchPassages({ query, documentId: document.import_id, pageSize: PASSAGES_PER_DOC, signal }),
+    queryFn: ({ pageParam, signal }) =>
+      fetchSearchPassages({ query, documentId: document.import_id, pageSize: RESULTS_PER_PAGE, pageToken: pageParam, signal }),
+    initialPageParam: 1,
+    // The API leaves `next_page` and `total_pages` unpopulated, so there is no cursor to
+    // follow. Paging is driven by the running result count against the reported total.
+    getNextPageParam: (lastPage, allPages) => {
+      const loaded = allPages.reduce((count, page) => count + page.results.length, 0);
+      const total = lastPage.total_size ?? 0;
+      // A page that comes back empty also ends paging, otherwise an over-reported total
+      // would leave the button fetching nothing forever.
+      if (loaded >= total || lastPage.results.length === 0) return undefined;
+      return allPages.length + 1;
+    },
     enabled: query.length > 0,
     // A term's results do not change within a session, so don't refetch one the user returns to.
     refetchOnWindowFocus: false,
@@ -168,7 +181,7 @@ export const DocumentPassageViewer = ({ document, vespaDocumentData }: TProps) =
   // `keepPreviousData` holds the last results against the new query key, so they have to
   // be dropped explicitly once the search is cleared.
   const passages = useMemo(
-    () => (hasQuery ? (data?.results ?? []).map((passage) => toPassageBlock(passage, document.title)) : []),
+    () => (hasQuery ? (data?.pages ?? []).flatMap((page) => page.results).map((passage) => toPassageBlock(passage, document.title)) : []),
     [data, document.title, hasQuery]
   );
 
@@ -203,8 +216,9 @@ export const DocumentPassageViewer = ({ document, vespaDocumentData }: TProps) =
     [canPreview]
   );
 
-  const totalMatches = hasQuery ? (data?.total_size ?? 0) : 0;
-  const isLoading = isFetching && passages.length === 0;
+  const totalMatches = hasQuery ? (data?.pages[0]?.total_size ?? 0) : 0;
+  // `isFetching` also covers loading the next page, which must not blank the list.
+  const isLoading = isFetching && !isFetchingNextPage && passages.length === 0;
 
   return (
     <section className="flex-1 flex flex-col" id="document-passage-viewer">
@@ -215,7 +229,7 @@ export const DocumentPassageViewer = ({ document, vespaDocumentData }: TProps) =
             clearable
             containerClasses="px-4 py-2"
             icon={<Search size={16} />}
-            inputClasses="text-base"
+            inputClasses="!text-sm"
             name="passage-search"
             onChange={(event) => setSearchTerm(event.target.value)}
             onClear={handleClear}
@@ -229,10 +243,10 @@ export const DocumentPassageViewer = ({ document, vespaDocumentData }: TProps) =
         </p>
       </FullWidth>
 
-      <div className="flex-1 flex flex-col border-t border-border-light lg:flex-row lg:h-[80vh]">
+      <div className="flex flex-col border-t border-border-light lg:flex-row lg:h-[80vh]">
         <div
           id="document-passages"
-          className="w-full px-5 py-4 lg:w-1/2 lg:h-full lg:overflow-y-auto scrollbar-thin scrollbar-thumb-gray-200 scrollbar-track-white scrollbar-thumb-rounded-full"
+          className="w-full max-h-[80vh] overflow-y-auto px-5 py-4 lg:w-1/2 lg:h-full scrollbar-thin scrollbar-thumb-gray-200 scrollbar-track-white scrollbar-thumb-rounded-full"
         >
           {isLoading && (
             <div className="flex justify-center">
@@ -242,7 +256,21 @@ export const DocumentPassageViewer = ({ document, vespaDocumentData }: TProps) =
           {!isLoading && isError && (
             <p className="py-10 text-center text-sm text-text-secondary">Something went wrong with your search. Please try again.</p>
           )}
-          {!isLoading && !isError && passages.length > 0 && <PassageResults passages={passages} onPassageClick={handlePassageClick} />}
+          {!isLoading && !isError && passages.length > 0 && (
+            <>
+              <PassageResults passages={passages} onPassageClick={handlePassageClick} />
+              {hasNextPage && (
+                <div className="flex flex-col items-center gap-2 pt-4">
+                  <Button variant="outlined" onClick={() => fetchNextPage()} disabled={isFetchingNextPage}>
+                    {isFetchingNextPage ? "Loading…" : "Load more"}
+                  </Button>
+                  <p className="text-sm text-text-secondary" aria-live="polite">
+                    Showing {passages.length} of {totalMatches}
+                  </p>
+                </div>
+              )}
+            </>
+          )}
           {!isLoading && !isError && passages.length === 0 && (
             <PassagesEmptyState concepts={topConcepts} hasQuery={hasQuery} onClearClick={handleClear} onConceptClick={handleConceptClick} />
           )}

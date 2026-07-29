@@ -232,6 +232,67 @@ describe("DocumentPassageViewer", () => {
     });
   });
 
+  describe("loading more results", () => {
+    const pageOf = (ids: string[], total: number) => ({
+      total_size: total,
+      results: ids.map((id) => buildPassage({ id, text: `Passage ${id}` })),
+    });
+
+    it("starts at the first page", async () => {
+      renderViewer("renewable");
+
+      await waitFor(() => expect(mockFetchSearchPassages).toHaveBeenCalledWith(expect.objectContaining({ pageToken: 1 })));
+    });
+
+    it("does not offer more when every result is already loaded", async () => {
+      mockFetchSearchPassages.mockResolvedValue(pageOf(["a", "b"], 2));
+      renderViewer("renewable");
+
+      await screen.findByText("Passage a");
+      expect(screen.queryByRole("button", { name: /load more/i })).not.toBeInTheDocument();
+    });
+
+    it("offers more when the total exceeds what is loaded", async () => {
+      mockFetchSearchPassages.mockResolvedValue(pageOf(["a", "b"], 5));
+      renderViewer("renewable");
+
+      expect(await screen.findByRole("button", { name: /load more/i })).toBeInTheDocument();
+      expect(screen.getByText("Showing 2 of 5")).toBeInTheDocument();
+    });
+
+    it("requests the next page and appends it below the first", async () => {
+      mockFetchSearchPassages.mockResolvedValueOnce(pageOf(["a", "b"], 4)).mockResolvedValueOnce(pageOf(["c", "d"], 4));
+      renderViewer("renewable");
+
+      await userEvent.click(await screen.findByRole("button", { name: /load more/i }));
+
+      expect(await screen.findByText("Passage c")).toBeInTheDocument();
+      expect(screen.getByText("Passage a")).toBeInTheDocument();
+      expect(mockFetchSearchPassages).toHaveBeenLastCalledWith(expect.objectContaining({ pageToken: 2 }));
+    });
+
+    it("stops offering more once the last page has arrived", async () => {
+      mockFetchSearchPassages.mockResolvedValueOnce(pageOf(["a", "b"], 4)).mockResolvedValueOnce(pageOf(["c", "d"], 4));
+      renderViewer("renewable");
+
+      await userEvent.click(await screen.findByRole("button", { name: /load more/i }));
+
+      await screen.findByText("Passage d");
+      expect(screen.queryByRole("button", { name: /load more/i })).not.toBeInTheDocument();
+    });
+
+    it("stops offering more when a page comes back empty despite an over-reported total", async () => {
+      mockFetchSearchPassages.mockResolvedValueOnce(pageOf(["a"], 99)).mockResolvedValueOnce(pageOf([], 99));
+      renderViewer("renewable");
+
+      await userEvent.click(await screen.findByRole("button", { name: /load more/i }));
+
+      await waitFor(() => expect(screen.queryByRole("button", { name: /load more/i })).not.toBeInTheDocument());
+      // The results already on screen survive the empty page.
+      expect(screen.getByText("Passage a")).toBeInTheDocument();
+    });
+  });
+
   describe("empty state concepts", () => {
     it("lists the document's most common concepts, highest count first", async () => {
       renderViewer();

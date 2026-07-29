@@ -59,6 +59,10 @@ interface SearchPassagesParams {
   query: string;
   documentId: string;
   pageSize?: number;
+  // 1-indexed page number. The API's `page` parameter is currently ignored, and its
+  // `next_page` / `total_pages` fields come back null, so callers page by incrementing
+  // this and comparing the running result count against `total_size`.
+  pageToken?: number;
   signal?: AbortSignal;
 }
 
@@ -75,12 +79,13 @@ function configurePassagesFilters(documentId: string): IPassageFilterGroup {
   };
 }
 
-export async function fetchSearchPassages({ query, documentId, pageSize, signal }: SearchPassagesParams): Promise<SearchPassagesResponse> {
+export async function fetchSearchPassages({ query, documentId, pageSize, pageToken, signal }: SearchPassagesParams): Promise<SearchPassagesResponse> {
   const url = new URL(searchPassagesUrl());
 
   url.searchParams.set("query", query);
   url.searchParams.set("filters", JSON.stringify(configurePassagesFilters(documentId)));
   if (pageSize !== undefined) url.searchParams.set("page_size", String(pageSize));
+  if (pageToken !== undefined) url.searchParams.set("page_token", String(pageToken));
 
   const res = await fetch(url, { signal });
   if (!res.ok) throw new Error(`Passage search API error: ${res.status}`);
