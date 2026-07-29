@@ -218,6 +218,9 @@ jobs:
     needs: changes
     if: needs.changes.outputs.projects != '[]'
     runs-on: ubuntu-latest
+    permissions:
+      id-token: write
+      contents: read
     environment: ${{ startsWith(matrix.project, 'production-') && 'production' || 'staging' }}
     strategy:
       matrix:
