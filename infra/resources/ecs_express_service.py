@@ -93,10 +93,10 @@ class ExpressGatewayServiceComponent(pulumi.ComponentResource):
             memory=config.memory,
             scaling_targets=[
                 ExpressGatewayServiceScalingTargetArgs(
-                    auto_scaling_metric="AVERAGE_CPU",
-                    auto_scaling_target_value=70,
-                    min_task_count=1,
-                    max_task_count=4,
+                    auto_scaling_metric="REQUEST_COUNT_PER_TARGET",  # Average over 60s interval
+                    auto_scaling_target_value=500,  # Requests per target per minute
+                    min_task_count=config.min_task_count,
+                    max_task_count=config.max_task_count,
                 ),
             ],
             network_configurations=[
