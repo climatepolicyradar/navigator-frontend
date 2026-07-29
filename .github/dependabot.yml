@@ -10,6 +10,15 @@ updates:
         update-types:
           - version-update:semver-major
     groups:
+      # A dependency joins the first group it matches, so this must stay above
+      # minor-and-patch. The @size-limit/* plugins pin size-limit to an exact
+      # version in their peerDependencies, so all four must bump together -
+      # no update-types filter here, to include majors.
+      size-limit:
+        patterns:
+          - size-limit
+          - "@size-limit/*"
+
       # Major updates will be raised as separate PRs by default
       minor-and-patch:
         applies-to: version-updates
