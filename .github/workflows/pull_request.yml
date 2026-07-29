@@ -315,21 +315,21 @@ jobs:
             staging-shared-resources:
               - 'infra/platform/**'
 
-            production-frontend-cpr:
-              - 'infra/Pulumi.cpr-production.yaml'
-              - 'infra/__main__.py'
+            # production-frontend-cpr:
+            #   - 'infra/Pulumi.cpr-production.yaml'
+            #   - 'infra/__main__.py'
 
-            production-frontend-mcf:
-              - 'infra/Pulumi.mcf-production.yaml'
-              - 'infra/__main__.py'
+            # production-frontend-mcf:
+            #   - 'infra/Pulumi.mcf-production.yaml'
+            #   - 'infra/__main__.py'
 
-            production-frontend-cclw:
-              - 'infra/Pulumi.cclw-production.yaml'
-              - 'infra/__main__.py'
+            # production-frontend-cclw:
+            #   - 'infra/Pulumi.cclw-production.yaml'
+            #   - 'infra/__main__.py'
 
-            production-frontend-ccc:
-              - 'infra/Pulumi.ccc-production.yaml'
-              - 'infra/__main__.py'
+            # production-frontend-ccc:
+            #   - 'infra/Pulumi.ccc-production.yaml'
+            #   - 'infra/__main__.py'
       - id: parse
         run: |
           CHANGES='${{ steps.filter.outputs.changes }}'
@@ -340,10 +340,13 @@ jobs:
     needs: changes
     if: needs.changes.outputs.pulumi_projects != '[]'
     runs-on: ubuntu-latest
+    permissions:
+      id-token: write
+      contents: read
     strategy:
       matrix:
         project: ${{ fromJSON(needs.changes.outputs.pulumi_projects) }}
-    environment: staging
+    environment: ${{ startsWith(matrix.project, 'production-') && 'production' || 'staging' }}
     env:
       DEPLOY_FROM_MAIN_BRANCH_ONLY: false
       AWS_REGION: eu-west-1
