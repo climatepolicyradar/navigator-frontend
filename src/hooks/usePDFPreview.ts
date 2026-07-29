@@ -1,42 +1,88 @@
+import type { SearchPassage } from "@/api/passages";
 import ViewSDKClient from "@/api/pdf";
 import { DEFAULT_DOCUMENT_TITLE } from "@/constants/document";
 import { TPassage, TFamilyDocumentPublic } from "@/types";
 
-function generateHighlights(document: TFamilyDocumentPublic, documentPassageMatches: TPassage[]) {
+/*
+  The viewer is fed passages from two sources with different geometry models:
+
+  - Legacy Vespa search: `text_block_coords`, a single box per passage, on a 1-indexed
+    `text_block_page`.
+  - v2 `/search/passages`: `pages_with_bounding_boxes`, potentially many boxes spread
+    over many pages, with a 0-indexed page `number`.
+
+  Both are normalised to `THighlight` before anything else happens, so the rest of the
+  hook never has to know which model a passage came from.
+*/
+export type TViewerPassage = TPassage | SearchPassage;
+
+type THighlight = {
+  id: string;
+  // 1-indexed, matching Adobe's page events and `gotoLocation`.
+  pageNumber: number;
+  boundingBox: [xMin: number, yMin: number, xMax: number, yMax: number];
+};
+
+const isNewModelPassage = (passage: TViewerPassage): passage is SearchPassage => "pages_with_bounding_boxes" in passage;
+
+// Both models list their four corners in the same order — top-left, top-right,
+// bottom-right, bottom-left — so only the container shape and the page indexing differ.
+const getPassageHighlights = (passage: TViewerPassage): THighlight[] => {
+  if (isNewModelPassage(passage)) {
+    return (passage.pages_with_bounding_boxes ?? []).flatMap((page) =>
+      (page.bounding_boxes ?? []).flatMap((box, boxIndex) => {
+        const [topLeft, topRight, bottomRight] = box.coordinates ?? [];
+        if (!topLeft || !topRight || !bottomRight) return [];
+
+        return [
+          {
+            // A passage can contribute several boxes, so the passage id alone would not
+            // be unique across annotations.
+            id: `${passage.text_block_id}-${page.number}-${boxIndex}`,
+            // `number` is 0-indexed in this model.
+            pageNumber: page.number + 1,
+            boundingBox: [topLeft.x, topLeft.y, topRight.x, bottomRight.y] as THighlight["boundingBox"],
+          },
+        ];
+      })
+    );
+  }
+
+  const [topLeft, topRight, bottomRight] = passage.text_block_coords ?? [];
+  if (!topLeft || !topRight || !bottomRight) return [];
+
+  return [
+    {
+      id: passage.text_block_id,
+      pageNumber: passage.text_block_page,
+      boundingBox: [topLeft[0], topLeft[1], topRight[0], bottomRight[1]],
+    },
+  ];
+};
+
+export const getHighlights = (passages: TViewerPassage[]): THighlight[] => passages.flatMap(getPassageHighlights);
+
+function generateAnnotations(document: TFamilyDocumentPublic, highlights: THighlight[]) {
   const date = new Date();
-  return documentPassageMatches.map((passage) => {
+  return highlights.map(({ id, pageNumber, boundingBox: [xMin, yMin, xMax, yMax] }) => {
     return {
       "@context": ["https://www.w3.org/ns/anno.jsonld", "https://comments.acrobat.com/ns/anno.jsonld"],
       type: "Annotation",
-      id: passage.text_block_id,
+      id,
       bodyValue: "",
       motivation: "commenting",
       target: {
         source: document.import_id,
         selector: {
           node: {
-            index: passage.text_block_page - 1,
+            // Adobe indexes pages from 0.
+            index: pageNumber - 1,
           },
           subtype: "highlight",
-          // WE CAN ASSUME BLOCK_COORDS IS ALWAYS LENGTH 4
-          // format [xmin, ymin, xmax, ymax]
-          boundingBox: [
-            passage.text_block_coords[0][0],
-            passage.text_block_coords[0][1],
-            passage.text_block_coords[1][0],
-            passage.text_block_coords[2][1],
-          ],
-          // format [Xmin, Ymin, Xmax, Ymin, Xmax, Ymax, Xmin, Ymax]
-          quadPoints: [
-            passage.text_block_coords[0][0],
-            passage.text_block_coords[0][1],
-            passage.text_block_coords[1][0],
-            passage.text_block_coords[0][1],
-            passage.text_block_coords[0][0],
-            passage.text_block_coords[2][1],
-            passage.text_block_coords[1][0],
-            passage.text_block_coords[2][1],
-          ],
+          // format [Xmin, Ymin, Xmax, Ymax]
+          boundingBox: [xMin, yMin, xMax, yMax],
+          // format [upper-left, upper-right, lower-left, lower-right] as x,y pairs
+          quadPoints: [xMin, yMin, xMax, yMin, xMin, yMax, xMax, yMax],
           styleClass: "body-value-css",
           type: "AdobeAnnoSelector",
           strokeColor: "#FFFF00",
@@ -82,6 +128,20 @@ export default function usePDFPreview(physicalDocument: TFamilyDocumentPublic, a
   let adobeViewerMemo: any;
   let viewerApiMemo: any;
   let annotationManagerApiMemo: any;
+
+  // The page-change listener is registered once and reads the highlights from here, so
+  // that a new set of passages does not require a second listener. `highlightsVersion`
+  // changes whenever they do, and is what makes the de-duplication below page-accurate.
+  let currentHighlights: THighlight[] = [];
+  let highlightsVersion = 0;
+  let hasRegisteredCallback = false;
+  // The (highlights, page) pair last pushed to the SDK, and the page it referred to.
+  let renderedKey: string | null = null;
+  let renderedPage: number | null = null;
+  // Annotation updates are serialised through this. Each is a remove-then-add pair, and
+  // two running concurrently interleave as remove/remove/add/add, which leaves both sets
+  // drawn on top of each other.
+  let annotationQueue: Promise<void> = Promise.resolve();
 
   const getAdobeApis = async (): Promise<TAdobeApis> => {
     const viewSDKClient = new ViewSDKClient();
@@ -132,9 +192,11 @@ export default function usePDFPreview(physicalDocument: TFamilyDocumentPublic, a
     await viewerApi.gotoLocation(pageNumber);
   };
 
-  // Removes existing highlights before add the provided passage highlights to the document
-  const addAnnotationsForPage = async (documentPassageMatches: TPassage[]) => {
-    // console.log("addAnnotationsForPage");
+  // Removes existing highlights before adding the ones that fall on the given page.
+  // Only ever holding one page's worth of annotations is deliberate — the Adobe SDK
+  // degrades badly when a document carries a large number of them.
+  const applyAnnotationsForPage = async (pageNumber: number) => {
+    // console.log("applyAnnotationsForPage");
     let annotationManagerApi = annotationManagerApiMemo;
     if (!annotationManagerApiMemo) {
       const { annotationManagerApi: newAnnotationManagerApi } = await getAdobeApis();
@@ -143,25 +205,54 @@ export default function usePDFPreview(physicalDocument: TFamilyDocumentPublic, a
     if (!annotationManagerApi) {
       return;
     }
-    // Clear annotations before adding provided ones
-    // console.time("Removing annotations");
-    await annotationManagerApi.removeAnnotationsFromPDF();
-    // console.timeEnd("Removing annotations");
-    if (documentPassageMatches.length > 0) {
-      // Generate highlights for the provided passages
-      const highlights = generateHighlights(physicalDocument, documentPassageMatches);
-      // console.time("Adding annotations");
-      await annotationManagerApi.addAnnotations(highlights);
-      // console.timeEnd("Adding annotations");
+
+    // CURRENT_ACTIVE_PAGE fires repeatedly for the same page, and the remove/add pair is
+    // the expensive part, so identical work is skipped. Checked here rather than when the
+    // update is queued, so it sees what actually reached the SDK.
+    const key = `${highlightsVersion}:${pageNumber}`;
+    if (key === renderedKey) {
+      return;
+    }
+    renderedKey = key;
+    renderedPage = pageNumber;
+
+    const pageHighlights = currentHighlights.filter((highlight) => highlight.pageNumber === pageNumber);
+    try {
+      // Clear annotations before adding provided ones
+      // console.time("Removing annotations");
+      await annotationManagerApi.removeAnnotationsFromPDF();
+      // console.timeEnd("Removing annotations");
+      if (pageHighlights.length > 0) {
+        // Generate highlights for the provided passages
+        const annotations = generateAnnotations(physicalDocument, pageHighlights);
+        // console.time("Adding annotations");
+        await annotationManagerApi.addAnnotations(annotations);
+        // console.timeEnd("Adding annotations");
+      }
+    } catch (error) {
+      // Whatever is on the page is now unknown, so let the next attempt redo this page
+      // rather than trusting the cache.
+      renderedKey = null;
+      throw error;
     }
   };
 
-  // Set up a new callback to listen for page changes once we have a new set of passages
-  // When the page changes, we will add the annotations for that page
-  const registerPassages = async (documentPassageMatches: TPassage[], startingPageNumber?: number) => {
-    let hasRegisteredCallback = false;
-    // Ensure we either start on the page passed in, or the page of the first passage, or default to first page
-    const startingPage = startingPageNumber || documentPassageMatches[0]?.text_block_page || 1;
+  // Queues an annotation update behind any still in flight. Without this the remove/add
+  // pairs of two overlapping updates interleave and both sets stay on the page.
+  const addAnnotationsForPage = (pageNumber: number): Promise<void> => {
+    annotationQueue = annotationQueue.then(() => applyAnnotationsForPage(pageNumber)).catch(() => {});
+    return annotationQueue;
+  };
+
+  // Takes a new set of passages, shows the ones on the starting page, and makes sure a
+  // page-change listener is in place to swap the highlights as the reader navigates.
+  const registerPassages = async (documentPassageMatches: TViewerPassage[], startingPageNumber?: number) => {
+    // A passage can carry boxes on more than one page, so highlights are flattened first
+    // and the page filtering works off those rather than off the passages.
+    currentHighlights = getHighlights(documentPassageMatches);
+    highlightsVersion += 1;
+    // Ensure we either start on the page passed in, or the page of the first highlight, or default to first page
+    const startingPage = startingPageNumber || currentHighlights[0]?.pageNumber || 1;
 
     let adobeViewer = adobeViewerMemo;
     if (!adobeViewer || !annotationManagerApiMemo) {
@@ -171,29 +262,40 @@ export default function usePDFPreview(physicalDocument: TFamilyDocumentPublic, a
     if (!adobeViewer) {
       return;
     }
-    // Open the viewer on the page of the first passage highlight
-    changePage(startingPage);
-    // We only want to add the annotations intentionally when we are confident this is a first load and initialisation
-    // Otherwise the callback below can handle highlights management on the page change event
-    // Add the annotations for the initial page
-    if (!hasRegisteredCallback) {
-      await addAnnotationsForPage(documentPassageMatches.filter((passage) => passage.text_block_page === startingPage));
+
+    // Only the first call moves the reader. Later calls are highlight refreshes — another
+    // page of results arriving — and navigating on those would drag the view away from
+    // wherever the reader had got to, as well as racing the page-change event.
+    // Read and claimed together, with no await between, so concurrent calls cannot both
+    // believe they are the first.
+    const isFirstRegistration = !hasRegisteredCallback;
+    hasRegisteredCallback = true;
+
+    if (isFirstRegistration) {
+      // Open the viewer on the page of the first passage highlight
+      changePage(startingPage);
+    }
+    // Redraw whichever page is on screen using the new highlights
+    await addAnnotationsForPage(isFirstRegistration ? startingPage : (renderedPage ?? startingPage));
+
+    // Register the page-change listener exactly once per viewer. Doing it on every call
+    // would stack listeners, and because each closes over the highlights it was created
+    // with, whichever finished last would decide what ended up on screen.
+    if (!isFirstRegistration) {
+      return;
     }
 
-    // Finally - register a callback on page change
     // Everytime we change page - add the highlights for that page
     // This will catch passage clicks, as well as navigation within the native pdf reader
     await adobeViewer.registerCallback(
       window.AdobeDC.View.Enum.CallbackType.EVENT_LISTENER,
       async (event: any) => {
         if (event.type === "CURRENT_ACTIVE_PAGE") {
-          await addAnnotationsForPage(documentPassageMatches.filter((passage) => passage.text_block_page === event.data.pageNumber));
+          await addAnnotationsForPage(event.data.pageNumber);
         }
       },
       { enableFilePreviewEvents: true }
     );
-
-    hasRegisteredCallback = true;
   };
 
   return { getAdobeApis, changePage, registerPassages };

@@ -14,14 +14,9 @@ import { FullWidth } from "@/components/panels/FullWidth";
 import { RESULTS_PER_PAGE } from "@/constants/paging";
 import { QUERY_PARAMS } from "@/constants/queryParams";
 import { TopicsContext } from "@/context/TopicsContext";
-import { TFamilyDocumentPublic, TPassage, TSearchResponse, TTopic } from "@/types";
+import { TFamilyDocumentPublic, TSearchResponse, TTopic } from "@/types";
 
 const TOP_CONCEPTS_LIMIT = 8;
-
-// Passage highlighting in the PDF is deferred until the passage model settles
-// (FUS-67 / FUS-48), so the viewer is handed a stable empty list and only ever
-// re-renders to change page.
-const NO_PASSAGE_HIGHLIGHTS: TPassage[] = [];
 
 type TProps = {
   document: TFamilyDocumentPublic;
@@ -128,11 +123,15 @@ PassageResults.displayName = "PassageResults";
 type TDocumentPreviewProps = {
   document: TFamilyDocumentPublic;
   pageNumber: number | null;
+  passages: SearchPassage[];
 };
 
 // Memoised so the Adobe viewer is not torn down and rebuilt on every search interaction.
-const DocumentPreview = memo(({ document, pageNumber }: TDocumentPreviewProps) => (
-  <EmbeddedPDF document={document} documentPassageMatches={NO_PASSAGE_HIGHLIGHTS} pageNumber={pageNumber} />
+// `startingPageNumber` is deliberately not passed: it sits in EmbeddedPDF's effect
+// dependencies, so feeding the current page back in would re-register the passages on
+// every passage click. The hook already leaves the reader where it is on a refresh.
+const DocumentPreview = memo(({ document, pageNumber, passages }: TDocumentPreviewProps) => (
+  <EmbeddedPDF document={document} documentPassageMatches={passages} pageNumber={pageNumber} />
 ));
 DocumentPreview.displayName = "DocumentPreview";
 
@@ -180,10 +179,11 @@ export const DocumentPassageViewer = ({ document, vespaDocumentData }: TProps) =
 
   // `keepPreviousData` holds the last results against the new query key, so they have to
   // be dropped explicitly once the search is cleared.
-  const passages = useMemo(
-    () => (hasQuery ? (data?.pages ?? []).flatMap((page) => page.results).map((passage) => toPassageBlock(passage, document.title)) : []),
-    [data, document.title, hasQuery]
-  );
+  // Kept in the API's own shape as well, since the PDF viewer highlights from the
+  // bounding boxes that `toPassageBlock` drops.
+  const searchPassages = useMemo(() => (hasQuery ? (data?.pages ?? []).flatMap((page) => page.results) : []), [data, hasQuery]);
+
+  const passages = useMemo(() => searchPassages.map((passage) => toPassageBlock(passage, document.title)), [searchPassages, document.title]);
 
   const topConcepts = useMemo(() => getTopDocumentConcepts(vespaDocumentData, topics, TOP_CONCEPTS_LIMIT), [vespaDocumentData, topics]);
 
@@ -277,7 +277,7 @@ export const DocumentPassageViewer = ({ document, vespaDocumentData }: TProps) =
         </div>
 
         <div id="document-preview" className="w-full h-[600px] border-t border-border-light lg:w-1/2 lg:h-full lg:border-t-0 lg:border-l">
-          {canPreview ? <DocumentPreview document={document} pageNumber={pageNumber} /> : <EmptyDocument />}
+          {canPreview ? <DocumentPreview document={document} pageNumber={pageNumber} passages={searchPassages} /> : <EmptyDocument />}
         </div>
       </div>
     </section>
