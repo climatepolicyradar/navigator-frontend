@@ -93,7 +93,7 @@
     "jsdom": "^29.1.0",
     "msw": "^2.15.0",
     "next-router-mock": "^1.0.5",
-    "postcss": "^8.5.23",
+    "postcss": "^8.5.24",
     "prettier": "^3.9.6",
     "size-limit": "^13.0.1",
     "storybook": "10.5.5",
