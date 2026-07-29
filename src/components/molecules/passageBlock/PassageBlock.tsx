@@ -60,17 +60,19 @@ export const PassageBlock = ({ passage, onCopyClick, onDocumentLinkClick, onPass
 
   return (
     <div
-      className={`bg-bg-primary border border-border-normal rounded-xl overflow-clip transition ${
-        isClickable ? "hocus:shadow-sm hocus:bg-paper" : "shadow-xs"
-      }`}
+      className={`bg-bg-primary border border-border-normal rounded-xl overflow-clip transition ${isClickable ? "hocus:shadow-sm " : "shadow-xs"}`}
     >
-      <div className="px-8 py-7">
+      <div className="text-sm text-text-primary">
         {isClickable ? (
-          <button type="button" onClick={() => onPassageClick(passage)} className="text-left w-full text-base text-text-primary hocus:underline">
+          <button
+            type="button"
+            onClick={() => onPassageClick(passage)}
+            className="text-left w-full text-sm text-text-primary px-8 py-7 hocus:bg-paper"
+          >
             {passage.content}
           </button>
         ) : (
-          <p className="text-base text-text-primary">{passage.content}</p>
+          <p className="px-8 py-7">{passage.content}</p>
         )}
       </div>
       {hasFooter && (
