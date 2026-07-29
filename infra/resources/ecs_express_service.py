@@ -19,6 +19,8 @@ class ExpressGatewayConfig:
     health_check_path: str = "/"
     cpu: str = "4096"
     memory: str = "8192"
+    min_task_count: int = 1
+    max_task_count: int = 4
 
 
 def prefix_name() -> str:
