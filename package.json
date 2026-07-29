@@ -40,7 +40,7 @@
     "lucide-react": "^1.27.0",
     "next": "^16.2.12",
     "nuqs": "^2.9.2",
-    "posthog-js": "^1.407.5",
+    "posthog-js": "^1.407.6",
     "react": "^19.2.8",
     "react-dom": "^19.2.8",
     "react-error-boundary": "^6.1.2",
