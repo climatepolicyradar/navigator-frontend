@@ -555,6 +555,8 @@ if not is_review_stack_or_template:
         name=f"{theme}-{env}-frontend-waf",
         # Bot Control is a paid add-on; only run it in production.
         enable_bot_control=env == "production",
+        # Log bot-tagged requests (edge-level record of all bots, including non-JS).
+        enable_logging=env == "production",
         tags={"CUSTOM_APP_THEME": theme, "Environment": env},
     )
 
@@ -712,6 +714,7 @@ if not is_review_stack_or_template:
                         "Accept",
                         "Access-Control-Request-Method",
                         "Access-Control-Request-Headers",
+                        "x-amzn-waf-is-bot",
                     ],
                 ),
                 cookies=CookieConfig(
