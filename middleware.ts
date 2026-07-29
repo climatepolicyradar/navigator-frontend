@@ -11,8 +11,8 @@ export default function middleware(request: NextRequest) {
   }
 
   // Surface WAF's bot signal as a client-readable cookie for posthog-js.
-  const isBot = request.headers.get("x-amzn-waf-is-bot") === "true";
-  response.cookies.set("is_bot", String(isBot), { httpOnly: false, path: "/", sameSite: "lax" });
+  const isWafBot = request.headers.get("x-amzn-waf-is-bot") === "true";
+  response.cookies.set("is_waf_bot", String(isWafBot), { httpOnly: false, path: "/", sameSite: "lax" });
 
   return response;
 }
