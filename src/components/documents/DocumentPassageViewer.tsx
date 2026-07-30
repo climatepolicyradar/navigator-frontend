@@ -1,5 +1,5 @@
-import { keepPreviousData, useInfiniteQuery } from "@tanstack/react-query";
-import { FileSearch2, ScanSearch, Search } from "lucide-react";
+import { useInfiniteQuery } from "@tanstack/react-query";
+import { Search } from "lucide-react";
 import { parseAsString, useQueryState } from "nuqs";
 import { memo, useCallback, useContext, useMemo, useState } from "react";
 
@@ -9,6 +9,7 @@ import Loader from "@/components/Loader";
 import { Button } from "@/components/atoms/button/Button";
 import { Input } from "@/components/atoms/input/Input";
 import { EmptyDocument } from "@/components/documents/EmptyDocument";
+import { EmptyPassages } from "@/components/molecules/emptyPassages/EmptyPassages";
 import { PassageBlock, TPassage as TPassageBlock } from "@/components/molecules/passageBlock/PassageBlock";
 import { FullWidth } from "@/components/panels/FullWidth";
 import { RESULTS_PER_PAGE } from "@/constants/paging";
@@ -16,7 +17,7 @@ import { QUERY_PARAMS } from "@/constants/queryParams";
 import { TopicsContext } from "@/context/TopicsContext";
 import { TFamilyDocumentPublic, TSearchResponse, TTopic } from "@/types";
 
-const TOP_CONCEPTS_LIMIT = 8;
+const TOP_CONCEPTS_LIMIT = 10;
 
 type TProps = {
   document: TFamilyDocumentPublic;
@@ -56,52 +57,6 @@ const getTopDocumentConcepts = (vespaDocumentData: TSearchResponse, topics: TTop
     .slice(0, limit)
     .map(([conceptId, count]) => ({ ...topicsById.get(conceptId), count }));
 };
-
-type TEmptyStateProps = {
-  concepts: TTopic[];
-  hasQuery: boolean;
-  onClearClick: () => void;
-  onConceptClick: (label: string) => void;
-};
-
-const PassagesEmptyState = ({ concepts, hasQuery, onClearClick, onConceptClick }: TEmptyStateProps) => (
-  <div className="flex flex-col gap-8 py-10">
-    <div className="flex flex-col items-center gap-3 text-center">
-      <div className="rounded-full bg-bg-flat p-4 text-elem-icon">{hasQuery ? <ScanSearch size={24} /> : <FileSearch2 size={24} />}</div>
-      <p className="font-medium text-text-primary">{hasQuery ? "No matching passages" : "Search passages"}</p>
-      <p className="max-w-xs text-sm text-text-secondary">
-        {hasQuery ? (
-          <>
-            <button type="button" onClick={onClearClick} className="underline hocus:text-text-primary">
-              Clear your search
-            </button>{" "}
-            to continue, or try a commonly mentioned topic below.
-          </>
-        ) : (
-          "Type a search or select from topics that appear in this document."
-        )}
-      </p>
-    </div>
-    {concepts.length > 0 && (
-      <div className="flex flex-col gap-3 border-t border-border-light pt-6">
-        <p className="text-sm text-text-secondary">Commonly mentioned in this document</p>
-        <ul className="flex flex-wrap gap-2">
-          {concepts.map((concept) => (
-            <li key={concept.wikibase_id}>
-              <button
-                type="button"
-                onClick={() => onConceptClick(concept.preferred_label)}
-                className="rounded-full border border-border-normal px-3 py-1 text-sm text-text-brand hocus:border-inky-blue hocus:bg-bg-flat"
-              >
-                {concept.preferred_label}
-              </button>
-            </li>
-          ))}
-        </ul>
-      </div>
-    )}
-  </div>
-);
 
 type TPassageResultsProps = {
   onPassageClick: (passage: TPassageBlock) => void;
@@ -145,14 +100,16 @@ export const DocumentPassageViewer = ({ document, vespaDocumentData }: TProps) =
   // browser back button or a concept being picked from the empty state. Adjusting during
   // render rather than in an effect avoids a second render pass with a stale input.
   const [previousQuery, setPreviousQuery] = useState(query);
+  const [hasNavigatedForQuery, setHasNavigatedForQuery] = useState(false);
   if (query !== previousQuery) {
     setPreviousQuery(query);
     setSearchTerm(query);
+    setHasNavigatedForQuery(false);
   }
 
   const canPreview = !!document.cdn_object && document.cdn_object.toLowerCase().endsWith(".pdf");
 
-  const { data, isError, isFetching, fetchNextPage, hasNextPage, isFetchingNextPage } = useInfiniteQuery({
+  const { data, isError, isFetching, isPending, fetchNextPage, hasNextPage, isFetchingNextPage } = useInfiniteQuery({
     queryKey: ["document-passages", document.import_id, query],
     queryFn: ({ pageParam, signal }) =>
       fetchSearchPassages({ query, documentId: document.import_id, pageSize: RESULTS_PER_PAGE, pageToken: pageParam, signal }),
@@ -171,23 +128,27 @@ export const DocumentPassageViewer = ({ document, vespaDocumentData }: TProps) =
     // A term's results do not change within a session, so don't refetch one the user returns to.
     refetchOnWindowFocus: false,
     refetchOnMount: false,
-    // Hold the previous results in place while the next term loads, to avoid the list collapsing.
-    placeholderData: keepPreviousData,
   });
 
   const hasQuery = query.length > 0;
 
-  // `keepPreviousData` holds the last results against the new query key, so they have to
-  // be dropped explicitly once the search is cleared.
-  // Kept in the API's own shape as well, since the PDF viewer highlights from the
-  // bounding boxes that `toPassageBlock` drops.
   const searchPassages = useMemo(() => (hasQuery ? (data?.pages ?? []).flatMap((page) => page.results) : []), [data, hasQuery]);
 
   const passages = useMemo(() => searchPassages.map((passage) => toPassageBlock(passage, document.title)), [searchPassages, document.title]);
 
+  // Take the reader to the first match once a search returns. Guarded so it happens once
+  // per search: paging in more results and clicking a passage both change the state above,
+  // and neither should pull the view back to the top of the results.
+  const firstResultPage = passages[0]?.pages?.[0]?.page_number;
+  if (hasQuery && !hasNavigatedForQuery && firstResultPage !== undefined) {
+    setHasNavigatedForQuery(true);
+    // `page_number` is 0-indexed in the passage model; the PDF viewer is 1-indexed.
+    setPageNumber(firstResultPage + 1);
+  }
+
   const topConcepts = useMemo(() => getTopDocumentConcepts(vespaDocumentData, topics, TOP_CONCEPTS_LIMIT), [vespaDocumentData, topics]);
 
-  const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
+  const handleSubmit = (event: React.SubmitEvent<HTMLFormElement>) => {
     event.preventDefault();
     // nuqs removes the param when given null, keeping an empty search out of the URL.
     setQuery(searchTerm.trim() || null);
@@ -217,8 +178,9 @@ export const DocumentPassageViewer = ({ document, vespaDocumentData }: TProps) =
   );
 
   const totalMatches = hasQuery ? (data?.pages[0]?.total_size ?? 0) : 0;
-  // `isFetching` also covers loading the next page, which must not blank the list.
-  const isLoading = isFetching && !isFetchingNextPage && passages.length === 0;
+
+  // Avoid cases where the result state flashes before the request has resolved
+  const isLoading = hasQuery && !isFetchingNextPage && passages.length === 0 && (isPending || isFetching);
 
   return (
     <section className="flex-1 flex flex-col" id="document-passage-viewer">
@@ -272,7 +234,7 @@ export const DocumentPassageViewer = ({ document, vespaDocumentData }: TProps) =
             </>
           )}
           {!isLoading && !isError && passages.length === 0 && (
-            <PassagesEmptyState concepts={topConcepts} hasQuery={hasQuery} onClearClick={handleClear} onConceptClick={handleConceptClick} />
+            <EmptyPassages concepts={topConcepts} hasQuery={hasQuery} onClearClick={handleClear} onConceptClick={handleConceptClick} />
           )}
         </div>
 

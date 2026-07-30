@@ -208,12 +208,17 @@ describe("DocumentPassageViewer", () => {
     });
 
     it("moves the preview to the passage page when a passage is clicked", async () => {
+      // A second passage well away from the first, so the click is what moves the reader
+      // rather than the jump to the first result.
+      mockFetchSearchPassages.mockResolvedValue({
+        total_size: 2,
+        results: [buildPassage(), buildPassage({ id: "passage-2", text: "A later passage", pages: [40] })],
+      });
       renderViewer("renewable");
-      const passage = await screen.findByRole("button", { name: /Certain ecological/ });
 
-      await userEvent.click(passage);
+      await userEvent.click(await screen.findByRole("button", { name: /A later passage/ }));
 
-      expect(await screen.findByText("page:17")).toBeInTheDocument();
+      expect(await screen.findByText("page:41")).toBeInTheDocument();
     });
 
     it("shows the no results state when nothing matches", async () => {
@@ -229,6 +234,111 @@ describe("DocumentPassageViewer", () => {
       renderViewer("renewable");
 
       expect(await screen.findByText(/Something went wrong with your search/)).toBeInTheDocument();
+    });
+  });
+
+  describe("switching between search terms", () => {
+    // Lets a search be left in flight so the intermediate render can be inspected.
+    const deferredPage = () => {
+      let resolvePage: (value: unknown) => void;
+      const promise = new Promise((resolve) => {
+        resolvePage = resolve;
+      });
+      return { promise, resolve: (value: unknown) => resolvePage(value) };
+    };
+
+    it("does not show the previous term's results while the next one loads", async () => {
+      const second = deferredPage();
+      mockFetchSearchPassages
+        .mockResolvedValueOnce({ total_size: 1, results: [buildPassage({ id: "a", text: "First term result" })] })
+        .mockReturnValueOnce(second.promise);
+      renderViewer("renewable");
+      await screen.findByText("First term result");
+
+      await userEvent.clear(searchBox());
+      await userEvent.type(searchBox(), "biomass{Enter}");
+
+      // The second search is still in flight here.
+      expect(screen.queryByText("First term result")).not.toBeInTheDocument();
+      expect(screen.queryByText("No matching passages")).not.toBeInTheDocument();
+
+      second.resolve({ total_size: 1, results: [buildPassage({ id: "b", text: "Second term result" })] });
+      expect(await screen.findByText("Second term result")).toBeInTheDocument();
+    });
+
+    it("does not flash the no-results state while a search is in flight", async () => {
+      const search = deferredPage();
+      mockFetchSearchPassages.mockReturnValueOnce(search.promise);
+      renderViewer();
+
+      await userEvent.type(searchBox(), "renewable{Enter}");
+
+      expect(screen.queryByText("No matching passages")).not.toBeInTheDocument();
+      expect(screen.queryByText("Search passages")).not.toBeInTheDocument();
+
+      search.resolve({ total_size: 0, results: [] });
+      expect(await screen.findByText("No matching passages")).toBeInTheDocument();
+    });
+  });
+
+  describe("moving the preview to the first result", () => {
+    it("jumps to the page of the first result when a search returns", async () => {
+      mockFetchSearchPassages.mockResolvedValue({ total_size: 1, results: [buildPassage({ pages: [23] })] });
+      renderViewer();
+
+      expect(screen.getByText("page:none")).toBeInTheDocument();
+
+      await userEvent.type(searchBox(), "renewable{Enter}");
+
+      expect(await screen.findByText("page:24")).toBeInTheDocument();
+    });
+
+    it("stays put when another page of results is loaded", async () => {
+      mockFetchSearchPassages
+        .mockResolvedValueOnce({ total_size: 4, results: [buildPassage({ id: "a", pages: [10] })] })
+        .mockResolvedValueOnce({ total_size: 4, results: [buildPassage({ id: "b", text: "Second page", pages: [80] })] });
+      renderViewer("renewable");
+      await screen.findByText("page:11");
+
+      await userEvent.click(await screen.findByRole("button", { name: /load more/i }));
+      await screen.findByText("Second page");
+
+      expect(screen.getByText("page:11")).toBeInTheDocument();
+    });
+
+    it("stays put after the reader has clicked through to another passage", async () => {
+      mockFetchSearchPassages.mockResolvedValue({
+        total_size: 2,
+        results: [buildPassage({ id: "a", pages: [10] }), buildPassage({ id: "b", text: "A later passage", pages: [80] })],
+      });
+      renderViewer("renewable");
+      await screen.findByText("page:11");
+
+      await userEvent.click(screen.getByRole("button", { name: /A later passage/ }));
+
+      expect(await screen.findByText("page:81")).toBeInTheDocument();
+    });
+
+    it("jumps again when a new search returns", async () => {
+      mockFetchSearchPassages.mockResolvedValue({ total_size: 1, results: [buildPassage({ pages: [10] })] });
+      renderViewer("renewable");
+      await screen.findByText("page:11");
+
+      mockFetchSearchPassages.mockResolvedValue({ total_size: 1, results: [buildPassage({ id: "b", pages: [55] })] });
+      await userEvent.clear(searchBox());
+      await userEvent.type(searchBox(), "biomass{Enter}");
+
+      expect(await screen.findByText("page:56")).toBeInTheDocument();
+    });
+
+    it("does not jump when a search returns nothing", async () => {
+      mockFetchSearchPassages.mockResolvedValue({ total_size: 0, results: [] });
+      renderViewer();
+
+      await userEvent.type(searchBox(), "renewable{Enter}");
+
+      await screen.findByText("No matching passages");
+      expect(screen.getByText("page:none")).toBeInTheDocument();
     });
   });
 
