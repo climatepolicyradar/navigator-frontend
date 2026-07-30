@@ -100,9 +100,13 @@ function generateAnnotations(document: TFamilyDocumentPublic, highlights: THighl
   });
 }
 
+// Adobe SDK does not provide a type
 type TAdobeApis = {
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   adobeViewer: any;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   viewerApi: any;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   annotationManagerApi: any;
 };
 
@@ -125,8 +129,12 @@ export default function usePDFPreview(physicalDocument: TFamilyDocumentPublic, a
   };
 
   // Memoize the Adobe Viewer API - this is used to control the viewer, e.g. change page
+  // Adobe SDK does not provide a type
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   let adobeViewerMemo: any;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   let viewerApiMemo: any;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   let annotationManagerApiMemo: any;
 
   // The page-change listener is registered once and reads the highlights from here, so
@@ -289,6 +297,8 @@ export default function usePDFPreview(physicalDocument: TFamilyDocumentPublic, a
     // This will catch passage clicks, as well as navigation within the native pdf reader
     await adobeViewer.registerCallback(
       window.AdobeDC.View.Enum.CallbackType.EVENT_LISTENER,
+      // Adobe SDK does not provide a type
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
       async (event: any) => {
         if (event.type === "CURRENT_ACTIVE_PAGE") {
           await addAnnotationsForPage(event.data.pageNumber);
