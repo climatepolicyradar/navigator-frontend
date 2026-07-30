@@ -83,7 +83,7 @@ export const SearchControls = ({
       <form onSubmit={onQuerySubmit} className="col-start-1 -col-end-1 cols-5:col-start-2 cols-5:-col-end-2">
         <Input
           containerClasses="px-4 py-3 bg-bg-flat border border-border-normal rounded-lg placeholder-text-tertiary"
-          inputClasses="py-0 text-sm text-text-primary font-medium leading-5"
+          inputClasses="py-0 text-sm! text-text-primary font-medium leading-5"
           icon={<LucideSearch size={16} />}
           clearable
           onChange={(event) => setSearchInput(event.target.value)}
