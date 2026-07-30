@@ -99,14 +99,18 @@ export const getFamilyData = async (slug: string, features: TFeatures, importId?
       .filter((country) => country.length === 3 && !EXCLUDED_ISO_CODES.includes(country))
       .map(async (country) => {
         try {
-          const { data: subDivisionResponse } = await apiClient.get<TApiGeographySubdivision[]>(`/geographies/subdivisions/${country}`);
+          const subDivisionResponse = await apiClient.get<TApiGeographySubdivision[]>(`/geographies/subdivisions/${country}`);
           // http-common's get() returns error.response rather than throwing for Axios errors,
-          // so a non-2xx response resolves here with an error body instead of an array.
-          if (!Array.isArray(subDivisionResponse)) {
-            errors.push(new Error(`Failed to fetch subdivisions data for country: ${country}`));
-            return [];
+          // so a non-2xx response resolves here instead of throwing.
+          if (Array.isArray(subDivisionResponse?.data)) {
+            return subDivisionResponse.data;
           }
-          return subDivisionResponse;
+          // A 404 just means the country has no subdivisions, which is expected for most
+          // countries - return empty quietly. Anything else (5xx, no response) is a genuine failure.
+          if (subDivisionResponse?.status !== 404) {
+            errors.push(new Error(`Failed to fetch subdivisions data for country: ${country}`));
+          }
+          return [];
         } catch (error) {
           const status = axios.isAxiosError(error) ? error.response?.status : "unknown";
           errors.push(new Error(`Failed to fetch subdivisions data for country: ${country}`, { cause: status }));

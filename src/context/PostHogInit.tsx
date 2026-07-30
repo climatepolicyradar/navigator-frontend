@@ -43,7 +43,15 @@ function PostHogPageView({ consent, pageViewProps }: TPostHogPageViewProps): nul
         geographyType = subdivisionMatcher.test(pathParts[2]) ? "subdivision" : "country";
       }
 
-      posthog.capture("$pageview", { $current_url: url, consent, geographyType, pageType, pageTypeSlug, ...pageViewProps });
+      posthog.capture("$pageview", {
+        $current_url: url,
+        consent,
+        is_waf_bot: getCookie("is_waf_bot") === "true",
+        geographyType,
+        pageType,
+        pageTypeSlug,
+        ...pageViewProps,
+      });
     }
   }, [pathname, searchParams, posthog, consent, pageViewProps]);
 
@@ -77,9 +85,6 @@ export default function PostHogInit({ consent = false, pageViewProps = {} }: TPo
       capture_pageview: true,
       capture_pageleave: true,
     });
-    // Tag every event with the WAF bot signal (set as a cookie by middleware.ts)
-    // so suspected bot traffic can be filtered out in PostHog.
-    posthog.register({ is_bot: getCookie("is_bot") === "true" });
     window.sessionStorage.setItem("posthogLoaded", "true");
   }, []);
 
@@ -91,6 +96,9 @@ export default function PostHogInit({ consent = false, pageViewProps = {} }: TPo
     } else {
       posthog.set_config({ persistence: "memory" });
     }
+    // Register after persistence is set: switching persistence clears super
+    // properties, so `is_waf_bot` was being dropped for non-consented users.
+    posthog.register({ is_waf_bot: getCookie("is_waf_bot") === "true" });
   }, [consent]);
 
   return (

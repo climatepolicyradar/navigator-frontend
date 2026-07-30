@@ -20,6 +20,7 @@ class FrontendWebAcl(pulumi.ComponentResource):
         self,
         name: str,
         enable_bot_control: bool = False,
+        enable_logging: bool = False,
         tags: dict[str, str] | None = None,
         opts: pulumi.ResourceOptions | None = None,
     ):
@@ -137,6 +138,10 @@ class FrontendWebAcl(pulumi.ComponentResource):
                         key="awswaf:managed:aws:bot-control:",
                     ),
                 ),
+                # Label bot requests so logging can filter to them (see logging_filter).
+                rule_labels=[
+                    aws.wafv2.WebAclRuleRuleLabelArgs(name="frontend:waf:bot"),
+                ],
                 visibility_config=aws.wafv2.WebAclRuleVisibilityConfigArgs(
                     cloudwatch_metrics_enabled=True,
                     metric_name="FlagBotTraffic",
@@ -163,6 +168,49 @@ class FrontendWebAcl(pulumi.ComponentResource):
             tags=self.tags,
             opts=pulumi.ResourceOptions(provider=self._useast1, parent=self),
         )
+
+        # Log bot-tagged requests to CloudWatch: captures every bot at the edge,
+        # including non-JS crawlers that never reach PostHog. Needs bot control,
+        # since the `frontend:waf:bot` label only exists when FlagBotTraffic runs.
+        if enable_logging:
+            # Log group must be named aws-waf-logs-*, and in us-east-1 for a
+            # CLOUDFRONT-scoped WebACL.
+            self.log_group = aws.cloudwatch.LogGroup(
+                f"{name}-waf-logs",
+                name=f"aws-waf-logs-{name}",
+                retention_in_days=30,
+                tags=self.tags,
+                opts=pulumi.ResourceOptions(provider=self._useast1, parent=self),
+            )
+
+            self.logging_config = aws.wafv2.WebAclLoggingConfiguration(
+                f"{name}-waf-logging",
+                resource_arn=self.web_acl.arn,
+                # WAFv2 wants the log-group ARN without the trailing ":*".
+                log_destination_configs=[
+                    self.log_group.arn.apply(
+                        lambda arn: arn[:-2] if arn.endswith(":*") else arn
+                    )
+                ],
+                # Keep only bot-tagged requests, drop the rest (cost control).
+                logging_filter=aws.wafv2.WebAclLoggingConfigurationLoggingFilterArgs(
+                    default_behavior="DROP",
+                    filters=[
+                        aws.wafv2.WebAclLoggingConfigurationLoggingFilterFilterArgs(
+                            behavior="KEEP",
+                            requirement="MEETS_ANY",
+                            conditions=[
+                                aws.wafv2.WebAclLoggingConfigurationLoggingFilterFilterConditionArgs(
+                                    label_name_condition=aws.wafv2.WebAclLoggingConfigurationLoggingFilterFilterConditionLabelNameConditionArgs(
+                                        label_name="frontend:waf:bot",
+                                    ),
+                                ),
+                            ],
+                        ),
+                    ],
+                ),
+                opts=pulumi.ResourceOptions(provider=self._useast1, parent=self),
+            )
 
         self.register_outputs(
             {
