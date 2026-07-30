@@ -1,7 +1,7 @@
 import type { SearchPassage } from "@/api/passages";
 import { TFamilyDocumentPublic, TPassage } from "@/types";
 
-import usePDFPreview, { getHighlights } from "./usePDFPreview";
+import usePDFPreview, { getHighlights, TAnnotation } from "./usePDFPreview";
 
 // Stands in for the Adobe SDK, which needs a real browser. Records the calls the hook
 // makes so the annotation behaviour can be asserted on.
@@ -222,7 +222,7 @@ describe("registerPassages", () => {
 
   // Pages sent to addAnnotations, read back off the generated Adobe payload.
   const annotatedPages = () =>
-    adobe.addAnnotations.mock.calls.flatMap((call) => call[0].map((annotation: any) => annotation.target.selector.node.index + 1));
+    adobe.addAnnotations.mock.calls.flatMap((call) => call[0].map((annotation: TAnnotation) => annotation.target.selector.node.index + 1));
 
   const firePageChange = async (pageNumber: number) => {
     const [, handler] = adobe.registerCallback.mock.calls[0];
@@ -231,6 +231,8 @@ describe("registerPassages", () => {
 
   beforeEach(() => {
     Object.values(adobe).forEach((mock) => mock.mockReset());
+    // Adobe SDK is not typed
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     window.AdobeDC = { View: { Enum: { CallbackType: { EVENT_LISTENER: "EVENT_LISTENER" } } } } as any;
   });
 

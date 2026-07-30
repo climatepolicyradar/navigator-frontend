@@ -62,7 +62,37 @@ const getPassageHighlights = (passage: TViewerPassage): THighlight[] => {
 
 export const getHighlights = (passages: TViewerPassage[]): THighlight[] => passages.flatMap(getPassageHighlights);
 
-function generateAnnotations(document: TFamilyDocumentPublic, highlights: THighlight[]) {
+export type TAnnotation = {
+  "@context": string[];
+  type: "Annotation";
+  id: string;
+  bodyValue: string;
+  motivation: "commenting";
+  target: {
+    source: string;
+    selector: {
+      node: {
+        index: number;
+      };
+      subtype: "highlight";
+      boundingBox: [xMin: number, yMin: number, xMax: number, yMax: number];
+      quadPoints: [xMin: number, yMin: number, xMax: number, yMin: number, xMin: number, yMax: number, xMax: number, yMax: number];
+      styleClass: "body-value-css";
+      type: "AdobeAnnoSelector";
+      strokeColor: "#FFFF00";
+      strokeWidth: 1;
+      opacity: 0.25;
+    };
+  };
+  creator: {
+    type: "Person";
+    name: "Climate Policy Radar";
+  };
+  created: string;
+  modified: string;
+};
+
+function generateAnnotations(document: TFamilyDocumentPublic, highlights: THighlight[]): TAnnotation[] {
   const date = new Date();
   return highlights.map(({ id, pageNumber, boundingBox: [xMin, yMin, xMax, yMax] }) => {
     return {
