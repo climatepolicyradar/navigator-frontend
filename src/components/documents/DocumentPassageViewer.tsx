@@ -192,11 +192,11 @@ export const DocumentPassageViewer = ({ document, vespaDocumentData }: TProps) =
             containerClasses="px-4 py-2"
             icon={<Search size={16} />}
             inputClasses="!text-sm"
-            name="passage-search"
+            name="Search"
             onChange={(event) => setSearchTerm(event.target.value)}
             onClear={handleClear}
             placeholder="Enter search term"
-            type="search"
+            type="text"
             value={searchTerm}
           />
         </form>
