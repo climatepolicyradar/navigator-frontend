@@ -2,7 +2,7 @@ import { Earth, ListFilter } from "lucide-react";
 
 import { TFiltersGroupConfig } from "@/types";
 
-export const FILTER_GROUPS: TFiltersGroupConfig[] = [
+export const SEARCH_FILTER_GROUPS: TFiltersGroupConfig[] = [
   {
     title: "Filters",
     subtitle: "Choose themes and specific filters to refine your search",

@@ -58,7 +58,7 @@ export const AppliedFilters = ({ ancestorPath = [], className, showClearAll }: I
             aria-label="Clear all filters"
             onClick={() => clearFilters()}
           >
-            Clear all
+            Reset
           </button>
         </li>
       )}
