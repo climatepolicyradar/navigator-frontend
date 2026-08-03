@@ -1,4 +1,4 @@
-import type { SearchPassage } from "@/api/passages";
+import type { ISearchPassage } from "@/api/passages";
 import ViewSDKClient from "@/api/pdf";
 import { DEFAULT_DOCUMENT_TITLE } from "@/constants/document";
 import { TPassage, TFamilyDocumentPublic } from "@/types";
@@ -14,7 +14,7 @@ import { TPassage, TFamilyDocumentPublic } from "@/types";
   Both are normalised to `THighlight` before anything else happens, so the rest of the
   hook never has to know which model a passage came from.
 */
-export type TViewerPassage = TPassage | SearchPassage;
+export type TViewerPassage = TPassage | ISearchPassage;
 
 type THighlight = {
   id: string;
@@ -23,7 +23,7 @@ type THighlight = {
   boundingBox: [xMin: number, yMin: number, xMax: number, yMax: number];
 };
 
-const isNewModelPassage = (passage: TViewerPassage): passage is SearchPassage => "pages_with_bounding_boxes" in passage;
+const isNewModelPassage = (passage: TViewerPassage): passage is ISearchPassage => "pages_with_bounding_boxes" in passage;
 
 // Both models list their four corners in the same order — top-left, top-right,
 // bottom-right, bottom-left — so only the container shape and the page indexing differ.

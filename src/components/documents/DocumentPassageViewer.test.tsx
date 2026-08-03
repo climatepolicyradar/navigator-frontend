@@ -2,7 +2,7 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { render, screen, waitFor, within } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 
-import type { SearchPassage } from "@/api/passages";
+import type { ISearchPassage } from "@/api/passages";
 import { TopicsContext } from "@/context/TopicsContext";
 import { TFamilyDocumentPublic, TSearchResponse, TTopics } from "@/types";
 
@@ -40,7 +40,7 @@ vi.mock("nuqs", async (importOriginal) => {
   };
 });
 
-const buildPassage = (overrides: Partial<SearchPassage> = {}): SearchPassage => ({
+const buildPassage = (overrides: Partial<ISearchPassage> = {}): ISearchPassage => ({
   id: "passage-1",
   text_block_id: "block-1",
   idx: 12,

@@ -1,4 +1,4 @@
-import type { SearchPassage } from "@/api/passages";
+import type { ISearchPassage } from "@/api/passages";
 import { TFamilyDocumentPublic, TPassage } from "@/types";
 
 import usePDFPreview, { getHighlights, TAnnotation } from "./usePDFPreview";
@@ -47,7 +47,7 @@ const legacyPassage = (overrides: Partial<TPassage> = {}): TPassage => ({
   ...overrides,
 });
 
-const newPassage = (overrides: Partial<SearchPassage> = {}): SearchPassage =>
+const newPassage = (overrides: Partial<ISearchPassage> = {}): ISearchPassage =>
   ({
     id: "passage-1",
     text_block_id: "block-1",
@@ -70,7 +70,7 @@ const newPassage = (overrides: Partial<SearchPassage> = {}): SearchPassage =>
       },
     ],
     ...overrides,
-  }) as SearchPassage;
+  }) as ISearchPassage;
 
 describe("getHighlights", () => {
   describe("the legacy Vespa model", () => {
@@ -198,7 +198,7 @@ describe("registerPassages", () => {
   const document = { cdn_object: "doc.pdf", import_id: "D1", title: "Doc" } as TFamilyDocumentPublic;
 
   // A passage whose single box sits on `page`, expressed 0-indexed as the API does.
-  const passageOnPage = (page: number, id: string): SearchPassage =>
+  const passageOnPage = (page: number, id: string): ISearchPassage =>
     newPassage({
       id,
       text_block_id: id,
