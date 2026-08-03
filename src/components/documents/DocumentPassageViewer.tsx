@@ -150,13 +150,12 @@ export const DocumentPassageViewer = ({ document, vespaDocumentData }: TProps) =
 
   const handleSubmit = (event: React.SubmitEvent<HTMLFormElement>) => {
     event.preventDefault();
-    // nuqs removes the param when given null, keeping an empty search out of the URL.
-    setQuery(searchTerm.trim() || null);
+    setQuery(searchTerm.trim());
   };
 
   const handleClear = () => {
     setSearchTerm("");
-    setQuery(null);
+    setQuery("");
   };
 
   const handleConceptClick = useCallback(
