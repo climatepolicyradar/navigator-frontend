@@ -1,7 +1,20 @@
+import { faro } from "@grafana/faro-web-sdk";
+
 import type { ISearchPassage } from "@/api/passages";
 import ViewSDKClient from "@/api/pdf";
 import { DEFAULT_DOCUMENT_TITLE } from "@/constants/document";
-import { TPassage, TFamilyDocumentPublic } from "@/types";
+import {
+  IAdobeAnnotationManagerApi,
+  IAdobeViewer,
+  IAdobeViewerApi,
+  TAdobeApis,
+  TAdobeEvent,
+  THighlight,
+  TPassage,
+  TFamilyDocumentPublic,
+} from "@/types";
+import { generateAnnotations } from "@/utils/adobe/generateAnnotations";
+import { reportMissingAdobeMethods } from "@/utils/adobe/reportMissingAdobeMethods";
 
 /*
   The viewer is fed passages from two sources with different geometry models:
@@ -15,13 +28,6 @@ import { TPassage, TFamilyDocumentPublic } from "@/types";
   hook never has to know which model a passage came from.
 */
 export type TViewerPassage = TPassage | ISearchPassage;
-
-type THighlight = {
-  id: string;
-  // 1-indexed, matching Adobe's page events and `gotoLocation`.
-  pageNumber: number;
-  boundingBox: [xMin: number, yMin: number, xMax: number, yMax: number];
-};
 
 const isNewModelPassage = (passage: TViewerPassage): passage is ISearchPassage => "pages_with_bounding_boxes" in passage;
 
@@ -62,84 +68,6 @@ const getPassageHighlights = (passage: TViewerPassage): THighlight[] => {
 
 export const getHighlights = (passages: TViewerPassage[]): THighlight[] => passages.flatMap(getPassageHighlights);
 
-export type TAnnotation = {
-  "@context": string[];
-  type: "Annotation";
-  id: string;
-  bodyValue: string;
-  motivation: "commenting";
-  target: {
-    source: string;
-    selector: {
-      node: {
-        index: number;
-      };
-      subtype: "highlight";
-      boundingBox: [xMin: number, yMin: number, xMax: number, yMax: number];
-      quadPoints: [xMin: number, yMin: number, xMax: number, yMin: number, xMin: number, yMax: number, xMax: number, yMax: number];
-      styleClass: "body-value-css";
-      type: "AdobeAnnoSelector";
-      strokeColor: "#FFFF00";
-      strokeWidth: 1;
-      opacity: 0.25;
-    };
-  };
-  creator: {
-    type: "Person";
-    name: "Climate Policy Radar";
-  };
-  created: string;
-  modified: string;
-};
-
-function generateAnnotations(document: TFamilyDocumentPublic, highlights: THighlight[]): TAnnotation[] {
-  const date = new Date();
-  return highlights.map(({ id, pageNumber, boundingBox: [xMin, yMin, xMax, yMax] }) => {
-    return {
-      "@context": ["https://www.w3.org/ns/anno.jsonld", "https://comments.acrobat.com/ns/anno.jsonld"],
-      type: "Annotation",
-      id,
-      bodyValue: "",
-      motivation: "commenting",
-      target: {
-        source: document.import_id,
-        selector: {
-          node: {
-            // Adobe indexes pages from 0.
-            index: pageNumber - 1,
-          },
-          subtype: "highlight",
-          // format [Xmin, Ymin, Xmax, Ymax]
-          boundingBox: [xMin, yMin, xMax, yMax],
-          // format [upper-left, upper-right, lower-left, lower-right] as x,y pairs
-          quadPoints: [xMin, yMin, xMax, yMin, xMin, yMax, xMax, yMax],
-          styleClass: "body-value-css",
-          type: "AdobeAnnoSelector",
-          strokeColor: "#FFFF00",
-          strokeWidth: 1,
-          opacity: 0.25,
-        },
-      },
-      creator: {
-        type: "Person",
-        name: "Climate Policy Radar",
-      },
-      created: date.toISOString(),
-      modified: date.toISOString(),
-    };
-  });
-}
-
-// Adobe SDK does not provide a type
-type TAdobeApis = {
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  adobeViewer: any;
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  viewerApi: any;
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  annotationManagerApi: any;
-};
-
 export default function usePDFPreview(physicalDocument: TFamilyDocumentPublic, adobeKey: string) {
   const viewerConfig = {
     showDownloadPDF: false,
@@ -159,13 +87,9 @@ export default function usePDFPreview(physicalDocument: TFamilyDocumentPublic, a
   };
 
   // Memoize the Adobe Viewer API - this is used to control the viewer, e.g. change page
-  // Adobe SDK does not provide a type
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  let adobeViewerMemo: any;
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  let viewerApiMemo: any;
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  let annotationManagerApiMemo: any;
+  let adobeViewerMemo: IAdobeViewer;
+  let viewerApiMemo: IAdobeViewerApi;
+  let annotationManagerApiMemo: IAdobeAnnotationManagerApi;
 
   // The page-change listener is registered once and reads the highlights from here, so
   // that a new set of passages does not require a second listener. `highlightsVersion`
@@ -184,7 +108,9 @@ export default function usePDFPreview(physicalDocument: TFamilyDocumentPublic, a
   const getAdobeApis = async (): Promise<TAdobeApis> => {
     const viewSDKClient = new ViewSDKClient();
     await viewSDKClient.ready();
-    const adobeViewer = await viewSDKClient.getAdobeView(physicalDocument, adobeKey, "pdf-div");
+    // The one place the untyped SDK crosses into typed code. `getAdobeView` comes from
+    // plain JS, so this annotation is an unchecked assertion — hence the runtime check below.
+    const adobeViewer: IAdobeViewer = await viewSDKClient.getAdobeView(physicalDocument, adobeKey, "pdf-div");
     adobeViewerMemo = adobeViewer;
     // Preview the file (this returns the Adobe Viewer APIs)
     const adobeViewerAPI = await adobeViewer.previewFile(
@@ -213,11 +139,14 @@ export default function usePDFPreview(physicalDocument: TFamilyDocumentPublic, a
     annotationManagerApi.setConfig(annotationConfig);
     annotationManagerApiMemo = annotationManagerApi;
 
-    return {
+    const apis = {
       adobeViewer,
       viewerApi,
       annotationManagerApi,
     };
+    reportMissingAdobeMethods(apis);
+
+    return apis;
   };
 
   // Changes the page of the pdf reader to the page number provided
@@ -234,7 +163,6 @@ export default function usePDFPreview(physicalDocument: TFamilyDocumentPublic, a
   // Only ever holding one page's worth of annotations is deliberate — the Adobe SDK
   // degrades badly when a document carries a large number of them.
   const applyAnnotationsForPage = async (pageNumber: number) => {
-    // console.log("applyAnnotationsForPage");
     let annotationManagerApi = annotationManagerApiMemo;
     if (!annotationManagerApiMemo) {
       const { annotationManagerApi: newAnnotationManagerApi } = await getAdobeApis();
@@ -257,15 +185,11 @@ export default function usePDFPreview(physicalDocument: TFamilyDocumentPublic, a
     const pageHighlights = currentHighlights.filter((highlight) => highlight.pageNumber === pageNumber);
     try {
       // Clear annotations before adding provided ones
-      // console.time("Removing annotations");
       await annotationManagerApi.removeAnnotationsFromPDF();
-      // console.timeEnd("Removing annotations");
       if (pageHighlights.length > 0) {
         // Generate highlights for the provided passages
         const annotations = generateAnnotations(physicalDocument, pageHighlights);
-        // console.time("Adding annotations");
         await annotationManagerApi.addAnnotations(annotations);
-        // console.timeEnd("Adding annotations");
       }
     } catch (error) {
       // Whatever is on the page is now unknown, so let the next attempt redo this page
@@ -278,7 +202,12 @@ export default function usePDFPreview(physicalDocument: TFamilyDocumentPublic, a
   // Queues an annotation update behind any still in flight. Without this the remove/add
   // pairs of two overlapping updates interleave and both sets stay on the page.
   const addAnnotationsForPage = (pageNumber: number): Promise<void> => {
-    annotationQueue = annotationQueue.then(() => applyAnnotationsForPage(pageNumber)).catch(() => {});
+    annotationQueue = annotationQueue
+      .then(() => applyAnnotationsForPage(pageNumber))
+      // Swallowed so one failure does not stall every later update, but reported
+      .catch((error: unknown) => {
+        faro.api?.pushError(error instanceof Error ? error : new Error(String(error)));
+      });
     return annotationQueue;
   };
 
@@ -327,9 +256,7 @@ export default function usePDFPreview(physicalDocument: TFamilyDocumentPublic, a
     // This will catch passage clicks, as well as navigation within the native pdf reader
     await adobeViewer.registerCallback(
       window.AdobeDC.View.Enum.CallbackType.EVENT_LISTENER,
-      // Adobe SDK does not provide a type
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      async (event: any) => {
+      async (event: TAdobeEvent) => {
         if (event.type === "CURRENT_ACTIVE_PAGE") {
           await addAnnotationsForPage(event.data.pageNumber);
         }

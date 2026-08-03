@@ -1,3 +1,4 @@
+export * from "./adobe";
 export * from "./api";
 export * from "./bff/collection";
 export * from "./bff/document";

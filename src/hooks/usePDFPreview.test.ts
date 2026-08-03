@@ -1,7 +1,7 @@
 import type { ISearchPassage } from "@/api/passages";
-import { TFamilyDocumentPublic, TPassage } from "@/types";
+import { TAnnotation, TFamilyDocumentPublic, TPassage } from "@/types";
 
-import usePDFPreview, { getHighlights, TAnnotation } from "./usePDFPreview";
+import usePDFPreview, { getHighlights } from "./usePDFPreview";
 
 // Stands in for the Adobe SDK, which needs a real browser. Records the calls the hook
 // makes so the annotation behaviour can be asserted on.
