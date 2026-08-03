@@ -314,7 +314,11 @@ jobs:
 
             staging-shared-resources:
               - 'infra/platform/**'
-
+            
+            # We have removed these for now as
+            # we need environment: production to get the AWS creds for that environment
+            # but that environment has GitHub protection rules, so we get stuck
+            # TODO: Iron out a strategy and implement it here
             # production-frontend-cpr:
             #   - 'infra/Pulumi.cpr-production.yaml'
             #   - 'infra/__main__.py'

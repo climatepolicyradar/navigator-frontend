@@ -1,7 +1,17 @@
 import axios from "axios";
-import type { AxiosInstance, AxiosResponse } from "axios";
+import type { AxiosError, AxiosInstance, AxiosResponse } from "axios";
 
 import { TApiConfig } from "@/types";
+
+// Log a concise one-line summary of a failed request. Never log the full
+// AxiosError/response: that dumps headers, the request body and the app-token
+// JWT into the logs and buries the useful detail under Node internals.
+function logApiError(error: AxiosError) {
+  const method = error.config?.method?.toUpperCase() ?? "REQUEST";
+  const url = error.config?.url ?? "unknown";
+  const summary = error.response ? `${error.response.status} ${error.response.statusText}` : (error.code ?? error.message);
+  console.error(`[api] ${method} ${url} -> ${summary}`);
+}
 
 export async function getEnvFromServer() {
   return await axios.get("/api/env").then((res: any) => res);
@@ -50,7 +60,7 @@ class ApiClient {
       .then((res: any) => res)
       .catch((error) => {
         if (axios.isAxiosError(error)) {
-          console.error(error.response);
+          logApiError(error);
           return error.response;
         }
         console.error(error);
@@ -64,7 +74,7 @@ class ApiClient {
       .then((res) => res)
       .catch((error) => {
         if (axios.isAxiosError(error)) {
-          console.error(error.response);
+          logApiError(error);
           return error.response;
         }
         console.error(error);
