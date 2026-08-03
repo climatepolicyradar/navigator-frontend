@@ -4,25 +4,25 @@
 
 import { ISearchPassagesParams, ISearchPassagesResponse, TSearchQueryGroup } from "@/types";
 
-function searchPassagesUrl(): string {
+const searchPassagesUrl = (): string => {
   const origin = (process.env.NEXT_PUBLIC_API_URL || "https://api.climatepolicyradar.org").replace(/\/$/, "");
   return `${origin}/search/passages`;
-}
+};
 
-function configurePassagesFilters(documents: string[]): TSearchQueryGroup {
+const configurePassagesFilters = (documents: string[]): TSearchQueryGroup => {
   return {
     op: "or",
     filters: documents.map((documentId) => ({ field: "document_id", op: "contains", value: documentId })),
   };
-}
+};
 
-export async function fetchSearchPassages({
+export const fetchSearchPassages = async ({
   query,
   documents,
   pageSize,
   pageToken,
   signal,
-}: ISearchPassagesParams): Promise<ISearchPassagesResponse> {
+}: ISearchPassagesParams): Promise<ISearchPassagesResponse> => {
   const url = new URL(searchPassagesUrl());
 
   url.searchParams.set("query", query);
@@ -33,4 +33,4 @@ export async function fetchSearchPassages({
   const res = await fetch(url, { signal });
   if (!res.ok) throw new Error(`Passage search API error: ${res.status}`);
   return res.json() as Promise<ISearchPassagesResponse>;
-}
+};
