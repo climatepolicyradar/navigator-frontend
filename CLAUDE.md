@@ -30,6 +30,8 @@ container.
   [Base UI components](https://base-ui.com/react/components)
 - When generating new components, do not apply too many tailwind classes, allow
   for developer discretion.
+- When composition React components, adhere to this order of declarations:
+  hooks, variables, event handlers, return (component render)
 
 ### Types
 
