@@ -38,11 +38,11 @@ type TDrawerContentProps = {
 };
 
 const DrawerContent = ({ familyData, languages }: TDrawerContentProps) => {
-  const { countries, family, familyTopics, subdivisions } = familyData;
+  const { family, familyTopics } = familyData;
   const { getCategoryTextLookup } = useText();
   const getCategoryText = getCategoryTextLookup(family.attribution.category);
-  const pageHeaderMetadata = getFamilyHeader({ countries, family, subdivisions, getCategoryText });
-  const metadata = getFamilyMetadata(family, familyTopics, countries, subdivisions);
+  const pageHeaderMetadata = getFamilyHeader({ family, getCategoryText });
+  const metadata = getFamilyMetadata(family, familyTopics);
 
   return (
     <div className="flex flex-col gap-8">

@@ -1,16 +1,14 @@
 import { TDataInDocument } from "@/schemas";
 
-import { TApiDocumentPublic, TApiSearchResponse } from "../api";
+import { TApiSearchResponse } from "../api";
 import { TTopics } from "../topics";
 import { TFamilyDocumentPublic, TFamilyPublic, TSearchResponse } from "../types";
 
-export type TDocumentApiOldData = {
-  document: TApiDocumentPublic;
+export type TDocumentApiData = {
+  document: TDataInDocument;
   topicsData: TTopics;
   vespaDocumentData: TApiSearchResponse;
 };
-
-export type TDocumentApiNewData = TDataInDocument | null;
 
 export type TDocumentPresentationalData = {
   document: TFamilyDocumentPublic;
@@ -18,9 +16,7 @@ export type TDocumentPresentationalData = {
   topicsData: TTopics;
   vespaDocumentData: TSearchResponse;
   debug?: {
-    usesDataIn: boolean;
-    newApiData?: TDocumentApiNewData;
-    originalDocument?: TApiDocumentPublic;
+    dataInDocument: TDataInDocument;
   };
 };
 

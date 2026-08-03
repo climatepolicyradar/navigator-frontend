@@ -1,5 +1,19 @@
-import { CATEGORY_MAP } from "@/bff/transformers/partials/transformOldFamily";
-import { TAttributionCategory, TCategory, TCorpusTypeSubCategory } from "@/types";
+import { TApiDataInCategory, TAttributionCategory, TCategory, TCorpusTypeSubCategory } from "@/types";
+
+export const CATEGORY_MAP: Record<TCategory, TApiDataInCategory> = {
+  Executive: "Policy",
+  EXECUTIVE: "Policy",
+  Law: "Law",
+  Legislative: "Law",
+  LEGISLATIVE: "Law",
+  Litigation: "Litigation",
+  LITIGATION: "Litigation",
+  MCF: "Multilateral Climate Fund project",
+  Policy: "Policy",
+  Reports: "Report",
+  REPORTS: "Report",
+  UNFCCC: "UN submission",
+};
 
 type TAnyCategory = Lowercase<TCategory | TAttributionCategory>;
 

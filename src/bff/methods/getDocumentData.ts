@@ -1,16 +1,7 @@
 import { ApiClient } from "@/api/http-common";
 import { documentTransformer } from "@/bff/transformers/documentTransformer";
-import { DEFAULT_DOCUMENT_TITLE } from "@/constants/document";
 import { TDataInDocument, validateDataInDocument } from "@/schemas";
-import {
-  TApiDocumentPublic,
-  TApiItemResponse,
-  TApiSearchResponse,
-  TApiSlugResponse,
-  TDocumentPresentationalResponse,
-  TFeatures,
-  TTopics,
-} from "@/types";
+import { TApiItemResponse, TApiSearchResponse, TApiSlugResponse, TDocumentPresentationalResponse, TFeatures, TTopics } from "@/types";
 import { extractTopicIds } from "@/utils/extractTopicIds";
 import { fetchAndProcessTopics } from "@/utils/fetchAndProcessTopics";
 
@@ -30,37 +21,20 @@ export const getDocumentData = async (slug: string, features: TFeatures): Promis
     return { data: null, errors };
   }
 
-  let document: TApiDocumentPublic;
-  try {
-    const { data: documentResponse } = await apiClient.get<TApiItemResponse<TApiDocumentPublic>>(
-      `/families/documents/${slugResponse.family_document_import_id}`
-    );
-    document = documentResponse.data;
-    if (document.title === "") document.title = DEFAULT_DOCUMENT_TITLE;
-  } catch (error) {
-    errors.push(new Error("Failed to fetch document data", error));
-    return { data: null, errors };
-  }
-
-  if (!document || !document.family) {
-    errors.push(new Error("No family or document data found"));
-    return { data: null, errors };
-  }
-
-  // Get the new data-in document for this document's family or fall back to the older data
-  let dataInDocument: TDataInDocument | null = null;
+  let document: TDataInDocument;
   if (features["new-data-model"]) {
     try {
       const { data: dataInDocumentResponse } = await apiClient.get<TApiItemResponse>(`/data-in/documents/${slugResponse.family_document_import_id}`);
-      dataInDocument = validateDataInDocument(dataInDocumentResponse.data);
+      document = validateDataInDocument(dataInDocumentResponse.data);
     } catch (error) {
-      errors.push(error as Error);
+      errors.push(new Error("Failed to fetch document data", error));
+      return { data: null, errors };
     }
   }
 
   let vespaDocumentData: TApiSearchResponse;
   try {
-    const vespaResponse = await backendApiClient.get<TApiSearchResponse>(`/document/${document.import_id}`);
+    const vespaResponse = await backendApiClient.get<TApiSearchResponse>(`/document/${document.id}`);
     // http-common's get() returns error.response rather than throwing for Axios errors,
     // so we must check the status explicitly rather than relying on catch for non-2xx responses.
     if (vespaResponse?.status === 200) {
@@ -77,5 +51,5 @@ export const getDocumentData = async (slug: string, features: TFeatures): Promis
 
   /* Transform API data for presentation */
 
-  return documentTransformer({ document, topicsData, vespaDocumentData }, dataInDocument, errors);
+  return documentTransformer({ document, topicsData, vespaDocumentData }, errors);
 };
