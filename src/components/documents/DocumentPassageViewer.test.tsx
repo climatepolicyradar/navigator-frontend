@@ -101,7 +101,7 @@ const renderViewer = (initialQuery = "") => {
   );
 };
 
-const searchBox = () => screen.getByRole("searchbox", { name: /search passages/i });
+const searchBox = () => screen.getByRole("textbox", { name: /search passages/i });
 
 // The Input atom's clear control is an unlabelled icon button, so it is reached through
 // the search landmark rather than by name.
@@ -131,7 +131,7 @@ describe("DocumentPassageViewer", () => {
       await userEvent.type(searchBox(), "renewable{Enter}");
 
       await waitFor(() => expect(mockFetchSearchPassages).toHaveBeenCalledTimes(1));
-      expect(mockFetchSearchPassages).toHaveBeenCalledWith(expect.objectContaining({ query: "renewable", documentId: "CCLW.document.1.1" }));
+      expect(mockFetchSearchPassages).toHaveBeenCalledWith(expect.objectContaining({ query: "renewable", documents: ["CCLW.document.1.1"] }));
     });
 
     it("puts the submitted term in the url so the search can be shared", async () => {
