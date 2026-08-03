@@ -41,7 +41,7 @@ container.
   definition if they feel it is necessary, but this should be the default
   behaviour.
 - If creating any new Interfaces prefix the name of the Interface with `I`, e.g.
-  `IInterfaceName`
+  `IInterfaceName`, or for new Types us `T`, e.g. `TTypeName`
 
 ### Utilities
 
