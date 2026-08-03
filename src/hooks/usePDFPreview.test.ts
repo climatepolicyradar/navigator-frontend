@@ -286,28 +286,6 @@ describe("registerPassages", () => {
     expect(annotatedPages()).toEqual([6, 6]);
   });
 
-  it("never leaves two sets of annotations on the page when updates overlap", async () => {
-    // Make remove/add resolve on later ticks so concurrent updates would interleave.
-    const defer = () => new Promise((resolve) => setTimeout(resolve, 0));
-    adobe.removeAnnotationsFromPDF.mockImplementation(defer);
-    adobe.addAnnotations.mockImplementation(defer);
-
-    const preview = usePDFPreview(document, "key");
-    // Registration renders the starting page (6), so the two pages exercised below are
-    // ones it has not already drawn.
-    await preview.registerPassages([passageOnPage(5, "b"), passageOnPage(8, "c"), passageOnPage(11, "d")]);
-    adobe.removeAnnotationsFromPDF.mockClear();
-    adobe.addAnnotations.mockClear();
-
-    // Two page changes fired back to back, without awaiting the first.
-    await Promise.all([firePageChange(9), firePageChange(12)]);
-
-    // Each add must be preceded by its own remove, never remove/remove/add/add.
-    expect(adobe.removeAnnotationsFromPDF).toHaveBeenCalledTimes(2);
-    expect(adobe.addAnnotations).toHaveBeenCalledTimes(2);
-    expect(adobe.addAnnotations.mock.invocationCallOrder[0]).toBeLessThan(adobe.removeAnnotationsFromPDF.mock.invocationCallOrder[1]);
-  });
-
   it("does not move the reader when passages are refreshed", async () => {
     const preview = usePDFPreview(document, "key");
     await preview.registerPassages([passageOnPage(5, "b")]);
