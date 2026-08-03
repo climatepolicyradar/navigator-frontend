@@ -2,14 +2,15 @@ import Script from "next/script";
 import { useRef, useMemo, useEffect, useContext } from "react";
 
 import { AdobeContext } from "@/context/AdobeContext";
-import usePDFPreview from "@/hooks/usePDFPreview";
-import { TFamilyDocumentPublic, TLoadingStatus, TPassage } from "@/types";
+import usePDFPreview, { TViewerPassage } from "@/hooks/usePDFPreview";
+import { TFamilyDocumentPublic, TLoadingStatus } from "@/types";
 
 import Loader from "./Loader";
 
 interface IProps {
   document: TFamilyDocumentPublic;
-  documentPassageMatches?: TPassage[];
+  // Accepts passages from either the legacy Vespa search or the v2 passages endpoint.
+  documentPassageMatches?: TViewerPassage[];
   pageNumber?: number;
   startingPageNumber?: number;
   searchStatus?: TLoadingStatus;
