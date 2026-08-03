@@ -3,7 +3,7 @@ import { Search } from "lucide-react";
 import { parseAsString, useQueryState } from "nuqs";
 import { memo, useCallback, useContext, useMemo, useState } from "react";
 
-import { fetchSearchPassages, type SearchPassage } from "@/api/passages";
+import { fetchSearchPassages, type ISearchPassage } from "@/api/passages";
 import EmbeddedPDF from "@/components/EmbeddedPDF";
 import Loader from "@/components/Loader";
 import { Button } from "@/components/atoms/button/Button";
@@ -25,7 +25,7 @@ type TProps = {
 };
 
 // The passages endpoint and the PassageBlock molecule name their fields differently.
-const toPassageBlock = (passage: SearchPassage, documentTitle: string): TPassageBlock => ({
+const toPassageBlock = (passage: ISearchPassage, documentTitle: string): TPassageBlock => ({
   id: passage.id,
   document_id: passage.document_id,
   idx: passage.idx,
@@ -78,7 +78,7 @@ PassageResults.displayName = "PassageResults";
 type TDocumentPreviewProps = {
   document: TFamilyDocumentPublic;
   pageNumber: number | null;
-  passages: SearchPassage[];
+  passages: ISearchPassage[];
 };
 
 // Memoised so the Adobe viewer is not torn down and rebuilt on every search interaction.
@@ -112,7 +112,7 @@ export const DocumentPassageViewer = ({ document, vespaDocumentData }: TProps) =
   const { data, isError, isFetching, isPending, fetchNextPage, hasNextPage, isFetchingNextPage } = useInfiniteQuery({
     queryKey: ["document-passages", document.import_id, query],
     queryFn: ({ pageParam, signal }) =>
-      fetchSearchPassages({ query, documentId: document.import_id, pageSize: RESULTS_PER_PAGE, pageToken: pageParam, signal }),
+      fetchSearchPassages({ query, documents: [document.import_id], pageSize: RESULTS_PER_PAGE, pageToken: pageParam, signal }),
     initialPageParam: 1,
     // The API leaves `next_page` and `total_pages` unpopulated, so there is no cursor to
     // follow. Paging is driven by the running result count against the reported total.

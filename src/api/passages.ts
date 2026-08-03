@@ -2,16 +2,18 @@
 // native fetch, `NEXT_PUBLIC_API_URL` with a public fallback, and throwing on a
 // non-2xx so react-query can surface the error.
 
-export interface PassageBoundingBox {
+import { TSearchQueryGroup } from "@/types";
+
+export interface IPassageBoundingBox {
   coordinates: { x: number; y: number }[];
 }
 
-export interface PassagePageWithBoundingBoxes {
+export interface IPassagePageWithBoundingBoxes {
   number: number;
-  bounding_boxes: PassageBoundingBox[];
+  bounding_boxes: IPassageBoundingBox[];
 }
 
-export interface SearchPassage {
+export interface ISearchPassage {
   id: string;
   text_block_id: string;
   idx: number;
@@ -21,7 +23,7 @@ export interface SearchPassage {
   type_confidence: number;
   page_number: number;
   pages: number[];
-  pages_with_bounding_boxes: PassagePageWithBoundingBoxes[];
+  pages_with_bounding_boxes: IPassagePageWithBoundingBoxes[];
   concepts: unknown[];
   heading_id: string | null;
   heading_text: string | null;
@@ -30,7 +32,7 @@ export interface SearchPassage {
   tokens: string[];
 }
 
-export interface SearchPassagesResponse {
+export interface ISearchPassagesResponse {
   took_ms: number | null;
   total_size: number | null;
   page: number;
@@ -38,26 +40,12 @@ export interface SearchPassagesResponse {
   total_pages: number | null;
   next_page: string | null;
   previous_page: string | null;
-  results: SearchPassage[];
+  results: ISearchPassage[];
 }
 
-// The passages endpoint has its own field vocabulary (`document_id` today, topics to
-// follow), so it cannot reuse TSearchQueryGroup, whose fields are typed to the
-// documents endpoint.
-interface IPassageFilterRule {
-  field: "document_id";
-  op: "contains";
-  value: string;
-}
-
-interface IPassageFilterGroup {
-  op: "and" | "or";
-  filters: (IPassageFilterGroup | IPassageFilterRule)[];
-}
-
-interface SearchPassagesParams {
+interface ISearchPassagesParams {
   query: string;
-  documentId: string;
+  documents: string[];
   pageSize?: number;
   // 1-indexed page number. The API's `page` parameter is currently ignored, and its
   // `next_page` / `total_pages` fields come back null, so callers page by incrementing
@@ -71,23 +59,28 @@ function searchPassagesUrl(): string {
   return `${origin}/search/passages`;
 }
 
-// Passage search is always scoped to a single document.
-function configurePassagesFilters(documentId: string): IPassageFilterGroup {
+function configurePassagesFilters(documents: string[]): TSearchQueryGroup {
   return {
-    op: "and",
-    filters: [{ field: "document_id", op: "contains", value: documentId }],
+    op: "or",
+    filters: documents.map((documentId) => ({ field: "document_id", op: "contains", value: documentId })),
   };
 }
 
-export async function fetchSearchPassages({ query, documentId, pageSize, pageToken, signal }: SearchPassagesParams): Promise<SearchPassagesResponse> {
+export async function fetchSearchPassages({
+  query,
+  documents,
+  pageSize,
+  pageToken,
+  signal,
+}: ISearchPassagesParams): Promise<ISearchPassagesResponse> {
   const url = new URL(searchPassagesUrl());
 
   url.searchParams.set("query", query);
-  url.searchParams.set("filters", JSON.stringify(configurePassagesFilters(documentId)));
+  url.searchParams.set("filters", JSON.stringify(configurePassagesFilters(documents)));
   if (pageSize !== undefined) url.searchParams.set("page_size", String(pageSize));
   if (pageToken !== undefined) url.searchParams.set("page_token", String(pageToken));
 
   const res = await fetch(url, { signal });
   if (!res.ok) throw new Error(`Passage search API error: ${res.status}`);
-  return res.json() as Promise<SearchPassagesResponse>;
+  return res.json() as Promise<ISearchPassagesResponse>;
 }
