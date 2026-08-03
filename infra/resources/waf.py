@@ -3,6 +3,9 @@ import pulumi_aws as aws
 
 from resources.util import tag_name
 
+# Label applied to bot traffic so the logging filter can select it.
+BOT_LABEL = "frontend:bot"
+
 
 class FrontendWebAcl(pulumi.ComponentResource):
     """
@@ -140,7 +143,7 @@ class FrontendWebAcl(pulumi.ComponentResource):
                 ),
                 # Label bot requests so logging can filter to them (see logging_filter).
                 rule_labels=[
-                    aws.wafv2.WebAclRuleRuleLabelArgs(name="frontend:waf:bot"),
+                    aws.wafv2.WebAclRuleRuleLabelArgs(name=BOT_LABEL),
                 ],
                 visibility_config=aws.wafv2.WebAclRuleVisibilityConfigArgs(
                     cloudwatch_metrics_enabled=True,
@@ -171,8 +174,12 @@ class FrontendWebAcl(pulumi.ComponentResource):
 
         # Log bot-tagged requests to CloudWatch: captures every bot at the edge,
         # including non-JS crawlers that never reach PostHog. Needs bot control,
-        # since the `frontend:waf:bot` label only exists when FlagBotTraffic runs.
+        # since the BOT_LABEL label only exists when FlagBotTraffic runs.
         if enable_logging:
+            account_id = aws.get_caller_identity(
+                opts=pulumi.InvokeOptions(provider=self._useast1)
+            ).account_id
+
             # Log group must be named aws-waf-logs-*, and in us-east-1 for a
             # CLOUDFRONT-scoped WebACL.
             self.log_group = aws.cloudwatch.LogGroup(
@@ -189,7 +196,7 @@ class FrontendWebAcl(pulumi.ComponentResource):
                 # WAFv2 wants the log-group ARN without the trailing ":*".
                 log_destination_configs=[
                     self.log_group.arn.apply(
-                        lambda arn: arn[:-2] if arn.endswith(":*") else arn
+                        lambda arn: arn.removesuffix(":*")
                     )
                 ],
                 # Keep only bot-tagged requests, drop the rest (cost control).
@@ -202,7 +209,7 @@ class FrontendWebAcl(pulumi.ComponentResource):
                             conditions=[
                                 aws.wafv2.WebAclLoggingConfigurationLoggingFilterFilterConditionArgs(
                                     label_name_condition=aws.wafv2.WebAclLoggingConfigurationLoggingFilterFilterConditionLabelNameConditionArgs(
-                                        label_name="frontend:waf:bot",
+                                        label_name=f"awswaf:{account_id}:webacl:{name}:{BOT_LABEL}",
                                     ),
                                 ),
                             ],
