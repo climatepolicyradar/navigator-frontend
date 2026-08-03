@@ -185,7 +185,7 @@ describe("DocumentPassageViewer", () => {
 
       await waitFor(() => expect(searchBox()).toHaveValue(""));
       expect(screen.getByText("Search passages")).toBeInTheDocument();
-      expect(urlQuery.writes.at(-1)).toBeNull();
+      expect(urlQuery.writes.at(-1)).toBe("");
     });
   });
 
