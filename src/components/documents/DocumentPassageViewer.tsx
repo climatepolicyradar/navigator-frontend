@@ -85,8 +85,6 @@ export const DocumentPassageViewer = ({ document, vespaDocumentData }: TProps) =
     setHasNavigatedForQuery(false);
   }
 
-  const canPreview = !!document.cdn_object && document.cdn_object.toLowerCase().endsWith(".pdf");
-
   const { data, isError, isFetching, isPending, fetchNextPage, hasNextPage, isFetchingNextPage } = useInfiniteQuery({
     queryKey: ["document-passages", document.import_id, query],
     queryFn: ({ pageParam, signal }) =>
@@ -108,11 +106,18 @@ export const DocumentPassageViewer = ({ document, vespaDocumentData }: TProps) =
     refetchOnMount: false,
   });
 
+  const canPreview = !!document.cdn_object && document.cdn_object.toLowerCase().endsWith(".pdf");
+
   const hasQuery = query.length > 0;
+
+  const totalMatches = hasQuery ? (data?.pages[0]?.total_size ?? 0) : 0;
 
   const searchPassages = useMemo(() => (hasQuery ? (data?.pages ?? []).flatMap((page) => page.results) : []), [data, hasQuery]);
 
   const passages = useMemo(() => searchPassages.map((passage) => toPassageBlock(passage, document.title)), [searchPassages, document.title]);
+
+  // Avoid cases where the result state flashes before the request has resolved
+  const isLoading = hasQuery && !isFetchingNextPage && passages.length === 0 && (isPending || isFetching);
 
   // Take the reader to the first match once a search returns. Guarded so it happens once
   // per search: paging in more results and clicking a passage both change the state above,
@@ -153,11 +158,6 @@ export const DocumentPassageViewer = ({ document, vespaDocumentData }: TProps) =
     },
     [canPreview]
   );
-
-  const totalMatches = hasQuery ? (data?.pages[0]?.total_size ?? 0) : 0;
-
-  // Avoid cases where the result state flashes before the request has resolved
-  const isLoading = hasQuery && !isFetchingNextPage && passages.length === 0 && (isPending || isFetching);
 
   return (
     <section className="flex-1 flex flex-col" id="document-passage-viewer">
