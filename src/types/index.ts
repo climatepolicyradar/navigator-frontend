@@ -5,6 +5,7 @@ export * from "./bff/document";
 export * from "./bff/family";
 export * from "./display";
 export * from "./features";
+export * from "./passages";
 export * from "./search";
 export * from "./search/filters";
 export * from "./search/labels";

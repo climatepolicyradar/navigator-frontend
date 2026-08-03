@@ -1,5 +1,4 @@
-import type { ISearchPassage } from "@/api/passages";
-import { TAnnotation, TFamilyDocumentPublic, TPassage } from "@/types";
+import { ISearchPassage, TAnnotation, TFamilyDocumentPublic, TPassage } from "@/types";
 
 import usePDFPreview, { getHighlights } from "./usePDFPreview";
 

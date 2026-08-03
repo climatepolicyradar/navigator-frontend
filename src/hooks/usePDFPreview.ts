@@ -1,12 +1,12 @@
 import { faro } from "@grafana/faro-web-sdk";
 
-import type { ISearchPassage } from "@/api/passages";
 import ViewSDKClient from "@/api/pdf";
 import { DEFAULT_DOCUMENT_TITLE } from "@/constants/document";
 import {
   IAdobeAnnotationManagerApi,
   IAdobeViewer,
   IAdobeViewerApi,
+  ISearchPassage,
   TAdobeApis,
   TAdobeEvent,
   THighlight,

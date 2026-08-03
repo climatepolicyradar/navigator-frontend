@@ -3,7 +3,7 @@ import { Search } from "lucide-react";
 import { parseAsString, useQueryState } from "nuqs";
 import { memo, useCallback, useContext, useMemo, useState } from "react";
 
-import { fetchSearchPassages, type ISearchPassage } from "@/api/passages";
+import { fetchSearchPassages } from "@/api/passages";
 import EmbeddedPDF from "@/components/EmbeddedPDF";
 import Loader from "@/components/Loader";
 import { Button } from "@/components/atoms/button/Button";
@@ -15,7 +15,7 @@ import { FullWidth } from "@/components/panels/FullWidth";
 import { RESULTS_PER_PAGE } from "@/constants/paging";
 import { QUERY_PARAMS } from "@/constants/queryParams";
 import { TopicsContext } from "@/context/TopicsContext";
-import { TFamilyDocumentPublic, TSearchResponse } from "@/types";
+import { ISearchPassage, TFamilyDocumentPublic, TSearchResponse } from "@/types";
 import { getTopDocumentConcepts } from "@/utils/topics/getTopDocumentTopics";
 
 const TOP_CONCEPTS_LIMIT = 10;
