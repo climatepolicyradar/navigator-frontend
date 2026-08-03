@@ -9,7 +9,7 @@ from typing import cast
 import pulumi
 import pulumi_aws as aws
 import pulumi_docker_build as docker_build
-from resources.app_runner_service import AppRunnerConfig, AppRunnerService
+from resources.app_runner_service import AppRunnerConfig
 from resources.cache_policy import CachePolicyConfig, CloudFrontCachePolicy
 from resources.cloudfront_distribution import (
     CloudFrontDistribution,
@@ -227,25 +227,6 @@ if not is_review_template:
 
     # Create the frontend AppRunner service in current account
     name_prefix = review_name if review_name else tag_name()
-    frontend = AppRunnerService(
-        name=name_prefix,
-        config=apprunner_config,
-        image_identifier=cast(str, image_identifier),
-        env_vars=FRONTEND_ENV,
-        auto_scaling_config_arn=(
-            config.require("auto_scaling_config_arn") if not is_cpr_stack else None
-        ),
-        access_role_arn=shared_access_role_arn,
-        opts=pulumi.ResourceOptions(
-            depends_on=(
-                [frontend_image]
-                if frontend_image is not None
-                else [ecr_repo.repository]
-                if ecr_repo
-                else []
-            ),
-        ),
-    )
 
     ecs_frontend_service = ExpressGatewayServiceComponent(
         name=name_prefix,
@@ -283,9 +264,6 @@ if not is_review_template:
     )
 
     # Export outputs
-    pulumi.export("frontend service name", frontend.service.service_name)
-    pulumi.export("frontend arn", frontend.service.arn)
-    pulumi.export("apprunner_service_url", frontend.service.service_url)
     pulumi.export("ecs_service_url", ecs_frontend_service.url)
 
 ########################################################################
@@ -453,9 +431,6 @@ if not is_review_stack_or_template:
     backend_stack = pulumi.StackReference(f"climatepolicyradar/backend/{env}")
     backend_service_url = backend_stack.get_output("ecs_express_service_url")
 
-    frontend.service.service_url.apply(
-        lambda url: pulumi.info(f"Frontend app runner URL: {url}")
-    )
     backend_service_url.apply(lambda url: pulumi.info(f"Backend app runner URL: {url}"))
 
     # Create origins for both frontend and API
@@ -757,8 +732,12 @@ if not is_review_stack_or_template:
                     origin_id="cpr-frontend",
                     domain_name=cast(
                         str,
-                        frontend.service.service_url.apply(
-                            lambda url: cast(str, url).replace("https://", "")
+                        ecs_frontend_service.service.ingress_paths.apply(
+                            lambda paths: (
+                                paths[0].endpoint.replace("https://", "")
+                                if paths
+                                else None
+                            )
                         ),
                     ),
                 ),
