@@ -71,7 +71,7 @@ class NextStaticBucket(pulumi.ComponentResource):
             bucket=bucket_name,
             tags=self.tags,
             opts=pulumi.ResourceOptions.merge(
-                pulumi.ResourceOptions(parent=self, protect=True),
+                pulumi.ResourceOptions(parent=self, protect=False),
                 opts or pulumi.ResourceOptions(),
             ),
         )
