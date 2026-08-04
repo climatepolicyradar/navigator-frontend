@@ -24,6 +24,7 @@ from resources.ecs_express_service import (
     ExpressGatewayServiceComponent,
 )
 from resources.github_actions_role import GitHubActionsRole
+from resources.next_static_bucket import NextStaticBucket, NextStaticBucketConfig
 from resources.rollback_alarm import RollbackAlarm, RollbackAlarmConfig
 from resources.util import (
     BehaviourOptions,
@@ -286,7 +287,7 @@ if not is_review_template:
 
 # We only generate this for the CPR stacks as having a role for each app is overkill
 stack = pulumi.get_stack()
-if stack == "staging" or stack == "production":
+if stack in ("staging", "production"):
     navigator_frontend_github_actions_role = aws.iam.Role(
         "navigator-frontend-github-actions",
         assume_role_policy=json.dumps(
@@ -353,7 +354,7 @@ if stack == "staging" or stack == "production":
 ########################################################################
 
 # Create GitHub Actions role only for CPR stacks (in current account)
-if stack == "staging" or stack == "production":
+if stack in ("staging", "production"):
     github_actions_role = GitHubActionsRole(
         name="navigator-new-frontend-github-actions",
     )
@@ -438,6 +439,21 @@ if not is_review_stack_or_template:
     )
 
     ########################################################################
+    # Create the /_next/static asset bucket
+    ########################################################################
+
+    # Serves build-specific JS/CSS so a client mid-session on an old build can
+    # still fetch its chunks after a deploy replaces the container. Review
+    # stacks skip CloudFront entirely, so they keep serving assets themselves.
+    next_static_bucket = None
+    if env in ("staging", "production"):
+        next_static_bucket = NextStaticBucket(
+            f"{name_prefix}-next-static",
+            bucket_name=f"cpr-{env}-{theme}-next-static",
+            config=NextStaticBucketConfig(),
+        )
+
+    ########################################################################
     # Create CloudFront distribution
     ########################################################################
 
@@ -462,7 +478,36 @@ if not is_review_stack_or_template:
         )
     ]
 
-    ordered_cache_behaviors = None
+    if next_static_bucket is not None:
+        origins.append(
+            OriginConfig(
+                origin_id="next-static",
+                domain_name=cast(
+                    str, next_static_bucket.bucket.bucket_regional_domain_name
+                ),
+                origin_access_control_id=cast(str, next_static_bucket.oac.id),
+            )
+        )
+
+    # AWS managed CachingOptimized. The frontend cache policy is wrong for
+    # static assets: it keys on all query strings (fragmenting the cache) and
+    # forwards Authorization, which can collide with OAC's SigV4 signing.
+    CACHING_OPTIMIZED_POLICY_ID = "658327ea-f89d-4fab-a63d-7e88639e58f6"
+
+    ordered_cache_behaviors = []
+    if next_static_bucket is not None:
+        ordered_cache_behaviors.append(
+            {
+                "allowed_methods": ["GET", "HEAD"],
+                "cached_methods": ["GET", "HEAD"],
+                "cache_policy_id": CACHING_OPTIMIZED_POLICY_ID,
+                "compress": True,
+                "path_pattern": "/_next/static/*",
+                "target_origin_id": "next-static",
+                "viewer_protocol_policy": "redirect-to-https",
+            }
+        )
+
     if is_cpr_stack:
         api_cache_policy = CloudFrontCachePolicy(
             CachePolicyConfig(
@@ -488,42 +533,44 @@ if not is_review_stack_or_template:
             ),
         )
         # Define ordered cache behaviors for API routes
-        ordered_cache_behaviors = [
-            {
-                "allowed_methods": [
-                    "GET",
-                    "HEAD",
-                    "OPTIONS",
-                    "PUT",
-                    "POST",
-                    "PATCH",
-                    "DELETE",
-                ],
-                "cached_methods": ["GET", "HEAD", "OPTIONS"],
-                "cache_policy_id": api_cache_policy.policy.id,
-                "compress": True,
-                "path_pattern": "/api/tokens",
-                "target_origin_id": "api",
-                "viewer_protocol_policy": "redirect-to-https",
-            },
-            {
-                "allowed_methods": [
-                    "GET",
-                    "HEAD",
-                    "OPTIONS",
-                    "PUT",
-                    "POST",
-                    "PATCH",
-                    "DELETE",
-                ],
-                "cached_methods": ["GET", "HEAD", "OPTIONS"],
-                "cache_policy_id": api_cache_policy.policy.id,
-                "compress": True,
-                "path_pattern": "/api/v1/*",
-                "target_origin_id": "api",
-                "viewer_protocol_policy": "redirect-to-https",
-            },
-        ]
+        ordered_cache_behaviors.extend(
+            [
+                {
+                    "allowed_methods": [
+                        "GET",
+                        "HEAD",
+                        "OPTIONS",
+                        "PUT",
+                        "POST",
+                        "PATCH",
+                        "DELETE",
+                    ],
+                    "cached_methods": ["GET", "HEAD", "OPTIONS"],
+                    "cache_policy_id": api_cache_policy.policy.id,
+                    "compress": True,
+                    "path_pattern": "/api/tokens",
+                    "target_origin_id": "api",
+                    "viewer_protocol_policy": "redirect-to-https",
+                },
+                {
+                    "allowed_methods": [
+                        "GET",
+                        "HEAD",
+                        "OPTIONS",
+                        "PUT",
+                        "POST",
+                        "PATCH",
+                        "DELETE",
+                    ],
+                    "cached_methods": ["GET", "HEAD", "OPTIONS"],
+                    "cache_policy_id": api_cache_policy.policy.id,
+                    "compress": True,
+                    "path_pattern": "/api/v1/*",
+                    "target_origin_id": "api",
+                    "viewer_protocol_policy": "redirect-to-https",
+                },
+            ]
+        )
 
         origins.append(
             OriginConfig(
@@ -569,6 +616,11 @@ if not is_review_stack_or_template:
             "Domain_Visibility": DomainVisibility.INTERNAL.value,
         },
     )
+
+    # Every distribution serving /_next/static/* has to be listed on the bucket
+    # policy. Collected here and granted after the cname block below, since S3
+    # allows only one policy per bucket.
+    next_static_reader_arns = [cf.distribution.arn]
 
     # Create A record for apex domain
     dns.create_alias_record(
@@ -629,6 +681,13 @@ if not is_review_stack_or_template:
             ],
         )
 
+        # This is the public-facing domain, and it serves the same origins, so it
+        # needs bucket read access too.
+        next_static_reader_arns.append(cname_cf.distribution.arn)
+
+    if next_static_bucket is not None:
+        next_static_bucket.allow_distribution_read(next_static_reader_arns)
+
     #######################################################################################
     # Create CCC redirects?
     #######################################################################################
@@ -663,11 +722,11 @@ if not is_review_stack_or_template:
         )
 
         infra_dir = Path(__file__).parent
-        with open(infra_dir / "lambda_code" / "redirects.json", "r") as f:
+        with open(infra_dir / "lambda_code" / "redirects.json") as f:
             redirects: list[dict[str, str]] = json.load(f)["redirects"]
 
         # Get the code as a string for the CloudFront Function
-        with open(infra_dir / "lambda_code" / "redirection.js", "r") as f:
+        with open(infra_dir / "lambda_code" / "redirection.js") as f:
             lambda_code = f.read()
 
         for redirect in redirects:

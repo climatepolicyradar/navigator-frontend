@@ -31,12 +31,12 @@ class RollbackAlarmConfig:
 
 def _dimension_from_arn(arn: str) -> str:
     """CloudWatch wants the ARN suffix, e.g. `targetgroup/name/id`."""
-    return arn.split(":")[-1]
+    return arn.rsplit(":", maxsplit=1)[-1]
 
 
 def _load_balancer_dimension(arn: str) -> str:
     """CloudWatch wants `app/name/id`, i.e. everything after `loadbalancer/`."""
-    return arn.split("loadbalancer/")[-1]
+    return arn.rsplit("loadbalancer/", maxsplit=1)[-1]
 
 
 class RollbackAlarm(pulumi.ComponentResource):

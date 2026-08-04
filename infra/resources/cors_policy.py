@@ -1,5 +1,5 @@
 from dataclasses import dataclass
-from typing import Any, Dict, Optional
+from typing import Any
 
 import pulumi
 import pulumi_aws as aws
@@ -39,7 +39,7 @@ class CloudFrontCORSPolicy(pulumi.ComponentResource):
     def __init__(
         self,
         config: CORSPolicyConfig,
-        opts: Optional[pulumi.ResourceOptions] = None,
+        opts: pulumi.ResourceOptions | None = None,
     ):
 
         super().__init__("cpr:cloudfront:CloudFrontCORSPolicy", config.name, None, opts)
@@ -54,7 +54,7 @@ class CloudFrontCORSPolicy(pulumi.ComponentResource):
             }
         )
 
-    def _build_policy_config(self, config: CORSPolicyConfig) -> Dict[str, Any]:
+    def _build_policy_config(self, config: CORSPolicyConfig) -> dict[str, Any]:
         return {
             "comment": config.comment,
             "name": f"{config.name}CORSPolicy",
@@ -66,7 +66,7 @@ class CloudFrontCORSPolicy(pulumi.ComponentResource):
         }
 
     def _create_policy(
-        self, config: CORSPolicyConfig, opts: Optional[pulumi.ResourceOptions] = None
+        self, config: CORSPolicyConfig, opts: pulumi.ResourceOptions | None = None
     ) -> aws.cloudfront.OriginRequestPolicy:
         # Allow user options to override our defaults.
         resource_opts = pulumi.ResourceOptions.merge(

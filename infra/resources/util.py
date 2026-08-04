@@ -2,14 +2,17 @@ import os
 import subprocess  # nosec: B404
 from dataclasses import dataclass
 from enum import Enum
-from typing import Any, Dict, List, Optional, Tuple, TypedDict
+from typing import Any, TypedDict
 from urllib.parse import urlparse
 
 import pulumi
 import pulumi_aws as aws
 
+# A bare apex domain is two labels ("example.com"); anything more has a subdomain.
+_APEX_DOMAIN_LABEL_COUNT = 2
 
-def parse_hostname(hostname_url: str) -> Tuple[str, str]:
+
+def parse_hostname(hostname_url: str) -> tuple[str, str]:
     """Parse a hostname URL into domain and subdomain.
 
     :param hostname_url: Full hostname URL (e.g. https://ccc.staging.climatepolicyradar.org/)
@@ -24,7 +27,7 @@ def parse_hostname(hostname_url: str) -> Tuple[str, str]:
     # Split into parts
     parts = full_domain.split(".")
 
-    if len(parts) <= 2:
+    if len(parts) <= _APEX_DOMAIN_LABEL_COUNT:
         # Simple domain like example.com
         return (".".join(parts), "")
     elif parts[-2] == "climatepolicyradar":
@@ -74,6 +77,9 @@ def get_active_branch() -> str:
                 "--show-current",
             ],
             capture_output=True,
+            # Explicit: a failure here (e.g. not a git repo) should fall through
+            # to an empty branch name, not abort the Pulumi program.
+            check=False,
         )
         .stdout.decode("utf-8")
         .split("\n")[0]
@@ -90,7 +96,10 @@ def is_branch_dirty() -> bool:
         return False
     return (
         subprocess.run(  # nosec: B603, B607
-            ["git", "status", "--porcelain"], capture_output=True
+            ["git", "status", "--porcelain"],
+            capture_output=True,
+            # Explicit: preserve the existing "treat failure as clean" behaviour.
+            check=False,
         ).stdout.decode("utf-8")
         != ""
     )
@@ -168,7 +177,7 @@ class HeaderConfig:
     """Configuration for headers in policies."""
 
     behaviour: BehaviourOptions
-    items: Optional[List[str]] = None
+    items: list[str] | None = None
 
 
 @dataclass
@@ -176,7 +185,7 @@ class CookieConfig:
     """Configuration for cookies in policies."""
 
     behaviour: BehaviourOptions
-    items: Optional[List[str]] = None
+    items: list[str] | None = None
 
 
 @dataclass
@@ -184,22 +193,22 @@ class QueryStringConfig:
     """Configuration for query strings in policies."""
 
     behaviour: BehaviourOptions
-    items: Optional[List[str]] = None
+    items: list[str] | None = None
 
 
 class CachePolicyItemsConfig(TypedDict):
     """Type definition for Cache Policy items configuration."""
 
     quantity: int
-    items: List[str]
+    items: list[str]
 
 
 class CachePolicyConfig(TypedDict):
     """Type definition for Cache Policy configuration section."""
 
-    headers_config: Dict[str, Any]
-    cookies_config: Dict[str, Any]
-    query_strings_config: Dict[str, Any]
+    headers_config: dict[str, Any]
+    cookies_config: dict[str, Any]
+    query_strings_config: dict[str, Any]
     enable_accept_encoding_gzip: bool
     enable_accept_encoding_brotli: bool
 
@@ -207,12 +216,12 @@ class CachePolicyConfig(TypedDict):
 class OriginRequestPolicyConfig(TypedDict, total=False):
     """Type definition for Origin Request Policy configuration section."""
 
-    headers_config: Dict[str, Any]
-    cookies_config: Dict[str, Any]
-    query_strings_config: Dict[str, Any]
+    headers_config: dict[str, Any]
+    cookies_config: dict[str, Any]
+    query_strings_config: dict[str, Any]
 
 
-def build_items_config(items: Optional[List[str]] = None) -> CachePolicyItemsConfig:
+def build_items_config(items: list[str] | None = None) -> CachePolicyItemsConfig:
     """
     Build a configuration section for items in a Cache Policy.
 

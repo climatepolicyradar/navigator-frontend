@@ -1,5 +1,5 @@
 from dataclasses import dataclass
-from typing import Any, Dict, Optional
+from typing import Any
 
 import pulumi
 import pulumi_aws as aws
@@ -42,7 +42,7 @@ class CloudFrontCachePolicy(pulumi.ComponentResource):
     def __init__(
         self,
         config: CachePolicyConfig,
-        opts: Optional[pulumi.ResourceOptions] = None,
+        opts: pulumi.ResourceOptions | None = None,
     ):
 
         super().__init__(
@@ -58,7 +58,7 @@ class CloudFrontCachePolicy(pulumi.ComponentResource):
             }
         )
 
-    def _build_policy_config(self, config: CachePolicyConfig) -> Dict[str, Any]:
+    def _build_policy_config(self, config: CachePolicyConfig) -> dict[str, Any]:
         headers_config = aws.cloudfront.CachePolicyParametersInCacheKeyAndForwardedToOriginHeadersConfigArgs(
             header_behavior=config.headers.behaviour.value,
         )
@@ -108,7 +108,7 @@ class CloudFrontCachePolicy(pulumi.ComponentResource):
         }
 
     def _create_policy(
-        self, config: CachePolicyConfig, opts: Optional[pulumi.ResourceOptions] = None
+        self, config: CachePolicyConfig, opts: pulumi.ResourceOptions | None = None
     ) -> aws.cloudfront.CachePolicy:
         # Allow user options to override our defaults.
         resource_opts = pulumi.ResourceOptions.merge(
