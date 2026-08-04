@@ -451,6 +451,12 @@ if not is_review_stack_or_template:
     # Serves build-specific JS/CSS so a client mid-session on an old build can
     # still fetch its chunks after a deploy replaces the container. Review
     # stacks skip CloudFront entirely, so they keep serving assets themselves.
+    #
+    # The bucket is always created here, but routing traffic to it is gated
+    # separately (see serve_next_static_from_s3 below). Creating it early is what
+    # lets deploys populate it *before* anything reads from it -- the moment the
+    # CloudFront behaviour goes live against an empty bucket, every asset 404s
+    # and the container's own copy is no longer reachable.
     next_static_bucket = None
     if env in ("staging", "production"):
         next_static_bucket = NextStaticBucket(
@@ -517,7 +523,26 @@ if not is_review_stack_or_template:
         )
     ]
 
-    if next_static_bucket is not None:
+    # Whether CloudFront actually routes /_next/static/* to the bucket. Off by
+    # default in production: merging the infra change runs `pulumi up` across all
+    # eight stacks unattended (merge_to_main.yml, --skip-preview), and switching
+    # the behaviour on before a deploy has uploaded anything would 404 every
+    # asset on a live site. Staging defaults on -- deploy-staging.yml runs
+    # automatically after a merge, so it repopulates itself.
+    #
+    # To enable a production theme, once a production deploy has run and
+    # populated its bucket, add to that stack's config:
+    #     frontend:next_static_enabled: "true"
+    # Editing one stack's YAML only triggers `pulumi up` for that stack, which is
+    # what makes a theme-at-a-time rollout possible.
+    next_static_enabled = config.get_bool("next_static_enabled")
+    if next_static_enabled is None:
+        next_static_enabled = env == "staging"
+    serve_next_static_from_s3 = next_static_bucket is not None and next_static_enabled
+
+    pulumi.info(f"Serving /_next/static/* from S3: {serve_next_static_from_s3}")
+
+    if serve_next_static_from_s3 and next_static_bucket is not None:
         origins.append(
             OriginConfig(
                 origin_id="next-static",
@@ -534,7 +559,7 @@ if not is_review_stack_or_template:
     CACHING_OPTIMIZED_POLICY_ID = "658327ea-f89d-4fab-a63d-7e88639e58f6"
 
     ordered_cache_behaviors = []
-    if next_static_bucket is not None:
+    if serve_next_static_from_s3:
         ordered_cache_behaviors.append(
             {
                 "allowed_methods": ["GET", "HEAD"],
