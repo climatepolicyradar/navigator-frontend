@@ -461,7 +461,10 @@ if not is_review_stack_or_template:
     if env in ("staging", "production"):
         next_static_bucket = NextStaticBucket(
             f"{name_prefix}-next-static",
-            bucket_name=f"cpr-{env}-{theme}-next-static",
+            # Mirrors the ECS service these assets belong to
+            # ({theme}-frontend-{env}), so both halves are derived from the stack
+            # rather than spelled out. CI reconstructs the same name.
+            bucket_name=f"{theme}-frontend-{env}-next-static",
             config=NextStaticBucketConfig(),
         )
 

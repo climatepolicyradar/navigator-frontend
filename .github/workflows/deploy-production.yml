@@ -80,7 +80,7 @@ jobs:
 
       - name: Upload static assets to S3
         env:
-          BUCKET_NAME: cpr-production-${{ inputs.theme }}-next-static
+          BUCKET_NAME: ${{ inputs.theme }}-frontend-production-next-static
         run: |
           set -euo pipefail
           # No --delete: these paths are per-build content hashes and must
