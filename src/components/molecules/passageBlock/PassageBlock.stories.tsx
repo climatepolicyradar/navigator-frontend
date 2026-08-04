@@ -58,6 +58,15 @@ export const NoHeading: TStory = {
   },
 };
 
+export const MultiplePages: TStory = {
+  args: {
+    passage: {
+      ...basePassage,
+      pages: [{ page_number: 15 }, { page_number: 16 }, { page_number: 17 }],
+    },
+  },
+};
+
 export const NoPage: TStory = {
   args: {
     passage: {

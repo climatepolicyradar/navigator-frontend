@@ -31,9 +31,12 @@ type TProps = {
   onCopyClick?: () => void;
   onDocumentLinkClick?: () => void;
   onPassageClick?: (passage: TPassage) => void;
+  // Hide the document title and its link when the passage is already shown in the
+  // context of that document, e.g. on the document page.
+  showDocument?: boolean;
 };
 
-export const PassageBlock = ({ passage, onCopyClick, onDocumentLinkClick, onPassageClick }: TProps) => {
+export const PassageBlock = ({ passage, onCopyClick, onDocumentLinkClick, onPassageClick, showDocument = true }: TProps) => {
   const [hasCopied, setHasCopied] = useState(false);
 
   useEffect(() => {
@@ -43,7 +46,11 @@ export const PassageBlock = ({ passage, onCopyClick, onDocumentLinkClick, onPass
   }, [hasCopied]);
 
   const isClickable = !!onPassageClick;
-  const pageNumber = passage.pages?.[0]?.page_number;
+  // `page_number` is 0-indexed in the passage model, so is shifted for display.
+  const pageNumbers = passage.pages?.map(({ page_number }) => page_number + 1) ?? [];
+  const hasPages = pageNumbers.length > 0;
+  const hasContext = hasPages || !!passage.headingText;
+  const hasFooter = showDocument || hasContext;
 
   const handleCopyClick = () => {
     navigator.clipboard.writeText(passage.content);
@@ -53,51 +60,61 @@ export const PassageBlock = ({ passage, onCopyClick, onDocumentLinkClick, onPass
 
   return (
     <div
-      className={`bg-bg-primary border border-border-normal rounded-xl overflow-clip transition ${
-        isClickable ? "hocus:shadow-sm hocus:bg-paper" : "shadow-xs"
-      }`}
+      className={`bg-bg-primary border border-border-normal rounded-xl overflow-clip transition ${isClickable ? "hocus:shadow-sm " : "shadow-xs"}`}
     >
-      <div className="px-8 py-7">
+      <div className="text-sm text-text-primary">
         {isClickable ? (
-          <button type="button" onClick={() => onPassageClick(passage)} className="text-left w-full text-base text-text-primary hocus:underline">
+          <button
+            type="button"
+            onClick={() => onPassageClick(passage)}
+            className="text-left w-full text-sm text-text-primary px-8 py-7 hocus:bg-paper"
+          >
             {passage.content}
           </button>
         ) : (
-          <p className="text-base text-text-primary">{passage.content}</p>
+          <p className="px-8 py-7">{passage.content}</p>
         )}
       </div>
-      <div className="bg-paper px-8 py-3 flex gap-16 items-start">
-        <div className="flex-1 min-w-0 flex flex-col gap-2.5">
-          <div className="flex gap-2 items-center">
-            <File size={16} className="text-elem-icon shrink-0" />
-            <p className="text-sm text-text-primary truncate">{passage.documentTitle}</p>
+      {hasFooter && (
+        <div className="bg-paper px-8 py-3 flex gap-16 items-start">
+          <div className="flex-1 min-w-0 flex flex-col gap-2.5">
+            {showDocument && (
+              <div className="flex gap-2 items-center">
+                <File size={16} className="text-elem-icon shrink-0" />
+                <p className="text-sm text-text-primary truncate">{passage.documentTitle}</p>
+              </div>
+            )}
+            {hasContext && (
+              <div className="flex gap-4 items-center">
+                {hasPages && (
+                  <div className="flex gap-2 items-center shrink-0">
+                    <LocateFixed size={16} className="text-elem-icon" />
+                    <p className="text-sm text-text-primary whitespace-nowrap">
+                      {pageNumbers.length === 1 ? "Pg." : "Pgs."} {pageNumbers.join(",")}
+                    </p>
+                  </div>
+                )}
+                {passage.headingText && (
+                  <>
+                    {hasPages && <span className="w-px h-3 bg-border-normal shrink-0" />}
+                    <p className="text-sm text-text-primary truncate">{passage.headingText}</p>
+                  </>
+                )}
+              </div>
+            )}
           </div>
-          {(pageNumber !== undefined || passage.headingText) && (
-            <div className="flex gap-4 items-center">
-              {pageNumber !== undefined && (
-                <div className="flex gap-2 items-center shrink-0">
-                  <LocateFixed size={16} className="text-elem-icon" />
-                  <p className="text-sm text-text-primary whitespace-nowrap">Pg. {pageNumber}</p>
-                </div>
-              )}
-              {passage.headingText && (
-                <>
-                  {pageNumber !== undefined && <span className="w-px h-3 bg-border-normal shrink-0" />}
-                  <p className="text-sm text-text-primary truncate">{passage.headingText}</p>
-                </>
-              )}
-            </div>
-          )}
+          <div className="flex gap-3 items-center shrink-0">
+            {showDocument && (
+              <button type="button" onClick={onDocumentLinkClick} aria-label="View document" className="text-elem-icon hocus:text-inky-blue">
+                <ExternalLink size={16} />
+              </button>
+            )}
+            <button type="button" onClick={handleCopyClick} aria-label="Copy passage text" className="text-elem-icon hocus:text-inky-blue">
+              {hasCopied ? <Check size={16} className="text-inky-blue" /> : <Copy size={16} />}
+            </button>
+          </div>
         </div>
-        <div className="flex gap-3 items-center shrink-0">
-          <button type="button" onClick={onDocumentLinkClick} aria-label="View document" className="text-elem-icon hocus:text-inky-blue">
-            <ExternalLink size={16} />
-          </button>
-          <button type="button" onClick={handleCopyClick} aria-label="Copy passage text" className="text-elem-icon hocus:text-inky-blue">
-            {hasCopied ? <Check size={16} className="text-inky-blue" /> : <Copy size={16} />}
-          </button>
-        </div>
-      </div>
+      )}
     </div>
   );
 };

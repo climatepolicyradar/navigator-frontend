@@ -10,6 +10,7 @@ import { FiveColumns } from "@/components/atoms/columns/FiveColumns";
 import { Debug } from "@/components/atoms/debug/Debug";
 import { ConceptsDocumentViewer } from "@/components/documents/ConceptsDocumentViewer";
 import { DocumentHead } from "@/components/documents/DocumentHead";
+import { DocumentPassageViewer } from "@/components/documents/DocumentPassageViewer";
 import Layout from "@/components/layouts/Main";
 import { Section } from "@/components/molecules/section/Section";
 import { getDocumentDescription } from "@/constants/metaDescriptions";
@@ -129,18 +130,22 @@ const DocumentPage = ({
               handleViewSourceClick={handleViewSourceClick}
             />
 
-            <ConceptsDocumentViewer
-              initialQueryTerm={qsSearchString}
-              initialExactMatch={exactMatchQuery}
-              initialPageNumber={startingPageNumber}
-              initialConceptFilters={conceptFilters}
-              vespaDocumentData={vespaDocumentData}
-              document={document}
-              searchStatus={status}
-              searchResultFamilies={isEmptySearch(router.query) ? [] : families}
-              handleSemanticSearchChange={handleSemanticSearchChange}
-              handlePassagesOrderChange={handlePassagesOrderChange}
-            />
+            {features["new-search"] ? (
+              <DocumentPassageViewer document={document} vespaDocumentData={vespaDocumentData} />
+            ) : (
+              <ConceptsDocumentViewer
+                initialQueryTerm={qsSearchString}
+                initialExactMatch={exactMatchQuery}
+                initialPageNumber={startingPageNumber}
+                initialConceptFilters={conceptFilters}
+                vespaDocumentData={vespaDocumentData}
+                document={document}
+                searchStatus={status}
+                searchResultFamilies={isEmptySearch(router.query) ? [] : families}
+                handleSemanticSearchChange={handleSemanticSearchChange}
+                handlePassagesOrderChange={handlePassagesOrderChange}
+              />
+            )}
           </section>
           {family.attribution.category === "Litigation" && (
             <Head>

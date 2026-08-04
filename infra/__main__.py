@@ -24,6 +24,7 @@ from resources.ecs_express_service import (
     ExpressGatewayServiceComponent,
 )
 from resources.github_actions_role import GitHubActionsRole
+from resources.rollback_alarm import RollbackAlarm, RollbackAlarmConfig
 from resources.util import (
     BehaviourOptions,
     CookieConfig,
@@ -262,6 +263,19 @@ if not is_review_template:
             ),
         ),
     )
+
+    # Replaces the alarm ECS Express creates, which fails deployments on 4XX.
+    # Production only: lower environments lack the traffic to make it meaningful.
+    if env == "production" and not is_review_stack:
+        RollbackAlarm(
+            name_prefix,
+            config=RollbackAlarmConfig(
+                theme=theme,
+                cluster=f"frontend-{env}",
+                service_name=f"{theme}-frontend-{env}",
+            ),
+            opts=pulumi.ResourceOptions(depends_on=[ecs_frontend_service]),
+        )
 
     # Export outputs
     pulumi.export("ecs_service_url", ecs_frontend_service.url)

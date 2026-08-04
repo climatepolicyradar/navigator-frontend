@@ -10,6 +10,11 @@ export type TSearchQueryRule =
       key?: "published_date";
       op: "eq" | "not_eq" | "lt" | "lte" | "gt" | "gte";
       value: string;
+    }
+  | {
+      field: "document_id";
+      op: "contains";
+      value: string;
     };
 
 export type TSearchQueryGroup = {
