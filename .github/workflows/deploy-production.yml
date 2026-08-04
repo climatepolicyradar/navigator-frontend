@@ -58,6 +58,37 @@ jobs:
           docker push $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
           echo "image=$ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG" >> $GITHUB_OUTPUT
 
+      # Serve this build's JS/CSS from S3 so a client mid-session on the old
+      # build can still fetch its chunks after the deploy below replaces the
+      # container. Must run before that deploy, or those requests 404.
+      - name: Extract static assets from built image
+        env:
+          IMAGE: ${{ steps.build-image.outputs.image }}
+        run: |
+          set -euo pipefail
+          CONTAINER_ID=$(docker create "$IMAGE")
+          mkdir -p ./next-static
+          # The trailing /. copies the directory *contents*. Without it, docker
+          # cp nests under ./next-static/static when the target already exists,
+          # which would publish every asset one level too deep.
+          docker cp "$CONTAINER_ID":/app/.next/static/. ./next-static
+          docker rm "$CONTAINER_ID"
+          if [ -z "$(find ./next-static -type f -print -quit)" ]; then
+            echo "::error::No static assets extracted from $IMAGE; refusing to deploy"
+            exit 1
+          fi
+
+      - name: Upload static assets to S3
+        env:
+          BUCKET_NAME: cpr-production-${{ inputs.theme }}-next-static
+        run: |
+          set -euo pipefail
+          # No --delete: these paths are per-build content hashes and must
+          # outlive the container that shipped them, for clients still holding
+          # the old HTML. The bucket lifecycle rule expires them instead.
+          aws s3 sync ./next-static "s3://${BUCKET_NAME}/_next/static/" \
+            --cache-control "public,max-age=31536000,immutable"
+
       # @see: https://github.com/marketplace/actions/amazon-ecs-deploy-express-service-action-for-github-actions#complete-example-with-all-options
       - name: Deploy to ECS (production)
         id: deploy-production
