@@ -1,0 +1,25 @@
+target-version = "py313"
+
+[lint]
+# Generic, formatter-friendly config.
+# https://docs.astral.sh/ruff/rules/#pydocstyle-d
+# https://docs.astral.sh/ruff/rules/#error-e
+# https://docs.astral.sh/ruff/rules/#pyflakes-f
+# https://docs.astral.sh/ruff/rules/relative-imports/#relative-imports-tid252
+# https://docs.astral.sh/ruff/rules/#pyupgrade-up
+# https://docs.astral.sh/ruff/rules/#pylint-pl
+# https://docs.astral.sh/ruff/rules/#tryceratops-try
+select = ["D3", "E", "F", "TID252", "UP", "PL", "TRY400"]
+
+# Never enforce `E501` (line length violations). This should be handled by formatters.
+ignore = [
+    "E501",
+    "TRY003",
+    "D213",
+    "D415",
+    "PLR0915",
+    # Pulumi component resources take a wide config surface by design; the
+    # alternative is bundling unrelated args into throwaway holder objects.
+    "PLR0913",
+    "PLR0917",
+]

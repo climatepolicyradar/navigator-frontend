@@ -1,5 +1,5 @@
 from dataclasses import dataclass
-from typing import Any, Dict, List, Optional, cast
+from typing import Any, cast
 
 import pulumi
 import pulumi_aws as aws
@@ -26,8 +26,8 @@ class DNSConfig:
     domain: str
     environment: str
     certificate_type: str = "CLOUDFRONT"  # "CLOUDFRONT" or "SSL"
-    zone_id: Optional[str] = None
-    subject_alternative_names: Optional[List[str]] = None
+    zone_id: str | None = None
+    subject_alternative_names: list[str] | None = None
 
 
 class DNS(pulumi.ComponentResource):
@@ -50,10 +50,10 @@ class DNS(pulumi.ComponentResource):
         self,
         name: str,
         config: DNSConfig,
-        load_balancer: Optional[aws.lb.LoadBalancer] = None,
-        target_group: Optional[aws.lb.TargetGroup] = None,
-        tags: Optional[Dict[str, Any]] = None,
-        opts: Optional[pulumi.ResourceOptions] = None,
+        load_balancer: aws.lb.LoadBalancer | None = None,
+        target_group: aws.lb.TargetGroup | None = None,
+        tags: dict[str, Any] | None = None,
+        opts: pulumi.ResourceOptions | None = None,
     ):
         super().__init__("pkg:index:DNS", name, None, opts)
 
@@ -111,7 +111,7 @@ class DNS(pulumi.ComponentResource):
         self.register_outputs(outputs)
 
     def _get_opts(
-        self, opts: Optional[pulumi.ResourceOptions] = None
+        self, opts: pulumi.ResourceOptions | None = None
     ) -> pulumi.ResourceOptions:
         return pulumi.ResourceOptions.merge(
             pulumi.ResourceOptions(parent=self, protect=True),
@@ -119,7 +119,7 @@ class DNS(pulumi.ComponentResource):
         )
 
     def create_record(
-        self, name: str, record_type: str, records: List[str], ttl: int = 300
+        self, name: str, record_type: str, records: list[str], ttl: int = 300
     ) -> aws.route53.Record:
         """Create a DNS record in the zone.
 
@@ -183,7 +183,7 @@ class DNS(pulumi.ComponentResource):
         )
 
     def _create_certificate(
-        self, provider: Optional[aws.Provider] = None
+        self, provider: aws.Provider | None = None
     ) -> aws.acm.Certificate:
         """Create ACM certificate for the domain."""
         opts = self.opts
@@ -206,7 +206,7 @@ class DNS(pulumi.ComponentResource):
         return aws.acm.Certificate(f"{self._name}-cert", **certificate_args)
 
     def _create_validation_records(
-        self, provider: Optional[aws.Provider] = None
+        self, provider: aws.Provider | None = None
     ) -> pulumi.Output:
         """Create DNS validation records for the certificate."""
 
@@ -238,7 +238,7 @@ class DNS(pulumi.ComponentResource):
         return self.certificate.domain_validation_options.apply(create_records)
 
     def _validate_certificate(
-        self, provider: Optional[aws.Provider] = None
+        self, provider: aws.Provider | None = None
     ) -> aws.acm.CertificateValidation:
         """Create certificate validation."""
         opts = self.opts

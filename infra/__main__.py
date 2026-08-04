@@ -24,6 +24,7 @@ from resources.ecs_express_service import (
     ExpressGatewayServiceComponent,
 )
 from resources.github_actions_role import GitHubActionsRole
+from resources.next_static_bucket import NextStaticBucket, NextStaticBucketConfig
 from resources.rollback_alarm import RollbackAlarm, RollbackAlarmConfig
 from resources.util import (
     BehaviourOptions,
@@ -41,6 +42,12 @@ validate_stack_and_branch()
 aws_account = aws.get_caller_identity()
 config = pulumi.Config()
 theme = config.require("theme")
+
+# The role the deploy workflows assume (deploy-staging.yml,
+# deploy-production.yml, deploy-all-production.yml). Referenced by name where we
+# attach policies to it, because the role resource below is created by no
+# current stack -- see the guard on GitHubActionsRole.
+DEPLOY_ROLE_NAME = "navigator-new-frontend-github-actions"
 
 
 FRONTEND_ENV = {
@@ -286,7 +293,7 @@ if not is_review_template:
 
 # We only generate this for the CPR stacks as having a role for each app is overkill
 stack = pulumi.get_stack()
-if stack == "staging" or stack == "production":
+if stack in ("staging", "production"):
     navigator_frontend_github_actions_role = aws.iam.Role(
         "navigator-frontend-github-actions",
         assume_role_policy=json.dumps(
@@ -353,9 +360,9 @@ if stack == "staging" or stack == "production":
 ########################################################################
 
 # Create GitHub Actions role only for CPR stacks (in current account)
-if stack == "staging" or stack == "production":
+if stack in ("staging", "production"):
     github_actions_role = GitHubActionsRole(
-        name="navigator-new-frontend-github-actions",
+        name=DEPLOY_ROLE_NAME,
     )
 
 # ########################################################################
@@ -438,6 +445,63 @@ if not is_review_stack_or_template:
     )
 
     ########################################################################
+    # Create the /_next/static asset bucket
+    ########################################################################
+
+    # Serves build-specific JS/CSS so a client mid-session on an old build can
+    # still fetch its chunks after a deploy replaces the container. Review
+    # stacks skip CloudFront entirely, so they keep serving assets themselves.
+    #
+    # The bucket is always created here, but routing traffic to it is gated
+    # separately (see serve_next_static_from_s3 below). Creating it early is what
+    # lets deploys populate it *before* anything reads from it -- the moment the
+    # CloudFront behaviour goes live against an empty bucket, every asset 404s
+    # and the container's own copy is no longer reachable.
+    next_static_bucket = None
+    if env in ("staging", "production"):
+        next_static_bucket = NextStaticBucket(
+            f"{name_prefix}-next-static",
+            # Mirrors the ECS service these assets belong to
+            # ({theme}-frontend-{env}), so both halves are derived from the stack
+            # rather than spelled out. CI reconstructs the same name.
+            bucket_name=f"{theme}-frontend-{env}-next-static",
+            config=NextStaticBucketConfig(),
+        )
+
+        # Let the deploy workflows sync the build's assets up. The role is
+        # created by no current stack -- the GitHubActionsRole guard above needs
+        # a stack named literally "staging" or "production", and every stack is
+        # {theme}-{env} -- and it carries protect=True, so attach a scoped
+        # inline policy to it by name rather than importing it. Named per
+        # theme+env so the four stacks sharing this role in each account don't
+        # fight over one policy name.
+        aws.iam.RolePolicy(
+            f"{theme}-{env}-next-static-s3-write",
+            role=DEPLOY_ROLE_NAME,
+            policy=next_static_bucket.bucket.arn.apply(
+                lambda arn: json.dumps(
+                    {
+                        "Version": "2012-10-17",
+                        "Statement": [
+                            {
+                                "Effect": "Allow",
+                                "Action": ["s3:PutObject", "s3:DeleteObject"],
+                                "Resource": f"{arn}/*",
+                            },
+                            {
+                                "Effect": "Allow",
+                                # aws s3 sync lists the destination to work out
+                                # what to skip, so it needs the bucket itself.
+                                "Action": ["s3:ListBucket"],
+                                "Resource": arn,
+                            },
+                        ],
+                    }
+                )
+            ),
+        )
+
+    ########################################################################
     # Create CloudFront distribution
     ########################################################################
 
@@ -462,7 +526,55 @@ if not is_review_stack_or_template:
         )
     ]
 
-    ordered_cache_behaviors = None
+    # Whether CloudFront actually routes /_next/static/* to the bucket. Off by
+    # default in production: merging the infra change runs `pulumi up` across all
+    # eight stacks unattended (merge_to_main.yml, --skip-preview), and switching
+    # the behaviour on before a deploy has uploaded anything would 404 every
+    # asset on a live site. Staging defaults on -- deploy-staging.yml runs
+    # automatically after a merge, so it repopulates itself.
+    #
+    # To enable a production theme, once a production deploy has run and
+    # populated its bucket, add to that stack's config:
+    #     frontend:next_static_enabled: "true"
+    # Editing one stack's YAML only triggers `pulumi up` for that stack, which is
+    # what makes a theme-at-a-time rollout possible.
+    next_static_enabled = config.get_bool("next_static_enabled")
+    if next_static_enabled is None:
+        next_static_enabled = env == "staging"
+    serve_next_static_from_s3 = next_static_bucket is not None and next_static_enabled
+
+    pulumi.info(f"Serving /_next/static/* from S3: {serve_next_static_from_s3}")
+
+    if serve_next_static_from_s3 and next_static_bucket is not None:
+        origins.append(
+            OriginConfig(
+                origin_id="next-static",
+                domain_name=cast(
+                    str, next_static_bucket.bucket.bucket_regional_domain_name
+                ),
+                origin_access_control_id=cast(str, next_static_bucket.oac.id),
+            )
+        )
+
+    # AWS managed CachingOptimized. The frontend cache policy is wrong for
+    # static assets: it keys on all query strings (fragmenting the cache) and
+    # forwards Authorization, which can collide with OAC's SigV4 signing.
+    CACHING_OPTIMIZED_POLICY_ID = "658327ea-f89d-4fab-a63d-7e88639e58f6"
+
+    ordered_cache_behaviors = []
+    if serve_next_static_from_s3:
+        ordered_cache_behaviors.append(
+            {
+                "allowed_methods": ["GET", "HEAD"],
+                "cached_methods": ["GET", "HEAD"],
+                "cache_policy_id": CACHING_OPTIMIZED_POLICY_ID,
+                "compress": True,
+                "path_pattern": "/_next/static/*",
+                "target_origin_id": "next-static",
+                "viewer_protocol_policy": "redirect-to-https",
+            }
+        )
+
     if is_cpr_stack:
         api_cache_policy = CloudFrontCachePolicy(
             CachePolicyConfig(
@@ -488,42 +600,44 @@ if not is_review_stack_or_template:
             ),
         )
         # Define ordered cache behaviors for API routes
-        ordered_cache_behaviors = [
-            {
-                "allowed_methods": [
-                    "GET",
-                    "HEAD",
-                    "OPTIONS",
-                    "PUT",
-                    "POST",
-                    "PATCH",
-                    "DELETE",
-                ],
-                "cached_methods": ["GET", "HEAD", "OPTIONS"],
-                "cache_policy_id": api_cache_policy.policy.id,
-                "compress": True,
-                "path_pattern": "/api/tokens",
-                "target_origin_id": "api",
-                "viewer_protocol_policy": "redirect-to-https",
-            },
-            {
-                "allowed_methods": [
-                    "GET",
-                    "HEAD",
-                    "OPTIONS",
-                    "PUT",
-                    "POST",
-                    "PATCH",
-                    "DELETE",
-                ],
-                "cached_methods": ["GET", "HEAD", "OPTIONS"],
-                "cache_policy_id": api_cache_policy.policy.id,
-                "compress": True,
-                "path_pattern": "/api/v1/*",
-                "target_origin_id": "api",
-                "viewer_protocol_policy": "redirect-to-https",
-            },
-        ]
+        ordered_cache_behaviors.extend(
+            [
+                {
+                    "allowed_methods": [
+                        "GET",
+                        "HEAD",
+                        "OPTIONS",
+                        "PUT",
+                        "POST",
+                        "PATCH",
+                        "DELETE",
+                    ],
+                    "cached_methods": ["GET", "HEAD", "OPTIONS"],
+                    "cache_policy_id": api_cache_policy.policy.id,
+                    "compress": True,
+                    "path_pattern": "/api/tokens",
+                    "target_origin_id": "api",
+                    "viewer_protocol_policy": "redirect-to-https",
+                },
+                {
+                    "allowed_methods": [
+                        "GET",
+                        "HEAD",
+                        "OPTIONS",
+                        "PUT",
+                        "POST",
+                        "PATCH",
+                        "DELETE",
+                    ],
+                    "cached_methods": ["GET", "HEAD", "OPTIONS"],
+                    "cache_policy_id": api_cache_policy.policy.id,
+                    "compress": True,
+                    "path_pattern": "/api/v1/*",
+                    "target_origin_id": "api",
+                    "viewer_protocol_policy": "redirect-to-https",
+                },
+            ]
+        )
 
         origins.append(
             OriginConfig(
@@ -569,6 +683,11 @@ if not is_review_stack_or_template:
             "Domain_Visibility": DomainVisibility.INTERNAL.value,
         },
     )
+
+    # Every distribution serving /_next/static/* has to be listed on the bucket
+    # policy. Collected here and granted after the cname block below, since S3
+    # allows only one policy per bucket.
+    next_static_reader_arns = [cf.distribution.arn]
 
     # Create A record for apex domain
     dns.create_alias_record(
@@ -629,6 +748,13 @@ if not is_review_stack_or_template:
             ],
         )
 
+        # This is the public-facing domain, and it serves the same origins, so it
+        # needs bucket read access too.
+        next_static_reader_arns.append(cname_cf.distribution.arn)
+
+    if next_static_bucket is not None:
+        next_static_bucket.allow_distribution_read(next_static_reader_arns)
+
     #######################################################################################
     # Create CCC redirects?
     #######################################################################################
@@ -663,11 +789,11 @@ if not is_review_stack_or_template:
         )
 
         infra_dir = Path(__file__).parent
-        with open(infra_dir / "lambda_code" / "redirects.json", "r") as f:
+        with open(infra_dir / "lambda_code" / "redirects.json") as f:
             redirects: list[dict[str, str]] = json.load(f)["redirects"]
 
         # Get the code as a string for the CloudFront Function
-        with open(infra_dir / "lambda_code" / "redirection.js", "r") as f:
+        with open(infra_dir / "lambda_code" / "redirection.js") as f:
             lambda_code = f.read()
 
         for redirect in redirects:

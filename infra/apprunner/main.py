@@ -1,5 +1,5 @@
 import json
-from typing import Mapping, Optional
+from collections.abc import Mapping
 
 import pulumi
 import pulumi_aws as aws
@@ -79,7 +79,7 @@ def create_frontend_auto_scaling_config() -> (
 def create_apprunner_config(
     account_id: str,
     image_identifier: str,
-    env: Optional[pulumi.Input[Mapping[str, pulumi.Input[str]]]] = None,
+    env: pulumi.Input[Mapping[str, pulumi.Input[str]]] | None = None,
 ) -> aws.apprunner.ServiceSourceConfigurationArgs:
 
     image_config = (
