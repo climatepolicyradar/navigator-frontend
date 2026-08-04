@@ -36,7 +36,7 @@ export const useFamilyPageHeaderData = (family: TFamilyPublic): FamilyPageHeader
 
         // Currently our families only have one country when a subdivision is present
         const country = countries[0];
-        if (country) breadcrumbParentGeography = { label: country.name, href: `/geographies${country.slug}` };
+        if (country) breadcrumbParentGeography = { label: country.name, href: `/geographies/${country.slug}` };
       } else {
         // Countries only
         const country = countries[0];

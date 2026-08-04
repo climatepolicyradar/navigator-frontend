@@ -46,7 +46,7 @@ describe("useFamilyPageHeaderData", () => {
 
     const { result } = renderHook(() => useFamilyPageHeaderData(family));
 
-    expect(result.current.breadcrumbParentGeography).toEqual({ label: "United States", href: "/geographies/united-states" });
+    expect(result.current.breadcrumbParentGeography).toEqual({ label: "United States", href: "/geographies/united-states-of-america" });
   });
 
   it("does not throw and omits the parent breadcrumb when the subdivision's code cannot be matched by exact string equality", () => {
