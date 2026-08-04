@@ -1,0 +1,13 @@
+[project]
+name = "frontend-platform"
+version = "0.1.0"
+requires-python = ">=3.13,<3.14"
+dependencies = [
+    "pulumi>=3.0.0,<4.0.0",
+    "pulumi-aws>=7.0.0,<8.0.0",
+    "pulumi-pulumiservice>=0.30.0",
+    "resources",
+]
+
+[tool.uv.sources]
+resources = { path = "../resources" }
