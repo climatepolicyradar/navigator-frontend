@@ -43,6 +43,12 @@ aws_account = aws.get_caller_identity()
 config = pulumi.Config()
 theme = config.require("theme")
 
+# The role the deploy workflows assume (deploy-staging.yml,
+# deploy-production.yml, deploy-all-production.yml). Referenced by name where we
+# attach policies to it, because the role resource below is created by no
+# current stack -- see the guard on GitHubActionsRole.
+DEPLOY_ROLE_NAME = "navigator-new-frontend-github-actions"
+
 
 FRONTEND_ENV = {
     "BACKEND_API_TOKEN": config.require("backend_api_token"),
@@ -356,7 +362,7 @@ if stack in ("staging", "production"):
 # Create GitHub Actions role only for CPR stacks (in current account)
 if stack in ("staging", "production"):
     github_actions_role = GitHubActionsRole(
-        name="navigator-new-frontend-github-actions",
+        name=DEPLOY_ROLE_NAME,
     )
 
 # ########################################################################
@@ -451,6 +457,39 @@ if not is_review_stack_or_template:
             f"{name_prefix}-next-static",
             bucket_name=f"cpr-{env}-{theme}-next-static",
             config=NextStaticBucketConfig(),
+        )
+
+        # Let the deploy workflows sync the build's assets up. The role is
+        # created by no current stack -- the GitHubActionsRole guard above needs
+        # a stack named literally "staging" or "production", and every stack is
+        # {theme}-{env} -- and it carries protect=True, so attach a scoped
+        # inline policy to it by name rather than importing it. Named per
+        # theme+env so the four stacks sharing this role in each account don't
+        # fight over one policy name.
+        aws.iam.RolePolicy(
+            f"{theme}-{env}-next-static-s3-write",
+            role=DEPLOY_ROLE_NAME,
+            policy=next_static_bucket.bucket.arn.apply(
+                lambda arn: json.dumps(
+                    {
+                        "Version": "2012-10-17",
+                        "Statement": [
+                            {
+                                "Effect": "Allow",
+                                "Action": ["s3:PutObject", "s3:DeleteObject"],
+                                "Resource": f"{arn}/*",
+                            },
+                            {
+                                "Effect": "Allow",
+                                # aws s3 sync lists the destination to work out
+                                # what to skip, so it needs the bucket itself.
+                                "Action": ["s3:ListBucket"],
+                                "Resource": arn,
+                            },
+                        ],
+                    }
+                )
+            ),
         )
 
     ########################################################################
