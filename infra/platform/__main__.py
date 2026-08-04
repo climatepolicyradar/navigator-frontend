@@ -14,7 +14,8 @@ from typing import cast
 import pulumi
 import pulumi_aws as aws
 import pulumi_pulumiservice as pulumiservice
-from resources.ecs_cluster import EcsCluster, EcsClusterConfig
+
+from infra.resources.ecs_cluster import EcsCluster, EcsClusterConfig
 
 # ---------------------------------------------------------------------------
 # Configuration
