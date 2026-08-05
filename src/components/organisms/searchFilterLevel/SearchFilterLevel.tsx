@@ -2,12 +2,16 @@ import sortBy from "lodash/sortBy";
 import { useMemo } from "react";
 
 import { SearchFilterGroups } from "@/components/molecules/searchFilterGroups/SearchFilterGroups";
+import { SearchFilterLookup } from "@/components/molecules/searchFilterLookup/SearchFilterLookup";
 import { SearchFilterParent } from "@/components/molecules/searchFilterParent/SearchFilterParent";
 import { SearchFilters } from "@/components/molecules/searchFilters/SearchFilters";
 import { TFilterPathLabel, TNestedSearchLabel } from "@/types";
 import { joinTailwindClasses } from "@/utils/tailwind";
 
-const LOOKUP_THRESHOLD = 8;
+const LOOKUP_THRESHOLD = 16;
+
+const countLabelsAndDescendants = (labels: TNestedSearchLabel[]): number =>
+  labels.reduce((count, label) => count + 1 + countLabelsAndDescendants(label.children), 0);
 
 interface IProps {
   ancestorPath: TFilterPathLabel[];
@@ -20,7 +24,6 @@ interface IProps {
 
 // Render a set of label peers depending on content and composition
 export const SearchFilterLevel = ({ ancestorPath, indented, labels, level, renderParents, showAppliedFilters }: IProps) => {
-  const isLongShallowList = useMemo(() => labels.length > LOOKUP_THRESHOLD && labels.every((label) => label.children.length === 0), [labels]);
   const sortedLabels = useMemo(() => sortBy(labels, "value"), [labels]);
 
   const indentedClasses = indented && "ml-8 mt-2 not-last:mb-2";
@@ -42,15 +45,14 @@ export const SearchFilterLevel = ({ ancestorPath, indented, labels, level, rende
     return <SearchFilterGroups ancestorPath={ancestorPath} labels={labels} level={level} />;
   }
 
-  // TODO re-enable
   // Searchable checkboxes
-  // if (isLongShallowList) {
-  //   return (
-  //     <div className={joinTailwindClasses(indentedClasses, "max-h-full overflow-y-auto")}>
-  //       <SearchFilterLookup ancestorPath={ancestorPath} labels={sortedLabels} level={level} />
-  //     </div>
-  //   );
-  // }
+  if (countLabelsAndDescendants(labels) > LOOKUP_THRESHOLD) {
+    return (
+      <div className={joinTailwindClasses(indentedClasses, "max-h-full overflow-y-auto")}>
+        <SearchFilterLookup ancestorPath={ancestorPath} labels={sortedLabels} level={level} />
+      </div>
+    );
+  }
 
   // Checkboxes (default)
   return <SearchFilters ancestorPath={ancestorPath} indented={indented} labels={sortedLabels} level={level} />;

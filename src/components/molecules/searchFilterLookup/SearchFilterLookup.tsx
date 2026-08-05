@@ -4,7 +4,8 @@ import { Input } from "@/components/atoms/input/Input";
 import { SearchFilter } from "@/components/molecules/searchFilter/SearchFilter";
 import { TFilterPathLabel, TNestedSearchLabel } from "@/types";
 
-const MAX_OPTIONS = 8;
+const LABELS_OVERFLOWING_THRESHOLD = 8;
+const MAX_LABELS = 4;
 
 interface IProps {
   ancestorPath: TFilterPathLabel[];
@@ -20,8 +21,8 @@ export const SearchFilterLookup = ({ ancestorPath, labels, level }: IProps) => {
     () => (searchText ? labels.filter((option) => option.value.toLocaleLowerCase().includes(searchText.toLocaleLowerCase())) : labels),
     [labels, searchText]
   );
-  const isOverflowing = filteredOptions.length > MAX_OPTIONS;
-  const clippedOptions = showAll ? filteredOptions : filteredOptions.slice(0, MAX_OPTIONS);
+  const isOverflowing = filteredOptions.length > LABELS_OVERFLOWING_THRESHOLD;
+  const clippedOptions = showAll ? filteredOptions : filteredOptions.slice(0, MAX_LABELS);
 
   return (
     <div className="w-full flex flex-col gap-2">
