@@ -1,6 +1,12 @@
+import { render, screen } from "@testing-library/react";
+import * as nextRouterMock from "next-router-mock";
+import { vi } from "vitest";
+
 import { TFamilyAttribution, TFamilyDocumentPublic, TFamilyPublic } from "@/types";
 
-import { getEventTableRows } from "./eventTable";
+import { getDocumentLink, getEventTableRows } from "./eventTable";
+
+vi.mock("next/router", () => nextRouterMock);
 
 describe("getEventTableRows", () => {
   it("returns an empty list of document rows if there are no documents in the family", () => {
@@ -210,5 +216,34 @@ describe("getEventTableRows", () => {
 
     expect(eventRows).toHaveLength(1);
     expect(eventRows[0].id).toBe("Document 1:Event 1");
+  });
+});
+
+describe("getDocumentLink", () => {
+  it("does not link to /documents/null when the document has no slug", () => {
+    const documentWithoutSlug = {
+      import_id: "Document 1",
+      slug: null,
+      title: "Document 1",
+      cdn_object: "https://example.com/doc.pdf",
+    } as TFamilyDocumentPublic;
+
+    render(<>{getDocumentLink(documentWithoutSlug, false, false, false)}</>);
+
+    expect(screen.queryByRole("link", { name: /document 1/i })).not.toBeInTheDocument();
+    expect(screen.getByText(/we do not have this document/i)).toBeInTheDocument();
+  });
+
+  it("links to the document preview when a slug is present", () => {
+    const documentWithSlug = {
+      import_id: "Document 1",
+      slug: "document-1",
+      title: "Document 1",
+      cdn_object: "https://example.com/doc.pdf",
+    } as TFamilyDocumentPublic;
+
+    render(<>{getDocumentLink(documentWithSlug, false, false, false)}</>);
+
+    expect(screen.getByRole("link")).toHaveAttribute("href", expect.stringContaining("/documents/document-1"));
   });
 });

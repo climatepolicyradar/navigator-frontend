@@ -13,8 +13,14 @@ export const getCollectionData = async (slug: string, features: TFeatures): Prom
 
   let slugResponse: TApiSlugResponse;
   try {
-    const { data: slugData } = await apiClient.get<TApiItemResponse<TApiSlugResponse>>(`/families/slugs/${slug}`);
-    slugResponse = slugData.data;
+    // http-common's get() returns error.response rather than throwing for Axios errors,
+    // so we must check the status explicitly rather than relying on catch for non-2xx responses.
+    const slugApiResponse = await apiClient.get<TApiItemResponse<TApiSlugResponse>>(`/families/slugs/${slug}`);
+    if (slugApiResponse?.status !== 200 || !slugApiResponse.data?.data?.collection_import_id) {
+      errors.push(new Error("Failed to query collection slug"));
+      return { data: null, errors };
+    }
+    slugResponse = slugApiResponse.data.data;
   } catch (error) {
     errors.push(new Error("Failed to query collection slug", error));
     return { data: null, errors };
@@ -48,17 +54,19 @@ export const getCollectionData = async (slug: string, features: TFeatures): Prom
       errors.push(error as Error);
     }
 
-    const collectionFamilies = getChildDocuments(dataInCollection.documents);
+    if (dataInCollection) {
+      const collectionFamilies = getChildDocuments(dataInCollection.documents);
 
-    try {
-      dataInFamilies = await Promise.all<TDataInDocument>(
-        collectionFamilies.map(async ({ value: collectionFamily }) => {
-          const { data: dataInFamilyResponse } = await apiClient.get<TApiItemResponse>(`/data-in/documents/${collectionFamily.id}`);
-          return validateDataInDocument(dataInFamilyResponse.data);
-        })
-      );
-    } catch (error) {
-      errors.push(error as Error);
+      try {
+        dataInFamilies = await Promise.all<TDataInDocument>(
+          collectionFamilies.map(async ({ value: collectionFamily }) => {
+            const { data: dataInFamilyResponse } = await apiClient.get<TApiItemResponse>(`/data-in/documents/${collectionFamily.id}`);
+            return validateDataInDocument(dataInFamilyResponse.data);
+          })
+        );
+      } catch (error) {
+        errors.push(error as Error);
+      }
     }
   }
 
