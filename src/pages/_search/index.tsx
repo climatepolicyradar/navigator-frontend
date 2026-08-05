@@ -2,17 +2,17 @@ import { GetServerSideProps, InferGetServerSidePropsType } from "next";
 import { useQueryState, parseAsString, parseAsJson } from "nuqs";
 import { useCallback, useEffect, useMemo, useState, type SetStateAction } from "react";
 
-import { normaliseSearchDocumentsSortKey, SearchDocument } from "@/api/search";
+import { normaliseSearchDocumentsSortKey, SearchDocument, SearchDocumentsSortKey } from "@/api/search";
 import { createGroup, isFilterGroupEmpty, AdvancedFilters } from "@/components/_experiment/advancedFilters/AdvancedFilters";
 import { DocumentDrawer } from "@/components/_experiment/documentDrawer/DocumentDrawer";
 import { IntelliSearch } from "@/components/_experiment/intellisearch";
 import { SearchContainer } from "@/components/_experiment/searchResults/SearchResults";
-import { SearchSortSelect } from "@/components/_experiment/searchSort/SearchSortSelect";
 import { SelectPerPage } from "@/components/_experiment/selectPerPage/SelectPerPage";
 import { Button } from "@/components/atoms/button/Button";
 import { FiveColumns } from "@/components/atoms/columns/FiveColumns";
 import Layout from "@/components/layouts/Main";
 import { Pagination } from "@/components/molecules/pagination/Pagination";
+import { Sort, TSortOption } from "@/components/molecules/sort/Sort";
 import { FiltersAndSort } from "@/components/organisms/filtersAndSort/FiltersAndSort";
 import { withEnvConfig } from "@/context/EnvConfig";
 import { FeaturesContext } from "@/context/FeaturesContext";
@@ -26,6 +26,14 @@ import { readConfigFile } from "@/utils/readConfigFile";
 import { joinTailwindClasses } from "@/utils/tailwind";
 
 const columnLayoutCss = "col-start-1 -col-end-1 cols-5:col-start-2 cols-5:-col-end-2";
+
+const SORT_OPTIONS: TSortOption<SearchDocumentsSortKey>[] = [
+  { id: "relevance", label: "Relevance" },
+  { id: "recent", label: "Most recent" },
+  { id: "oldest", label: "Oldest" },
+  { id: "title_asc", label: "A–Z" },
+  { id: "title_desc", label: "Z–A" },
+];
 
 type TProps = InferGetServerSidePropsType<typeof getServerSideProps>;
 
@@ -112,9 +120,11 @@ const ShadowSearch = ({ theme, themeConfig, features }: TProps) => {
           <FiltersAndSort labels={availableFilters} />
           {/* SORT (// TODO move into FilterAndSort) */}
           <div className="col-start-1 -col-end-1 cols-5:col-start-2 cols-5:-col-end-2 flex gap-2">
-            <SearchSortSelect
-              sortParam={sortKey}
-              onChange={(next) => {
+            <Sort
+              defaultId="relevance"
+              options={SORT_OPTIONS}
+              value={sortKey}
+              onValueChange={(next) => {
                 setSortParam(next);
                 setCurrentPage("1");
               }}
