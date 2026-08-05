@@ -16,7 +16,7 @@ permissions:
 
 jobs:
   deploy-staging:
-    name: Deploy ${{ github.sha }} to staging
+    name: Deploy ${{ github.sha }} to staging ${{ matrix.theme }}
     # relating to a, b, c in the `on` section
     if: |
       github.event.workflow_run.conclusion == 'success' ||
@@ -86,7 +86,7 @@ jobs:
             --cache-control "public,max-age=31536000,immutable"
 
       # @see: https://github.com/marketplace/actions/amazon-ecs-deploy-express-service-action-for-github-actions#complete-example-with-all-options
-      - name: Deploy to ECS (staging)
+      - name: Deploy to ECS (staging ${{ matrix.theme }})
         id: deploy-staging
         uses: aws-actions/amazon-ecs-deploy-express-service@v1.2.2
         with:
