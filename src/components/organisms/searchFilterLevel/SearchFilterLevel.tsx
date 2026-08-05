@@ -14,12 +14,13 @@ interface IProps {
   ancestorPath: TFilterPathLabel[];
   indented?: boolean;
   labels: TNestedSearchLabel[];
+  level: number;
   renderParents?: boolean;
   showAppliedFilters?: boolean;
 }
 
 // Render a set of label peers depending on content and composition
-export const SearchFilterLevel = ({ ancestorPath, indented, labels, renderParents, showAppliedFilters }: IProps) => {
+export const SearchFilterLevel = ({ ancestorPath, indented, labels, level, renderParents, showAppliedFilters }: IProps) => {
   const isLongShallowList = useMemo(() => labels.length > LOOKUP_THRESHOLD && labels.every((label) => label.children.length === 0), [labels]);
   const sortedLabels = useMemo(() => sortBy(labels, "value"), [labels]);
 
@@ -27,12 +28,11 @@ export const SearchFilterLevel = ({ ancestorPath, indented, labels, renderParent
   const labelTypes = new Set(labels.map((label) => label.type));
 
   // Parents
-  const levelIsParents = renderParents && ancestorPath.length === 0 && labelTypes.size === 1;
-  if (levelIsParents) {
+  if (level === 1 && renderParents) {
     return (
       <ul className={joinTailwindClasses("list-none", indentedClasses)}>
         {sortedLabels.map((label) => (
-          <SearchFilterParent key={label.id} ancestorPath={ancestorPath} label={label} showAppliedFilters={showAppliedFilters} />
+          <SearchFilterParent key={label.id} ancestorPath={ancestorPath} label={label} level={level} showAppliedFilters={showAppliedFilters} />
         ))}
       </ul>
     );
@@ -40,14 +40,14 @@ export const SearchFilterLevel = ({ ancestorPath, indented, labels, renderParent
 
   // Grouped by type
   if (labelTypes.size > 1) {
-    return <SearchFilterGroups ancestorPath={ancestorPath} labels={labels} />;
+    return <SearchFilterGroups ancestorPath={ancestorPath} labels={labels} level={level} />;
   }
 
   // Searchable checkboxes
   if (isLongShallowList) {
     return (
       <div className={joinTailwindClasses(indentedClasses, "max-h-full overflow-y-auto")}>
-        <SearchFilterLookup ancestorPath={ancestorPath} labels={sortedLabels} />
+        <SearchFilterLookup ancestorPath={ancestorPath} labels={sortedLabels} level={level} />
       </div>
     );
   }
@@ -56,7 +56,7 @@ export const SearchFilterLevel = ({ ancestorPath, indented, labels, renderParent
   return (
     <ul className={joinTailwindClasses("flex flex-col gap-2 list-none", indentedClasses)}>
       {sortedLabels.map((label) => (
-        <SearchFilter key={label.id} ancestorPath={ancestorPath} label={label} />
+        <SearchFilter key={label.id} ancestorPath={ancestorPath} label={label} level={level} />
       ))}
     </ul>
   );

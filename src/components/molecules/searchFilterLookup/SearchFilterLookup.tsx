@@ -9,9 +9,10 @@ const MAX_OPTIONS = 8;
 interface IProps {
   ancestorPath: TFilterPathLabel[];
   labels: TNestedSearchLabel[];
+  level: number;
 }
 
-export const SearchFilterLookup = ({ ancestorPath, labels }: IProps) => {
+export const SearchFilterLookup = ({ ancestorPath, labels, level }: IProps) => {
   const [searchText, setSearchText] = useState("");
   const [showAll, setShowAll] = useState(false);
 
@@ -33,7 +34,7 @@ export const SearchFilterLookup = ({ ancestorPath, labels }: IProps) => {
       />
       <ul className="flex flex-col gap-2 list-none">
         {clippedOptions.map((option) => (
-          <SearchFilter key={option.id} ancestorPath={ancestorPath} label={option} />
+          <SearchFilter key={option.id} ancestorPath={ancestorPath} label={option} level={level} />
         ))}
       </ul>
       {isOverflowing && (

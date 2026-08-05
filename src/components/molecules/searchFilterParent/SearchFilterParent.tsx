@@ -15,10 +15,11 @@ import { firstCase } from "@/utils/text";
 interface IProps {
   ancestorPath: TFilterPathLabel[];
   label: TNestedSearchLabel;
+  level: number;
   showAppliedFilters?: boolean;
 }
 
-export const SearchFilterParent = ({ ancestorPath, label, showAppliedFilters }: IProps) => {
+export const SearchFilterParent = ({ ancestorPath, label, level, showAppliedFilters }: IProps) => {
   const { checkedLabelPaths, toggleFilter } = useContext(FiltersContext);
   const [isExpanded, setIsExpanded] = useState(false);
 
@@ -69,7 +70,7 @@ export const SearchFilterParent = ({ ancestorPath, label, showAppliedFilters }: 
       {showAppliedFilters && <AppliedFilters ancestorPath={pathLabels} className="pl-8 mt-4" />}
       {isExpanded && label.children.length > 0 && (
         <div className="ml-9 pt-6">
-          <SearchFilterLevel ancestorPath={pathLabels} labels={label.children} />
+          <SearchFilterLevel ancestorPath={pathLabels} labels={label.children} level={level + 1} />
         </div>
       )}
       <div className="relative -bottom-4 h-px ml-9 bg-border-light group-last:hidden" />

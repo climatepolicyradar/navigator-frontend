@@ -14,9 +14,10 @@ import { firstCase } from "@/utils/text";
 interface IProps {
   ancestorPath: TFilterPathLabel[];
   label: TNestedSearchLabel;
+  level: number;
 }
 
-export const SearchFilter = ({ ancestorPath, label }: IProps) => {
+export const SearchFilter = ({ ancestorPath, label, level }: IProps) => {
   const { checkedLabelPaths, toggleFilter } = useContext(FiltersContext);
   const [isExpanded, setIsExpanded] = useState(false);
 
@@ -59,7 +60,7 @@ export const SearchFilter = ({ ancestorPath, label }: IProps) => {
         </Checkbox>
         {hasChildren && <ChevronDown size={16} className={joinTailwindClasses("text-elem-icon", isExpanded && "rotate-180")} />}
       </button>
-      {hasChildren && isExpanded && <SearchFilterLevel ancestorPath={pathLabels} labels={label.children} indented />}
+      {hasChildren && isExpanded && <SearchFilterLevel ancestorPath={pathLabels} labels={label.children} level={level + 1} indented />}
     </li>
   );
 };
