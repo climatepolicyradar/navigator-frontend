@@ -1,11 +1,11 @@
 import { ApiClient } from "@/api/http-common";
 import { documentTransformer } from "@/bff/transformers/documentTransformer";
 import { TDataInDocument, validateDataInDocument } from "@/schemas";
-import { TApiItemResponse, TApiSearchResponse, TApiSlugResponse, TDocumentPresentationalResponse, TFeatures, TTopics } from "@/types";
+import { TApiItemResponse, TApiSearchResponse, TApiSlugResponse, TDocumentPresentationalResponse, TTopics } from "@/types";
 import { extractTopicIds } from "@/utils/extractTopicIds";
 import { fetchAndProcessTopics } from "@/utils/fetchAndProcessTopics";
 
-export const getDocumentData = async (slug: string, features: TFeatures): Promise<TDocumentPresentationalResponse> => {
+export const getDocumentData = async (slug: string): Promise<TDocumentPresentationalResponse> => {
   /* Make API requests */
 
   const errors: Error[] = [];
@@ -22,14 +22,12 @@ export const getDocumentData = async (slug: string, features: TFeatures): Promis
   }
 
   let document: TDataInDocument;
-  if (features["new-data-model"]) {
-    try {
-      const { data: dataInDocumentResponse } = await apiClient.get<TApiItemResponse>(`/data-in/documents/${slugResponse.family_document_import_id}`);
-      document = validateDataInDocument(dataInDocumentResponse.data);
-    } catch (error) {
-      errors.push(new Error("Failed to fetch document data", error));
-      return { data: null, errors };
-    }
+  try {
+    const { data: dataInDocumentResponse } = await apiClient.get<TApiItemResponse>(`/data-in/documents/${slugResponse.family_document_import_id}`);
+    document = validateDataInDocument(dataInDocumentResponse.data);
+  } catch (error) {
+    errors.push(new Error("Failed to fetch document data", error));
+    return { data: null, errors };
   }
 
   let vespaDocumentData: TApiSearchResponse;

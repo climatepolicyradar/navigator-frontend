@@ -185,7 +185,7 @@ export const getServerSideProps = (async (context) => {
   const featureFlags = getFeatureFlags(context.req.cookies);
   const features = getFeatures(themeConfig, featureFlags);
 
-  const { data: documentData, errors } = await getDocumentData(slug, features);
+  const { data: documentData, errors } = await getDocumentData(slug);
   errors.forEach((err) => console.error(err));
   if (documentData === null) return { notFound: true };
 
