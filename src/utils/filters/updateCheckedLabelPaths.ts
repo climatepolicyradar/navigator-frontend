@@ -10,9 +10,14 @@ export const updateCheckedLabelPaths = (
 ): TFilterPathLabel[][] => {
   let updatedCheckedLabelPaths = [...checkedLabelPaths];
 
-  // indeterminate is treated as unchecked
+  // Indeterminate is treated as unchecked
   if (checked === true) {
-    updatedCheckedLabelPaths.push(labelPath);
+    const labelPathSignature = getLabelPathSignature(labelPath);
+    updatedCheckedLabelPaths = [
+      // Removes any child filters below the filter being checked
+      ...checkedLabelPaths.filter((labels) => !(labels.length > labelPath.length && getLabelPathSignature(labels).startsWith(labelPathSignature))),
+      labelPath,
+    ];
   } else {
     updatedCheckedLabelPaths = checkedLabelPaths.filter((labels) => getLabelPathSignature(labels) !== getLabelPathSignature(labelPath));
   }
