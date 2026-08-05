@@ -146,7 +146,6 @@ export const DocumentPassageViewer = ({ document, vespaDocumentData }: TProps) =
   const handleClear = () => {
     setSearchTerm("");
     setQuery("");
-    setSort("relevance desc");
   };
 
   const handleConceptClick = useCallback(
