@@ -1,10 +1,9 @@
 import sortBy from "lodash/sortBy";
 import { useMemo } from "react";
 
-import { SearchFilter } from "@/components/molecules/searchFilter/SearchFilter";
 import { SearchFilterGroups } from "@/components/molecules/searchFilterGroups/SearchFilterGroups";
-import { SearchFilterLookup } from "@/components/molecules/searchFilterLookup/SearchFilterLookup";
 import { SearchFilterParent } from "@/components/molecules/searchFilterParent/SearchFilterParent";
+import { SearchFilters } from "@/components/molecules/searchFilters/SearchFilters";
 import { TFilterPathLabel, TNestedSearchLabel } from "@/types";
 import { joinTailwindClasses } from "@/utils/tailwind";
 
@@ -43,21 +42,16 @@ export const SearchFilterLevel = ({ ancestorPath, indented, labels, level, rende
     return <SearchFilterGroups ancestorPath={ancestorPath} labels={labels} level={level} />;
   }
 
+  // TODO re-enable
   // Searchable checkboxes
-  if (isLongShallowList) {
-    return (
-      <div className={joinTailwindClasses(indentedClasses, "max-h-full overflow-y-auto")}>
-        <SearchFilterLookup ancestorPath={ancestorPath} labels={sortedLabels} level={level} />
-      </div>
-    );
-  }
+  // if (isLongShallowList) {
+  //   return (
+  //     <div className={joinTailwindClasses(indentedClasses, "max-h-full overflow-y-auto")}>
+  //       <SearchFilterLookup ancestorPath={ancestorPath} labels={sortedLabels} level={level} />
+  //     </div>
+  //   );
+  // }
 
   // Checkboxes (default)
-  return (
-    <ul className={joinTailwindClasses("flex flex-col gap-2 list-none", indentedClasses)}>
-      {sortedLabels.map((label) => (
-        <SearchFilter key={label.id} ancestorPath={ancestorPath} label={label} level={level} />
-      ))}
-    </ul>
-  );
+  return <SearchFilters ancestorPath={ancestorPath} indented={indented} labels={sortedLabels} level={level} />;
 };
