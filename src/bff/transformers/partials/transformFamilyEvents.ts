@@ -11,7 +11,7 @@ import {
   TDataInDocumentAttributes,
   DISPLAY_ALLOWED_STATUSES,
 } from "@/schemas";
-import { TAttributionCategory, TFamilyApiNewData, TFamilyEventPublic } from "@/types";
+import { TAttributionCategory, TFamilyEventPublic } from "@/types";
 import { groupByType, TItemsByType } from "@/utils/data-in/groupByType";
 
 const makeActivityStatusEvent = (
@@ -49,7 +49,7 @@ type TAllFamilyEvents = {
   documentEvents: TDocumentEvents[];
 };
 
-export const transformFamilyEvents = (document: TFamilyApiNewData, category: TAttributionCategory): TAllFamilyEvents => {
+export const transformFamilyEvents = (document: TDataInDocument, category: TAttributionCategory): TAllFamilyEvents => {
   const groupedDocumentLabels = groupByType<TDataInLabel, TDataInLabelType>(document.labels, LABEL_TYPES, MANDATORY_FAMILY_LABEL_TYPES);
   const familyEvents: TFamilyEventPublic[] = [];
 

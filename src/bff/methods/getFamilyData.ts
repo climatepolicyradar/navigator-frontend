@@ -1,35 +1,17 @@
-import axios from "axios";
-
 import { ApiClient } from "@/api/http-common";
+import { getParentDocuments } from "@/bff/methods/getRelations";
 import { familyTransformer } from "@/bff/transformers/familyTransformer";
-import { DEFAULT_DOCUMENT_TITLE } from "@/constants/document";
-import { EXCLUDED_ISO_CODES } from "@/constants/geography";
 import { TDataInDocument, validateDataInDocument } from "@/schemas";
-import {
-  IApiFamilyDocumentTopics,
-  TApiCollectionPublicWithFamilies,
-  TApiFamilyPublic,
-  TApiGeography,
-  TApiGeographySubdivision,
-  TApiItemResponse,
-  TApiSearchResponse,
-  TApiSlugResponse,
-  TCorpusTypeDictionary,
-  TFamilyPresentationalResponse,
-  TFeatures,
-} from "@/types";
-import { isCorpusIdAllowed } from "@/utils/checkCorpusAccess";
-import { extractNestedData } from "@/utils/extractNestedData";
+import { IApiFamilyDocumentTopics, TApiItemResponse, TApiSearchResponse, TApiSlugResponse, TFamilyPresentationalResponse } from "@/types";
 import { processFamilyTopics } from "@/utils/topics/processFamilyTopics";
 
-export const getFamilyData = async (slug: string, features: TFeatures, importId?: string): Promise<TFamilyPresentationalResponse> => {
+export const getFamilyData = async (slug: string, importId?: string): Promise<TFamilyPresentationalResponse> => {
   /* Make API requests */
 
   const errors: Error[] = [];
   const backendApiClient = new ApiClient(process.env.BACKEND_API_URL);
   const apiClient = new ApiClient(process.env.CONCEPTS_API_URL);
 
-  // If we are passing an importId in - we can skip calling the slugs endpoint to get it
   let familyImportId = importId;
   if (slug) {
     try {
@@ -42,28 +24,28 @@ export const getFamilyData = async (slug: string, features: TFeatures, importId?
     }
   }
 
-  let family: TApiFamilyPublic;
+  let family: TDataInDocument;
   try {
-    // and then query the families API by the returned family_import_id
-    const { data: familyResponse } = await apiClient.get<TApiItemResponse<TApiFamilyPublic>>(`/families/${familyImportId}`);
-    family = familyResponse.data;
-    family.documents.forEach((document) => {
-      if (document.title === "") document.title = DEFAULT_DOCUMENT_TITLE;
-    });
+    const { data: dataInDocumentResponse } = await apiClient.get<TApiItemResponse>(`/data-in/documents/${familyImportId}`);
+    family = validateDataInDocument(dataInDocumentResponse.data);
   } catch (error) {
-    errors.push(new Error("Failed to fetch families data", error));
+    errors.push(new Error("Failed to fetch family data", error));
     return { data: null, errors };
   }
 
-  // Get the new data-in document for this family or fall back to the older data
-  let dataInDocument: TDataInDocument | null = null;
-  if (family && features["new-data-model"]) {
-    try {
-      const { data: dataInDocumentResponse } = await apiClient.get<TApiItemResponse>(`/data-in/documents/${family.import_id}`);
-      dataInDocument = validateDataInDocument(dataInDocumentResponse.data);
-    } catch (error) {
-      errors.push(error as Error);
-    }
+  let collections: TDataInDocument[];
+  try {
+    const familyCollections = getParentDocuments(family.documents || []);
+
+    collections = await Promise.all<TDataInDocument>(
+      familyCollections.map(async ({ value: familyCollection }) => {
+        const { data: collectionResponse } = await apiClient.get<TApiItemResponse>(`/data-in/documents/${familyCollection.id}`);
+        return validateDataInDocument(collectionResponse.data);
+      })
+    );
+  } catch (error) {
+    errors.push(new Error("Failed to fetch collections data", error));
+    return { data: null, errors };
   }
 
   // The Vespa families data has the concepts data attached, which is why we need this
@@ -71,7 +53,7 @@ export const getFamilyData = async (slug: string, features: TFeatures, importId?
   try {
     // max_hits_per_family=100 is set ensure we get all documents for a family
     // this should probably be done in the `backend-api`, but it currently does not work
-    const vespaResponse = await backendApiClient.get<TApiSearchResponse>(`/families/${family.import_id}?max_hits_per_family=100`);
+    const vespaResponse = await backendApiClient.get<TApiSearchResponse>(`/families/${family.id}?max_hits_per_family=100`);
     // http-common's get() returns error.response rather than throwing for Axios errors,
     // so we must check the status explicitly rather than relying on catch for non-2xx responses.
     if (vespaResponse?.status === 200) {
@@ -87,71 +69,15 @@ export const getFamilyData = async (slug: string, features: TFeatures, importId?
   let familyTopics: IApiFamilyDocumentTopics;
   if (vespaFamilyData) familyTopics = await processFamilyTopics(vespaFamilyData);
 
-  const { config, error: configError } = await backendApiClient.getConfig();
-  if (configError) errors.push(configError);
-  const response_geo = extractNestedData<TApiGeography>(config.geographies);
-  const countries = response_geo[1];
-  const corpusTypes: TCorpusTypeDictionary = config.corpus_types;
-
-  // This is because our family.geographies field isn't hydrated but rather a string[]
-  const allSubdivisions = await Promise.all<TApiGeographySubdivision[]>(
-    family.geographies
-      .filter((country) => country.length === 3 && !EXCLUDED_ISO_CODES.includes(country))
-      .map(async (country) => {
-        try {
-          const subDivisionResponse = await apiClient.get<TApiGeographySubdivision[]>(`/geographies/subdivisions/${country}`);
-          // http-common's get() returns error.response rather than throwing for Axios errors,
-          // so a non-2xx response resolves here instead of throwing.
-          if (Array.isArray(subDivisionResponse?.data)) {
-            return subDivisionResponse.data;
-          }
-          // A 404 just means the country has no subdivisions, which is expected for most
-          // countries - return empty quietly. Anything else (5xx, no response) is a genuine failure.
-          if (subDivisionResponse?.status !== 404) {
-            errors.push(new Error(`Failed to fetch subdivisions data for country: ${country}`));
-          }
-          return [];
-        } catch (error) {
-          const status = axios.isAxiosError(error) ? error.response?.status : "unknown";
-          errors.push(new Error(`Failed to fetch subdivisions data for country: ${country}`, { cause: status }));
-          return [];
-        }
-      })
-  );
-  const subdivisions = allSubdivisions.flat().filter((subdivision) => subdivision !== undefined);
-
-  const allCollections = await Promise.all<TApiCollectionPublicWithFamilies[]>(
-    family.collections.map(async (collection) => {
-      try {
-        const { data: collectionResponse } = await apiClient.get(`/families/collections/${collection.import_id}`);
-        return collectionResponse.data;
-      } catch (error) {
-        errors.push(new Error("Failed to fetch collection data for collection: " + collection.import_id, error));
-        return [];
-      }
-    })
-  );
-  const collections = allCollections.flat().filter((collection) => collection !== undefined);
-
-  // Check the family is in the "allowed_corpora"
-  if (family.corpus_id && !isCorpusIdAllowed(process.env.BACKEND_API_TOKEN, family.corpus_id)) {
-    errors.push(new Error("Family is not in an allowed corpora"));
-    return { data: null, errors };
-  }
-
   /* Transform API data for presentation */
 
   return familyTransformer(
     {
       collections,
-      corpusTypes,
-      countries,
       family,
       familyTopics: familyTopics || null,
-      subdivisions,
       vespaFamilyData: vespaFamilyData || null,
     },
-    dataInDocument,
     errors
   );
 };

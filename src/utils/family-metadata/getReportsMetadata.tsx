@@ -2,14 +2,13 @@ import { Fragment } from "react";
 
 import { GeographyLink } from "@/components/molecules/geographyLink/GeographyLink";
 import { EN_DASH } from "@/constants/chars";
-import { getCountryName, getCountrySlug } from "@/helpers/getCountryFields";
-import { IFamilyDocumentTopics, IMetadata, TFamilyPublic, TGeography } from "@/types";
+import { IFamilyDocumentTopics, IMetadata, TFamilyPublic } from "@/types";
 import { getTopicsMetadataItem } from "@/utils/family-metadata/getTopicsMetadataItem";
 import { isSystemGeo } from "@/utils/isSystemGeo";
 import { convertDate } from "@/utils/timedate";
 import { familyTopicsHasTopics } from "@/utils/topics/processFamilyTopics";
 
-export function getReportsMetadata(family: TFamilyPublic, familyTopics: IFamilyDocumentTopics | null, countries: TGeography[]): IMetadata[] {
+export function getReportsMetadata(family: TFamilyPublic, familyTopics: IFamilyDocumentTopics | null): IMetadata[] {
   const metadata = [];
 
   const [year] = convertDate(family.published_date);
@@ -26,28 +25,28 @@ export function getReportsMetadata(family: TFamilyPublic, familyTopics: IFamilyD
     metadata.push({
       label: "Geography",
       value: family.geographies.map((geo, index) => {
-        const geoSlug = getCountrySlug(geo, countries);
-        const geoName = getCountryName(geo, countries);
         return (
-          <Fragment key={geo}>
+          <Fragment key={geo.slug}>
             {index > 0 && ", "}
-            {!isSystemGeo(geoName) ? <GeographyLink code={geo} name={geoName} slug={geoSlug || geo.toLowerCase()} /> : <span>{geoName}</span>}
+            {!isSystemGeo(geo.name) ? <GeographyLink {...geo} /> : <span>{geo.name}</span>}
           </Fragment>
         );
       }),
     });
   }
 
-  family?.metadata?.author_type &&
+  if (family?.metadata?.author_type) {
     metadata.push({
       label: "Author Type",
       value: family.metadata?.author_type.join(", ") || EN_DASH,
     });
-  family?.metadata?.author &&
+  }
+  if (family?.metadata?.author) {
     metadata.push({
       label: "Author",
       value: family.metadata?.author.join(", ") || EN_DASH,
     });
+  }
 
   /* Document Type */
   metadata.push({

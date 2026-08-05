@@ -1,13 +1,10 @@
-import orderBy from "lodash/orderBy";
 import { Fragment, ReactNode } from "react";
 
 import { PageLink } from "@/components/atoms/pageLink/PageLink";
-import { GeographyLink, IProps as GeographyLinkProps } from "@/components/molecules/geographyLink/GeographyLink";
+import { GeographyLink } from "@/components/molecules/geographyLink/GeographyLink";
 import { TCategoryDictionaryKey } from "@/constants/text";
-import { getCountryName, getCountrySlug } from "@/helpers/getCountryFields";
-import { getSubdivisionName } from "@/helpers/getSubdivision";
 import { getSumUSD } from "@/helpers/getSumUSD";
-import { IMetadata, TFamilyPublic, TGeography, TGeographySubdivision } from "@/types";
+import { IMetadata, TFamilyPublic } from "@/types";
 import { scrollToBlock } from "@/utils/blocks/scrollToBlock";
 import { isSystemGeo } from "@/utils/isSystemGeo";
 import { pluralise } from "@/utils/pluralise";
@@ -17,35 +14,18 @@ import { convertDate } from "@/utils/timedate";
 const MAX_SHOWN_GEOGRAPHIES = 3;
 
 type TProps = {
-  countries: TGeography[];
   family: TFamilyPublic;
-  subdivisions: TGeographySubdivision[];
   getCategoryText: (textKey: TCategoryDictionaryKey) => string;
 };
 
-export const getFamilyHeader = ({ countries, family, subdivisions, getCategoryText }: TProps): IMetadata[] => {
+export const getFamilyHeader = ({ family, getCategoryText }: TProps): IMetadata[] => {
   const [year] = convertDate(family.published_date);
   const isLitigation = family.attribution.category === "Litigation";
   const isMCF = family.attribution.category === "Multilateral Climate Fund project";
+  const { geographies } = family;
 
-  const codeIsCountry = (code: string) => !code.includes("-");
-
-  // TODO use the new geography endpoint + GeographyV2
-  const geographiesDisplayData: GeographyLinkProps[] = orderBy(
-    family.geographies
-      .map((code) => {
-        const isSubdivision = !codeIsCountry(code);
-        const name = isSubdivision ? getSubdivisionName(code, subdivisions) : getCountryName(code, countries);
-        const slug = isSubdivision ? code.toLowerCase() : getCountrySlug(code, countries);
-        return name && slug ? { code, name, slug: isSystemGeo(name) ? undefined : slug } : null;
-      })
-      .filter((data) => data),
-    [(data) => data.code.includes("-"), "name"],
-    ["asc", "asc"]
-  );
-
-  const visibleGeographiesData = geographiesDisplayData.slice(0, MAX_SHOWN_GEOGRAPHIES);
-  const hiddenGeographiesCount = Math.max(0, geographiesDisplayData.length - MAX_SHOWN_GEOGRAPHIES);
+  const visibleGeographiesData = geographies.slice(0, MAX_SHOWN_GEOGRAPHIES);
+  const hiddenGeographiesCount = Math.max(0, geographies.length - MAX_SHOWN_GEOGRAPHIES);
 
   const isGeographiesParentAndChild =
     visibleGeographiesData.length === 2 && !visibleGeographiesData[0].code.includes("-") && visibleGeographiesData[1].code.includes("-");
