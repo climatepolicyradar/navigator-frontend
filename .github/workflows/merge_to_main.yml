@@ -221,8 +221,7 @@ jobs:
     permissions:
       id-token: write
       contents: read
-    environment: staging
-    # environment: startsWith(matrix.project, 'production-') && 'production' || 'staging' }}
+    environment: ${{ startsWith(matrix.project, 'production-') && 'production' || 'staging' }}
     strategy:
       matrix:
         project: ${{ fromJSON(needs.changes.outputs.projects) }}
