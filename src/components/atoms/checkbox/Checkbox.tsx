@@ -16,7 +16,7 @@ export const Checkbox = ({ children: label, className, noClickLabel, ...rootProp
   const labelId = useId();
 
   const wrapperClasses = joinTailwindClasses(
-    "flex gap-3 items-center text-sm font-normal leading-5",
+    "flex gap-3 items-start text-sm text-left font-normal leading-5",
     rootProps.disabled ? "text-text-tertiary cursor-not-allowed" : "text-text-primary",
     !noClickLabel && !rootProps.disabled && "cursor-pointer",
     noClickLabel && !rootProps.disabled && "select-none",
