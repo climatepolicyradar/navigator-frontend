@@ -1,5 +1,4 @@
 from dataclasses import dataclass
-from typing import Dict, Optional
 
 import pulumi
 import pulumi_aws as aws
@@ -40,9 +39,9 @@ class ExpressGatewayServiceComponent(pulumi.ComponentResource):
         infrastructure_role_arn: pulumi.Output[str],
         security_group_ids: list[pulumi.Output[str]],
         subnets: list[pulumi.Output[str]],
-        env_vars: Optional[Dict[str, str]] = None,
-        runtime_environment_secrets: Optional[Dict[str, pulumi.Output]] = None,
-        opts: Optional[pulumi.ResourceOptions] = None,
+        env_vars: dict[str, str] | None = None,
+        runtime_environment_secrets: dict[str, pulumi.Output] | None = None,
+        opts: pulumi.ResourceOptions | None = None,
     ):
         super().__init__("pkg:index:ExpressGatewayService", name, None, opts)
         self._prefix = name if pulumi.get_stack().startswith("pr-") else prefix_name()
@@ -115,7 +114,7 @@ class ExpressGatewayServiceComponent(pulumi.ComponentResource):
         self.register_outputs({"url": self.url, "domain_name": self.domain_name})
 
     def _get_opts(
-        self, opts: Optional[pulumi.ResourceOptions] = None
+        self, opts: pulumi.ResourceOptions | None = None
     ) -> pulumi.ResourceOptions:
         return pulumi.ResourceOptions.merge(
             pulumi.ResourceOptions(parent=self, protect=True),

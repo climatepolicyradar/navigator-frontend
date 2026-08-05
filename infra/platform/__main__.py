@@ -204,7 +204,7 @@ if is_staging:
         organization=org_name,
         project=project_name,
         name="aws-creds-staging",
-        yaml=aws_creds_staging_yaml.apply(lambda y: pulumi.StringAsset(y)),
+        yaml=aws_creds_staging_yaml.apply(pulumi.StringAsset),
     )
 
     # Review stack environments - imports aws-creds-staging and provides
@@ -233,7 +233,7 @@ if is_staging:
             organization=org_name,
             project=project_name,
             name=f"{theme}-review",
-            yaml=cpr_review_yaml.apply(lambda y: pulumi.StringAsset(y)),
+            yaml=cpr_review_yaml.apply(pulumi.StringAsset),
             opts=pulumi.ResourceOptions(depends_on=[aws_creds_staging_env]),
         )
 

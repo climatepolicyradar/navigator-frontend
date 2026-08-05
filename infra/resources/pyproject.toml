@@ -12,4 +12,4 @@ email = "katy@climatepolicyradar.org"
 
 [tool.setuptools.packages.find]
 where = [".."]          # look one level up (i.e. in navigator-frontend/infra/)
-include = ["infra*"]
+include = ["resources*"]

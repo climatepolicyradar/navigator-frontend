@@ -3,7 +3,7 @@
 import json
 import re
 from dataclasses import dataclass
-from typing import Dict, Optional, cast
+from typing import cast
 
 from resources.util import tag_name
 import pulumi
@@ -26,9 +26,9 @@ class VpcConfig:
     :type subnets: Optional[list[str]]
     """
 
-    vpc_connector_arn: Optional[str] = None
-    security_groups: Optional[list[str]] = None
-    subnets: Optional[list[str]] = None
+    vpc_connector_arn: str | None = None
+    security_groups: list[str] | None = None
+    subnets: list[str] | None = None
 
 
 @dataclass
@@ -85,11 +85,11 @@ class AppRunnerConfig:
     memory: str = "2 GB"
     region: str = "eu-west-1"
     auto_deploy: bool = False
-    vpc_config: Optional[VpcConfig] = None
-    health_check_config: Optional[HealthCheckConfig] = None
-    s3_bucket_access: Optional[dict[str, list[str]]] = None
+    vpc_config: VpcConfig | None = None
+    health_check_config: HealthCheckConfig | None = None
+    s3_bucket_access: dict[str, list[str]] | None = None
     ssm_access: bool = False
-    custom_domain: Optional[str] = None
+    custom_domain: str | None = None
 
 
 class AppRunnerService(pulumi.ComponentResource):
@@ -150,12 +150,12 @@ class AppRunnerService(pulumi.ComponentResource):
         name: str,
         config: AppRunnerConfig,
         image_identifier: str,
-        env_vars: Optional[Dict[str, str]] = None,
-        tags: Optional[Dict[str, str]] = None,
-        opts: Optional[pulumi.ResourceOptions] = None,
-        auto_scaling_config_arn: Optional[str] = None,
-        runtime_environment_secrets: Optional[Dict[str, pulumi.Output]] = None,
-        access_role_arn: Optional[pulumi.Input[str]] = None,
+        env_vars: dict[str, str] | None = None,
+        tags: dict[str, str] | None = None,
+        opts: pulumi.ResourceOptions | None = None,
+        auto_scaling_config_arn: str | None = None,
+        runtime_environment_secrets: dict[str, pulumi.Output] | None = None,
+        access_role_arn: pulumi.Input[str] | None = None,
     ):
         super().__init__("pkg:index:AppRunnerService", name, None, opts)
 
@@ -184,7 +184,7 @@ class AppRunnerService(pulumi.ComponentResource):
         # stacks can hit when names are auto-generated.
         if access_role_arn is not None:
             self.access_role_arn: pulumi.Input[str] = access_role_arn
-            self.access_role: Optional[aws.iam.Role] = None
+            self.access_role: aws.iam.Role | None = None
         else:
             self.access_role = self._create_access_role()
             self.access_role_arn = self.access_role.arn
@@ -230,7 +230,7 @@ class AppRunnerService(pulumi.ComponentResource):
         )
 
     def _get_auto_scaling_config_arn(
-        self, config: AppRunnerConfig, auto_scaling_config_arn: Optional[str]
+        self, config: AppRunnerConfig, auto_scaling_config_arn: str | None
     ) -> str:
         """Get the appropriate auto scaling configuration ARN.
 
@@ -433,7 +433,7 @@ class AppRunnerService(pulumi.ComponentResource):
         return apprunner_instance_role
 
     def _merge_opts(
-        self, opts: Optional[pulumi.ResourceOptions] = None
+        self, opts: pulumi.ResourceOptions | None = None
     ) -> pulumi.ResourceOptions:
         return pulumi.ResourceOptions.merge(
             pulumi.ResourceOptions(
@@ -444,7 +444,7 @@ class AppRunnerService(pulumi.ComponentResource):
 
     def _create_vpc_connector(
         self, vpc_config: VpcConfig
-    ) -> Optional[aws.apprunner.VpcConnector]:
+    ) -> aws.apprunner.VpcConnector | None:
         """Create VPC connector if not provided.
 
         :param vpc_config: VPC configuration
@@ -480,8 +480,8 @@ class AppRunnerService(pulumi.ComponentResource):
         self,
         config: AppRunnerConfig,
         image_identifier: str,
-        env_vars: Optional[Dict[str, str]],
-        runtime_environment_secrets: Optional[Dict[str, pulumi.Output[str]]],
+        env_vars: dict[str, str] | None,
+        runtime_environment_secrets: dict[str, pulumi.Output[str]] | None,
     ) -> aws.apprunner.Service:
         """Create AppRunner service."""
         # Create provider for the specific region
