@@ -1,7 +1,14 @@
 import { describe, expect, it } from "vitest";
 
 import { DEFAULT_FEATURES } from "@/constants/features";
-import { collectionByIdHandler, collectionSlugHandler, dataInCollectionHandler, testCollectionSlug } from "@/tests/mocks/api/collectionDataHandlers";
+import {
+  collectionByIdHandler,
+  collectionSlugHandler,
+  dataInChildFamilyHandler,
+  dataInCollectionHandler,
+  testChildFamilyImportId,
+  testCollectionSlug,
+} from "@/tests/mocks/api/collectionDataHandlers";
 import { server } from "@/tests/mocks/server";
 
 import { getCollectionData } from "./getCollectionData";
@@ -45,6 +52,58 @@ describe("getCollectionData", () => {
 
   it("does not throw when the data-in fetch fails and new-data-model is enabled", async () => {
     server.use(collectionSlugHandler(), collectionByIdHandler(), dataInCollectionHandler({ status: 500 }));
+
+    const result = await getCollectionData(testCollectionSlug, { ...DEFAULT_FEATURES, "new-data-model": true });
+
+    expect(result.data).not.toBeNull();
+  });
+
+  it("fetches and validates each child family's data-in document when new-data-model is enabled", async () => {
+    server.use(
+      collectionSlugHandler(),
+      collectionByIdHandler(),
+      dataInCollectionHandler({
+        body: {
+          id: "collection-1",
+          title: "Test Collection",
+          description: null,
+          attributes: { deprecated_slug: "test-collection-slug" },
+          labels: [],
+          items: [],
+          documents: [
+            { type: "has_member", value: { id: testChildFamilyImportId, title: "Child Family", description: null, attributes: {}, labels: [] } },
+          ],
+        },
+      }),
+      dataInChildFamilyHandler()
+    );
+
+    const result = await getCollectionData(testCollectionSlug, { ...DEFAULT_FEATURES, "new-data-model": true });
+
+    expect(result.errors).toEqual([]);
+    expect(result.data.collection.families).toHaveLength(1);
+    expect(result.data.collection.families[0].import_id).toBe(testChildFamilyImportId);
+  });
+
+  it("logs an error but does not throw when a child family's data-in fetch fails", async () => {
+    server.use(
+      collectionSlugHandler(),
+      collectionByIdHandler(),
+      dataInCollectionHandler({
+        body: {
+          id: "collection-1",
+          title: "Test Collection",
+          description: null,
+          attributes: {},
+          labels: [],
+          items: [],
+          documents: [
+            { type: "has_member", value: { id: testChildFamilyImportId, title: "Child Family", description: null, attributes: {}, labels: [] } },
+          ],
+        },
+      }),
+      dataInChildFamilyHandler({ status: 500 })
+    );
 
     const result = await getCollectionData(testCollectionSlug, { ...DEFAULT_FEATURES, "new-data-model": true });
 

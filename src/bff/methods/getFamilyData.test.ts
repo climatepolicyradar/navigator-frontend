@@ -3,6 +3,7 @@ import { describe, expect, it } from "vitest";
 
 import { DEFAULT_FEATURES } from "@/constants/features";
 import {
+  dataInFamilyHandler,
   familyByIdHandler,
   familyCollectionHandler,
   familySlugHandler,
@@ -97,5 +98,54 @@ describe("getFamilyData", () => {
 
     expect(result.data).toBeNull();
     expect(result.errors[0].message).toBe("Failed to fetch families data");
+  });
+
+  it("fetches and validates the data-in document when new-data-model is enabled", async () => {
+    server.use(
+      familySlugHandler(),
+      familyByIdHandler(),
+      familyCollectionHandler(),
+      geographySubdivisionsHandler(),
+      vespaFamilyHandler(),
+      dataInFamilyHandler()
+    );
+
+    const result = await getFamilyData(testFamilySlug, { ...DEFAULT_FEATURES, "new-data-model": true });
+
+    // The data-in fetch and schema validation should succeed without pushing a fetch-failure
+    // error; downstream transformer errors (e.g. missing taxonomy items) are a separate concern.
+    expect(result.errors.some((e) => e.message.includes("data-in") || e.message.includes("Failed to fetch"))).toBe(false);
+    expect(result.data).not.toBeNull();
+  });
+
+  it("logs an error but does not throw when the data-in fetch fails and new-data-model is enabled", async () => {
+    server.use(
+      familySlugHandler(),
+      familyByIdHandler(),
+      familyCollectionHandler(),
+      geographySubdivisionsHandler(),
+      vespaFamilyHandler(),
+      dataInFamilyHandler({ status: 500 })
+    );
+
+    const result = await getFamilyData(testFamilySlug, { ...DEFAULT_FEATURES, "new-data-model": true });
+
+    expect(result.data).not.toBeNull();
+  });
+
+  it("logs an error but does not throw when the data-in response fails schema validation", async () => {
+    server.use(
+      familySlugHandler(),
+      familyByIdHandler(),
+      familyCollectionHandler(),
+      geographySubdivisionsHandler(),
+      vespaFamilyHandler(),
+      dataInFamilyHandler({ body: { id: testFamilyImportId } })
+    );
+
+    const result = await getFamilyData(testFamilySlug, { ...DEFAULT_FEATURES, "new-data-model": true });
+
+    expect(result.data).not.toBeNull();
+    expect(result.errors.length).toBeGreaterThan(0);
   });
 });

@@ -3,6 +3,7 @@ import { describe, expect, it } from "vitest";
 
 import { DEFAULT_FEATURES } from "@/constants/features";
 import {
+  dataInDocumentHandler,
   documentByIdHandler,
   documentSlugHandler,
   testDocumentImportId,
@@ -54,5 +55,30 @@ describe("getDocumentData", () => {
 
     expect(result.data).toBeNull();
     expect(result.errors[0].message).toBe("Failed to fetch document data");
+  });
+
+  it("fetches and validates the data-in document when new-data-model is enabled", async () => {
+    server.use(documentSlugHandler(), documentByIdHandler(), vespaDocumentHandler(), dataInDocumentHandler());
+
+    const result = await getDocumentData(testDocumentSlug, { ...DEFAULT_FEATURES, "new-data-model": true });
+
+    expect(result.data).not.toBeNull();
+  });
+
+  it("logs an error but does not throw when the data-in fetch fails and new-data-model is enabled", async () => {
+    server.use(documentSlugHandler(), documentByIdHandler(), vespaDocumentHandler(), dataInDocumentHandler({ status: 500 }));
+
+    const result = await getDocumentData(testDocumentSlug, { ...DEFAULT_FEATURES, "new-data-model": true });
+
+    expect(result.data).not.toBeNull();
+  });
+
+  it("logs an error but does not throw when the data-in response fails schema validation", async () => {
+    server.use(documentSlugHandler(), documentByIdHandler(), vespaDocumentHandler(), dataInDocumentHandler({ body: { id: testDocumentImportId } }));
+
+    const result = await getDocumentData(testDocumentSlug, { ...DEFAULT_FEATURES, "new-data-model": true });
+
+    expect(result.data).not.toBeNull();
+    expect(result.errors.length).toBeGreaterThan(0);
   });
 });

@@ -71,3 +71,13 @@ export const vespaFamilyHandler = () =>
       families: [],
     });
   });
+
+export const dataInFamilyHandler = (overrides: Partial<{ status: number; body: unknown }> = {}) =>
+  http.get(`${process.env.CONCEPTS_API_URL}/data-in/documents/${testFamilyImportId}`, () => {
+    if (overrides.status && overrides.status !== 200) {
+      return HttpResponse.json({ detail: "error" }, { status: overrides.status });
+    }
+    return HttpResponse.json({
+      data: overrides.body ?? { id: testFamilyImportId, title: "Test Family", description: null, attributes: {}, labels: [] },
+    });
+  });
