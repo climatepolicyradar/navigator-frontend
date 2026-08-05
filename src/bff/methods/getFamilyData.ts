@@ -93,9 +93,15 @@ export const getFamilyData = async (slug: string, features: TFeatures, importId?
   const countries = response_geo[1];
   const corpusTypes: TCorpusTypeDictionary = config.corpus_types;
 
+  // http-common's get() can resolve a 200 with a malformed body, so guard against
+  // family.geographies being missing before reading array methods off it.
+  if (!Array.isArray(family.geographies)) {
+    errors.push(new Error("Family data missing geographies array"));
+  }
+
   // This is because our family.geographies field isn't hydrated but rather a string[]
   const allSubdivisions = await Promise.all<TApiGeographySubdivision[]>(
-    family.geographies
+    (family.geographies ?? [])
       .filter((country) => country.length === 3 && !EXCLUDED_ISO_CODES.includes(country))
       .map(async (country) => {
         try {
@@ -120,8 +126,12 @@ export const getFamilyData = async (slug: string, features: TFeatures, importId?
   );
   const subdivisions = allSubdivisions.flat().filter((subdivision) => subdivision !== undefined);
 
+  if (!Array.isArray(family.collections)) {
+    errors.push(new Error("Family data missing collections array"));
+  }
+
   const allCollections = await Promise.all<TApiCollectionPublicWithFamilies[]>(
-    family.collections.map(async (collection) => {
+    (family.collections ?? []).map(async (collection) => {
       try {
         const { data: collectionResponse } = await apiClient.get(`/families/collections/${collection.import_id}`);
         return collectionResponse.data;
