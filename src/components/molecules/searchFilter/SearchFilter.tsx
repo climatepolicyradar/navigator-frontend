@@ -18,7 +18,7 @@ interface IProps {
 
 export const SearchFilter = ({ ancestorPath, label }: IProps) => {
   const { checkedLabelPaths, toggleFilter } = useContext(FiltersContext);
-  const [isOpen, setIsOpen] = useState(false);
+  const [isExpanded, setIsExpanded] = useState(false);
 
   const pathLabels = [getFilterPathLabel(label), ...ancestorPath];
   const checked = getFilterStatus(pathLabels, checkedLabelPaths);
@@ -26,36 +26,40 @@ export const SearchFilter = ({ ancestorPath, label }: IProps) => {
   const hasChildren = label.children.length > 0;
 
   const onCheckedChange = (value: TCheckboxState) => {
-    if (value === true) setIsOpen(true);
+    if (value === true) setIsExpanded(true);
     if (value === false) {
       const hasCheckedChildren = filterHasSelectedChildren(checkedLabelPaths, ancestorPath, label);
-      if (!hasCheckedChildren) setIsOpen(false);
+      if (!hasCheckedChildren) setIsExpanded(false);
     }
 
     toggleFilter(pathLabels, value);
   };
 
-  const onToggle = (event: MouseEvent<HTMLButtonElement>) => {
+  const onToggleAccordion = (event: MouseEvent<HTMLButtonElement>) => {
     if (event.target instanceof HTMLInputElement) return; // Overrides Base UI's Checkbox click dispatcher
-    setIsOpen((current) => !current);
+    setIsExpanded((current) => !current);
   };
+
+  const labelClickBehaviour = hasChildren
+    ? { onClick: (event: MouseEvent) => event.stopPropagation(), noClickLabel: true }
+    : { onClick: undefined, noClickLabel: false };
 
   return (
     <li>
-      <button type="button" className="w-full flex flex-row items-center" onClick={onToggle}>
+      <button type="button" className="w-full flex flex-row items-center" onClick={onToggleAccordion}>
         <Checkbox
           checked={checked === true}
           indeterminate={checked === "indeterminate"}
           onCheckedChange={onCheckedChange}
-          onClick={(event) => event.stopPropagation()}
-          noClickLabel
+          onClick={labelClickBehaviour.onClick}
+          noClickLabel={labelClickBehaviour.noClickLabel}
           className="flex-1"
         >
           {firstCase(label.value)}
         </Checkbox>
-        {hasChildren && <ChevronDown size={16} className={joinTailwindClasses("text-elem-icon", isOpen && "rotate-180")} />}
+        {hasChildren && <ChevronDown size={16} className={joinTailwindClasses("text-elem-icon", isExpanded && "rotate-180")} />}
       </button>
-      {hasChildren && isOpen && <SearchFilterLevel ancestorPath={pathLabels} labels={label.children} indented />}
+      {hasChildren && isExpanded && <SearchFilterLevel ancestorPath={pathLabels} labels={label.children} indented />}
     </li>
   );
 };
