@@ -185,11 +185,10 @@ export const DocumentPassageViewer = ({ document, vespaDocumentData }: TProps) =
             value={searchTerm}
           />
         </form>
-        <div className="flex justify-end items-center gap-1">
+        <div className="flex justify-end items-center gap-4">
           <p className="text-sm text-text-secondary text-right" aria-live="polite">
             {isLoading ? "Searching…" : `${totalMatches} matching ${totalMatches === 1 ? "passage" : "passages"}`}
           </p>
-          <div className="w-px h-2/3 mx-3 bg-border-normal" />
           <Sort
             defaultId="relevance desc"
             options={SORT_OPTIONS}
