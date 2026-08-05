@@ -23,8 +23,14 @@ export const getDocumentData = async (slug: string, features: TFeatures): Promis
 
   let slugResponse: TApiSlugResponse;
   try {
-    const { data: slugData } = await apiClient.get<TApiItemResponse<TApiSlugResponse>>(`/families/slugs/${slug}`);
-    slugResponse = slugData.data;
+    // http-common's get() returns error.response rather than throwing for Axios errors,
+    // so we must check the status explicitly rather than relying on catch for non-2xx responses.
+    const slugApiResponse = await apiClient.get<TApiItemResponse<TApiSlugResponse>>(`/families/slugs/${slug}`);
+    if (slugApiResponse?.status !== 200 || !slugApiResponse.data?.data?.family_document_import_id) {
+      errors.push(new Error("Failed to query document slug"));
+      return { data: null, errors };
+    }
+    slugResponse = slugApiResponse.data.data;
   } catch (error) {
     errors.push(new Error("Failed to query document slug", error));
     return { data: null, errors };
