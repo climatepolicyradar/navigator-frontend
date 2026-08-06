@@ -17,6 +17,7 @@ import { DataInDebug } from "@/components/debug/dataInDebug";
 import Layout from "@/components/layouts/Main";
 import { Section } from "@/components/molecules/section/Section";
 import { BlocksLayout, TBlockDefinitions } from "@/components/organisms/blocksLayout/BlocksLayout";
+import { FamilyPassageViewer } from "@/components/organisms/familyPassageViewer/FamilyPassageViewer";
 import { PageHeader } from "@/components/organisms/pageHeader/PageHeader";
 import { MAX_PASSAGES } from "@/constants/paging";
 import { QUERY_PARAMS } from "@/constants/queryParams";
@@ -202,7 +203,9 @@ export const FamilyPage = ({ collections, countries, debug, errors, family, fami
                 ),
                 panel: (
                   <FiveColumns>
-                    <main className="col-start-1 -col-end-1 cols-4:col-start-3 cols-4:col-end-9">YO</main>
+                    <main className="pb-8 col-start-1 -col-end-1 cols-4:col-start-3 cols-4:col-end-10">
+                      <FamilyPassageViewer family={family} familyTopics={familyTopics} getCategoryText={getCategoryText} />
+                    </main>
                   </FiveColumns>
                 ),
               },
