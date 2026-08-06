@@ -1,0 +1,2118 @@
+{
+  "uid": "waf-bot-monitoring",
+  "title": "WAF: Bot Traffic",
+  "description": "Bot traffic through the frontend WAFs, from AWS/WAFV2 CloudWatch metrics in us-east-1. Production only. No template variables: Grafana does not interpolate them into CloudWatch dimension values, so every WebACL is named literally. The datasource uid is substituted at push time. Denominator is AllowedRequests{Rule=ALL}, which equals total traffic only because no rule in these ACLs blocks; if a blocking rule is added, BlockedRequests{Rule=ALL} must be added to it.",
+  "tags": ["waf", "bots", "cloudwatch"],
+  "timezone": "utc",
+  "editable": true,
+  "graphTooltip": 1,
+  "schemaVersion": 41,
+  "version": 0,
+  "refresh": "",
+  "time": {
+    "from": "now-24h",
+    "to": "now"
+  },
+  "timepicker": {},
+  "fiscalYearStartMonth": 0,
+  "links": [],
+  "annotations": {
+    "list": []
+  },
+  "templating": {
+    "list": []
+  },
+  "panels": [
+    {
+      "id": 1,
+      "type": "row",
+      "title": "By theme",
+      "collapsed": false,
+      "panels": [],
+      "gridPos": {
+        "h": 1,
+        "w": 24,
+        "x": 0,
+        "y": 0
+      }
+    },
+    {
+      "id": 2,
+      "type": "timeseries",
+      "title": "cpr: bot share of traffic (%)",
+      "description": "Bot requests as a percentage of all requests on cpr. Read the trend, not a point value: a spike in ordinary traffic pushes this down without bot traffic changing at all, so check the request-count panels below before concluding anything. Reads zero before 2026-07-22, when the bot rule reached production.",
+      "datasource": {
+        "type": "cloudwatch",
+        "uid": "__CLOUDWATCH_DS_UID__"
+      },
+      "gridPos": {
+        "h": 8,
+        "w": 6,
+        "x": 0,
+        "y": 1
+      },
+      "targets": [
+        {
+          "refId": "A",
+          "datasource": {
+            "type": "cloudwatch",
+            "uid": "__CLOUDWATCH_DS_UID__"
+          },
+          "id": "m0",
+          "expression": "",
+          "namespace": "AWS/WAFV2",
+          "metricName": "AllowedRequests",
+          "dimensions": {
+            "Rule": ["ALL"],
+            "WebACL": ["cpr-production-frontend-waf"]
+          },
+          "statistic": "Sum",
+          "period": "3600",
+          "region": "us-east-1",
+          "range": true,
+          "queryMode": "Metrics",
+          "metricQueryType": 0,
+          "metricEditorMode": 0,
+          "matchExact": true,
+          "sqlExpression": "",
+          "label": "_all",
+          "hide": false
+        },
+        {
+          "refId": "B",
+          "datasource": {
+            "type": "cloudwatch",
+            "uid": "__CLOUDWATCH_DS_UID__"
+          },
+          "id": "m1",
+          "expression": "",
+          "namespace": "AWS/WAFV2",
+          "metricName": "CountedRequests",
+          "dimensions": {
+            "Rule": ["FlagBotTraffic"],
+            "WebACL": ["cpr-production-frontend-waf"]
+          },
+          "statistic": "Sum",
+          "period": "3600",
+          "region": "us-east-1",
+          "range": true,
+          "queryMode": "Metrics",
+          "metricQueryType": 0,
+          "metricEditorMode": 0,
+          "matchExact": true,
+          "sqlExpression": "",
+          "label": "_bot",
+          "hide": false
+        },
+        {
+          "refId": "C",
+          "datasource": {
+            "type": "cloudwatch",
+            "uid": "__CLOUDWATCH_DS_UID__"
+          },
+          "id": "e0",
+          "expression": "m1/m0*100",
+          "namespace": "",
+          "metricName": "",
+          "dimensions": {},
+          "statistic": "Sum",
+          "period": "3600",
+          "region": "us-east-1",
+          "range": true,
+          "queryMode": "Metrics",
+          "metricQueryType": 0,
+          "metricEditorMode": 1,
+          "matchExact": true,
+          "sqlExpression": "",
+          "label": "cpr",
+          "hide": false
+        }
+      ],
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "palette-classic"
+          },
+          "unit": "percent",
+          "custom": {
+            "drawStyle": "line",
+            "lineWidth": 1,
+            "fillOpacity": 8,
+            "showPoints": "never",
+            "spanNulls": false,
+            "axisPlacement": "auto",
+            "scaleDistribution": {
+              "type": "linear"
+            },
+            "stacking": {
+              "group": "A",
+              "mode": "none"
+            }
+          }
+        },
+        "overrides": [
+          {
+            "matcher": {
+              "id": "byRegexp",
+              "options": "/^_.*/"
+            },
+            "properties": [
+              {
+                "id": "custom.hideFrom",
+                "value": {
+                  "legend": true,
+                  "tooltip": true,
+                  "viz": true
+                }
+              }
+            ]
+          }
+        ]
+      },
+      "options": {
+        "legend": {
+          "showLegend": false,
+          "displayMode": "list",
+          "placement": "bottom",
+          "calcs": []
+        },
+        "tooltip": {
+          "mode": "single",
+          "sort": "none"
+        }
+      }
+    },
+    {
+      "id": 3,
+      "type": "timeseries",
+      "title": "cclw: bot share of traffic (%)",
+      "description": "Bot requests as a percentage of all requests on cclw. Read the trend, not a point value: a spike in ordinary traffic pushes this down without bot traffic changing at all, so check the request-count panels below before concluding anything. Reads zero before 2026-07-22, when the bot rule reached production.",
+      "datasource": {
+        "type": "cloudwatch",
+        "uid": "__CLOUDWATCH_DS_UID__"
+      },
+      "gridPos": {
+        "h": 8,
+        "w": 6,
+        "x": 6,
+        "y": 1
+      },
+      "targets": [
+        {
+          "refId": "A",
+          "datasource": {
+            "type": "cloudwatch",
+            "uid": "__CLOUDWATCH_DS_UID__"
+          },
+          "id": "m0",
+          "expression": "",
+          "namespace": "AWS/WAFV2",
+          "metricName": "AllowedRequests",
+          "dimensions": {
+            "Rule": ["ALL"],
+            "WebACL": ["cclw-production-frontend-waf"]
+          },
+          "statistic": "Sum",
+          "period": "3600",
+          "region": "us-east-1",
+          "range": true,
+          "queryMode": "Metrics",
+          "metricQueryType": 0,
+          "metricEditorMode": 0,
+          "matchExact": true,
+          "sqlExpression": "",
+          "label": "_all",
+          "hide": false
+        },
+        {
+          "refId": "B",
+          "datasource": {
+            "type": "cloudwatch",
+            "uid": "__CLOUDWATCH_DS_UID__"
+          },
+          "id": "m1",
+          "expression": "",
+          "namespace": "AWS/WAFV2",
+          "metricName": "CountedRequests",
+          "dimensions": {
+            "Rule": ["FlagBotTraffic"],
+            "WebACL": ["cclw-production-frontend-waf"]
+          },
+          "statistic": "Sum",
+          "period": "3600",
+          "region": "us-east-1",
+          "range": true,
+          "queryMode": "Metrics",
+          "metricQueryType": 0,
+          "metricEditorMode": 0,
+          "matchExact": true,
+          "sqlExpression": "",
+          "label": "_bot",
+          "hide": false
+        },
+        {
+          "refId": "C",
+          "datasource": {
+            "type": "cloudwatch",
+            "uid": "__CLOUDWATCH_DS_UID__"
+          },
+          "id": "e0",
+          "expression": "m1/m0*100",
+          "namespace": "",
+          "metricName": "",
+          "dimensions": {},
+          "statistic": "Sum",
+          "period": "3600",
+          "region": "us-east-1",
+          "range": true,
+          "queryMode": "Metrics",
+          "metricQueryType": 0,
+          "metricEditorMode": 1,
+          "matchExact": true,
+          "sqlExpression": "",
+          "label": "cclw",
+          "hide": false
+        }
+      ],
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "palette-classic"
+          },
+          "unit": "percent",
+          "custom": {
+            "drawStyle": "line",
+            "lineWidth": 1,
+            "fillOpacity": 8,
+            "showPoints": "never",
+            "spanNulls": false,
+            "axisPlacement": "auto",
+            "scaleDistribution": {
+              "type": "linear"
+            },
+            "stacking": {
+              "group": "A",
+              "mode": "none"
+            }
+          }
+        },
+        "overrides": [
+          {
+            "matcher": {
+              "id": "byRegexp",
+              "options": "/^_.*/"
+            },
+            "properties": [
+              {
+                "id": "custom.hideFrom",
+                "value": {
+                  "legend": true,
+                  "tooltip": true,
+                  "viz": true
+                }
+              }
+            ]
+          }
+        ]
+      },
+      "options": {
+        "legend": {
+          "showLegend": false,
+          "displayMode": "list",
+          "placement": "bottom",
+          "calcs": []
+        },
+        "tooltip": {
+          "mode": "single",
+          "sort": "none"
+        }
+      }
+    },
+    {
+      "id": 4,
+      "type": "timeseries",
+      "title": "mcf: bot share of traffic (%)",
+      "description": "Bot requests as a percentage of all requests on mcf. Read the trend, not a point value: a spike in ordinary traffic pushes this down without bot traffic changing at all, so check the request-count panels below before concluding anything. Reads zero before 2026-07-22, when the bot rule reached production.",
+      "datasource": {
+        "type": "cloudwatch",
+        "uid": "__CLOUDWATCH_DS_UID__"
+      },
+      "gridPos": {
+        "h": 8,
+        "w": 6,
+        "x": 12,
+        "y": 1
+      },
+      "targets": [
+        {
+          "refId": "A",
+          "datasource": {
+            "type": "cloudwatch",
+            "uid": "__CLOUDWATCH_DS_UID__"
+          },
+          "id": "m0",
+          "expression": "",
+          "namespace": "AWS/WAFV2",
+          "metricName": "AllowedRequests",
+          "dimensions": {
+            "Rule": ["ALL"],
+            "WebACL": ["mcf-production-frontend-waf"]
+          },
+          "statistic": "Sum",
+          "period": "3600",
+          "region": "us-east-1",
+          "range": true,
+          "queryMode": "Metrics",
+          "metricQueryType": 0,
+          "metricEditorMode": 0,
+          "matchExact": true,
+          "sqlExpression": "",
+          "label": "_all",
+          "hide": false
+        },
+        {
+          "refId": "B",
+          "datasource": {
+            "type": "cloudwatch",
+            "uid": "__CLOUDWATCH_DS_UID__"
+          },
+          "id": "m1",
+          "expression": "",
+          "namespace": "AWS/WAFV2",
+          "metricName": "CountedRequests",
+          "dimensions": {
+            "Rule": ["FlagBotTraffic"],
+            "WebACL": ["mcf-production-frontend-waf"]
+          },
+          "statistic": "Sum",
+          "period": "3600",
+          "region": "us-east-1",
+          "range": true,
+          "queryMode": "Metrics",
+          "metricQueryType": 0,
+          "metricEditorMode": 0,
+          "matchExact": true,
+          "sqlExpression": "",
+          "label": "_bot",
+          "hide": false
+        },
+        {
+          "refId": "C",
+          "datasource": {
+            "type": "cloudwatch",
+            "uid": "__CLOUDWATCH_DS_UID__"
+          },
+          "id": "e0",
+          "expression": "m1/m0*100",
+          "namespace": "",
+          "metricName": "",
+          "dimensions": {},
+          "statistic": "Sum",
+          "period": "3600",
+          "region": "us-east-1",
+          "range": true,
+          "queryMode": "Metrics",
+          "metricQueryType": 0,
+          "metricEditorMode": 1,
+          "matchExact": true,
+          "sqlExpression": "",
+          "label": "mcf",
+          "hide": false
+        }
+      ],
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "palette-classic"
+          },
+          "unit": "percent",
+          "custom": {
+            "drawStyle": "line",
+            "lineWidth": 1,
+            "fillOpacity": 8,
+            "showPoints": "never",
+            "spanNulls": false,
+            "axisPlacement": "auto",
+            "scaleDistribution": {
+              "type": "linear"
+            },
+            "stacking": {
+              "group": "A",
+              "mode": "none"
+            }
+          }
+        },
+        "overrides": [
+          {
+            "matcher": {
+              "id": "byRegexp",
+              "options": "/^_.*/"
+            },
+            "properties": [
+              {
+                "id": "custom.hideFrom",
+                "value": {
+                  "legend": true,
+                  "tooltip": true,
+                  "viz": true
+                }
+              }
+            ]
+          }
+        ]
+      },
+      "options": {
+        "legend": {
+          "showLegend": false,
+          "displayMode": "list",
+          "placement": "bottom",
+          "calcs": []
+        },
+        "tooltip": {
+          "mode": "single",
+          "sort": "none"
+        }
+      }
+    },
+    {
+      "id": 5,
+      "type": "timeseries",
+      "title": "ccc: bot share of traffic (%)",
+      "description": "Bot requests as a percentage of all requests on ccc. Read the trend, not a point value: a spike in ordinary traffic pushes this down without bot traffic changing at all, so check the request-count panels below before concluding anything. Reads zero before 2026-07-22, when the bot rule reached production.",
+      "datasource": {
+        "type": "cloudwatch",
+        "uid": "__CLOUDWATCH_DS_UID__"
+      },
+      "gridPos": {
+        "h": 8,
+        "w": 6,
+        "x": 18,
+        "y": 1
+      },
+      "targets": [
+        {
+          "refId": "A",
+          "datasource": {
+            "type": "cloudwatch",
+            "uid": "__CLOUDWATCH_DS_UID__"
+          },
+          "id": "m0",
+          "expression": "",
+          "namespace": "AWS/WAFV2",
+          "metricName": "AllowedRequests",
+          "dimensions": {
+            "Rule": ["ALL"],
+            "WebACL": ["ccc-production-frontend-waf"]
+          },
+          "statistic": "Sum",
+          "period": "3600",
+          "region": "us-east-1",
+          "range": true,
+          "queryMode": "Metrics",
+          "metricQueryType": 0,
+          "metricEditorMode": 0,
+          "matchExact": true,
+          "sqlExpression": "",
+          "label": "_all",
+          "hide": false
+        },
+        {
+          "refId": "B",
+          "datasource": {
+            "type": "cloudwatch",
+            "uid": "__CLOUDWATCH_DS_UID__"
+          },
+          "id": "m1",
+          "expression": "",
+          "namespace": "AWS/WAFV2",
+          "metricName": "CountedRequests",
+          "dimensions": {
+            "Rule": ["FlagBotTraffic"],
+            "WebACL": ["ccc-production-frontend-waf"]
+          },
+          "statistic": "Sum",
+          "period": "3600",
+          "region": "us-east-1",
+          "range": true,
+          "queryMode": "Metrics",
+          "metricQueryType": 0,
+          "metricEditorMode": 0,
+          "matchExact": true,
+          "sqlExpression": "",
+          "label": "_bot",
+          "hide": false
+        },
+        {
+          "refId": "C",
+          "datasource": {
+            "type": "cloudwatch",
+            "uid": "__CLOUDWATCH_DS_UID__"
+          },
+          "id": "e0",
+          "expression": "m1/m0*100",
+          "namespace": "",
+          "metricName": "",
+          "dimensions": {},
+          "statistic": "Sum",
+          "period": "3600",
+          "region": "us-east-1",
+          "range": true,
+          "queryMode": "Metrics",
+          "metricQueryType": 0,
+          "metricEditorMode": 1,
+          "matchExact": true,
+          "sqlExpression": "",
+          "label": "ccc",
+          "hide": false
+        }
+      ],
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "palette-classic"
+          },
+          "unit": "percent",
+          "custom": {
+            "drawStyle": "line",
+            "lineWidth": 1,
+            "fillOpacity": 8,
+            "showPoints": "never",
+            "spanNulls": false,
+            "axisPlacement": "auto",
+            "scaleDistribution": {
+              "type": "linear"
+            },
+            "stacking": {
+              "group": "A",
+              "mode": "none"
+            }
+          }
+        },
+        "overrides": [
+          {
+            "matcher": {
+              "id": "byRegexp",
+              "options": "/^_.*/"
+            },
+            "properties": [
+              {
+                "id": "custom.hideFrom",
+                "value": {
+                  "legend": true,
+                  "tooltip": true,
+                  "viz": true
+                }
+              }
+            ]
+          }
+        ]
+      },
+      "options": {
+        "legend": {
+          "showLegend": false,
+          "displayMode": "list",
+          "placement": "bottom",
+          "calcs": []
+        },
+        "tooltip": {
+          "mode": "single",
+          "sort": "none"
+        }
+      }
+    },
+    {
+      "id": 6,
+      "type": "timeseries",
+      "title": "All requests, by theme",
+      "description": "Total requests through each WebACL. A spike here is what makes the share panel fall.",
+      "datasource": {
+        "type": "cloudwatch",
+        "uid": "__CLOUDWATCH_DS_UID__"
+      },
+      "gridPos": {
+        "h": 8,
+        "w": 12,
+        "x": 0,
+        "y": 9
+      },
+      "targets": [
+        {
+          "refId": "A",
+          "datasource": {
+            "type": "cloudwatch",
+            "uid": "__CLOUDWATCH_DS_UID__"
+          },
+          "id": "",
+          "expression": "",
+          "namespace": "AWS/WAFV2",
+          "metricName": "AllowedRequests",
+          "dimensions": {
+            "Rule": ["ALL"],
+            "WebACL": ["cpr-production-frontend-waf"]
+          },
+          "statistic": "Sum",
+          "period": "3600",
+          "region": "us-east-1",
+          "range": true,
+          "queryMode": "Metrics",
+          "metricQueryType": 0,
+          "metricEditorMode": 0,
+          "matchExact": true,
+          "sqlExpression": "",
+          "label": "cpr",
+          "hide": false
+        },
+        {
+          "refId": "B",
+          "datasource": {
+            "type": "cloudwatch",
+            "uid": "__CLOUDWATCH_DS_UID__"
+          },
+          "id": "",
+          "expression": "",
+          "namespace": "AWS/WAFV2",
+          "metricName": "AllowedRequests",
+          "dimensions": {
+            "Rule": ["ALL"],
+            "WebACL": ["cclw-production-frontend-waf"]
+          },
+          "statistic": "Sum",
+          "period": "3600",
+          "region": "us-east-1",
+          "range": true,
+          "queryMode": "Metrics",
+          "metricQueryType": 0,
+          "metricEditorMode": 0,
+          "matchExact": true,
+          "sqlExpression": "",
+          "label": "cclw",
+          "hide": false
+        },
+        {
+          "refId": "C",
+          "datasource": {
+            "type": "cloudwatch",
+            "uid": "__CLOUDWATCH_DS_UID__"
+          },
+          "id": "",
+          "expression": "",
+          "namespace": "AWS/WAFV2",
+          "metricName": "AllowedRequests",
+          "dimensions": {
+            "Rule": ["ALL"],
+            "WebACL": ["mcf-production-frontend-waf"]
+          },
+          "statistic": "Sum",
+          "period": "3600",
+          "region": "us-east-1",
+          "range": true,
+          "queryMode": "Metrics",
+          "metricQueryType": 0,
+          "metricEditorMode": 0,
+          "matchExact": true,
+          "sqlExpression": "",
+          "label": "mcf",
+          "hide": false
+        },
+        {
+          "refId": "D",
+          "datasource": {
+            "type": "cloudwatch",
+            "uid": "__CLOUDWATCH_DS_UID__"
+          },
+          "id": "",
+          "expression": "",
+          "namespace": "AWS/WAFV2",
+          "metricName": "AllowedRequests",
+          "dimensions": {
+            "Rule": ["ALL"],
+            "WebACL": ["ccc-production-frontend-waf"]
+          },
+          "statistic": "Sum",
+          "period": "3600",
+          "region": "us-east-1",
+          "range": true,
+          "queryMode": "Metrics",
+          "metricQueryType": 0,
+          "metricEditorMode": 0,
+          "matchExact": true,
+          "sqlExpression": "",
+          "label": "ccc",
+          "hide": false
+        }
+      ],
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "palette-classic"
+          },
+          "unit": "short",
+          "custom": {
+            "drawStyle": "line",
+            "lineWidth": 1,
+            "fillOpacity": 8,
+            "showPoints": "never",
+            "spanNulls": false,
+            "axisPlacement": "auto",
+            "scaleDistribution": {
+              "type": "linear"
+            },
+            "stacking": {
+              "group": "A",
+              "mode": "none"
+            }
+          }
+        },
+        "overrides": []
+      },
+      "options": {
+        "legend": {
+          "displayMode": "list",
+          "placement": "bottom",
+          "showLegend": true,
+          "calcs": []
+        },
+        "tooltip": {
+          "mode": "multi",
+          "sort": "desc"
+        }
+      }
+    },
+    {
+      "id": 7,
+      "type": "timeseries",
+      "title": "Bot requests, by theme",
+      "description": "Requests matching the bot rule, per theme.",
+      "datasource": {
+        "type": "cloudwatch",
+        "uid": "__CLOUDWATCH_DS_UID__"
+      },
+      "gridPos": {
+        "h": 8,
+        "w": 12,
+        "x": 12,
+        "y": 9
+      },
+      "targets": [
+        {
+          "refId": "A",
+          "datasource": {
+            "type": "cloudwatch",
+            "uid": "__CLOUDWATCH_DS_UID__"
+          },
+          "id": "",
+          "expression": "",
+          "namespace": "AWS/WAFV2",
+          "metricName": "CountedRequests",
+          "dimensions": {
+            "Rule": ["FlagBotTraffic"],
+            "WebACL": ["cpr-production-frontend-waf"]
+          },
+          "statistic": "Sum",
+          "period": "3600",
+          "region": "us-east-1",
+          "range": true,
+          "queryMode": "Metrics",
+          "metricQueryType": 0,
+          "metricEditorMode": 0,
+          "matchExact": true,
+          "sqlExpression": "",
+          "label": "cpr",
+          "hide": false
+        },
+        {
+          "refId": "B",
+          "datasource": {
+            "type": "cloudwatch",
+            "uid": "__CLOUDWATCH_DS_UID__"
+          },
+          "id": "",
+          "expression": "",
+          "namespace": "AWS/WAFV2",
+          "metricName": "CountedRequests",
+          "dimensions": {
+            "Rule": ["FlagBotTraffic"],
+            "WebACL": ["cclw-production-frontend-waf"]
+          },
+          "statistic": "Sum",
+          "period": "3600",
+          "region": "us-east-1",
+          "range": true,
+          "queryMode": "Metrics",
+          "metricQueryType": 0,
+          "metricEditorMode": 0,
+          "matchExact": true,
+          "sqlExpression": "",
+          "label": "cclw",
+          "hide": false
+        },
+        {
+          "refId": "C",
+          "datasource": {
+            "type": "cloudwatch",
+            "uid": "__CLOUDWATCH_DS_UID__"
+          },
+          "id": "",
+          "expression": "",
+          "namespace": "AWS/WAFV2",
+          "metricName": "CountedRequests",
+          "dimensions": {
+            "Rule": ["FlagBotTraffic"],
+            "WebACL": ["mcf-production-frontend-waf"]
+          },
+          "statistic": "Sum",
+          "period": "3600",
+          "region": "us-east-1",
+          "range": true,
+          "queryMode": "Metrics",
+          "metricQueryType": 0,
+          "metricEditorMode": 0,
+          "matchExact": true,
+          "sqlExpression": "",
+          "label": "mcf",
+          "hide": false
+        },
+        {
+          "refId": "D",
+          "datasource": {
+            "type": "cloudwatch",
+            "uid": "__CLOUDWATCH_DS_UID__"
+          },
+          "id": "",
+          "expression": "",
+          "namespace": "AWS/WAFV2",
+          "metricName": "CountedRequests",
+          "dimensions": {
+            "Rule": ["FlagBotTraffic"],
+            "WebACL": ["ccc-production-frontend-waf"]
+          },
+          "statistic": "Sum",
+          "period": "3600",
+          "region": "us-east-1",
+          "range": true,
+          "queryMode": "Metrics",
+          "metricQueryType": 0,
+          "metricEditorMode": 0,
+          "matchExact": true,
+          "sqlExpression": "",
+          "label": "ccc",
+          "hide": false
+        }
+      ],
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "palette-classic"
+          },
+          "unit": "short",
+          "custom": {
+            "drawStyle": "line",
+            "lineWidth": 1,
+            "fillOpacity": 8,
+            "showPoints": "never",
+            "spanNulls": false,
+            "axisPlacement": "auto",
+            "scaleDistribution": {
+              "type": "linear"
+            },
+            "stacking": {
+              "group": "A",
+              "mode": "none"
+            }
+          }
+        },
+        "overrides": []
+      },
+      "options": {
+        "legend": {
+          "displayMode": "list",
+          "placement": "bottom",
+          "showLegend": true,
+          "calcs": []
+        },
+        "tooltip": {
+          "mode": "multi",
+          "sort": "desc"
+        }
+      }
+    },
+    {
+      "id": 8,
+      "type": "row",
+      "title": "What kind of bots (all themes combined)",
+      "collapsed": false,
+      "panels": [],
+      "gridPos": {
+        "h": 1,
+        "w": 24,
+        "x": 0,
+        "y": 17
+      }
+    },
+    {
+      "id": 9,
+      "type": "timeseries",
+      "title": "By bot category",
+      "description": "http_library dominates: scripted clients, not crawlers.",
+      "datasource": {
+        "type": "cloudwatch",
+        "uid": "__CLOUDWATCH_DS_UID__"
+      },
+      "gridPos": {
+        "h": 9,
+        "w": 12,
+        "x": 0,
+        "y": 18
+      },
+      "targets": [
+        {
+          "refId": "A",
+          "datasource": {
+            "type": "cloudwatch",
+            "uid": "__CLOUDWATCH_DS_UID__"
+          },
+          "id": "",
+          "expression": "SUM(SEARCH('{AWS/WAFV2,LabelName,LabelNamespace,WebACL} MetricName=\"AllowedRequests\" LabelNamespace=\"awswaf:managed:aws:bot-control:bot:category\" LabelName=\"http_library\"', 'Sum', 3600))",
+          "namespace": "",
+          "metricName": "",
+          "dimensions": {},
+          "statistic": "Sum",
+          "period": "3600",
+          "region": "us-east-1",
+          "range": true,
+          "queryMode": "Metrics",
+          "metricQueryType": 0,
+          "metricEditorMode": 1,
+          "matchExact": true,
+          "sqlExpression": "",
+          "label": "http_library",
+          "hide": false
+        },
+        {
+          "refId": "B",
+          "datasource": {
+            "type": "cloudwatch",
+            "uid": "__CLOUDWATCH_DS_UID__"
+          },
+          "id": "",
+          "expression": "SUM(SEARCH('{AWS/WAFV2,LabelName,LabelNamespace,WebACL} MetricName=\"AllowedRequests\" LabelNamespace=\"awswaf:managed:aws:bot-control:bot:category\" LabelName=\"search_engine\"', 'Sum', 3600))",
+          "namespace": "",
+          "metricName": "",
+          "dimensions": {},
+          "statistic": "Sum",
+          "period": "3600",
+          "region": "us-east-1",
+          "range": true,
+          "queryMode": "Metrics",
+          "metricQueryType": 0,
+          "metricEditorMode": 1,
+          "matchExact": true,
+          "sqlExpression": "",
+          "label": "search_engine",
+          "hide": false
+        },
+        {
+          "refId": "C",
+          "datasource": {
+            "type": "cloudwatch",
+            "uid": "__CLOUDWATCH_DS_UID__"
+          },
+          "id": "",
+          "expression": "SUM(SEARCH('{AWS/WAFV2,LabelName,LabelNamespace,WebACL} MetricName=\"AllowedRequests\" LabelNamespace=\"awswaf:managed:aws:bot-control:bot:category\" LabelName=\"seo\"', 'Sum', 3600))",
+          "namespace": "",
+          "metricName": "",
+          "dimensions": {},
+          "statistic": "Sum",
+          "period": "3600",
+          "region": "us-east-1",
+          "range": true,
+          "queryMode": "Metrics",
+          "metricQueryType": 0,
+          "metricEditorMode": 1,
+          "matchExact": true,
+          "sqlExpression": "",
+          "label": "seo",
+          "hide": false
+        },
+        {
+          "refId": "D",
+          "datasource": {
+            "type": "cloudwatch",
+            "uid": "__CLOUDWATCH_DS_UID__"
+          },
+          "id": "",
+          "expression": "SUM(SEARCH('{AWS/WAFV2,LabelName,LabelNamespace,WebACL} MetricName=\"AllowedRequests\" LabelNamespace=\"awswaf:managed:aws:bot-control:bot:category\" LabelName=\"ai\"', 'Sum', 3600))",
+          "namespace": "",
+          "metricName": "",
+          "dimensions": {},
+          "statistic": "Sum",
+          "period": "3600",
+          "region": "us-east-1",
+          "range": true,
+          "queryMode": "Metrics",
+          "metricQueryType": 0,
+          "metricEditorMode": 1,
+          "matchExact": true,
+          "sqlExpression": "",
+          "label": "ai",
+          "hide": false
+        },
+        {
+          "refId": "E",
+          "datasource": {
+            "type": "cloudwatch",
+            "uid": "__CLOUDWATCH_DS_UID__"
+          },
+          "id": "",
+          "expression": "SUM(SEARCH('{AWS/WAFV2,LabelName,LabelNamespace,WebACL} MetricName=\"AllowedRequests\" LabelNamespace=\"awswaf:managed:aws:bot-control:bot:category\" LabelName=\"scraping_framework\"', 'Sum', 3600))",
+          "namespace": "",
+          "metricName": "",
+          "dimensions": {},
+          "statistic": "Sum",
+          "period": "3600",
+          "region": "us-east-1",
+          "range": true,
+          "queryMode": "Metrics",
+          "metricQueryType": 0,
+          "metricEditorMode": 1,
+          "matchExact": true,
+          "sqlExpression": "",
+          "label": "scraping_framework",
+          "hide": false
+        },
+        {
+          "refId": "F",
+          "datasource": {
+            "type": "cloudwatch",
+            "uid": "__CLOUDWATCH_DS_UID__"
+          },
+          "id": "",
+          "expression": "SUM(SEARCH('{AWS/WAFV2,LabelName,LabelNamespace,WebACL} MetricName=\"AllowedRequests\" LabelNamespace=\"awswaf:managed:aws:bot-control:bot:category\" LabelName=\"content_fetcher\"', 'Sum', 3600))",
+          "namespace": "",
+          "metricName": "",
+          "dimensions": {},
+          "statistic": "Sum",
+          "period": "3600",
+          "region": "us-east-1",
+          "range": true,
+          "queryMode": "Metrics",
+          "metricQueryType": 0,
+          "metricEditorMode": 1,
+          "matchExact": true,
+          "sqlExpression": "",
+          "label": "content_fetcher",
+          "hide": false
+        },
+        {
+          "refId": "G",
+          "datasource": {
+            "type": "cloudwatch",
+            "uid": "__CLOUDWATCH_DS_UID__"
+          },
+          "id": "",
+          "expression": "SUM(SEARCH('{AWS/WAFV2,LabelName,LabelNamespace,WebACL} MetricName=\"AllowedRequests\" LabelNamespace=\"awswaf:managed:aws:bot-control:bot:category\" LabelName=\"archiver\"', 'Sum', 3600))",
+          "namespace": "",
+          "metricName": "",
+          "dimensions": {},
+          "statistic": "Sum",
+          "period": "3600",
+          "region": "us-east-1",
+          "range": true,
+          "queryMode": "Metrics",
+          "metricQueryType": 0,
+          "metricEditorMode": 1,
+          "matchExact": true,
+          "sqlExpression": "",
+          "label": "archiver",
+          "hide": false
+        },
+        {
+          "refId": "H",
+          "datasource": {
+            "type": "cloudwatch",
+            "uid": "__CLOUDWATCH_DS_UID__"
+          },
+          "id": "",
+          "expression": "SUM(SEARCH('{AWS/WAFV2,LabelName,LabelNamespace,WebACL} MetricName=\"AllowedRequests\" LabelNamespace=\"awswaf:managed:aws:bot-control:bot:category\" LabelName=\"monitoring\"', 'Sum', 3600))",
+          "namespace": "",
+          "metricName": "",
+          "dimensions": {},
+          "statistic": "Sum",
+          "period": "3600",
+          "region": "us-east-1",
+          "range": true,
+          "queryMode": "Metrics",
+          "metricQueryType": 0,
+          "metricEditorMode": 1,
+          "matchExact": true,
+          "sqlExpression": "",
+          "label": "monitoring",
+          "hide": false
+        },
+        {
+          "refId": "I",
+          "datasource": {
+            "type": "cloudwatch",
+            "uid": "__CLOUDWATCH_DS_UID__"
+          },
+          "id": "",
+          "expression": "SUM(SEARCH('{AWS/WAFV2,LabelName,LabelNamespace,WebACL} MetricName=\"AllowedRequests\" LabelNamespace=\"awswaf:managed:aws:bot-control:bot:category\" LabelName=\"social_media\"', 'Sum', 3600))",
+          "namespace": "",
+          "metricName": "",
+          "dimensions": {},
+          "statistic": "Sum",
+          "period": "3600",
+          "region": "us-east-1",
+          "range": true,
+          "queryMode": "Metrics",
+          "metricQueryType": 0,
+          "metricEditorMode": 1,
+          "matchExact": true,
+          "sqlExpression": "",
+          "label": "social_media",
+          "hide": false
+        },
+        {
+          "refId": "J",
+          "datasource": {
+            "type": "cloudwatch",
+            "uid": "__CLOUDWATCH_DS_UID__"
+          },
+          "id": "",
+          "expression": "SUM(SEARCH('{AWS/WAFV2,LabelName,LabelNamespace,WebACL} MetricName=\"AllowedRequests\" LabelNamespace=\"awswaf:managed:aws:bot-control:bot:category\" LabelName=\"advertising\"', 'Sum', 3600))",
+          "namespace": "",
+          "metricName": "",
+          "dimensions": {},
+          "statistic": "Sum",
+          "period": "3600",
+          "region": "us-east-1",
+          "range": true,
+          "queryMode": "Metrics",
+          "metricQueryType": 0,
+          "metricEditorMode": 1,
+          "matchExact": true,
+          "sqlExpression": "",
+          "label": "advertising",
+          "hide": false
+        },
+        {
+          "refId": "K",
+          "datasource": {
+            "type": "cloudwatch",
+            "uid": "__CLOUDWATCH_DS_UID__"
+          },
+          "id": "",
+          "expression": "SUM(SEARCH('{AWS/WAFV2,LabelName,LabelNamespace,WebACL} MetricName=\"AllowedRequests\" LabelNamespace=\"awswaf:managed:aws:bot-control:bot:category\" LabelName=\"link_checker\"', 'Sum', 3600))",
+          "namespace": "",
+          "metricName": "",
+          "dimensions": {},
+          "statistic": "Sum",
+          "period": "3600",
+          "region": "us-east-1",
+          "range": true,
+          "queryMode": "Metrics",
+          "metricQueryType": 0,
+          "metricEditorMode": 1,
+          "matchExact": true,
+          "sqlExpression": "",
+          "label": "link_checker",
+          "hide": false
+        },
+        {
+          "refId": "L",
+          "datasource": {
+            "type": "cloudwatch",
+            "uid": "__CLOUDWATCH_DS_UID__"
+          },
+          "id": "",
+          "expression": "SUM(SEARCH('{AWS/WAFV2,LabelName,LabelNamespace,WebACL} MetricName=\"AllowedRequests\" LabelNamespace=\"awswaf:managed:aws:bot-control:bot:category\" LabelName=\"email_client\"', 'Sum', 3600))",
+          "namespace": "",
+          "metricName": "",
+          "dimensions": {},
+          "statistic": "Sum",
+          "period": "3600",
+          "region": "us-east-1",
+          "range": true,
+          "queryMode": "Metrics",
+          "metricQueryType": 0,
+          "metricEditorMode": 1,
+          "matchExact": true,
+          "sqlExpression": "",
+          "label": "email_client",
+          "hide": false
+        },
+        {
+          "refId": "M",
+          "datasource": {
+            "type": "cloudwatch",
+            "uid": "__CLOUDWATCH_DS_UID__"
+          },
+          "id": "",
+          "expression": "SUM(SEARCH('{AWS/WAFV2,LabelName,LabelNamespace,WebACL} MetricName=\"AllowedRequests\" LabelNamespace=\"awswaf:managed:aws:bot-control:bot:category\" LabelName=\"miscellaneous\"', 'Sum', 3600))",
+          "namespace": "",
+          "metricName": "",
+          "dimensions": {},
+          "statistic": "Sum",
+          "period": "3600",
+          "region": "us-east-1",
+          "range": true,
+          "queryMode": "Metrics",
+          "metricQueryType": 0,
+          "metricEditorMode": 1,
+          "matchExact": true,
+          "sqlExpression": "",
+          "label": "miscellaneous",
+          "hide": false
+        }
+      ],
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "palette-classic"
+          },
+          "unit": "short",
+          "custom": {
+            "drawStyle": "line",
+            "lineWidth": 1,
+            "fillOpacity": 8,
+            "showPoints": "never",
+            "spanNulls": false,
+            "axisPlacement": "auto",
+            "scaleDistribution": {
+              "type": "linear"
+            },
+            "stacking": {
+              "group": "A",
+              "mode": "none"
+            }
+          }
+        },
+        "overrides": []
+      },
+      "options": {
+        "legend": {
+          "displayMode": "list",
+          "placement": "bottom",
+          "showLegend": true,
+          "calcs": []
+        },
+        "tooltip": {
+          "mode": "multi",
+          "sort": "desc"
+        }
+      }
+    },
+    {
+      "id": 10,
+      "type": "timeseries",
+      "title": "Verified vs unverified",
+      "description": "Unverified means the bot's self-declared identity failed validation.",
+      "datasource": {
+        "type": "cloudwatch",
+        "uid": "__CLOUDWATCH_DS_UID__"
+      },
+      "gridPos": {
+        "h": 9,
+        "w": 12,
+        "x": 12,
+        "y": 18
+      },
+      "targets": [
+        {
+          "refId": "A",
+          "datasource": {
+            "type": "cloudwatch",
+            "uid": "__CLOUDWATCH_DS_UID__"
+          },
+          "id": "",
+          "expression": "SUM(SEARCH('{AWS/WAFV2,LabelName,LabelNamespace,WebACL} MetricName=\"AllowedRequests\" LabelNamespace=\"awswaf:managed:aws:bot-control:bot\" LabelName=\"verified\"', 'Sum', 3600))",
+          "namespace": "",
+          "metricName": "",
+          "dimensions": {},
+          "statistic": "Sum",
+          "period": "3600",
+          "region": "us-east-1",
+          "range": true,
+          "queryMode": "Metrics",
+          "metricQueryType": 0,
+          "metricEditorMode": 1,
+          "matchExact": true,
+          "sqlExpression": "",
+          "label": "verified",
+          "hide": false
+        },
+        {
+          "refId": "B",
+          "datasource": {
+            "type": "cloudwatch",
+            "uid": "__CLOUDWATCH_DS_UID__"
+          },
+          "id": "",
+          "expression": "SUM(SEARCH('{AWS/WAFV2,LabelName,LabelNamespace,WebACL} MetricName=\"AllowedRequests\" LabelNamespace=\"awswaf:managed:aws:bot-control:bot\" LabelName=\"unverified\"', 'Sum', 3600))",
+          "namespace": "",
+          "metricName": "",
+          "dimensions": {},
+          "statistic": "Sum",
+          "period": "3600",
+          "region": "us-east-1",
+          "range": true,
+          "queryMode": "Metrics",
+          "metricQueryType": 0,
+          "metricEditorMode": 1,
+          "matchExact": true,
+          "sqlExpression": "",
+          "label": "unverified",
+          "hide": false
+        }
+      ],
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "palette-classic"
+          },
+          "unit": "short",
+          "custom": {
+            "drawStyle": "line",
+            "lineWidth": 1,
+            "fillOpacity": 8,
+            "showPoints": "never",
+            "spanNulls": false,
+            "axisPlacement": "auto",
+            "scaleDistribution": {
+              "type": "linear"
+            },
+            "stacking": {
+              "group": "A",
+              "mode": "none"
+            }
+          }
+        },
+        "overrides": []
+      },
+      "options": {
+        "legend": {
+          "displayMode": "list",
+          "placement": "bottom",
+          "showLegend": true,
+          "calcs": []
+        },
+        "tooltip": {
+          "mode": "multi",
+          "sort": "desc"
+        }
+      }
+    },
+    {
+      "id": 11,
+      "type": "bargauge",
+      "title": "Top bot names",
+      "description": "Fixed list of names, not every bot Bot Control knows. CloudWatch SEARCH cannot rank server-side and wildcarding all ~90 names across four WebACLs returns ~200 series. Add names here as needed.",
+      "datasource": {
+        "type": "cloudwatch",
+        "uid": "__CLOUDWATCH_DS_UID__"
+      },
+      "gridPos": {
+        "h": 10,
+        "w": 12,
+        "x": 0,
+        "y": 27
+      },
+      "targets": [
+        {
+          "refId": "A",
+          "datasource": {
+            "type": "cloudwatch",
+            "uid": "__CLOUDWATCH_DS_UID__"
+          },
+          "id": "",
+          "expression": "SUM(SEARCH('{AWS/WAFV2,LabelName,LabelNamespace,WebACL} MetricName=\"AllowedRequests\" LabelNamespace=\"awswaf:managed:aws:bot-control:bot:name\" LabelName=\"python_requests\"', 'Sum', 3600))",
+          "namespace": "",
+          "metricName": "",
+          "dimensions": {},
+          "statistic": "Sum",
+          "period": "3600",
+          "region": "us-east-1",
+          "range": true,
+          "queryMode": "Metrics",
+          "metricQueryType": 0,
+          "metricEditorMode": 1,
+          "matchExact": true,
+          "sqlExpression": "",
+          "label": "python_requests",
+          "hide": false
+        },
+        {
+          "refId": "B",
+          "datasource": {
+            "type": "cloudwatch",
+            "uid": "__CLOUDWATCH_DS_UID__"
+          },
+          "id": "",
+          "expression": "SUM(SEARCH('{AWS/WAFV2,LabelName,LabelNamespace,WebACL} MetricName=\"AllowedRequests\" LabelNamespace=\"awswaf:managed:aws:bot-control:bot:name\" LabelName=\"go_http\"', 'Sum', 3600))",
+          "namespace": "",
+          "metricName": "",
+          "dimensions": {},
+          "statistic": "Sum",
+          "period": "3600",
+          "region": "us-east-1",
+          "range": true,
+          "queryMode": "Metrics",
+          "metricQueryType": 0,
+          "metricEditorMode": 1,
+          "matchExact": true,
+          "sqlExpression": "",
+          "label": "go_http",
+          "hide": false
+        },
+        {
+          "refId": "C",
+          "datasource": {
+            "type": "cloudwatch",
+            "uid": "__CLOUDWATCH_DS_UID__"
+          },
+          "id": "",
+          "expression": "SUM(SEARCH('{AWS/WAFV2,LabelName,LabelNamespace,WebACL} MetricName=\"AllowedRequests\" LabelNamespace=\"awswaf:managed:aws:bot-control:bot:name\" LabelName=\"curl\"', 'Sum', 3600))",
+          "namespace": "",
+          "metricName": "",
+          "dimensions": {},
+          "statistic": "Sum",
+          "period": "3600",
+          "region": "us-east-1",
+          "range": true,
+          "queryMode": "Metrics",
+          "metricQueryType": 0,
+          "metricEditorMode": 1,
+          "matchExact": true,
+          "sqlExpression": "",
+          "label": "curl",
+          "hide": false
+        },
+        {
+          "refId": "D",
+          "datasource": {
+            "type": "cloudwatch",
+            "uid": "__CLOUDWATCH_DS_UID__"
+          },
+          "id": "",
+          "expression": "SUM(SEARCH('{AWS/WAFV2,LabelName,LabelNamespace,WebACL} MetricName=\"AllowedRequests\" LabelNamespace=\"awswaf:managed:aws:bot-control:bot:name\" LabelName=\"okhttp\"', 'Sum', 3600))",
+          "namespace": "",
+          "metricName": "",
+          "dimensions": {},
+          "statistic": "Sum",
+          "period": "3600",
+          "region": "us-east-1",
+          "range": true,
+          "queryMode": "Metrics",
+          "metricQueryType": 0,
+          "metricEditorMode": 1,
+          "matchExact": true,
+          "sqlExpression": "",
+          "label": "okhttp",
+          "hide": false
+        },
+        {
+          "refId": "E",
+          "datasource": {
+            "type": "cloudwatch",
+            "uid": "__CLOUDWATCH_DS_UID__"
+          },
+          "id": "",
+          "expression": "SUM(SEARCH('{AWS/WAFV2,LabelName,LabelNamespace,WebACL} MetricName=\"AllowedRequests\" LabelNamespace=\"awswaf:managed:aws:bot-control:bot:name\" LabelName=\"java\"', 'Sum', 3600))",
+          "namespace": "",
+          "metricName": "",
+          "dimensions": {},
+          "statistic": "Sum",
+          "period": "3600",
+          "region": "us-east-1",
+          "range": true,
+          "queryMode": "Metrics",
+          "metricQueryType": 0,
+          "metricEditorMode": 1,
+          "matchExact": true,
+          "sqlExpression": "",
+          "label": "java",
+          "hide": false
+        },
+        {
+          "refId": "F",
+          "datasource": {
+            "type": "cloudwatch",
+            "uid": "__CLOUDWATCH_DS_UID__"
+          },
+          "id": "",
+          "expression": "SUM(SEARCH('{AWS/WAFV2,LabelName,LabelNamespace,WebACL} MetricName=\"AllowedRequests\" LabelNamespace=\"awswaf:managed:aws:bot-control:bot:name\" LabelName=\"node_fetch\"', 'Sum', 3600))",
+          "namespace": "",
+          "metricName": "",
+          "dimensions": {},
+          "statistic": "Sum",
+          "period": "3600",
+          "region": "us-east-1",
+          "range": true,
+          "queryMode": "Metrics",
+          "metricQueryType": 0,
+          "metricEditorMode": 1,
+          "matchExact": true,
+          "sqlExpression": "",
+          "label": "node_fetch",
+          "hide": false
+        },
+        {
+          "refId": "G",
+          "datasource": {
+            "type": "cloudwatch",
+            "uid": "__CLOUDWATCH_DS_UID__"
+          },
+          "id": "",
+          "expression": "SUM(SEARCH('{AWS/WAFV2,LabelName,LabelNamespace,WebACL} MetricName=\"AllowedRequests\" LabelNamespace=\"awswaf:managed:aws:bot-control:bot:name\" LabelName=\"googlebot\"', 'Sum', 3600))",
+          "namespace": "",
+          "metricName": "",
+          "dimensions": {},
+          "statistic": "Sum",
+          "period": "3600",
+          "region": "us-east-1",
+          "range": true,
+          "queryMode": "Metrics",
+          "metricQueryType": 0,
+          "metricEditorMode": 1,
+          "matchExact": true,
+          "sqlExpression": "",
+          "label": "googlebot",
+          "hide": false
+        },
+        {
+          "refId": "H",
+          "datasource": {
+            "type": "cloudwatch",
+            "uid": "__CLOUDWATCH_DS_UID__"
+          },
+          "id": "",
+          "expression": "SUM(SEARCH('{AWS/WAFV2,LabelName,LabelNamespace,WebACL} MetricName=\"AllowedRequests\" LabelNamespace=\"awswaf:managed:aws:bot-control:bot:name\" LabelName=\"bingbot\"', 'Sum', 3600))",
+          "namespace": "",
+          "metricName": "",
+          "dimensions": {},
+          "statistic": "Sum",
+          "period": "3600",
+          "region": "us-east-1",
+          "range": true,
+          "queryMode": "Metrics",
+          "metricQueryType": 0,
+          "metricEditorMode": 1,
+          "matchExact": true,
+          "sqlExpression": "",
+          "label": "bingbot",
+          "hide": false
+        },
+        {
+          "refId": "I",
+          "datasource": {
+            "type": "cloudwatch",
+            "uid": "__CLOUDWATCH_DS_UID__"
+          },
+          "id": "",
+          "expression": "SUM(SEARCH('{AWS/WAFV2,LabelName,LabelNamespace,WebACL} MetricName=\"AllowedRequests\" LabelNamespace=\"awswaf:managed:aws:bot-control:bot:name\" LabelName=\"gptbot\"', 'Sum', 3600))",
+          "namespace": "",
+          "metricName": "",
+          "dimensions": {},
+          "statistic": "Sum",
+          "period": "3600",
+          "region": "us-east-1",
+          "range": true,
+          "queryMode": "Metrics",
+          "metricQueryType": 0,
+          "metricEditorMode": 1,
+          "matchExact": true,
+          "sqlExpression": "",
+          "label": "gptbot",
+          "hide": false
+        },
+        {
+          "refId": "J",
+          "datasource": {
+            "type": "cloudwatch",
+            "uid": "__CLOUDWATCH_DS_UID__"
+          },
+          "id": "",
+          "expression": "SUM(SEARCH('{AWS/WAFV2,LabelName,LabelNamespace,WebACL} MetricName=\"AllowedRequests\" LabelNamespace=\"awswaf:managed:aws:bot-control:bot:name\" LabelName=\"ccbot\"', 'Sum', 3600))",
+          "namespace": "",
+          "metricName": "",
+          "dimensions": {},
+          "statistic": "Sum",
+          "period": "3600",
+          "region": "us-east-1",
+          "range": true,
+          "queryMode": "Metrics",
+          "metricQueryType": 0,
+          "metricEditorMode": 1,
+          "matchExact": true,
+          "sqlExpression": "",
+          "label": "ccbot",
+          "hide": false
+        },
+        {
+          "refId": "K",
+          "datasource": {
+            "type": "cloudwatch",
+            "uid": "__CLOUDWATCH_DS_UID__"
+          },
+          "id": "",
+          "expression": "SUM(SEARCH('{AWS/WAFV2,LabelName,LabelNamespace,WebACL} MetricName=\"AllowedRequests\" LabelNamespace=\"awswaf:managed:aws:bot-control:bot:name\" LabelName=\"bytespider\"', 'Sum', 3600))",
+          "namespace": "",
+          "metricName": "",
+          "dimensions": {},
+          "statistic": "Sum",
+          "period": "3600",
+          "region": "us-east-1",
+          "range": true,
+          "queryMode": "Metrics",
+          "metricQueryType": 0,
+          "metricEditorMode": 1,
+          "matchExact": true,
+          "sqlExpression": "",
+          "label": "bytespider",
+          "hide": false
+        },
+        {
+          "refId": "L",
+          "datasource": {
+            "type": "cloudwatch",
+            "uid": "__CLOUDWATCH_DS_UID__"
+          },
+          "id": "",
+          "expression": "SUM(SEARCH('{AWS/WAFV2,LabelName,LabelNamespace,WebACL} MetricName=\"AllowedRequests\" LabelNamespace=\"awswaf:managed:aws:bot-control:bot:name\" LabelName=\"semrushbot\"', 'Sum', 3600))",
+          "namespace": "",
+          "metricName": "",
+          "dimensions": {},
+          "statistic": "Sum",
+          "period": "3600",
+          "region": "us-east-1",
+          "range": true,
+          "queryMode": "Metrics",
+          "metricQueryType": 0,
+          "metricEditorMode": 1,
+          "matchExact": true,
+          "sqlExpression": "",
+          "label": "semrushbot",
+          "hide": false
+        },
+        {
+          "refId": "M",
+          "datasource": {
+            "type": "cloudwatch",
+            "uid": "__CLOUDWATCH_DS_UID__"
+          },
+          "id": "",
+          "expression": "SUM(SEARCH('{AWS/WAFV2,LabelName,LabelNamespace,WebACL} MetricName=\"AllowedRequests\" LabelNamespace=\"awswaf:managed:aws:bot-control:bot:name\" LabelName=\"ahrefsbot\"', 'Sum', 3600))",
+          "namespace": "",
+          "metricName": "",
+          "dimensions": {},
+          "statistic": "Sum",
+          "period": "3600",
+          "region": "us-east-1",
+          "range": true,
+          "queryMode": "Metrics",
+          "metricQueryType": 0,
+          "metricEditorMode": 1,
+          "matchExact": true,
+          "sqlExpression": "",
+          "label": "ahrefsbot",
+          "hide": false
+        },
+        {
+          "refId": "N",
+          "datasource": {
+            "type": "cloudwatch",
+            "uid": "__CLOUDWATCH_DS_UID__"
+          },
+          "id": "",
+          "expression": "SUM(SEARCH('{AWS/WAFV2,LabelName,LabelNamespace,WebACL} MetricName=\"AllowedRequests\" LabelNamespace=\"awswaf:managed:aws:bot-control:bot:name\" LabelName=\"dataforseobot\"', 'Sum', 3600))",
+          "namespace": "",
+          "metricName": "",
+          "dimensions": {},
+          "statistic": "Sum",
+          "period": "3600",
+          "region": "us-east-1",
+          "range": true,
+          "queryMode": "Metrics",
+          "metricQueryType": 0,
+          "metricEditorMode": 1,
+          "matchExact": true,
+          "sqlExpression": "",
+          "label": "dataforseobot",
+          "hide": false
+        },
+        {
+          "refId": "O",
+          "datasource": {
+            "type": "cloudwatch",
+            "uid": "__CLOUDWATCH_DS_UID__"
+          },
+          "id": "",
+          "expression": "SUM(SEARCH('{AWS/WAFV2,LabelName,LabelNamespace,WebACL} MetricName=\"AllowedRequests\" LabelNamespace=\"awswaf:managed:aws:bot-control:bot:name\" LabelName=\"amazonbot\"', 'Sum', 3600))",
+          "namespace": "",
+          "metricName": "",
+          "dimensions": {},
+          "statistic": "Sum",
+          "period": "3600",
+          "region": "us-east-1",
+          "range": true,
+          "queryMode": "Metrics",
+          "metricQueryType": 0,
+          "metricEditorMode": 1,
+          "matchExact": true,
+          "sqlExpression": "",
+          "label": "amazonbot",
+          "hide": false
+        },
+        {
+          "refId": "P",
+          "datasource": {
+            "type": "cloudwatch",
+            "uid": "__CLOUDWATCH_DS_UID__"
+          },
+          "id": "",
+          "expression": "SUM(SEARCH('{AWS/WAFV2,LabelName,LabelNamespace,WebACL} MetricName=\"AllowedRequests\" LabelNamespace=\"awswaf:managed:aws:bot-control:bot:name\" LabelName=\"applebot\"', 'Sum', 3600))",
+          "namespace": "",
+          "metricName": "",
+          "dimensions": {},
+          "statistic": "Sum",
+          "period": "3600",
+          "region": "us-east-1",
+          "range": true,
+          "queryMode": "Metrics",
+          "metricQueryType": 0,
+          "metricEditorMode": 1,
+          "matchExact": true,
+          "sqlExpression": "",
+          "label": "applebot",
+          "hide": false
+        }
+      ],
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "palette-classic"
+          },
+          "unit": "short",
+          "custom": {}
+        },
+        "overrides": []
+      },
+      "options": {
+        "reduceOptions": {
+          "calcs": ["sum"],
+          "fields": "",
+          "values": false
+        },
+        "orientation": "horizontal",
+        "displayMode": "gradient",
+        "showUnfilled": true,
+        "minVizWidth": 8,
+        "minVizHeight": 10
+      }
+    },
+    {
+      "id": 12,
+      "type": "timeseries",
+      "title": "Detection signals",
+      "description": "How Bot Control decided: non-browser user agent or header, automated browser, known data-centre IP.",
+      "datasource": {
+        "type": "cloudwatch",
+        "uid": "__CLOUDWATCH_DS_UID__"
+      },
+      "gridPos": {
+        "h": 10,
+        "w": 6,
+        "x": 12,
+        "y": 27
+      },
+      "targets": [
+        {
+          "refId": "A",
+          "datasource": {
+            "type": "cloudwatch",
+            "uid": "__CLOUDWATCH_DS_UID__"
+          },
+          "id": "",
+          "expression": "SUM(SEARCH('{AWS/WAFV2,LabelName,LabelNamespace,WebACL} MetricName=\"AllowedRequests\" LabelNamespace=\"awswaf:managed:aws:bot-control:signal\" LabelName=\"non_browser_user_agent\"', 'Sum', 3600))",
+          "namespace": "",
+          "metricName": "",
+          "dimensions": {},
+          "statistic": "Sum",
+          "period": "3600",
+          "region": "us-east-1",
+          "range": true,
+          "queryMode": "Metrics",
+          "metricQueryType": 0,
+          "metricEditorMode": 1,
+          "matchExact": true,
+          "sqlExpression": "",
+          "label": "non_browser_user_agent",
+          "hide": false
+        },
+        {
+          "refId": "B",
+          "datasource": {
+            "type": "cloudwatch",
+            "uid": "__CLOUDWATCH_DS_UID__"
+          },
+          "id": "",
+          "expression": "SUM(SEARCH('{AWS/WAFV2,LabelName,LabelNamespace,WebACL} MetricName=\"AllowedRequests\" LabelNamespace=\"awswaf:managed:aws:bot-control:signal\" LabelName=\"automated_browser\"', 'Sum', 3600))",
+          "namespace": "",
+          "metricName": "",
+          "dimensions": {},
+          "statistic": "Sum",
+          "period": "3600",
+          "region": "us-east-1",
+          "range": true,
+          "queryMode": "Metrics",
+          "metricQueryType": 0,
+          "metricEditorMode": 1,
+          "matchExact": true,
+          "sqlExpression": "",
+          "label": "automated_browser",
+          "hide": false
+        },
+        {
+          "refId": "C",
+          "datasource": {
+            "type": "cloudwatch",
+            "uid": "__CLOUDWATCH_DS_UID__"
+          },
+          "id": "",
+          "expression": "SUM(SEARCH('{AWS/WAFV2,LabelName,LabelNamespace,WebACL} MetricName=\"AllowedRequests\" LabelNamespace=\"awswaf:managed:aws:bot-control:signal\" LabelName=\"known_bot_data_center\"', 'Sum', 3600))",
+          "namespace": "",
+          "metricName": "",
+          "dimensions": {},
+          "statistic": "Sum",
+          "period": "3600",
+          "region": "us-east-1",
+          "range": true,
+          "queryMode": "Metrics",
+          "metricQueryType": 0,
+          "metricEditorMode": 1,
+          "matchExact": true,
+          "sqlExpression": "",
+          "label": "known_bot_data_center",
+          "hide": false
+        },
+        {
+          "refId": "D",
+          "datasource": {
+            "type": "cloudwatch",
+            "uid": "__CLOUDWATCH_DS_UID__"
+          },
+          "id": "",
+          "expression": "SUM(SEARCH('{AWS/WAFV2,LabelName,LabelNamespace,WebACL} MetricName=\"AllowedRequests\" LabelNamespace=\"awswaf:managed:aws:bot-control:signal\" LabelName=\"non_browser_header\"', 'Sum', 3600))",
+          "namespace": "",
+          "metricName": "",
+          "dimensions": {},
+          "statistic": "Sum",
+          "period": "3600",
+          "region": "us-east-1",
+          "range": true,
+          "queryMode": "Metrics",
+          "metricQueryType": 0,
+          "metricEditorMode": 1,
+          "matchExact": true,
+          "sqlExpression": "",
+          "label": "non_browser_header",
+          "hide": false
+        }
+      ],
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "palette-classic"
+          },
+          "unit": "short",
+          "custom": {
+            "drawStyle": "line",
+            "lineWidth": 1,
+            "fillOpacity": 8,
+            "showPoints": "never",
+            "spanNulls": false,
+            "axisPlacement": "auto",
+            "scaleDistribution": {
+              "type": "linear"
+            },
+            "stacking": {
+              "group": "A",
+              "mode": "none"
+            }
+          }
+        },
+        "overrides": []
+      },
+      "options": {
+        "legend": {
+          "displayMode": "list",
+          "placement": "bottom",
+          "showLegend": true,
+          "calcs": []
+        },
+        "tooltip": {
+          "mode": "multi",
+          "sort": "desc"
+        }
+      }
+    },
+    {
+      "id": 13,
+      "type": "timeseries",
+      "title": "Chrome/125 rule, by theme",
+      "description": "Our own headless-signature rule, predating Bot Control. If this climbs while Bot Control stays flat, Bot Control may be missing something.",
+      "datasource": {
+        "type": "cloudwatch",
+        "uid": "__CLOUDWATCH_DS_UID__"
+      },
+      "gridPos": {
+        "h": 10,
+        "w": 6,
+        "x": 18,
+        "y": 27
+      },
+      "targets": [
+        {
+          "refId": "A",
+          "datasource": {
+            "type": "cloudwatch",
+            "uid": "__CLOUDWATCH_DS_UID__"
+          },
+          "id": "",
+          "expression": "",
+          "namespace": "AWS/WAFV2",
+          "metricName": "CountedRequests",
+          "dimensions": {
+            "Rule": ["CountChrome125UserAgent"],
+            "WebACL": ["cpr-production-frontend-waf"]
+          },
+          "statistic": "Sum",
+          "period": "3600",
+          "region": "us-east-1",
+          "range": true,
+          "queryMode": "Metrics",
+          "metricQueryType": 0,
+          "metricEditorMode": 0,
+          "matchExact": true,
+          "sqlExpression": "",
+          "label": "cpr",
+          "hide": false
+        },
+        {
+          "refId": "B",
+          "datasource": {
+            "type": "cloudwatch",
+            "uid": "__CLOUDWATCH_DS_UID__"
+          },
+          "id": "",
+          "expression": "",
+          "namespace": "AWS/WAFV2",
+          "metricName": "CountedRequests",
+          "dimensions": {
+            "Rule": ["CountChrome125UserAgent"],
+            "WebACL": ["cclw-production-frontend-waf"]
+          },
+          "statistic": "Sum",
+          "period": "3600",
+          "region": "us-east-1",
+          "range": true,
+          "queryMode": "Metrics",
+          "metricQueryType": 0,
+          "metricEditorMode": 0,
+          "matchExact": true,
+          "sqlExpression": "",
+          "label": "cclw",
+          "hide": false
+        },
+        {
+          "refId": "C",
+          "datasource": {
+            "type": "cloudwatch",
+            "uid": "__CLOUDWATCH_DS_UID__"
+          },
+          "id": "",
+          "expression": "",
+          "namespace": "AWS/WAFV2",
+          "metricName": "CountedRequests",
+          "dimensions": {
+            "Rule": ["CountChrome125UserAgent"],
+            "WebACL": ["mcf-production-frontend-waf"]
+          },
+          "statistic": "Sum",
+          "period": "3600",
+          "region": "us-east-1",
+          "range": true,
+          "queryMode": "Metrics",
+          "metricQueryType": 0,
+          "metricEditorMode": 0,
+          "matchExact": true,
+          "sqlExpression": "",
+          "label": "mcf",
+          "hide": false
+        },
+        {
+          "refId": "D",
+          "datasource": {
+            "type": "cloudwatch",
+            "uid": "__CLOUDWATCH_DS_UID__"
+          },
+          "id": "",
+          "expression": "",
+          "namespace": "AWS/WAFV2",
+          "metricName": "CountedRequests",
+          "dimensions": {
+            "Rule": ["CountChrome125UserAgent"],
+            "WebACL": ["ccc-production-frontend-waf"]
+          },
+          "statistic": "Sum",
+          "period": "3600",
+          "region": "us-east-1",
+          "range": true,
+          "queryMode": "Metrics",
+          "metricQueryType": 0,
+          "metricEditorMode": 0,
+          "matchExact": true,
+          "sqlExpression": "",
+          "label": "ccc",
+          "hide": false
+        }
+      ],
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "palette-classic"
+          },
+          "unit": "short",
+          "custom": {
+            "drawStyle": "line",
+            "lineWidth": 1,
+            "fillOpacity": 8,
+            "showPoints": "never",
+            "spanNulls": false,
+            "axisPlacement": "auto",
+            "scaleDistribution": {
+              "type": "linear"
+            },
+            "stacking": {
+              "group": "A",
+              "mode": "none"
+            }
+          }
+        },
+        "overrides": []
+      },
+      "options": {
+        "legend": {
+          "displayMode": "list",
+          "placement": "bottom",
+          "showLegend": true,
+          "calcs": []
+        },
+        "tooltip": {
+          "mode": "multi",
+          "sort": "desc"
+        }
+      }
+    }
+  ]
+}
