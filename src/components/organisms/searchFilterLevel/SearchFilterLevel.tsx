@@ -1,10 +1,11 @@
 import sortBy from "lodash/sortBy";
-import { useMemo } from "react";
+import { useContext, useMemo } from "react";
 
 import { SearchFilterGroups } from "@/components/molecules/searchFilterGroups/SearchFilterGroups";
 import { SearchFilterLookup } from "@/components/molecules/searchFilterLookup/SearchFilterLookup";
 import { SearchFilterParent } from "@/components/molecules/searchFilterParent/SearchFilterParent";
 import { SearchFilters } from "@/components/molecules/searchFilters/SearchFilters";
+import { FiltersLookupContext } from "@/context/FiltersLookupContext";
 import { TFilterPathLabel, TNestedSearchLabel } from "@/types";
 import { joinTailwindClasses } from "@/utils/tailwind";
 
@@ -24,6 +25,7 @@ interface IProps {
 
 // Render a set of label peers depending on content and composition
 export const SearchFilterLevel = ({ ancestorPath, indented, labels, level, renderParents, showAppliedFilters }: IProps) => {
+  const { inUse: isLookupAtHigherLevel } = useContext(FiltersLookupContext);
   const sortedLabels = useMemo(() => sortBy(labels, "value"), [labels]);
 
   const indentedClasses = indented && "ml-8 mt-2 not-last:mb-2";
@@ -46,7 +48,7 @@ export const SearchFilterLevel = ({ ancestorPath, indented, labels, level, rende
   }
 
   // Searchable checkboxes
-  if (countLabelsAndDescendants(labels) > LOOKUP_THRESHOLD) {
+  if (countLabelsAndDescendants(labels) > LOOKUP_THRESHOLD && !isLookupAtHigherLevel) {
     return (
       <div className={joinTailwindClasses(indentedClasses, "max-h-full overflow-y-auto")}>
         <SearchFilterLookup ancestorPath={ancestorPath} labels={sortedLabels} level={level} />
