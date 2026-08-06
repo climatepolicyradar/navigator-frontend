@@ -1,7 +1,7 @@
 {
   "uid": "waf-bot-monitoring",
   "title": "WAF: Bot Traffic",
-  "description": "Bot traffic through the frontend WAFs, from AWS/WAFV2 CloudWatch metrics in us-east-1. Production only. No template variables: Grafana does not interpolate them into CloudWatch dimension values, so every WebACL is named literally. Denominator is AllowedRequests{Rule=ALL}, which equals total traffic only because no rule in these ACLs blocks; if a blocking rule is added, BlockedRequests{Rule=ALL} must be added to it.",
+  "description": "Bot traffic through the frontend WAFs, from AWS/WAFV2 CloudWatch metrics in us-east-1. Production only. No template variables: Grafana does not interpolate them into CloudWatch dimension values, so every WebACL is named literally. The datasource uid is substituted at push time. Denominator is AllowedRequests{Rule=ALL}, which equals total traffic only because no rule in these ACLs blocks; if a blocking rule is added, BlockedRequests{Rule=ALL} must be added to it.",
   "tags": ["waf", "bots", "cloudwatch"],
   "timezone": "utc",
   "editable": true,
@@ -43,7 +43,7 @@
       "description": "Bot requests as a percentage of all requests on cpr. Read the trend, not a point value: a spike in ordinary traffic pushes this down without bot traffic changing at all, so check the request-count panels below before concluding anything. Reads zero before 2026-07-22, when the bot rule reached production.",
       "datasource": {
         "type": "cloudwatch",
-        "uid": "2A7dsDK4k"
+        "uid": "__CLOUDWATCH_DS_UID__"
       },
       "gridPos": {
         "h": 8,
@@ -56,7 +56,7 @@
           "refId": "A",
           "datasource": {
             "type": "cloudwatch",
-            "uid": "2A7dsDK4k"
+            "uid": "__CLOUDWATCH_DS_UID__"
           },
           "id": "m0",
           "expression": "",
@@ -82,7 +82,7 @@
           "refId": "B",
           "datasource": {
             "type": "cloudwatch",
-            "uid": "2A7dsDK4k"
+            "uid": "__CLOUDWATCH_DS_UID__"
           },
           "id": "m1",
           "expression": "",
@@ -108,7 +108,7 @@
           "refId": "C",
           "datasource": {
             "type": "cloudwatch",
-            "uid": "2A7dsDK4k"
+            "uid": "__CLOUDWATCH_DS_UID__"
           },
           "id": "e0",
           "expression": "m1/m0*100",
@@ -189,7 +189,7 @@
       "description": "Bot requests as a percentage of all requests on cclw. Read the trend, not a point value: a spike in ordinary traffic pushes this down without bot traffic changing at all, so check the request-count panels below before concluding anything. Reads zero before 2026-07-22, when the bot rule reached production.",
       "datasource": {
         "type": "cloudwatch",
-        "uid": "2A7dsDK4k"
+        "uid": "__CLOUDWATCH_DS_UID__"
       },
       "gridPos": {
         "h": 8,
@@ -202,7 +202,7 @@
           "refId": "A",
           "datasource": {
             "type": "cloudwatch",
-            "uid": "2A7dsDK4k"
+            "uid": "__CLOUDWATCH_DS_UID__"
           },
           "id": "m0",
           "expression": "",
@@ -228,7 +228,7 @@
           "refId": "B",
           "datasource": {
             "type": "cloudwatch",
-            "uid": "2A7dsDK4k"
+            "uid": "__CLOUDWATCH_DS_UID__"
           },
           "id": "m1",
           "expression": "",
@@ -254,7 +254,7 @@
           "refId": "C",
           "datasource": {
             "type": "cloudwatch",
-            "uid": "2A7dsDK4k"
+            "uid": "__CLOUDWATCH_DS_UID__"
           },
           "id": "e0",
           "expression": "m1/m0*100",
@@ -335,7 +335,7 @@
       "description": "Bot requests as a percentage of all requests on mcf. Read the trend, not a point value: a spike in ordinary traffic pushes this down without bot traffic changing at all, so check the request-count panels below before concluding anything. Reads zero before 2026-07-22, when the bot rule reached production.",
       "datasource": {
         "type": "cloudwatch",
-        "uid": "2A7dsDK4k"
+        "uid": "__CLOUDWATCH_DS_UID__"
       },
       "gridPos": {
         "h": 8,
@@ -348,7 +348,7 @@
           "refId": "A",
           "datasource": {
             "type": "cloudwatch",
-            "uid": "2A7dsDK4k"
+            "uid": "__CLOUDWATCH_DS_UID__"
           },
           "id": "m0",
           "expression": "",
@@ -374,7 +374,7 @@
           "refId": "B",
           "datasource": {
             "type": "cloudwatch",
-            "uid": "2A7dsDK4k"
+            "uid": "__CLOUDWATCH_DS_UID__"
           },
           "id": "m1",
           "expression": "",
@@ -400,7 +400,7 @@
           "refId": "C",
           "datasource": {
             "type": "cloudwatch",
-            "uid": "2A7dsDK4k"
+            "uid": "__CLOUDWATCH_DS_UID__"
           },
           "id": "e0",
           "expression": "m1/m0*100",
@@ -481,7 +481,7 @@
       "description": "Bot requests as a percentage of all requests on ccc. Read the trend, not a point value: a spike in ordinary traffic pushes this down without bot traffic changing at all, so check the request-count panels below before concluding anything. Reads zero before 2026-07-22, when the bot rule reached production.",
       "datasource": {
         "type": "cloudwatch",
-        "uid": "2A7dsDK4k"
+        "uid": "__CLOUDWATCH_DS_UID__"
       },
       "gridPos": {
         "h": 8,
@@ -494,7 +494,7 @@
           "refId": "A",
           "datasource": {
             "type": "cloudwatch",
-            "uid": "2A7dsDK4k"
+            "uid": "__CLOUDWATCH_DS_UID__"
           },
           "id": "m0",
           "expression": "",
@@ -520,7 +520,7 @@
           "refId": "B",
           "datasource": {
             "type": "cloudwatch",
-            "uid": "2A7dsDK4k"
+            "uid": "__CLOUDWATCH_DS_UID__"
           },
           "id": "m1",
           "expression": "",
@@ -546,7 +546,7 @@
           "refId": "C",
           "datasource": {
             "type": "cloudwatch",
-            "uid": "2A7dsDK4k"
+            "uid": "__CLOUDWATCH_DS_UID__"
           },
           "id": "e0",
           "expression": "m1/m0*100",
@@ -627,7 +627,7 @@
       "description": "Total requests through each WebACL. A spike here is what makes the share panel fall.",
       "datasource": {
         "type": "cloudwatch",
-        "uid": "2A7dsDK4k"
+        "uid": "__CLOUDWATCH_DS_UID__"
       },
       "gridPos": {
         "h": 8,
@@ -640,7 +640,7 @@
           "refId": "A",
           "datasource": {
             "type": "cloudwatch",
-            "uid": "2A7dsDK4k"
+            "uid": "__CLOUDWATCH_DS_UID__"
           },
           "id": "",
           "expression": "",
@@ -666,7 +666,7 @@
           "refId": "B",
           "datasource": {
             "type": "cloudwatch",
-            "uid": "2A7dsDK4k"
+            "uid": "__CLOUDWATCH_DS_UID__"
           },
           "id": "",
           "expression": "",
@@ -692,7 +692,7 @@
           "refId": "C",
           "datasource": {
             "type": "cloudwatch",
-            "uid": "2A7dsDK4k"
+            "uid": "__CLOUDWATCH_DS_UID__"
           },
           "id": "",
           "expression": "",
@@ -718,7 +718,7 @@
           "refId": "D",
           "datasource": {
             "type": "cloudwatch",
-            "uid": "2A7dsDK4k"
+            "uid": "__CLOUDWATCH_DS_UID__"
           },
           "id": "",
           "expression": "",
@@ -785,7 +785,7 @@
       "description": "Requests matching the bot rule, per theme.",
       "datasource": {
         "type": "cloudwatch",
-        "uid": "2A7dsDK4k"
+        "uid": "__CLOUDWATCH_DS_UID__"
       },
       "gridPos": {
         "h": 8,
@@ -798,7 +798,7 @@
           "refId": "A",
           "datasource": {
             "type": "cloudwatch",
-            "uid": "2A7dsDK4k"
+            "uid": "__CLOUDWATCH_DS_UID__"
           },
           "id": "",
           "expression": "",
@@ -824,7 +824,7 @@
           "refId": "B",
           "datasource": {
             "type": "cloudwatch",
-            "uid": "2A7dsDK4k"
+            "uid": "__CLOUDWATCH_DS_UID__"
           },
           "id": "",
           "expression": "",
@@ -850,7 +850,7 @@
           "refId": "C",
           "datasource": {
             "type": "cloudwatch",
-            "uid": "2A7dsDK4k"
+            "uid": "__CLOUDWATCH_DS_UID__"
           },
           "id": "",
           "expression": "",
@@ -876,7 +876,7 @@
           "refId": "D",
           "datasource": {
             "type": "cloudwatch",
-            "uid": "2A7dsDK4k"
+            "uid": "__CLOUDWATCH_DS_UID__"
           },
           "id": "",
           "expression": "",
@@ -956,7 +956,7 @@
       "description": "http_library dominates: scripted clients, not crawlers.",
       "datasource": {
         "type": "cloudwatch",
-        "uid": "2A7dsDK4k"
+        "uid": "__CLOUDWATCH_DS_UID__"
       },
       "gridPos": {
         "h": 9,
@@ -969,7 +969,7 @@
           "refId": "A",
           "datasource": {
             "type": "cloudwatch",
-            "uid": "2A7dsDK4k"
+            "uid": "__CLOUDWATCH_DS_UID__"
           },
           "id": "",
           "expression": "SUM(SEARCH('{AWS/WAFV2,LabelName,LabelNamespace,WebACL} MetricName=\"AllowedRequests\" LabelNamespace=\"awswaf:managed:aws:bot-control:bot:category\" LabelName=\"http_library\"', 'Sum', 3600))",
@@ -992,7 +992,7 @@
           "refId": "B",
           "datasource": {
             "type": "cloudwatch",
-            "uid": "2A7dsDK4k"
+            "uid": "__CLOUDWATCH_DS_UID__"
           },
           "id": "",
           "expression": "SUM(SEARCH('{AWS/WAFV2,LabelName,LabelNamespace,WebACL} MetricName=\"AllowedRequests\" LabelNamespace=\"awswaf:managed:aws:bot-control:bot:category\" LabelName=\"search_engine\"', 'Sum', 3600))",
@@ -1015,7 +1015,7 @@
           "refId": "C",
           "datasource": {
             "type": "cloudwatch",
-            "uid": "2A7dsDK4k"
+            "uid": "__CLOUDWATCH_DS_UID__"
           },
           "id": "",
           "expression": "SUM(SEARCH('{AWS/WAFV2,LabelName,LabelNamespace,WebACL} MetricName=\"AllowedRequests\" LabelNamespace=\"awswaf:managed:aws:bot-control:bot:category\" LabelName=\"seo\"', 'Sum', 3600))",
@@ -1038,7 +1038,7 @@
           "refId": "D",
           "datasource": {
             "type": "cloudwatch",
-            "uid": "2A7dsDK4k"
+            "uid": "__CLOUDWATCH_DS_UID__"
           },
           "id": "",
           "expression": "SUM(SEARCH('{AWS/WAFV2,LabelName,LabelNamespace,WebACL} MetricName=\"AllowedRequests\" LabelNamespace=\"awswaf:managed:aws:bot-control:bot:category\" LabelName=\"ai\"', 'Sum', 3600))",
@@ -1061,7 +1061,7 @@
           "refId": "E",
           "datasource": {
             "type": "cloudwatch",
-            "uid": "2A7dsDK4k"
+            "uid": "__CLOUDWATCH_DS_UID__"
           },
           "id": "",
           "expression": "SUM(SEARCH('{AWS/WAFV2,LabelName,LabelNamespace,WebACL} MetricName=\"AllowedRequests\" LabelNamespace=\"awswaf:managed:aws:bot-control:bot:category\" LabelName=\"scraping_framework\"', 'Sum', 3600))",
@@ -1084,7 +1084,7 @@
           "refId": "F",
           "datasource": {
             "type": "cloudwatch",
-            "uid": "2A7dsDK4k"
+            "uid": "__CLOUDWATCH_DS_UID__"
           },
           "id": "",
           "expression": "SUM(SEARCH('{AWS/WAFV2,LabelName,LabelNamespace,WebACL} MetricName=\"AllowedRequests\" LabelNamespace=\"awswaf:managed:aws:bot-control:bot:category\" LabelName=\"content_fetcher\"', 'Sum', 3600))",
@@ -1107,7 +1107,7 @@
           "refId": "G",
           "datasource": {
             "type": "cloudwatch",
-            "uid": "2A7dsDK4k"
+            "uid": "__CLOUDWATCH_DS_UID__"
           },
           "id": "",
           "expression": "SUM(SEARCH('{AWS/WAFV2,LabelName,LabelNamespace,WebACL} MetricName=\"AllowedRequests\" LabelNamespace=\"awswaf:managed:aws:bot-control:bot:category\" LabelName=\"archiver\"', 'Sum', 3600))",
@@ -1130,7 +1130,7 @@
           "refId": "H",
           "datasource": {
             "type": "cloudwatch",
-            "uid": "2A7dsDK4k"
+            "uid": "__CLOUDWATCH_DS_UID__"
           },
           "id": "",
           "expression": "SUM(SEARCH('{AWS/WAFV2,LabelName,LabelNamespace,WebACL} MetricName=\"AllowedRequests\" LabelNamespace=\"awswaf:managed:aws:bot-control:bot:category\" LabelName=\"monitoring\"', 'Sum', 3600))",
@@ -1153,7 +1153,7 @@
           "refId": "I",
           "datasource": {
             "type": "cloudwatch",
-            "uid": "2A7dsDK4k"
+            "uid": "__CLOUDWATCH_DS_UID__"
           },
           "id": "",
           "expression": "SUM(SEARCH('{AWS/WAFV2,LabelName,LabelNamespace,WebACL} MetricName=\"AllowedRequests\" LabelNamespace=\"awswaf:managed:aws:bot-control:bot:category\" LabelName=\"social_media\"', 'Sum', 3600))",
@@ -1176,7 +1176,7 @@
           "refId": "J",
           "datasource": {
             "type": "cloudwatch",
-            "uid": "2A7dsDK4k"
+            "uid": "__CLOUDWATCH_DS_UID__"
           },
           "id": "",
           "expression": "SUM(SEARCH('{AWS/WAFV2,LabelName,LabelNamespace,WebACL} MetricName=\"AllowedRequests\" LabelNamespace=\"awswaf:managed:aws:bot-control:bot:category\" LabelName=\"advertising\"', 'Sum', 3600))",
@@ -1199,7 +1199,7 @@
           "refId": "K",
           "datasource": {
             "type": "cloudwatch",
-            "uid": "2A7dsDK4k"
+            "uid": "__CLOUDWATCH_DS_UID__"
           },
           "id": "",
           "expression": "SUM(SEARCH('{AWS/WAFV2,LabelName,LabelNamespace,WebACL} MetricName=\"AllowedRequests\" LabelNamespace=\"awswaf:managed:aws:bot-control:bot:category\" LabelName=\"link_checker\"', 'Sum', 3600))",
@@ -1222,7 +1222,7 @@
           "refId": "L",
           "datasource": {
             "type": "cloudwatch",
-            "uid": "2A7dsDK4k"
+            "uid": "__CLOUDWATCH_DS_UID__"
           },
           "id": "",
           "expression": "SUM(SEARCH('{AWS/WAFV2,LabelName,LabelNamespace,WebACL} MetricName=\"AllowedRequests\" LabelNamespace=\"awswaf:managed:aws:bot-control:bot:category\" LabelName=\"email_client\"', 'Sum', 3600))",
@@ -1245,7 +1245,7 @@
           "refId": "M",
           "datasource": {
             "type": "cloudwatch",
-            "uid": "2A7dsDK4k"
+            "uid": "__CLOUDWATCH_DS_UID__"
           },
           "id": "",
           "expression": "SUM(SEARCH('{AWS/WAFV2,LabelName,LabelNamespace,WebACL} MetricName=\"AllowedRequests\" LabelNamespace=\"awswaf:managed:aws:bot-control:bot:category\" LabelName=\"miscellaneous\"', 'Sum', 3600))",
@@ -1309,7 +1309,7 @@
       "description": "Unverified means the bot's self-declared identity failed validation.",
       "datasource": {
         "type": "cloudwatch",
-        "uid": "2A7dsDK4k"
+        "uid": "__CLOUDWATCH_DS_UID__"
       },
       "gridPos": {
         "h": 9,
@@ -1322,7 +1322,7 @@
           "refId": "A",
           "datasource": {
             "type": "cloudwatch",
-            "uid": "2A7dsDK4k"
+            "uid": "__CLOUDWATCH_DS_UID__"
           },
           "id": "",
           "expression": "SUM(SEARCH('{AWS/WAFV2,LabelName,LabelNamespace,WebACL} MetricName=\"AllowedRequests\" LabelNamespace=\"awswaf:managed:aws:bot-control:bot\" LabelName=\"verified\"', 'Sum', 3600))",
@@ -1345,7 +1345,7 @@
           "refId": "B",
           "datasource": {
             "type": "cloudwatch",
-            "uid": "2A7dsDK4k"
+            "uid": "__CLOUDWATCH_DS_UID__"
           },
           "id": "",
           "expression": "SUM(SEARCH('{AWS/WAFV2,LabelName,LabelNamespace,WebACL} MetricName=\"AllowedRequests\" LabelNamespace=\"awswaf:managed:aws:bot-control:bot\" LabelName=\"unverified\"', 'Sum', 3600))",
@@ -1409,7 +1409,7 @@
       "description": "Fixed list of names, not every bot Bot Control knows. CloudWatch SEARCH cannot rank server-side and wildcarding all ~90 names across four WebACLs returns ~200 series. Add names here as needed.",
       "datasource": {
         "type": "cloudwatch",
-        "uid": "2A7dsDK4k"
+        "uid": "__CLOUDWATCH_DS_UID__"
       },
       "gridPos": {
         "h": 10,
@@ -1422,7 +1422,7 @@
           "refId": "A",
           "datasource": {
             "type": "cloudwatch",
-            "uid": "2A7dsDK4k"
+            "uid": "__CLOUDWATCH_DS_UID__"
           },
           "id": "",
           "expression": "SUM(SEARCH('{AWS/WAFV2,LabelName,LabelNamespace,WebACL} MetricName=\"AllowedRequests\" LabelNamespace=\"awswaf:managed:aws:bot-control:bot:name\" LabelName=\"python_requests\"', 'Sum', 3600))",
@@ -1445,7 +1445,7 @@
           "refId": "B",
           "datasource": {
             "type": "cloudwatch",
-            "uid": "2A7dsDK4k"
+            "uid": "__CLOUDWATCH_DS_UID__"
           },
           "id": "",
           "expression": "SUM(SEARCH('{AWS/WAFV2,LabelName,LabelNamespace,WebACL} MetricName=\"AllowedRequests\" LabelNamespace=\"awswaf:managed:aws:bot-control:bot:name\" LabelName=\"go_http\"', 'Sum', 3600))",
@@ -1468,7 +1468,7 @@
           "refId": "C",
           "datasource": {
             "type": "cloudwatch",
-            "uid": "2A7dsDK4k"
+            "uid": "__CLOUDWATCH_DS_UID__"
           },
           "id": "",
           "expression": "SUM(SEARCH('{AWS/WAFV2,LabelName,LabelNamespace,WebACL} MetricName=\"AllowedRequests\" LabelNamespace=\"awswaf:managed:aws:bot-control:bot:name\" LabelName=\"curl\"', 'Sum', 3600))",
@@ -1491,7 +1491,7 @@
           "refId": "D",
           "datasource": {
             "type": "cloudwatch",
-            "uid": "2A7dsDK4k"
+            "uid": "__CLOUDWATCH_DS_UID__"
           },
           "id": "",
           "expression": "SUM(SEARCH('{AWS/WAFV2,LabelName,LabelNamespace,WebACL} MetricName=\"AllowedRequests\" LabelNamespace=\"awswaf:managed:aws:bot-control:bot:name\" LabelName=\"okhttp\"', 'Sum', 3600))",
@@ -1514,7 +1514,7 @@
           "refId": "E",
           "datasource": {
             "type": "cloudwatch",
-            "uid": "2A7dsDK4k"
+            "uid": "__CLOUDWATCH_DS_UID__"
           },
           "id": "",
           "expression": "SUM(SEARCH('{AWS/WAFV2,LabelName,LabelNamespace,WebACL} MetricName=\"AllowedRequests\" LabelNamespace=\"awswaf:managed:aws:bot-control:bot:name\" LabelName=\"java\"', 'Sum', 3600))",
@@ -1537,7 +1537,7 @@
           "refId": "F",
           "datasource": {
             "type": "cloudwatch",
-            "uid": "2A7dsDK4k"
+            "uid": "__CLOUDWATCH_DS_UID__"
           },
           "id": "",
           "expression": "SUM(SEARCH('{AWS/WAFV2,LabelName,LabelNamespace,WebACL} MetricName=\"AllowedRequests\" LabelNamespace=\"awswaf:managed:aws:bot-control:bot:name\" LabelName=\"node_fetch\"', 'Sum', 3600))",
@@ -1560,7 +1560,7 @@
           "refId": "G",
           "datasource": {
             "type": "cloudwatch",
-            "uid": "2A7dsDK4k"
+            "uid": "__CLOUDWATCH_DS_UID__"
           },
           "id": "",
           "expression": "SUM(SEARCH('{AWS/WAFV2,LabelName,LabelNamespace,WebACL} MetricName=\"AllowedRequests\" LabelNamespace=\"awswaf:managed:aws:bot-control:bot:name\" LabelName=\"googlebot\"', 'Sum', 3600))",
@@ -1583,7 +1583,7 @@
           "refId": "H",
           "datasource": {
             "type": "cloudwatch",
-            "uid": "2A7dsDK4k"
+            "uid": "__CLOUDWATCH_DS_UID__"
           },
           "id": "",
           "expression": "SUM(SEARCH('{AWS/WAFV2,LabelName,LabelNamespace,WebACL} MetricName=\"AllowedRequests\" LabelNamespace=\"awswaf:managed:aws:bot-control:bot:name\" LabelName=\"bingbot\"', 'Sum', 3600))",
@@ -1606,7 +1606,7 @@
           "refId": "I",
           "datasource": {
             "type": "cloudwatch",
-            "uid": "2A7dsDK4k"
+            "uid": "__CLOUDWATCH_DS_UID__"
           },
           "id": "",
           "expression": "SUM(SEARCH('{AWS/WAFV2,LabelName,LabelNamespace,WebACL} MetricName=\"AllowedRequests\" LabelNamespace=\"awswaf:managed:aws:bot-control:bot:name\" LabelName=\"gptbot\"', 'Sum', 3600))",
@@ -1629,7 +1629,7 @@
           "refId": "J",
           "datasource": {
             "type": "cloudwatch",
-            "uid": "2A7dsDK4k"
+            "uid": "__CLOUDWATCH_DS_UID__"
           },
           "id": "",
           "expression": "SUM(SEARCH('{AWS/WAFV2,LabelName,LabelNamespace,WebACL} MetricName=\"AllowedRequests\" LabelNamespace=\"awswaf:managed:aws:bot-control:bot:name\" LabelName=\"ccbot\"', 'Sum', 3600))",
@@ -1652,7 +1652,7 @@
           "refId": "K",
           "datasource": {
             "type": "cloudwatch",
-            "uid": "2A7dsDK4k"
+            "uid": "__CLOUDWATCH_DS_UID__"
           },
           "id": "",
           "expression": "SUM(SEARCH('{AWS/WAFV2,LabelName,LabelNamespace,WebACL} MetricName=\"AllowedRequests\" LabelNamespace=\"awswaf:managed:aws:bot-control:bot:name\" LabelName=\"bytespider\"', 'Sum', 3600))",
@@ -1675,7 +1675,7 @@
           "refId": "L",
           "datasource": {
             "type": "cloudwatch",
-            "uid": "2A7dsDK4k"
+            "uid": "__CLOUDWATCH_DS_UID__"
           },
           "id": "",
           "expression": "SUM(SEARCH('{AWS/WAFV2,LabelName,LabelNamespace,WebACL} MetricName=\"AllowedRequests\" LabelNamespace=\"awswaf:managed:aws:bot-control:bot:name\" LabelName=\"semrushbot\"', 'Sum', 3600))",
@@ -1698,7 +1698,7 @@
           "refId": "M",
           "datasource": {
             "type": "cloudwatch",
-            "uid": "2A7dsDK4k"
+            "uid": "__CLOUDWATCH_DS_UID__"
           },
           "id": "",
           "expression": "SUM(SEARCH('{AWS/WAFV2,LabelName,LabelNamespace,WebACL} MetricName=\"AllowedRequests\" LabelNamespace=\"awswaf:managed:aws:bot-control:bot:name\" LabelName=\"ahrefsbot\"', 'Sum', 3600))",
@@ -1721,7 +1721,7 @@
           "refId": "N",
           "datasource": {
             "type": "cloudwatch",
-            "uid": "2A7dsDK4k"
+            "uid": "__CLOUDWATCH_DS_UID__"
           },
           "id": "",
           "expression": "SUM(SEARCH('{AWS/WAFV2,LabelName,LabelNamespace,WebACL} MetricName=\"AllowedRequests\" LabelNamespace=\"awswaf:managed:aws:bot-control:bot:name\" LabelName=\"dataforseobot\"', 'Sum', 3600))",
@@ -1744,7 +1744,7 @@
           "refId": "O",
           "datasource": {
             "type": "cloudwatch",
-            "uid": "2A7dsDK4k"
+            "uid": "__CLOUDWATCH_DS_UID__"
           },
           "id": "",
           "expression": "SUM(SEARCH('{AWS/WAFV2,LabelName,LabelNamespace,WebACL} MetricName=\"AllowedRequests\" LabelNamespace=\"awswaf:managed:aws:bot-control:bot:name\" LabelName=\"amazonbot\"', 'Sum', 3600))",
@@ -1767,7 +1767,7 @@
           "refId": "P",
           "datasource": {
             "type": "cloudwatch",
-            "uid": "2A7dsDK4k"
+            "uid": "__CLOUDWATCH_DS_UID__"
           },
           "id": "",
           "expression": "SUM(SEARCH('{AWS/WAFV2,LabelName,LabelNamespace,WebACL} MetricName=\"AllowedRequests\" LabelNamespace=\"awswaf:managed:aws:bot-control:bot:name\" LabelName=\"applebot\"', 'Sum', 3600))",
@@ -1817,7 +1817,7 @@
       "description": "How Bot Control decided: non-browser user agent or header, automated browser, known data-centre IP.",
       "datasource": {
         "type": "cloudwatch",
-        "uid": "2A7dsDK4k"
+        "uid": "__CLOUDWATCH_DS_UID__"
       },
       "gridPos": {
         "h": 10,
@@ -1830,7 +1830,7 @@
           "refId": "A",
           "datasource": {
             "type": "cloudwatch",
-            "uid": "2A7dsDK4k"
+            "uid": "__CLOUDWATCH_DS_UID__"
           },
           "id": "",
           "expression": "SUM(SEARCH('{AWS/WAFV2,LabelName,LabelNamespace,WebACL} MetricName=\"AllowedRequests\" LabelNamespace=\"awswaf:managed:aws:bot-control:signal\" LabelName=\"non_browser_user_agent\"', 'Sum', 3600))",
@@ -1853,7 +1853,7 @@
           "refId": "B",
           "datasource": {
             "type": "cloudwatch",
-            "uid": "2A7dsDK4k"
+            "uid": "__CLOUDWATCH_DS_UID__"
           },
           "id": "",
           "expression": "SUM(SEARCH('{AWS/WAFV2,LabelName,LabelNamespace,WebACL} MetricName=\"AllowedRequests\" LabelNamespace=\"awswaf:managed:aws:bot-control:signal\" LabelName=\"automated_browser\"', 'Sum', 3600))",
@@ -1876,7 +1876,7 @@
           "refId": "C",
           "datasource": {
             "type": "cloudwatch",
-            "uid": "2A7dsDK4k"
+            "uid": "__CLOUDWATCH_DS_UID__"
           },
           "id": "",
           "expression": "SUM(SEARCH('{AWS/WAFV2,LabelName,LabelNamespace,WebACL} MetricName=\"AllowedRequests\" LabelNamespace=\"awswaf:managed:aws:bot-control:signal\" LabelName=\"known_bot_data_center\"', 'Sum', 3600))",
@@ -1899,7 +1899,7 @@
           "refId": "D",
           "datasource": {
             "type": "cloudwatch",
-            "uid": "2A7dsDK4k"
+            "uid": "__CLOUDWATCH_DS_UID__"
           },
           "id": "",
           "expression": "SUM(SEARCH('{AWS/WAFV2,LabelName,LabelNamespace,WebACL} MetricName=\"AllowedRequests\" LabelNamespace=\"awswaf:managed:aws:bot-control:signal\" LabelName=\"non_browser_header\"', 'Sum', 3600))",
@@ -1963,7 +1963,7 @@
       "description": "Our own headless-signature rule, predating Bot Control. If this climbs while Bot Control stays flat, Bot Control may be missing something.",
       "datasource": {
         "type": "cloudwatch",
-        "uid": "2A7dsDK4k"
+        "uid": "__CLOUDWATCH_DS_UID__"
       },
       "gridPos": {
         "h": 10,
@@ -1976,7 +1976,7 @@
           "refId": "A",
           "datasource": {
             "type": "cloudwatch",
-            "uid": "2A7dsDK4k"
+            "uid": "__CLOUDWATCH_DS_UID__"
           },
           "id": "",
           "expression": "",
@@ -2002,7 +2002,7 @@
           "refId": "B",
           "datasource": {
             "type": "cloudwatch",
-            "uid": "2A7dsDK4k"
+            "uid": "__CLOUDWATCH_DS_UID__"
           },
           "id": "",
           "expression": "",
@@ -2028,7 +2028,7 @@
           "refId": "C",
           "datasource": {
             "type": "cloudwatch",
-            "uid": "2A7dsDK4k"
+            "uid": "__CLOUDWATCH_DS_UID__"
           },
           "id": "",
           "expression": "",
@@ -2054,7 +2054,7 @@
           "refId": "D",
           "datasource": {
             "type": "cloudwatch",
-            "uid": "2A7dsDK4k"
+            "uid": "__CLOUDWATCH_DS_UID__"
           },
           "id": "",
           "expression": "",
