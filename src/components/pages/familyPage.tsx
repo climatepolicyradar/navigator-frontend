@@ -184,34 +184,38 @@ export const FamilyPage = ({ collections, countries, debug, errors, family, fami
         />
         {features["new-data-model"] && features.debug && <DataInDebug usesDataIn={debug.usesDataIn} />}
         <PageHeader title={family.title} metadata={pageHeaderMetadata} />
-        <Tabs
-          onValueChange={changeTab}
-          value={activeTab}
-          className=""
-          panelClassName="pt-8"
-          tabs={[
-            { id: "about", label: "About", panel: <BlocksLayout blockDefinitions={blockDefinitions} blocksToRender={blocksToRender} /> },
-            {
-              id: "search",
-              label: (
-                <>
-                  <Search size={20} />
-                  Search in documents
-                </>
-              ),
-              panel: (
-                <FiveColumns>
-                  <main className="col-start-1 -col-end-1 cols-4:col-start-3 cols-4:col-end-9">YO</main>
-                </FiveColumns>
-              ),
-            },
-          ]}
-          tabsContainer={(tabsList) => (
-            <FiveColumns>
-              <div className="col-start-1 -col-end-1 cols-4:col-start-3">{tabsList}</div>
-            </FiveColumns>
-          )}
-        />
+        {features["new-search"] ? (
+          <Tabs
+            onValueChange={changeTab}
+            value={activeTab}
+            className=""
+            panelClassName="pt-8"
+            tabs={[
+              { id: "about", label: "About", panel: <BlocksLayout blockDefinitions={blockDefinitions} blocksToRender={blocksToRender} /> },
+              {
+                id: "search",
+                label: (
+                  <>
+                    <Search size={20} />
+                    Search in documents
+                  </>
+                ),
+                panel: (
+                  <FiveColumns>
+                    <main className="col-start-1 -col-end-1 cols-4:col-start-3 cols-4:col-end-9">YO</main>
+                  </FiveColumns>
+                ),
+              },
+            ]}
+            tabsContainer={(tabsList) => (
+              <FiveColumns>
+                <div className="col-start-1 -col-end-1 cols-4:col-start-3">{tabsList}</div>
+              </FiveColumns>
+            )}
+          />
+        ) : (
+          <BlocksLayout blockDefinitions={blockDefinitions} blocksToRender={blocksToRender} />
+        )}
         <Head>
           <script
             type="application/ld+json"
