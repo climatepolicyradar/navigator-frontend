@@ -46,13 +46,13 @@ export const FiltersAndSort = ({ labels }: IProps) => {
 
   return (
     <FiltersContext value={{ checkedLabelPaths, clearFilters, labelValues, toggleFilter }}>
-      <div className="col-start-1 -col-end-1 cols-5:col-start-2 cols-5:-col-end-2 flex flex-wrap gap-1">
+      <div className="col-start-1 -col-end-1 cols-5:col-start-2 cols-5:-col-end-2 flex flex-wrap items-center gap-1">
         {filterGroups.map((group) => {
           const SearchFilters = group.container === "drawer" ? SearchFiltersDrawer : SearchFiltersPopover;
 
           return (
             <Fragment key={group.title}>
-              {group.afterPartition && <div className="w-px h-full mx-3 bg-border-normal" />}
+              {group.afterPartition && <div className="w-px h-2/3 mx-3 bg-border-normal" />}
               <SearchFilters filterGroup={group} />
             </Fragment>
           );

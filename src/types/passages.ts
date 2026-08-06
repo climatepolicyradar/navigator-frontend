@@ -37,6 +37,10 @@ export interface ISearchPassagesResponse {
   results: ISearchPassage[];
 }
 
+export const SEARCH_PASSAGES_SORT_KEYS = ["relevance desc", "idx asc"] as const;
+
+export type TSearchPassagesSortKey = (typeof SEARCH_PASSAGES_SORT_KEYS)[number];
+
 export interface ISearchPassagesParams {
   query: string;
   documents: string[];
@@ -46,4 +50,5 @@ export interface ISearchPassagesParams {
   // this and comparing the running result count against `total_size`.
   pageToken?: number;
   signal?: AbortSignal;
+  sort?: TSearchPassagesSortKey;
 }

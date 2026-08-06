@@ -1,6 +1,6 @@
 import { useInfiniteQuery } from "@tanstack/react-query";
 import { Search } from "lucide-react";
-import { parseAsString, useQueryState } from "nuqs";
+import { parseAsString, parseAsStringLiteral, useQueryState } from "nuqs";
 import { memo, useCallback, useContext, useMemo, useState } from "react";
 
 import { fetchSearchPassages } from "@/api/passages";
@@ -11,14 +11,20 @@ import { Input } from "@/components/atoms/input/Input";
 import { EmptyDocument } from "@/components/documents/EmptyDocument";
 import { EmptyPassages } from "@/components/molecules/emptyPassages/EmptyPassages";
 import { PassageBlock, TPassage as TPassageBlock } from "@/components/molecules/passageBlock/PassageBlock";
+import { Sort, TSortOption } from "@/components/molecules/sort/Sort";
 import { FullWidth } from "@/components/panels/FullWidth";
 import { RESULTS_PER_PAGE } from "@/constants/paging";
 import { QUERY_PARAMS } from "@/constants/queryParams";
 import { TopicsContext } from "@/context/TopicsContext";
-import { ISearchPassage, TFamilyDocumentPublic, TSearchResponse } from "@/types";
+import { ISearchPassage, SEARCH_PASSAGES_SORT_KEYS, TFamilyDocumentPublic, TSearchPassagesSortKey, TSearchResponse } from "@/types";
 import { getTopDocumentConcepts } from "@/utils/topics/getTopDocumentTopics";
 
 const TOP_CONCEPTS_LIMIT = 10;
+
+const SORT_OPTIONS: TSortOption<TSearchPassagesSortKey>[] = [
+  { id: "relevance desc", label: "Relevance" },
+  { id: "idx asc", label: "Page Number" },
+];
 
 type TProps = {
   document: TFamilyDocumentPublic;
@@ -71,6 +77,7 @@ DocumentPreview.displayName = "DocumentPreview";
 export const DocumentPassageViewer = ({ document, vespaDocumentData }: TProps) => {
   const { topics } = useContext(TopicsContext);
   const [query, setQuery] = useQueryState(QUERY_PARAMS.query_string, parseAsString.withDefault(""));
+  const [sort, setSort] = useQueryState("sort", parseAsStringLiteral(SEARCH_PASSAGES_SORT_KEYS).withDefault("relevance desc"));
   const [searchTerm, setSearchTerm] = useState(query);
   const [pageNumber, setPageNumber] = useState<number | null>(null);
 
@@ -86,9 +93,9 @@ export const DocumentPassageViewer = ({ document, vespaDocumentData }: TProps) =
   }
 
   const { data, isError, isFetching, isPending, fetchNextPage, hasNextPage, isFetchingNextPage } = useInfiniteQuery({
-    queryKey: ["document-passages", document.import_id, query],
+    queryKey: ["document-passages", document.import_id, query, sort],
     queryFn: ({ pageParam, signal }) =>
-      fetchSearchPassages({ query, documents: [document.import_id], pageSize: RESULTS_PER_PAGE, pageToken: pageParam, signal }),
+      fetchSearchPassages({ query, documents: [document.import_id], pageSize: RESULTS_PER_PAGE, sort, pageToken: pageParam, signal }),
     initialPageParam: 1,
     // The API leaves `next_page` and `total_pages` unpopulated, so there is no cursor to
     // follow. Paging is driven by the running result count against the reported total.
@@ -177,9 +184,19 @@ export const DocumentPassageViewer = ({ document, vespaDocumentData }: TProps) =
             value={searchTerm}
           />
         </form>
-        <p className="text-sm text-text-secondary text-right" aria-live="polite">
-          {isLoading ? "Searching…" : `${totalMatches} matching ${totalMatches === 1 ? "passage" : "passages"}`}
-        </p>
+        <div className="flex justify-end items-center gap-4">
+          <p className="text-sm text-text-secondary text-right" aria-live="polite">
+            {isLoading ? "Searching…" : `${totalMatches} matching ${totalMatches === 1 ? "passage" : "passages"}`}
+          </p>
+          <Sort
+            defaultId="relevance desc"
+            options={SORT_OPTIONS}
+            value={sort}
+            onValueChange={(next) => {
+              setSort(next);
+            }}
+          />
+        </div>
       </FullWidth>
 
       <div className="flex flex-col border-t border-border-light lg:flex-row lg:h-[80vh]">
