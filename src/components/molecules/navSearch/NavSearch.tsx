@@ -7,30 +7,13 @@ import { Input } from "@/components/atoms/input/Input";
 import { QUERY_PARAMS } from "@/constants/queryParams";
 import { SYSTEM_GEO_CODES } from "@/constants/systemGeos";
 import useConfig from "@/hooks/useConfig";
+import { addSubStringHighlights } from "@/utils/addSubStringHighlights";
 import { CleanRouterQuery } from "@/utils/cleanRouterQuery";
 
 import { NavSearchDropdown } from "./NavSearchDropdown";
 import { NavSearchSuggestion } from "./NavSearchSuggestion";
 
 const pagesWithContextualSearch: string[] = ["/document/[id]", "/documents/[id]", "/geographies/[id]"];
-
-// Replaces the substring match with bold via JSX.
-const withBoldMatch = (text: string, match: string) => {
-  if (!text.toLowerCase().includes(match.toLowerCase())) return text;
-
-  const matchIndex = text.toLowerCase().indexOf(match.toLowerCase());
-  const beforeMatch = text.slice(0, matchIndex);
-  const matchText = text.slice(matchIndex, matchIndex + match.length);
-  const afterMatch = text.slice(matchIndex + match.length);
-
-  return (
-    <>
-      {beforeMatch.length > 0 && beforeMatch}
-      <span className="font-semibold">{matchText}</span>
-      {afterMatch.length > 0 && afterMatch}
-    </>
-  );
-};
 
 export const NavSearch = () => {
   const ref = useRef(null);
@@ -182,7 +165,7 @@ export const NavSearch = () => {
                       }
                       onClick={handleSuggestionClick}
                     >
-                      {withBoldMatch(geography.display_value, searchText)}
+                      {addSubStringHighlights(geography.display_value, searchText, "font-semibold")}
                     </NavSearchSuggestion>
                   ))}
                 </div>
