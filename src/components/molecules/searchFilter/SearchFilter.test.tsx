@@ -25,7 +25,7 @@ const renderWithFiltersContext = (
   render(
     <FiltersContext.Provider value={{ checkedLabelPaths, clearFilters: vi.fn(), labelValues: {}, toggleFilter }}>
       <ul>
-        <SearchFilter ancestorPath={ancestorPath} label={label} />
+        <SearchFilter ancestorPath={ancestorPath} label={label} level={3} />
       </ul>
     </FiltersContext.Provider>
   );

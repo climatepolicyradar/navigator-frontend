@@ -10,13 +10,16 @@ import { TFilterPathLabel, TNestedSearchLabel } from "@/types";
 interface IProps {
   ancestorPath: TFilterPathLabel[];
   labels: TNestedSearchLabel[];
+  level: number;
 }
 
-export const SearchFilterGroups = ({ ancestorPath, labels }: IProps) => {
+export const SearchFilterGroups = ({ ancestorPath, labels, level }: IProps) => {
   const groups = sortBy(Object.entries(groupBy(labels, "type")), "0");
 
+  const defaultValue = level === 2 ? groups.map(([type]) => type) : undefined;
+
   return (
-    <Accordion.Root multiple className="flex flex-col gap-5">
+    <Accordion.Root multiple defaultValue={defaultValue} className="flex flex-col gap-5">
       {groups.map(([type, typeLabels]) => (
         <Accordion.Item key={type} value={type} className="group">
           <Accordion.Header>
@@ -26,7 +29,7 @@ export const SearchFilterGroups = ({ ancestorPath, labels }: IProps) => {
             </Accordion.Trigger>
           </Accordion.Header>
           <Accordion.Panel className="mt-3">
-            <SearchFilterLevel ancestorPath={ancestorPath} labels={typeLabels} />
+            <SearchFilterLevel ancestorPath={ancestorPath} labels={typeLabels} level={level + 1} />
           </Accordion.Panel>
         </Accordion.Item>
       ))}
