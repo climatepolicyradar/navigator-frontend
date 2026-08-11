@@ -23,7 +23,7 @@ describe("SearchFilterLookup", () => {
 
     await renderAndSearch(labels, "electric vehicles");
 
-    expect(screen.getByText("electric vehicles")).toBeInTheDocument();
+    expect(screen.getByText("Electric vehicles")).toBeInTheDocument();
   });
 
   it("does not show a direct child that does not match the search term", async () => {
@@ -46,7 +46,7 @@ describe("SearchFilterLookup", () => {
 
     await renderAndSearch(labels, "electric vehicles");
 
-    expect(screen.getByText("electric vehicles")).toBeInTheDocument();
+    expect(screen.getByText("Electric vehicles")).toBeInTheDocument();
   });
 
   it("shows a child whose deeper descendant matches the search term", async () => {
