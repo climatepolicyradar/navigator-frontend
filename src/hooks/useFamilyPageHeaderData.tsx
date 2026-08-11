@@ -1,20 +1,11 @@
-import orderBy from "lodash/orderBy";
+import partition from "lodash/partition";
 import { useMemo } from "react";
 
 import { TBreadcrumbLink } from "@/components/breadcrumbs/Breadcrumbs";
-import { IProps as GeographyLinkProps } from "@/components/molecules/geographyLink/GeographyLink";
-import { getCountryName, getCountrySlug } from "@/helpers/getCountryFields";
-import { getSubdivisionName } from "@/helpers/getSubdivision";
 import { useText } from "@/hooks/useText";
-import { IMetadata, TFamilyPublic, TGeography, TGeographySubdivision } from "@/types";
+import { IMetadata, TFamilyPublic } from "@/types";
 import { getFamilyHeader } from "@/utils/family-header/getFamilyHeader";
 import { isSystemGeo } from "@/utils/isSystemGeo";
-
-interface IProps {
-  countries: TGeography[];
-  family: TFamilyPublic;
-  subdivisions: TGeographySubdivision[];
-}
 
 type FamilyPageHeaderData = {
   pageHeaderMetadata: IMetadata[];
@@ -22,59 +13,41 @@ type FamilyPageHeaderData = {
   breadcrumbParentGeography: TBreadcrumbLink | null;
 };
 
-export const useFamilyPageHeaderData = ({ countries, family, subdivisions }: IProps): FamilyPageHeaderData => {
+export const useFamilyPageHeaderData = (family: TFamilyPublic): FamilyPageHeaderData => {
   const { getCategoryTextLookup } = useText();
   const getCategoryText = getCategoryTextLookup(family.attribution.category);
 
   return useMemo(() => {
+    const { geographies } = family;
     const codeIsCountry = (code: string) => !code.includes("-");
-
-    // TODO use the new geography endpoint + GeographyV2
-    const geographiesDisplayData: GeographyLinkProps[] = orderBy(
-      family.geographies
-        .map((code) => {
-          const isSubdivision = !codeIsCountry(code);
-          const name = isSubdivision ? getSubdivisionName(code, subdivisions) : getCountryName(code, countries);
-          const slug = isSubdivision ? code.toLowerCase() : getCountrySlug(code, countries);
-          return name && slug ? { code, name, slug: isSystemGeo(name) ? undefined : slug } : null;
-        })
-        .filter((data) => data),
-      [(data) => data.code.includes("-"), "name"],
-      ["asc", "asc"]
-    );
 
     /* Geographies breadcrumbs */
 
     let breadcrumbGeography: TBreadcrumbLink = null;
     let breadcrumbParentGeography: TBreadcrumbLink = null;
 
-    if (geographiesDisplayData.length > 0) {
-      if (geographiesDisplayData.some((geo) => !codeIsCountry(geo.code))) {
+    if (geographies.length > 0) {
+      const [countries, subdivisions] = partition(geographies, (geo) => codeIsCountry(geo.code));
+
+      if (subdivisions.length > 0) {
         // Includes a subdivision
-        const subdivision = geographiesDisplayData.find((geo) => !codeIsCountry(geo.code));
+        const subdivision = subdivisions[0];
         breadcrumbGeography = { label: subdivision.name, href: `/geographies/${subdivision.slug}` };
 
-        // Get the subdivision's parent country
-        const subdivisionData = subdivisions.find((sub) => sub.code === subdivision.code);
-        if (subdivisionData) {
-          const parentCountryCode = subdivisionData.country_alpha_3;
-          const countryName = getCountryName(parentCountryCode, countries);
-          const countrySlug = getCountrySlug(parentCountryCode, countries);
-          if (countryName && countrySlug && !isSystemGeo(countryName)) {
-            breadcrumbParentGeography = { label: countryName, href: `/geographies/${countrySlug}` };
-          }
-        }
+        // Currently our families only have one country when a subdivision is present
+        const country = countries[0];
+        if (country) breadcrumbParentGeography = { label: country.name, href: `/geographies/${country.slug}` };
       } else {
         // Countries only
-        const country = geographiesDisplayData[0];
+        const country = countries[0];
         if (!isSystemGeo(country.name)) breadcrumbGeography = { label: country.name, href: `/geographies/${country.slug}` };
       }
     }
 
     return {
-      pageHeaderMetadata: getFamilyHeader({ countries, family, subdivisions, getCategoryText }),
+      pageHeaderMetadata: getFamilyHeader({ family, getCategoryText }),
       breadcrumbGeography,
       breadcrumbParentGeography,
     };
-  }, [countries, family, subdivisions, getCategoryText]);
+  }, [family, getCategoryText]);
 };

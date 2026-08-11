@@ -1,6 +1,6 @@
 import { renderHook } from "@testing-library/react";
 
-import { TFamilyPublic, TGeography, TGeographySubdivision } from "@/types";
+import { TFamilyPublic } from "@/types";
 
 import { useFamilyPageHeaderData } from "./useFamilyPageHeaderData";
 
@@ -9,7 +9,7 @@ const baseFamily: TFamilyPublic = {
   title: "Test Family",
   summary: "Summary",
   slug: "test-family",
-  geographies: ["USA", "US-OR"],
+  geographies: [],
   published_date: "2020-01-01T00:00:00Z",
   last_updated_date: null,
   attribution: {
@@ -26,15 +26,27 @@ const baseFamily: TFamilyPublic = {
   metadata: {},
 };
 
-const countries: TGeography[] = [{ id: 1, display_value: "United States", value: "USA", type: "country", parent_id: null, slug: "united-states" }];
-
 describe("useFamilyPageHeaderData", () => {
   it("resolves the parent country breadcrumb when the subdivision is present in the subdivisions list", () => {
-    const subdivisions: TGeographySubdivision[] = [{ code: "US-OR", name: "Oregon", type: "state", country_alpha_2: "US", country_alpha_3: "USA" }];
+    const family = {
+      ...baseFamily,
+      geographies: [
+        {
+          code: "USA",
+          name: "United States",
+          slug: "united-states-of-america",
+        },
+        {
+          code: "USA-OR",
+          name: "Oregon",
+          slug: "us-or",
+        },
+      ],
+    };
 
-    const { result } = renderHook(() => useFamilyPageHeaderData({ countries, family: baseFamily, subdivisions }));
+    const { result } = renderHook(() => useFamilyPageHeaderData(family));
 
-    expect(result.current.breadcrumbParentGeography).toEqual({ label: "United States", href: "/geographies/united-states" });
+    expect(result.current.breadcrumbParentGeography).toEqual({ label: "United States", href: "/geographies/united-states-of-america" });
   });
 
   it("does not throw and omits the parent breadcrumb when the subdivision's code cannot be matched by exact string equality", () => {
@@ -42,11 +54,25 @@ describe("useFamilyPageHeaderData", () => {
     // stays in geographiesDisplayData), but the strict `sub.code === subdivision.code` lookup below does
     // not - reproducing the same "found the name, but the exact record lookup misses" shape as when an
     // upstream `/geographies/subdivisions/{country}` fetch fails and the subdivision record is absent.
-    const subdivisions: TGeographySubdivision[] = [{ code: "us-or", name: "Oregon", type: "state", country_alpha_2: "US", country_alpha_3: "USA" }];
+    const family = {
+      ...baseFamily,
+      geographies: [
+        {
+          code: "USA",
+          name: "United States",
+          slug: "united-states-of-america",
+        },
+        {
+          code: "usa-or",
+          name: "Oregon",
+          slug: "us-or",
+        },
+      ],
+    };
 
-    expect(() => renderHook(() => useFamilyPageHeaderData({ countries, family: baseFamily, subdivisions }))).not.toThrow();
+    expect(() => renderHook(() => useFamilyPageHeaderData(family))).not.toThrow();
 
-    const { result } = renderHook(() => useFamilyPageHeaderData({ countries, family: baseFamily, subdivisions }));
+    const { result } = renderHook(() => useFamilyPageHeaderData(baseFamily));
     expect(result.current.breadcrumbParentGeography).toBeNull();
   });
 });

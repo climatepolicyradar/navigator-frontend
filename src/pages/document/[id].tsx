@@ -1,5 +1,6 @@
 import { GetServerSideProps, InferGetServerSidePropsType } from "next";
 
+import { getFamilyData } from "@/bff/methods/getFamilyData";
 import { FamilyPage as FamilyPageUI } from "@/components/pages/familyPage";
 import { ROBOTS_BLOCKED_SLUGS, X_ROBOTS_TAG_NOINDEX_VALUE } from "@/constants/robots";
 import { withEnvConfig } from "@/context/EnvConfig";
@@ -7,8 +8,6 @@ import { TTheme } from "@/types";
 import { getFeatureFlags } from "@/utils/featureFlags";
 import { getFeatures } from "@/utils/features";
 import { readConfigFile } from "@/utils/readConfigFile";
-
-import { getFamilyData } from "../../bff/methods/getFamilyData";
 
 /*
   # DEV NOTES
@@ -36,7 +35,7 @@ export const getServerSideProps = (async (context) => {
   const featureFlags = getFeatureFlags(context.req.cookies);
   const features = getFeatures(themeConfig, featureFlags);
 
-  const { data: familyData, errors } = await getFamilyData(slug, features);
+  const { data: familyData, errors } = await getFamilyData(slug);
   errors.forEach((err) => console.error(err));
   if (familyData === null) return { notFound: true };
   if (!features.debug) delete familyData.debug;

@@ -1,8 +1,6 @@
 import { describe, expect, it } from "vitest";
 
-import { DEFAULT_FEATURES } from "@/constants/features";
 import {
-  collectionByIdHandler,
   collectionSlugHandler,
   dataInChildFamilyHandler,
   dataInCollectionHandler,
@@ -15,9 +13,9 @@ import { getCollectionData } from "./getCollectionData";
 
 describe("getCollectionData", () => {
   it("returns collection data on the happy path", async () => {
-    server.use(collectionSlugHandler(), collectionByIdHandler());
+    server.use(collectionSlugHandler(), dataInCollectionHandler());
 
-    const result = await getCollectionData(testCollectionSlug, DEFAULT_FEATURES);
+    const result = await getCollectionData(testCollectionSlug);
 
     expect(result.data).not.toBeNull();
   });
@@ -25,7 +23,7 @@ describe("getCollectionData", () => {
   it("returns null data when the slug lookup responds with a non-200 status", async () => {
     server.use(collectionSlugHandler({ status: 404 }));
 
-    const result = await getCollectionData(testCollectionSlug, DEFAULT_FEATURES);
+    const result = await getCollectionData(testCollectionSlug);
 
     expect(result.data).toBeNull();
     expect(result.errors[0].message).toBe("Failed to query collection slug");
@@ -44,24 +42,24 @@ describe("getCollectionData", () => {
       })
     );
 
-    const result = await getCollectionData(testCollectionSlug, DEFAULT_FEATURES);
+    const result = await getCollectionData(testCollectionSlug);
 
     expect(result.data).toBeNull();
     expect(result.errors[0].message).toBe("Failed to query collection slug");
   });
 
-  it("does not throw when the data-in fetch fails and new-data-model is enabled", async () => {
-    server.use(collectionSlugHandler(), collectionByIdHandler(), dataInCollectionHandler({ status: 500 }));
+  it("returns null data when the collection data-in fetch fails", async () => {
+    server.use(collectionSlugHandler(), dataInCollectionHandler({ status: 500 }));
 
-    const result = await getCollectionData(testCollectionSlug, { ...DEFAULT_FEATURES, "new-data-model": true });
+    const result = await getCollectionData(testCollectionSlug);
 
-    expect(result.data).not.toBeNull();
+    expect(result.data).toBeNull();
+    expect(result.errors[0].message).toBe("Failed to fetch collection data");
   });
 
-  it("fetches and validates each child family's data-in document when new-data-model is enabled", async () => {
+  it("fetches and validates each child family's data-in document", async () => {
     server.use(
       collectionSlugHandler(),
-      collectionByIdHandler(),
       dataInCollectionHandler({
         body: {
           id: "collection-1",
@@ -78,23 +76,22 @@ describe("getCollectionData", () => {
       dataInChildFamilyHandler()
     );
 
-    const result = await getCollectionData(testCollectionSlug, { ...DEFAULT_FEATURES, "new-data-model": true });
+    const result = await getCollectionData(testCollectionSlug);
 
     expect(result.errors).toEqual([]);
     expect(result.data.collection.families).toHaveLength(1);
     expect(result.data.collection.families[0].import_id).toBe(testChildFamilyImportId);
   });
 
-  it("logs an error but does not throw when a child family's data-in fetch fails", async () => {
+  it("returns null data when a child family's data-in fetch fails", async () => {
     server.use(
       collectionSlugHandler(),
-      collectionByIdHandler(),
       dataInCollectionHandler({
         body: {
           id: "collection-1",
           title: "Test Collection",
           description: null,
-          attributes: {},
+          attributes: { deprecated_slug: "test-collection-slug" },
           labels: [],
           items: [],
           documents: [
@@ -105,8 +102,9 @@ describe("getCollectionData", () => {
       dataInChildFamilyHandler({ status: 500 })
     );
 
-    const result = await getCollectionData(testCollectionSlug, { ...DEFAULT_FEATURES, "new-data-model": true });
+    const result = await getCollectionData(testCollectionSlug);
 
-    expect(result.data).not.toBeNull();
+    expect(result.data).toBeNull();
+    expect(result.errors[0].message).toBe("Failed to fetch families data");
   });
 });
