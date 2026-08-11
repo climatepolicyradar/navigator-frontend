@@ -5,8 +5,7 @@ import { useCallback, useEffect, useState, type SetStateAction } from "react";
 import { normaliseSearchDocumentsSortKey, SearchDocument } from "@/api/search";
 import { createGroup, isFilterGroupEmpty, AdvancedFilters } from "@/components/_experiment/advancedFilters/AdvancedFilters";
 import { DocumentDrawer } from "@/components/_experiment/documentDrawer/DocumentDrawer";
-import { SearchContainer } from "@/components/_experiment/searchResults/SearchResults";
-import { SelectPerPage } from "@/components/_experiment/selectPerPage/SelectPerPage";
+import { SEARCH_RESULTS_PAGE_SIZE, SearchContainer } from "@/components/_experiment/searchResults/SearchResults";
 import { FiveColumns } from "@/components/atoms/columns/FiveColumns";
 import Layout from "@/components/layouts/Main";
 import { Pagination } from "@/components/molecules/pagination/Pagination";
@@ -46,7 +45,6 @@ const ShadowSearch = ({ theme, themeConfig, features }: TProps) => {
   const [filters, setFiltersInUrl] = useQueryState("filters", parseAsJson<TSearchQueryGroup>(FilterGroupSchema).withDefault(createGroup()));
   // pagination state
   const [currentPage, setCurrentPage] = useQueryState("page_token", parseAsString.withDefault("1"));
-  const [pageSize, setPageSize] = useQueryState("page_size", parseAsString.withDefault("10"));
   const [sortParam] = useQueryState("sort", parseAsString.withDefault("relevance"));
   const sortKey = normaliseSearchDocumentsSortKey(sortParam);
   const [totalNoOfResults, setTotalNoOfResults] = useState<number | null>(null);
@@ -100,7 +98,6 @@ const ShadowSearch = ({ theme, themeConfig, features }: TProps) => {
               query={query}
               filters={filters}
               page_token={currentPage}
-              page_size={pageSize}
               sort={sortKey}
               onTotalResultsChange={setTotalNoOfResults}
               onResultClicked={(document, event) => {
@@ -122,23 +119,14 @@ const ShadowSearch = ({ theme, themeConfig, features }: TProps) => {
           {/* PAGINATION */}
           {totalNoOfResults !== null && totalNoOfResults > 0 && (query || !isFilterGroupEmpty(filters)) && (
             <div className={columnLayoutCss}>
-              <div className="flex flex-wrap justify-between items-center gap-4">
-                <Pagination
-                  currentPage={parseInt(currentPage)}
-                  totalPages={totalNoOfResults !== null ? Math.ceil(totalNoOfResults / parseInt(pageSize)) : 0}
-                  onPageChange={(page) => {
-                    window.scrollTo(0, 0);
-                    setCurrentPage(page.toString());
-                  }}
-                />
-                <SelectPerPage
-                  value={pageSize}
-                  onChange={(size) => {
-                    setPageSize(size);
-                    setCurrentPage("1");
-                  }}
-                />
-              </div>
+              <Pagination
+                currentPage={parseInt(currentPage)}
+                totalPages={totalNoOfResults !== null ? Math.ceil(totalNoOfResults / SEARCH_RESULTS_PAGE_SIZE) : 0}
+                onPageChange={(page) => {
+                  window.scrollTo(0, 0);
+                  setCurrentPage(page.toString());
+                }}
+              />
             </div>
           )}
         </FiveColumns>

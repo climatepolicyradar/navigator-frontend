@@ -9,6 +9,8 @@ import { sanitiseSearchQueryGroup } from "@/utils/filters/advancedFilters";
 import { isFilterGroupEmpty } from "../advancedFilters/AdvancedFilters";
 import { EmptySearch } from "../emptySearch/EmptySearch";
 
+export const SEARCH_RESULTS_PAGE_SIZE = 10;
+
 // Principal = Family in old model
 const isPrincipal = (result: SearchDocument): boolean => {
   return result.labels.some((label) => label.type === "status" && label.value.value === "Principal");
@@ -57,7 +59,6 @@ export function SearchContainer({
   query,
   filters,
   page_token,
-  page_size,
   sort,
   onTotalResultsChange,
   onResultClicked,
@@ -66,7 +67,6 @@ export function SearchContainer({
   query?: string;
   filters?: TSearchQueryGroup;
   page_token?: string;
-  page_size?: string;
   sort?: SearchDocumentsSortKey;
   onTotalResultsChange?: (total: number | null) => void;
   onResultClicked?: (document: SearchDocument, event: React.MouseEvent<HTMLButtonElement>) => void;
@@ -83,12 +83,12 @@ export function SearchContainer({
 
     return fetchSearchDocuments({
       query,
-      page_size,
+      page_size: SEARCH_RESULTS_PAGE_SIZE.toString(),
       page_token,
       filters: nonEmptyFilters,
       sort,
     });
-  }, [query, nonEmptyFilters, page_token, page_size, sort]);
+  }, [query, nonEmptyFilters, page_token, sort]);
 
   return (
     <>
