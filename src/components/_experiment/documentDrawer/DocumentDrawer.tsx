@@ -144,6 +144,7 @@ export function DocumentDrawer({ document, open, onOpenChange }: TDocumentDrawer
               panel: <div>Search to go here.</div>,
             },
           ]}
+          tabsContainer={(tabsList) => <div className="pl-8">{tabsList}</div>}
         />
       )}
       {!isLoading && !familyData && <p>Sorry, this document has failed to load.</p>}

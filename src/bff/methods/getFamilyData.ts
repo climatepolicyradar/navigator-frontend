@@ -16,8 +16,14 @@ export const getFamilyData = async (slug: string, importId?: string): Promise<TF
   if (slug) {
     try {
       // As the families API cannot be queried by slugs, we need to get the slugResponse
-      const { data: slugData } = await apiClient.get<TApiItemResponse<TApiSlugResponse>>(`/families/slugs/${slug}`);
-      familyImportId = slugData.data.family_import_id;
+      // http-common's get() returns error.response rather than throwing for Axios errors,
+      // so we must check the status explicitly rather than relying on catch for non-2xx responses.
+      const slugApiResponse = await apiClient.get<TApiItemResponse<TApiSlugResponse>>(`/families/slugs/${slug}`);
+      if (slugApiResponse?.status !== 200 || !slugApiResponse.data?.data?.family_import_id) {
+        errors.push(new Error("Failed to query family slug"));
+        return { data: null, errors };
+      }
+      familyImportId = slugApiResponse.data.data.family_import_id;
     } catch (error) {
       errors.push(new Error("Failed to query family slug", error));
       return { data: null, errors };

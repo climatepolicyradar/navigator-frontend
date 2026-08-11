@@ -89,6 +89,37 @@ jobs:
           aws s3 sync ./next-static "s3://${BUCKET_NAME}/_next/static/" \
             --cache-control "public,max-age=31536000,immutable"
 
+      # Runs after assets are uploaded, not on merge to main: pulumi up can
+      # change the CloudFront behaviour that routes /_next/static/* to this
+      # theme's S3 bucket, which is only safe once that bucket holds the
+      # assets for the build about to go live (uploaded above). It also runs
+      # before the ECS deploy below, so that deploy lands on infra (target
+      # groups, alarms, etc.) pulumi has already finished updating.
+      - name: Configure AWS credentials (infra)
+        uses: aws-actions/configure-aws-credentials@v6.2.3
+        with:
+          role-to-assume: arn:aws:iam::${{ secrets.AWS_ACCOUNT_ID }}:role/navigator-infra-github-actions
+          role-session-name: GitHub_to_AWS_via_FederatedOIDC_production
+          aws-region: eu-west-1
+
+      - uses: astral-sh/setup-uv@v7
+
+      - name: Install pulumi
+        uses: pulumi/actions@v7
+        env:
+          PULUMI_ACCESS_TOKEN: ${{ secrets.PULUMI_ACCESS_TOKEN }}
+
+      - name: Install infra dependencies
+        working-directory: infra
+        run: uv sync
+
+      - name: Pulumi up (production ${{ inputs.theme }})
+        working-directory: infra
+        run: pulumi up --yes --skip-preview --stack climatepolicyradar/frontend/${{ inputs.theme }}-production
+        env:
+          PULUMI_ACCESS_TOKEN: ${{ secrets.PULUMI_ACCESS_TOKEN }}
+          DEPLOY_TO_PROD_STACK_ALLOWED: true
+
       # @see: https://github.com/marketplace/actions/amazon-ecs-deploy-express-service-action-for-github-actions#complete-example-with-all-options
       - name: Deploy to ECS (production)
         id: deploy-production

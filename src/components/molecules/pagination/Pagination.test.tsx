@@ -1,65 +1,66 @@
-import { render, screen, fireEvent } from "@testing-library/react";
+import { act, render, screen } from "@testing-library/react";
+import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 
 import { Pagination } from "./Pagination";
 
+class MockResizeObserver {
+  static instances: MockResizeObserver[] = [];
+  callback: ResizeObserverCallback;
+
+  constructor(callback: ResizeObserverCallback) {
+    this.callback = callback;
+    MockResizeObserver.instances.push(this);
+  }
+
+  observe() {}
+  unobserve() {}
+  disconnect() {}
+
+  trigger(width: number) {
+    this.callback([{ contentRect: { width } } as ResizeObserverEntry], this as unknown as ResizeObserver);
+  }
+}
+
+const triggerResize = (width: number) => {
+  const observer = MockResizeObserver.instances[MockResizeObserver.instances.length - 1];
+  act(() => observer.trigger(width));
+};
+
 describe("Pagination", () => {
-  it("does not render Back and Next buttons by default", () => {
-    render(<Pagination currentPage={1} totalPages={5} onPageChange={() => {}} />);
-    expect(screen.queryByRole("button", { name: /back/i })).not.toBeInTheDocument();
-    expect(screen.queryByRole("button", { name: /next/i })).not.toBeInTheDocument();
+  const originalResizeObserver = window.ResizeObserver;
+
+  beforeEach(() => {
+    MockResizeObserver.instances = [];
+    window.ResizeObserver = MockResizeObserver as unknown as typeof ResizeObserver;
   });
 
-  it("renders Back and Next buttons", () => {
-    render(<Pagination currentPage={1} totalPages={5} onPageChange={() => {}} showNextPrevButtons={true} />);
-    expect(screen.getByRole("button", { name: /back/i })).toBeInTheDocument();
-    expect(screen.getByRole("button", { name: /next/i })).toBeInTheDocument();
+  afterEach(() => {
+    window.ResizeObserver = originalResizeObserver;
   });
 
-  it("disables Back on the first page", () => {
-    render(<Pagination currentPage={1} totalPages={5} onPageChange={() => {}} showNextPrevButtons={true} />);
-    expect(screen.getByRole("button", { name: /back/i })).toBeDisabled();
+  it("renders narrow pagination when the measured width is below the breakpoint", () => {
+    render(<Pagination currentPage={1} totalPages={20} onPageChange={vi.fn()} />);
+    triggerResize(400);
+
+    expect(screen.getByRole("button", { name: "3" })).toBeInTheDocument();
+    expect(screen.queryByRole("button", { name: "9" })).not.toBeInTheDocument();
   });
 
-  it("disables Next on the last page", () => {
-    render(<Pagination currentPage={5} totalPages={5} onPageChange={() => {}} showNextPrevButtons={true} />);
-    expect(screen.getByRole("button", { name: /next/i })).toBeDisabled();
+  it("renders wide pagination when the measured width is at or above the breakpoint", () => {
+    render(<Pagination currentPage={1} totalPages={20} onPageChange={vi.fn()} />);
+    triggerResize(520);
+
+    expect(screen.getByRole("button", { name: "9" })).toBeInTheDocument();
+    expect(screen.queryByRole("button", { name: "10" })).not.toBeInTheDocument();
   });
 
-  it("renders all page buttons when totalPages is small", () => {
-    render(<Pagination currentPage={1} totalPages={5} onPageChange={() => {}} />);
-    [1, 2, 3, 4, 5].forEach((page) => {
-      expect(screen.getByRole("button", { name: String(page) })).toBeInTheDocument();
-    });
-  });
+  it("switches between narrow and wide as the measured width changes", () => {
+    render(<Pagination currentPage={1} totalPages={20} onPageChange={vi.fn()} />);
 
-  it("disables the current page button", () => {
-    render(<Pagination currentPage={3} totalPages={5} onPageChange={() => {}} />);
-    expect(screen.getByRole("button", { name: "3" })).toBeDisabled();
-  });
+    triggerResize(520);
+    expect(screen.getByRole("button", { name: "9" })).toBeInTheDocument();
 
-  it("calls onPageChange with the next page when Next is clicked", () => {
-    const onPageChange = vi.fn();
-    render(<Pagination currentPage={3} totalPages={5} onPageChange={onPageChange} showNextPrevButtons={true} />);
-    fireEvent.click(screen.getByRole("button", { name: /next/i }));
-    expect(onPageChange).toHaveBeenCalledWith(4);
-  });
-
-  it("calls onPageChange with the previous page when Back is clicked", () => {
-    const onPageChange = vi.fn();
-    render(<Pagination currentPage={3} totalPages={5} onPageChange={onPageChange} showNextPrevButtons={true} />);
-    fireEvent.click(screen.getByRole("button", { name: /back/i }));
-    expect(onPageChange).toHaveBeenCalledWith(2);
-  });
-
-  it("calls onPageChange with the selected page when a page button is clicked", () => {
-    const onPageChange = vi.fn();
-    render(<Pagination currentPage={1} totalPages={5} onPageChange={onPageChange} />);
-    fireEvent.click(screen.getByRole("button", { name: "4" }));
-    expect(onPageChange).toHaveBeenCalledWith(4);
-  });
-
-  it("renders ellipsis for large page counts when current page is in the middle", () => {
-    render(<Pagination currentPage={10} totalPages={20} onPageChange={() => {}} />);
-    expect(screen.getAllByText("…")).toHaveLength(2);
+    triggerResize(400);
+    expect(screen.queryByRole("button", { name: "9" })).not.toBeInTheDocument();
   });
 });

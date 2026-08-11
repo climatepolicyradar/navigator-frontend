@@ -1,72 +1,60 @@
-import { LucideArrowLeft, LucideArrowRight } from "lucide-react";
+import { useEffect, useRef, useState } from "react";
 
-import { getPaginationPages } from "@/utils/_experiment/getPaginationPages";
+import { getPaginationPages } from "@/utils/pagination/getPaginationPages";
 import { joinTailwindClasses } from "@/utils/tailwind";
+
+const WIDE_BREAKPOINT_PX = 520;
 
 type TProps = {
   currentPage: number;
   totalPages: number;
   onPageChange: (page: number) => void;
-  showNextPrevButtons?: boolean;
 };
 
-const sharedPaginationButtonClasses = "h-8 min-w-8 px-1 rounded-lg transition hover:bg-bg-flat";
-const prevNextButtonClasses =
-  "px-2.5 flex items-center disabled:cursor-not-allowed! disabled:text-[#a3a3a3] disabled:hover:bg-transparent disabled:hover:text-[#a3a3a3]";
+export const Pagination = ({ currentPage, totalPages, onPageChange }: TProps) => {
+  const ref = useRef(null);
+  const [isWide, setIsWide] = useState(false);
 
-export function Pagination({ currentPage, totalPages, onPageChange, showNextPrevButtons }: TProps) {
+  useEffect(() => {
+    const ulElement = ref.current;
+    if (!ulElement) return;
+
+    const observer = new ResizeObserver(([entry]) => {
+      setIsWide(entry.contentRect.width >= WIDE_BREAKPOINT_PX);
+    });
+    observer.observe(ulElement);
+
+    return () => observer.disconnect();
+  }, []);
+
+  const pages = getPaginationPages(totalPages, currentPage, isWide);
+
   const handlePageChange = (page: number) => {
     if (page >= 1 && page <= totalPages) {
       onPageChange(page);
     }
   };
 
-  const pageItems = getPaginationPages(currentPage, totalPages);
-
   return (
-    <div className="flex flex-wrap gap-6 font-medium text-inky-blue text-sm">
-      {showNextPrevButtons && (
-        <button
-          onClick={() => handlePageChange(currentPage - 1)}
-          disabled={currentPage === 1}
-          className={joinTailwindClasses(sharedPaginationButtonClasses, prevNextButtonClasses)}
-        >
-          <LucideArrowLeft width={16} height={16} className="mr-2" />
-          Back
-        </button>
+    <ul ref={ref} className="flex flex-1 min-w-0 items-start gap-2 text-base text-text-brand font-medium leading-5">
+      {pages.map(({ type, page }, pageIndex) =>
+        type === "ellipsis" ? (
+          <li key={pageIndex} className="w-10 h-10 flex items-center justify-center select-none">
+            <span className="text-text-tertiary">&hellip;</span>
+          </li>
+        ) : (
+          <li key={pageIndex}>
+            <button
+              type="button"
+              className={joinTailwindClasses("w-10 h-10 rounded-lg", page === currentPage ? "bg-bg-brand text-white" : "hover:bg-bg-flat")}
+              onClick={() => handlePageChange(page)}
+              disabled={page === currentPage}
+            >
+              {page}
+            </button>
+          </li>
+        )
       )}
-      <ul className="flex items-center gap-2">
-        {pageItems.map((item) =>
-          item.type === "ellipsis" ? (
-            <li key={item.key} className="min-h-8 min-w-8 flex items-center justify-center">
-              &hellip;
-            </li>
-          ) : (
-            <li key={item.page}>
-              <button
-                className={joinTailwindClasses(
-                  sharedPaginationButtonClasses,
-                  item.page === currentPage ? "bg-inky-blue text-white hover:bg-inky-blue" : ""
-                )}
-                onClick={() => handlePageChange(item.page)}
-                disabled={item.page === currentPage}
-              >
-                {item.page}
-              </button>
-            </li>
-          )
-        )}
-      </ul>
-      {showNextPrevButtons && (
-        <button
-          onClick={() => handlePageChange(currentPage + 1)}
-          disabled={currentPage === totalPages}
-          className={joinTailwindClasses(sharedPaginationButtonClasses, prevNextButtonClasses)}
-        >
-          Next
-          <LucideArrowRight width={16} height={16} className="ml-2" />
-        </button>
-      )}
-    </div>
+    </ul>
   );
-}
+};
