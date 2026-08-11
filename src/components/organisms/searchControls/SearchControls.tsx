@@ -1,4 +1,3 @@
-import uniqBy from "lodash/uniqBy";
 import { LucideSearch } from "lucide-react";
 import { parseAsJson, parseAsString, useQueryState } from "nuqs";
 import { Fragment, SubmitEventHandler, useMemo, useState } from "react";
@@ -11,10 +10,11 @@ import { Sort } from "@/components/molecules/sort/Sort";
 import { FiltersContext, TToggleFilterCallback } from "@/context/FiltersContext";
 import { FilterGroupSchema } from "@/schemas";
 import { TFiltersGroupConfig, TSearchLabel, TSearchQueryGroup, TSortOptionConfig } from "@/types";
-import { getLabelPathSignature, sortFilterPathLabels } from "@/utils/filters/filterPaths";
+import { sortFilterPathLabels } from "@/utils/filters/filterPaths";
 import { getSearchLabelValues } from "@/utils/filters/getSearchLabelValues";
 import { groupSearchLabels } from "@/utils/filters/groupSearchLabels";
 import { nestSearchLabels } from "@/utils/filters/nestSearchLabels";
+import { updateCheckedLabelPaths } from "@/utils/filters/updateCheckedLabelPaths";
 import { DEFAULT_SEARCH_QUERY_GROUP, filterPathsToQueryGroup } from "@/utils/search/filterPathsToQueryGroup";
 import { queryGroupToFilterPaths } from "@/utils/search/queryGroupToFilterPaths";
 
@@ -53,12 +53,7 @@ export const SearchControls = ({
   const filterGroupsWithLabels = useMemo(() => groupSearchLabels(nestSearchLabels(labels), filterGroups), [filterGroups, labels]);
 
   const toggleFilter: TToggleFilterCallback = (labelPath, checked) => {
-    const updatedCheckedLabelPaths = sortFilterPathLabels(
-      checked === true // indeterminate is treated as unchecked
-        ? uniqBy([...checkedLabelPaths, labelPath], getLabelPathSignature)
-        : checkedLabelPaths.filter((labels) => getLabelPathSignature(labels) !== getLabelPathSignature(labelPath))
-    );
-
+    const updatedCheckedLabelPaths = updateCheckedLabelPaths(checkedLabelPaths, labelPath, checked);
     setFilterParam(filterPathsToQueryGroup(updatedCheckedLabelPaths));
   };
 
