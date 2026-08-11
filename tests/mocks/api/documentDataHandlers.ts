@@ -1,47 +1,9 @@
 import { http, HttpResponse } from "msw";
 
-import { TApiDocumentPublic, TApiFamilyPublic } from "@/types";
+import { TDataInDocument } from "@/schemas";
 
 export const testDocumentSlug = "test-document-slug";
 export const testDocumentImportId = "document-1";
-
-const testFamily = {
-  category: "Executive",
-  collections: [],
-  concepts: [],
-  corpus_id: "CCLW.corpus.i00000001.n0000",
-  documents: [],
-  events: [],
-  geographies: ["FRA"],
-  import_id: "family-1",
-  last_updated_date: "2024-01-01",
-  metadata: {},
-  organisation: "CPR",
-  organisation_attribution_url: null,
-  published_date: "2024-01-01",
-  slug: "test-family-slug",
-  summary: "Test family summary",
-  title: "Test Family",
-} as TApiFamilyPublic;
-
-export const testDocument = {
-  cdn_object: "",
-  content_type: null,
-  document_role: null,
-  document_type: null,
-  family: testFamily,
-  import_id: testDocumentImportId,
-  language: null,
-  languages: [],
-  md5_sum: null,
-  slug: testDocumentSlug,
-  source_url: null,
-  title: "Test Document",
-  valid_metadata: {},
-  variant_name: null,
-  variant: null,
-  document_status: "published",
-} as TApiDocumentPublic;
 
 export const documentSlugHandler = (overrides: Partial<{ status: number; body: unknown }> = {}) =>
   http.get(`${process.env.CONCEPTS_API_URL}/families/slugs/${testDocumentSlug}`, () => {
@@ -57,14 +19,6 @@ export const documentSlugHandler = (overrides: Partial<{ status: number; body: u
         created: "2024-01-01",
       },
     });
-  });
-
-export const documentByIdHandler = (overrides: Partial<{ status: number; document: Partial<TApiDocumentPublic> }> = {}) =>
-  http.get(`${process.env.CONCEPTS_API_URL}/families/documents/${testDocumentImportId}`, () => {
-    if (overrides.status && overrides.status !== 200) {
-      return HttpResponse.json({ detail: "error" }, { status: overrides.status });
-    }
-    return HttpResponse.json({ data: { ...testDocument, ...overrides.document } });
   });
 
 export const vespaDocumentHandler = () =>
@@ -84,12 +38,27 @@ export const vespaDocumentHandler = () =>
     );
   });
 
+// A minimal but schema-complete TDataInDocument for a document: satisfies validateDocumentAttributes
+// (status, deprecated_slug), the mandatory "category" label, and the mandatory cdn/source items
+// required by transformDocument (MANDATORY_ITEM_TYPES applies whenever status isn't "awaiting_source_file").
+export const testDocumentDataIn: TDataInDocument = {
+  id: testDocumentImportId,
+  title: "Test Document",
+  description: null,
+  attributes: { status: "published", deprecated_slug: testDocumentSlug },
+  labels: [{ type: "category", value: { id: "category::policy", type: "concept", value: "Policy", labels: [] } }],
+  items: [
+    { type: "cdn", url: "https://cdn.example.com/test-document.pdf", content_type: "application/pdf" },
+    { type: "source", url: "https://example.com/test-document", content_type: null },
+  ],
+};
+
 export const dataInDocumentHandler = (overrides: Partial<{ status: number; body: unknown }> = {}) =>
   http.get(`${process.env.CONCEPTS_API_URL}/data-in/documents/${testDocumentImportId}`, () => {
     if (overrides.status && overrides.status !== 200) {
       return HttpResponse.json({ detail: "error" }, { status: overrides.status });
     }
     return HttpResponse.json({
-      data: overrides.body ?? { id: testDocumentImportId, title: "Test Document", description: null, attributes: {}, labels: [] },
+      data: overrides.body ?? testDocumentDataIn,
     });
   });
