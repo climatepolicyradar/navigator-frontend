@@ -46,7 +46,7 @@ export const Pagination = ({ currentPage, totalPages, onPageChange }: TProps) =>
           <li key={pageIndex}>
             <button
               type="button"
-              className={joinTailwindClasses("w-10 h-10 rounded-lg", page === currentPage && "bg-bg-brand text-white")}
+              className={joinTailwindClasses("w-10 h-10 rounded-lg", page === currentPage ? "bg-bg-brand text-white" : "hover:bg-bg-flat")}
               onClick={() => handlePageChange(page)}
               disabled={page === currentPage}
             >
