@@ -10,46 +10,40 @@ const meta = {
     layout: "centered",
   },
   argTypes: {
-    onValueChange: { control: false },
+    onChange: { control: false },
     value: { control: false },
   },
 } satisfies Meta<typeof Sort>;
-type TStory<SortId extends string> = StoryObj<typeof Sort<SortId>>;
+type TStory = StoryObj<typeof Sort>;
 
 export default meta;
 
-const useSortRender = <SortId extends string>({ options, value, ...props }: React.ComponentProps<typeof Sort<SortId>>) => {
-  const [selectedId, setSelectedId] = useState<SortId>(value);
-  const changeValue = (newValue: SortId) => setSelectedId(newValue);
+const useSortRender = ({ sortOptions, value, ...props }: React.ComponentProps<typeof Sort>) => {
+  const [selectedId, setSelectedId] = useState(value);
+  const changeValue = (newValue: string) => setSelectedId(newValue);
 
-  return <Sort {...props} options={options} onValueChange={changeValue} value={selectedId} />;
+  return <Sort {...props} sortOptions={sortOptions} onChange={changeValue} value={selectedId} />;
 };
 
-type TSearchSortId = "relevance" | "recent" | "oldest" | "title_asc" | "title_desc";
-
-export const SearchResults: TStory<TSearchSortId> = {
+export const SearchResults: TStory = {
   args: {
-    defaultId: "relevance",
-    options: [
-      { id: "relevance", label: "Relevance" },
-      { id: "recent", label: "Most recent" },
-      { id: "oldest", label: "Oldest" },
-      { id: "title_asc", label: "A-Z" },
-      { id: "title_desc", label: "Z-A" },
+    sortOptions: [
+      { paramValue: "relevance", label: "Relevance" },
+      { paramValue: "recent", label: "Most recent" },
+      { paramValue: "oldest", label: "Oldest" },
+      { paramValue: "title_asc", label: "A-Z" },
+      { paramValue: "title_desc", label: "Z-A" },
     ],
     value: "relevance",
   },
   render: useSortRender,
 };
 
-type TPassageSortId = "relevance desc" | "idx asc";
-
-export const DocumentPassages: TStory<TPassageSortId> = {
+export const DocumentPassages: TStory = {
   args: {
-    defaultId: "relevance desc",
-    options: [
-      { id: "relevance desc", label: "Relevance" },
-      { id: "idx asc", label: "Page Number" },
+    sortOptions: [
+      { paramValue: "relevance desc", label: "Relevance" },
+      { paramValue: "idx asc", label: "Page Number" },
     ],
     value: "relevance desc",
   },
@@ -57,7 +51,7 @@ export const DocumentPassages: TStory<TPassageSortId> = {
 };
 
 /* The option is named in the trigger as soon as the selection moves off the default. */
-export const NonDefaultSelection: TStory<TSearchSortId> = {
+export const NonDefaultSelection: TStory = {
   args: {
     ...SearchResults.args,
     value: "oldest",
@@ -65,7 +59,7 @@ export const NonDefaultSelection: TStory<TSearchSortId> = {
   render: useSortRender,
 };
 
-export const CustomLabel: TStory<TSearchSortId> = {
+export const CustomLabel: TStory = {
   args: {
     ...SearchResults.args,
     label: "Order by",
