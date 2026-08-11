@@ -1,8 +1,11 @@
+import { Search } from "lucide-react";
 import Head from "next/head";
 import { useRouter } from "next/router";
-import { useCallback } from "react";
+import { useCallback, useState } from "react";
 
+import { FiveColumns } from "@/components/atoms/columns/FiveColumns";
 import { Debug } from "@/components/atoms/debug/Debug";
+import { Tabs } from "@/components/atoms/tabs/Tabs";
 import { CollectionsBlock } from "@/components/blocks/collectionsBlock/CollectionsBlock";
 import { DocumentsBlock } from "@/components/blocks/documentsBlock/DocumentsBlock";
 import { MetadataBlock } from "@/components/blocks/metadataBlock/MetadataBlock";
@@ -64,8 +67,11 @@ export interface IProps {
 export const FamilyPage = ({ collections, countries, debug, errors, family, familyTopics, features, subdivisions, theme, themeConfig }: IProps) => {
   const configQuery = useConfig();
   const { data: { languages = {} } = {} } = configQuery;
+  const [activeTab, setActiveTab] = useState<string>("about");
   const { getCategoryTextLookup } = useText();
   const getCategoryText = getCategoryTextLookup(family.attribution.category);
+
+  const changeTab = (newValue: string) => setActiveTab(newValue);
 
   /* Search matches */
 
@@ -178,7 +184,38 @@ export const FamilyPage = ({ collections, countries, debug, errors, family, fami
         />
         {features["new-data-model"] && features.debug && <DataInDebug usesDataIn={debug.usesDataIn} />}
         <PageHeader title={family.title} metadata={pageHeaderMetadata} />
-        <BlocksLayout blockDefinitions={blockDefinitions} blocksToRender={blocksToRender} />
+        {features["new-search"] ? (
+          <Tabs
+            onValueChange={changeTab}
+            value={activeTab}
+            className=""
+            panelClassName="pt-8"
+            tabs={[
+              { id: "about", label: "About", panel: <BlocksLayout blockDefinitions={blockDefinitions} blocksToRender={blocksToRender} /> },
+              {
+                id: "search",
+                label: (
+                  <>
+                    <Search size={20} />
+                    Search in documents
+                  </>
+                ),
+                panel: (
+                  <FiveColumns>
+                    <main className="col-start-1 -col-end-1 cols-4:col-start-3 cols-4:col-end-9">YO</main>
+                  </FiveColumns>
+                ),
+              },
+            ]}
+            tabsContainer={(tabsList) => (
+              <FiveColumns>
+                <div className="col-start-1 -col-end-1 cols-4:col-start-3">{tabsList}</div>
+              </FiveColumns>
+            )}
+          />
+        ) : (
+          <BlocksLayout blockDefinitions={blockDefinitions} blocksToRender={blocksToRender} />
+        )}
         <Head>
           <script
             type="application/ld+json"

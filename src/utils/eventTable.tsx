@@ -142,8 +142,13 @@ const getFamilyDocuments = (family: TFamilyPublic): TEventRowData[] =>
 
 const linkClasses = "block text-[#0038a9] underline underline-offset-4 decoration-[#d1d5db] hover:decoration-[#6b7280]";
 
-const getDocumentLink = (document: TFamilyDocumentPublic, hasMatches: boolean, isMainDocument: boolean, isLitigation: boolean): React.ReactNode => {
-  const canPreview = hasMatches || (!!document.cdn_object && document.cdn_object.toLowerCase().endsWith(".pdf"));
+export const getDocumentLink = (
+  document: TFamilyDocumentPublic,
+  hasMatches: boolean,
+  isMainDocument: boolean,
+  isLitigation: boolean
+): React.ReactNode => {
+  const canPreview = !!document.slug && (hasMatches || (!!document.cdn_object && document.cdn_object.toLowerCase().endsWith(".pdf")));
   const canViewSource = !canPreview && !!document.source_url;
 
   if (canPreview)
@@ -259,7 +264,7 @@ export const getEventTableRows = ({
     /* Topics */
 
     let topicsDisplay: ReactNode = null;
-    if (document && familyTopics) {
+    if (document && document.slug && familyTopics) {
       const documentTopicsData = familyTopics.documents.find((doc) => doc.importId === document.import_id)?.conceptCounts ?? {};
 
       const sortedTopics = orderBy(Object.entries(documentTopicsData), ["1"], ["desc"]);

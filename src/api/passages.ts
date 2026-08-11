@@ -22,6 +22,7 @@ export const fetchSearchPassages = async ({
   pageSize,
   pageToken,
   signal,
+  sort,
 }: ISearchPassagesParams): Promise<ISearchPassagesResponse> => {
   const url = new URL(searchPassagesUrl());
 
@@ -29,6 +30,8 @@ export const fetchSearchPassages = async ({
   url.searchParams.set("filters", JSON.stringify(configurePassagesFilters(documents)));
   if (pageSize !== undefined) url.searchParams.set("page_size", String(pageSize));
   if (pageToken !== undefined) url.searchParams.set("page_token", String(pageToken));
+  const sortKey = sort ?? "relevance desc";
+  url.searchParams.set("order_by", sortKey);
 
   const res = await fetch(url, { signal });
   if (!res.ok) throw new Error(`Passage search API error: ${res.status}`);

@@ -15,12 +15,85 @@ permissions:
   contents: read
 
 jobs:
-  deploy-staging:
-    name: Deploy ${{ github.sha }} to staging ${{ matrix.theme }}
-    # relating to a, b, c in the `on` section
+  # Check if we have any infra changes, so pulumi up below only runs for
+  # stacks this push actually touched.
+  changes:
+    runs-on: ubuntu-latest
     if: |
       github.event.workflow_run.conclusion == 'success' ||
       github.event_name == 'workflow_dispatch'
+    outputs:
+      projects: ${{ steps.parse.outputs.projects }}
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          ref: ${{ github.event.workflow_run.head_sha || github.sha }}
+          fetch-depth: 2
+      - id: base-sha
+        run: echo "sha=$(git rev-parse HEAD~1)" >> "$GITHUB_OUTPUT"
+      - uses: dorny/paths-filter@v4
+        id: filter
+        with:
+          base: ${{ steps.base-sha.outputs.sha }}
+          filters: |
+            staging-frontend-cpr:
+              - 'infra/Pulumi.cpr-staging.yaml'
+              - 'infra/__main__.py'
+
+            staging-frontend-mcf:
+              - 'infra/Pulumi.mcf-staging.yaml'
+              - 'infra/__main__.py'
+
+            staging-frontend-cclw:
+              - 'infra/Pulumi.cclw-staging.yaml'
+              - 'infra/__main__.py'
+
+            staging-frontend-ccc:
+              - 'infra/Pulumi.ccc-staging.yaml'
+              - 'infra/__main__.py'
+
+            staging-shared-resources:
+              - 'infra/platform/**'
+
+      - id: parse
+        run: |
+          CHANGES='${{ steps.filter.outputs.changes }}'
+          CHANGES=${CHANGES:-[]}
+          echo "projects=$(echo "$CHANGES" | jq -c '.')" >> "$GITHUB_OUTPUT"
+
+  # infra/platform/** has no per-theme deploy step to run alongside, so it
+  # keeps its own pulumi up here rather than joining the matrix below.
+  pulumi-up-shared-resources:
+    needs: changes
+    if: contains(fromJSON(needs.changes.outputs.projects), 'staging-shared-resources')
+    runs-on: ubuntu-latest
+    permissions:
+      id-token: write
+      contents: read
+    environment: staging
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          ref: ${{ github.event.workflow_run.head_sha || github.sha }}
+      - uses: astral-sh/setup-uv@v7
+      - name: configure aws credentials
+        uses: aws-actions/configure-aws-credentials@v6.2.3
+        with:
+          role-to-assume: arn:aws:iam::${{ secrets.AWS_ACCOUNT_ID }}:role/navigator-infra-github-actions
+          role-session-name: GitHub_to_AWS_via_FederatedOIDC_staging
+          aws-region: eu-west-1
+      - name: Install dependencies
+        working-directory: infra/platform
+        run: uv sync
+      - name: Pulumi up
+        working-directory: infra/platform
+        run: pulumi up --yes --skip-preview --stack climatepolicyradar/frontend-platform/staging
+        env:
+          PULUMI_ACCESS_TOKEN: ${{ secrets.PULUMI_ACCESS_TOKEN }}
+
+  deploy-staging:
+    needs: changes
+    name: Deploy ${{ github.sha }} to staging ${{ matrix.theme }}
     strategy:
       matrix:
         theme: [cpr, cclw, mcf, ccc]
@@ -84,6 +157,51 @@ jobs:
           # the old HTML. The bucket lifecycle rule expires them instead.
           aws s3 sync ./next-static "s3://${BUCKET_NAME}/_next/static/" \
             --cache-control "public,max-age=31536000,immutable"
+
+      # Only runs when this theme's stack actually changed. Placed after the
+      # S3 upload and before the ECS deploy, same reasoning as production:
+      # pulumi up can change CloudFront's routing to this bucket, which is
+      # only safe once the bucket holds the assets going live (uploaded
+      # above), and the ECS deploy should land on infra pulumi already
+      # finished updating.
+      - name: Configure AWS credentials (infra)
+        if: contains(fromJSON(needs.changes.outputs.projects), format('staging-frontend-{0}', matrix.theme))
+        uses: aws-actions/configure-aws-credentials@v6.2.3
+        with:
+          role-to-assume: arn:aws:iam::${{ secrets.AWS_ACCOUNT_ID }}:role/navigator-infra-github-actions
+          role-session-name: GitHub_to_AWS_via_FederatedOIDC_staging
+          aws-region: eu-west-1
+
+      - uses: astral-sh/setup-uv@v7
+        if: contains(fromJSON(needs.changes.outputs.projects), format('staging-frontend-{0}', matrix.theme))
+
+      - name: Install pulumi
+        if: contains(fromJSON(needs.changes.outputs.projects), format('staging-frontend-{0}', matrix.theme))
+        uses: pulumi/actions@v7
+        env:
+          PULUMI_ACCESS_TOKEN: ${{ secrets.PULUMI_ACCESS_TOKEN }}
+
+      - name: Install infra dependencies
+        if: contains(fromJSON(needs.changes.outputs.projects), format('staging-frontend-{0}', matrix.theme))
+        working-directory: infra
+        run: uv sync
+
+      - name: Pulumi up (staging ${{ matrix.theme }})
+        if: contains(fromJSON(needs.changes.outputs.projects), format('staging-frontend-{0}', matrix.theme))
+        working-directory: infra
+        run: pulumi up --yes --skip-preview --stack climatepolicyradar/frontend/${{ matrix.theme }}-staging
+        env:
+          PULUMI_ACCESS_TOKEN: ${{ secrets.PULUMI_ACCESS_TOKEN }}
+
+      # pulumi up above may have re-configured credentials to the infra role;
+      # the ECS deploy needs the frontend deploy role instead.
+      - name: Configure AWS credentials
+        if: contains(fromJSON(needs.changes.outputs.projects), format('staging-frontend-{0}', matrix.theme))
+        uses: aws-actions/configure-aws-credentials@v6.2.3
+        with:
+          role-to-assume: arn:aws:iam::${{ secrets.AWS_ACCOUNT_ID }}:role/navigator-new-frontend-github-actions
+          role-session-name: GitHub_to_AWS_via_FederatedOIDC
+          aws-region: eu-west-1
 
       # @see: https://github.com/marketplace/actions/amazon-ecs-deploy-express-service-action-for-github-actions#complete-example-with-all-options
       - name: Deploy to ECS (staging ${{ matrix.theme }})

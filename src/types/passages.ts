@@ -46,4 +46,5 @@ export interface ISearchPassagesParams {
   // this and comparing the running result count against `total_size`.
   pageToken?: number;
   signal?: AbortSignal;
+  sort?: string;
 }

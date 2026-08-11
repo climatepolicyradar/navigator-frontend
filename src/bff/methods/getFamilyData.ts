@@ -34,8 +34,14 @@ export const getFamilyData = async (slug: string, features: TFeatures, importId?
   if (slug) {
     try {
       // As the families API cannot be queried by slugs, we need to get the slugResponse
-      const { data: slugData } = await apiClient.get<TApiItemResponse<TApiSlugResponse>>(`/families/slugs/${slug}`);
-      familyImportId = slugData.data.family_import_id;
+      // http-common's get() returns error.response rather than throwing for Axios errors,
+      // so we must check the status explicitly rather than relying on catch for non-2xx responses.
+      const slugApiResponse = await apiClient.get<TApiItemResponse<TApiSlugResponse>>(`/families/slugs/${slug}`);
+      if (slugApiResponse?.status !== 200 || !slugApiResponse.data?.data?.family_import_id) {
+        errors.push(new Error("Failed to query family slug"));
+        return { data: null, errors };
+      }
+      familyImportId = slugApiResponse.data.data.family_import_id;
     } catch (error) {
       errors.push(new Error("Failed to query family slug", error));
       return { data: null, errors };
@@ -93,9 +99,15 @@ export const getFamilyData = async (slug: string, features: TFeatures, importId?
   const countries = response_geo[1];
   const corpusTypes: TCorpusTypeDictionary = config.corpus_types;
 
+  // http-common's get() can resolve a 200 with a malformed body, so guard against
+  // family.geographies being missing before reading array methods off it.
+  if (!Array.isArray(family.geographies)) {
+    errors.push(new Error("Family data missing geographies array"));
+  }
+
   // This is because our family.geographies field isn't hydrated but rather a string[]
   const allSubdivisions = await Promise.all<TApiGeographySubdivision[]>(
-    family.geographies
+    (family.geographies ?? [])
       .filter((country) => country.length === 3 && !EXCLUDED_ISO_CODES.includes(country))
       .map(async (country) => {
         try {
@@ -120,8 +132,12 @@ export const getFamilyData = async (slug: string, features: TFeatures, importId?
   );
   const subdivisions = allSubdivisions.flat().filter((subdivision) => subdivision !== undefined);
 
+  if (!Array.isArray(family.collections)) {
+    errors.push(new Error("Family data missing collections array"));
+  }
+
   const allCollections = await Promise.all<TApiCollectionPublicWithFamilies[]>(
-    family.collections.map(async (collection) => {
+    (family.collections ?? []).map(async (collection) => {
       try {
         const { data: collectionResponse } = await apiClient.get(`/families/collections/${collection.import_id}`);
         return collectionResponse.data;
