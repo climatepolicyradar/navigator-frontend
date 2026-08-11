@@ -1,7 +1,6 @@
 """Component resource for GitHub Actions IAM role."""
 
 import json
-from typing import Optional
 
 import pulumi
 import pulumi_aws as aws
@@ -19,7 +18,7 @@ class GitHubActionsRole(pulumi.ComponentResource):
     def __init__(
         self,
         name: str,
-        opts: Optional[pulumi.ResourceOptions] = None,
+        opts: pulumi.ResourceOptions | None = None,
     ):
         super().__init__("pkg:index:GitHubActionsRole", name, None, opts)
         self.name = name

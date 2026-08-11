@@ -31,5 +31,6 @@ config:
   frontend:otel_resource_attributes: service.namespace=frontend,environment=production
   frontend:apprunner_frontend_vcpu_count: 4 vCPU
   frontend:apprunner_frontend_memory_gb: 8 GB
+  frontend:next_static_enabled: "true"
 environment:
   - frontend/cpr-production

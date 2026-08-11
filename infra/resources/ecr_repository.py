@@ -1,7 +1,6 @@
 """Component resource for ECR repository creation."""
 
 from dataclasses import dataclass
-from typing import Dict, Optional
 
 import pulumi
 import pulumi_aws as aws
@@ -28,8 +27,8 @@ class ECRRepository(pulumi.ComponentResource):
         self,
         name: str,
         config: ECRRepositoryConfig,
-        tags: Optional[Dict[str, str]] = None,
-        opts: Optional[pulumi.ResourceOptions] = None,
+        tags: dict[str, str] | None = None,
+        opts: pulumi.ResourceOptions | None = None,
     ):
         super().__init__("pkg:index:ECRRepository", name, None, opts)
         self._name = name
@@ -57,7 +56,7 @@ class ECRRepository(pulumi.ComponentResource):
         )
 
     def _create_ecr_repo(
-        self, config: ECRRepositoryConfig, opts: Optional[pulumi.ResourceOptions] = None
+        self, config: ECRRepositoryConfig, opts: pulumi.ResourceOptions | None = None
     ) -> aws.ecr.Repository:
         # Allow user options to override our defaults.
         resource_opts = pulumi.ResourceOptions.merge(

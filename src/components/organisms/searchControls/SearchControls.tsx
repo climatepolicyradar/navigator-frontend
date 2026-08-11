@@ -3,11 +3,11 @@ import { LucideSearch } from "lucide-react";
 import { parseAsJson, parseAsString, useQueryState } from "nuqs";
 import { Fragment, SubmitEventHandler, useMemo, useState } from "react";
 
-import { SearchSortSelect } from "@/components/_experiment/searchSort/SearchSortSelect";
 import { Input } from "@/components/atoms/input/Input";
 import { AppliedFilters } from "@/components/molecules/appliedFilters/AppliedFilters";
 import { SearchFiltersDrawer } from "@/components/molecules/searchFiltersDrawer/SearchFiltersDrawer";
 import { SearchFiltersPopover } from "@/components/molecules/searchFiltersPopover/SearchFiltersPopover";
+import { Sort } from "@/components/molecules/sort/Sort";
 import { FiltersContext, TToggleFilterCallback } from "@/context/FiltersContext";
 import { FilterGroupSchema } from "@/schemas";
 import { TFiltersGroupConfig, TSearchLabel, TSearchQueryGroup, TSortOptionConfig } from "@/types";
@@ -76,8 +76,6 @@ export const SearchControls = ({
     setQueryParam(searchInput);
   };
 
-  <div className="p-4 bg-bg-flat border border-border-normal rounded-lg" />;
-
   return (
     <FiltersContext value={{ checkedLabelPaths, clearFilters, labelValues, toggleFilter }}>
       <form onSubmit={onQuerySubmit} className="col-start-1 -col-end-1 cols-5:col-start-2 cols-5:-col-end-2">
@@ -108,7 +106,7 @@ export const SearchControls = ({
           })}
         </div>
         <div className="flex gap-1">
-          <SearchSortSelect sortOptions={sortOptions} onChange={onSort} value={sortParam} />
+          <Sort sortOptions={sortOptions} value={sortParam} onChange={onSort} />
         </div>
       </div>
       <AppliedFilters showClearAll />

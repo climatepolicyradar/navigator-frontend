@@ -1,5 +1,5 @@
 from dataclasses import dataclass
-from typing import Any, Dict, Optional
+from typing import Any
 
 import pulumi
 import pulumi_aws as aws
@@ -25,8 +25,8 @@ class EcsCluster(pulumi.ComponentResource):
         self,
         name: str,
         config: EcsClusterConfig,
-        tags: Optional[Dict[str, Any]] = None,
-        opts: Optional[pulumi.ResourceOptions] = None,
+        tags: dict[str, Any] | None = None,
+        opts: pulumi.ResourceOptions | None = None,
     ):
         super().__init__("pkg:index:EcsCluster", name, opts)
 
@@ -151,7 +151,7 @@ class EcsCluster(pulumi.ComponentResource):
         )
 
     def _get_opts(
-        self, opts: Optional[pulumi.ResourceOptions] = None
+        self, opts: pulumi.ResourceOptions | None = None
     ) -> pulumi.ResourceOptions:
         return pulumi.ResourceOptions.merge(
             pulumi.ResourceOptions(parent=self, protect=True),

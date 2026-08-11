@@ -314,22 +314,26 @@ jobs:
 
             staging-shared-resources:
               - 'infra/platform/**'
+            
+            # We have removed these for now as
+            # we need environment: production to get the AWS creds for that environment
+            # but that environment has GitHub protection rules, so we get stuck
+            # TODO: Iron out a strategy and implement it here
+            # production-frontend-cpr:
+            #   - 'infra/Pulumi.cpr-production.yaml'
+            #   - 'infra/__main__.py'
 
-            production-frontend-cpr:
-              - 'infra/Pulumi.cpr-production.yaml'
-              - 'infra/__main__.py'
+            # production-frontend-mcf:
+            #   - 'infra/Pulumi.mcf-production.yaml'
+            #   - 'infra/__main__.py'
 
-            production-frontend-mcf:
-              - 'infra/Pulumi.mcf-production.yaml'
-              - 'infra/__main__.py'
+            # production-frontend-cclw:
+            #   - 'infra/Pulumi.cclw-production.yaml'
+            #   - 'infra/__main__.py'
 
-            production-frontend-cclw:
-              - 'infra/Pulumi.cclw-production.yaml'
-              - 'infra/__main__.py'
-
-            production-frontend-ccc:
-              - 'infra/Pulumi.ccc-production.yaml'
-              - 'infra/__main__.py'
+            # production-frontend-ccc:
+            #   - 'infra/Pulumi.ccc-production.yaml'
+            #   - 'infra/__main__.py'
       - id: parse
         run: |
           CHANGES='${{ steps.filter.outputs.changes }}'
@@ -340,10 +344,13 @@ jobs:
     needs: changes
     if: needs.changes.outputs.pulumi_projects != '[]'
     runs-on: ubuntu-latest
+    permissions:
+      id-token: write
+      contents: read
     strategy:
       matrix:
         project: ${{ fromJSON(needs.changes.outputs.pulumi_projects) }}
-    environment: staging
+    environment: ${{ startsWith(matrix.project, 'production-') && 'production' || 'staging' }}
     env:
       DEPLOY_FROM_MAIN_BRANCH_ONLY: false
       AWS_REGION: eu-west-1

@@ -3,5 +3,5 @@ description: Manages OIDC identity provider, IAM deployment roles, ESC environme
 runtime:
   name: python
   options:
-    toolchain: pip
-    virtualenv: venv
+    toolchain: uv
+    virtualenv: .venv

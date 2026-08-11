@@ -1,6 +1,6 @@
 from dataclasses import dataclass
 from enum import Enum
-from typing import Any, Dict, List, Optional, cast
+from typing import Any, cast
 
 import pulumi
 import pulumi_aws as aws
@@ -23,10 +23,13 @@ class OriginConfig:
     domain_name: str
     origin_id: str
     origin_path: str = ""
-    custom_headers: Optional[Dict[str, str]] = None
+    custom_headers: dict[str, str] | None = None
     connection_timeout: int = 10
     read_timeout: int = 30
     keepalive_timeout: int = 5
+    # Set for S3 origins accessed via Origin Access Control; mutually
+    # exclusive with the custom_origin_config path used for HTTP origins.
+    origin_access_control_id: str | None = None
 
 
 class CloudFrontDistribution(pulumi.ComponentResource):
@@ -62,16 +65,16 @@ class CloudFrontDistribution(pulumi.ComponentResource):
         name: str,
         dist_type: DistributionType,
         description: str,
-        aliases: List[str],
-        origins: List[OriginConfig],
+        aliases: list[str],
+        origins: list[OriginConfig],
         cache_policy_id: str,
         acm_certificate: aws.acm.Certificate,
-        origin_request_policy_id: Optional[str] = None,
-        default_cache_behavior: Optional[List[Dict[str, Any]]] = None,
-        ordered_cache_behaviors: Optional[List[Dict[str, Any]]] = None,
-        tags: Optional[Dict[str, str]] = None,
-        web_acl_id: Optional[str] = None,
-        opts: Optional[pulumi.ResourceOptions] = None,
+        origin_request_policy_id: str | None = None,
+        default_cache_behavior: list[dict[str, Any]] | None = None,
+        ordered_cache_behaviors: list[dict[str, Any]] | None = None,
+        tags: dict[str, str] | None = None,
+        web_acl_id: str | None = None,
+        opts: pulumi.ResourceOptions | None = None,
     ):
 
         super().__init__("cpr:cloudfront:CloudFrontDistribution", name, None, opts)
@@ -114,10 +117,11 @@ class CloudFrontDistribution(pulumi.ComponentResource):
             }
         )
 
-    def _create_origins(self, origins: List[OriginConfig]) -> List[Dict[str, Any]]:
+    def _create_origins(self, origins: list[OriginConfig]) -> list[dict[str, Any]]:
         """Create the origins configuration for CloudFront."""
-        return [
-            {
+        result = []
+        for origin in origins:
+            entry: dict[str, Any] = {
                 "domain_name": origin.domain_name,
                 "origin_id": origin.origin_id,
                 "origin_path": origin.origin_path,
@@ -125,26 +129,31 @@ class CloudFrontDistribution(pulumi.ComponentResource):
                     {"header_name": name, "header_value": value}
                     for name, value in (origin.custom_headers or {}).items()
                 ],
-                "custom_origin_config": {
+                "connection_attempts": 3,
+                "connection_timeout": origin.connection_timeout,
+            }
+            # S3 origins are reached via OAC and must not carry a
+            # custom_origin_config; HTTP origins are the other way round.
+            if origin.origin_access_control_id:
+                entry["origin_access_control_id"] = origin.origin_access_control_id
+            else:
+                entry["custom_origin_config"] = {
                     "http_port": 80,
                     "https_port": 443,
                     "origin_protocol_policy": "https-only",
                     "origin_ssl_protocols": ["TLSv1.2"],
                     "origin_read_timeout": origin.read_timeout,
                     "origin_keepalive_timeout": origin.keepalive_timeout,
-                },
-                "connection_attempts": 3,
-                "connection_timeout": origin.connection_timeout,
-            }
-            for origin in origins
-        ]
+                }
+            result.append(entry)
+        return result
 
     def _create_default_cache_behaviour(
         self,
         target_origin_id: str,
         cache_policy_id: str,
-        origin_request_policy_id: Optional[str],
-    ) -> Dict[str, Any]:
+        origin_request_policy_id: str | None,
+    ) -> dict[str, Any]:
         """Create the default cache behaviour configuration."""
         behaviour = {
             "target_origin_id": target_origin_id,
@@ -163,14 +172,14 @@ class CloudFrontDistribution(pulumi.ComponentResource):
     def _build_distribution_config(
         self,
         dist_type: DistributionType,
-        aliases: List[str],
-        origins: List[OriginConfig],
+        aliases: list[str],
+        origins: list[OriginConfig],
         cache_policy_id: str,
         acm_certificate_arn: str,
-        origin_request_policy_id: Optional[str],
-        ordered_cache_behaviors: Optional[List[Dict[str, Any]]] = None,
-        web_acl_id: Optional[str] = None,
-    ) -> Dict[str, Any]:
+        origin_request_policy_id: str | None,
+        ordered_cache_behaviors: list[dict[str, Any]] | None = None,
+        web_acl_id: str | None = None,
+    ) -> dict[str, Any]:
         config = {
             "aliases": aliases,
             "enabled": True,
@@ -210,14 +219,14 @@ class CloudFrontDistribution(pulumi.ComponentResource):
         self,
         dist_type: DistributionType,
         description: str,
-        aliases: List[str],
-        origins: List[OriginConfig],
+        aliases: list[str],
+        origins: list[OriginConfig],
         cache_policy_id: str,
         acm_certificate: aws.acm.Certificate,
-        origin_request_policy_id: Optional[str],
-        ordered_cache_behaviors: Optional[List[Dict[str, Any]]] = None,
-        web_acl_id: Optional[str] = None,
-        opts: Optional[pulumi.ResourceOptions] = None,
+        origin_request_policy_id: str | None,
+        ordered_cache_behaviors: list[dict[str, Any]] | None = None,
+        web_acl_id: str | None = None,
+        opts: pulumi.ResourceOptions | None = None,
     ) -> aws.cloudfront.Distribution:
         # Allow user options to override our defaults.
         resource_opts = pulumi.ResourceOptions.merge(
