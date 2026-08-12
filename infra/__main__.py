@@ -112,12 +112,19 @@ if "staging" in stack or is_review_stack_or_template:
 if "production" in stack:
     env = "production"
 
+# Review stacks share their VPC, ECR repo, and ECR access role with
+# production rather than staging, so review pulls from prod config.
+# Keep this separate from `env` above -- that one still drives naming,
+# task counts, and WAF settings, which should stay staging-shaped for review.
+shared_resources_env = "production" if is_review_stack_or_template else env
 
 # ECR repository setup.
 # Review stacks use a shared ECR repo managed by frontend-platform to avoid
 # creating/destroying repos per PR and hitting RepositoryAlreadyExistsException.
 # Non-review stacks create their own dedicated ECR repo as before.
-aws_env_stack = pulumi.StackReference(f"climatepolicyradar/aws_env/{"production" if is_review_stack_or_template else env}")
+aws_env_stack = pulumi.StackReference(
+    f"climatepolicyradar/aws_env/{shared_resources_env}"
+)
 docker_tag = config.require("docker_tag")
 pulumi.info(f"Docker tag: {docker_tag}")
 
@@ -141,12 +148,12 @@ if not is_review_stack_or_template:
 
 # Review stack: use the shared ECR repo from frontend-platform.
 shared_resources_stack = pulumi.StackReference(
-    f"climatepolicyradar/frontend-platform/{env}"
+    f"climatepolicyradar/frontend-platform/{shared_resources_env}"
 )
 
 review_ecr_url = None
 frontend_image: docker_build.Image | None = None
-if is_review_stack and env == "staging":
+if is_review_stack and shared_resources_env == "production":
     review_ecr_url = shared_resources_stack.get_output("cpr_review_ecr_repository_url")
 
     # Build and push the Docker image as part of the Pulumi deployment so that
@@ -201,7 +208,7 @@ shared_access_role_arn = None
 if not is_review_template:
     # For review stacks, use the shared ECR access role created in frontend-platform
     # to avoid the 64-character IAM role name limit on ephemeral PR stacks.
-    if is_review_stack and env == "staging":
+    if is_review_stack and shared_resources_env == "production":
         shared_access_role_arn = shared_resources_stack.get_output(
             "apprunner_ecr_access_role_arn"
         )
