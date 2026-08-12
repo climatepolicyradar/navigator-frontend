@@ -173,10 +173,10 @@ aws_creds_yaml = deployment_role.arn.apply(
 )
 
 aws_creds_env = pulumiservice.Environment(
-    f"aws-creds-{stack}",
+    "aws-creds",
     organization=org_name,
     project=project_name,
-    name=f"aws-creds-{stack}",
+    name="aws-creds",
     yaml=aws_creds_yaml.apply(pulumi.StringAsset),
 )
 
@@ -231,9 +231,7 @@ for theme in ["cpr", "cclw", "mcf", "ccc"]:
             protect=True, additional_secret_outputs=["repository_url"]
         ),
     )
-    pulumi.export(
-        f"{theme}_review_ecr_repository_url", review_ecr_repo.repository_url
-    )
+    pulumi.export(f"{theme}_review_ecr_repository_url", review_ecr_repo.repository_url)
 
 # Review stack environments - imports aws-creds-production and provides
 # stack-specific config for each theme's review stack and its PR stacks.
