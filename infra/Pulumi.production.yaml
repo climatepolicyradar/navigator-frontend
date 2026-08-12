@@ -1,0 +1,4 @@
+config:
+  aws:region: eu-west-1
+  frontend:validation_account_id:
+    secure: AAABAEF+M5SlZwe5B06B2lSW2/3t+BA1cuxRr8ul2W1H21IHNan9DdHyCJw=
