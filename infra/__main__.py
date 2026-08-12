@@ -117,7 +117,7 @@ if "production" in stack:
 # Review stacks use a shared ECR repo managed by frontend-platform to avoid
 # creating/destroying repos per PR and hitting RepositoryAlreadyExistsException.
 # Non-review stacks create their own dedicated ECR repo as before.
-aws_env_stack = pulumi.StackReference(f"climatepolicyradar/aws_env/{env}")
+aws_env_stack = pulumi.StackReference(f"climatepolicyradar/aws_env/{"production" if is_review_stack_or_template else env}")
 docker_tag = config.require("docker_tag")
 pulumi.info(f"Docker tag: {docker_tag}")
 
