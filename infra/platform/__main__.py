@@ -25,6 +25,7 @@ project_name = "frontend"
 aws_account = aws.get_caller_identity()
 stack = pulumi.get_stack()
 is_staging = stack == "staging"
+is_production = stack == "production"
 
 # ---------------------------------------------------------------------------
 # OIDC Identity Provider (managed in aws_env, referenced here)
@@ -149,38 +150,11 @@ aws.iam.RolePolicyAttachment(
 pulumi.export("apprunner_ecr_access_role_arn", apprunner_ecr_access_role.arn)
 
 # ---------------------------------------------------------------------------
-# Staging-only resources
+# ESC Environment: AWS credentials (staging)
 # ---------------------------------------------------------------------------
+# Shared AWS credentials environment - provides dynamic OIDC credentials
+# for frontend staging deployments.
 if is_staging:
-    # ---------------------------------------------------------------------------
-    # Shared ECR Repositories for Review Stacks
-    # ---------------------------------------------------------------------------
-    # A single ECR repository shared by all ephemeral PR review stacks of that
-    # theme. Each PR pushes its image with a branch-specific tag (e.g. the PR
-    # number or branch name) so images don't collide. This avoids
-    # creating/destroying ECR repos per PR stack and prevents
-    # RepositoryAlreadyExistsException errors.
-    for theme in ["cpr", "cclw", "mcf", "ccc"]:
-        review_ecr_repo = aws.ecr.Repository(
-            f"review-navigator-frontend-{theme}",
-            name=f"review-navigator-frontend-{theme}",
-            image_scanning_configuration=aws.ecr.RepositoryImageScanningConfigurationArgs(
-                scan_on_push=False,
-            ),
-            image_tag_mutability="MUTABLE",
-            opts=pulumi.ResourceOptions(
-                protect=True, additional_secret_outputs=["repository_url"]
-            ),
-        )
-        pulumi.export(
-            f"{theme}_review_ecr_repository_url", review_ecr_repo.repository_url
-        )
-
-    # ---------------------------------------------------------------------------
-    # ESC Environments (staging only)
-    # ---------------------------------------------------------------------------
-    # Shared AWS credentials environment - provides dynamic OIDC credentials
-    # for all frontend staging deployments (including review stacks).
     aws_creds_staging_yaml = deployment_role.arn.apply(
         lambda role_arn: (
             "values:\n"
@@ -207,14 +181,76 @@ if is_staging:
         yaml=aws_creds_staging_yaml.apply(pulumi.StringAsset),
     )
 
-    # Review stack environments - imports aws-creds-staging and provides
+# ---------------------------------------------------------------------------
+# Production-only resources
+# ---------------------------------------------------------------------------
+# Review (PR) stacks now share production's ECR repos and credentials
+# rather than staging's, so this project's review-stack resources are
+# owned by the production stack's `pulumi up`, not staging's.
+if is_production:
+    # ---------------------------------------------------------------------------
+    # ESC Environment: AWS credentials (production)
+    # ---------------------------------------------------------------------------
+    # Shared AWS credentials environment - provides dynamic OIDC credentials
+    # for frontend production deployments (including review stacks).
+    aws_creds_production_yaml = deployment_role.arn.apply(
+        lambda role_arn: (
+            "values:\n"
+            "  aws:\n"
+            "    login:\n"
+            "      fn::open::aws-login:\n"
+            "        oidc:\n"
+            f"          roleArn: {role_arn}\n"
+            "          sessionName: pulumi-frontend-deployments\n"
+            "          duration: 1h\n"
+            "  environmentVariables:\n"
+            "    AWS_ACCESS_KEY_ID: ${aws.login.accessKeyId}\n"
+            "    AWS_SECRET_ACCESS_KEY: ${aws.login.secretAccessKey}\n"
+            "    AWS_SESSION_TOKEN: ${aws.login.sessionToken}\n"
+            "    AWS_REGION: eu-west-1\n"
+        )
+    )
+
+    aws_creds_production_env = pulumiservice.Environment(
+        "aws-creds-production",
+        organization=org_name,
+        project=project_name,
+        name="aws-creds-production",
+        yaml=aws_creds_production_yaml.apply(pulumi.StringAsset),
+    )
+
+    # ---------------------------------------------------------------------------
+    # Shared ECR Repositories for Review Stacks
+    # ---------------------------------------------------------------------------
+    # A single ECR repository shared by all ephemeral PR review stacks of that
+    # theme. Each PR pushes its image with a branch-specific tag (e.g. the PR
+    # number or branch name) so images don't collide. This avoids
+    # creating/destroying ECR repos per PR stack and prevents
+    # RepositoryAlreadyExistsException errors.
+    for theme in ["cpr", "cclw", "mcf", "ccc"]:
+        review_ecr_repo = aws.ecr.Repository(
+            f"review-navigator-frontend-{theme}",
+            name=f"review-navigator-frontend-{theme}",
+            image_scanning_configuration=aws.ecr.RepositoryImageScanningConfigurationArgs(
+                scan_on_push=False,
+            ),
+            image_tag_mutability="MUTABLE",
+            opts=pulumi.ResourceOptions(
+                protect=True, additional_secret_outputs=["repository_url"]
+            ),
+        )
+        pulumi.export(
+            f"{theme}_review_ecr_repository_url", review_ecr_repo.repository_url
+        )
+
+    # Review stack environments - imports aws-creds-production and provides
     # stack-specific config for each theme's review stack and its PR stacks.
     cpr_review_yaml = pulumi.Output.all(
         apprunner_ecr_access_role.arn,
     ).apply(
         lambda args: (
             "imports:\n"
-            f"  - {project_name}/aws-creds-staging\n"
+            f"  - {project_name}/aws-creds-production\n"
             "\n"
             "values:\n"
             "  pulumiConfig:\n"
@@ -234,11 +270,11 @@ if is_staging:
             project=project_name,
             name=f"{theme}-review",
             yaml=cpr_review_yaml.apply(pulumi.StringAsset),
-            opts=pulumi.ResourceOptions(depends_on=[aws_creds_staging_env]),
+            opts=pulumi.ResourceOptions(depends_on=[aws_creds_production_env]),
         )
 
     # ---------------------------------------------------------------------------
-    # Deployment Settings for review stacks (staging only)
+    # Deployment Settings for review stacks
     # ---------------------------------------------------------------------------
     for theme in ["cpr", "cclw", "mcf", "ccc"]:
         deployment_settings = pulumiservice.DeploymentSettings(
