@@ -257,7 +257,7 @@ wheels = [
 
 [[package]]
 name = "pulumi"
-version = "3.226.0"
+version = "3.256.0"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
     { name = "debugpy" },
@@ -273,21 +273,21 @@ dependencies = [
     { name = "semver" },
 ]
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/48/ae/6c93c0b47ae998a1ca2e6c8ae5aec5c6b5068d8005a68aa76a4d795bdf6a/pulumi-3.226.0-py3-none-any.whl", hash = "sha256:ad35faa3c67d8cc53908b9442fe32bdb7aa98dedfca4ae1b4791c0a44e32adb6", size = 393472, upload-time = "2026-03-12T15:53:59.271Z" },
+    { url = "https://files.pythonhosted.org/packages/22/26/21763ca2838569a6e40638dd9677fd34f36a15f89a8ab763cb2468205fb9/pulumi-3.256.0-py3-none-any.whl", hash = "sha256:ee6f018a628b9cc2b5e70b69e05a51965966a6c6d9e7429d698fc665525aaa58", size = 417217, upload-time = "2026-08-04T19:35:52.75Z" },
 ]
 
 [[package]]
 name = "pulumi-aws"
-version = "7.23.0"
+version = "7.41.0"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
     { name = "parver" },
     { name = "pulumi" },
     { name = "semver" },
 ]
-sdist = { url = "https://files.pythonhosted.org/packages/d0/5c/df89de14fadeaf7332e0cbbd8111390103892a5ab00ac378e0e6e90ac004/pulumi_aws-7.23.0.tar.gz", hash = "sha256:24e8a79d0affb50f95f7a38b8de35cb3a4869bb14c91d2446aeeb0ebfe53074f", size = 8826507, upload-time = "2026-03-12T13:54:50.807Z" }
+sdist = { url = "https://files.pythonhosted.org/packages/e3/cb/b8693bbc1c22574534616e3093bca84dbf7f4b4cf1fdc73ac222b65c4e4c/pulumi_aws-7.41.0.tar.gz", hash = "sha256:e42f6eea3aa0223baf6303ebc1619eaa0a828131fe4a482ef10df311dceb6d40", size = 9348010, upload-time = "2026-08-07T15:11:07.38Z" }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/88/c7/6890f38b9ebdd2d5bfb6fffba5edc35783048d939bb8aa3f8abe2cf2a6ea/pulumi_aws-7.23.0-py3-none-any.whl", hash = "sha256:e4ad3e572c479fb18a3d9218b66ea8d97f60e26a9449f725acb99f52b26b0665", size = 11883431, upload-time = "2026-03-12T13:54:48.078Z" },
+    { url = "https://files.pythonhosted.org/packages/12/fc/55745667dfa73e82106ba8b87e758b49f10a138ec014c7e8261151fc2566/pulumi_aws-7.41.0-py3-none-any.whl", hash = "sha256:3728180f344366c72f7f637cca73627dbf5d1fc0ff0711fcd9f1d9f67d13bcf2", size = 12542216, upload-time = "2026-08-07T15:11:03.207Z" },
 ]
 
 [[package]]
