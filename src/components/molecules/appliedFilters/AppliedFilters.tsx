@@ -1,6 +1,7 @@
 import { LucideX } from "lucide-react";
 import { useContext, useMemo } from "react";
 
+import { COUNTRY_FLAGS } from "@/constants/flags";
 import { FiltersContext } from "@/context/FiltersContext";
 import { TFilterPathLabel } from "@/types";
 import { getLabelPathSignature, sortFilterPathLabels } from "@/utils/filters/filterPaths";
@@ -35,10 +36,14 @@ export const AppliedFilters = ({ ancestorPath = [], className, showClearAll }: I
     <ul className={allClasses} aria-label="Applied filters">
       {labels.map((labelPath) => {
         const label = labelPath[0];
+        const emoji = (["country", "geography"].includes(label.type) && COUNTRY_FLAGS[label.value]) ?? "";
 
         return (
-          <li key={label.id} className="flex flex-nowrap gap-1 pl-3 pr-2 py-1 bg-bg-flat rounded-full">
-            <span className="block text-sm text-text-primary text-nowrap font-medium leading-5">{labelValues[label.id] || label.value}</span>
+          <li key={label.id} className="flex flex-nowrap gap-1 pl-3 pr-2 py-1 bg-[#1A4F8C1A] rounded-full">
+            <span className="block text-sm text-text-primary text-nowrap font-medium leading-5">
+              {emoji ? emoji + " " : ""}
+              {labelValues[label.id] || label.value}
+            </span>
             <button
               type="button"
               className="p-1 -m-1 text-inky-blue"
