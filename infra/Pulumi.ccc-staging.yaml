@@ -5,8 +5,8 @@ config:
   frontend:auto_scaling_config_arn:
     secure: AAABADwS6eLn5CO4IC2yuZrB4uA8os2XHOibaaPlPjDXwv2ZnX7GgLZKiaEYv1x7VdANjT+ipaYIJx9KYFbf7g2d9w2OjGprb2fQUMDVYBT9+/pZeRQEhhKlyj+586qNxDnc+gRgtM4jSzsq5QW/yrRxdt+6dvhwZPCJnGiekfIcwMmNOzcYoRduADp+d3MeLER1qFEg9Pk=
   frontend:backend_api_token:
-    secure: AAABAPFl29XDQNvMyWY3OIGqZpUITNG/kHB/tHMtyZjZQrZ/Br3UR3IdDOhdzkWMqiAv6vx2GnNq89o0peQPZxWwagKqvMB3/afKP8OZEcGDiR8WYLjsz1Pgkl+ePjhGMpFjqFvpwWW5SSJq7Y1oSByUMzXx4/ih0Y6vzP6PUTd34Ti0EBULejf3ouZtp/IVZY5TrCgahYDoBa+6+k2tO+X+3IymFtDDDd1014Hp3ZzSlAe8WdwL9cijc7bqch3oMFRsikrdvLm0vgAXXBUU6cP0wuFKmDu6vcxEvzRmOM7xu1McVhoLx4ZDOSxzY3zXJvcpnPk5disR3jXkR/jNJzmovBn44365n8zlXxefGb5BWoPT1rEMMU/vpJjKJGcWz8emd7+ZUFqi6hRwEqJkfU/kCEMIepxUTE5TA1ZQKTdO9AWvOf/cLShuVn3kBLe8eEwYiGAahvBb8z5VQArxtA4=
-  frontend:backend_api_url: https://cpr.staging.climatepolicyradar.org/api/v1
+    secure: AAABAHX+N+rt6Iv3b3aLo0vjCokBbf/5hH1z6YzpWWAitpoxP04ppKcUijHY/UejVdj++EhgawNJLuaqI+tcZleh66etdJ3n/PyGRWLfROSmY2WZO39f4N69x2qiC6BgD2wgptsEU3keyumKkIKCpZA+hgCumFgaQqMGGDuSrg0qfv56gRuRhugVQrSCjhSUVfEpzgZfeqiS+fKriTCY9nejZ4WmIsmR/oZdCysMpvVXtDA3lzO5lWCP1jvVKC/uhyZrXgRhtoz2B/3So2WPw+vvbwbLZMciuWFN4IwukXHaOUi9Km+FNvbxZ18o4IzBLtLB4bJCaE6pgEvOvAsESnCaR7BK/iwz2fa/C1uqvf06+vVGQ+t43jPCFLfFhgFr8xJHVtCHxnrxl2SsJdGXZkNF3OGeCvMuuhDq78egO++xErAbHcUDP0Ut2PPl9BgXtroKGw==
+  frontend:backend_api_url: https://app.climatepolicyradar.org/api/v1
   frontend:cdn_url: https://cdn.dev.climatepolicyradar.org
   frontend:ecr_uri:
     secure: AAABAI+YapHHn15SEmeTFXswl9Xakpw6r3SqmXgmPf5uL178cqdP+dQyzw+RRkLWDxbHOrf8FJeHWOTV7Rop/b4rmdNez5d3dL40JgCCQl3cozlVRGcxUf0MpAg25OY6To3r
@@ -19,7 +19,7 @@ config:
   frontend:theme: ccc
   frontend:validation_account_id:
     secure: AAABADhYOVHp6UwwZyZqMsjOOgHgQh7G3zPKRx5cSa4fPn4Io4cXWHh3UGY=
-  frontend:concepts_api_url: https://api.staging.climatepolicyradar.org
+  frontend:concepts_api_url: https://api.climatepolicyradar.org
   frontend:next_public_faro_url: https://faro-collector-prod-gb-south-0.grafana.net/collect/74f6d4bd78b7bb2cc270036193aaa3a6
   frontend:next_public_faro_app_name: ccc-frontend
   frontend:next_public_faro_app_namespace: frontend
