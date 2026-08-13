@@ -35,7 +35,7 @@ export const SearchFilterLevel = ({ ancestorPath, indented, labels, level, rende
   // Parents
   if (level === 1 && renderParents) {
     return (
-      <ul className={joinTailwindClasses("list-none", indentedClasses)}>
+      <ul className={joinTailwindClasses("flex flex-col gap-4 list-none", indentedClasses)}>
         {sortedLabels.map((label) => (
           <SearchFilterParent key={label.id} ancestorPath={ancestorPath} label={label} level={level} />
         ))}

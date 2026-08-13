@@ -46,35 +46,37 @@ export const SearchFilterParent = ({ ancestorPath, label, level }: IProps) => {
     : { onClick: undefined, noClickLabel: false };
 
   return (
-    <li className="py-4 group">
-      <div className={joinTailwindClasses("relative -top-4 h-px bg-border-light", !isGroupLabel && "ml-9")} />
-      <button type="button" className="w-full flex flex-row items-center" onClick={onToggleAccordion}>
-        {isGroupLabel ? (
-          <span className="flex-1 text-base text-text-primary text-start font-medium leading-5">{firstCase(label.value)}</span>
-        ) : (
-          <Checkbox
-            checked={checked === true}
-            indeterminate={checked === "indeterminate"}
-            onCheckedChange={onCheckedChange}
-            onClick={labelClickBehaviour.onClick}
-            noClickLabel={labelClickBehaviour.noClickLabel}
-            className="flex-1 gap-4! items-start!"
-          >
-            <span className="text-base text-text-primary font-medium leading-5">{firstCase(label.value)}</span>
-          </Checkbox>
+    <>
+      <div className={joinTailwindClasses("relative h-px bg-border-light", !isGroupLabel && "ml-9")} />
+      <li className="group">
+        <button type="button" className="w-full flex flex-row items-center" onClick={onToggleAccordion}>
+          {isGroupLabel ? (
+            <span className="flex-1 text-base text-text-primary text-start font-medium leading-5">{firstCase(label.value)}</span>
+          ) : (
+            <Checkbox
+              checked={checked === true}
+              indeterminate={checked === "indeterminate"}
+              onCheckedChange={onCheckedChange}
+              onClick={labelClickBehaviour.onClick}
+              noClickLabel={labelClickBehaviour.noClickLabel}
+              className="flex-1 gap-4! items-start!"
+            >
+              <span className="text-base text-text-primary font-medium leading-5">{firstCase(label.value)}</span>
+            </Checkbox>
+          )}
+          {hasChildren && (
+            <ChevronDown
+              size={16}
+              className={joinTailwindClasses("shrink-0 -p-1 text-elem-icon transition duration-300", isExpanded && "rotate-180")}
+            />
+          )}
+        </button>
+        {isExpanded && label.children.length > 0 && (
+          <div className={joinTailwindClasses("pt-4", !isGroupLabel && "ml-9")}>
+            <SearchFilterLevel ancestorPath={pathLabels} labels={label.children} level={level + 1} />
+          </div>
         )}
-        {hasChildren && (
-          <ChevronDown
-            size={16}
-            className={joinTailwindClasses("shrink-0 -p-1 text-elem-icon transition duration-300", isExpanded && "rotate-180")}
-          />
-        )}
-      </button>
-      {isExpanded && label.children.length > 0 && (
-        <div className={joinTailwindClasses("pt-6", !isGroupLabel && "ml-9")}>
-          <SearchFilterLevel ancestorPath={pathLabels} labels={label.children} level={level + 1} />
-        </div>
-      )}
-    </li>
+      </li>
+    </>
   );
 };
