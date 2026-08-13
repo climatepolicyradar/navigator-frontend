@@ -20,13 +20,14 @@ interface IProps {
   labels: TNestedSearchLabel[];
   level: number;
   renderParents?: boolean;
-  showAppliedFilters?: boolean;
 }
 
 // Render a set of label peers depending on content and composition
-export const SearchFilterLevel = ({ ancestorPath, indented, labels, level, renderParents, showAppliedFilters }: IProps) => {
+export const SearchFilterLevel = ({ ancestorPath, indented, labels, level, renderParents }: IProps) => {
   const { inUse: isLookupAtHigherLevel } = useContext(FiltersLookupContext);
-  const sortedLabels = useMemo(() => sortBy(labels, "value"), [labels]);
+
+  const levelIsGroups = labels.every((label) => label.type === "group");
+  const sortedLabels = useMemo(() => (levelIsGroups ? labels : sortBy(labels, "value")), [labels, levelIsGroups]);
 
   const indentedClasses = indented && "ml-8 mt-2 not-last:mb-2";
   const labelTypes = new Set(labels.map((label) => label.type));
@@ -36,7 +37,7 @@ export const SearchFilterLevel = ({ ancestorPath, indented, labels, level, rende
     return (
       <ul className={joinTailwindClasses("list-none", indentedClasses)}>
         {sortedLabels.map((label) => (
-          <SearchFilterParent key={label.id} ancestorPath={ancestorPath} label={label} level={level} showAppliedFilters={showAppliedFilters} />
+          <SearchFilterParent key={label.id} ancestorPath={ancestorPath} label={label} level={level} />
         ))}
       </ul>
     );

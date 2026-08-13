@@ -1,6 +1,7 @@
 import { Earth, ListFilter } from "lucide-react";
 
 import { TFiltersGroupConfig } from "@/types";
+import { prepareGeographyFilters } from "@/utils/filters/prepareGeographyFilter";
 
 export const SEARCH_FILTER_GROUPS: TFiltersGroupConfig[] = [
   {
@@ -16,7 +17,7 @@ export const SEARCH_FILTER_GROUPS: TFiltersGroupConfig[] = [
     Icon: Earth,
     container: "drawer",
     rootLabelTypes: ["region"],
-    showAppliedFilters: true,
+    prepareRootLabels: prepareGeographyFilters,
   },
   {
     title: "Topic",

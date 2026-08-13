@@ -10,8 +10,8 @@ type TFiltersGroupDrawerConfig = {
   Icon: LucideIcon;
   container: "drawer";
   rootLabelTypes: string[];
+  prepareRootLabels?: (rootLabels: TNestedSearchLabel[]) => TNestedSearchLabel[];
   afterPartition?: boolean;
-  showAppliedFilters?: boolean;
 };
 
 type TFiltersGroupPopoverConfig = {
@@ -20,8 +20,8 @@ type TFiltersGroupPopoverConfig = {
   Icon?: never;
   container: "popover";
   rootLabelTypes: string[];
+  prepareRootLabels?: (rootLabels: TNestedSearchLabel[]) => TNestedSearchLabel[];
   afterPartition?: boolean;
-  showAppliedFilters?: never;
 };
 
 export type TFiltersGroupConfig = TFiltersGroupDrawerConfig | TFiltersGroupPopoverConfig;

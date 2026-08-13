@@ -11,6 +11,8 @@ export const groupSearchLabels = (nestedLabels: TNestedSearchLabel[], filterGrou
       .map((type) => groupedRootLabels[type] || [])
       .flat();
 
-    return { ...group, nestedLabels: includedRootLabels };
+    const preparedRootLabels = group.prepareRootLabels?.(includedRootLabels) ?? includedRootLabels;
+
+    return { ...group, nestedLabels: preparedRootLabels };
   });
 };

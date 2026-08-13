@@ -2,7 +2,6 @@ import { ChevronDown } from "lucide-react";
 import { MouseEvent, useContext, useState } from "react";
 
 import { Checkbox } from "@/components/atoms/checkbox/Checkbox";
-import { AppliedFilters } from "@/components/molecules/appliedFilters/AppliedFilters";
 import { SearchFilterLevel } from "@/components/organisms/searchFilterLevel/SearchFilterLevel";
 import { FiltersContext } from "@/context/FiltersContext";
 import { TCheckboxState, TFilterPathLabel, TNestedSearchLabel } from "@/types";
@@ -16,16 +15,15 @@ interface IProps {
   ancestorPath: TFilterPathLabel[];
   label: TNestedSearchLabel;
   level: number;
-  showAppliedFilters?: boolean;
 }
 
-export const SearchFilterParent = ({ ancestorPath, label, level, showAppliedFilters }: IProps) => {
+export const SearchFilterParent = ({ ancestorPath, label, level }: IProps) => {
   const { checkedLabelPaths, toggleFilter } = useContext(FiltersContext);
   const [isExpanded, setIsExpanded] = useState(false);
 
-  const pathLabels = [getFilterPathLabel(label), ...ancestorPath];
+  const isGroupLabel = label.type === "group";
+  const pathLabels = isGroupLabel ? [...ancestorPath] : [getFilterPathLabel(label), ...ancestorPath];
   const checked = getFilterStatus(pathLabels, checkedLabelPaths);
-
   const hasChildren = label.children.length > 0;
 
   const onCheckedChange = (value: TCheckboxState) => {
@@ -49,17 +47,22 @@ export const SearchFilterParent = ({ ancestorPath, label, level, showAppliedFilt
 
   return (
     <li className="py-4 group">
+      <div className={joinTailwindClasses("relative -top-4 h-px bg-border-light", !isGroupLabel && "ml-9")} />
       <button type="button" className="w-full flex flex-row items-center" onClick={onToggleAccordion}>
-        <Checkbox
-          checked={checked === true}
-          indeterminate={checked === "indeterminate"}
-          onCheckedChange={onCheckedChange}
-          onClick={labelClickBehaviour.onClick}
-          noClickLabel={labelClickBehaviour.noClickLabel}
-          className="flex-1 gap-4! items-start!"
-        >
-          <span className="text-base text-text-primary font-medium leading-5">{firstCase(label.value)}</span>
-        </Checkbox>
+        {isGroupLabel ? (
+          <span className="flex-1 text-base text-text-primary text-start font-medium leading-5">{firstCase(label.value)}</span>
+        ) : (
+          <Checkbox
+            checked={checked === true}
+            indeterminate={checked === "indeterminate"}
+            onCheckedChange={onCheckedChange}
+            onClick={labelClickBehaviour.onClick}
+            noClickLabel={labelClickBehaviour.noClickLabel}
+            className="flex-1 gap-4! items-start!"
+          >
+            <span className="text-base text-text-primary font-medium leading-5">{firstCase(label.value)}</span>
+          </Checkbox>
+        )}
         {hasChildren && (
           <ChevronDown
             size={16}
@@ -67,13 +70,11 @@ export const SearchFilterParent = ({ ancestorPath, label, level, showAppliedFilt
           />
         )}
       </button>
-      {showAppliedFilters && <AppliedFilters ancestorPath={pathLabels} className="pl-8 mt-4" />}
       {isExpanded && label.children.length > 0 && (
-        <div className="ml-9 pt-6">
+        <div className={joinTailwindClasses("pt-6", !isGroupLabel && "ml-9")}>
           <SearchFilterLevel ancestorPath={pathLabels} labels={label.children} level={level + 1} />
         </div>
       )}
-      <div className="relative -bottom-4 h-px ml-9 bg-border-light group-last:hidden" />
     </li>
   );
 };
