@@ -25,3 +25,11 @@ export const SEARCH_FILTER_GROUPS: TFiltersGroupConfig[] = [
     afterPartition: true,
   },
 ];
+
+export const PASSAGE_FILTER_GROUPS: TFiltersGroupConfig[] = [
+  {
+    title: "Topic",
+    container: "popover",
+    rootLabelTypes: ["concept"],
+  },
+];
