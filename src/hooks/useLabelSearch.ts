@@ -94,6 +94,13 @@ export const loadLabels = async (query: string): Promise<TSearchLabel[]> => {
   return response.data.results || [];
 };
 
+export async function loadLabelTaxonomy() {
+  const apiUrl = process.env.NEXT_PUBLIC_API_URL || "https://api.climatepolicyradar.org";
+  const client = new ApiClient(apiUrl);
+  const response = await client.get<TLabelsResponse>(`/search/labels-taxonomy`, null);
+  return response.data.results || [];
+}
+
 /**
  * Hook that searches the /search/labels API with debouncing.
  *

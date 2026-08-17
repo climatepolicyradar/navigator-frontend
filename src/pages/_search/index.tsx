@@ -14,7 +14,7 @@ import { SEARCH_FILTER_GROUPS } from "@/constants/filters";
 import { SEARCH_SORT_OPTIONS } from "@/constants/sort";
 import { withEnvConfig } from "@/context/EnvConfig";
 import { FeaturesContext } from "@/context/FeaturesContext";
-import { loadLabels } from "@/hooks/useLabelSearch";
+import { loadLabelTaxonomy } from "@/hooks/useLabelSearch";
 import { FilterGroupSchema } from "@/schemas";
 import { TSearchLabel, TSearchQueryGroup, TTheme } from "@/types";
 import { getFeatureFlags } from "@/utils/featureFlags";
@@ -73,7 +73,7 @@ const ShadowSearch = ({ theme, themeConfig, features }: TProps) => {
   const [advancedFiltersOpen, setAdvancedFiltersOpen] = useState(false);
 
   useEffect(() => {
-    loadLabels("").then(setAvailableFilters);
+    loadLabelTaxonomy().then(setAvailableFilters);
   }, []);
 
   return (
