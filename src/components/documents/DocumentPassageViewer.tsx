@@ -32,8 +32,9 @@ const toPassageBlock = (passage: ISearchPassage, documentTitle: string): TPassag
   idx: passage.idx,
   content: passage.text,
   pages: passage.pages?.map((pageNumber) => ({ page_number: pageNumber })),
-  headingText: passage.heading_text ?? undefined,
+  headingText: passage.heading_text ?? null,
   documentTitle,
+  labels: passage.labels ?? null,
 });
 
 type TPassageResultsProps = {
@@ -177,9 +178,15 @@ export const DocumentPassageViewer = ({ document, vespaDocumentData }: TProps) =
             value={searchTerm}
           />
         </form>
-        <p className="text-sm text-text-secondary text-right" aria-live="polite">
-          {isLoading ? "Searching…" : `${totalMatches} matching ${totalMatches === 1 ? "passage" : "passages"}`}
-        </p>
+        <div className="flex flex-wrap items-center justify-between">
+          <div>{/* topic selector here */}</div>
+          <div className="flex flex-wrap items-center gap-2">
+            <p className="text-sm text-text-secondary text-right" aria-live="polite">
+              {isLoading ? "Searching…" : `${totalMatches} matching ${totalMatches === 1 ? "passage" : "passages"}`}
+            </p>
+            {/* sort here */}
+          </div>
+        </div>
       </FullWidth>
 
       <div className="flex flex-col border-t border-border-light lg:flex-row lg:h-[80vh]">

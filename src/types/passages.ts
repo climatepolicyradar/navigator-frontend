@@ -7,6 +7,19 @@ export interface IPassagePageWithBoundingBoxes {
   bounding_boxes: IPassageBoundingBox[];
 }
 
+export interface IPassageLabel {
+  classifier_id: string;
+  end_index: number;
+  labelled_text: string;
+  labellers: string[];
+  start_index: number;
+  value: {
+    id: string;
+    type: string;
+    value: string;
+  };
+}
+
 export interface ISearchPassage {
   id: string;
   text_block_id: string;
@@ -24,6 +37,7 @@ export interface ISearchPassage {
   document_id: string;
   principal_id: string;
   tokens: string[];
+  labels: IPassageLabel[] | null;
 }
 
 export interface ISearchPassagesResponse {

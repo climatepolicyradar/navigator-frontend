@@ -1,23 +1,12 @@
 import { Check, Copy, ExternalLink, File, LocateFixed } from "lucide-react";
 import { useEffect, useState } from "react";
 
+import { IPassageLabel } from "@/types";
+
 const COPY_FEEDBACK_TIMEOUT = 1000;
 
 type TPassagePage = {
   page_number: number;
-};
-
-type TPassageLabel = {
-  classifier_id: string;
-  end_index: number;
-  labelled_text: string;
-  labellers: string[];
-  start_index: number;
-  value: {
-    id: string;
-    type: string;
-    value: string;
-  };
 };
 
 export type TPassage = {
@@ -25,7 +14,7 @@ export type TPassage = {
   document_id: string;
   idx: number;
   content: string;
-  labels?: TPassageLabel[];
+  labels?: IPassageLabel[];
   language?: string;
   content_type?: string;
   type_confidence?: number;
