@@ -32,7 +32,7 @@ export const EmptyPassages = ({ concepts, hasQuery, onClearClick, onConceptClick
     </div>
     {concepts.length > 0 && (
       <div className="flex flex-col gap-3 border-t border-border-light pt-6">
-        <p className="text-sm text-text-secondary">Commonly mentioned in {subject}</p>
+        <p className="text-sm text-text-secondary">Topics that appear within this {subject}</p>
         <ul className="flex flex-wrap gap-2">
           {concepts.map((concept) => (
             <li key={concept.wikibase_id}>
