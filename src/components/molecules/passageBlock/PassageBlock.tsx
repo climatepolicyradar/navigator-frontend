@@ -7,11 +7,25 @@ type TPassagePage = {
   page_number: number;
 };
 
+type TPassageLabel = {
+  classifier_id: string;
+  end_index: number;
+  labelled_text: string;
+  labellers: string[];
+  start_index: number;
+  value: {
+    id: string;
+    type: string;
+    value: string;
+  };
+};
+
 export type TPassage = {
   id: string;
   document_id: string;
   idx: number;
   content: string;
+  labels?: TPassageLabel[];
   language?: string;
   content_type?: string;
   type_confidence?: number;
@@ -69,10 +83,18 @@ export const PassageBlock = ({ passage, onCopyClick, onDocumentLinkClick, onPass
             onClick={() => onPassageClick(passage)}
             className="text-left w-full text-sm text-text-primary px-8 py-7 hocus:bg-paper"
           >
-            {passage.content}
+            <p>{passage.content}</p>
+            {passage.labels?.length > 0 && (
+              <p className="text-text-secondary mt-2">Contains topics: {passage.labels.map((label) => label.value.value).join(", ")}</p>
+            )}
           </button>
         ) : (
-          <p className="px-8 py-7">{passage.content}</p>
+          <div className="px-8 py-7">
+            <p>{passage.content}</p>
+            {passage.labels?.length > 0 && (
+              <p className="text-text-secondary mt-2">Contains topics: {passage.labels.map((label) => label.value.value).join(", ")}</p>
+            )}
+          </div>
         )}
       </div>
       {hasFooter && (
