@@ -28,7 +28,7 @@ describe("AppliedFilters", () => {
 
   it("renders a nested label", () => {
     renderWithFiltersContext([nestedPath]);
-    expect(screen.getByText("Paris")).toBeInTheDocument();
+    expect(screen.getByText("France → Paris")).toBeInTheDocument();
   });
 
   it("calls toggleFilter when removing an applied filter", async () => {
