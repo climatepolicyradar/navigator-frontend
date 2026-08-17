@@ -7,13 +7,15 @@ import { codeIsCountry, getGeographySlug } from "@/utils/geography";
 
 export const transformFamilyGeographies = (geographyLabels: TDataInLabel[]): TFamilyGeography[] =>
   orderBy(
-    geographyLabels.map((label) => {
-      const code = label.value.id.split(ID_SEPARATOR)[1];
-      const name = label.value.value;
-      const slug = getGeographySlug(code, name);
+    geographyLabels
+      .filter((label) => label.value.type !== "region")
+      .map((label) => {
+        const code = label.value.id.split(ID_SEPARATOR)[1];
+        const name = label.value.value;
+        const slug = getGeographySlug(code, name);
 
-      return { code, name, slug };
-    }),
+        return { code, name, slug };
+      }),
     [(geo) => codeIsCountry(geo.code), "name"],
     ["desc", "asc"]
   );
