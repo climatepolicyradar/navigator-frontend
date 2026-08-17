@@ -1,19 +1,9 @@
 import { http, HttpResponse } from "msw";
 
 import { TDataInDocument } from "@/schemas";
-import { TApiCollectionPublicWithFamilies } from "@/types";
 
 export const testCollectionSlug = "test-collection-slug";
 export const testCollectionImportId = "collection-1";
-
-export const testCollection = {
-  description: "Test collection",
-  families: [],
-  import_id: testCollectionImportId,
-  metadata: {},
-  slug: testCollectionSlug,
-  title: "Test Collection",
-} as TApiCollectionPublicWithFamilies;
 
 export const collectionSlugHandler = (overrides: Partial<{ status: number; body: unknown }> = {}) =>
   http.get(`${process.env.CONCEPTS_API_URL}/families/slugs/${testCollectionSlug}`, () => {
@@ -31,14 +21,6 @@ export const collectionSlugHandler = (overrides: Partial<{ status: number; body:
     });
   });
 
-export const collectionByIdHandler = (overrides: Partial<{ status: number; collection: Partial<TApiCollectionPublicWithFamilies> }> = {}) =>
-  http.get(`${process.env.CONCEPTS_API_URL}/families/collections/${testCollectionImportId}`, () => {
-    if (overrides.status && overrides.status !== 200) {
-      return HttpResponse.json({ detail: "error" }, { status: overrides.status });
-    }
-    return HttpResponse.json({ data: { ...testCollection, ...overrides.collection } });
-  });
-
 export const testChildFamilyImportId = "family-in-collection-1";
 
 export const dataInCollectionHandler = (overrides: Partial<{ status: number; body: unknown }> = {}) =>
@@ -51,7 +33,7 @@ export const dataInCollectionHandler = (overrides: Partial<{ status: number; bod
         id: testCollectionImportId,
         title: "Test Collection",
         description: null,
-        attributes: {},
+        attributes: { deprecated_slug: testCollectionSlug },
         labels: [],
         items: [],
         documents: [],

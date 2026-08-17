@@ -5,6 +5,7 @@ import { ReactNode } from "react";
 import { joinTailwindClasses } from "@/utils/tailwind";
 
 interface IProps extends Omit<React.InputHTMLAttributes<HTMLInputElement>, "size"> {
+  className?: never;
   clearable?: boolean;
   containerClasses?: string;
   icon?: ReactNode;
@@ -13,18 +14,7 @@ interface IProps extends Omit<React.InputHTMLAttributes<HTMLInputElement>, "size
   onClear?: () => void;
 }
 
-export const Input = ({
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  className: _className,
-  clearable = false,
-  containerClasses = "",
-  icon,
-  iconSide = "left",
-  inputClasses = "",
-  onClear,
-  value,
-  ...props
-}: IProps) => {
+export const Input = ({ clearable = false, containerClasses = "", icon, iconSide = "left", inputClasses = "", onClear, value, ...props }: IProps) => {
   const allContainerClasses = joinTailwindClasses(
     "w-full px-2 flex flex-row justify-around items-center bg-bg-flat rounded-md outline-inky-blue -outline-offset-1 focus-within:outline",
     containerClasses
@@ -33,7 +23,7 @@ export const Input = ({
     "flex-1 p-1 bg-transparent border-none text-xs text-text-primary font-medium leading-6 placeholder:text-text-tertiary caret-text-inky-blue focus:shadow-[none]",
     inputClasses
   );
-  const iconClasses = "flex items-center shrink-0 text-elem-icon";
+  const iconClasses = "flex items-center shrink-0 text-text-tertiary";
   const clearButtonClasses = joinTailwindClasses(iconClasses, !value && "hidden", icon && iconSide === "right" && "mr-1");
   const iconWrapper = icon ? <div className={iconClasses}>{icon}</div> : null;
 

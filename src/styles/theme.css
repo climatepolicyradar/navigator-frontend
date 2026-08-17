@@ -27,6 +27,7 @@
   /* Color / UI / Background */
   --color-bg-primary: var(--color-white);
   --color-bg-inverse: var(--color-inky-black);
+  --color-bg-brand: var(--color-inky-blue);
   --color-bg-flat: var(--color-neutral-100);
 
   /* Color / UI / Border */

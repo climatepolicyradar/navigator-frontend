@@ -20,7 +20,13 @@ const baseCollection: TCollectionPublicWithFamilies = {
   description: "Test Description",
   families: [
     {
-      geographies: ["USA"],
+      geographies: [
+        {
+          code: "USA",
+          name: "United States",
+          slug: "united-states-of-america",
+        },
+      ],
       import_id: "",
       last_updated_date: null,
       metadata: {

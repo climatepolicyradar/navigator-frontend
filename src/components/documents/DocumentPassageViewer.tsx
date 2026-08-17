@@ -11,9 +11,11 @@ import { Input } from "@/components/atoms/input/Input";
 import { EmptyDocument } from "@/components/documents/EmptyDocument";
 import { EmptyPassages } from "@/components/molecules/emptyPassages/EmptyPassages";
 import { PassageBlock, TPassage as TPassageBlock } from "@/components/molecules/passageBlock/PassageBlock";
+import { Sort } from "@/components/molecules/sort/Sort";
 import { FullWidth } from "@/components/panels/FullWidth";
 import { RESULTS_PER_PAGE } from "@/constants/paging";
 import { QUERY_PARAMS } from "@/constants/queryParams";
+import { PASSAGE_SORT_OPTIONS } from "@/constants/sort";
 import { TopicsContext } from "@/context/TopicsContext";
 import { ISearchPassage, TFamilyDocumentPublic, TSearchResponse } from "@/types";
 import { getTopDocumentConcepts } from "@/utils/topics/getTopDocumentTopics";
@@ -72,6 +74,7 @@ DocumentPreview.displayName = "DocumentPreview";
 export const DocumentPassageViewer = ({ document, vespaDocumentData }: TProps) => {
   const { topics } = useContext(TopicsContext);
   const [query, setQuery] = useQueryState(QUERY_PARAMS.query_string, parseAsString.withDefault(""));
+  const [sort, setSort] = useQueryState("sort", parseAsString.withDefault("relevance desc"));
   const [searchTerm, setSearchTerm] = useState(query);
   const [pageNumber, setPageNumber] = useState<number | null>(null);
 
@@ -87,9 +90,9 @@ export const DocumentPassageViewer = ({ document, vespaDocumentData }: TProps) =
   }
 
   const { data, isError, isFetching, isPending, fetchNextPage, hasNextPage, isFetchingNextPage } = useInfiniteQuery({
-    queryKey: ["document-passages", document.import_id, query],
+    queryKey: ["document-passages", document.import_id, query, sort],
     queryFn: ({ pageParam, signal }) =>
-      fetchSearchPassages({ query, documents: [document.import_id], pageSize: RESULTS_PER_PAGE, pageToken: pageParam, signal }),
+      fetchSearchPassages({ query, documents: [document.import_id], pageSize: RESULTS_PER_PAGE, sort, pageToken: pageParam, signal }),
     initialPageParam: 1,
     // The API leaves `next_page` and `total_pages` unpopulated, so there is no cursor to
     // follow. Paging is driven by the running result count against the reported total.
@@ -179,14 +182,15 @@ export const DocumentPassageViewer = ({ document, vespaDocumentData }: TProps) =
           />
         </form>
         <div className="flex flex-wrap items-center justify-between">
-          <div>
-            <div>{/* topic selector here */}</div>
-          </div>
+          <div>{/* topic selector here */}</div>
           <div className="flex flex-wrap items-center gap-2">
-            <p className="text-sm text-text-secondary text-right" aria-live="polite">
-              {isLoading ? "Searching…" : `${totalMatches} matching ${totalMatches === 1 ? "passage" : "passages"}`}
-            </p>
-            {/* sort here */}
+            <div className="flex items-center gap-4">
+              <p className="text-sm text-text-secondary text-right" aria-live="polite">
+                {isLoading ? "Searching…" : `${totalMatches} matching ${totalMatches === 1 ? "passage" : "passages"}`}
+              </p>
+              {/* sort here */}
+              <Sort sortOptions={PASSAGE_SORT_OPTIONS} value={sort} onChange={(next) => setSort(next)} />
+            </div>
           </div>
         </div>
       </FullWidth>

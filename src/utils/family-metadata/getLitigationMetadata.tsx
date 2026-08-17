@@ -1,13 +1,10 @@
-import sortBy from "lodash/sortBy";
 import { Fragment, ReactNode } from "react";
 
 import { ConceptHierarchy } from "@/components/molecules/conceptHierarchy/ConceptHierarchy";
 import { GeographyLink } from "@/components/molecules/geographyLink/GeographyLink";
 import { ARROW_RIGHT, EN_DASH } from "@/constants/chars";
 import { FILING_DATE_EVENT_TYPES } from "@/constants/events";
-import { getCountryName, getCountrySlug } from "@/helpers/getCountryFields";
-import { getSubdivisionName } from "@/helpers/getSubdivision";
-import { IFamilyDocumentTopics, IMetadata, TFamilyPublic, TGeography, TGeographySubdivision } from "@/types";
+import { IFamilyDocumentTopics, IMetadata, TFamilyPublic } from "@/types";
 import { buildConceptHierarchy } from "@/utils/buildConceptHierarchy";
 import { getTopicsMetadataItem } from "@/utils/family-metadata/getTopicsMetadataItem";
 import { isSystemGeo } from "@/utils/isSystemGeo";
@@ -15,19 +12,13 @@ import { familyTopicsHasTopics } from "@/utils/topics/processFamilyTopics";
 
 const hierarchyArrow = ` ${ARROW_RIGHT} `;
 
-export function getLitigationMetadata(
-  family: TFamilyPublic,
-  familyTopics: IFamilyDocumentTopics | null,
-  countries: TGeography[],
-  subdivisions: TGeographySubdivision[]
-): IMetadata[] {
+export function getLitigationMetadata(family: TFamilyPublic, familyTopics: IFamilyDocumentTopics | null): IMetadata[] {
   const metadata = [];
 
   // Structure concepts into a hierarchy we can use
   const hierarchy = buildConceptHierarchy(family.concepts);
-  const geosOrdered = sortBy(family.geographies, [(geo) => geo.length !== 3, (geo) => geo.toLowerCase()]);
 
-  const isUSA = geosOrdered.includes("USA");
+  const isUSA = family.geographies.some((geo) => geo.code === "USA");
 
   /* Filing year */
   let filingTimestamp = family.events.find((event) => FILING_DATE_EVENT_TYPES.includes(event.event_type))?.date;
@@ -45,19 +36,15 @@ export function getLitigationMetadata(
   });
 
   /* Geography */
-  if (geosOrdered.length > 0) {
+  if (family.geographies.length > 0) {
     metadata.push({
       label: "Geography",
-      value: geosOrdered.map((geo, index) => {
-        const geoSlug = getCountrySlug(geo, countries);
-        const geoName = geoSlug ? getCountryName(geo, countries) : getSubdivisionName(geo, subdivisions);
-        return (
-          <Fragment key={geo}>
-            {!isSystemGeo(geoName) ? <GeographyLink code={geo} name={geoName} slug={geoSlug || geo.toLowerCase()} /> : <span>{geoName}</span>}
-            {index + 1 < geosOrdered.length && hierarchyArrow}
-          </Fragment>
-        );
-      }),
+      value: family.geographies.map((geo, index) => (
+        <Fragment key={geo.slug}>
+          {!isSystemGeo(geo.name) ? <GeographyLink {...geo} /> : <span>{geo.name}</span>}
+          {index + 1 < family.geographies.length && hierarchyArrow}
+        </Fragment>
+      )),
     });
   }
 

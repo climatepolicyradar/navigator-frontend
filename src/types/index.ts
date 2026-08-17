@@ -10,6 +10,7 @@ export * from "./search";
 export * from "./search/filters";
 export * from "./search/labels";
 export * from "./search/query";
+export * from "./search/sort";
 export * from "./table";
 export * from "./tables/familyDocumentTopics";
 export * from "./theme";

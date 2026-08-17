@@ -1,13 +1,10 @@
-import { HttpResponse, http } from "msw";
 import { describe, expect, it } from "vitest";
 
-import { DEFAULT_FEATURES } from "@/constants/features";
+import { dataInCollectionHandler, testCollectionImportId } from "@/tests/mocks/api/collectionDataHandlers";
 import {
   dataInFamilyHandler,
-  familyByIdHandler,
-  familyCollectionHandler,
   familySlugHandler,
-  geographySubdivisionsHandler,
+  testFamilyDataIn,
   testFamilyImportId,
   testFamilySlug,
   vespaFamilyHandler,
@@ -18,9 +15,9 @@ import { getFamilyData } from "./getFamilyData";
 
 describe("getFamilyData", () => {
   it("returns family data on the happy path", async () => {
-    server.use(familySlugHandler(), familyByIdHandler(), familyCollectionHandler(), geographySubdivisionsHandler(), vespaFamilyHandler());
+    server.use(familySlugHandler(), dataInFamilyHandler(), vespaFamilyHandler());
 
-    const result = await getFamilyData(testFamilySlug, DEFAULT_FEATURES);
+    const result = await getFamilyData(testFamilySlug);
 
     expect(result.errors.map((e) => e.message)).toEqual([]);
     expect(result.data).not.toBeNull();
@@ -30,7 +27,7 @@ describe("getFamilyData", () => {
   it("returns null data when the slug lookup responds with a non-200 status", async () => {
     server.use(familySlugHandler({ status: 404 }));
 
-    const result = await getFamilyData(testFamilySlug, DEFAULT_FEATURES);
+    const result = await getFamilyData(testFamilySlug);
 
     expect(result.data).toBeNull();
     expect(result.errors[0].message).toBe("Failed to query family slug");
@@ -43,109 +40,95 @@ describe("getFamilyData", () => {
       })
     );
 
-    const result = await getFamilyData(testFamilySlug, DEFAULT_FEATURES);
+    const result = await getFamilyData(testFamilySlug);
 
     expect(result.data).toBeNull();
     expect(result.errors[0].message).toBe("Failed to query family slug");
   });
 
-  it("logs an error but does not throw when the family response is missing geographies", async () => {
-    server.use(
-      familySlugHandler(),
-      familyByIdHandler({ family: { geographies: undefined } }),
-      familyCollectionHandler(),
-      geographySubdivisionsHandler(),
-      vespaFamilyHandler()
-    );
+  it("returns null data when the family data-in fetch fails", async () => {
+    server.use(familySlugHandler(), dataInFamilyHandler({ status: 500 }));
 
-    const result = await getFamilyData(testFamilySlug, DEFAULT_FEATURES);
+    const result = await getFamilyData(testFamilySlug);
 
-    expect(result.data).not.toBeNull();
-    expect(result.errors.some((error) => error.message === "Family data missing geographies array")).toBe(true);
+    expect(result.data).toBeNull();
+    expect(result.errors[0].message).toBe("Failed to fetch family data");
   });
 
-  it("logs an error but does not throw when the family response is missing collections", async () => {
-    server.use(
-      familySlugHandler(),
-      familyByIdHandler({ family: { collections: undefined } }),
-      familyCollectionHandler(),
-      geographySubdivisionsHandler(),
-      vespaFamilyHandler()
-    );
+  it("returns null data when the family data-in response fails schema validation", async () => {
+    server.use(familySlugHandler(), dataInFamilyHandler({ body: { id: testFamilyImportId } }));
 
-    const result = await getFamilyData(testFamilySlug, DEFAULT_FEATURES);
+    const result = await getFamilyData(testFamilySlug);
 
-    expect(result.data).not.toBeNull();
-    expect(result.errors.some((error) => error.message === "Family data missing collections array")).toBe(true);
+    expect(result.data).toBeNull();
+    expect(result.errors.length).toBeGreaterThan(0);
   });
 
   it("skips the slug lookup and uses importId directly when provided", async () => {
-    server.use(familyByIdHandler(), familyCollectionHandler(), geographySubdivisionsHandler(), vespaFamilyHandler());
+    server.use(dataInFamilyHandler(), vespaFamilyHandler());
 
-    const result = await getFamilyData("", DEFAULT_FEATURES, testFamilyImportId);
+    const result = await getFamilyData("", testFamilyImportId);
 
     expect(result.data).not.toBeNull();
     expect(result.data.family.import_id).toBe(testFamilyImportId);
   });
 
-  it("returns null data when the families-by-id lookup fails outright", async () => {
+  it("fetches and validates a parent collection's data-in document", async () => {
     server.use(
       familySlugHandler(),
-      http.get(`${process.env.CONCEPTS_API_URL}/families/${testFamilyImportId}`, () => HttpResponse.error())
+      dataInFamilyHandler({
+        body: {
+          ...testFamilyDataIn,
+          documents: [
+            {
+              type: "member_of",
+              value: {
+                id: testCollectionImportId,
+                title: "Test Collection",
+                description: null,
+                attributes: { deprecated_slug: "test-collection-slug" },
+                labels: [],
+              },
+            },
+          ],
+        },
+      }),
+      dataInCollectionHandler(),
+      vespaFamilyHandler()
     );
 
-    const result = await getFamilyData(testFamilySlug, DEFAULT_FEATURES);
+    const result = await getFamilyData(testFamilySlug);
+
+    expect(result.data.collections).toHaveLength(1);
+    expect(result.data.collections[0].import_id).toBe(testCollectionImportId);
+  });
+
+  it("returns null data when a parent collection's data-in fetch fails", async () => {
+    server.use(
+      familySlugHandler(),
+      dataInFamilyHandler({
+        body: {
+          ...testFamilyDataIn,
+          documents: [
+            {
+              type: "member_of",
+              value: {
+                id: testCollectionImportId,
+                title: "Test Collection",
+                description: null,
+                attributes: { deprecated_slug: "test-collection-slug" },
+                labels: [],
+              },
+            },
+          ],
+        },
+      }),
+      dataInCollectionHandler({ status: 500 })
+    );
+
+    const result = await getFamilyData(testFamilySlug);
 
     expect(result.data).toBeNull();
-    expect(result.errors[0].message).toBe("Failed to fetch families data");
-  });
-
-  it("fetches and validates the data-in document when new-data-model is enabled", async () => {
-    server.use(
-      familySlugHandler(),
-      familyByIdHandler(),
-      familyCollectionHandler(),
-      geographySubdivisionsHandler(),
-      vespaFamilyHandler(),
-      dataInFamilyHandler()
-    );
-
-    const result = await getFamilyData(testFamilySlug, { ...DEFAULT_FEATURES, "new-data-model": true });
-
-    // The data-in fetch and schema validation should succeed without pushing a fetch-failure
-    // error; downstream transformer errors (e.g. missing taxonomy items) are a separate concern.
-    expect(result.errors.some((e) => e.message.includes("data-in") || e.message.includes("Failed to fetch"))).toBe(false);
-    expect(result.data).not.toBeNull();
-  });
-
-  it("logs an error but does not throw when the data-in fetch fails and new-data-model is enabled", async () => {
-    server.use(
-      familySlugHandler(),
-      familyByIdHandler(),
-      familyCollectionHandler(),
-      geographySubdivisionsHandler(),
-      vespaFamilyHandler(),
-      dataInFamilyHandler({ status: 500 })
-    );
-
-    const result = await getFamilyData(testFamilySlug, { ...DEFAULT_FEATURES, "new-data-model": true });
-
-    expect(result.data).not.toBeNull();
-  });
-
-  it("logs an error but does not throw when the data-in response fails schema validation", async () => {
-    server.use(
-      familySlugHandler(),
-      familyByIdHandler(),
-      familyCollectionHandler(),
-      geographySubdivisionsHandler(),
-      vespaFamilyHandler(),
-      dataInFamilyHandler({ body: { id: testFamilyImportId } })
-    );
-
-    const result = await getFamilyData(testFamilySlug, { ...DEFAULT_FEATURES, "new-data-model": true });
-
-    expect(result.data).not.toBeNull();
-    expect(result.errors.length).toBeGreaterThan(0);
+    expect(result.errors[0].message).toBe("Failed to fetch collections data");
   });
 });

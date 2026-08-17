@@ -1,8 +1,7 @@
 import { Legislation, WithContext } from "schema-dts";
 
 import { TCollectionPublicWithFamilies } from "@/types";
-
-import { getAppUrlForJSONLD } from "./helpers";
+import { getAppUrlForJSONLD } from "@/utils/json-ld/helpers";
 
 /**
  * Generates JSON-LD structured data for a litigation collection.

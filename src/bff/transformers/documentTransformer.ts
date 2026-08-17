@@ -1,37 +1,24 @@
-import { oldDocumentTransformer } from "@/bff/transformers/oldDocumentTransformer";
 import { transformDocument } from "@/bff/transformers/partials/transformDocument";
 import { transformDocumentFamily } from "@/bff/transformers/partials/transformDocumentFamily";
-import { TDocumentApiNewData, TDocumentApiOldData, TDocumentPresentationalResponse } from "@/types";
+import { TDocumentApiData, TDocumentPresentationalResponse } from "@/types";
 
-export const documentTransformer = (
-  documentApiOldData: TDocumentApiOldData,
-  documentApiNewData: TDocumentApiNewData,
-  errors: Error[]
-): TDocumentPresentationalResponse => {
-  if (documentApiOldData === null) return { data: null, errors };
+export const documentTransformer = (documentApiData: TDocumentApiData, errors: Error[]): TDocumentPresentationalResponse => {
+  try {
+    const { document, topicsData, vespaDocumentData } = documentApiData;
 
-  if (documentApiNewData) {
-    try {
-      const document = transformDocument(documentApiNewData, []);
-      if (!document) return { data: null, errors };
-
-      return {
-        data: {
-          ...documentApiOldData,
-          document,
-          family: transformDocumentFamily(documentApiNewData.documents || []),
-          debug: {
-            originalDocument: documentApiOldData.document,
-            newApiData: documentApiNewData,
-            usesDataIn: true,
-          },
+    return {
+      data: {
+        document: transformDocument(document, []),
+        family: transformDocumentFamily(document.documents || []),
+        topicsData,
+        vespaDocumentData,
+        debug: {
+          dataInDocument: document,
         },
-        errors,
-      };
-    } catch (error) {
-      return oldDocumentTransformer(documentApiOldData, documentApiNewData, [...errors, error as Error]);
-    }
-  } else {
-    return oldDocumentTransformer(documentApiOldData, documentApiNewData, errors);
+      },
+      errors,
+    };
+  } catch (error) {
+    return { data: null, errors: [...errors, error as Error] };
   }
 };
