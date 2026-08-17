@@ -44,6 +44,7 @@ const buildPassage = (overrides: Partial<ISearchPassage> = {}): ISearchPassage =
   text_block_id: "block-1",
   idx: 12,
   text: "Certain ecological and other requirements for the areas used by cultivation.",
+  labels: [],
   language: "en",
   type: "",
   type_confidence: 0,

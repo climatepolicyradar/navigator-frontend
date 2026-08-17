@@ -25,6 +25,7 @@ export interface ISearchPassage {
   text_block_id: string;
   idx: number;
   text: string;
+  labels: IPassageLabel[] | null;
   language: string | null;
   type: string;
   type_confidence: number;
@@ -37,7 +38,6 @@ export interface ISearchPassage {
   document_id: string;
   principal_id: string;
   tokens: string[];
-  labels: IPassageLabel[] | null;
 }
 
 export interface ISearchPassagesResponse {
