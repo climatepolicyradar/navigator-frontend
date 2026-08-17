@@ -34,7 +34,7 @@ const toPassageBlock = (passage: ISearchPassage, documentTitle: string): TPassag
   pages: passage.pages?.map((pageNumber) => ({ page_number: pageNumber })),
   headingText: passage.heading_text ?? null,
   documentTitle,
-  labels: passage.labels ?? null,
+  labels: passage.labels,
 });
 
 type TPassageResultsProps = {
