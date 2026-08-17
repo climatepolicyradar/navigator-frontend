@@ -1,11 +1,31 @@
 import { LucideX } from "lucide-react";
 import { useContext, useMemo } from "react";
 
+import { ARROW_RIGHT } from "@/constants/chars";
 import { COUNTRY_FLAGS } from "@/constants/flags";
 import { FiltersContext } from "@/context/FiltersContext";
 import { TFilterPathLabel } from "@/types";
 import { getLabelPathSignature, sortFilterPathLabels } from "@/utils/filters/filterPaths";
 import { joinTailwindClasses } from "@/utils/tailwind";
+
+const getAppliedFilterLabel = (labelValues: Record<string, string>, labelPath: TFilterPathLabel[]): string => {
+  const getLabelValue = (label: TFilterPathLabel) => labelValues[label.id] || label.value;
+  const isGeography = labelPath.some((label) => ["country", "geography"].includes(label.type));
+
+  // Geographies are arrow separated paths with country emojis
+  if (isGeography) {
+    return [...labelPath]
+      .reverse()
+      .map((label) => {
+        const emoji = COUNTRY_FLAGS[label.value] ?? "";
+        const emojiString = emoji ? `${emoji} ` : "";
+        return `${emojiString}${getLabelValue(label)}`;
+      })
+      .join(` ${ARROW_RIGHT} `);
+  }
+
+  return getLabelValue(labelPath[0]);
+};
 
 interface IProps {
   ancestorPath?: TFilterPathLabel[];
@@ -36,14 +56,10 @@ export const AppliedFilters = ({ ancestorPath = [], className, showClearAll }: I
     <ul className={allClasses} aria-label="Applied filters">
       {labels.map((labelPath) => {
         const label = labelPath[0];
-        const emoji = (["country", "geography"].includes(label.type) && COUNTRY_FLAGS[label.value]) ?? "";
 
         return (
           <li key={label.id} className="flex flex-nowrap gap-1 pl-3 pr-2 py-1 bg-[#1A4F8C1A] rounded-full">
-            <span className="block text-sm text-text-primary text-nowrap font-medium leading-5">
-              {emoji ? emoji + " " : ""}
-              {labelValues[label.id] || label.value}
-            </span>
+            <span className="block text-sm text-text-primary text-nowrap font-medium leading-5">{getAppliedFilterLabel(labelValues, labelPath)}</span>
             <button
               type="button"
               className="p-1 -m-1 text-inky-blue"
