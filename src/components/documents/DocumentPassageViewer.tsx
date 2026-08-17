@@ -179,7 +179,9 @@ export const DocumentPassageViewer = ({ document, vespaDocumentData }: TProps) =
           />
         </form>
         <div className="flex flex-wrap items-center justify-between">
-          <div>{/* topic selector here */}</div>
+          <div>
+            <div>{/* topic selector here */}</div>
+          </div>
           <div className="flex flex-wrap items-center gap-2">
             <p className="text-sm text-text-secondary text-right" aria-live="polite">
               {isLoading ? "Searching…" : `${totalMatches} matching ${totalMatches === 1 ? "passage" : "passages"}`}
