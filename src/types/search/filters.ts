@@ -8,20 +8,22 @@ type TFiltersGroupDrawerConfig = {
   title: string;
   subtitle?: string;
   Icon: LucideIcon;
+  afterPartition?: boolean;
   container: "drawer";
   rootLabelTypes: string[];
   prepareRootLabels?: (rootLabels: TNestedSearchLabel[]) => TNestedSearchLabel[];
-  afterPartition?: boolean;
+  filterParentsDefaultOpen?: boolean;
 };
 
 type TFiltersGroupPopoverConfig = {
   title: string;
   subtitle?: never;
   Icon?: never;
+  afterPartition?: boolean;
   container: "popover";
   rootLabelTypes: string[];
   prepareRootLabels?: (rootLabels: TNestedSearchLabel[]) => TNestedSearchLabel[];
-  afterPartition?: boolean;
+  filterParentsDefaultOpen?: boolean;
 };
 
 export type TFiltersGroupConfig = TFiltersGroupDrawerConfig | TFiltersGroupPopoverConfig;

@@ -18,6 +18,7 @@ export const SEARCH_FILTER_GROUPS: TFiltersGroupConfig[] = [
     container: "drawer",
     rootLabelTypes: ["region"],
     prepareRootLabels: prepareGeographyFilters,
+    filterParentsDefaultOpen: true,
   },
   {
     title: "Topic",

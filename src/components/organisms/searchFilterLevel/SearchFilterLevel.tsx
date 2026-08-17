@@ -20,10 +20,11 @@ interface IProps {
   labels: TNestedSearchLabel[];
   level: number;
   renderParents?: boolean;
+  parentsDefaultOpen?: boolean;
 }
 
 // Render a set of label peers depending on content and composition
-export const SearchFilterLevel = ({ ancestorPath, indented, labels, level, renderParents }: IProps) => {
+export const SearchFilterLevel = ({ ancestorPath, indented, labels, level, parentsDefaultOpen, renderParents }: IProps) => {
   const { inUse: isLookupAtHigherLevel } = useContext(FiltersLookupContext);
 
   const levelIsGroups = labels.every((label) => label.type === "group");
@@ -37,7 +38,7 @@ export const SearchFilterLevel = ({ ancestorPath, indented, labels, level, rende
     return (
       <ul className={joinTailwindClasses("flex flex-col gap-4 list-none", indentedClasses)}>
         {sortedLabels.map((label) => (
-          <SearchFilterParent key={label.id} ancestorPath={ancestorPath} label={label} level={level} />
+          <SearchFilterParent key={label.id} ancestorPath={ancestorPath} defaultOpen={parentsDefaultOpen} label={label} level={level} />
         ))}
       </ul>
     );

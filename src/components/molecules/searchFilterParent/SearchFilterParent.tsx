@@ -15,11 +15,12 @@ interface IProps {
   ancestorPath: TFilterPathLabel[];
   label: TNestedSearchLabel;
   level: number;
+  defaultOpen?: boolean;
 }
 
-export const SearchFilterParent = ({ ancestorPath, label, level }: IProps) => {
+export const SearchFilterParent = ({ ancestorPath, defaultOpen = false, label, level }: IProps) => {
   const { checkedLabelPaths, toggleFilter } = useContext(FiltersContext);
-  const [isExpanded, setIsExpanded] = useState(false);
+  const [isExpanded, setIsExpanded] = useState(defaultOpen);
 
   const isGroupLabel = label.type === "group";
   const pathLabels = isGroupLabel ? [...ancestorPath] : [getFilterPathLabel(label), ...ancestorPath];
