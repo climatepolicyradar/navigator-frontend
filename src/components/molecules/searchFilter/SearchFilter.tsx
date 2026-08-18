@@ -74,7 +74,7 @@ export const SearchFilter = ({ ancestorPath, label, level }: IProps) => {
         >
           <span>{labelValue}</span>
         </Checkbox>
-        {hasChildren && <ChevronDown size={16} className={joinTailwindClasses("text-elem-icon", isExpanded && "rotate-180")} />}
+        {!isFiltered && hasChildren && <ChevronDown size={16} className={joinTailwindClasses("text-elem-icon", isExpanded && "rotate-180")} />}
       </button>
       {hasChildren && (isExpanded || isFiltered) && (
         <SearchFilterLevel ancestorPath={pathLabels} labels={label.children} level={level + 1} indented />
