@@ -49,6 +49,13 @@ export const SearchControls = ({
   const [_currentPage, setCurrentPage] = useQueryState("page_token", parseAsString.withDefault("1"));
 
   const [searchInput, setSearchInput] = useState(queryParam);
+  // Keep input in sync with query
+  const [lastQueryParam, setLastQueryParam] = useState(queryParam);
+
+  if (queryParam !== lastQueryParam) {
+    setLastQueryParam(queryParam);
+    setSearchInput(queryParam);
+  }
 
   const labelValues = useMemo(() => getSearchLabelValues(labels), [labels]);
   const checkedLabelPaths = useMemo(() => sortFilterPathLabels(queryGroupToFilterPaths(filterParam)), [filterParam]);
