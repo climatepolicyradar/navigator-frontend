@@ -1,6 +1,6 @@
 import { LucideSearch } from "lucide-react";
 import { parseAsJson, parseAsString, useQueryState } from "nuqs";
-import { Fragment, SubmitEventHandler, useMemo, useState } from "react";
+import { Fragment, ReactNode, SubmitEventHandler, useMemo, useState } from "react";
 
 import { Input } from "@/components/atoms/input/Input";
 import { AppliedFilters } from "@/components/molecules/appliedFilters/AppliedFilters";
@@ -15,25 +15,33 @@ import { getSearchLabelValues } from "@/utils/filters/getSearchLabelValues";
 import { groupSearchLabels } from "@/utils/filters/groupSearchLabels";
 import { nestSearchLabels } from "@/utils/filters/nestSearchLabels";
 import { updateCheckedLabelPaths } from "@/utils/filters/updateCheckedLabelPaths";
+import { pluralise } from "@/utils/pluralise";
 import { DEFAULT_SEARCH_QUERY_GROUP, filterPathsToQueryGroup } from "@/utils/search/filterPathsToQueryGroup";
 import { queryGroupToFilterPaths } from "@/utils/search/queryGroupToFilterPaths";
+import { formatDateShort } from "@/utils/timedate";
 
 interface IProps {
+  extraContent?: ReactNode; // Benefits from FiltersContext for rendering suggestions / zero state
   filterGroups: TFiltersGroupConfig[];
   filterParamKey: string;
   labels: TSearchLabel[];
   queryParamKey: string;
   resetPageOnSort?: boolean;
+  resultsCount?: number | null;
+  resultsMostRecent?: Date | null;
   sortOptions: TSortOptionConfig[];
   sortParamKey: string;
 }
 
 export const SearchControls = ({
+  extraContent = null,
   filterGroups,
   filterParamKey,
   labels,
   queryParamKey,
   resetPageOnSort = false,
+  resultsCount,
+  resultsMostRecent,
   sortOptions,
   sortParamKey,
 }: IProps) => {
@@ -87,24 +95,42 @@ export const SearchControls = ({
           value={searchInput}
         />
       </form>
-      <div className="col-start-1 -col-end-1 cols-5:col-start-2 cols-5:-col-end-2 flex flex-wrap gap-1 justify-between">
-        <div className="flex gap-1">
+      <div className="col-start-1 -col-end-1 cols-5:col-start-2 cols-5:-col-end-2 flex flex-wrap gap-1 justify-between text-sm text-text-primary font-normal leading-5">
+        <div className="flex flex-wrap gap-1 items-center">
           {filterGroupsWithLabels.map((group) => {
             const SearchFilters = group.container === "drawer" ? SearchFiltersDrawer : SearchFiltersPopover;
 
             return (
               <Fragment key={group.title}>
-                {group.afterPartition && <div className="w-px h-full mx-3 bg-border-normal" />}
+                {group.afterPartition && <div className="w-px h-6 mx-3 bg-border-normal hidden sm:block" />}
                 <SearchFilters filterGroup={group} />
               </Fragment>
             );
           })}
         </div>
-        <div className="flex gap-1">
+        <div className="flex flex-wrap gap-1 items-center">
+          {typeof resultsCount === "number" && (
+            <>
+              <div>
+                {resultsCount} {pluralise(resultsCount, ["result", "results"])}
+              </div>
+              <div className="w-px h-4 mx-3 bg-border-normal" />
+            </>
+          )}
+          {resultsMostRecent && (
+            <>
+              <div>
+                {/* TODO: localise this date */}
+                Most recent: {formatDateShort(resultsMostRecent, "en-GB")}
+              </div>
+              <div className="w-px h-4 mx-3 bg-border-normal" />
+            </>
+          )}
           <Sort sortOptions={sortOptions} value={sortParam} onChange={onSort} />
         </div>
       </div>
       <AppliedFilters showClearAll />
+      {extraContent}
     </FiltersContext>
   );
 };

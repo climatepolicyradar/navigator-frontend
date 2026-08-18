@@ -84,11 +84,13 @@ const ShadowSearch = ({ theme, themeConfig, features }: TProps) => {
             <h1 className="text-5xl font-bold text-inky-black">Search</h1>
           </div>
           {/* CONTROLS - FILTERS, SORT, etc */}
+          {/* TODO add most recent date from search results */}
           <SearchControls
             filterGroups={SEARCH_FILTER_GROUPS}
             filterParamKey="filters"
             labels={availableFilters}
             queryParamKey="q"
+            resultsCount={totalNoOfResults}
             sortOptions={SEARCH_SORT_OPTIONS}
             sortParamKey="sort"
           />
