@@ -1,23 +1,24 @@
 import { useInfiniteQuery } from "@tanstack/react-query";
-import { Search } from "lucide-react";
 import { parseAsString, useQueryState } from "nuqs";
-import { memo, useCallback, useContext, useMemo, useState } from "react";
+import { memo, useCallback, useContext, useEffect, useMemo, useState } from "react";
 
 import { fetchSearchPassages } from "@/api/passages";
 import EmbeddedPDF from "@/components/EmbeddedPDF";
 import Loader from "@/components/Loader";
 import { Button } from "@/components/atoms/button/Button";
-import { Input } from "@/components/atoms/input/Input";
 import { EmptyDocument } from "@/components/documents/EmptyDocument";
 import { EmptyPassages } from "@/components/molecules/emptyPassages/EmptyPassages";
 import { PassageBlock, TPassage as TPassageBlock } from "@/components/molecules/passageBlock/PassageBlock";
-import { Sort } from "@/components/molecules/sort/Sort";
+import { SearchControls } from "@/components/organisms/searchControls/SearchControls";
 import { FullWidth } from "@/components/panels/FullWidth";
+import { ID_SEPARATOR } from "@/constants/chars";
+import { PASSAGE_FILTER_GROUPS } from "@/constants/filters";
 import { RESULTS_PER_PAGE } from "@/constants/paging";
 import { QUERY_PARAMS } from "@/constants/queryParams";
 import { PASSAGE_SORT_OPTIONS } from "@/constants/sort";
 import { TopicsContext } from "@/context/TopicsContext";
-import { ISearchPassage, TFamilyDocumentPublic, TSearchResponse } from "@/types";
+import { loadLabels } from "@/hooks/useLabelSearch";
+import { ISearchPassage, TFamilyDocumentPublic, TSearchLabel, TSearchResponse } from "@/types";
 import { getTopDocumentConcepts } from "@/utils/topics/getTopDocumentTopics";
 
 const TOP_CONCEPTS_LIMIT = 10;
@@ -74,9 +75,9 @@ DocumentPreview.displayName = "DocumentPreview";
 export const DocumentPassageViewer = ({ document, vespaDocumentData }: TProps) => {
   const { topics } = useContext(TopicsContext);
   const [query, setQuery] = useQueryState(QUERY_PARAMS.query_string, parseAsString.withDefault(""));
-  const [sort, setSort] = useQueryState("sort", parseAsString.withDefault("relevance desc"));
-  const [searchTerm, setSearchTerm] = useState(query);
+  const [sort] = useQueryState("sort", parseAsString.withDefault("relevance desc"));
   const [pageNumber, setPageNumber] = useState<number | null>(null);
+  const [availableFilters, setAvailableFilters] = useState<TSearchLabel[]>([]);
 
   // Keep the input in step with the URL when the query changes elsewhere, e.g. the
   // browser back button or a concept being picked from the empty state. Adjusting during
@@ -85,9 +86,12 @@ export const DocumentPassageViewer = ({ document, vespaDocumentData }: TProps) =
   const [hasNavigatedForQuery, setHasNavigatedForQuery] = useState(false);
   if (query !== previousQuery) {
     setPreviousQuery(query);
-    setSearchTerm(query);
     setHasNavigatedForQuery(false);
   }
+
+  useEffect(() => {
+    loadLabels("").then(setAvailableFilters);
+  }, []);
 
   const { data, isError, isFetching, isPending, fetchNextPage, hasNextPage, isFetchingNextPage } = useInfiniteQuery({
     queryKey: ["document-passages", document.import_id, query, sort],
@@ -133,21 +137,21 @@ export const DocumentPassageViewer = ({ document, vespaDocumentData }: TProps) =
     setPageNumber(firstResultPage + 1);
   }
 
-  const topConcepts = useMemo(() => getTopDocumentConcepts(vespaDocumentData, topics, TOP_CONCEPTS_LIMIT), [vespaDocumentData, topics]);
+  const rankedConcepts = useMemo(() => getTopDocumentConcepts(vespaDocumentData, topics), [vespaDocumentData, topics]);
+  const topConcepts = useMemo(() => rankedConcepts.slice(0, TOP_CONCEPTS_LIMIT), [rankedConcepts]);
 
-  const handleSubmit = (event: React.SubmitEvent<HTMLFormElement>) => {
-    event.preventDefault();
-    setQuery(searchTerm.trim());
-  };
+  // Only offer concept filters the document actually has passages for
+  const conceptFilters = useMemo(() => {
+    const rankedIds = new Set(rankedConcepts.map((concept) => concept.wikibase_id));
+    return availableFilters.filter((label) => label.type === "concept" && rankedIds.has(label.id.split(ID_SEPARATOR)[1]));
+  }, [availableFilters, rankedConcepts]);
 
   const handleClear = () => {
-    setSearchTerm("");
     setQuery("");
   };
 
   const handleConceptClick = useCallback(
     (label: string) => {
-      setSearchTerm(label);
       setQuery(label);
     },
     [setQuery]
@@ -166,33 +170,14 @@ export const DocumentPassageViewer = ({ document, vespaDocumentData }: TProps) =
   return (
     <section className="flex-1 flex flex-col" id="document-passage-viewer">
       <FullWidth extraClasses="flex flex-col gap-4 py-4">
-        <form onSubmit={handleSubmit} role="search">
-          <Input
-            aria-label="Search passages in this document"
-            clearable
-            containerClasses="px-4 py-2"
-            icon={<Search size={16} />}
-            inputClasses="!text-sm"
-            name="Search"
-            onChange={(event) => setSearchTerm(event.target.value)}
-            onClear={handleClear}
-            placeholder="Enter search term"
-            type="text"
-            value={searchTerm}
-          />
-        </form>
-        <div className="flex flex-wrap items-center justify-between">
-          <div>{/* topic selector here */}</div>
-          <div className="flex flex-wrap items-center gap-2">
-            <div className="flex items-center gap-4">
-              <p className="text-sm text-text-secondary text-right" aria-live="polite">
-                {isLoading ? "Searching…" : `${totalMatches} matching ${totalMatches === 1 ? "passage" : "passages"}`}
-              </p>
-              {/* sort here */}
-              <Sort sortOptions={PASSAGE_SORT_OPTIONS} value={sort} onChange={(next) => setSort(next)} />
-            </div>
-          </div>
-        </div>
+        <SearchControls
+          filterGroups={PASSAGE_FILTER_GROUPS}
+          filterParamKey="filters"
+          labels={conceptFilters}
+          queryParamKey="q"
+          sortOptions={PASSAGE_SORT_OPTIONS}
+          sortParamKey="sort"
+        />
       </FullWidth>
 
       <div className="flex flex-col border-t border-border-light lg:flex-row lg:h-[80vh]">
