@@ -15,7 +15,6 @@ import { getSearchLabelValues } from "@/utils/filters/getSearchLabelValues";
 import { groupSearchLabels } from "@/utils/filters/groupSearchLabels";
 import { nestSearchLabels } from "@/utils/filters/nestSearchLabels";
 import { updateCheckedLabelPaths } from "@/utils/filters/updateCheckedLabelPaths";
-import { pluralise } from "@/utils/pluralise";
 import { DEFAULT_SEARCH_QUERY_GROUP, filterPathsToQueryGroup } from "@/utils/search/filterPathsToQueryGroup";
 import { queryGroupToFilterPaths } from "@/utils/search/queryGroupToFilterPaths";
 import { formatDateShort } from "@/utils/timedate";
@@ -27,7 +26,7 @@ interface IProps {
   labels: TSearchLabel[];
   queryParamKey: string;
   resetPageOnSort?: boolean;
-  resultsCount?: number | null;
+  resultsNode?: ReactNode;
   resultsMostRecent?: Date | null;
   sortOptions: TSortOptionConfig[];
   sortParamKey: string;
@@ -40,7 +39,7 @@ export const SearchControls = ({
   labels,
   queryParamKey,
   resetPageOnSort = false,
-  resultsCount,
+  resultsNode,
   resultsMostRecent,
   sortOptions,
   sortParamKey,
@@ -109,11 +108,9 @@ export const SearchControls = ({
           })}
         </div>
         <div className="flex flex-wrap gap-1 items-center">
-          {typeof resultsCount === "number" && (
+          {resultsNode && (
             <>
-              <div>
-                {resultsCount} {pluralise(resultsCount, ["result", "results"])}
-              </div>
+              {resultsNode}
               <div className="w-px h-4 mx-3 bg-border-normal" />
             </>
           )}

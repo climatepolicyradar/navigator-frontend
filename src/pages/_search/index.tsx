@@ -19,6 +19,7 @@ import { FilterGroupSchema } from "@/schemas";
 import { TSearchLabel, TSearchQueryGroup, TTheme } from "@/types";
 import { getFeatureFlags } from "@/utils/featureFlags";
 import { getFeatures } from "@/utils/features";
+import { pluralise } from "@/utils/pluralise";
 import { readConfigFile } from "@/utils/readConfigFile";
 import { joinTailwindClasses } from "@/utils/tailwind";
 
@@ -122,7 +123,13 @@ const ShadowSearch = ({ theme, themeConfig, features }: TProps) => {
             filterParamKey="filters"
             labels={availableFilters}
             queryParamKey="q"
-            resultsCount={totalNoOfResults}
+            resultsNode={
+              totalNoOfResults ? (
+                <div>
+                  {totalNoOfResults} {pluralise(totalNoOfResults, ["result", "results"])}
+                </div>
+              ) : null
+            }
             sortOptions={SEARCH_SORT_OPTIONS}
             sortParamKey="sort"
           />
