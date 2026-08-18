@@ -33,7 +33,7 @@ export const Drawer = ({ children, childrenClassName, title, titleExtras, direct
           <BaseDrawer.Popup className={joinTailwindClasses(styles.DrawerContent, wide && styles.DrawerContentWide)} data-direction={direction}>
             <div className="flex items-start justify-between pt-7 px-8 pb-0">
               {!!title && (
-                <BaseDrawer.Title className="text-xl font-semibold flex-1" data-base-ui-swipe-ignore>
+                <BaseDrawer.Title className="text-xl text-text-primary font-semibold flex-1" data-base-ui-swipe-ignore>
                   {title}
                 </BaseDrawer.Title>
               )}

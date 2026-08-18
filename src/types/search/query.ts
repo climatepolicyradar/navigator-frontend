@@ -1,6 +1,12 @@
 export type TSearchQueryRule =
   | {
-      field: "labels.value.id" | "attributes.status";
+      field: "labels.value.id" | "labels.value.type" | "attributes.status";
+      op: "contains" | "not_contains" | "eq";
+      value: string;
+      checked?: true;
+    }
+  | {
+      field: "type" | "value";
       op: "contains" | "not_contains" | "eq";
       value: string;
       checked?: true;

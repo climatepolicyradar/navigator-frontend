@@ -17,26 +17,33 @@ import { nestSearchLabels } from "@/utils/filters/nestSearchLabels";
 import { updateCheckedLabelPaths } from "@/utils/filters/updateCheckedLabelPaths";
 import { DEFAULT_SEARCH_QUERY_GROUP, filterPathsToQueryGroup } from "@/utils/search/filterPathsToQueryGroup";
 import { queryGroupToFilterPaths } from "@/utils/search/queryGroupToFilterPaths";
+import { formatDateShort } from "@/utils/timedate";
 
 interface IProps {
+  extraContent?: ReactNode; // Benefits from FiltersContext for rendering suggestions / zero state
   filterGroups: TFiltersGroupConfig[];
   filterParamKey: string;
   filtersSlot?: ReactNode;
   labels: TSearchLabel[];
   queryParamKey: string;
   resetPageOnSort?: boolean;
+  resultsNode?: ReactNode;
+  resultsMostRecent?: Date | null;
   sortOptions: TSortOptionConfig[];
   sortParamKey: string;
   text?: ReactNode;
 }
 
 export const SearchControls = ({
+  extraContent = null,
   filterGroups,
   filterParamKey,
   filtersSlot,
   labels,
   queryParamKey,
   resetPageOnSort = false,
+  resultsNode,
+  resultsMostRecent,
   sortOptions,
   sortParamKey,
   text,
@@ -98,26 +105,41 @@ export const SearchControls = ({
           value={searchInput}
         />
       </form>
-      <div className="col-start-1 -col-end-1 cols-5:col-start-2 cols-5:-col-end-2 flex flex-wrap gap-1 justify-between">
-        <div className="flex gap-1">
+      <div className="col-start-1 -col-end-1 cols-5:col-start-2 cols-5:-col-end-2 flex flex-wrap gap-1 justify-between text-sm text-text-primary font-normal leading-5">
+        <div className="flex flex-wrap gap-1 items-center">
           {filtersSlot}
           {filterGroupsWithLabels.map((group) => {
             const SearchFilters = group.container === "drawer" ? SearchFiltersDrawer : SearchFiltersPopover;
 
             return (
               <Fragment key={group.title}>
-                {group.afterPartition && <div className="w-px h-full mx-3 bg-border-normal" />}
+                {group.afterPartition && <div className="w-px h-6 mx-3 bg-border-normal hidden sm:block" />}
                 <SearchFilters filterGroup={group} />
               </Fragment>
             );
           })}
         </div>
-        <div className="flex items-center gap-2">
-          {text}
+        <div className="flex flex-wrap gap-1 items-center">
+          {resultsNode && (
+            <>
+              {resultsNode}
+              <div className="w-px h-4 mx-3 bg-border-normal" />
+            </>
+          )}
+          {resultsMostRecent && (
+            <>
+              <div>
+                {/* TODO: localise this date */}
+                Most recent: {formatDateShort(resultsMostRecent, "en-GB")}
+              </div>
+              <div className="w-px h-4 mx-3 bg-border-normal" />
+            </>
+          )}
           <Sort sortOptions={sortOptions} value={sortParam} onChange={onSort} />
         </div>
       </div>
       <AppliedFilters showClearAll />
+      {extraContent}
     </FiltersContext>
   );
 };

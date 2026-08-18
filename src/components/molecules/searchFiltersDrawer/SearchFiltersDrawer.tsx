@@ -35,7 +35,13 @@ export const SearchFiltersDrawer = ({ filterGroup }: IProps) => {
           </>
         }
       >
-        <SearchFilterLevel ancestorPath={[]} labels={nestedLabels} level={1} renderParents showAppliedFilters={filterGroup.showAppliedFilters} />
+        <SearchFilterLevel
+          ancestorPath={[]}
+          labels={nestedLabels}
+          level={1}
+          parentsDefaultOpen={filterGroup.filterParentsDefaultOpen}
+          renderParents
+        />
       </Drawer>
     </>
   );
