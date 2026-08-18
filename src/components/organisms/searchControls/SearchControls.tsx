@@ -68,7 +68,7 @@ export const SearchControls = ({
 
   const onQuerySubmit: SubmitEventHandler<HTMLFormElement> = (event) => {
     event.preventDefault();
-    setQueryParam(searchInput);
+    setQueryParam(searchInput.trim());
   };
 
   return (
