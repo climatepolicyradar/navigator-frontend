@@ -1,3 +1,5 @@
+import { TSearchQueryGroup } from "@/types";
+
 export interface IPassageBoundingBox {
   coordinates: { x: number; y: number }[];
 }
@@ -54,6 +56,7 @@ export interface ISearchPassagesResponse {
 export interface ISearchPassagesParams {
   query: string;
   documents: string[];
+  filters?: TSearchQueryGroup | null;
   pageSize?: number;
   // 1-indexed page number. The API's `page` parameter is currently ignored, and its
   // `next_page` / `total_pages` fields come back null, so callers page by incrementing

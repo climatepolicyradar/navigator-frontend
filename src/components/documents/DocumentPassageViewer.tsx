@@ -1,5 +1,5 @@
 import { useInfiniteQuery } from "@tanstack/react-query";
-import { parseAsString, useQueryState } from "nuqs";
+import { parseAsJson, parseAsString, useQueryState } from "nuqs";
 import { memo, useCallback, useContext, useEffect, useMemo, useState } from "react";
 
 import { fetchSearchPassages } from "@/api/passages";
@@ -18,7 +18,8 @@ import { QUERY_PARAMS } from "@/constants/queryParams";
 import { PASSAGE_SORT_OPTIONS } from "@/constants/sort";
 import { TopicsContext } from "@/context/TopicsContext";
 import { loadLabels } from "@/hooks/useLabelSearch";
-import { ISearchPassage, TFamilyDocumentPublic, TSearchLabel, TSearchResponse } from "@/types";
+import { FilterGroupSchema } from "@/schemas";
+import { ISearchPassage, TFamilyDocumentPublic, TSearchLabel, TSearchQueryGroup, TSearchResponse } from "@/types";
 import { getTopDocumentConcepts } from "@/utils/topics/getTopDocumentTopics";
 
 const TOP_CONCEPTS_LIMIT = 10;
@@ -74,18 +75,23 @@ DocumentPreview.displayName = "DocumentPreview";
 
 export const DocumentPassageViewer = ({ document, vespaDocumentData }: TProps) => {
   const { topics } = useContext(TopicsContext);
-  const [query, setQuery] = useQueryState(QUERY_PARAMS.query_string, parseAsString.withDefault(""));
+  const [queryParam, setQueryParam] = useQueryState(QUERY_PARAMS.query_string, parseAsString.withDefault(""));
+  const [filterParam, setFilterParams] = useQueryState("filters", parseAsJson<TSearchQueryGroup>(FilterGroupSchema));
   const [sort] = useQueryState("sort", parseAsString.withDefault("relevance desc"));
   const [pageNumber, setPageNumber] = useState<number | null>(null);
   const [availableFilters, setAvailableFilters] = useState<TSearchLabel[]>([]);
 
-  // Arm the jump to the first result whenever the search changes, whether that is a new
-  // term or a re-ordering. Adjusting during render rather than in an effect avoids a
-  // second render pass with a stale value.
-  const [previousSearch, setPreviousSearch] = useState({ query, sort });
+  // Arm the jump to the first result when changed:
+  // - the search query
+  // - different topics
+  // - re-ordering
+  // Adjusting during render rather than in an effect avoids a second render pass with a stale value.
+  // The filter group is compared serialised, so the check does not rest on the parser returning a stable object.
+  const filterKey = JSON.stringify(filterParam);
+  const [previousSearch, setPreviousSearch] = useState({ queryParam, filterKey, sort });
   const [hasNavigatedForSearch, setHasNavigatedForSearch] = useState(false);
-  if (query !== previousSearch.query || sort !== previousSearch.sort) {
-    setPreviousSearch({ query, sort });
+  if (queryParam !== previousSearch.queryParam || filterKey !== previousSearch.filterKey || sort !== previousSearch.sort) {
+    setPreviousSearch({ queryParam, filterKey, sort });
     setHasNavigatedForSearch(false);
   }
 
@@ -93,10 +99,20 @@ export const DocumentPassageViewer = ({ document, vespaDocumentData }: TProps) =
     loadLabels("").then(setAvailableFilters);
   }, []);
 
+  const hasSearch = queryParam.length > 0 || !!filterParam;
+
   const { data, isError, isFetching, isPending, fetchNextPage, hasNextPage, isFetchingNextPage } = useInfiniteQuery({
-    queryKey: ["document-passages", document.import_id, query, sort],
+    queryKey: ["document-passages", document.import_id, queryParam, filterParam, sort],
     queryFn: ({ pageParam, signal }) =>
-      fetchSearchPassages({ query, documents: [document.import_id], pageSize: RESULTS_PER_PAGE, sort, pageToken: pageParam, signal }),
+      fetchSearchPassages({
+        query: queryParam,
+        documents: [document.import_id],
+        filters: filterParam,
+        pageSize: RESULTS_PER_PAGE,
+        sort,
+        pageToken: pageParam,
+        signal,
+      }),
     initialPageParam: 1,
     // The API leaves `next_page` and `total_pages` unpopulated, so there is no cursor to
     // follow. Paging is driven by the running result count against the reported total.
@@ -108,7 +124,7 @@ export const DocumentPassageViewer = ({ document, vespaDocumentData }: TProps) =
       if (loaded >= total || lastPage.results.length === 0) return undefined;
       return allPages.length + 1;
     },
-    enabled: query.length > 0,
+    enabled: hasSearch,
     // A term's results do not change within a session, so don't refetch one the user returns to.
     refetchOnWindowFocus: false,
     refetchOnMount: false,
@@ -116,20 +132,18 @@ export const DocumentPassageViewer = ({ document, vespaDocumentData }: TProps) =
 
   const canPreview = !!document.cdn_object && document.cdn_object.toLowerCase().endsWith(".pdf");
 
-  const hasQuery = query.length > 0;
+  const totalMatches = hasSearch ? (data?.pages[0]?.total_size ?? 0) : 0;
 
-  const totalMatches = hasQuery ? (data?.pages[0]?.total_size ?? 0) : 0;
-
-  const searchPassages = useMemo(() => (hasQuery ? (data?.pages ?? []).flatMap((page) => page.results) : []), [data, hasQuery]);
+  const searchPassages = useMemo(() => (hasSearch ? (data?.pages ?? []).flatMap((page) => page.results) : []), [data, hasSearch]);
 
   const passages = useMemo(() => searchPassages.map((passage) => toPassageBlock(passage, document.title)), [searchPassages, document.title]);
 
   // Avoid cases where the result state flashes before the request has resolved
-  const isLoading = hasQuery && !isFetchingNextPage && passages.length === 0 && (isPending || isFetching);
+  const isLoading = hasSearch && !isFetchingNextPage && passages.length === 0 && (isPending || isFetching);
 
   // Navigate to the first match once a search returns
   const firstResultPage = passages[0]?.pages?.[0]?.page_number;
-  if (hasQuery && !hasNavigatedForSearch && firstResultPage !== undefined) {
+  if (hasSearch && !hasNavigatedForSearch && firstResultPage !== undefined) {
     setHasNavigatedForSearch(true);
     // `page_number` is 0-indexed in the passage model; the PDF viewer is 1-indexed.
     setPageNumber(firstResultPage + 1);
@@ -145,14 +159,15 @@ export const DocumentPassageViewer = ({ document, vespaDocumentData }: TProps) =
   }, [availableFilters, rankedConcepts]);
 
   const handleClear = () => {
-    setQuery("");
+    setQueryParam("");
+    setFilterParams(null);
   };
 
   const handleConceptClick = useCallback(
     (label: string) => {
-      setQuery(label);
+      setQueryParam(label);
     },
-    [setQuery]
+    [setQueryParam]
   );
 
   const handlePassageClick = useCallback(
@@ -207,7 +222,7 @@ export const DocumentPassageViewer = ({ document, vespaDocumentData }: TProps) =
             </>
           )}
           {!isLoading && !isError && passages.length === 0 && (
-            <EmptyPassages concepts={topConcepts} hasQuery={hasQuery} onClearClick={handleClear} onConceptClick={handleConceptClick} />
+            <EmptyPassages concepts={topConcepts} hasQuery={hasSearch} onClearClick={handleClear} onConceptClick={handleConceptClick} />
           )}
         </div>
 
