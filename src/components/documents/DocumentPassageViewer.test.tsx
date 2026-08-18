@@ -1,5 +1,5 @@
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import { render, screen, waitFor, within } from "@testing-library/react";
+import { act, render, screen, waitFor } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 
 import { TopicsContext } from "@/context/TopicsContext";
@@ -15,23 +15,41 @@ vi.mock("@/components/EmbeddedPDF", () => ({
 const mockFetchSearchPassages = vi.hoisted(() => vi.fn());
 vi.mock("@/api/passages", () => ({ fetchSearchPassages: mockFetchSearchPassages }));
 
-// A stateful stand-in for the `q` URL param. nuqs' own testing adapter is fully
-// controlled and reverts the value after every write, which the component reads as a
-// browser navigation. The real adapter (wired in _app.tsx) keeps the value, so this fake
-// reproduces production semantics: read the initial term, then hold what is written.
-const urlQuery = vi.hoisted(() => ({ initial: "", writes: [] as (string | null)[] }));
+// A stateful stand-in for the URL params. nuqs' own testing adapter is fully controlled
+// and reverts the value after every write, which the component reads as a browser
+// navigation. The real adapter (wired in _app.tsx) keeps the value, so this fake
+// reproduces production semantics: read the initial value, then hold what is written.
+// The store is shared across hook instances and keyed by param, because the viewer and
+// its SearchControls both read `q` and `sort`, and a write from one must reach the other.
+const url = vi.hoisted(() => {
+  const values = new Map<string, unknown>();
+  const listeners = new Set<() => void>();
+  return {
+    reset: () => values.clear(),
+    read: (key: string, fallback: unknown) => (values.has(key) ? values.get(key) : fallback),
+    write: (key: string, value: unknown) => {
+      values.set(key, value);
+      listeners.forEach((listener) => listener());
+    },
+    subscribe: (listener: () => void) => {
+      listeners.add(listener);
+      return (): void => {
+        listeners.delete(listener);
+      };
+    },
+  };
+});
 vi.mock("nuqs", async (importOriginal) => {
   const actual = await importOriginal<typeof import("nuqs")>();
-  const { useState } = await import("react");
+  const { useSyncExternalStore } = await import("react");
   return {
     ...actual,
-    useQueryState: () => {
-      const [value, setValue] = useState(urlQuery.initial);
+    useQueryState: (key: string, parser: { defaultValue?: unknown }) => {
+      const read = () => url.read(key, parser?.defaultValue);
       return [
-        value,
-        (next: string | null) => {
-          urlQuery.writes.push(next);
-          setValue(next ?? "");
+        useSyncExternalStore(url.subscribe, read, read),
+        (next: unknown) => {
+          url.write(key, next ?? parser?.defaultValue);
           return Promise.resolve(new URLSearchParams());
         },
       ];
@@ -89,7 +107,7 @@ const vespaDocumentData = {
 } as unknown as TSearchResponse;
 
 const renderViewer = (initialQuery = "") => {
-  urlQuery.initial = initialQuery;
+  if (initialQuery) url.write("q", initialQuery);
   const queryClient = new QueryClient({ defaultOptions: { queries: { retry: false } } });
 
   return render(
@@ -101,91 +119,52 @@ const renderViewer = (initialQuery = "") => {
   );
 };
 
-const searchBox = () => screen.getByRole("textbox", { name: /search passages/i });
+// The search input, its submit and its clear button belong to SearchControls, which is
+// covered by its own component's tests. The viewer only reacts to the term in the URL, so
+// these drive the param directly rather than the markup around it.
+const searchFor = async (term: string) => {
+  await act(async () => url.write("q", term));
+};
 
-// The Input atom's clear control is an unlabelled icon button, so it is reached through
-// the search landmark rather than by name.
-const clearButton = () => within(screen.getByRole("search")).getByRole("button");
+/*
+  Base UI keeps the sort positioner hidden until it has measured the trigger, so the popup
+  only becomes accessible a tick after the click.
+*/
+const sortBy = async (optionName: string) => {
+  await userEvent.click(screen.getByRole("combobox"));
+  await waitFor(() => expect(screen.getByRole("listbox")).toBeVisible());
+  await userEvent.click(screen.getByRole("option", { name: optionName }));
+};
 
 describe("DocumentPassageViewer", () => {
   beforeEach(() => {
-    urlQuery.initial = "";
-    urlQuery.writes = [];
+    url.reset();
     mockFetchSearchPassages.mockReset();
     mockFetchSearchPassages.mockResolvedValue({ total_size: 1, results: [buildPassage()] });
   });
 
   describe("handling the search term", () => {
-    it("does not search until the user submits a term", async () => {
-      renderViewer();
-      await screen.findByText("Search passages");
-
-      await userEvent.type(searchBox(), "renewable");
-
-      expect(mockFetchSearchPassages).not.toHaveBeenCalled();
-    });
-
-    it("searches the document for the term when the user presses enter", async () => {
-      renderViewer();
-
-      await userEvent.type(searchBox(), "renewable{Enter}");
+    it("searches the document for the term in the url", async () => {
+      renderViewer("renewable");
 
       await waitFor(() => expect(mockFetchSearchPassages).toHaveBeenCalledTimes(1));
       expect(mockFetchSearchPassages).toHaveBeenCalledWith(expect.objectContaining({ query: "renewable", documents: ["CCLW.document.1.1"] }));
     });
 
-    it("puts the submitted term in the url so the search can be shared", async () => {
+    it("does not search while there is no term", async () => {
       renderViewer();
 
-      await userEvent.type(searchBox(), "renewable{Enter}");
-
-      await waitFor(() => expect(urlQuery.writes).toContain("renewable"));
-    });
-
-    it("trims surrounding whitespace from the term", async () => {
-      renderViewer();
-
-      await userEvent.type(searchBox(), "  renewable  {Enter}");
-
-      await waitFor(() => expect(mockFetchSearchPassages).toHaveBeenCalledWith(expect.objectContaining({ query: "renewable" })));
-    });
-
-    it("does not search when the term is only whitespace", async () => {
-      renderViewer();
-
-      await userEvent.type(searchBox(), "   {Enter}");
-
+      await screen.findByText("Search passages");
       expect(mockFetchSearchPassages).not.toHaveBeenCalled();
     });
 
-    it("runs the search from the url on first render", async () => {
-      renderViewer("renewable");
-
-      await waitFor(() => expect(mockFetchSearchPassages).toHaveBeenCalledWith(expect.objectContaining({ query: "renewable" })));
-      expect(searchBox()).toHaveValue("renewable");
-    });
-
-    it("keeps the term the user is typing, and only searches the submitted one", async () => {
+    it("returns to the empty state when the term is cleared", async () => {
       renderViewer("renewable");
       await screen.findByText(/Certain ecological/);
 
-      await userEvent.clear(searchBox());
-      await userEvent.type(searchBox(), "biomass");
+      await searchFor("");
 
-      expect(searchBox()).toHaveValue("biomass");
-      expect(mockFetchSearchPassages).toHaveBeenCalledTimes(1);
-      expect(mockFetchSearchPassages).toHaveBeenCalledWith(expect.objectContaining({ query: "renewable" }));
-    });
-
-    it("clears the term and returns to the empty state", async () => {
-      renderViewer("renewable");
-      await screen.findByText(/Certain ecological/);
-
-      await userEvent.click(clearButton());
-
-      await waitFor(() => expect(searchBox()).toHaveValue(""));
-      expect(screen.getByText("Search passages")).toBeInTheDocument();
-      expect(urlQuery.writes.at(-1)).toBe("");
+      expect(await screen.findByText("Search passages")).toBeInTheDocument();
     });
   });
 
@@ -198,13 +177,6 @@ describe("DocumentPassageViewer", () => {
       expect(screen.getByText("Section 4: National Target 16")).toBeInTheDocument();
       // The reader is already on this document, so its title is not repeated per passage.
       expect(screen.queryByText(document.title)).not.toBeInTheDocument();
-    });
-
-    it("reports the number of matches", async () => {
-      mockFetchSearchPassages.mockResolvedValue({ total_size: 12, results: [buildPassage()] });
-      renderViewer("renewable");
-
-      expect(await screen.findByText("12 matching passages")).toBeInTheDocument();
     });
 
     it("moves the preview to the passage page when a passage is clicked", async () => {
@@ -226,7 +198,6 @@ describe("DocumentPassageViewer", () => {
       renderViewer("renewable");
 
       expect(await screen.findByText("No matching passages")).toBeInTheDocument();
-      expect(screen.getByText("0 matching passages")).toBeInTheDocument();
     });
 
     it("shows an error message when the search fails", async () => {
@@ -255,8 +226,7 @@ describe("DocumentPassageViewer", () => {
       renderViewer("renewable");
       await screen.findByText("First term result");
 
-      await userEvent.clear(searchBox());
-      await userEvent.type(searchBox(), "biomass{Enter}");
+      await searchFor("biomass");
 
       // The second search is still in flight here.
       expect(screen.queryByText("First term result")).not.toBeInTheDocument();
@@ -271,7 +241,7 @@ describe("DocumentPassageViewer", () => {
       mockFetchSearchPassages.mockReturnValueOnce(search.promise);
       renderViewer();
 
-      await userEvent.type(searchBox(), "renewable{Enter}");
+      await searchFor("renewable");
 
       expect(screen.queryByText("No matching passages")).not.toBeInTheDocument();
       expect(screen.queryByText("Search passages")).not.toBeInTheDocument();
@@ -288,7 +258,7 @@ describe("DocumentPassageViewer", () => {
 
       expect(screen.getByText("page:none")).toBeInTheDocument();
 
-      await userEvent.type(searchBox(), "renewable{Enter}");
+      await searchFor("renewable");
 
       expect(await screen.findByText("page:24")).toBeInTheDocument();
     });
@@ -325,17 +295,30 @@ describe("DocumentPassageViewer", () => {
       await screen.findByText("page:11");
 
       mockFetchSearchPassages.mockResolvedValue({ total_size: 1, results: [buildPassage({ id: "b", pages: [55] })] });
-      await userEvent.clear(searchBox());
-      await userEvent.type(searchBox(), "biomass{Enter}");
+      await searchFor("biomass");
 
       expect(await screen.findByText("page:56")).toBeInTheDocument();
+    });
+
+    // Re-ordering gives the term a different first match, so the reader follows it rather
+    // than being left on the page the previous ordering picked.
+    it("jumps again when the sort order changes", async () => {
+      mockFetchSearchPassages.mockResolvedValue({ total_size: 1, results: [buildPassage({ pages: [10] })] });
+      renderViewer("renewable");
+      await screen.findByText("page:11");
+
+      mockFetchSearchPassages.mockResolvedValue({ total_size: 1, results: [buildPassage({ id: "b", pages: [2] })] });
+      await sortBy("Page Number");
+
+      expect(await screen.findByText("page:3")).toBeInTheDocument();
+      expect(mockFetchSearchPassages).toHaveBeenLastCalledWith(expect.objectContaining({ sort: "idx asc" }));
     });
 
     it("does not jump when a search returns nothing", async () => {
       mockFetchSearchPassages.mockResolvedValue({ total_size: 0, results: [] });
       renderViewer();
 
-      await userEvent.type(searchBox(), "renewable{Enter}");
+      await searchFor("renewable");
 
       await screen.findByText("No matching passages");
       expect(screen.getByText("page:none")).toBeInTheDocument();
@@ -418,7 +401,6 @@ describe("DocumentPassageViewer", () => {
       await userEvent.click(await screen.findByRole("button", { name: "Extreme weather" }));
 
       await waitFor(() => expect(mockFetchSearchPassages).toHaveBeenCalledWith(expect.objectContaining({ query: "Extreme weather" })));
-      expect(searchBox()).toHaveValue("Extreme weather");
     });
   });
 });

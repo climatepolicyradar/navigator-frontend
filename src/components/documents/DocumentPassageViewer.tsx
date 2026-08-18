@@ -79,14 +79,14 @@ export const DocumentPassageViewer = ({ document, vespaDocumentData }: TProps) =
   const [pageNumber, setPageNumber] = useState<number | null>(null);
   const [availableFilters, setAvailableFilters] = useState<TSearchLabel[]>([]);
 
-  // Keep the input in step with the URL when the query changes elsewhere, e.g. the
-  // browser back button or a concept being picked from the empty state. Adjusting during
-  // render rather than in an effect avoids a second render pass with a stale input.
-  const [previousQuery, setPreviousQuery] = useState(query);
-  const [hasNavigatedForQuery, setHasNavigatedForQuery] = useState(false);
-  if (query !== previousQuery) {
-    setPreviousQuery(query);
-    setHasNavigatedForQuery(false);
+  // Arm the jump to the first result whenever the search changes, whether that is a new
+  // term or a re-ordering. Adjusting during render rather than in an effect avoids a
+  // second render pass with a stale value.
+  const [previousSearch, setPreviousSearch] = useState({ query, sort });
+  const [hasNavigatedForSearch, setHasNavigatedForSearch] = useState(false);
+  if (query !== previousSearch.query || sort !== previousSearch.sort) {
+    setPreviousSearch({ query, sort });
+    setHasNavigatedForSearch(false);
   }
 
   useEffect(() => {
@@ -127,12 +127,10 @@ export const DocumentPassageViewer = ({ document, vespaDocumentData }: TProps) =
   // Avoid cases where the result state flashes before the request has resolved
   const isLoading = hasQuery && !isFetchingNextPage && passages.length === 0 && (isPending || isFetching);
 
-  // Take the reader to the first match once a search returns. Guarded so it happens once
-  // per search: paging in more results and clicking a passage both change the state above,
-  // and neither should pull the view back to the top of the results.
+  // Navigate to the first match once a search returns
   const firstResultPage = passages[0]?.pages?.[0]?.page_number;
-  if (hasQuery && !hasNavigatedForQuery && firstResultPage !== undefined) {
-    setHasNavigatedForQuery(true);
+  if (hasQuery && !hasNavigatedForSearch && firstResultPage !== undefined) {
+    setHasNavigatedForSearch(true);
     // `page_number` is 0-indexed in the passage model; the PDF viewer is 1-indexed.
     setPageNumber(firstResultPage + 1);
   }
