@@ -16,8 +16,8 @@ import { BreadCrumbs } from "@/components/breadcrumbs/Breadcrumbs";
 import Layout from "@/components/layouts/Main";
 import { Section } from "@/components/molecules/section/Section";
 import { BlocksLayout, TBlockDefinitions } from "@/components/organisms/blocksLayout/BlocksLayout";
-import { FamilyPassageViewer } from "@/components/organisms/familyPassageViewer/FamilyPassageViewer";
 import { PageHeader } from "@/components/organisms/pageHeader/PageHeader";
+import { PassageSearch } from "@/components/organisms/passageSearch/PassageSearch";
 import { MAX_PASSAGES } from "@/constants/paging";
 import { QUERY_PARAMS } from "@/constants/queryParams";
 import { FeaturesContext } from "@/context/FeaturesContext";
@@ -42,6 +42,8 @@ import { getFamilyMetadata } from "@/utils/family-metadata/getFamilyMetadata";
 import { getFamilyMetaDescription } from "@/utils/getFamilyMetaDescription";
 import { getLitigationCaseJSONLD } from "@/utils/json-ld/getLitigationCaseJSONLD";
 import { pluralise } from "@/utils/pluralise";
+import { firstCase } from "@/utils/text";
+import { getTopFamilyTopics } from "@/utils/topics/getTopFamilyTopics";
 import { familyTopicsHasTopics } from "@/utils/topics/processFamilyTopics";
 
 export interface IProps {
@@ -193,7 +195,12 @@ export const FamilyPage = ({ collections, debug, errors, family, familyTopics, f
                 panel: (
                   <FiveColumns>
                     <main className="pb-8 col-start-1 -col-end-1 cols-4:col-start-3 cols-4:col-end-10">
-                      <FamilyPassageViewer family={family} familyTopics={familyTopics} getCategoryText={getCategoryText} />
+                      <PassageSearch
+                        documents={family.documents}
+                        concepts={getTopFamilyTopics(familyTopics)}
+                        documentsLabel={`Documents in this ${firstCase(getCategoryText("familySingular"))}`}
+                        subject="these documents"
+                      />
                     </main>
                   </FiveColumns>
                 ),

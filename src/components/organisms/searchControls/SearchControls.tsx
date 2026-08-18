@@ -21,6 +21,7 @@ import { queryGroupToFilterPaths } from "@/utils/search/queryGroupToFilterPaths"
 interface IProps {
   filterGroups: TFiltersGroupConfig[];
   filterParamKey: string;
+  filtersSlot?: ReactNode;
   labels: TSearchLabel[];
   queryParamKey: string;
   resetPageOnSort?: boolean;
@@ -32,6 +33,7 @@ interface IProps {
 export const SearchControls = ({
   filterGroups,
   filterParamKey,
+  filtersSlot,
   labels,
   queryParamKey,
   resetPageOnSort = false,
@@ -98,6 +100,7 @@ export const SearchControls = ({
       </form>
       <div className="col-start-1 -col-end-1 cols-5:col-start-2 cols-5:-col-end-2 flex flex-wrap gap-1 justify-between">
         <div className="flex gap-1">
+          {filtersSlot}
           {filterGroupsWithLabels.map((group) => {
             const SearchFilters = group.container === "drawer" ? SearchFiltersDrawer : SearchFiltersPopover;
 

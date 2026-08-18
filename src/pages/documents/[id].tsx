@@ -10,9 +10,9 @@ import { FiveColumns } from "@/components/atoms/columns/FiveColumns";
 import { Debug } from "@/components/atoms/debug/Debug";
 import { ConceptsDocumentViewer } from "@/components/documents/ConceptsDocumentViewer";
 import { DocumentHead } from "@/components/documents/DocumentHead";
-import { DocumentPassageViewer } from "@/components/documents/DocumentPassageViewer";
 import Layout from "@/components/layouts/Main";
 import { Section } from "@/components/molecules/section/Section";
+import { PassageSearch } from "@/components/organisms/passageSearch/PassageSearch";
 import { getDocumentDescription } from "@/constants/metaDescriptions";
 import { MAX_PASSAGES } from "@/constants/paging";
 import { QUERY_PARAMS } from "@/constants/queryParams";
@@ -27,6 +27,7 @@ import { getFeatureFlags } from "@/utils/featureFlags";
 import { getFeatures } from "@/utils/features";
 import { getLitigationDocumentJSONLD } from "@/utils/json-ld/getLitigationDocumentJSONLD";
 import { readConfigFile } from "@/utils/readConfigFile";
+import { getTopDocumentConcepts } from "@/utils/topics/getTopDocumentTopics";
 
 // If we don't have a query string or a concept selected, we do't have a search
 const isEmptySearch = (query: ParsedUrlQuery) => {
@@ -106,6 +107,8 @@ const DocumentPage = ({
     [conceptFiltersQuery]
   );
 
+  const passageConcepts = useMemo(() => getTopDocumentConcepts(vespaDocumentData, topicsData?.topics ?? []), [vespaDocumentData, topicsData]);
+
   return (
     <FeaturesContext.Provider value={features}>
       <Layout
@@ -131,7 +134,7 @@ const DocumentPage = ({
             />
 
             {features["new-search"] ? (
-              <DocumentPassageViewer document={document} vespaDocumentData={vespaDocumentData} />
+              <PassageSearch documents={[document]} concepts={passageConcepts} enablePreview />
             ) : (
               <ConceptsDocumentViewer
                 initialQueryTerm={qsSearchString}

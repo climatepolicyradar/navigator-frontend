@@ -34,7 +34,6 @@ export interface ISearchPassage {
   page_number: number;
   pages: number[];
   pages_with_bounding_boxes: IPassagePageWithBoundingBoxes[];
-  concepts: unknown[];
   heading_id: string | null;
   heading_text: string | null;
   document_id: string;
