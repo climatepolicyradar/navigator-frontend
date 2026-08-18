@@ -14,7 +14,7 @@ import { SEARCH_FILTER_GROUPS } from "@/constants/filters";
 import { SEARCH_SORT_OPTIONS } from "@/constants/sort";
 import { withEnvConfig } from "@/context/EnvConfig";
 import { FeaturesContext } from "@/context/FeaturesContext";
-import { loadLabelTaxonomy } from "@/hooks/useLabelSearch";
+import { loadFilteredLabels, loadLabelTaxonomy } from "@/hooks/useLabelSearch";
 import { FilterGroupSchema } from "@/schemas";
 import { TSearchLabel, TSearchQueryGroup, TTheme } from "@/types";
 import { getFeatureFlags } from "@/utils/featureFlags";
@@ -73,7 +73,39 @@ const ShadowSearch = ({ theme, themeConfig, features }: TProps) => {
   const [advancedFiltersOpen, setAdvancedFiltersOpen] = useState(false);
 
   useEffect(() => {
-    loadLabelTaxonomy().then(setAvailableFilters);
+    const loadedFilteredLabels = loadFilteredLabels({
+      // These are the explicit labels to needed to power the search page
+      op: "or",
+      filters: [
+        {
+          field: "type",
+          op: "contains",
+          value: "concept",
+        },
+        {
+          field: "type",
+          op: "contains",
+          value: "region",
+        },
+        {
+          field: "type",
+          op: "contains",
+          value: "country",
+        },
+        {
+          field: "type",
+          op: "contains",
+          value: "subdivision",
+        },
+      ],
+    });
+
+    // We have to append this data until the categories taxonomy data source data is fixed
+    // @see: https://linear.app/climate-policy-radar/issue/APP-2266/fusion-enrichment-fleshing-out-the-publishedcanonicallabels
+    const loadedLabelTaxonomy = loadLabelTaxonomy();
+    const allFilterLabels = Promise.all([loadedFilteredLabels, loadedLabelTaxonomy]);
+
+    allFilterLabels.then(([filteredLabels, labelTaxonomy]) => setAvailableFilters([...filteredLabels, ...labelTaxonomy]));
   }, []);
 
   return (

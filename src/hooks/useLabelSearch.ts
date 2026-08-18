@@ -2,7 +2,7 @@ import debounce from "lodash/debounce";
 import { useEffect, useMemo, useState } from "react";
 
 import { ApiClient } from "@/api/http-common";
-import { TSearchLabel } from "@/types";
+import { TSearchLabel, TSearchQueryGroup } from "@/types";
 
 type TLabelsResponse = {
   results: TSearchLabel[];
@@ -94,7 +94,18 @@ export const loadLabels = async (query: string): Promise<TSearchLabel[]> => {
   return response.data.results || [];
 };
 
+export async function loadFilteredLabels(filters: TSearchQueryGroup) {
+  const apiUrl = process.env.NEXT_PUBLIC_API_URL || "https://api.climatepolicyradar.org";
+  const client = new ApiClient(apiUrl);
+  const response = await client.get<TLabelsResponse>(`/search/labels?page_size=10000&filters=${encodeURIComponent(JSON.stringify(filters))}`, null);
+  return response.data.results || [];
+}
+
 export async function loadLabelTaxonomy() {
+  /**
+   * This is temporary fix until the categories taxonomy data source data is fixed
+   * @see: https://linear.app/climate-policy-radar/issue/APP-2266/fusion-enrichment-fleshing-out-the-publishedcanonicallabels
+   */
   const apiUrl = process.env.NEXT_PUBLIC_API_URL || "https://api.climatepolicyradar.org";
   const client = new ApiClient(apiUrl);
   const response = await client.get<TLabelsResponse>(`/search/labels-taxonomy`, null);
