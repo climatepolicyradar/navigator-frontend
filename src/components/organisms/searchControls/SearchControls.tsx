@@ -1,6 +1,6 @@
 import { LucideSearch } from "lucide-react";
 import { parseAsJson, parseAsString, useQueryState } from "nuqs";
-import { Fragment, SubmitEventHandler, useMemo, useState } from "react";
+import { Fragment, ReactNode, SubmitEventHandler, useMemo, useState } from "react";
 
 import { Input } from "@/components/atoms/input/Input";
 import { AppliedFilters } from "@/components/molecules/appliedFilters/AppliedFilters";
@@ -26,6 +26,7 @@ interface IProps {
   resetPageOnSort?: boolean;
   sortOptions: TSortOptionConfig[];
   sortParamKey: string;
+  text?: ReactNode;
 }
 
 export const SearchControls = ({
@@ -36,6 +37,7 @@ export const SearchControls = ({
   resetPageOnSort = false,
   sortOptions,
   sortParamKey,
+  text,
 }: IProps) => {
   const [queryParam, setQueryParam] = useQueryState(queryParamKey, parseAsString.withDefault(""));
   const [filterParam, setFilterParam] = useQueryState(
@@ -100,7 +102,8 @@ export const SearchControls = ({
             );
           })}
         </div>
-        <div className="flex gap-1">
+        <div className="flex items-center gap-2">
+          {text}
           <Sort sortOptions={sortOptions} value={sortParam} onChange={onSort} />
         </div>
       </div>

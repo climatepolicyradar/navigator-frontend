@@ -3,7 +3,7 @@ import { act, render, screen, waitFor } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 
 import { TopicsContext } from "@/context/TopicsContext";
-import { ISearchPassage, TFamilyDocumentPublic, TSearchResponse, TTopics } from "@/types";
+import { ISearchPassage, TFamilyDocumentPublic, TSearchQueryGroup, TSearchResponse, TTopics } from "@/types";
 
 import { DocumentPassageViewer } from "./DocumentPassageViewer";
 
@@ -29,6 +29,12 @@ const url = vi.hoisted(() => {
     read: (key: string, fallback: unknown) => (values.has(key) ? values.get(key) : fallback),
     write: (key: string, value: unknown) => {
       values.set(key, value);
+      listeners.forEach((listener) => listener());
+    },
+    // nuqs drops a param from the url once it is set back to its parser default, leaving
+    // each reader on its own default rather than on a shared null.
+    clear: (key: string) => {
+      values.delete(key);
       listeners.forEach((listener) => listener());
     },
     subscribe: (listener: () => void) => {
@@ -126,6 +132,18 @@ const searchFor = async (term: string) => {
   await act(async () => url.write("q", term));
 };
 
+// The topic checkboxes belong to SearchControls, so these drive the filter group it writes
+// to the url rather than the popover markup.
+const topicFilter: TSearchQueryGroup = { op: "or", filters: [{ field: "labels.value.id", op: "contains", value: "concept/Q1", checked: true }] };
+
+const filterBy = async (filters: TSearchQueryGroup) => {
+  await act(async () => url.write("filters", filters));
+};
+
+const clearFilters = async () => {
+  await act(async () => url.clear("filters"));
+};
+
 /*
   Base UI keeps the sort positioner hidden until it has measured the trigger, so the popup
   only becomes accessible a tick after the click.
@@ -165,6 +183,49 @@ describe("DocumentPassageViewer", () => {
       await searchFor("");
 
       expect(await screen.findByText("Search passages")).toBeInTheDocument();
+    });
+  });
+
+  describe("handling the filters", () => {
+    it("searches again with the filters when they change", async () => {
+      renderViewer("renewable");
+      await waitFor(() => expect(mockFetchSearchPassages).toHaveBeenCalledTimes(1));
+
+      await filterBy(topicFilter);
+
+      await waitFor(() => expect(mockFetchSearchPassages).toHaveBeenCalledTimes(2));
+      expect(mockFetchSearchPassages).toHaveBeenLastCalledWith(expect.objectContaining({ query: "renewable", filters: topicFilter }));
+    });
+
+    // A topic on its own is a search: the reader can browse the document's passages by
+    // topic without typing a term.
+    it("searches on a filter alone, with no term", async () => {
+      renderViewer();
+
+      await filterBy(topicFilter);
+
+      await waitFor(() => expect(mockFetchSearchPassages).toHaveBeenCalledTimes(1));
+      expect(mockFetchSearchPassages).toHaveBeenCalledWith(expect.objectContaining({ query: "", filters: topicFilter }));
+      expect(await screen.findByText(/Certain ecological/)).toBeInTheDocument();
+    });
+
+    it("returns to the empty state when the filters are cleared", async () => {
+      renderViewer();
+      await filterBy(topicFilter);
+      await screen.findByText(/Certain ecological/);
+
+      await clearFilters();
+
+      expect(await screen.findByText("Search passages")).toBeInTheDocument();
+    });
+
+    it("reports no matches when a filter-only search returns nothing", async () => {
+      mockFetchSearchPassages.mockResolvedValue({ total_size: 0, results: [] });
+      renderViewer();
+
+      await filterBy(topicFilter);
+
+      expect(await screen.findByText("No matching passages")).toBeInTheDocument();
     });
   });
 
@@ -261,6 +322,30 @@ describe("DocumentPassageViewer", () => {
       await searchFor("renewable");
 
       expect(await screen.findByText("page:24")).toBeInTheDocument();
+    });
+
+    it("jumps to the page of the first result of a filter-only search", async () => {
+      mockFetchSearchPassages.mockResolvedValue({ total_size: 1, results: [buildPassage({ pages: [23] })] });
+      renderViewer();
+
+      expect(screen.getByText("page:none")).toBeInTheDocument();
+
+      await filterBy(topicFilter);
+
+      expect(await screen.findByText("page:24")).toBeInTheDocument();
+    });
+
+    // A different set of topics gives the term a different first match, so the reader
+    // follows it rather than being left on the page the previous set picked.
+    it("jumps again when the filters change", async () => {
+      mockFetchSearchPassages.mockResolvedValue({ total_size: 1, results: [buildPassage({ pages: [10] })] });
+      renderViewer("renewable");
+      await screen.findByText("page:11");
+
+      mockFetchSearchPassages.mockResolvedValue({ total_size: 1, results: [buildPassage({ id: "b", pages: [55] })] });
+      await filterBy(topicFilter);
+
+      expect(await screen.findByText("page:56")).toBeInTheDocument();
     });
 
     it("stays put when another page of results is loaded", async () => {

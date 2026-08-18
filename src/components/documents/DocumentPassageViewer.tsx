@@ -190,6 +190,11 @@ export const DocumentPassageViewer = ({ document, vespaDocumentData }: TProps) =
           queryParamKey="q"
           sortOptions={PASSAGE_SORT_OPTIONS}
           sortParamKey="sort"
+          text={
+            <p className="text-sm text-text-secondary text-right" aria-live="polite">
+              {isLoading ? "Searching…" : `${totalMatches} matching ${totalMatches === 1 ? "passage" : "passages"}`}
+            </p>
+          }
         />
       </FullWidth>
 
