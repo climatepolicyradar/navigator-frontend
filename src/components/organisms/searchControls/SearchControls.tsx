@@ -31,7 +31,6 @@ interface IProps {
   resultsMostRecent?: Date | null;
   sortOptions: TSortOptionConfig[];
   sortParamKey: string;
-  text?: ReactNode;
 }
 
 export const SearchControls = ({
@@ -46,7 +45,6 @@ export const SearchControls = ({
   resultsMostRecent,
   sortOptions,
   sortParamKey,
-  text,
 }: IProps) => {
   const [queryParam, setQueryParam] = useQueryState(queryParamKey, parseAsString.withDefault(""));
   const [filterParam, setFilterParam] = useQueryState(

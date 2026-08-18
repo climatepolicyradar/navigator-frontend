@@ -252,7 +252,7 @@ export const PassageSearch = ({ concepts, documents, documentsLabel, enablePrevi
       queryParamKey={QUERY_PARAMS.query_string}
       sortOptions={PASSAGE_SORT_OPTIONS}
       sortParamKey={SORT_PARAM_KEY}
-      text={
+      resultsNode={
         <p className="text-sm text-text-secondary text-right" aria-live="polite">
           {isLoading ? "Searching…" : `${totalMatches} matching ${totalMatches === 1 ? "passage" : "passages"}`}
         </p>
