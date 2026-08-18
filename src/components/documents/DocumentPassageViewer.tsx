@@ -22,7 +22,7 @@ import { FilterGroupSchema } from "@/schemas";
 import { ISearchPassage, TFamilyDocumentPublic, TSearchLabel, TSearchQueryGroup, TSearchResponse } from "@/types";
 import { getTopDocumentConcepts } from "@/utils/topics/getTopDocumentTopics";
 
-const TOP_CONCEPTS_LIMIT = 10;
+// const TOP_CONCEPTS_LIMIT = 10;
 
 type TProps = {
   document: TFamilyDocumentPublic;
@@ -150,7 +150,8 @@ export const DocumentPassageViewer = ({ document, vespaDocumentData }: TProps) =
   }
 
   const rankedConcepts = useMemo(() => getTopDocumentConcepts(vespaDocumentData, topics), [vespaDocumentData, topics]);
-  const topConcepts = useMemo(() => rankedConcepts.slice(0, TOP_CONCEPTS_LIMIT), [rankedConcepts]);
+  // TODO: get this tied into the filter labels properly
+  // const topConcepts = useMemo(() => rankedConcepts.slice(0, TOP_CONCEPTS_LIMIT), [rankedConcepts]);
 
   // Only offer concept filters the document actually has passages for
   const conceptFilters = useMemo(() => {
@@ -227,7 +228,7 @@ export const DocumentPassageViewer = ({ document, vespaDocumentData }: TProps) =
             </>
           )}
           {!isLoading && !isError && passages.length === 0 && (
-            <EmptyPassages concepts={topConcepts} hasQuery={hasSearch} onClearClick={handleClear} onConceptClick={handleConceptClick} />
+            <EmptyPassages concepts={[]} hasQuery={hasSearch} onClearClick={handleClear} onConceptClick={handleConceptClick} />
           )}
         </div>
 
