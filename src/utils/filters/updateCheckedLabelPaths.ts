@@ -14,8 +14,13 @@ export const updateCheckedLabelPaths = (
   if (checked === true) {
     const labelPathSignature = getLabelPathSignature(labelPath);
     updatedCheckedLabelPaths = [
-      // Removes any child filters below the filter being checked
-      ...checkedLabelPaths.filter((labels) => !(labels.length > labelPath.length && getLabelPathSignature(labels).startsWith(labelPathSignature))),
+      // Removes any child filters below, or already-checked ancestors above, the filter being checked
+      ...checkedLabelPaths.filter((labels) => {
+        const labelsSignature = getLabelPathSignature(labels);
+        const isDescendant = labels.length > labelPath.length && labelsSignature.startsWith(labelPathSignature);
+        const isAncestor = labels.length < labelPath.length && labelPathSignature.startsWith(labelsSignature);
+        return !isDescendant && !isAncestor;
+      }),
       labelPath,
     ];
   } else {
