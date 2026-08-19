@@ -20,7 +20,7 @@ vi.mock("@/api/passages", () => ({ fetchSearchPassages: mockFetchSearchPassages 
 
 // The label lookup only populates the Topic filter's options, which belong to SearchControls.
 // Stubbed so the suite makes no network calls of its own.
-vi.mock("@/hooks/useLabelSearch", () => ({ loadLabels: () => Promise.resolve([]) }));
+vi.mock("@/hooks/loadFilteredLabels", () => ({ loadLabels: () => Promise.resolve([]) }));
 
 // A stateful stand-in for the URL params. nuqs' own testing adapter is fully controlled and
 // reverts the value after every write, which the component reads as a browser navigation.
