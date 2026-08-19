@@ -83,6 +83,13 @@ class GitHubActionsRole(pulumi.ComponentResource):
                                         "ecs:DescribeTaskDefinition",
                                         "ecs:ListTaskDefinitions",
                                         "ecs:DescribeExpressGatewayService",
+                                        # Replacing the RollbackAlarm that ECS
+                                        # Express generates during a deployment.
+                                        # @see: .github/workflows/scripts/fix_rollback_alarm.sh
+                                        "cloudwatch:PutMetricAlarm",
+                                        "cloudwatch:DescribeAlarms",
+                                        "tag:GetResources",
+                                        "elasticloadbalancing:DescribeTargetGroups",
                                     ],
                                     "Effect": "Allow",
                                     "Resource": "*",
