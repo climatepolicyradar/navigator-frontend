@@ -93,7 +93,7 @@ export const PassageSearch = ({ concepts, documents, documentsLabel, enablePrevi
   const [sort] = useQueryState(SORT_PARAM_KEY, parseAsString.withDefault(PASSAGE_SORT_OPTIONS[0].paramValue));
   const [documentsParam, setDocumentsParam] = useQueryState(QUERY_PARAMS.documents, parseAsArrayOf(parseAsString).withDefault([]));
   const [pageNumber, setPageNumber] = useState<number | null>(null);
-  const [availableFilters, setAvailableFilters] = useState<TSearchLabel[]>([]);
+  const [availableConcepts, setAvailableConcepts] = useState<TSearchLabel[]>([]);
 
   // Arm the jump to the first result when changed:
   // - the search query
@@ -119,7 +119,7 @@ export const PassageSearch = ({ concepts, documents, documentsLabel, enablePrevi
           value: "concept",
         },
       ],
-    }).then(setAvailableFilters);
+    }).then(setAvailableConcepts);
   }, []);
 
   const documentsById = useMemo(() => new Map(documents.map((document) => [document.import_id, document])), [documents]);
@@ -195,8 +195,8 @@ export const PassageSearch = ({ concepts, documents, documentsLabel, enablePrevi
   // Only offer concept filters the scope actually has passages for
   const conceptFilters = useMemo(() => {
     const rankedIds = new Set(concepts.map((concept) => concept.wikibase_id));
-    return availableFilters.filter((label) => label.type === "concept" && rankedIds.has(label.id.split(ID_SEPARATOR)[1]));
-  }, [availableFilters, concepts]);
+    return availableConcepts.filter((label) => label.type === "concept" && rankedIds.has(label.id.split(ID_SEPARATOR)[1]));
+  }, [availableConcepts, concepts]);
 
   const handleClear = () => {
     setQueryParam("");
