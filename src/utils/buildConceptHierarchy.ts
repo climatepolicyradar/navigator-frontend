@@ -40,6 +40,7 @@ function buildTree(concept: TFamilyConcept, allConcepts: TFamilyConcept[], visit
 export function buildConceptHierarchy(concepts?: TFamilyConcept[]): TFamilyConceptTreeNode[] {
   // Root concepts: those with no parents
   // TODO: remove this workaround for Litigation concepts when the data is updated. What were root concepts previously are now tagged with being a subconcept of litigation
+  // https://linear.app/climate-policy-radar/issue/FUS-276/remove-litigation-root-concept-hack-in-ui
   const roots =
     concepts?.filter((concept) => concept.subconcept_of_labels.length === 0 || concept.subconcept_of_labels[0].toLowerCase() === "litigation") || [];
 
