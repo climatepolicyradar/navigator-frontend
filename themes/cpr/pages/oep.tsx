@@ -167,7 +167,7 @@ const OceanEnergyPathwayPage = () => {
               </EqualColumn>
               <EqualColumn extraClasses="mt-9 md:mt-0 md:self-end flex flex-row flex-wrap md:justify-end gap-y-4 gap-x-8">
                 <ExternalLink url="https://www.climatepolicyradar.org" className="flex items-center">
-                  <Image src="/images/cpr-logo-homepage.png" width={215} height={12} alt="Climate Policy Radar logo" className="" />
+                  <Image src="/images/cpr-logo-homepage.png" width={215} height={12} alt="Climate Policy Radar logo" />
                 </ExternalLink>
                 <ExternalLink url="https://www.oceanenergypathway.org" className="flex">
                   <Image
