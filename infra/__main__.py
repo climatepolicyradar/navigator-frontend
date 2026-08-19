@@ -235,12 +235,19 @@ if not is_review_template:
     # Create the frontend AppRunner service in current account
     name_prefix = review_name if review_name else tag_name()
 
+    # Review stacks keep the RollbackAlarm ECS generates: their target groups are
+    # not tagged with a name we can look them up by.
+    use_custom_rollback_alarm = not is_review_stack_or_template
+
     ecs_frontend_service = ExpressGatewayServiceComponent(
         name=name_prefix,
         config=ExpressGatewayConfig(
             health_check_path="/",
             min_task_count=3 if env == "production" else 1,
             max_task_count=8 if env == "production" else 4,
+            rollback_alarm_target_group_tag=(
+                f"{theme}-frontend" if use_custom_rollback_alarm else None
+            ),
         ),
         image_identifier=cast(str, image_identifier),
         cluster_arn=shared_resources_stack.get_output("frontend_ecs_cluster_arn"),
