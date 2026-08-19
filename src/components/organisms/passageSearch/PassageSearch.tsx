@@ -18,7 +18,7 @@ import { PASSAGE_FILTER_GROUPS } from "@/constants/filters";
 import { RESULTS_PER_PAGE } from "@/constants/paging";
 import { QUERY_PARAMS } from "@/constants/queryParams";
 import { PASSAGE_SORT_OPTIONS } from "@/constants/sort";
-import { loadLabels } from "@/hooks/useLabelSearch";
+import { loadFilteredLabels } from "@/hooks/useLabelSearch";
 import { FilterGroupSchema } from "@/schemas";
 import { ISearchPassage, TFamilyDocumentPublic, TSearchLabel, TSearchQueryGroup, TTopic } from "@/types";
 
@@ -110,7 +110,16 @@ export const PassageSearch = ({ concepts, documents, documentsLabel, enablePrevi
   }
 
   useEffect(() => {
-    loadLabels("").then(setAvailableFilters);
+    loadFilteredLabels({
+      op: "or",
+      filters: [
+        {
+          field: "type",
+          op: "contains",
+          value: "concept",
+        },
+      ],
+    }).then(setAvailableFilters);
   }, []);
 
   const documentsById = useMemo(() => new Map(documents.map((document) => [document.import_id, document])), [documents]);
