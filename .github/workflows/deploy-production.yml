@@ -159,5 +159,14 @@ jobs:
           sleep 30
           .github/workflows/scripts/fix_rollback_alarm.sh ${{ inputs.theme }} production
 
+      # HOTFIX: HOLD_ROLLBACK_ALARM makes the wait loop reinstate the neutralised
+      # alarm on every poll. A single write does not survive -- ECS restores its
+      # own version partway through the bake -- so this keeps the window in
+      # which the defective alarm is live down to the poll interval. It is a
+      # race rather than a fix; the step logs how often ECS reverted so we can
+      # see whether it is holding.
+      # @related: ROLLBACK_ALARM_TIMING
       - name: Wait for production deployment
+        env:
+          HOLD_ROLLBACK_ALARM: "1"
         run: .github/workflows/scripts/wait_for_deployment.sh ${{ inputs.theme }} production
