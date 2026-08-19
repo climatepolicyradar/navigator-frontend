@@ -29,9 +29,7 @@ type TPage = {
 };
 
 interface IProps {
-  page?: TPage & {
-    notFound?: boolean;
-  };
+  page: TPage;
 }
 
 export default function Page({ page }: InferGetStaticPropsType<typeof getStaticProps>) {
@@ -62,13 +60,6 @@ export default function Page({ page }: InferGetStaticPropsType<typeof getStaticP
     loadFeatureFlags();
     loadThemeConfig();
   }, []);
-
-  // TODO: fix this properly
-  // Next is throwing a NEXT_REDIRECT error under the hood when attempting to navigate to a missing page at root, e.g. /missing-page
-  if (!page || page.notFound) {
-    console.warn("Page not found");
-    return window.location.replace("/not-found");
-  }
 
   const DynamicComponent = dynamic(
     () =>
