@@ -27,16 +27,6 @@ const columnLayoutCss = "col-start-1 -col-end-1 cols-5:col-start-2 cols-5:-col-e
 
 type TProps = InferGetServerSidePropsType<typeof getServerSideProps>;
 
-/*
- * SHADOW SEARCH is currently made up of 6 Core surfaces, each surface is commented in code below
- * NB: this is not necessarily the order they appear within this component
- * - Search input (and suggestions)
- * - Filters
- * - Applied filters
- * - Advanced filters
- * - Search results
- * - Result drawer
- */
 const ShadowSearch = ({ theme, themeConfig, features }: TProps) => {
   const [availableFilters, setAvailableFilters] = useState<TSearchLabel[]>([]);
 

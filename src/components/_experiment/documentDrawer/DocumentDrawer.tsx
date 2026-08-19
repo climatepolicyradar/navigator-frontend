@@ -10,11 +10,14 @@ import { MetadataBlock } from "@/components/blocks/metadataBlock/MetadataBlock";
 import { NoteBlock } from "@/components/blocks/noteBlock/NoteBlock";
 import { TextBlock } from "@/components/blocks/textBlock/TextBlock";
 import { TopicsBlock } from "@/components/blocks/topicsBlock/TopicsBlock";
+import { PassageSearch } from "@/components/organisms/passageSearch/PassageSearch";
 import useConfig from "@/hooks/useConfig";
 import { useText } from "@/hooks/useText";
 import { TFamilyPresentationalData } from "@/types";
 import { getFamilyHeader } from "@/utils/family-header/getFamilyHeader";
 import { getFamilyMetadata } from "@/utils/family-metadata/getFamilyMetadata";
+import { firstCase } from "@/utils/text";
+import { getTopFamilyTopics } from "@/utils/topics/getTopFamilyTopics";
 import { familyTopicsHasTopics } from "@/utils/topics/processFamilyTopics";
 
 function linkHref(doc: SearchDocument): string | undefined {
@@ -83,6 +86,7 @@ export function DocumentDrawer({ document, open, onOpenChange }: TDocumentDrawer
   const { data: { languages = {} } = {} } = useConfig();
   const [activeTab, setActiveTab] = useState<string>("about");
   const changeTab = (newValue: string) => setActiveTab(newValue);
+  const { getCategoryTextLookup } = useText();
 
   const importId = document?.id as string | undefined;
 
@@ -91,6 +95,8 @@ export function DocumentDrawer({ document, open, onOpenChange }: TDocumentDrawer
     queryFn: () => fetch(`/api/document/${importId}`).then((res) => (res.ok ? res.json() : null)),
     enabled: !!importId,
   });
+
+  const getCategoryText = getCategoryTextLookup(familyData?.family.attribution.category);
 
   return (
     <Drawer
@@ -141,7 +147,14 @@ export function DocumentDrawer({ document, open, onOpenChange }: TDocumentDrawer
                   Search in documents
                 </>
               ),
-              panel: <div>Search to go here.</div>,
+              panel: (
+                <PassageSearch
+                  documents={familyData.family.documents}
+                  concepts={getTopFamilyTopics(familyData.familyTopics)}
+                  documentsLabel={`Documents in this ${firstCase(getCategoryText("familySingular"))}`}
+                  subject="these documents"
+                />
+              ),
             },
           ]}
           tabsContainer={(tabsList) => <div className="pl-8">{tabsList}</div>}
