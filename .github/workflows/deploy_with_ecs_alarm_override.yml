@@ -1,0 +1,162 @@
+# ESCAPE HATCH.
+#
+# Same production deploy as deploy-production.yml, but it neutralises the
+# RollbackAlarm that ECS Express generates, and keeps neutralising it for the
+# duration of the bake.
+#
+# Why this exists: Express Mode gates deployments on an alarm it generates and
+# owns, whose expression counts 4XX and divides a fleet-wide error count by a
+# per-task request count. On a site with ordinary crawler 404s that alarm fires
+# constantly -- it rolled back seven consecutive production deployments with
+# zero 5XX responses in the entire window. There is no supported way to
+# configure or opt out of it: the alarm is absent from the ECS API model
+# entirely. See .github/workflows/scripts/fix_rollback_alarm.sh.
+#
+# Use deploy-production.yml normally. Reach for this when a deploy keeps
+# rolling back and the errors are 4XX you already expect.
+#
+# Intentionally ungated: no branch restriction, so a fix can go out from a
+# branch without merging first. That also means it can put unreviewed code into
+# production -- that is the trade this workflow exists to make.
+name: Deploy with ECS alarm override
+
+on:
+  workflow_dispatch:
+    inputs:
+      # Gated only by the theme list. Deliberately runnable from any branch.
+      # trunk-ignore(checkov/CKV_GHA_7)
+      theme:
+        description: Theme to deploy
+        type: choice
+        required: true
+        options:
+          - cpr
+          - cclw
+          - mcf
+          - ccc
+
+permissions:
+  id-token: write
+  contents: read
+
+jobs:
+  deploy-production:
+    name: Deploy ${{ github.sha }} to ${{ inputs.theme }} production (alarm
+      override)
+    runs-on: ubuntu-latest
+    environment:
+      name: production
+    steps:
+      - uses: actions/checkout@v7
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v6.2.3
+        with:
+          role-to-assume: arn:aws:iam::${{ secrets.AWS_ACCOUNT_ID }}:role/navigator-new-frontend-github-actions
+          role-session-name: GitHub_to_AWS_via_FederatedOIDC
+          aws-region: eu-west-1
+
+      - name: Login to Amazon ECR (production)
+        id: login-ecr-production
+        uses: aws-actions/amazon-ecr-login@d539f0932e70871a027e9d5a9d8fc38589180a64
+
+      - name: Build, tag, and push to ECR with 'latest' tag
+        id: build-image
+        env:
+          ECR_REGISTRY: ${{ secrets.DOCKER_REGISTRY }}
+          IMAGE_TAG: latest
+          AWS_REGION: eu-west-1
+          ECR_REPOSITORY: navigator-frontend-${{ inputs.theme }}
+          THEME: ${{ inputs.theme }}
+        # @related: GITHUB_SHA_ENV_VAR
+        run: |
+          docker build --build-arg THEME=${THEME} --build-arg GITHUB_SHA=$(git rev-parse HEAD) -t $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG .
+          docker push $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
+          echo "image=$ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG" >> $GITHUB_OUTPUT
+
+      # Serve this build's JS/CSS from S3 so a client mid-session on the old
+      # build can still fetch its chunks after the deploy below replaces the
+      # container. Must run before that deploy, or those requests 404.
+      - name: Extract static assets from built image
+        env:
+          IMAGE: ${{ steps.build-image.outputs.image }}
+        run: |
+          set -euo pipefail
+          CONTAINER_ID=$(docker create "$IMAGE")
+          mkdir -p ./next-static
+          # The trailing /. copies the directory *contents*. Without it, docker
+          # cp nests under ./next-static/static when the target already exists,
+          # which would publish every asset one level too deep.
+          docker cp "$CONTAINER_ID":/app/.next/static/. ./next-static
+          docker rm "$CONTAINER_ID"
+          if [ -z "$(find ./next-static -type f -print -quit)" ]; then
+            echo "::error::No static assets extracted from $IMAGE; refusing to deploy"
+            exit 1
+          fi
+
+      - name: Upload static assets to S3
+        env:
+          BUCKET_NAME: ${{ inputs.theme }}-frontend-production-next-static
+        run: |
+          set -euo pipefail
+          # No --delete: these paths are per-build content hashes and must
+          # outlive the container that shipped them, for clients still holding
+          # the old HTML. The bucket lifecycle rule expires them instead.
+          aws s3 sync ./next-static "s3://${BUCKET_NAME}/_next/static/" \
+            --cache-control "public,max-age=31536000,immutable"
+
+      # No pulumi up, unlike deploy-production.yml: this workflow ships a
+      # container, it does not reconcile infrastructure. That keeps it fast and
+      # narrow, and means everything below runs as the frontend deploy role
+      # rather than the infra one.
+      #
+      # The consequence is that infrastructure is taken as it stands. If a
+      # build needs an infra change to go with it -- a new CloudFront
+      # behaviour, say -- run deploy-production.yml instead, or apply the infra
+      # change separately first.
+
+      # Driven by three steps rather than
+      # aws-actions/amazon-ecs-deploy-express-service, because the alarm fix
+      # has to land *between* starting the deployment and waiting on it, and
+      # that action blocks until the deployment finishes. It is only a thin
+      # wrapper over UpdateExpressGatewayService plus polling, so little is
+      # lost, and we get to set our own timeout instead of its hardcoded 15
+      # minutes -- deployments of this service have been observed at 10.
+      - name: Start ECS deployment (production)
+        id: deploy-production
+        env:
+          IMAGE: ${{ steps.build-image.outputs.image }}
+          SERVICE: ${{ inputs.theme }}-frontend-production
+        run: |
+          set -euo pipefail
+          SERVICE_ARN=$(aws ecs describe-services \
+            --cluster frontend-production --services "${SERVICE}" \
+            --query 'services[0].serviceArn' --output text)
+          echo "service-arn=${SERVICE_ARN}" >> "$GITHUB_OUTPUT"
+
+          # Echo the running container back with only the image swapped, so
+          # nothing else about the service configuration is disturbed.
+          CONTAINER=$(aws ecs describe-express-gateway-service \
+            --service-arn "${SERVICE_ARN}" \
+            --query 'service.activeConfigurations[0].primaryContainer' --output json \
+            | jq -c --arg image "${IMAGE}" '.image = $image')
+
+          aws ecs update-express-gateway-service \
+            --service-arn "${SERVICE_ARN}" --primary-container "${CONTAINER}"
+          echo "started deployment of ${IMAGE}"
+
+      # ECS rewrites its RollbackAlarm once per deployment, at a time that
+      # varies -- observed both within ~10s of the start and several minutes
+      # in. This first write covers the early case; the wait step below
+      # reinstates it on every poll, covering the late one.
+      # @related: ROLLBACK_ALARM_TIMING
+      - name: Neutralise the ECS-generated rollback alarm
+        run: |
+          sleep 30
+          .github/workflows/scripts/fix_rollback_alarm.sh ${{ inputs.theme }} production
+
+      # Reinstates the neutralised alarm on every poll, so the window in which
+      # ECS's version is live stays down to the poll interval. This is a race,
+      # not a guarantee: the step logs how many times ECS reverted it, which is
+      # the number worth reading to judge whether this is holding.
+      - name: Wait for production deployment
+        run: .github/workflows/scripts/wait_for_deployment.sh ${{ inputs.theme }} production

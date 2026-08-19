@@ -120,53 +120,41 @@ jobs:
           PULUMI_ACCESS_TOKEN: ${{ secrets.PULUMI_ACCESS_TOKEN }}
           DEPLOY_TO_PROD_STACK_ALLOWED: true
 
-      # Deployment is driven by three steps rather than
-      # aws-actions/amazon-ecs-deploy-express-service, because the alarm fix
-      # below has to land *between* starting the deployment and waiting on it,
-      # and that action blocks until the deployment finishes. It is only a thin
-      # wrapper over UpdateExpressGatewayService plus polling, so little is
-      # lost, and we get to set our own timeout instead of its hardcoded 15
-      # minutes -- deployments of this service have been observed at 10.
-      - name: Start ECS deployment (production)
+      # @see: https://github.com/marketplace/actions/amazon-ecs-deploy-express-service-action-for-github-actions#complete-example-with-all-options
+      - name: Deploy to ECS (production)
         id: deploy-production
+        uses: aws-actions/amazon-ecs-deploy-express-service@v1.2.2
+        with:
+          cluster: frontend-production
+          service-name: ${{ inputs.theme }}-frontend-production
+          image: ${{ steps.build-image.outputs.image }}
+          execution-role-arn: arn:aws:iam::${{ secrets.AWS_ACCOUNT_ID }}:role/frontend-production-ecs-task-execution-role
+          infrastructure-role-arn: arn:aws:iam::${{ secrets.AWS_ACCOUNT_ID }}:role/frontend-production-ecs-task-infrastructure-role
+
+      - name: Verify production deployment outcome
         env:
-          IMAGE: ${{ steps.build-image.outputs.image }}
-          SERVICE: ${{ inputs.theme }}-frontend-production
+          SERVICE_ARN: ${{ steps.deploy-production.outputs.service-arn }}
         run: |
           set -euo pipefail
-          SERVICE_ARN=$(aws ecs describe-services \
-            --cluster frontend-production --services "${SERVICE}" \
-            --query 'services[0].serviceArn' --output text)
-          echo "service-arn=${SERVICE_ARN}" >> "$GITHUB_OUTPUT"
-
-          # Echo the running container back with only the image swapped, so
-          # nothing else about the service configuration is disturbed.
-          CONTAINER=$(aws ecs describe-express-gateway-service \
-            --service-arn "${SERVICE_ARN}" \
-            --query 'service.activeConfigurations[0].primaryContainer' --output json \
-            | jq -c --arg image "${IMAGE}" '.image = $image')
-
-          aws ecs update-express-gateway-service \
-            --service-arn "${SERVICE_ARN}" --primary-container "${CONTAINER}"
-          echo "started deployment of ${IMAGE}"
-
-      # ECS Express generates its own RollbackAlarm and rewrites it ~7s after a
-      # deployment starts, so this cannot run any earlier -- see the script for
-      # what is wrong with the generated alarm and why we replace it in place.
-      # @related: ROLLBACK_ALARM_TIMING
-      - name: Correct the ECS-generated rollback alarm
-        run: |
-          sleep 30
-          .github/workflows/scripts/fix_rollback_alarm.sh ${{ inputs.theme }} production
-
-      # HOTFIX: HOLD_ROLLBACK_ALARM makes the wait loop reinstate the neutralised
-      # alarm on every poll. A single write does not survive -- ECS restores its
-      # own version partway through the bake -- so this keeps the window in
-      # which the defective alarm is live down to the poll interval. It is a
-      # race rather than a fix; the step logs how often ECS reverted so we can
-      # see whether it is holding.
-      # @related: ROLLBACK_ALARM_TIMING
-      - name: Wait for production deployment
-        env:
-          HOLD_ROLLBACK_ALARM: "1"
-        run: .github/workflows/scripts/wait_for_deployment.sh ${{ inputs.theme }} production
+          if [[ -z "${SERVICE_ARN}" ]]; then
+            echo "::error::deploy step did not emit a service-arn output"
+            exit 1
+          fi
+          DEPLOY_ARN=$(aws ecs list-service-deployments \
+            --cluster frontend-production \
+            --service "${SERVICE_ARN}" \
+            --query 'serviceDeployments[0].serviceDeploymentArn' \
+            --output text)
+          if [[ -z "${DEPLOY_ARN}" || "${DEPLOY_ARN}" == "None" ]]; then
+            echo "::error::Could not find a service deployment for ${SERVICE_ARN}"
+            exit 1
+          fi
+          STATUS=$(aws ecs describe-service-deployments \
+            --service-deployment-arns "${DEPLOY_ARN}" \
+            --query 'serviceDeployments[0].status' \
+            --output text)
+          echo "Deployment ${DEPLOY_ARN} final status: ${STATUS}"
+          if [[ "${STATUS}" != "SUCCESSFUL" ]]; then
+            echo "::error::Deployment did not succeed (status=${STATUS})"
+            exit 1
+          fi
