@@ -97,7 +97,12 @@ async function handler(event) {
     } else if (uri.length > 1) {
       kvsCandidates.push(uri + "/");
     }
-    for (const candidate of kvsCandidates) {
+    // Indexed loop, not for...of: the cloudfront-js-2.0 parser rejects
+    // for...of (SyntaxError: Token "of" not supported) even though
+    // UpdateFunction validation accepts it. Verify runtime compatibility
+    // with scripts/test-edge.sh before publishing changes to this file.
+    for (let i = 0; i < kvsCandidates.length; i++) {
+      const candidate = kvsCandidates[i];
       if (await kvsHandle.exists(candidate)) {
         const redirectUrl = await kvsHandle.get(candidate);
 
