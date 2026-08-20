@@ -26,7 +26,7 @@ export const getGeographyMetaData = (stats: NonNullable<GeographyV2["statistics"
         <Popover
           openOnHover
           trigger={
-            <button className="underline underline-offset-4 decoration-[#d1d5db] hover:decoration-[#6b7280] cursor-help!">
+            <button className="underline underline-offset-4 decoration-border-light hover:decoration-border-normal cursor-help!">
               {stats.climate_risk_index}
             </button>
           }
@@ -38,7 +38,7 @@ export const getGeographyMetaData = (stats: NonNullable<GeographyV2["statistics"
             </p>
             <p>
               This data is from the Global Risk Index 2021 published by{" "}
-              <ExternalLink className="underline hover:text-blue-800 transition" url="https:www.germanwatch.org/en/cri">
+              <ExternalLink className="underline hover:text-text-brand transition" url="https://www.germanwatch.org/en/cri">
                 German Watch
               </ExternalLink>
               . Numbers marked with an asterisk (*) are from the Global Risk Index 2020, being the latest available data for that country. This data
@@ -46,7 +46,7 @@ export const getGeographyMetaData = (stats: NonNullable<GeographyV2["statistics"
             </p>
             <p>
               See the full report published by German Watch{" "}
-              <ExternalLink className="underline hover:text-blue-800 transition" url="https:www.germanwatch.org/en/19777">
+              <ExternalLink className="underline hover:text-text-brand transition" url="https://www.germanwatch.org/en/19777">
                 here
               </ExternalLink>
               .
@@ -71,7 +71,7 @@ export const getGeographyMetaData = (stats: NonNullable<GeographyV2["statistics"
         <Popover
           openOnHover
           trigger={
-            <button className="underline underline-offset-4 decoration-[#d1d5db] hover:decoration-[#6b7280] cursor-help!">
+            <button className="underline underline-offset-4 decoration-border-light hover:decoration-border-normal cursor-help!">
               {stats.global_emissions_percent + "%"}
             </button>
           }
@@ -79,7 +79,7 @@ export const getGeographyMetaData = (stats: NonNullable<GeographyV2["statistics"
           <div className="flex flex-col gap-4">
             <p>
               The share of global emissions data is from{" "}
-              <ExternalLink className="underline hover:text-blue-800 transition" url="https://www.climatewatchdata.org/">
+              <ExternalLink className="underline hover:text-text-brand transition" url="https://www.climatewatchdata.org/">
                 Climate Watch
               </ExternalLink>
               , managed by the World Resources Institute.

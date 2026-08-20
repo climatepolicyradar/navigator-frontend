@@ -99,6 +99,70 @@ describe("pattern matches", () => {
   });
 });
 
+describe("legacy /climate-change-litigation prefix", () => {
+  const testCases = [
+    // KVS hit on the stripped remainder
+    {
+      input: "/climate-change-litigation/us-climate-change-litigation/",
+      expected: "/search",
+    },
+    // pattern hit on the stripped remainder
+    {
+      input: "/climate-change-litigation/case-category/clean-water-act/",
+      expected: "/search?cpl=category%2Fclean+water+act",
+    },
+    // wp-content passthrough loses the prefix
+    {
+      input: "/climate-change-litigation/wp-content/uploads/sites/16/case-documents/2021/20210615_docket-221-cv-00778_ruling.pdf",
+      expected: "https://admin.climatecasechart.com/wp-content/uploads/sites/16/case-documents/2021/20210615_docket-221-cv-00778_ruling.pdf",
+    },
+    // bare prefix goes home
+    { input: "/climate-change-litigation", expected: "/" },
+    { input: "/climate-change-litigation/", expected: "/" },
+    // unknown remainder still sheds the prefix
+    { input: "/climate-change-litigation/whatever", expected: "/whatever" },
+    // open-redirect vectors collapse to same-origin paths: // is
+    // protocol-relative and browsers normalise \ to /
+    { input: "/climate-change-litigation//evil.com", expected: "/evil.com" },
+    { input: "/climate-change-litigation/\\evil.com", expected: "/evil.com" },
+    { input: "/climate-change-litigation///evil.com", expected: "/evil.com" },
+    {
+      input: "/climate-change-litigation//\\/evil.com",
+      expected: "/evil.com",
+    },
+  ];
+
+  test.each(testCases)("$input => $expected", async ({ input, expected }) => {
+    const response = await handler({ request: { uri: input } });
+    expect(response.statusCode).toEqual(301);
+    expect(response.headers.location.value).toEqual(expected);
+  });
+});
+
+describe("old WordPress feeds", () => {
+  test.each([["/rss"], ["/rss/"], ["/feed"], ["/feed/"]])("%s => /", async (input) => {
+    const response = await handler({ request: { uri: input } });
+    expect(response.statusCode).toEqual(301);
+    expect(response.headers.location.value).toEqual("/");
+  });
+});
+
+describe("KVS trailing-slash tolerance", () => {
+  test("finds a slash-keyed entry from a slashless URI", async () => {
+    const response = await handler({
+      request: { uri: "/us-climate-change-litigation" },
+    });
+    expect(response.headers.location.value).toEqual("/search");
+  });
+
+  test("finds a slashless-keyed entry from a slashed URI", async () => {
+    const response = await handler({
+      request: { uri: "/case/juliana-v-united-states/" },
+    });
+    expect(response.statusCode).toEqual(301);
+  });
+});
+
 describe("redirection handler", () => {
   test("does redirect a known URI", async () => {
     const response = await handler({
