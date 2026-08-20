@@ -82,7 +82,7 @@ const DrawerContent = ({ familyData, languages }: TDrawerContentProps) => {
   );
 };
 
-export function DocumentDrawer({ document, open, onOpenChange }: TDocumentDrawerProps) {
+export function PrincipalDrawer({ document, open, onOpenChange }: TDocumentDrawerProps) {
   const { data: { languages = {} } = {} } = useConfig();
   const [activeTab, setActiveTab] = useState<string>("about");
   const changeTab = (newValue: string) => setActiveTab(newValue);
