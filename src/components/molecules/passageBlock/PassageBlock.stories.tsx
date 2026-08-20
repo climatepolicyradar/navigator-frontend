@@ -1,5 +1,7 @@
 import { Meta, StoryObj } from "@storybook/nextjs-vite";
 
+import { IPassageLabel } from "@/types";
+
 import { PassageBlock, TPassage } from "./PassageBlock";
 
 const meta = {
@@ -11,6 +13,15 @@ const meta = {
 type TStory = StoryObj<typeof PassageBlock>;
 
 export default meta;
+
+const makeLabel = (value: string): IPassageLabel => ({
+  classifier_id: `classifier-${value}`,
+  end_index: 0,
+  labelled_text: value,
+  labellers: ["classifier"],
+  start_index: 0,
+  value: { id: `concept-${value}`, type: "concept", value },
+});
 
 const basePassage: TPassage = {
   id: "passage-1",
@@ -73,5 +84,33 @@ export const NoPage: TStory = {
       ...basePassage,
       pages: undefined,
     },
+  },
+};
+
+export const WithTopic: TStory = {
+  args: {
+    passage: {
+      ...basePassage,
+      labels: [makeLabel("Biodiversity")],
+    },
+  },
+};
+
+export const WithMultipleTopics: TStory = {
+  args: {
+    passage: {
+      ...basePassage,
+      labels: [makeLabel("Biodiversity"), makeLabel("Renewable energy"), makeLabel("Land use")],
+    },
+  },
+};
+
+export const ClickableWithTopics: TStory = {
+  args: {
+    passage: {
+      ...basePassage,
+      labels: [makeLabel("Biodiversity"), makeLabel("Renewable energy")],
+    },
+    onPassageClick: () => {},
   },
 };

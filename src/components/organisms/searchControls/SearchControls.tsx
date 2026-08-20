@@ -23,6 +23,7 @@ interface IProps {
   extraContent?: ReactNode; // Benefits from FiltersContext for rendering suggestions / zero state
   filterGroups: TFiltersGroupConfig[];
   filterParamKey: string;
+  filtersSlot?: ReactNode;
   labels: TSearchLabel[];
   queryParamKey: string;
   resetPageOnSort?: boolean;
@@ -36,6 +37,7 @@ export const SearchControls = ({
   extraContent = null,
   filterGroups,
   filterParamKey,
+  filtersSlot,
   labels,
   queryParamKey,
   resetPageOnSort = false,
@@ -54,6 +56,13 @@ export const SearchControls = ({
   const [_currentPage, setCurrentPage] = useQueryState("page_token", parseAsString.withDefault("1"));
 
   const [searchInput, setSearchInput] = useState(queryParam);
+  // Keep input in sync with query
+  const [lastQueryParam, setLastQueryParam] = useState(queryParam);
+
+  if (queryParam !== lastQueryParam) {
+    setLastQueryParam(queryParam);
+    setSearchInput(queryParam);
+  }
 
   const labelValues = useMemo(() => getSearchLabelValues(labels), [labels]);
   const checkedLabelPaths = useMemo(() => sortFilterPathLabels(queryGroupToFilterPaths(filterParam)), [filterParam]);
@@ -75,7 +84,7 @@ export const SearchControls = ({
 
   const onQuerySubmit: SubmitEventHandler<HTMLFormElement> = (event) => {
     event.preventDefault();
-    setQueryParam(searchInput);
+    setQueryParam(searchInput.trim());
   };
 
   return (
@@ -96,6 +105,7 @@ export const SearchControls = ({
       </form>
       <div className="col-start-1 -col-end-1 cols-5:col-start-2 cols-5:-col-end-2 flex flex-wrap gap-1 justify-between text-sm text-text-primary font-normal leading-5">
         <div className="flex flex-wrap gap-1 items-center">
+          {filtersSlot}
           {filterGroupsWithLabels.map((group) => {
             const SearchFilters = group.container === "drawer" ? SearchFiltersDrawer : SearchFiltersPopover;
 

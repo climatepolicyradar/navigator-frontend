@@ -1,6 +1,8 @@
 import { Check, Copy, ExternalLink, File, LocateFixed } from "lucide-react";
 import { useEffect, useState } from "react";
 
+import { IPassageLabel } from "@/types";
+
 const COPY_FEEDBACK_TIMEOUT = 1000;
 
 type TPassagePage = {
@@ -12,6 +14,7 @@ export type TPassage = {
   document_id: string;
   idx: number;
   content: string;
+  labels?: IPassageLabel[];
   language?: string;
   content_type?: string;
   type_confidence?: number;
@@ -69,10 +72,18 @@ export const PassageBlock = ({ passage, onCopyClick, onDocumentLinkClick, onPass
             onClick={() => onPassageClick(passage)}
             className="text-left w-full text-sm text-text-primary px-8 py-7 hocus:bg-paper"
           >
-            {passage.content}
+            <p>{passage.content}</p>
+            {passage.labels?.length > 0 && (
+              <p className="text-text-secondary mt-2">Contains topics: {passage.labels.map((label) => label.value.value).join(", ")}</p>
+            )}
           </button>
         ) : (
-          <p className="px-8 py-7">{passage.content}</p>
+          <div className="px-8 py-7">
+            <p>{passage.content}</p>
+            {passage.labels?.length > 0 && (
+              <p className="text-text-secondary mt-2">Contains topics: {passage.labels.map((label) => label.value.value).join(", ")}</p>
+            )}
+          </div>
         )}
       </div>
       {hasFooter && (
