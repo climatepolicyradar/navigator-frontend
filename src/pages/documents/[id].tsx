@@ -59,8 +59,10 @@ const DocumentPage = ({
   const exactMatchQuery = router.query[QUERY_PARAMS.exact_match] === undefined || router.query[QUERY_PARAMS.exact_match] !== "false";
   const startingPageNumber = Number(router.query.page) || 0;
 
+  const isNewSearch = features["new-search"];
+
   // Note: only runs a fresh start if either a query string or concept data is provided
-  const { status, families } = useSearch(router.query, null, document.import_id, !isEmptySearch(router.query), MAX_PASSAGES);
+  const { status, families } = useSearch(router.query, null, document.import_id, !isNewSearch && !isEmptySearch(router.query), MAX_PASSAGES);
 
   const handleViewSourceClick = (e: React.FormEvent<HTMLButtonElement>) => {
     e.preventDefault();
@@ -133,7 +135,7 @@ const DocumentPage = ({
               handleViewSourceClick={handleViewSourceClick}
             />
 
-            {features["new-search"] ? (
+            {isNewSearch ? (
               <PassageSearch documents={[document]} concepts={passageConcepts} enablePreview />
             ) : (
               <ConceptsDocumentViewer

@@ -72,12 +72,19 @@ export const FamilyPage = ({ collections, debug, errors, family, familyTopics, f
   /* Search matches */
 
   const router = useRouter();
+  const isNewSearch = features["new-search"];
   const hasSearch = Boolean(
     router.query[QUERY_PARAMS.query_string] || router.query[QUERY_PARAMS.concept_id] || router.query[QUERY_PARAMS.concept_name]
   );
 
   let matchesFamily: TMatchedFamily = null;
-  const { status: matchesStatus, families: searchFamilyResults } = useSearch(router.query, family.import_id, null, hasSearch, MAX_PASSAGES);
+  const { status: matchesStatus, families: searchFamilyResults } = useSearch(
+    router.query,
+    family.import_id,
+    null,
+    !isNewSearch && hasSearch,
+    MAX_PASSAGES
+  );
   if (hasSearch) {
     searchFamilyResults.forEach((searchFamilyResult) => {
       if (family.slug === searchFamilyResult.family_slug) {
@@ -176,7 +183,7 @@ export const FamilyPage = ({ collections, debug, errors, family, familyTopics, f
           label={family.title}
         />
         <PageHeader title={family.title} metadata={pageHeaderMetadata} />
-        {features["new-search"] ? (
+        {isNewSearch ? (
           <Tabs
             onValueChange={changeTab}
             value={activeTab}
