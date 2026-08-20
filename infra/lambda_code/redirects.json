@@ -3429,6 +3429,10 @@
       "Value": "/document/smith-v-fonterra-co-operative-group-limited_33b2"
     },
     {
+      "Key": "/non-us-case/smith-v-fonterra",
+      "Value": "/document/smith-v-fonterra-co-operative-group-limited_33b2"
+    },
+    {
       "Key": "/non-us-case/in-the-matter-of-the-greenhouse-gas-pollution-pricing-act-sc-2018-c-12",
       "Value": "/document/in-the-matter-of-the-greenhouse-gas-pollution-pricing-act-sc-2018-c-12_1baf"
     },
@@ -5346,6 +5350,10 @@
     },
     {
       "Key": "/case/texas-v-blackrock-inc",
+      "Value": "/collections/texas-v-blackrock-inc-_c94f1f"
+    },
+    {
+      "Key": "/case/texas-v-blackrock-inc/,NO,Web",
       "Value": "/collections/texas-v-blackrock-inc-_c94f1f"
     },
     {
@@ -9394,6 +9402,10 @@
     },
     {
       "Key": "/case/ksanka-kupaqa-xa%ca%be%e2%b1%a1%c8%bcin-v-us-fish-wildlife-service",
+      "Value": "/collections/ksanka-kupaqa-xa-in-v-u-s-fish-wildlife-service_82cfef"
+    },
+    {
+      "Key": "/case/ksanka-kupaqa-xa%CA%BE%E2%B1%A1%C8%BCin-v-us-fish-wildlife-service",
       "Value": "/collections/ksanka-kupaqa-xa-in-v-u-s-fish-wildlife-service_82cfef"
     },
     {
