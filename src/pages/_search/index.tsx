@@ -99,6 +99,8 @@ const ShadowSearch = ({ theme, themeConfig, features }: TProps) => {
     allFilterLabels.then(([filteredLabels, labelTaxonomy]) => setAvailableFilters([...filteredLabels, ...labelTaxonomy]));
   }, []);
 
+  const hasSearch = query || !isFilterGroupEmpty(filters);
+
   return (
     <FeaturesContext.Provider value={features}>
       <Layout theme={theme as TTheme} themeConfig={themeConfig} metadataKey="search">
@@ -172,7 +174,7 @@ const ShadowSearch = ({ theme, themeConfig, features }: TProps) => {
           onOpenChange={setAdvancedFiltersOpen}
         />
         {/* DRAWER */}
-        <PrincipalDrawer document={selectedDocument} open={drawerOpen} onOpenChange={setDrawerOpen} />
+        <PrincipalDrawer document={selectedDocument} open={drawerOpen} onOpenChange={setDrawerOpen} tab={hasSearch ? "search" : "about"} />
       </Layout>
     </FeaturesContext.Provider>
   );

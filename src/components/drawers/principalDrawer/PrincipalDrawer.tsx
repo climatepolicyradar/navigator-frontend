@@ -34,6 +34,7 @@ type TDocumentDrawerProps = {
   document: SearchDocument | null;
   open: boolean;
   onOpenChange: (open: boolean) => void;
+  tab?: string;
 };
 
 type TDrawerContentProps = {
@@ -83,9 +84,9 @@ const DrawerContent = ({ familyData, languages }: TDrawerContentProps) => {
   );
 };
 
-export function PrincipalDrawer({ document, open, onOpenChange }: TDocumentDrawerProps) {
+export function PrincipalDrawer({ document, open, onOpenChange, tab }: TDocumentDrawerProps) {
   const { data: { languages = {} } = {} } = useConfig();
-  const [activeTab, setActiveTab] = useState<string>("about");
+  const [activeTab, setActiveTab] = useState<string>(tab || "about");
   const changeTab = (newValue: string) => setActiveTab(newValue);
   const { getCategoryTextLookup } = useText();
 
