@@ -47,7 +47,7 @@ describe("PassageBlock", () => {
   it("lists every page when a passage spans more than one", () => {
     const passage: TPassage = { ...basePassage, pages: [{ page_number: 0 }, { page_number: 1 }, { page_number: 2 }] };
     render(<PassageBlock passage={passage} />);
-    expect(screen.getByText("Pgs. 1,2,3")).toBeInTheDocument();
+    expect(screen.getByText("Pgs. 1, 2, 3")).toBeInTheDocument();
   });
 
   it("does not render a page number for an empty pages array", () => {
