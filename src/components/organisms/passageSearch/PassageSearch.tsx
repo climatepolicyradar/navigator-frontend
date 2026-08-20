@@ -208,15 +208,21 @@ export const PassageSearch = ({ concepts, documents, documentsLabel, enablePrevi
     setDocumentsParam(nextSelectedIds.length === allDocumentIds.length ? null : nextSelectedIds);
   };
 
-  // Without a preview to drive, a passage takes the reader to its own document. The document
-  // page runs the same search on arrival and opens at its first match, so the term travels
-  // with them. Passages only exist once a search has run, so there is always one.
+  // We have to run some logic because passages don't contain the document slug
   const documentHref = useCallback(
     (passage: TPassageBlock) => {
       const slug = documentsById.get(passage.document_id)?.slug;
       return slug ? { pathname: `/documents/${slug}`, query: { [QUERY_PARAMS.query_string]: queryParam } } : null;
     },
     [documentsById, queryParam]
+  );
+
+  const handleDocumentLinkClick = useCallback(
+    (passage: TPassageBlock) => {
+      const href = documentHref(passage);
+      if (href) window.open(`${href.pathname}`, "_blank");
+    },
+    [documentHref]
   );
 
   const handlePassageClick = useCallback(
@@ -233,14 +239,6 @@ export const PassageSearch = ({ concepts, documents, documentsLabel, enablePrevi
       if (href) router.push(href);
     },
     [canPreview, documentHref, enablePreview, router]
-  );
-
-  const handleDocumentLinkClick = useCallback(
-    (passage: TPassageBlock) => {
-      const href = documentHref(passage);
-      if (href) window.open(`${href.pathname}?${new URLSearchParams(href.query).toString()}`, "_blank");
-    },
-    [documentHref]
   );
 
   const controls = (
