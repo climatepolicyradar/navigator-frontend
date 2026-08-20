@@ -99,7 +99,7 @@ export const PassageBlock = ({ passage, onCopyClick, onDocumentLinkClick, onPass
                   <div className="flex gap-2 items-center shrink-0">
                     <LocateFixed size={16} className="text-elem-icon" />
                     <p className="text-sm text-text-primary whitespace-nowrap">
-                      {pageNumbers.length === 1 ? "Pg." : "Pgs."} {pageNumbers.join(",")}
+                      {pageNumbers.length === 1 ? "Pg." : "Pgs."} {pageNumbers.join(", ")}
                     </p>
                   </div>
                 )}
