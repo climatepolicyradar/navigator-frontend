@@ -4,9 +4,9 @@ import { useCallback, useEffect, useState, type SetStateAction } from "react";
 
 import { normaliseSearchDocumentsSortKey, SearchDocument } from "@/api/search";
 import { createGroup, isFilterGroupEmpty, AdvancedFilters } from "@/components/_experiment/advancedFilters/AdvancedFilters";
-import { DocumentDrawer } from "@/components/_experiment/documentDrawer/DocumentDrawer";
 import { SEARCH_RESULTS_PAGE_SIZE, SearchContainer } from "@/components/_experiment/searchResults/SearchResults";
 import { FiveColumns } from "@/components/atoms/columns/FiveColumns";
+import { PrincipalDrawer } from "@/components/drawers/principalDrawer/PrincipalDrawer";
 import Layout from "@/components/layouts/Main";
 import { Pagination } from "@/components/molecules/pagination/Pagination";
 import { SearchControls } from "@/components/organisms/searchControls/SearchControls";
@@ -27,16 +27,6 @@ const columnLayoutCss = "col-start-1 -col-end-1 cols-5:col-start-2 cols-5:-col-e
 
 type TProps = InferGetServerSidePropsType<typeof getServerSideProps>;
 
-/*
- * SHADOW SEARCH is currently made up of 6 Core surfaces, each surface is commented in code below
- * NB: this is not necessarily the order they appear within this component
- * - Search input (and suggestions)
- * - Filters
- * - Applied filters
- * - Advanced filters
- * - Search results
- * - Result drawer
- */
 const ShadowSearch = ({ theme, themeConfig, features }: TProps) => {
   const [availableFilters, setAvailableFilters] = useState<TSearchLabel[]>([]);
 
@@ -108,6 +98,8 @@ const ShadowSearch = ({ theme, themeConfig, features }: TProps) => {
 
     allFilterLabels.then(([filteredLabels, labelTaxonomy]) => setAvailableFilters([...filteredLabels, ...labelTaxonomy]));
   }, []);
+
+  const hasSearch = query || !isFilterGroupEmpty(filters);
 
   return (
     <FeaturesContext.Provider value={features}>
@@ -182,7 +174,7 @@ const ShadowSearch = ({ theme, themeConfig, features }: TProps) => {
           onOpenChange={setAdvancedFiltersOpen}
         />
         {/* DRAWER */}
-        <DocumentDrawer document={selectedDocument} open={drawerOpen} onOpenChange={setDrawerOpen} />
+        <PrincipalDrawer document={selectedDocument} open={drawerOpen} onOpenChange={setDrawerOpen} tab={hasSearch ? "search" : "about"} />
       </Layout>
     </FeaturesContext.Provider>
   );
