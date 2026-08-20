@@ -113,10 +113,8 @@ describe("legacy /climate-change-litigation prefix", () => {
     },
     // wp-content passthrough loses the prefix
     {
-      input:
-        "/climate-change-litigation/wp-content/uploads/sites/16/case-documents/2021/20210615_docket-221-cv-00778_ruling.pdf",
-      expected:
-        "https://admin.climatecasechart.com/wp-content/uploads/sites/16/case-documents/2021/20210615_docket-221-cv-00778_ruling.pdf",
+      input: "/climate-change-litigation/wp-content/uploads/sites/16/case-documents/2021/20210615_docket-221-cv-00778_ruling.pdf",
+      expected: "https://admin.climatecasechart.com/wp-content/uploads/sites/16/case-documents/2021/20210615_docket-221-cv-00778_ruling.pdf",
     },
     // bare prefix goes home
     { input: "/climate-change-litigation", expected: "/" },
@@ -133,14 +131,11 @@ describe("legacy /climate-change-litigation prefix", () => {
 });
 
 describe("old WordPress feeds", () => {
-  test.each([["/rss"], ["/rss/"], ["/feed"], ["/feed/"]])(
-    "%s => /",
-    async (input) => {
-      const response = await handler({ request: { uri: input } });
-      expect(response.statusCode).toEqual(301);
-      expect(response.headers.location.value).toEqual("/");
-    }
-  );
+  test.each([["/rss"], ["/rss/"], ["/feed"], ["/feed/"]])("%s => /", async (input) => {
+    const response = await handler({ request: { uri: input } });
+    expect(response.statusCode).toEqual(301);
+    expect(response.headers.location.value).toEqual("/");
+  });
 });
 
 describe("KVS trailing-slash tolerance", () => {
