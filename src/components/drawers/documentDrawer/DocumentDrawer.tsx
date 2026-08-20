@@ -17,12 +17,12 @@ import { formatDateShort } from "@/utils/timedate";
 import { getTopFamilyDocumentTopics } from "@/utils/topics/getTopFamilyDocumentTopics";
 
 interface IProps {
-  documentImportId: string | null; // The currently displayed document
+  documentImportId: string | null;
   family: TFamilyPublic;
   familyTopics?: IFamilyDocumentTopics | null;
   languages: TLanguages;
-  onOpenChange: (open: boolean) => void; // Triggered each time the drawer is opened or closed
-  open: boolean; // Whether the drawer is currently open. Necessitates useState
+  onOpenChange: (open: boolean) => void;
+  open: boolean;
 }
 
 export const DocumentDrawer = ({ documentImportId, family, familyTopics, languages, onOpenChange, open }: IProps) => {
