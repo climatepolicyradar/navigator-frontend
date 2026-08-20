@@ -295,6 +295,46 @@ for theme in ["cpr", "cclw", "mcf", "ccc"]:
     )
 
 # ---------------------------------------------------------------------------
+# ALB access log bucket
+# ---------------------------------------------------------------------------
+# The shared frontend ALB is provisioned implicitly by ECS Express Gateway
+# (see EcsCluster / ExpressGatewayService below) rather than as a Pulumi
+# resource, so its access-logs.s3 attribute has to be enabled out-of-band via
+# the AWS CLI. This bucket is the destination for that access log delivery.
+if is_production:
+    alb_log_bucket = aws.s3.Bucket(
+        "frontend-alb-logs",
+        bucket="cpr-frontend-alb-logs",
+        tags={
+            "CPR-Created-By": "pulumi",
+            "CPR-Pulumi-Stack-Name": pulumi.get_stack(),
+            "CPR-Pulumi-Project-Name": pulumi.get_project(),
+        },
+    )
+
+    elb_service_account = aws.elb.get_service_account()
+
+    aws.s3.BucketPolicy(
+        "frontend-alb-logs-policy",
+        bucket=alb_log_bucket.id,
+        policy=pulumi.Output.all(alb_log_bucket.arn, aws_account.account_id).apply(
+            lambda args: json.dumps(
+                {
+                    "Version": "2012-10-17",
+                    "Statement": [
+                        {
+                            "Effect": "Allow",
+                            "Principal": {"AWS": elb_service_account.arn},
+                            "Action": "s3:PutObject",
+                            "Resource": f"{args[0]}/frontend-production/AWSLogs/{args[1]}/*",
+                        }
+                    ],
+                }
+            )
+        ),
+    )
+
+# ---------------------------------------------------------------------------
 # ECS Cluster
 # ---------------------------------------------------------------------------
 # Vpc ID, public subnet IDs and CloudFront origin prefix list ID are required
