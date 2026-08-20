@@ -121,6 +121,15 @@ describe("legacy /climate-change-litigation prefix", () => {
     { input: "/climate-change-litigation/", expected: "/" },
     // unknown remainder still sheds the prefix
     { input: "/climate-change-litigation/whatever", expected: "/whatever" },
+    // open-redirect vectors collapse to same-origin paths: // is
+    // protocol-relative and browsers normalise \ to /
+    { input: "/climate-change-litigation//evil.com", expected: "/evil.com" },
+    { input: "/climate-change-litigation/\\evil.com", expected: "/evil.com" },
+    { input: "/climate-change-litigation///evil.com", expected: "/evil.com" },
+    {
+      input: "/climate-change-litigation//\\/evil.com",
+      expected: "/evil.com",
+    },
   ];
 
   test.each(testCases)("$input => $expected", async ({ input, expected }) => {

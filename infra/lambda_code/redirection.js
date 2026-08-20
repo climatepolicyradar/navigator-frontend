@@ -35,7 +35,11 @@ async function handler(event) {
     let hadLegacyPrefix = false;
     const legacyPrefixMatch = uri.match(/^\/climate-change-litigation(\/.*)?$/);
     if (legacyPrefixMatch) {
-      uri = legacyPrefixMatch[1] || "/";
+      // Collapse leading slashes and backslashes: a stripped remainder like
+      // //evil.com or /\evil.com would otherwise reach the fallback redirect
+      // as a protocol-relative URL and send the visitor off-site (browsers
+      // normalise \ to / per the WHATWG URL spec).
+      uri = (legacyPrefixMatch[1] || "/").replace(/^[/\\]+/, "/");
       hadLegacyPrefix = true;
     }
 
