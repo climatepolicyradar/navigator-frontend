@@ -9,16 +9,26 @@ const searchPassagesUrl = (): string => {
   return `${origin}/search/passages`;
 };
 
-const configurePassagesFilters = (documents: string[]): TSearchQueryGroup => {
-  return {
+const configurePassagesFilters = (documents: string[], filters?: TSearchQueryGroup): TSearchQueryGroup => {
+  const documentsFilter: TSearchQueryGroup = {
     op: "or",
     filters: documents.map((documentId) => ({ field: "document_id", op: "contains", value: documentId })),
+  };
+
+  const filtersWithConditionals: TSearchQueryGroup[] = [documentsFilter];
+
+  if (filters) filtersWithConditionals.push(filters);
+
+  return {
+    op: "and",
+    filters: filtersWithConditionals,
   };
 };
 
 export const fetchSearchPassages = async ({
   query,
   documents,
+  filters,
   pageSize,
   pageToken,
   signal,
@@ -27,7 +37,7 @@ export const fetchSearchPassages = async ({
   const url = new URL(searchPassagesUrl());
 
   url.searchParams.set("query", query);
-  url.searchParams.set("filters", JSON.stringify(configurePassagesFilters(documents)));
+  url.searchParams.set("filters", JSON.stringify(configurePassagesFilters(documents, filters)));
   if (pageSize !== undefined) url.searchParams.set("page_size", String(pageSize));
   if (pageToken !== undefined) url.searchParams.set("page_token", String(pageToken));
   const sortKey = sort ?? "relevance desc";

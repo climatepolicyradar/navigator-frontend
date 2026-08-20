@@ -31,19 +31,30 @@ export type TViewerPassage = TPassage | ISearchPassage;
 
 const isNewModelPassage = (passage: TViewerPassage): passage is ISearchPassage => "pages_with_bounding_boxes" in passage;
 
+// Remove identical bounding boxes for the same passage on the same page
+const dedupeHighlights = (highlights: THighlight[]): THighlight[] => {
+  const seen = new Set<string>();
+
+  return highlights.filter((highlight) => {
+    const key = `${highlight.pageNumber}:${highlight.boundingBox.join(",")}`;
+    if (seen.has(key)) return false;
+    seen.add(key);
+    return true;
+  });
+};
+
 // Both models list their four corners in the same order — top-left, top-right,
 // bottom-right, bottom-left — so only the container shape and the page indexing differ.
 const getPassageHighlights = (passage: TViewerPassage): THighlight[] => {
   if (isNewModelPassage(passage)) {
-    return (passage.pages_with_bounding_boxes ?? []).flatMap((page) =>
+    const highlights = (passage.pages_with_bounding_boxes ?? []).flatMap((page) =>
       (page.bounding_boxes ?? []).flatMap((box, boxIndex) => {
         const [topLeft, topRight, bottomRight] = box.coordinates ?? [];
         if (!topLeft || !topRight || !bottomRight) return [];
 
         return [
           {
-            // A passage can contribute several boxes, so the passage id alone would not
-            // be unique across annotations.
+            // Support multiple boxes per page
             id: `${passage.text_block_id}-${page.number}-${boxIndex}`,
             // `number` is 0-indexed in this model.
             pageNumber: page.number + 1,
@@ -52,6 +63,8 @@ const getPassageHighlights = (passage: TViewerPassage): THighlight[] => {
         ];
       })
     );
+
+    return dedupeHighlights(highlights);
   }
 
   const [topLeft, topRight, bottomRight] = passage.text_block_coords ?? [];
