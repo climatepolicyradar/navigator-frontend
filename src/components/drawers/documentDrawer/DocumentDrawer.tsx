@@ -14,6 +14,7 @@ import { DOCUMENT_DRAWER_TOPICS_TABLE_COLUMNS, getDocumentDrawerTopicTableRows }
 import { TTopicTableColumnId, TTopicTableRow } from "@/utils/tables/topic/topicTable";
 import { firstCase } from "@/utils/text";
 import { formatDateShort } from "@/utils/timedate";
+import { getTopFamilyDocumentTopics } from "@/utils/topics/getTopFamilyDocumentTopics";
 
 interface IProps {
   documentImportId: string | null; // The currently displayed document
@@ -112,7 +113,7 @@ export const DocumentDrawer = ({ documentImportId, family, familyTopics, languag
     >
       {features["new-search"] ? (
         <>
-          <PassageSearch documents={[document]} concepts={[]} subject="this document" />
+          <PassageSearch documents={[document]} concepts={getTopFamilyDocumentTopics(familyTopics, documentImportId)} subject="this document" />
         </>
       ) : (
         <>
