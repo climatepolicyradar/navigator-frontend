@@ -312,6 +312,21 @@ if is_production:
         },
     )
 
+    aws.s3.BucketLifecycleConfiguration(
+        "frontend-alb-logs-lifecycle",
+        bucket=alb_log_bucket.id,
+        rules=[
+            aws.s3.BucketLifecycleConfigurationRuleArgs(
+                id="expire-old-logs",
+                status="Enabled",
+                filter=aws.s3.BucketLifecycleConfigurationRuleFilterArgs(prefix=""),
+                expiration=aws.s3.BucketLifecycleConfigurationRuleExpirationArgs(
+                    days=30
+                ),
+            )
+        ],
+    )
+
     elb_service_account = aws.elb.get_service_account()
 
     aws.s3.BucketPolicy(

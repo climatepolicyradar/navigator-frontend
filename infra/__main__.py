@@ -507,6 +507,21 @@ if not is_review_stack_or_template:
         },
     )
 
+    aws.s3.BucketLifecycleConfiguration(
+        f"{name_prefix}-cloudfront-logs-lifecycle",
+        bucket=cloudfront_log_bucket.id,
+        rules=[
+            aws.s3.BucketLifecycleConfigurationRuleArgs(
+                id="expire-old-logs",
+                status="Enabled",
+                filter=aws.s3.BucketLifecycleConfigurationRuleFilterArgs(prefix=""),
+                expiration=aws.s3.BucketLifecycleConfigurationRuleExpirationArgs(
+                    days=30
+                ),
+            )
+        ],
+    )
+
     cloudfront_log_bucket_ownership = aws.s3.BucketOwnershipControls(
         f"{name_prefix}-cloudfront-logs-ownership",
         bucket=cloudfront_log_bucket.id,
