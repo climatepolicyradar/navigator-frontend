@@ -1,0 +1,71 @@
+{
+  "comment": "Behavioral fixtures for ccc-redirection, executed in the real CloudFront Functions runtime by scripts/test-edge.sh. kvsSeed entries are copied from redirects.json and loaded into the scratch KVS so KVS-dependent cases run against real lookup semantics.",
+  "kvsSeed": {
+    "/us-climate-change-litigation/": "/search",
+    "/non-us-jurisdiction/": "/search#tab=jurisdictions",
+    "/non-us-principal-law/": "/search#tab=principal-laws",
+    "/case/juliana-v-united-states": "/collections/juliana-v-united-states_e35e2b",
+    "/non-us-case/smith-v-fonterra": "/document/smith-v-fonterra-co-operative-group-limited_33b2",
+    "/wp-content/uploads/2025/07/Case-Bundles-2025-07-15.csv": "https://form.jotform.com/252292116187356"
+  },
+  "cases": [
+    { "uri": "/", "expect": "pass" },
+    { "uri": "/unknown-uri/", "expect": "pass" },
+    { "uri": "/documents/some-real-document_ab12", "expect": "pass" },
+
+    { "uri": "/case-category/clean-water-act/", "expect": "redirect", "location": "/search?cpl=category%2Fclean+water+act" },
+    { "uri": "/non-us-case-category/failure-to-adapt/", "expect": "redirect", "location": "/search?cpl=category%2Ffailure+to+adapt" },
+    { "uri": "/principle-law/rivers-and-harbors-act/", "expect": "redirect", "location": "/search?cpl=principal_law%2Frivers+and+harbors+act" },
+    {
+      "uri": "/non-us-jurisdiction/superior-council-of-justice-administration/",
+      "expect": "redirect",
+      "location": "/search?cpl=jurisdiction%2Fsuperior+council+of+justice+administration"
+    },
+
+    { "uri": "/us-climate-change-litigation/", "expect": "redirect", "location": "/search" },
+    { "uri": "/non-us-jurisdiction/", "expect": "redirect", "location": "/search#tab=jurisdictions" },
+    {
+      "uri": "/wp-content/uploads/2025/07/Case-Bundles-2025-07-15.csv",
+      "expect": "redirect",
+      "location": "https://form.jotform.com/252292116187356"
+    },
+    {
+      "uri": "/wp-content/uploads/sites/16/case-documents/2021/x.pdf",
+      "expect": "redirect",
+      "location": "https://admin.climatecasechart.com/wp-content/uploads/sites/16/case-documents/2021/x.pdf"
+    },
+
+    { "uri": "/us-climate-change-litigation", "expect": "redirect", "location": "/search" },
+    { "uri": "/case/juliana-v-united-states/", "expect": "redirect", "location": "/collections/juliana-v-united-states_e35e2b" },
+
+    { "uri": "/rss", "expect": "redirect", "location": "/" },
+    { "uri": "/rss/", "expect": "redirect", "location": "/" },
+    { "uri": "/feed", "expect": "redirect", "location": "/" },
+    { "uri": "/feed/", "expect": "redirect", "location": "/" },
+
+    { "uri": "/climate-change-litigation", "expect": "redirect", "location": "/" },
+    { "uri": "/climate-change-litigation/", "expect": "redirect", "location": "/" },
+    { "uri": "/climate-change-litigation/whatever", "expect": "redirect", "location": "/whatever" },
+    { "uri": "/climate-change-litigation/us-climate-change-litigation/", "expect": "redirect", "location": "/search" },
+    {
+      "uri": "/climate-change-litigation/case-category/clean-water-act/",
+      "expect": "redirect",
+      "location": "/search?cpl=category%2Fclean+water+act"
+    },
+    {
+      "uri": "/climate-change-litigation/non-us-case/smith-v-fonterra",
+      "expect": "redirect",
+      "location": "/document/smith-v-fonterra-co-operative-group-limited_33b2"
+    },
+    {
+      "uri": "/climate-change-litigation/wp-content/uploads/sites/16/case-documents/2021/x.pdf",
+      "expect": "redirect",
+      "location": "https://admin.climatecasechart.com/wp-content/uploads/sites/16/case-documents/2021/x.pdf"
+    },
+
+    { "uri": "/climate-change-litigation//evil.com", "expect": "redirect", "location": "/evil.com" },
+    { "uri": "/climate-change-litigation/\\evil.com", "expect": "redirect", "location": "/evil.com" },
+    { "uri": "/climate-change-litigation///evil.com", "expect": "redirect", "location": "/evil.com" },
+    { "uri": "/climate-change-litigation//\\/evil.com", "expect": "redirect", "location": "/evil.com" }
+  ]
+}
