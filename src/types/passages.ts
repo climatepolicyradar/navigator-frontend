@@ -1,3 +1,5 @@
+import { TSearchQueryGroup } from "@/types";
+
 export interface IPassageBoundingBox {
   coordinates: { x: number; y: number }[];
 }
@@ -7,18 +9,31 @@ export interface IPassagePageWithBoundingBoxes {
   bounding_boxes: IPassageBoundingBox[];
 }
 
+export interface IPassageLabel {
+  classifier_id: string;
+  end_index: number;
+  labelled_text: string;
+  labellers: string[];
+  start_index: number;
+  value: {
+    id: string;
+    type: string;
+    value: string;
+  };
+}
+
 export interface ISearchPassage {
   id: string;
   text_block_id: string;
   idx: number;
   text: string;
+  labels: IPassageLabel[] | null;
   language: string | null;
   type: string;
   type_confidence: number;
   page_number: number;
   pages: number[];
   pages_with_bounding_boxes: IPassagePageWithBoundingBoxes[];
-  concepts: unknown[];
   heading_id: string | null;
   heading_text: string | null;
   document_id: string;
@@ -40,6 +55,7 @@ export interface ISearchPassagesResponse {
 export interface ISearchPassagesParams {
   query: string;
   documents: string[];
+  filters?: TSearchQueryGroup | null;
   pageSize?: number;
   // 1-indexed page number. The API's `page` parameter is currently ignored, and its
   // `next_page` / `total_pages` fields come back null, so callers page by incrementing

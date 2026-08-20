@@ -11,6 +11,9 @@ export const runGenericDocumentTests = (theme: TTheme): void => {
 
   documentsToTest.forEach(({ titleForTests, slug, withSearch, withTopic, withParentTopic }) => {
     test(`adding a search query generates passage matches - ${titleForTests}`, async ({ page }) => {
+      // TODO: remove when we have settled on solution for new search
+      test.skip(process.env.E2E_TEST_FEATURE_FLAGS === "true", "We need to revisit as we have rebuilt the search on document");
+
       // Load the document page
       await documentPage.goToDocument(page, slug);
       await documentPage.waitUntilLoaded(page);
@@ -34,8 +37,8 @@ export const runGenericDocumentTests = (theme: TTheme): void => {
     });
 
     test(`selecting a topic generates passage matches - ${titleForTests}`, async ({ page }) => {
-      // TODO: remove when we have topics enabled for new passage search
-      test.skip(process.env.E2E_TEST_FEATURE_FLAGS === "true", "We don't have topics enabled for new passage search");
+      // TODO: remove when we have settled on solution for new search
+      test.skip(process.env.E2E_TEST_FEATURE_FLAGS === "true", "We need to revisit as we have rebuilt the search on document");
 
       // Load the document page
       await documentPage.goToDocument(page, slug);

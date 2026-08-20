@@ -29,3 +29,11 @@ export const SEARCH_FILTER_GROUPS: TFiltersGroupConfig[] = [
     prepareRootLabels: prepareTopicFilters,
   },
 ];
+
+export const PASSAGE_FILTER_GROUPS: TFiltersGroupConfig[] = [
+  {
+    title: "Topic",
+    container: "popover",
+    rootLabelTypes: ["concept"],
+  },
+];

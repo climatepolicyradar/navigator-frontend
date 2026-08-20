@@ -1,6 +1,17 @@
 import { render, screen, fireEvent } from "@testing-library/react";
 
+import { IPassageLabel } from "@/types";
+
 import { PassageBlock, TPassage } from "./PassageBlock";
+
+const makeLabel = (value: string): IPassageLabel => ({
+  classifier_id: `classifier-${value}`,
+  end_index: 0,
+  labelled_text: value,
+  labellers: ["classifier"],
+  start_index: 0,
+  value: { id: `concept-${value}`, type: "concept", value },
+});
 
 const basePassage: TPassage = {
   id: "passage-1",
@@ -60,6 +71,29 @@ describe("PassageBlock", () => {
     const passage: TPassage = { ...basePassage, headingText: undefined };
     render(<PassageBlock passage={passage} />);
     expect(screen.queryByText("Section 4: National Target 16")).not.toBeInTheDocument();
+  });
+
+  it("renders the label values as topics when labels are present", () => {
+    const passage: TPassage = { ...basePassage, labels: [makeLabel("Biodiversity"), makeLabel("Renewable energy")] };
+    render(<PassageBlock passage={passage} />);
+    expect(screen.getByText("Contains topics: Biodiversity, Renewable energy")).toBeInTheDocument();
+  });
+
+  it("does not render topics when labels are absent", () => {
+    render(<PassageBlock passage={basePassage} />);
+    expect(screen.queryByText(/Contains topics:/)).not.toBeInTheDocument();
+  });
+
+  it("does not render topics for an empty labels array", () => {
+    const passage: TPassage = { ...basePassage, labels: [] };
+    render(<PassageBlock passage={passage} />);
+    expect(screen.queryByText(/Contains topics:/)).not.toBeInTheDocument();
+  });
+
+  it("renders topics inside the clickable passage button", () => {
+    const passage: TPassage = { ...basePassage, labels: [makeLabel("Biodiversity")] };
+    render(<PassageBlock passage={passage} onPassageClick={() => {}} />);
+    expect(screen.getByRole("button", { name: /Contains topics: Biodiversity/ })).toBeInTheDocument();
   });
 
   it("renders the passage text as plain text when onPassageClick is not provided", () => {
