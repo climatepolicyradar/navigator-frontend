@@ -95,9 +95,11 @@ export const DocumentDrawer = ({ documentImportId, family, familyTopics, languag
       onOpenChange={onOpenChange}
       title={
         document.slug ? (
-          <PageLink keepQuery href={"/documents/" + document.slug} className="text-3xl text-inky-blue underline-offset-5 hover:underline">
-            {document.title}
-          </PageLink>
+          <span className="block pt-5">
+            <PageLink keepQuery href={"/documents/" + document.slug} className="text-3xl text-inky-blue underline-offset-5 hover:underline">
+              {document.title}
+            </PageLink>
+          </span>
         ) : (
           document.title
         )
