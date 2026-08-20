@@ -104,9 +104,9 @@ export const DocumentDrawer = ({ documentImportId, family, familyTopics, languag
       }
       titleExtras={
         document.slug ? (
-          <a target="_blank" href={"/documents/" + document.slug} className="text-neutral-500 hover:text-neutral-800 justify-end">
+          <PageLink external keepQuery href={"/documents/" + document.slug} className="text-neutral-500 hover:text-neutral-800 justify-end">
             <LucideExternalLink width={20} height={20} />
-          </a>
+          </PageLink>
         ) : undefined
       }
       wide

@@ -4,6 +4,7 @@ import { Fragment, useState } from "react";
 
 import { SearchDocument } from "@/api/search";
 import { Drawer } from "@/components/atoms/drawer/Drawer";
+import { PageLink } from "@/components/atoms/pageLink/PageLink";
 import { Tabs } from "@/components/atoms/tabs/Tabs";
 import { DocumentsBlock } from "@/components/blocks/documentsBlock/DocumentsBlock";
 import { MetadataBlock } from "@/components/blocks/metadataBlock/MetadataBlock";
@@ -106,11 +107,9 @@ export function PrincipalDrawer({ document, open, onOpenChange }: TDocumentDrawe
         document ? (
           linkHref(document) ? (
             <span className="block pt-5">
-              <a
-                href={linkHref(document)!}
-                className="text-3xl text-inky-blue underline-offset-5 hover:underline"
-                dangerouslySetInnerHTML={{ __html: document.title }}
-              />
+              <PageLink keepQuery href={linkHref(document)!} className="text-3xl text-inky-blue underline-offset-5 hover:underline">
+                <span dangerouslySetInnerHTML={{ __html: document.title }} />
+              </PageLink>
             </span>
           ) : (
             <span dangerouslySetInnerHTML={{ __html: document.title }} />
@@ -119,9 +118,9 @@ export function PrincipalDrawer({ document, open, onOpenChange }: TDocumentDrawe
       }
       titleExtras={
         document && linkHref(document) ? (
-          <a target="_blank" href={linkHref(document)!} className="text-neutral-500 hover:text-neutral-800 justify-end">
+          <PageLink external keepQuery href={linkHref(document)!} className="text-neutral-500 hover:text-neutral-800 justify-end">
             <LucideExternalLink width={20} height={20} />
-          </a>
+          </PageLink>
         ) : undefined
       }
       wide
