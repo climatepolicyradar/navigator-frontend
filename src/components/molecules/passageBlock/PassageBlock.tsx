@@ -75,16 +75,12 @@ export const PassageBlock = ({ passage, onCopyClick, onDocumentLinkClick, onPass
             className="text-left w-full text-sm text-text-primary px-8 py-7 hocus:bg-paper"
           >
             <p>{passage.content}</p>
-            {passage.labels?.length > 0 && (
-              <p className="text-text-secondary mt-2">Contains topics: {passage.labels.map((label) => label.value.value).join(", ")}</p>
-            )}
+            {passage.labels?.length > 0 && <p className="text-text-secondary mt-2">Contains topics: {topics.join(", ")}</p>}
           </button>
         ) : (
           <div className="px-8 py-7">
             <p>{passage.content}</p>
-            {passage.labels?.length > 0 && (
-              <p className="text-text-secondary mt-2">Contains topics: {passage.labels.map((label) => label.value.value).join(", ")}</p>
-            )}
+            {passage.labels?.length > 0 && <p className="text-text-secondary mt-2">Contains topics: {topics.join(", ")}</p>}
           </div>
         )}
       </div>
