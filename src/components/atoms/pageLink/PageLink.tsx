@@ -7,7 +7,13 @@ import { MouseEventHandler, ReactNode } from "react";
 import { CleanRouterQuery } from "@/utils/cleanRouterQuery";
 import { joinTailwindClasses } from "@/utils/tailwind";
 
-const getDebugClasses = (external: boolean, keepQuery: boolean, query?: ParsedUrlQuery) => {
+type TQueryOverrides = Record<string, string | string[] | null | undefined>;
+
+// A null/undefined override removes the param rather than emitting an empty one
+const mergeQuery = (inherited: ParsedUrlQuery, overrides: TQueryOverrides): ParsedUrlQuery =>
+  Object.fromEntries(Object.entries({ ...inherited, ...overrides }).filter(([, value]) => value !== null && value !== undefined)) as ParsedUrlQuery;
+
+const getDebugClasses = (external: boolean, keepQuery: boolean, query?: TQueryOverrides) => {
   if (external) return "outline-2! outline-red-500"; // External = red
   if (keepQuery && query && Object.keys(query).length > 0) return "outline-2! outline-purple-500"; // Modified keep query = purple
   if (keepQuery) return "outline-2! outline-blue-500"; // Keep query = blue
@@ -24,7 +30,7 @@ export interface IProps extends LinkProps {
   hash?: string;
   href: string;
   keepQuery?: boolean;
-  query?: ParsedUrlQuery;
+  query?: TQueryOverrides;
   underline?: boolean;
 }
 
@@ -42,13 +48,7 @@ export const PageLink = ({
 }: IProps) => {
   const router = useRouter();
 
-  const routerQuery = CleanRouterQuery({
-    ...(keepQuery ? router.query : {}),
-    ...query,
-  });
-  Object.entries(query).forEach(([queryKey, queryValue]) => {
-    queryValue ?? delete routerQuery[queryKey]; // Unset null or undefined query values
-  });
+  const routerQuery = CleanRouterQuery(mergeQuery(keepQuery ? router.query : {}, query));
 
   // Prevents a DOM parent onClick event from triggering when clicking a link
   const stopPropagation: MouseEventHandler<HTMLAnchorElement> = (event) => {
