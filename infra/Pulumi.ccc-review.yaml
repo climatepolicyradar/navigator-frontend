@@ -1,32 +1,32 @@
 config:
   aws:region: eu-west-1
   frontend:adobe_api_key:
-    secure: AAABAEKmOcwRRlyi2xq5GzkGaQQ8zF5ga5dbVls0i7NXx0XaCI7xJ73I2OoL91Zj5wnsRkgx3ZxZ7/+OCUS/WQ==
-  frontend:app_url: https://ccc.staging.climatepolicyradar.org
+    secure: AAABACtwzOlFVqCCfINt1z++cFen+jI9Qi7W3QCFiBmnzo7G7TpUr0/sV0ciJj+43mNhVF4yJPA2B9j3R7HrtQ==
+  frontend:app_url: https://www.climatecasechart.com
   frontend:auto_scaling_config_arn:
-    secure: AAABAMLiVgfPfCMKyoSzo25Rv0K82cRhG3GOMy8/4JMohXyqSmQL04y1o3qTjY9gnI4Er1RuufR1zfwKwbb7qNdi6/+q02IU1rBTNTN5Mg76ZlVsFbvdSSTj7zynp4IWH6LZfjCRzzbrN3wtCfHRneS2f+CXHGn7ozBJ1jq2105U7AbcLtk+M/elmKgZ6IsyyeA5wX1KKiU=
+    secure: AAABAEhGYn8tjVFsl550VTYGADzn2yn5QbH55AcExhj2r22dwZ5S8Toikm2WftkhlTtegMGYNjP/y+XICJ09yEogZqYySNA1U2HTMxL8QNSH44S/hwd1DgIEYntX5aSNxJSOaRbXT5FEDuCDIbRM6xqOt6nAkBHzpL8OAa9Aq2elqTyGfT8s5Xq44tCsyUirsaQaZ8FrmzRZTJM=
   frontend:backend_api_token:
-    secure: AAABALm6UvakS6tRQpz9UmK1PFa6S0Ho6k03/2xIGU996yNcCkXr/ATk7Waz9rHSyu9S99I7J3X4kI4RUFTu4hr+A6TBpMG5uLpq+issblTY08spYIgP6Myqvy5h24Fp/ChyuuRxYW7obojLYcuOZGn7MSMInQSciiurS/xVjyGZQbGLcW+//yUdBC65+31boUR6NPZgxehRd1+lBNqPU8agscXaS1iH1//C1y+3Yp329bwj7O/9sgzY11x0XHJXc3uoRU33P3j3JnypKYw5PFGO4voa1ro4TFsI/G7CPioHSaT8G/gBZKpwoOHqv+lDpMYKYjjIJN+UNM5Ge3iIAMk3UeiY+2hXWHSvhqzyNNBIfTM9dVEe1yYc1HRY5O3TJcgJXdfnHv1qwV+k/oHc9/zNq2j41sNPgTXl04dchQuFpRq4s2zgmBQpuqWB5vAC8oboosrbJzH8bgTZ7Rjd5Sg=
-  frontend:backend_api_url: https://cpr.staging.climatepolicyradar.org/api/v1
-  frontend:cdn_url: https://cdn.dev.climatepolicyradar.org
-  frontend:concepts_api_url: https://api.staging.climatepolicyradar.org
+    secure: AAABAJwPFMVhOZ3UL7E+3C2NAzHGl6GkCNnjZ+U3M5aGCK/F7S2jQ+x66o2F8GI4KzIMaNYBTAdsAVR9qO9AkLlQJxv5+XeyUmxg4m3AhySyIqvvwvQqRhN+XEiuZm0i/IUkLl0gMt2JLaf2C00QdiU2AuVyogANP2y7NLq2NMU16klpiGpFOdPXRWVv0BI1UJdH1R/KD8fRwymAkM6TLtR7LrSqnG97vdTcgnDMO3KrNHSFMuI8XJ2F7v1uOu0c27z4Cee4IhDjmnb39rnqD3FyAGGSOzREebYLeOHp0wu3N8ZD0MG4Bet34aPiCQBYmtUzPH9KqDOoaab6EpKyHjIpiK+c9VZePhabrsbFlXe7RbNM+JNchAEMqteQk7kQdTzjGDdb0PnPOW+slnPccTGdvR/Sl4UNPwbFLtkEFznvbXFHLYE9o9FBVzuaSyGbR7BY0Q==
+  frontend:backend_api_url: https://app.climatepolicyradar.org/api/v1
+  frontend:cdn_url: https://cdn.climatepolicyradar.org
+  frontend:concepts_api_url: https://api.climatepolicyradar.org
   frontend:ecr_uri:
-    secure: AAABAJwpWK11uFCUFabj+0svcZRr7sdbcahEvnZUiFDk6wDrdWH85VSEDxiJEvQLDCYxLrsHCUP1Tu2enN76ouTihjT1b0zlG7sNU9BwB+05ENIn6TJnAXMZMNw1kJzBuHe0
+    secure: AAABAJnsBnddY7lJBGCX+zZw0GPVTv69M4Xnc6zI46WF72l86i2J0yY3OeZpsMZ71f80ltheIcGY0e1k/MBegRWNJrovZbKclQOuzMtoya2GbZ2pIP0alnjtIoR/9B0Q6TP/
   frontend:next_public_faro_app_name: ccc-review-frontend
   frontend:next_public_faro_app_namespace: frontend
   frontend:next_public_faro_url: https://faro-collector-prod-gb-south-0.grafana.net/collect/74f6d4bd78b7bb2cc270036193aaa3a6
-  frontend:otel_exporter_otlp_endpoint: https://otel.staging.climatepolicyradar.org/
+  frontend:otel_exporter_otlp_endpoint: https://otel.prod.climatepolicyradar.org/
   frontend:otel_exporter_otlp_protocol: http/protobuf
   frontend:otel_resource_attributes: service.namespace=frontend
   frontend:otel_service_name: frontend-server
   frontend:redirect_file: default.json
-  frontend:robots: "true"
+  frontend:robots: "false"
   frontend:s3-path:
-    secure: AAABAHOxhVvcpptdQEWonRCZI4GfZreRuDuotNFOhNhor789YnKiuuUBDtp8lxizCh6HoXOZ+jDCamoKoYJ+vYNPbY7rNC9eMBkG7iuJeDYAsq7oPuScW9fvMxTV/aPG2A==
-  frontend:targets_url: https://cpr-staging-targets-json-store.s3.eu-west-1.amazonaws.com
+    secure: AAABAEV7kLt+nO0i9QLHmW4H8A9L1VYYUhja72Uf7EPFylbqOHjWodKkZEDTeiR/tUG1yn9iVU2LuSZmg88Ev88QZuD8B8sN2jKCFXvx1Ge52TkmGSSiomslmJpWj9akRHPT+A==
+  frontend:targets_url: https://cpr-production-targets-json-store.s3.eu-west-1.amazonaws.com
   frontend:theme: ccc
   frontend:validation_account_id:
-    secure: AAABAO27voF7di6u38zns14+kI+/wjLr5GzuvDz8LZxc2grKbCFv2+trwMQ=
+    secure: AAABAObvsYXeJ63WV/F4XiG7Wc0g2DPTzGDRgBZ+3Z3mkNINZrpTOjIPMmc=
   frontend:apprunner_frontend_vcpu_count: 1 vCPU
   frontend:apprunner_frontend_memory_gb: 2 GB
 environment:
