@@ -196,6 +196,23 @@ jobs:
             exit 1
           fi
 
+      - name: Install pulumi CLI
+        if: steps.wait_deployment.outcome == 'success'
+        uses: pulumi/actions@v7
+
+      - name: Fetch ${{matrix.theme}} review stack URL
+        id: fetch_url
+        if: steps.wait_deployment.outcome == 'success'
+        env:
+          STACK_NAME: ${{ steps.decide.outputs.stack_name }}
+        run: |
+          review_url=$(pulumi stack output ecs_service_url --stack "${ORG}/${PROJECT}/${STACK_NAME}")
+          if [ -z "$review_url" ]; then
+            echo "ecs_service_url stack output was empty"
+            exit 1
+          fi
+          echo "review_url=$review_url" >> "$GITHUB_OUTPUT"
+
       - name: Trigger destroy deployment for ${{matrix.theme}}
         if: steps.decide.outputs.action == 'destroy'
         env:
