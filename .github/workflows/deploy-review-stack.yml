@@ -213,6 +213,42 @@ jobs:
           fi
           echo "review_url=$review_url" >> "$GITHUB_OUTPUT"
 
+      - name: Post ${{matrix.theme}} review stack URL to PR
+        if: steps.wait_deployment.outcome == 'success'
+        env:
+          GH_TOKEN: ${{ github.token }}
+          THEME: ${{ matrix.theme }}
+          REVIEW_URL: ${{ steps.fetch_url.outputs.review_url }}
+          PR_NUMBER: ${{ github.event.pull_request.number }}
+          DEPLOYMENT_ID: ${{ steps.trigger_update.outputs.deployment_id }}
+          STACK_NAME: ${{ steps.decide.outputs.stack_name }}
+        run: |
+          marker="<!-- review-stack-url:${THEME} -->"
+          logs_url="https://app.pulumi.com/${ORG}/${PROJECT}/${STACK_NAME}/deployments/${DEPLOYMENT_ID}"
+          body="${marker}
+          **${THEME}** review stack: ${REVIEW_URL}
+
+          [Deployment logs](${logs_url})"
+
+          existing_comment_id=$(gh api \
+            "repos/${{ github.repository }}/issues/${PR_NUMBER}/comments" \
+            --paginate \
+            --jq "[.[] | select(.body | startswith(\"${marker}\"))][0].id")
+
+          if [ -n "$existing_comment_id" ] && [ "$existing_comment_id" != "null" ]; then
+            gh api \
+              --method PATCH \
+              "repos/${{ github.repository }}/issues/comments/${existing_comment_id}" \
+              -f body="$body"
+            echo "Updated existing comment ${existing_comment_id} for theme ${THEME}"
+          else
+            gh api \
+              --method POST \
+              "repos/${{ github.repository }}/issues/${PR_NUMBER}/comments" \
+              -f body="$body"
+            echo "Created new comment for theme ${THEME}"
+          fi
+
       - name: Trigger destroy deployment for ${{matrix.theme}}
         if: steps.decide.outputs.action == 'destroy'
         env:
