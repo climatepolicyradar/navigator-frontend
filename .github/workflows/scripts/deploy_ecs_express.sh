@@ -1,34 +1,18 @@
 #!/usr/bin/env bash
 #
-# Deploy IMAGE to an ECS Express frontend service, correcting the service's
-# ECS-generated RollbackAlarm to judge deployment health on 5xx only.
+# Deploy IMAGE to an ECS Express service, correcting its generated
+# RollbackAlarm to judge deployment health on 5xx only. Most of our 4xx is
+# crawler noise and says nothing about task health; a genuinely broken build
+# still rolls back via 5xx or the untouched circuit breaker.
 #
-# The generated alarm rolls a deployment back at >1% 4xx+5xx. On a public site
-# most 4xx is crawler traffic: 90% of ours is bots hitting stale URLs, and a
-# burst against quiet-hours traffic reads as a 30% "error rate". Client errors
-# say nothing about whether the new tasks are healthy, so they are excluded
-# here; a genuinely broken build fails via 5xx (SSR crashes exceed the floor
-# within a minute) or via the untouched circuit breaker.
-#
-# ECS rewrites the alarm at deployment start (observed +2..35s after the
-# service update; CloudTrail Aug 18-24) and touches it again only when a
-# rollback fires. So: start the deployment, sleep out the rewrite window,
-# write the corrected alarm once, and confirm at the end that it held. The
-# fixed sleep beats watching the alarm's updated-timestamp: the pulumi step
-# just before this can trigger its own rewrite seconds earlier, which makes
-# timestamps ambiguous. 65s > the 35s observed worst case.
-#
-# Everything else -- rollback wiring, threshold, evaluation periods -- is
-# ECS's own definition, read back and left intact. The only edits: drop the
-# 4xx terms, floor 5xx at 5/min so one stray 502 in a quiet minute cannot
-# trip FILL(total, 1).
-#
-# Takes the cluster and service name directly so it can also be run by hand
-# against a review-stack service (review stacks deploy via Pulumi Deployments,
-# which never runs this script):
-#   deploy_ecs_express.sh frontend-production review-cpr-frontend-1472 <image>
+# ECS rewrites the alarm once at deployment start (observed +2..35s after
+# the service update; CloudTrail Aug 18-24) and otherwise only on rollback.
+# So: write the corrected alarm before starting, so ours is live from second
+# zero; watch for ECS's rewrite landing on top; re-write the moment it does.
+# The stock alarm is live for seconds at most.
 #
 # Usage: deploy_ecs_express.sh <cluster> <service> <image>
+#   e.g. deploy_ecs_express.sh frontend-production review-cpr-frontend-1506 <image>
 
 set -euo pipefail
 
@@ -38,9 +22,37 @@ IMAGE="${3:?}"
 
 ALARM="${CLUSTER}/${SERVICE}/RollbackAlarm"
 MARKER="5xx-only; 4xx excluded by deploy_ecs_express.sh"
-PATCHED=$(mktemp)
 
-# Start the deployment: the running container spec with only the image swapped.
+alarm_description() {
+	aws cloudwatch describe-alarms --alarm-names "${ALARM}" \
+		--query 'MetricAlarms[0].AlarmDescription' --output text
+}
+
+# Read the live alarm, drop the 4xx terms, floor 5xx at 5/min so one stray
+# 502 against a quiet minute cannot trip FILL(total, 1). Everything else --
+# rollback wiring, threshold, evaluation -- is ECS's own, left intact.
+correct_alarm() {
+	local patched
+	patched=$(aws cloudwatch describe-alarms --alarm-names "${ALARM}" \
+		--query 'MetricAlarms[0]' | jq --arg d "${MARKER}" '
+		{AlarmName, ComparisonOperator, EvaluationPeriods, DatapointsToAlarm,
+		 Threshold, TreatMissingData, AlarmDescription: $d,
+		 Metrics: [.Metrics[] | select(.Id | test("_4xx$") | not)
+			| if .Expression then .Expression |= gsub(
+				"IF\\(m[0-9]+_4xx < 5, 0, m[0-9]+_4xx\\) \\+ (?<b>m[0-9]+_5xx)";
+				"IF(\(.b) < 5, 0, \(.b))") else . end]}')
+	# gsub matched nothing: ECS changed the expression shape; do not write.
+	[[ ${patched} == *"5xx < 5"* ]] || {
+		echo "::error::alarm expression unrecognised -- not patching"
+		exit 1
+	}
+	aws cloudwatch put-metric-alarm --cli-input-json "${patched}"
+	echo "corrected ${ALARM}"
+}
+
+correct_alarm
+
+# Start the deployment: the running container spec, image swapped.
 SERVICE_ARN=$(aws ecs describe-services --cluster "${CLUSTER}" --services "${SERVICE}" \
 	--query 'services[0].serviceArn' --output text)
 CONTAINER=$(aws ecs describe-express-gateway-service --service-arn "${SERVICE_ARN}" \
@@ -50,28 +62,19 @@ aws ecs update-express-gateway-service \
 	--service-arn "${SERVICE_ARN}" --primary-container "${CONTAINER}" >/dev/null
 echo "deployment started: ${IMAGE}"
 
-# Wait out ECS's alarm rewrite window, then correct the alarm in place.
-sleep 65
-aws cloudwatch describe-alarms --alarm-names "${ALARM}" --query 'MetricAlarms[0]' |
-	jq --arg d "${MARKER}" '
-		{AlarmName, ComparisonOperator, EvaluationPeriods, DatapointsToAlarm,
-		 Threshold, TreatMissingData, AlarmDescription: $d,
-		 Metrics: [.Metrics[] | select(.Id | test("_4xx$") | not)
-			| if .Expression then .Expression |= gsub(
-				"IF\\(m[0-9]+_4xx < 5, 0, m[0-9]+_4xx\\) \\+ (?<b>m[0-9]+_5xx)";
-				"IF(\(.b) < 5, 0, \(.b))") else . end]}' \
-		>"${PATCHED}"
-# If ECS changed the expression's shape the gsub matched nothing: keep their
-# alarm rather than mislabel it as ours.
-grep -q '5xx < 5' "${PATCHED}" || {
-	echo "::error::alarm expression did not match; ECS changed it -- not patching"
-	exit 1
-}
-aws cloudwatch put-metric-alarm --cli-input-json "file://${PATCHED}"
-echo "corrected ${ALARM}"
+# Watch for ECS's rewrite; re-correct the moment it lands. Stop once it has,
+# or at 60s -- well past the observed window.
+for _ in $(seq 1 30); do
+	DESC=$(alarm_description)
+	if [[ ${DESC} != "${MARKER}" ]]; then
+		correct_alarm
+		break
+	fi
+	sleep 2
+done
 
-# Wait on the deployment. Poll status, not rolloutState: after a rollback the
-# surviving revision reports rolloutState COMPLETED, which reads as success.
+# Wait on the deployment. status, not rolloutState: a finished rollback
+# reports rolloutState COMPLETED, which reads as success.
 DEPLOYMENT=$(aws ecs list-service-deployments --cluster "${CLUSTER}" --service "${SERVICE}" \
 	--query 'serviceDeployments[0].serviceDeploymentArn' --output text)
 STATUS=PENDING
@@ -88,17 +91,15 @@ for _ in $(seq 1 120); do
 		;;
 	esac
 done
-if [[ ${STATUS} != SUCCESSFUL ]]; then
+[[ ${STATUS} == SUCCESSFUL ]] || {
 	echo "::error::timed out waiting on ${DEPLOYMENT}"
 	exit 1
-fi
+}
 
-# Sentinel: per the observed schedule ECS cannot have rewritten the alarm
-# mid-bake. If it did, the timing model has changed and the next deploy may
-# fail on 4xx again with no other signal.
-LIVE=$(aws cloudwatch describe-alarms --alarm-names "${ALARM}" \
-	--query 'MetricAlarms[0].AlarmDescription' --output text)
-if [[ ${LIVE} != "${MARKER}" ]]; then
-	echo "::warning::corrected alarm did not hold through the bake (now: '${LIVE}') -- the ECS rewrite schedule has changed; see script header"
-fi
+# ECS only touches the alarm at start and rollback; if ours is gone the
+# schedule has changed and the next deploy may fail on 4xx with no signal.
+LIVE=$(alarm_description)
+[[ ${LIVE} == "${MARKER}" ]] ||
+	echo "::warning::corrected alarm did not hold (now: '${LIVE}')"
+
 echo "deployment succeeded"
