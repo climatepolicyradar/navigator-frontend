@@ -97,11 +97,24 @@ async function handler(event) {
     } else if (uri.length > 1) {
       kvsCandidates.push(uri + "/");
     }
-    for (const candidate of kvsCandidates) {
+    // Indexed loop, not for...of: the cloudfront-js-2.0 parser rejects
+    // for...of (SyntaxError: Token "of" not supported) even though
+    // UpdateFunction validation accepts it. Verify runtime compatibility
+    // with scripts/test-edge.sh before publishing changes to this file.
+    for (let i = 0; i < kvsCandidates.length; i++) {
+      const candidate = kvsCandidates[i];
       if (await kvsHandle.exists(candidate)) {
         const redirectUrl = await kvsHandle.get(candidate);
 
         if (redirectUrl) {
+          // Self-loop guard: request.uri never includes the querystring, so a
+          // value pointing back at the requested path (e.g. key /search/ ->
+          // /search?l=...) would 301 forever (2026-08-24 incident). The
+          // slash-variant would loop too, via the origin's 308 slash-strip.
+          const targetPath = redirectUrl.split("?")[0].split("#")[0];
+          if (targetPath === uri || targetPath === uri + "/") {
+            break;
+          }
           console.log("Redirecting: " + uri + " -> " + redirectUrl);
 
           return redirect(redirectUrl);

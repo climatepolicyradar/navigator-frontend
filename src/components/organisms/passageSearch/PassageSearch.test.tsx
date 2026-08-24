@@ -556,7 +556,7 @@ describe("PassageSearch", () => {
 
       await userEvent.click(await screen.findByRole("button", { name: "View document" }));
 
-      expect(open).toHaveBeenCalledWith("/documents/main-document?q=renewable", "_blank");
+      expect(open).toHaveBeenCalledWith("/documents/main-document", "_blank");
       open.mockRestore();
     });
   });

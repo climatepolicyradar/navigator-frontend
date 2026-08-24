@@ -6,12 +6,12 @@ import { SearchFilterLevel } from "@/components/organisms/searchFilterLevel/Sear
 import { FiltersContext } from "@/context/FiltersContext";
 import { FiltersLookupContext } from "@/context/FiltersLookupContext";
 import { TCheckboxState, TFilterPathLabel, TNestedSearchLabel } from "@/types";
-import { addSubStringHighlights } from "@/utils/addSubStringHighlights";
 import { filterHasSelectedChildren } from "@/utils/filters/filterHasSelectedChildren";
 import { getFilterPathLabel, getLabelPathSignature } from "@/utils/filters/filterPaths";
 import { getFilterStatus } from "@/utils/filters/getFilterStatus";
 import { joinTailwindClasses } from "@/utils/tailwind";
-import { firstCase } from "@/utils/text";
+import { addSubStringHighlights } from "@/utils/text/addSubStringHighlights";
+import { firstCase } from "@/utils/text/firstCase";
 
 interface IProps {
   ancestorPath: TFilterPathLabel[];

@@ -4,17 +4,21 @@ import { Fragment, useState } from "react";
 
 import { SearchDocument } from "@/api/search";
 import { Drawer } from "@/components/atoms/drawer/Drawer";
+import { PageLink } from "@/components/atoms/pageLink/PageLink";
 import { Tabs } from "@/components/atoms/tabs/Tabs";
 import { DocumentsBlock } from "@/components/blocks/documentsBlock/DocumentsBlock";
 import { MetadataBlock } from "@/components/blocks/metadataBlock/MetadataBlock";
 import { NoteBlock } from "@/components/blocks/noteBlock/NoteBlock";
 import { TextBlock } from "@/components/blocks/textBlock/TextBlock";
 import { TopicsBlock } from "@/components/blocks/topicsBlock/TopicsBlock";
+import { PassageSearch } from "@/components/organisms/passageSearch/PassageSearch";
 import useConfig from "@/hooks/useConfig";
 import { useText } from "@/hooks/useText";
 import { TFamilyPresentationalData } from "@/types";
 import { getFamilyHeader } from "@/utils/family-header/getFamilyHeader";
 import { getFamilyMetadata } from "@/utils/family-metadata/getFamilyMetadata";
+import { firstCase } from "@/utils/text/firstCase";
+import { getTopFamilyTopics } from "@/utils/topics/getTopFamilyTopics";
 import { familyTopicsHasTopics } from "@/utils/topics/processFamilyTopics";
 
 function linkHref(doc: SearchDocument): string | undefined {
@@ -30,6 +34,7 @@ type TDocumentDrawerProps = {
   document: SearchDocument | null;
   open: boolean;
   onOpenChange: (open: boolean) => void;
+  tab?: string;
 };
 
 type TDrawerContentProps = {
@@ -79,10 +84,11 @@ const DrawerContent = ({ familyData, languages }: TDrawerContentProps) => {
   );
 };
 
-export function DocumentDrawer({ document, open, onOpenChange }: TDocumentDrawerProps) {
+export function PrincipalDrawer({ document, open, onOpenChange, tab }: TDocumentDrawerProps) {
   const { data: { languages = {} } = {} } = useConfig();
-  const [activeTab, setActiveTab] = useState<string>("about");
+  const [activeTab, setActiveTab] = useState<string>(tab || "about");
   const changeTab = (newValue: string) => setActiveTab(newValue);
+  const { getCategoryTextLookup } = useText();
 
   const importId = document?.id as string | undefined;
 
@@ -92,6 +98,8 @@ export function DocumentDrawer({ document, open, onOpenChange }: TDocumentDrawer
     enabled: !!importId,
   });
 
+  const getCategoryText = getCategoryTextLookup(familyData?.family.attribution.category);
+
   return (
     <Drawer
       open={open}
@@ -100,11 +108,9 @@ export function DocumentDrawer({ document, open, onOpenChange }: TDocumentDrawer
         document ? (
           linkHref(document) ? (
             <span className="block pt-5">
-              <a
-                href={linkHref(document)!}
-                className="text-3xl text-inky-blue underline-offset-5 hover:underline"
-                dangerouslySetInnerHTML={{ __html: document.title }}
-              />
+              <PageLink keepQuery href={linkHref(document)!} className="text-3xl text-inky-blue underline-offset-5 hover:underline">
+                <span dangerouslySetInnerHTML={{ __html: document.title }} />
+              </PageLink>
             </span>
           ) : (
             <span dangerouslySetInnerHTML={{ __html: document.title }} />
@@ -113,9 +119,9 @@ export function DocumentDrawer({ document, open, onOpenChange }: TDocumentDrawer
       }
       titleExtras={
         document && linkHref(document) ? (
-          <a target="_blank" href={linkHref(document)!} className="text-neutral-500 hover:text-neutral-800 justify-end">
+          <PageLink external keepQuery href={linkHref(document)!} className="text-neutral-500 hover:text-neutral-800 justify-end">
             <LucideExternalLink width={20} height={20} />
-          </a>
+          </PageLink>
         ) : undefined
       }
       wide
@@ -141,7 +147,14 @@ export function DocumentDrawer({ document, open, onOpenChange }: TDocumentDrawer
                   Search in documents
                 </>
               ),
-              panel: <div>Search to go here.</div>,
+              panel: (
+                <PassageSearch
+                  documents={familyData.family.documents}
+                  concepts={getTopFamilyTopics(familyData.familyTopics)}
+                  documentsLabel={`Documents in this ${firstCase(getCategoryText("familySingular"))}`}
+                  subject="these documents"
+                />
+              ),
             },
           ]}
           tabsContainer={(tabsList) => <div className="pl-8">{tabsList}</div>}

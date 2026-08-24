@@ -163,6 +163,25 @@ describe("KVS trailing-slash tolerance", () => {
   });
 });
 
+describe("KVS self-loop guard", () => {
+  /**
+   * /search is a live app route, and the KVS carries a legacy /search/ key.
+   * Without the guard, the trailing-slash tolerance matches /search to that
+   * key and 301s it to /search?l=... — which re-enters the function as plain
+   * /search (request.uri has no querystring) and loops forever (2026-08-24).
+   */
+  test("does not redirect a URI whose KVS value points back at it", async () => {
+    const response = await handler({ request: { uri: "/search" } });
+    expect(response).toEqual({ uri: "/search" });
+  });
+
+  test("still redirects the slash-keyed variant one hop", async () => {
+    const response = await handler({ request: { uri: "/search/" } });
+    expect(response.statusCode).toEqual(301);
+    expect(response.headers.location.value).toEqual("/search?l=united-states-of-america");
+  });
+});
+
 describe("redirection handler", () => {
   test("does redirect a known URI", async () => {
     const response = await handler({

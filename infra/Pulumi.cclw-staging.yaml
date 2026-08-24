@@ -29,5 +29,6 @@ config:
   frontend:otel_resource_attributes: service.namespace=frontend,environment=staging
   frontend:apprunner_frontend_vcpu_count: 1 vCPU
   frontend:apprunner_frontend_memory_gb: 2 GB
+  frontend:next_static_enabled: "false"
 environment:
   - frontend/cclw-staging
