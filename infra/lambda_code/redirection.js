@@ -107,6 +107,14 @@ async function handler(event) {
         const redirectUrl = await kvsHandle.get(candidate);
 
         if (redirectUrl) {
+          // Self-loop guard: request.uri never includes the querystring, so a
+          // value pointing back at the requested path (e.g. key /search/ ->
+          // /search?l=...) would 301 forever (2026-08-24 incident). The
+          // slash-variant would loop too, via the origin's 308 slash-strip.
+          const targetPath = redirectUrl.split("?")[0].split("#")[0];
+          if (targetPath === uri || targetPath === uri + "/") {
+            break;
+          }
           console.log("Redirecting: " + uri + " -> " + redirectUrl);
 
           return redirect(redirectUrl);
