@@ -67,7 +67,7 @@ FRONTEND_ENV = {
     "OTEL_EXPORTER_OTLP_PROTOCOL": config.require("otel_exporter_otlp_protocol"),
     "OTEL_SERVICE_NAME": config.require("otel_service_name"),
     "OTEL_RESOURCE_ATTRIBUTES": config.require("otel_resource_attributes"),
-    "NEXT_STATIC_ENABLED": config.get("next_static_enabled"),
+    "NEXT_STATIC_ENABLED": config.require("next_static_enabled"),
 }
 
 ########################################################################
