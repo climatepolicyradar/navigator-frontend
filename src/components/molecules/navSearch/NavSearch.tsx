@@ -7,8 +7,8 @@ import { Input } from "@/components/atoms/input/Input";
 import { QUERY_PARAMS } from "@/constants/queryParams";
 import { SYSTEM_GEO_CODES } from "@/constants/systemGeos";
 import useConfig from "@/hooks/useConfig";
-import { addSubStringHighlights } from "@/utils/addSubStringHighlights";
 import { CleanRouterQuery } from "@/utils/cleanRouterQuery";
+import { addSubStringHighlights } from "@/utils/text/addSubStringHighlights";
 
 import { NavSearchDropdown } from "./NavSearchDropdown";
 import { NavSearchSuggestion } from "./NavSearchSuggestion";

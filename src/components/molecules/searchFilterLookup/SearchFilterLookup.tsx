@@ -6,6 +6,7 @@ import { SearchFilter } from "@/components/molecules/searchFilter/SearchFilter";
 import { FiltersLookupContext } from "@/context/FiltersLookupContext";
 import { TFilterPathLabel, TNestedSearchLabel } from "@/types";
 import { getFilterPathLabel, getLabelPathSignature } from "@/utils/filters/filterPaths";
+import { toSearchableText } from "@/utils/text/toSearchableText";
 
 const LABELS_OVERFLOWING_THRESHOLD = 8;
 const MAX_LABELS = 4;
@@ -18,13 +19,14 @@ interface IProps {
 }
 
 // Gets a label path signature for each label or their children that partially includes the searchText
-const getMatchingLabelPathSignatures = (labels: TNestedSearchLabel[], ancestorPath: TFilterPathLabel[], searchText: string): string[] => {
-  const lowerSearchText = searchText.toLocaleLowerCase();
-
+const getMatchingLabelPathSignatures = (labels: TNestedSearchLabel[], ancestorPath: TFilterPathLabel[], searchableSearchText: string): string[] => {
   return labels.flatMap((label) => {
-    const isMatch = label.value.toLocaleLowerCase().includes(lowerSearchText) || label.id.toLocaleLowerCase().includes(lowerSearchText);
+    const isMatch = toSearchableText(label.value).includes(searchableSearchText) || toSearchableText(label.id).includes(searchableSearchText);
     const pathLabels = [getFilterPathLabel(label), ...ancestorPath];
-    return [...(isMatch ? [getLabelPathSignature(pathLabels)] : []), ...getMatchingLabelPathSignatures(label.children, pathLabels, searchText)];
+    return [
+      ...(isMatch ? [getLabelPathSignature(pathLabels)] : []),
+      ...getMatchingLabelPathSignatures(label.children, pathLabels, searchableSearchText),
+    ];
   });
 };
 
@@ -34,7 +36,7 @@ export const SearchFilterLookup = ({ ancestorPath, labels, level }: IProps) => {
 
   const searchTerm = searchText.length >= MIN_SEARCH_LENGTH ? searchText : "";
   const matchingLabelPathSignatures = useMemo(
-    () => (searchTerm !== "" ? getMatchingLabelPathSignatures(labels, ancestorPath, searchTerm.toLocaleLowerCase()) : []),
+    () => (searchTerm !== "" ? getMatchingLabelPathSignatures(labels, ancestorPath, toSearchableText(searchTerm)) : []),
     [ancestorPath, labels, searchTerm]
   );
 
