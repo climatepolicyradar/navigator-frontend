@@ -89,6 +89,12 @@ const nextConfig = {
    * standalone output is optimised for running the app in a container
    */
   output: "standalone",
+  /**
+   * This URL has the assets published to if via S3.
+   * @see: https://github.com/climatepolicyradar/navigator-frontend/blob/93bfc4070244d3901c58fc18cf2772fbdc90b1e1/infra/__main__.py#L433-L447
+   * @see: https://nextjs.org/docs/app/api-reference/config/next-config-js/assetPrefix
+   */
+  assetPrefix: process.env.NEXT_STATIC_ENABLED === "true" ? `https://${process.env.THEME}.production.climatepolicyradar.org` : undefined,
 };
 
 const withBundleAnalyzer = require("@next/bundle-analyzer")({
