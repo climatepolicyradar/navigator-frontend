@@ -2,7 +2,7 @@ import { ReactNode, useEffect, useState } from "react";
 
 import { FiveColumns } from "@/components/atoms/columns/FiveColumns";
 import { TBlock } from "@/types";
-import { firstCase } from "@/utils/text";
+import { firstCase } from "@/utils/text/firstCase";
 
 import { ContentsSideBar, ISideBarItem } from "../contentsSideBar/ContentsSideBar";
 
