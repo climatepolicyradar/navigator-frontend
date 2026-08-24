@@ -229,9 +229,7 @@ jobs:
 
           existing_comment_id=$(gh api \
             "repos/${{ github.repository }}/issues/${PR_NUMBER}/comments" \
-            --paginate \
-            --slurp \
-            --jq "[.[][] | select(.body | startswith(\"${marker}\"))][0].id")
+            --paginate | jq -s "[.[][] | select(.body | startswith(\"${marker}\"))][0].id")
 
           if [ -n "$existing_comment_id" ] && [ "$existing_comment_id" != "null" ]; then
             gh api \
