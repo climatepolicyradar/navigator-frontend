@@ -169,8 +169,14 @@ jobs:
             sleep 15
             response=$(curl -fsSL \
               -H "Authorization: token ${PULUMI_ACCESS_TOKEN}" \
-              "https://api.pulumi.com/api/stacks/${ORG}/${PROJECT}/${STACK_NAME}/deployments/${DEPLOYMENT_ID}")
-            current_status=$(echo "$response" | jq -r '.status')
+              "https://api.pulumi.com/api/stacks/${ORG}/${PROJECT}/${STACK_NAME}/deployments/${DEPLOYMENT_ID}") || {
+              echo "Poll request failed, will retry"
+              continue
+            }
+            current_status=$(echo "$response" | jq -r '.status') || {
+              echo "Could not parse deployment status, will retry"
+              continue
+            }
             echo "Deployment ${DEPLOYMENT_ID} status: ${current_status}"
             if [ "$current_status" = "succeeded" ] || [ "$current_status" = "failed" ]; then
               terminal_status="$current_status"
