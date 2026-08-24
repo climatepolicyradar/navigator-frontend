@@ -1,6 +1,7 @@
-import { useState } from "react";
+import { useContext, useState } from "react";
 
 import { SearchFilter } from "@/components/molecules/searchFilter/SearchFilter";
+import { FiltersLookupContext } from "@/context/FiltersLookupContext";
 import { TFilterPathLabel, TNestedSearchLabel } from "@/types";
 import { joinTailwindClasses } from "@/utils/tailwind";
 
@@ -16,11 +17,12 @@ interface IProps {
 
 export const SearchFilters = ({ ancestorPath, indented, labels, level }: IProps) => {
   const [isExpanded, setIsExpanded] = useState(false);
+  const { searchTerm } = useContext(FiltersLookupContext);
 
-  const isOverflowing = level === 3 && labels.length > LABELS_OVERFLOWING_THRESHOLD;
+  const isOverflowing = searchTerm === "" && level === 3 && labels.length > LABELS_OVERFLOWING_THRESHOLD;
   const shownLabels = isExpanded || !isOverflowing ? labels : labels.slice(0, MAX_LABELS);
 
-  const listClasses = joinTailwindClasses("flex flex-col gap-2 list-none", indented && "ml-8 mt-2 not-last:mb-2");
+  const listClasses = joinTailwindClasses("flex flex-col gap-2 list-none", indented && "ml-8 has-[>li]:mt-2 not-last:mb-2");
 
   return (
     <>

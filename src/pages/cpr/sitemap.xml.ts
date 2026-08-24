@@ -1,13 +1,12 @@
-import type { MetadataRoute } from "next";
+import { GetServerSidePropsContext, MetadataRoute } from "next";
 
 import { ApiClient } from "@/api/http-common";
 import CPRthemeConfig from "@/cpr/config";
 import { TApiFamilyPublic } from "@/types";
 import { extractGeographySlugs } from "@/utils/geography";
+import { toSitemapXml } from "@/utils/sitemap";
 
-export const dynamic = "force-dynamic";
-
-export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
+const buildSitemap = async (): Promise<MetadataRoute.Sitemap> => {
   const allCorpusIds = CPRthemeConfig.categories?.options.flatMap((option) => option.value) || [];
   const allCorpusIdsSearchParams = allCorpusIds.map((corpusId) => ["corpus.import_id", corpusId]);
   const urlSearchParams = new URLSearchParams(allCorpusIdsSearchParams);
@@ -67,4 +66,18 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
       priority: 0.5,
     },
   ];
+};
+
+function Sitemap() {}
+
+export async function getServerSideProps({ res }: GetServerSidePropsContext) {
+  res.setHeader("Content-Type", "application/xml; charset=utf-8");
+  res.write(toSitemapXml(await buildSitemap()));
+  res.end();
+
+  return {
+    props: {},
+  };
 }
+
+export default Sitemap;

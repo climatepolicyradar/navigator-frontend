@@ -25,9 +25,29 @@ function redirect(location) {
 
 async function handler(event) {
   const request = event.request;
-  const uri = request.uri;
+  let uri = request.uri;
 
   try {
+    // The pre-migration site nested everything under
+    // /climate-change-litigation/; crawlers still request those URLs.
+    // Strip the prefix and run the remainder through the same rules,
+    // falling back to a redirect onto the stripped path itself.
+    let hadLegacyPrefix = false;
+    const legacyPrefixMatch = uri.match(/^\/climate-change-litigation(\/.*)?$/);
+    if (legacyPrefixMatch) {
+      // Collapse leading slashes and backslashes: a stripped remainder like
+      // //evil.com or /\evil.com would otherwise reach the fallback redirect
+      // as a protocol-relative URL and send the visitor off-site (browsers
+      // normalise \ to / per the WHATWG URL spec).
+      uri = (legacyPrefixMatch[1] || "/").replace(/^[/\\]+/, "/");
+      hadLegacyPrefix = true;
+    }
+
+    // Old WordPress feed URLs; there is no feed on the current site.
+    if (uri === "/rss" || uri === "/rss/" || uri === "/feed" || uri === "/feed/") {
+      return redirect("/");
+    }
+
     /** Pattern matching redirects */
     // /case-category/clean-water-act/
     const caseCategoryMatch = uri.match(/\/case-category\/((.*)[^\/])/);
@@ -69,16 +89,36 @@ async function handler(event) {
       return redirect(redirectUrl);
     }
 
-    console.log("kvsHandle.exists(uri);");
-    const redirectExists = await kvsHandle.exists(uri);
+    // KVS keys are inconsistent about trailing slashes, and Next.js only
+    // strips slashes (never adds), so try the URI both ways.
+    const kvsCandidates = [uri];
+    if (uri.endsWith("/") && uri.length > 1) {
+      kvsCandidates.push(uri.slice(0, -1));
+    } else if (uri.length > 1) {
+      kvsCandidates.push(uri + "/");
+    }
+    // Indexed loop, not for...of: the cloudfront-js-2.0 parser rejects
+    // for...of (SyntaxError: Token "of" not supported) even though
+    // UpdateFunction validation accepts it. Verify runtime compatibility
+    // with scripts/test-edge.sh before publishing changes to this file.
+    for (let i = 0; i < kvsCandidates.length; i++) {
+      const candidate = kvsCandidates[i];
+      if (await kvsHandle.exists(candidate)) {
+        const redirectUrl = await kvsHandle.get(candidate);
 
-    if (redirectExists) {
-      const redirectUrl = await kvsHandle.get(uri);
+        if (redirectUrl) {
+          // Self-loop guard: request.uri never includes the querystring, so a
+          // value pointing back at the requested path (e.g. key /search/ ->
+          // /search?l=...) would 301 forever (2026-08-24 incident). The
+          // slash-variant would loop too, via the origin's 308 slash-strip.
+          const targetPath = redirectUrl.split("?")[0].split("#")[0];
+          if (targetPath === uri || targetPath === uri + "/") {
+            break;
+          }
+          console.log("Redirecting: " + uri + " -> " + redirectUrl);
 
-      if (redirectUrl) {
-        console.log("Redirecting: " + uri + " -> " + redirectUrl);
-
-        return redirect(redirectUrl);
+          return redirect(redirectUrl);
+        }
       }
     }
 
@@ -88,6 +128,12 @@ async function handler(event) {
     if (wpContentMatch) {
       const redirectUrl = `https://admin.climatecasechart.com${uri}`;
       return redirect(redirectUrl);
+    }
+
+    // No rule matched, but the URI carried the legacy prefix: send the
+    // client to the stripped path rather than 404 on the prefixed one.
+    if (hadLegacyPrefix) {
+      return redirect(uri);
     }
 
     console.log("No redirect found");

@@ -2,7 +2,7 @@ import orderBy from "lodash/orderBy";
 
 import { LabelButton } from "@/components/atoms/labelButton/LabelButton";
 import { IFamilyDocumentTopics, TTableColumn, TTableRow } from "@/types";
-import { firstCase } from "@/utils/text";
+import { firstCase } from "@/utils/text/firstCase";
 
 export type TTopicTableColumnId = "group" | "topics";
 

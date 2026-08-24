@@ -10,9 +10,9 @@ import { FiveColumns } from "@/components/atoms/columns/FiveColumns";
 import { Debug } from "@/components/atoms/debug/Debug";
 import { ConceptsDocumentViewer } from "@/components/documents/ConceptsDocumentViewer";
 import { DocumentHead } from "@/components/documents/DocumentHead";
-import { DocumentPassageViewer } from "@/components/documents/DocumentPassageViewer";
 import Layout from "@/components/layouts/Main";
 import { Section } from "@/components/molecules/section/Section";
+import { PassageSearch } from "@/components/organisms/passageSearch/PassageSearch";
 import { getDocumentDescription } from "@/constants/metaDescriptions";
 import { MAX_PASSAGES } from "@/constants/paging";
 import { QUERY_PARAMS } from "@/constants/queryParams";
@@ -27,6 +27,7 @@ import { getFeatureFlags } from "@/utils/featureFlags";
 import { getFeatures } from "@/utils/features";
 import { getLitigationDocumentJSONLD } from "@/utils/json-ld/getLitigationDocumentJSONLD";
 import { readConfigFile } from "@/utils/readConfigFile";
+import { getTopDocumentConcepts } from "@/utils/topics/getTopDocumentTopics";
 
 // If we don't have a query string or a concept selected, we do't have a search
 const isEmptySearch = (query: ParsedUrlQuery) => {
@@ -58,8 +59,10 @@ const DocumentPage = ({
   const exactMatchQuery = router.query[QUERY_PARAMS.exact_match] === undefined || router.query[QUERY_PARAMS.exact_match] !== "false";
   const startingPageNumber = Number(router.query.page) || 0;
 
+  const isNewSearch = features["new-search"];
+
   // Note: only runs a fresh start if either a query string or concept data is provided
-  const { status, families } = useSearch(router.query, null, document.import_id, !isEmptySearch(router.query), MAX_PASSAGES);
+  const { status, families } = useSearch(router.query, null, document.import_id, !isNewSearch && !isEmptySearch(router.query), MAX_PASSAGES);
 
   const handleViewSourceClick = (e: React.FormEvent<HTMLButtonElement>) => {
     e.preventDefault();
@@ -106,6 +109,8 @@ const DocumentPage = ({
     [conceptFiltersQuery]
   );
 
+  const passageConcepts = useMemo(() => getTopDocumentConcepts(vespaDocumentData, topicsData?.topics ?? []), [vespaDocumentData, topicsData]);
+
   return (
     <FeaturesContext.Provider value={features}>
       <Layout
@@ -130,8 +135,8 @@ const DocumentPage = ({
               handleViewSourceClick={handleViewSourceClick}
             />
 
-            {features["new-search"] ? (
-              <DocumentPassageViewer document={document} vespaDocumentData={vespaDocumentData} />
+            {isNewSearch ? (
+              <PassageSearch documents={[document]} concepts={passageConcepts} enablePreview />
             ) : (
               <ConceptsDocumentViewer
                 initialQueryTerm={qsSearchString}
@@ -186,7 +191,10 @@ export const getServerSideProps = (async (context) => {
   const features = getFeatures(themeConfig, featureFlags);
 
   const { data: documentData, errors } = await getDocumentData(slug);
-  errors.forEach((err) => console.error(err));
+  errors.forEach((err) => {
+    console.error(`[documents.getServerSideProps]: url: ${context.req.url}, params: ${context.params}`);
+    console.error(err);
+  });
   if (documentData === null) return { notFound: true };
 
   return {

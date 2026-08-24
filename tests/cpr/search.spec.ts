@@ -33,7 +33,12 @@ test.describe("Search", () => {
     await familyLink.click();
 
     /** Family page */
-    await Promise.all([page.waitForURL("**" + familyHref), page.waitForResponse("**/searches")]);
+    // TODO: remove when we have settled on solution for new search
+    const familyPageWaits: Promise<unknown>[] = [page.waitForURL("**" + familyHref)];
+    if (process.env.E2E_TEST_FEATURE_FLAGS !== "true") {
+      familyPageWaits.push(page.waitForResponse("**/searches"));
+    }
+    await Promise.all(familyPageWaits);
     await genericPage.waitUntilLoaded(page, familyName);
   });
 });

@@ -4,7 +4,7 @@ import { LabelButton } from "@/components/atoms/labelButton/LabelButton";
 import { PageLink } from "@/components/atoms/pageLink/PageLink";
 import { QUERY_PARAMS } from "@/constants/queryParams";
 import { IFamilyDocumentTopics, TTopic, TTableColumn } from "@/types";
-import { firstCase } from "@/utils/text";
+import { firstCase } from "@/utils/text/firstCase";
 
 import { TTopicTableColumnId, TTopicTableRow } from "./topicTable";
 

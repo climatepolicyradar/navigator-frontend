@@ -4,9 +4,9 @@ import { useCallback, useEffect, useState, type SetStateAction } from "react";
 
 import { normaliseSearchDocumentsSortKey, SearchDocument } from "@/api/search";
 import { createGroup, isFilterGroupEmpty, AdvancedFilters } from "@/components/_experiment/advancedFilters/AdvancedFilters";
-import { DocumentDrawer } from "@/components/_experiment/documentDrawer/DocumentDrawer";
 import { SEARCH_RESULTS_PAGE_SIZE, SearchContainer } from "@/components/_experiment/searchResults/SearchResults";
 import { FiveColumns } from "@/components/atoms/columns/FiveColumns";
+import { PrincipalDrawer } from "@/components/drawers/principalDrawer/PrincipalDrawer";
 import Layout from "@/components/layouts/Main";
 import { Pagination } from "@/components/molecules/pagination/Pagination";
 import { SearchControls } from "@/components/organisms/searchControls/SearchControls";
@@ -14,11 +14,12 @@ import { SEARCH_FILTER_GROUPS } from "@/constants/filters";
 import { SEARCH_SORT_OPTIONS } from "@/constants/sort";
 import { withEnvConfig } from "@/context/EnvConfig";
 import { FeaturesContext } from "@/context/FeaturesContext";
-import { loadLabels } from "@/hooks/useLabelSearch";
+import { loadFilteredLabels, loadLabelTaxonomy } from "@/hooks/useLabelSearch";
 import { FilterGroupSchema } from "@/schemas";
 import { TSearchLabel, TSearchQueryGroup, TTheme } from "@/types";
 import { getFeatureFlags } from "@/utils/featureFlags";
 import { getFeatures } from "@/utils/features";
+import { pluralise } from "@/utils/pluralise";
 import { readConfigFile } from "@/utils/readConfigFile";
 import { joinTailwindClasses } from "@/utils/tailwind";
 
@@ -26,16 +27,6 @@ const columnLayoutCss = "col-start-1 -col-end-1 cols-5:col-start-2 cols-5:-col-e
 
 type TProps = InferGetServerSidePropsType<typeof getServerSideProps>;
 
-/*
- * SHADOW SEARCH is currently made up of 6 Core surfaces, each surface is commented in code below
- * NB: this is not necessarily the order they appear within this component
- * - Search input (and suggestions)
- * - Filters
- * - Applied filters
- * - Advanced filters
- * - Search results
- * - Result drawer
- */
 const ShadowSearch = ({ theme, themeConfig, features }: TProps) => {
   const [availableFilters, setAvailableFilters] = useState<TSearchLabel[]>([]);
 
@@ -73,8 +64,42 @@ const ShadowSearch = ({ theme, themeConfig, features }: TProps) => {
   const [advancedFiltersOpen, setAdvancedFiltersOpen] = useState(false);
 
   useEffect(() => {
-    loadLabels("").then(setAvailableFilters);
+    const loadedFilteredLabels = loadFilteredLabels({
+      // These are the explicit labels to needed to power the search page
+      op: "or",
+      filters: [
+        {
+          field: "type",
+          op: "contains",
+          value: "concept",
+        },
+        {
+          field: "type",
+          op: "contains",
+          value: "region",
+        },
+        {
+          field: "type",
+          op: "contains",
+          value: "country",
+        },
+        {
+          field: "type",
+          op: "contains",
+          value: "subdivision",
+        },
+      ],
+    });
+
+    // We have to append this data until the categories taxonomy data source data is fixed
+    // @see: https://linear.app/climate-policy-radar/issue/APP-2266/fusion-enrichment-fleshing-out-the-publishedcanonicallabels
+    const loadedLabelTaxonomy = loadLabelTaxonomy();
+    const allFilterLabels = Promise.all([loadedFilteredLabels, loadedLabelTaxonomy]);
+
+    allFilterLabels.then(([filteredLabels, labelTaxonomy]) => setAvailableFilters([...filteredLabels, ...labelTaxonomy]));
   }, []);
+
+  const hasSearch = query || !isFilterGroupEmpty(filters);
 
   return (
     <FeaturesContext.Provider value={features}>
@@ -84,11 +109,19 @@ const ShadowSearch = ({ theme, themeConfig, features }: TProps) => {
             <h1 className="text-5xl font-bold text-inky-black">Search</h1>
           </div>
           {/* CONTROLS - FILTERS, SORT, etc */}
+          {/* TODO add most recent date from search results */}
           <SearchControls
             filterGroups={SEARCH_FILTER_GROUPS}
             filterParamKey="filters"
             labels={availableFilters}
             queryParamKey="q"
+            resultsNode={
+              totalNoOfResults ? (
+                <div>
+                  {totalNoOfResults} {pluralise(totalNoOfResults, ["result", "results"])}
+                </div>
+              ) : null
+            }
             sortOptions={SEARCH_SORT_OPTIONS}
             sortParamKey="sort"
           />
@@ -141,7 +174,7 @@ const ShadowSearch = ({ theme, themeConfig, features }: TProps) => {
           onOpenChange={setAdvancedFiltersOpen}
         />
         {/* DRAWER */}
-        <DocumentDrawer document={selectedDocument} open={drawerOpen} onOpenChange={setDrawerOpen} />
+        <PrincipalDrawer document={selectedDocument} open={drawerOpen} onOpenChange={setDrawerOpen} tab={hasSearch ? "search" : "about"} />
       </Layout>
     </FeaturesContext.Provider>
   );

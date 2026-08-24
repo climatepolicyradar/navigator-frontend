@@ -1,6 +1,8 @@
 import { Check, Copy, ExternalLink, File, LocateFixed } from "lucide-react";
 import { useEffect, useState } from "react";
 
+import { IPassageLabel } from "@/types";
+
 const COPY_FEEDBACK_TIMEOUT = 1000;
 
 type TPassagePage = {
@@ -12,6 +14,7 @@ export type TPassage = {
   document_id: string;
   idx: number;
   content: string;
+  labels?: IPassageLabel[];
   language?: string;
   content_type?: string;
   type_confidence?: number;
@@ -50,6 +53,8 @@ export const PassageBlock = ({ passage, onCopyClick, onDocumentLinkClick, onPass
   const pageNumbers = passage.pages?.map(({ page_number }) => page_number + 1) ?? [];
   const hasPages = pageNumbers.length > 0;
   const hasContext = hasPages || !!passage.headingText;
+  // A passage can carry the same label for several matched spans, so each topic is only shown once.
+  const topics = [...new Set(passage.labels?.map((label) => label.value.value) ?? [])];
   const hasFooter = showDocument || hasContext;
 
   const handleCopyClick = () => {
@@ -69,10 +74,14 @@ export const PassageBlock = ({ passage, onCopyClick, onDocumentLinkClick, onPass
             onClick={() => onPassageClick(passage)}
             className="text-left w-full text-sm text-text-primary px-8 py-7 hocus:bg-paper"
           >
-            {passage.content}
+            <p>{passage.content}</p>
+            {passage.labels?.length > 0 && <p className="text-text-secondary mt-2">Contains topics: {topics.join(", ")}</p>}
           </button>
         ) : (
-          <p className="px-8 py-7">{passage.content}</p>
+          <div className="px-8 py-7">
+            <p>{passage.content}</p>
+            {passage.labels?.length > 0 && <p className="text-text-secondary mt-2">Contains topics: {topics.join(", ")}</p>}
+          </div>
         )}
       </div>
       {hasFooter && (
@@ -90,7 +99,7 @@ export const PassageBlock = ({ passage, onCopyClick, onDocumentLinkClick, onPass
                   <div className="flex gap-2 items-center shrink-0">
                     <LocateFixed size={16} className="text-elem-icon" />
                     <p className="text-sm text-text-primary whitespace-nowrap">
-                      {pageNumbers.length === 1 ? "Pg." : "Pgs."} {pageNumbers.join(",")}
+                      {pageNumbers.length === 1 ? "Pg." : "Pgs."} {pageNumbers.join(", ")}
                     </p>
                   </div>
                 )}

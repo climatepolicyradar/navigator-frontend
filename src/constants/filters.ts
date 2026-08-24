@@ -1,6 +1,8 @@
 import { Earth, ListFilter } from "lucide-react";
 
 import { TFiltersGroupConfig } from "@/types";
+import { prepareGeographyFilters } from "@/utils/filters/prepareGeographyFilter";
+import { prepareTopicFilters } from "@/utils/filters/prepareTopicFilters";
 
 export const SEARCH_FILTER_GROUPS: TFiltersGroupConfig[] = [
   {
@@ -16,12 +18,22 @@ export const SEARCH_FILTER_GROUPS: TFiltersGroupConfig[] = [
     Icon: Earth,
     container: "drawer",
     rootLabelTypes: ["region"],
-    showAppliedFilters: true,
+    prepareRootLabels: prepareGeographyFilters,
+    filterParentsDefaultOpen: true,
   },
   {
     title: "Topic",
     container: "popover",
-    rootLabelTypes: ["concept"],
     afterPartition: true,
+    rootLabelTypes: ["concept"],
+    prepareRootLabels: prepareTopicFilters,
+  },
+];
+
+export const PASSAGE_FILTER_GROUPS: TFiltersGroupConfig[] = [
+  {
+    title: "Topic",
+    container: "popover",
+    rootLabelTypes: ["concept"],
   },
 ];

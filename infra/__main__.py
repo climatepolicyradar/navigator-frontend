@@ -67,6 +67,7 @@ FRONTEND_ENV = {
     "OTEL_EXPORTER_OTLP_PROTOCOL": config.require("otel_exporter_otlp_protocol"),
     "OTEL_SERVICE_NAME": config.require("otel_service_name"),
     "OTEL_RESOURCE_ATTRIBUTES": config.require("otel_resource_attributes"),
+    "NEXT_STATIC_ENABLED": config.require("next_static_enabled"),
 }
 
 ########################################################################
@@ -495,6 +496,55 @@ if not is_review_stack_or_template:
         )
 
     ########################################################################
+    # Create the CloudFront access log bucket
+    ########################################################################
+
+    # CloudFront's (v1) access logging delivers via an ACL grant rather than a
+    # bucket policy, so Object Ownership has to stay "BucketOwnerPreferred"
+    # instead of the modern "Bucket owner enforced" default, which disables
+    # ACLs entirely.
+    cloudfront_log_bucket = aws.s3.Bucket(
+        f"{name_prefix}-cloudfront-logs",
+        bucket=f"{theme}-frontend-{env}-cloudfront-logs",
+        tags={
+            "CPR-Created-By": "pulumi",
+            "CPR-Pulumi-Stack-Name": pulumi.get_stack(),
+            "CPR-Pulumi-Project-Name": pulumi.get_project(),
+            "CPR-Tag": tag_name(),
+        },
+    )
+
+    aws.s3.BucketLifecycleConfiguration(
+        f"{name_prefix}-cloudfront-logs-lifecycle",
+        bucket=cloudfront_log_bucket.id,
+        rules=[
+            aws.s3.BucketLifecycleConfigurationRuleArgs(
+                id="expire-old-logs",
+                status="Enabled",
+                filter=aws.s3.BucketLifecycleConfigurationRuleFilterArgs(prefix=""),
+                expiration=aws.s3.BucketLifecycleConfigurationRuleExpirationArgs(
+                    days=30
+                ),
+            )
+        ],
+    )
+
+    cloudfront_log_bucket_ownership = aws.s3.BucketOwnershipControls(
+        f"{name_prefix}-cloudfront-logs-ownership",
+        bucket=cloudfront_log_bucket.id,
+        rule=aws.s3.BucketOwnershipControlsRuleArgs(
+            object_ownership="BucketOwnerPreferred",
+        ),
+    )
+
+    aws.s3.BucketAcl(
+        f"{name_prefix}-cloudfront-logs-acl",
+        bucket=cloudfront_log_bucket.id,
+        acl="log-delivery-write",
+        opts=pulumi.ResourceOptions(depends_on=[cloudfront_log_bucket_ownership]),
+    )
+
+    ########################################################################
     # Create CloudFront distribution
     ########################################################################
 
@@ -669,6 +719,8 @@ if not is_review_stack_or_template:
         origin_request_policy_id=cast(str, cors_policy.policy.id),
         ordered_cache_behaviors=ordered_cache_behaviors,
         web_acl_id=cast(str, frontend_web_acl.web_acl.arn),
+        logging_bucket=cast(str, cloudfront_log_bucket.bucket_regional_domain_name),
+        logging_prefix="primary/",
         # Needed for auto-invalidations to work, @related: CUSTOM_APP_THEME
         tags={
             "CUSTOM_APP_THEME": theme,
@@ -720,6 +772,8 @@ if not is_review_stack_or_template:
             origin_request_policy_id=cast(str, cors_policy.policy.id),
             ordered_cache_behaviors=ordered_cache_behaviors,
             web_acl_id=cast(str, frontend_web_acl.web_acl.arn),
+            logging_bucket=cast(str, cloudfront_log_bucket.bucket_regional_domain_name),
+            logging_prefix="cname/",
             # Needed for auto-invalidations to work, @related: CUSTOM_APP_THEME
             tags={
                 "CUSTOM_APP_THEME": theme,
@@ -891,6 +945,8 @@ if not is_review_stack_or_template:
                 ],
             ),
             web_acl_id=cast(str, frontend_web_acl.web_acl.arn),
+            logging_bucket=cast(str, cloudfront_log_bucket.bucket_regional_domain_name),
+            logging_prefix="ccc-redirect/",
             # These are used for cache invalidations
             tags={"CUSTOM_APP_THEME": "ccc", "Environment": "production"},
         )

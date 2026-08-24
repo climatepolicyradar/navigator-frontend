@@ -149,11 +149,11 @@ describe("getHighlights", () => {
       const passage = newPassage({
         pages_with_bounding_boxes: [
           { number: 0, bounding_boxes: [box] },
-          { number: 7, bounding_boxes: [box, box] },
+          { number: 7, bounding_boxes: [box] },
         ],
       });
 
-      expect(getHighlights([passage]).map((highlight) => highlight.pageNumber)).toEqual([1, 8, 8]);
+      expect(getHighlights([passage]).map((highlight) => highlight.pageNumber)).toEqual([1, 8]);
     });
 
     it("gives every box a distinct id, since one passage can produce many", () => {
@@ -165,9 +165,17 @@ describe("getHighlights", () => {
           { x: 1, y: 4 },
         ],
       };
+      const otherBox = {
+        coordinates: [
+          { x: 5, y: 6 },
+          { x: 7, y: 6 },
+          { x: 7, y: 8 },
+          { x: 5, y: 8 },
+        ],
+      };
       const passage = newPassage({
         pages_with_bounding_boxes: [
-          { number: 0, bounding_boxes: [box, box] },
+          { number: 0, bounding_boxes: [box, otherBox] },
           { number: 7, bounding_boxes: [box] },
         ],
       });
@@ -190,6 +198,77 @@ describe("getHighlights", () => {
     const highlights = getHighlights([legacyPassage(), newPassage()]);
 
     expect(highlights.map((highlight) => highlight.pageNumber)).toEqual([16, 41]);
+  });
+
+  describe("de-duplication", () => {
+    const box = {
+      coordinates: [
+        { x: 1, y: 2 },
+        { x: 3, y: 2 },
+        { x: 3, y: 4 },
+        { x: 1, y: 4 },
+      ],
+    };
+
+    it("drops a box repeated on the same page within one passage", () => {
+      const passage = newPassage({ pages_with_bounding_boxes: [{ number: 0, bounding_boxes: [box, box] }] });
+
+      const highlights = getHighlights([passage]);
+
+      expect(highlights).toHaveLength(1);
+      expect(highlights[0].id).toBe("block-1-0-0");
+    });
+
+    it("keeps a box shared by two separate passages, so both matches stay visible", () => {
+      const first = newPassage({ text_block_id: "block-a", pages_with_bounding_boxes: [{ number: 0, bounding_boxes: [box] }] });
+      const second = newPassage({ text_block_id: "block-b", pages_with_bounding_boxes: [{ number: 0, bounding_boxes: [box] }] });
+
+      const highlights = getHighlights([first, second]);
+
+      expect(highlights).toHaveLength(2);
+      expect(highlights.map((highlight) => highlight.id)).toEqual(["block-a-0-0", "block-b-0-0"]);
+    });
+
+    it("keeps the same box when it appears on different pages", () => {
+      const passage = newPassage({
+        pages_with_bounding_boxes: [
+          { number: 0, bounding_boxes: [box] },
+          { number: 7, bounding_boxes: [box] },
+        ],
+      });
+
+      expect(getHighlights([passage])).toHaveLength(2);
+    });
+
+    it("does not de-duplicate across the two geometry models, since those are separate passages", () => {
+      const legacy = legacyPassage();
+      const equivalent = newPassage({
+        pages_with_bounding_boxes: [
+          {
+            // The legacy model is 1-indexed, so page 16 there is 15 here.
+            number: 15,
+            bounding_boxes: [
+              {
+                coordinates: [
+                  { x: 40, y: 415 },
+                  { x: 568, y: 415 },
+                  { x: 568, y: 566 },
+                  { x: 40, y: 566 },
+                ],
+              },
+            ],
+          },
+        ],
+      });
+
+      const highlights = getHighlights([legacy, equivalent]);
+
+      expect(highlights).toHaveLength(2);
+      expect(highlights.map((highlight) => highlight.boundingBox)).toEqual([
+        [40, 415, 568, 566],
+        [40, 415, 568, 566],
+      ]);
+    });
   });
 });
 

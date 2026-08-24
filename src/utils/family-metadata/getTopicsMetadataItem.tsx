@@ -6,7 +6,7 @@ import { IFamilyDocumentTopics, IMetadata } from "@/types";
 import { scrollToBlock } from "@/utils/blocks/scrollToBlock";
 import { pluralise } from "@/utils/pluralise";
 import { joinNodes } from "@/utils/reactNode";
-import { firstCase } from "@/utils/text";
+import { firstCase } from "@/utils/text/firstCase";
 import { familyTopicsHasTopics } from "@/utils/topics/processFamilyTopics";
 
 const MAX_SHOWN_TOPICS = 3;

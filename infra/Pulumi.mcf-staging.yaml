@@ -5,8 +5,8 @@ config:
   frontend:auto_scaling_config_arn:
     secure: AAABANp2+MsBWZohjHXJCCAP1rQdlu4TxyyU5RXRUD1NXHjDNSbTCm5sOF5Riwk7nAT1asvrzz+DAs4bvNn7flReZJ0REzNIOkkLiVFjd3Kz0zqefZyRy0C7vfGOh/FgHnp60E3DINtistBUwiKoDjxoM1/NWXur4OGRVd+V4vFCBY3TYJvU1H1QJ9Rwfu75dtp8FhW/0b0=
   frontend:backend_api_token:
-    secure: AAABAGZX2uaer3Ygj/O6I9uyoEquxx48jPwV9y2+tP1ijU3JyO2YhSjQv3XsxzWvS4g4si7NCGIZ8HlUGw2kUObK4X1XxPSXZqOeyrNo8OX2BGI3B/0liv9+kIOZY3LXh/qTyS8T4YdJsaXSwMZ75gx+hmpZhGzRd0kWc79/wl2DPKJ8ophm9FC4R4lyUF9vD/nefqE5/8QY/fZfcQzGjKLd7xJ7pwCVleqQ4w2i4r6yGZo8cfQWymgKuoeqwn7g1zV2fdfVEY6WHEoijHbaSaipKt0JM8nGHXVikH2tDxAJS4JfoHKjg4ALE4iuHrq/2b8lJD5/uIoBC9puVzVqD1hUK6oHvk2qzzkzRs6lB5fNFr3z4pn3URX7btyRw6/NsgTCpu3Eq4PxrPp9fLXKeODjSiBNPZqyfDiKr3xaBeKkkoCNyxI9uDvbl+4wEJ5YgLVwdhxg2eH9+Dn1v9WI8lXUow0i0ldy6heRKLdPS8Ow4J3/skBIHj+r067BV5cQcDoulQ4T95n369pqNKsjagkaTymONn8mAWlOk8I4lNd00TW49+ajCUp+4B+57nCpk0MSA0qGmPRb5JCGIrSi/AxsUHFeycE+irULrZqPUBqupDaGAg39bqHyx9phBADAyG+10S3WbZuI7eMySsrkvRDVzfkq4BjJ6wltvLlMEpGSlNMueCzHsWuvZ52pN2r4XaSQgn9RThdocBcHCs+sopfjjX+TBSqd9C+wHFFNtPfURRyVyQ==
-  frontend:backend_api_url: https://cpr.staging.climatepolicyradar.org/api/v1
+    secure: AAABAK5UCTaTx0D119SZ9k0Kniay8qx5FN/OSlgMu41DW94BStrFjIS/OwqEhzY1e9tWZHQWglrmL+qsd7zgk1ommOQB4eYVeLUPbQ8uekaAhvjN6CN4t65DmWnc03mSkHJ9aLNV3VGiTPytanYr7tYibP3VgJ0xWcCVLG8lCOWA1WSQ08jCUnWOTPH9hX2KP/32s0t8/UHbwx+ZnP9tcOxCNTkAQlY04zFwLquNG6l+YUheco/zosRO3TdL/YipHPGsbnrawxB120k1YCxI1AcwNekvEsjc0ao2I4IEOJviAxlYvgvBCrYFsLwfHoiuuAvnP31bZPHRTm/3MvcdxzH8I/7+bNnYf9Se+VprT1vifXyjx4aDZ7qGNnG2MH/kGsgnEJ6fVP4dzCJNSaFBsnjRiG+630ZN2wtcVC7wneeo7eirjM//gDGx6HVQ1dEOlAxEqmw5a/rGXuGN+OTHpcCHiJn9slI1QQxBdirmpWE/IGa2t3d+k/46svgWishz40v9ETttVMx/YXJ987WTT/p7d4svi4gOwXLjiz4X4m8oAJpJxT9tXoUkxTks7LQt1PO1D+mgWMpLDUAyVUV8ZI4vngwWvGIf6/DjYhZ6rxU4ExH89iPWTyHTInlwxY2hKZkjQjP/mPztgw3nofRGJUMCgWUJ+7pvpVfAGMSJBYGH6Q2tcbwm0/XcI1L7jkTra+y9F/NOggOTOjZofE+oNDHh1AcMPVWX5BR9
+  frontend:backend_api_url: https://app.climatepolicyradar.org/api/v1
   frontend:cdn_url: https://cdn.dev.climatepolicyradar.org
   frontend:ecr_uri:
     secure: AAABAAirsNpwLRxG3Lns/7197aZkhsVamEurPXbEZbbCcs9+rrUyIxHK/g0Z2/NW2AC97B8/jTsUjOlwZ4rVjYgU7IO3L9lzPkk1QXjLc8vfgIP0f+3ESz5RkjfDroytGSC4
@@ -19,7 +19,7 @@ config:
   frontend:theme: mcf
   frontend:validation_account_id:
     secure: AAABAPD1SMTQPKIwvq1MwDIKBH5AQgQQw8otZ7bmqWBZJYUEWnT9SbITgTg=
-  frontend:concepts_api_url: https://api.staging.climatepolicyradar.org
+  frontend:concepts_api_url: https://api.climatepolicyradar.org
   frontend:next_public_faro_url: https://faro-collector-prod-gb-south-0.grafana.net/collect/74f6d4bd78b7bb2cc270036193aaa3a6
   frontend:next_public_faro_app_name: mcf-frontend
   frontend:next_public_faro_app_namespace: frontend
@@ -29,5 +29,6 @@ config:
   frontend:otel_resource_attributes: service.namespace=frontend,environment=staging
   frontend:apprunner_frontend_vcpu_count: 1 vCPU
   frontend:apprunner_frontend_memory_gb: 2 GB
+  frontend:next_static_enabled: "false"
 environment:
   - frontend/mcf-staging

@@ -10,7 +10,7 @@ export const Footer = () => {
       <SiteWidth extraClasses="flex flex-col gap-9">
         <div className="flex">
           <LinkWithQuery href="/">
-            <Image src="/images/cpr-logo-horizontal.svg" width={228} height={35} alt="Climate Policy Radar logo" data-cy="cpr-logo" />
+            <Image src="/images/cpr-logo-horizontal-new.svg" width={228} height={13} alt="Climate Policy Radar logo" data-cy="cpr-logo" />
           </LinkWithQuery>
         </div>
         <p className="text-lg text-textNormal">
