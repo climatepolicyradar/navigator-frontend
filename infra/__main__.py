@@ -938,6 +938,8 @@ if not is_review_stack_or_template:
                 ],
             ),
             web_acl_id=cast(str, frontend_web_acl.web_acl.arn),
+            logging_bucket=cast(str, cloudfront_log_bucket.bucket_regional_domain_name),
+            logging_prefix="ccc-redirect/",
             # These are used for cache invalidations
             tags={"CUSTOM_APP_THEME": "ccc", "Environment": "production"},
         )
