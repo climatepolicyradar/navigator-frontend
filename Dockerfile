@@ -12,6 +12,11 @@ ENV NODE_ENV=production
 ARG GITHUB_SHA
 ENV GITHUB_SHA=${GITHUB_SHA}
 
+# Must be set at build time: standalone output serialises next.config.js into
+# the build, so the assetPrefix ternary never sees runtime env.
+ARG NEXT_STATIC_ENABLED
+ENV NEXT_STATIC_ENABLED=${NEXT_STATIC_ENABLED}
+
 # Generate tsconfig.json from template with the selected THEME
 RUN sed "s/__THEME__/${THEME}/g" tsconfig.base.json > tsconfig.json
 
