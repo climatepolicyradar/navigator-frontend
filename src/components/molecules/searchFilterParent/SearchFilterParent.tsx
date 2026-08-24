@@ -9,7 +9,7 @@ import { filterHasSelectedChildren } from "@/utils/filters/filterHasSelectedChil
 import { getFilterPathLabel } from "@/utils/filters/filterPaths";
 import { getFilterStatus } from "@/utils/filters/getFilterStatus";
 import { joinTailwindClasses } from "@/utils/tailwind";
-import { firstCase } from "@/utils/text";
+import { firstCase } from "@/utils/text/firstCase";
 
 interface IProps {
   ancestorPath: TFilterPathLabel[];

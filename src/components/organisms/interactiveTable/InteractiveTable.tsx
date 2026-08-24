@@ -10,7 +10,7 @@ import { Tooltip } from "@/components/atoms/tooltip/Tooltip";
 import { EN_DASH } from "@/constants/chars";
 import { TTableCell, TTableColumn, TTableOrder, TTableRow, TTableSortOption, TTableSortRules } from "@/types";
 import { joinTailwindClasses } from "@/utils/tailwind";
-import { firstCase } from "@/utils/text";
+import { firstCase } from "@/utils/text/firstCase";
 
 const DEFAULT_SORT_OPTIONS: TTableSortOption[] = [
   { order: "asc", label: "Ascending" },

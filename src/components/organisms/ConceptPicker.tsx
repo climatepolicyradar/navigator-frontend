@@ -18,7 +18,7 @@ import { TutorialContext } from "@/context/TutorialContext";
 import { TTopic, TTheme } from "@/types";
 import { CleanRouterQuery } from "@/utils/cleanRouterQuery";
 import { groupByRootConcept } from "@/utils/conceptsGroupedbyRootConcept";
-import { firstCase } from "@/utils/text";
+import { firstCase } from "@/utils/text/firstCase";
 import { getIncompleteTutorialNames } from "@/utils/tutorials";
 
 interface IProps {

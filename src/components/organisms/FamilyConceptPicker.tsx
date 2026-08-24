@@ -10,7 +10,7 @@ import { TTopic } from "@/types";
 import { CleanRouterQuery } from "@/utils/cleanRouterQuery";
 import { FilterSelectedConcepts } from "@/utils/conceptFilter";
 import { groupByRootConcept } from "@/utils/conceptsGroupedbyRootConcept";
-import { firstCase } from "@/utils/text";
+import { firstCase } from "@/utils/text/firstCase";
 
 interface IProps {
   concepts: TTopic[];
