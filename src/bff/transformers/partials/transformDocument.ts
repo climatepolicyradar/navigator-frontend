@@ -15,7 +15,7 @@ import {
 import { TDocumentContentType, TFamilyDocumentPublic, TFamilyEventPublic } from "@/types";
 import { groupByType } from "@/utils/data-in/groupByType";
 
-export const transformDocument = (document: TDataInDocument, events: TFamilyEventPublic[]): TFamilyDocumentPublic => {
+export const transformDocument = (document: TDataInDocument, events: TFamilyEventPublic[]): TFamilyDocumentPublic | null => {
   const documentAttributes = validateDocumentAttributes(document.attributes);
   const displayAllowed = DISPLAY_ALLOWED_STATUSES.includes(documentAttributes.status);
   if (!displayAllowed) return null;

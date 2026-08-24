@@ -27,10 +27,11 @@ export const DocumentHead = ({ document, family, handleViewOtherDocsClick, handl
   const [showFullSummary, setShowFullSummary] = useState(false);
   const [summary, setSummary] = useState("");
 
-  const geoName = family.geographies[0].name || "";
-  const geoSlug = family.geographies[0].slug || "";
+  const geoName = family.geographies?.[0]?.name || "";
+  const geoSlug = family.geographies?.[0]?.slug || "";
   const isMain = document.document_role.toLowerCase().includes("main");
-  const breadcrumbGeography = family.geographies && family.geographies.length > 1 ? null : { label: geoName, href: `/geographies/${geoSlug}` };
+  // Families whose geography labels are all regions have no geographies; only show the breadcrumb for a single geography
+  const breadcrumbGeography = family.geographies?.length === 1 ? { label: geoName, href: `/geographies/${geoSlug}` } : null;
   const breadcrumbFamily = {
     label: family.title,
     href: `/document/${family.slug}`,
