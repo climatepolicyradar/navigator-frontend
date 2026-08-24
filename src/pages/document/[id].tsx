@@ -37,7 +37,7 @@ export const getServerSideProps = (async (context) => {
 
   const { data: familyData, errors } = await getFamilyData(slug);
   errors.forEach((err) => {
-    console.error(`[document.getServerSideProps]: url: ${context.req.url}, params: ${context.req.params}`);
+    console.error(`[document.getServerSideProps]: url: ${context.req.url}, params: ${context.params}`);
     console.error(err);
   });
   if (familyData === null) return { notFound: true };

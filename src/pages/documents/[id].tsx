@@ -192,7 +192,7 @@ export const getServerSideProps = (async (context) => {
 
   const { data: documentData, errors } = await getDocumentData(slug);
   errors.forEach((err) => {
-    console.error(`[documents.getServerSideProps]: url: ${context.req.url}, params: ${context.req.params}`);
+    console.error(`[documents.getServerSideProps]: url: ${context.req.url}, params: ${context.params}`);
     console.error(err);
   });
   if (documentData === null) return { notFound: true };
