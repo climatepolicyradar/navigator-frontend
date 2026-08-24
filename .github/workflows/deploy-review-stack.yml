@@ -155,6 +155,41 @@ jobs:
           deployment_id=$(echo "$body" | jq -r '.id')
           echo "deployment_id=$deployment_id" >> "$GITHUB_OUTPUT"
 
+      - name: Wait for ${{matrix.theme}} deployment to finish
+        id: wait_deployment
+        if: steps.decide.outputs.action == 'update'
+        env:
+          STACK_NAME: ${{ steps.decide.outputs.stack_name }}
+          DEPLOYMENT_ID: ${{ steps.trigger_update.outputs.deployment_id }}
+        run: |
+          # Poll every 15s for up to 10 minutes (40 attempts). A real review
+          # stack deploy observed on 2026-08-12 took ~3.5 minutes end to end.
+          terminal_status=""
+          for _ in $(seq 1 40); do
+            sleep 15
+            response=$(curl -fsSL \
+              -H "Authorization: token ${PULUMI_ACCESS_TOKEN}" \
+              "https://api.pulumi.com/api/stacks/${ORG}/${PROJECT}/${STACK_NAME}/deployments/${DEPLOYMENT_ID}")
+            current_status=$(echo "$response" | jq -r '.status')
+            echo "Deployment ${DEPLOYMENT_ID} status: ${current_status}"
+            if [ "$current_status" = "succeeded" ] || [ "$current_status" = "failed" ]; then
+              terminal_status="$current_status"
+              break
+            fi
+          done
+
+          if [ -z "$terminal_status" ]; then
+            echo "Timed out waiting for deployment ${DEPLOYMENT_ID} to finish"
+            exit 1
+          fi
+
+          echo "status=$terminal_status" >> "$GITHUB_OUTPUT"
+
+          if [ "$terminal_status" != "succeeded" ]; then
+            echo "Deployment ${DEPLOYMENT_ID} finished with status: $terminal_status"
+            exit 1
+          fi
+
       - name: Trigger destroy deployment for ${{matrix.theme}}
         if: steps.decide.outputs.action == 'destroy'
         env:
