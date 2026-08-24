@@ -23,16 +23,19 @@
 # 4xx terms, floor 5xx at 5/min so one stray 502 in a quiet minute cannot
 # trip FILL(total, 1).
 #
-# Usage: deploy_ecs_express.sh <theme> <env> <image>
+# Takes the cluster and service name directly so it can also be run by hand
+# against a review-stack service (review stacks deploy via Pulumi Deployments,
+# which never runs this script):
+#   deploy_ecs_express.sh frontend-production review-cpr-frontend-1472 <image>
+#
+# Usage: deploy_ecs_express.sh <cluster> <service> <image>
 
 set -euo pipefail
 
-THEME="${1:?usage: deploy_ecs_express.sh <theme> <env> <image>}"
-ENVIRONMENT="${2:?}"
+CLUSTER="${1:?usage: deploy_ecs_express.sh <cluster> <service> <image>}"
+SERVICE="${2:?}"
 IMAGE="${3:?}"
 
-CLUSTER="frontend-${ENVIRONMENT}"
-SERVICE="${THEME}-frontend-${ENVIRONMENT}"
 ALARM="${CLUSTER}/${SERVICE}/RollbackAlarm"
 MARKER="5xx-only; 4xx excluded by deploy_ecs_express.sh"
 PATCHED=$(mktemp)

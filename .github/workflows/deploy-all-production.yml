@@ -124,4 +124,4 @@ jobs:
       - name: Deploy to ECS (production)
         run: >
           .github/workflows/scripts/deploy_ecs_express.sh
-          ${{ matrix.theme }} production ${{ steps.build-image.outputs.image }}
+          frontend-production ${{ matrix.theme }}-frontend-production ${{ steps.build-image.outputs.image }}
