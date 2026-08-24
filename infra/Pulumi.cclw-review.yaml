@@ -29,5 +29,6 @@ config:
     secure: AAABAPhk+ysogBeSmPh6FvER2NjuglxlJrEsLYXfxt3ChzGTXz3yvX5vR7Y=
   frontend:apprunner_frontend_vcpu_count: 1 vCPU
   frontend:apprunner_frontend_memory_gb: 2 GB
+  frontend:next_static_enabled: "false"
 environment:
   - frontend/cclw-review

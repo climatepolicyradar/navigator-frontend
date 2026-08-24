@@ -29,5 +29,6 @@ config:
     secure: AAABAObvsYXeJ63WV/F4XiG7Wc0g2DPTzGDRgBZ+3Z3mkNINZrpTOjIPMmc=
   frontend:apprunner_frontend_vcpu_count: 1 vCPU
   frontend:apprunner_frontend_memory_gb: 2 GB
+  frontend:next_static_enabled: "false"
 environment:
   - frontend/ccc-review

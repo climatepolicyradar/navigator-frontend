@@ -32,5 +32,6 @@ config:
     secure: AAABAMaACKo+TYbkmVU000GHeLYFLAujP5Zb4HaBJmtHQJFjk2pOFspl8xsBnU7uYwcFCt1p83sSfDJfS+VDBWAZFfXHznimWlVXPi2wVWKgiq2N3TG2plO16RwExFKnJmkF0wY2uFG9PKJ4y8jUZ1n1SYbpV6MTwYICZx6TATCGWKKvyjbdUoV1jqc6GWc91YVV+I/GQYZFHX4=
   frontend:apprunner_frontend_vcpu_count: 1 vCPU
   frontend:apprunner_frontend_memory_gb: 2 GB
+  frontend:next_static_enabled: "false"
 environment:
   - frontend/cpr-review

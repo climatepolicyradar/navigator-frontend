@@ -29,5 +29,6 @@ config:
     secure: AAABAL+RYiGFRbFAlFoXuqcDSURZnm0RgIZPCJ2JNhLfevnIG0HszBQhHyI=
   frontend:apprunner_frontend_vcpu_count: 1 vCPU
   frontend:apprunner_frontend_memory_gb: 2 GB
+  frontend:next_static_enabled: "false"
 environment:
   - frontend/mcf-review
