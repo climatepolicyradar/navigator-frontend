@@ -6,6 +6,9 @@ on:
     types: [labeled, unlabeled, synchronize, closed]
     branches: [main]
 
+permissions:
+  pull-requests: write
+
 jobs:
   review-stack:
     runs-on: ubuntu-latest
@@ -113,6 +116,7 @@ jobs:
           echo "Deployment settings configured for ${STACK_NAME}"
 
       - name: Trigger update deployment for ${{matrix.theme}}
+        id: trigger_update
         if: steps.decide.outputs.action == 'update'
         env:
           STACK_NAME: ${{ steps.decide.outputs.stack_name }}
@@ -147,6 +151,9 @@ jobs:
             echo "Failed to trigger deployment"
             exit 1
           fi
+
+          deployment_id=$(echo "$body" | jq -r '.id')
+          echo "deployment_id=$deployment_id" >> "$GITHUB_OUTPUT"
 
       - name: Trigger destroy deployment for ${{matrix.theme}}
         if: steps.decide.outputs.action == 'destroy'
