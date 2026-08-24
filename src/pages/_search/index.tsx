@@ -6,7 +6,7 @@ import { normaliseSearchDocumentsSortKey, SearchDocument } from "@/api/search";
 import { createGroup, isFilterGroupEmpty, AdvancedFilters } from "@/components/_experiment/advancedFilters/AdvancedFilters";
 import { SEARCH_RESULTS_PAGE_SIZE, SearchContainer } from "@/components/_experiment/searchResults/SearchResults";
 import { FiveColumns } from "@/components/atoms/columns/FiveColumns";
-import { PrincipalDrawer } from "@/components/drawers/principalDrawer/PrincipalDrawer";
+import { PrincipalDrawer, TPrincipalDrawerTab } from "@/components/drawers/principalDrawer/PrincipalDrawer";
 import Layout from "@/components/layouts/Main";
 import { Pagination } from "@/components/molecules/pagination/Pagination";
 import { SearchControls } from "@/components/organisms/searchControls/SearchControls";
@@ -59,6 +59,7 @@ const ShadowSearch = ({ theme, themeConfig, features }: TProps) => {
   // Control SearchFilters popover and active category tab (single source of truth)
   const [selectedDocument, setSelectedDocument] = useState<SearchDocument | null>(null);
   const [drawerOpen, setDrawerOpen] = useState(false);
+  const [drawerTab, setDrawerTab] = useState<TPrincipalDrawerTab>("about");
 
   // Control Advanced Filters view
   const [advancedFiltersOpen, setAdvancedFiltersOpen] = useState(false);
@@ -145,6 +146,7 @@ const ShadowSearch = ({ theme, themeConfig, features }: TProps) => {
                 }
                 // otherwise open document in drawer
                 setSelectedDocument(document);
+                setDrawerTab(hasSearch ? "search" : "about");
                 setDrawerOpen(true);
               }}
             />
@@ -174,7 +176,7 @@ const ShadowSearch = ({ theme, themeConfig, features }: TProps) => {
           onOpenChange={setAdvancedFiltersOpen}
         />
         {/* DRAWER */}
-        <PrincipalDrawer document={selectedDocument} open={drawerOpen} onOpenChange={setDrawerOpen} tab={hasSearch ? "search" : "about"} />
+        <PrincipalDrawer document={selectedDocument} open={drawerOpen} onOpenChange={setDrawerOpen} tab={drawerTab} onTabChange={setDrawerTab} />
       </Layout>
     </FeaturesContext.Provider>
   );

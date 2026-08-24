@@ -1,6 +1,6 @@
 import { useQuery } from "@tanstack/react-query";
 import { LucideExternalLink, Search } from "lucide-react";
-import { Fragment, useState } from "react";
+import { Fragment } from "react";
 
 import { SearchDocument } from "@/api/search";
 import { Drawer } from "@/components/atoms/drawer/Drawer";
@@ -30,11 +30,14 @@ function linkHref(doc: SearchDocument): string | undefined {
     }
 }
 
+export type TPrincipalDrawerTab = "about" | "search";
+
 type TDocumentDrawerProps = {
   document: SearchDocument | null;
   open: boolean;
   onOpenChange: (open: boolean) => void;
-  tab?: string;
+  tab: TPrincipalDrawerTab;
+  onTabChange: (tab: TPrincipalDrawerTab) => void;
 };
 
 type TDrawerContentProps = {
@@ -84,10 +87,8 @@ const DrawerContent = ({ familyData, languages }: TDrawerContentProps) => {
   );
 };
 
-export function PrincipalDrawer({ document, open, onOpenChange, tab }: TDocumentDrawerProps) {
+export function PrincipalDrawer({ document, open, onOpenChange, tab, onTabChange }: TDocumentDrawerProps) {
   const { data: { languages = {} } = {} } = useConfig();
-  const [activeTab, setActiveTab] = useState<string>(tab || "about");
-  const changeTab = (newValue: string) => setActiveTab(newValue);
   const { getCategoryTextLookup } = useText();
 
   const importId = document?.id as string | undefined;
@@ -132,9 +133,9 @@ export function PrincipalDrawer({ document, open, onOpenChange, tab }: TDocument
         </div>
       )}
       {!isLoading && familyData && (
-        <Tabs
-          onValueChange={changeTab}
-          value={activeTab}
+        <Tabs<TPrincipalDrawerTab>
+          onValueChange={onTabChange}
+          value={tab}
           className="-mx-8"
           panelClassName="pt-8"
           tabs={[
