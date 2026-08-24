@@ -2,6 +2,7 @@
   "comment": "Behavioral fixtures for ccc-redirection, executed in the real CloudFront Functions runtime by scripts/test-edge.sh. kvsSeed entries are copied from redirects.json and loaded into the scratch KVS so KVS-dependent cases run against real lookup semantics.",
   "kvsSeed": {
     "/us-climate-change-litigation/": "/search",
+    "/search/": "/search?l=united-states-of-america",
     "/non-us-jurisdiction/": "/search#tab=jurisdictions",
     "/non-us-principal-law/": "/search#tab=principal-laws",
     "/case/juliana-v-united-states": "/collections/juliana-v-united-states_e35e2b",
@@ -12,6 +13,8 @@
     { "uri": "/", "expect": "pass" },
     { "uri": "/unknown-uri/", "expect": "pass" },
     { "uri": "/documents/some-real-document_ab12", "expect": "pass" },
+    { "uri": "/search", "expect": "pass" },
+    { "uri": "/search/", "expect": "redirect", "location": "/search?l=united-states-of-america" },
 
     { "uri": "/case-category/clean-water-act/", "expect": "redirect", "location": "/search?cpl=category%2Fclean+water+act" },
     { "uri": "/non-us-case-category/failure-to-adapt/", "expect": "redirect", "location": "/search?cpl=category%2Ffailure+to+adapt" },
