@@ -2,8 +2,15 @@ import { Check, Copy, ExternalLink, File, LocateFixed } from "lucide-react";
 import { useEffect, useState } from "react";
 
 import { IPassageLabel } from "@/types";
+import { joinNodes } from "@/utils/reactNode";
+import { THighlightRange, addHighlights } from "@/utils/text/addHighlights";
+import { findSubStringMatches } from "@/utils/text/findSubStringMatches";
 
 const COPY_FEEDBACK_TIMEOUT = 1000;
+
+const QUERY_HIGHLIGHT = "bg-yellow-200 text-black";
+const TOPIC_HIGHLIGHT = "bg-light-blue text-inky-navy";
+const QUERY_AND_TOPIC_HIGHLIGHT = "bg-linear-to-b from-yellow-200 from-50% to-light-blue to-50% box-decoration-clone text-inky-navy";
 
 type TPassagePage = {
   page_number: number;
@@ -34,12 +41,32 @@ type TProps = {
   onCopyClick?: () => void;
   onDocumentLinkClick?: () => void;
   onPassageClick?: (passage: TPassage) => void;
+  query?: string;
+  activeTopicsIds?: string[];
   // Hide the document title and its link when the passage is already shown in the
   // context of that document, e.g. on the document page.
   showDocument?: boolean;
 };
 
-export const PassageBlock = ({ passage, onCopyClick, onDocumentLinkClick, onPassageClick, showDocument = true }: TProps) => {
+const resolveHighlightClassName = (classNames: string[]) => (classNames.length > 1 ? QUERY_AND_TOPIC_HIGHLIGHT : classNames[0]);
+
+// The topic spans and the query matches are both positions in the passage's own text, so they
+// are gathered into one list and handed to `addHighlights` to be applied in a single pass
+const getHighlightRanges = ({
+  content,
+  query,
+  activeTopics,
+}: {
+  content: string;
+  query?: string;
+  activeTopics: IPassageLabel[];
+}): THighlightRange[] => [
+  ...activeTopics.map(({ start_index, end_index }) => ({ start: start_index, end: end_index, className: TOPIC_HIGHLIGHT })),
+  // Trimmed so that a query the user typed with surrounding spaces still matches
+  ...findSubStringMatches(content, query?.trim() ?? "").map((match) => ({ ...match, className: QUERY_HIGHLIGHT })),
+];
+
+export const PassageBlock = ({ passage, onCopyClick, onDocumentLinkClick, onPassageClick, query, activeTopicsIds, showDocument = true }: TProps) => {
   const [hasCopied, setHasCopied] = useState(false);
 
   useEffect(() => {
@@ -53,8 +80,26 @@ export const PassageBlock = ({ passage, onCopyClick, onDocumentLinkClick, onPass
   const pageNumbers = passage.pages?.map(({ page_number }) => page_number + 1) ?? [];
   const hasPages = pageNumbers.length > 0;
   const hasContext = hasPages || !!passage.headingText;
+  const activeTopics = passage.labels?.filter((label) => activeTopicsIds?.includes(label.value.id)) ?? [];
+  const highlightedContent = addHighlights(
+    passage.content,
+    getHighlightRanges({ content: passage.content, query, activeTopics }),
+    resolveHighlightClassName
+  );
   // A passage can carry the same label for several matched spans, so each topic is only shown once.
-  const topics = [...new Set(passage.labels?.map((label) => label.value.value) ?? [])];
+  const topics = [...new Map(passage.labels?.map(({ value }) => [value.value, value.id]) ?? [])];
+  const topicsList = joinNodes(
+    topics.map(([value, id]) =>
+      activeTopicsIds?.includes(id) ? (
+        <span key={id} className={TOPIC_HIGHLIGHT}>
+          {value}
+        </span>
+      ) : (
+        value
+      )
+    ),
+    ", "
+  );
   const hasFooter = showDocument || hasContext;
 
   const handleCopyClick = () => {
@@ -74,13 +119,13 @@ export const PassageBlock = ({ passage, onCopyClick, onDocumentLinkClick, onPass
             onClick={() => onPassageClick(passage)}
             className="text-left w-full text-sm text-text-primary px-8 py-7 hocus:bg-paper"
           >
-            <p>{passage.content}</p>
-            {passage.labels?.length > 0 && <p className="text-text-secondary mt-2">Contains topics: {topics.join(", ")}</p>}
+            <p>{highlightedContent}</p>
+            {passage.labels?.length > 0 && <p className="text-text-secondary mt-2">Contains topics: {topicsList}</p>}
           </button>
         ) : (
           <div className="px-8 py-7">
-            <p>{passage.content}</p>
-            {passage.labels?.length > 0 && <p className="text-text-secondary mt-2">Contains topics: {topics.join(", ")}</p>}
+            <p>{highlightedContent}</p>
+            {passage.labels?.length > 0 && <p className="text-text-secondary mt-2">Contains topics: {topicsList}</p>}
           </div>
         )}
       </div>

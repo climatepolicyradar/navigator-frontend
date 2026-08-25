@@ -105,6 +105,28 @@ export const WithMultipleTopics: TStory = {
   },
 };
 
+// `makeLabel` leaves the span indices at zero, which is enough for the topic list but not
+// for the highlighting, so this label is positioned against the base content
+const makeSpanLabel = (value: string, startIndex: number, endIndex: number): IPassageLabel => ({
+  ...makeLabel(value),
+  start_index: startIndex,
+  end_index: endIndex,
+});
+
+// Shows all three fills at once: the "Land use" span is topic-only, the second "high" is
+// query-only, and the first "high" sits inside the "Biodiversity" span so it is both
+export const WithHighlights: TStory = {
+  args: {
+    passage: {
+      ...basePassage,
+      labels: [makeSpanLabel("Biodiversity", 163, 188), makeSpanLabel("Land use", 8, 18), makeLabel("Renewable energy")],
+    },
+    query: "high",
+    // "Renewable energy" is left out, so the topics list shows an active and an inactive topic
+    activeTopicsIds: ["concept-Biodiversity", "concept-Land use"],
+  },
+};
+
 export const ClickableWithTopics: TStory = {
   args: {
     passage: {

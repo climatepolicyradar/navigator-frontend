@@ -13,6 +13,14 @@ const makeLabel = (value: string): IPassageLabel => ({
   value: { id: `concept-${value}`, type: "concept", value },
 });
 
+// `makeLabel` leaves the span indices at zero, which suits the topic list but not the
+// highlighting, so those cases build their labels against real positions in the content
+const makeSpanLabel = (value: string, startIndex: number, endIndex: number): IPassageLabel => ({
+  ...makeLabel(value),
+  start_index: startIndex,
+  end_index: endIndex,
+});
+
 const basePassage: TPassage = {
   id: "passage-1",
   document_id: "doc-1",
@@ -122,5 +130,111 @@ describe("PassageBlock", () => {
     fireEvent.click(screen.getByRole("button", { name: "Copy passage text" }));
     expect(navigator.clipboard.writeText).toHaveBeenCalledWith(basePassage.content);
     expect(handleCopyClick).toHaveBeenCalledTimes(1);
+  });
+
+  describe("highlighting", () => {
+    // "Certain ecological and other requirements for geohazards."
+    //          ^8    ^18                                ^46   ^56
+    const topicPassage: TPassage = {
+      ...basePassage,
+      labels: [makeSpanLabel("Ecology", 8, 18), makeSpanLabel("Geohazards", 46, 56)],
+    };
+    const activeTopicsIds = ["concept-Ecology", "concept-Geohazards"];
+
+    const repeatedPassage: TPassage = { ...basePassage, content: "Climate adaptation and climate mitigation" };
+
+    it("leaves the content as a single text node when there is no query and no active topics", () => {
+      render(<PassageBlock passage={basePassage} />);
+      expect(screen.getByText(basePassage.content).querySelector("span")).toBeNull();
+    });
+
+    it("highlights every active topic, not only the last one", () => {
+      render(<PassageBlock passage={topicPassage} activeTopicsIds={activeTopicsIds} />);
+
+      expect(screen.getByText("ecological")).toHaveClass("bg-light-blue");
+      expect(screen.getByText("geohazards")).toHaveClass("bg-light-blue");
+    });
+
+    it("does not highlight a topic that is not active", () => {
+      render(<PassageBlock passage={topicPassage} activeTopicsIds={["concept-Geohazards"]} />);
+
+      expect(screen.queryByText("ecological")).not.toBeInTheDocument();
+      expect(screen.getByText("geohazards")).toHaveClass("bg-light-blue");
+    });
+
+    it("highlights every occurrence of the query", () => {
+      render(<PassageBlock passage={repeatedPassage} query="climate" />);
+
+      const highlighted = screen.getAllByText(/^climate$/i);
+      expect(highlighted).toHaveLength(2);
+      highlighted.forEach((span) => expect(span).toHaveClass("bg-yellow-200"));
+    });
+
+    it("matches a query the user typed with surrounding spaces", () => {
+      render(<PassageBlock passage={repeatedPassage} query="  climate  " />);
+      expect(screen.getAllByText(/^climate$/i)).toHaveLength(2);
+    });
+
+    it("does not highlight anything for an empty or whitespace-only query", () => {
+      const { unmount } = render(<PassageBlock passage={repeatedPassage} query="" />);
+      expect(screen.getByText(repeatedPassage.content).querySelector("span")).toBeNull();
+      unmount();
+
+      render(<PassageBlock passage={repeatedPassage} query="   " />);
+      expect(screen.getByText(repeatedPassage.content).querySelector("span")).toBeNull();
+    });
+
+    it("splits the fill of a span matched by both the query and an active topic", () => {
+      // The topic is named so that it cannot be confused with the highlighted content
+      const passage: TPassage = { ...repeatedPassage, labels: [makeSpanLabel("Climate action", 0, 7)] };
+      render(<PassageBlock passage={passage} query="climate" activeTopicsIds={["concept-Climate action"]} />);
+
+      // The query colour fills the top half and the topic colour the bottom, per line
+      expect(screen.getByText("Climate")).toHaveClass(
+        "bg-linear-to-b",
+        "from-yellow-200",
+        "from-50%",
+        "to-light-blue",
+        "to-50%",
+        "box-decoration-clone"
+      );
+      expect(screen.getByText("climate")).toHaveClass("bg-yellow-200");
+    });
+
+    it("highlights the content when the passage is not clickable", () => {
+      render(<PassageBlock passage={topicPassage} activeTopicsIds={activeTopicsIds} />);
+      expect(screen.queryByRole("button", { name: /ecological/ })).not.toBeInTheDocument();
+      expect(screen.getByText("ecological")).toHaveClass("bg-light-blue");
+    });
+
+    it("highlights an active topic in the topics list", () => {
+      render(<PassageBlock passage={topicPassage} activeTopicsIds={["concept-Ecology"]} />);
+
+      // The active topic is its own element now, so the list reads as one string but is not one node
+      expect(screen.getByText(/^Contains topics:/)).toHaveTextContent("Contains topics: Ecology, Geohazards");
+      expect(screen.getByText("Ecology")).toHaveClass("bg-light-blue");
+      // The inactive topic stays as plain text alongside it
+      expect(screen.queryByText("Geohazards")).not.toBeInTheDocument();
+    });
+
+    it("highlights every active topic in the topics list", () => {
+      render(<PassageBlock passage={topicPassage} activeTopicsIds={activeTopicsIds} />);
+
+      expect(screen.getByText("Ecology")).toHaveClass("bg-light-blue");
+      expect(screen.getByText("Geohazards")).toHaveClass("bg-light-blue");
+    });
+
+    it("does not highlight any topic in the list when none are active", () => {
+      render(<PassageBlock passage={topicPassage} />);
+
+      expect(screen.getByText("Contains topics: Ecology, Geohazards")).toBeInTheDocument();
+      expect(screen.queryByText("Ecology")).not.toBeInTheDocument();
+    });
+
+    it("highlights the content when the passage is clickable", () => {
+      render(<PassageBlock passage={topicPassage} activeTopicsIds={activeTopicsIds} onPassageClick={() => {}} />);
+      expect(screen.getByRole("button", { name: new RegExp(basePassage.content) })).toBeInTheDocument();
+      expect(screen.getByText("ecological")).toHaveClass("bg-light-blue");
+    });
   });
 });
