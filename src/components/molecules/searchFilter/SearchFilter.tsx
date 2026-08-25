@@ -7,7 +7,7 @@ import { FiltersContext } from "@/context/FiltersContext";
 import { FiltersLookupContext } from "@/context/FiltersLookupContext";
 import { TCheckboxState, TFilterPathLabel, TNestedSearchLabel } from "@/types";
 import { filterHasSelectedChildren } from "@/utils/filters/filterHasSelectedChildren";
-import { getFilterPathLabel, getLabelPathSignature } from "@/utils/filters/filterPaths";
+import { getFilterPathLabels, getLabelPathSignature } from "@/utils/filters/filterPaths";
 import { getFilterStatus } from "@/utils/filters/getFilterStatus";
 import { joinTailwindClasses } from "@/utils/tailwind";
 import { addSubStringHighlights } from "@/utils/text/addSubStringHighlights";
@@ -24,7 +24,7 @@ export const SearchFilter = ({ ancestorPath, label, level }: IProps) => {
   const { searchTerm, matchingLabelPathSignatures } = useContext(FiltersLookupContext);
   const [isExpanded, setIsExpanded] = useState(false);
 
-  const pathLabels = useMemo(() => [getFilterPathLabel(label), ...ancestorPath], [ancestorPath, label]);
+  const pathLabels = useMemo(() => getFilterPathLabels(label, ancestorPath), [ancestorPath, label]);
   const checked = getFilterStatus(pathLabels, checkedLabelPaths);
 
   const isFiltered = searchTerm !== "";
