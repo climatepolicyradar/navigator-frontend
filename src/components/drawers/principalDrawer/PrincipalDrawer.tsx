@@ -1,6 +1,6 @@
 import { useQuery } from "@tanstack/react-query";
 import { LucideExternalLink, Search } from "lucide-react";
-import { Fragment } from "react";
+import { Fragment, ReactNode } from "react";
 
 import { SearchDocument } from "@/api/search";
 import { Drawer } from "@/components/atoms/drawer/Drawer";
@@ -12,11 +12,14 @@ import { NoteBlock } from "@/components/blocks/noteBlock/NoteBlock";
 import { TextBlock } from "@/components/blocks/textBlock/TextBlock";
 import { TopicsBlock } from "@/components/blocks/topicsBlock/TopicsBlock";
 import { PassageSearch } from "@/components/organisms/passageSearch/PassageSearch";
+import { SearchLevelContext } from "@/context/SearchLevelContext";
 import useConfig from "@/hooks/useConfig";
+import { useSearchLevelValues } from "@/hooks/useSearchLevel";
 import { useText } from "@/hooks/useText";
 import { TFamilyPresentationalData } from "@/types";
 import { getFamilyHeader } from "@/utils/family-header/getFamilyHeader";
 import { getFamilyMetadata } from "@/utils/family-metadata/getFamilyMetadata";
+import { flattenLevelToBaseQuery } from "@/utils/search/searchLevels";
 import { firstCase } from "@/utils/text";
 import { getTopFamilyTopics } from "@/utils/topics/getTopFamilyTopics";
 import { familyTopicsHasTopics } from "@/utils/topics/processFamilyTopics";
@@ -33,7 +36,8 @@ function linkHref(doc: SearchDocument): string | undefined {
 export type TPrincipalDrawerTab = "about" | "search";
 
 type TDocumentDrawerProps = {
-  document: SearchDocument | null;
+  document: SearchDocument | null; // The clicked search result, absent when the drawer is opened from a link
+  importId: string | null;
   open: boolean;
   onOpenChange: (open: boolean) => void;
   tab: TPrincipalDrawerTab;
@@ -87,11 +91,11 @@ const DrawerContent = ({ familyData, languages }: TDrawerContentProps) => {
   );
 };
 
-export function PrincipalDrawer({ document, open, onOpenChange, tab, onTabChange }: TDocumentDrawerProps) {
+export function PrincipalDrawer({ document, importId, open, onOpenChange, tab, onTabChange }: TDocumentDrawerProps) {
   const { data: { languages = {} } = {} } = useConfig();
   const { getCategoryTextLookup } = useText();
-
-  const importId = document?.id as string | undefined;
+  // The drawer's own search, flattened onto the base params of whatever page a link leads to
+  const [principalSearch] = useSearchLevelValues("principal");
 
   const { data: familyData, isLoading } = useQuery<TFamilyPresentationalData | null>({
     queryKey: ["family", importId],
@@ -101,26 +105,29 @@ export function PrincipalDrawer({ document, open, onOpenChange, tab, onTabChange
 
   const getCategoryText = getCategoryTextLookup(familyData?.family.attribution.category);
 
+  const outboundQuery = flattenLevelToBaseQuery(principalSearch);
+  // The clicked result names the drawer immediately; a drawer opened from a link waits for the fetch.
+  const titleHref = document ? linkHref(document) : familyData && `/document/${familyData.family.slug}`;
+  const titleContent: ReactNode = document ? <span dangerouslySetInnerHTML={{ __html: document.title }} /> : (familyData?.family.title ?? undefined);
+
   return (
     <Drawer
       open={open}
       onOpenChange={onOpenChange}
       title={
-        document ? (
-          linkHref(document) ? (
-            <span className="block pt-5">
-              <PageLink keepQuery href={linkHref(document)!} className="text-3xl text-inky-blue underline-offset-5 hover:underline">
-                <span dangerouslySetInnerHTML={{ __html: document.title }} />
-              </PageLink>
-            </span>
-          ) : (
-            <span dangerouslySetInnerHTML={{ __html: document.title }} />
-          )
-        ) : undefined
+        titleContent && titleHref ? (
+          <span className="block pt-5">
+            <PageLink keepQuery query={outboundQuery} href={titleHref} className="text-3xl text-inky-blue underline-offset-5 hover:underline">
+              {titleContent}
+            </PageLink>
+          </span>
+        ) : (
+          titleContent
+        )
       }
       titleExtras={
-        document && linkHref(document) ? (
-          <PageLink external keepQuery href={linkHref(document)!} className="text-neutral-500 hover:text-neutral-800 justify-end">
+        titleHref ? (
+          <PageLink external keepQuery query={outboundQuery} href={titleHref} className="text-neutral-500 hover:text-neutral-800 justify-end">
             <LucideExternalLink width={20} height={20} />
           </PageLink>
         ) : undefined
@@ -133,33 +140,35 @@ export function PrincipalDrawer({ document, open, onOpenChange, tab, onTabChange
         </div>
       )}
       {!isLoading && familyData && (
-        <Tabs<TPrincipalDrawerTab>
-          onValueChange={onTabChange}
-          value={tab}
-          className="-mx-8"
-          panelClassName="pt-8"
-          tabs={[
-            { id: "about", label: "About", panel: <DrawerContent familyData={familyData} languages={languages} /> },
-            {
-              id: "search",
-              label: (
-                <>
-                  <Search size={20} />
-                  Search in documents
-                </>
-              ),
-              panel: (
-                <PassageSearch
-                  documents={familyData.family.documents}
-                  concepts={getTopFamilyTopics(familyData.familyTopics)}
-                  documentsLabel={`Documents in this ${firstCase(getCategoryText("familySingular"))}`}
-                  subject="these documents"
-                />
-              ),
-            },
-          ]}
-          tabsContainer={(tabsList) => <div className="pl-8">{tabsList}</div>}
-        />
+        <SearchLevelContext value="principal">
+          <Tabs<TPrincipalDrawerTab>
+            onValueChange={onTabChange}
+            value={tab}
+            className="-mx-8"
+            panelClassName="pt-8"
+            tabs={[
+              { id: "about", label: "About", panel: <DrawerContent familyData={familyData} languages={languages} /> },
+              {
+                id: "search",
+                label: (
+                  <>
+                    <Search size={20} />
+                    Search in documents
+                  </>
+                ),
+                panel: (
+                  <PassageSearch
+                    documents={familyData.family.documents}
+                    concepts={getTopFamilyTopics(familyData.familyTopics)}
+                    documentsLabel={`Documents in this ${firstCase(getCategoryText("familySingular"))}`}
+                    subject="these documents"
+                  />
+                ),
+              },
+            ]}
+            tabsContainer={(tabsList) => <div className="pl-8">{tabsList}</div>}
+          />
+        </SearchLevelContext>
       )}
       {!isLoading && !familyData && <p>Sorry, this document has failed to load.</p>}
     </Drawer>

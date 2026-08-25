@@ -7,9 +7,12 @@ import { ViewMore } from "@/components/molecules/viewMore/ViewMore";
 import { InteractiveTable } from "@/components/organisms/interactiveTable/InteractiveTable";
 import { PassageSearch } from "@/components/organisms/passageSearch/PassageSearch";
 import { FeaturesContext } from "@/context/FeaturesContext";
+import { SearchLevelContext } from "@/context/SearchLevelContext";
 import { getLanguage } from "@/helpers/getLanguage";
+import { useSearchLevelValues } from "@/hooks/useSearchLevel";
 import { IFamilyDocumentTopics, IMetadata, TFamilyDocumentPublic, TFamilyEventPublic, TFamilyPublic, TLanguages } from "@/types";
 import { getEventTableRowsData } from "@/utils/eventTable";
+import { flattenLevelToBaseQuery } from "@/utils/search/searchLevels";
 import { DOCUMENT_DRAWER_TOPICS_TABLE_COLUMNS, getDocumentDrawerTopicTableRows } from "@/utils/tables/topic/documentDrawerTopicTable";
 import { TTopicTableColumnId, TTopicTableRow } from "@/utils/tables/topic/topicTable";
 import { firstCase } from "@/utils/text";
@@ -27,6 +30,9 @@ interface IProps {
 
 export const DocumentDrawer = ({ documentImportId, family, familyTopics, languages, onOpenChange, open }: IProps) => {
   const features = useContext(FeaturesContext);
+  // The drawer's own search, flattened onto the base params of the document page it links to
+  const [documentSearch] = useSearchLevelValues("document");
+  const outboundQuery = flattenLevelToBaseQuery(documentSearch);
 
   const isLitigation = family.attribution.category === "Litigation";
 
@@ -96,7 +102,12 @@ export const DocumentDrawer = ({ documentImportId, family, familyTopics, languag
       title={
         document.slug ? (
           <span className="block pt-5">
-            <PageLink keepQuery href={"/documents/" + document.slug} className="text-3xl text-inky-blue underline-offset-5 hover:underline">
+            <PageLink
+              keepQuery
+              query={outboundQuery}
+              href={"/documents/" + document.slug}
+              className="text-3xl text-inky-blue underline-offset-5 hover:underline"
+            >
               {document.title}
             </PageLink>
           </span>
@@ -106,7 +117,13 @@ export const DocumentDrawer = ({ documentImportId, family, familyTopics, languag
       }
       titleExtras={
         document.slug ? (
-          <PageLink external keepQuery href={"/documents/" + document.slug} className="text-neutral-500 hover:text-neutral-800 justify-end">
+          <PageLink
+            external
+            keepQuery
+            query={outboundQuery}
+            href={"/documents/" + document.slug}
+            className="text-neutral-500 hover:text-neutral-800 justify-end"
+          >
             <LucideExternalLink width={20} height={20} />
           </PageLink>
         ) : undefined
@@ -114,9 +131,9 @@ export const DocumentDrawer = ({ documentImportId, family, familyTopics, languag
       wide
     >
       {features["new-search"] ? (
-        <>
+        <SearchLevelContext value="document">
           <PassageSearch documents={[document]} concepts={getTopFamilyDocumentTopics(familyTopics, documentImportId)} subject="this document" />
-        </>
+        </SearchLevelContext>
       ) : (
         <>
           {metadata.length > 0 && (

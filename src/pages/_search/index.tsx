@@ -15,12 +15,14 @@ import { SEARCH_SORT_OPTIONS } from "@/constants/sort";
 import { withEnvConfig } from "@/context/EnvConfig";
 import { FeaturesContext } from "@/context/FeaturesContext";
 import { loadFilteredLabels, loadLabelTaxonomy } from "@/hooks/useLabelSearch";
+import { useNestedSearchLevel } from "@/hooks/useSearchLevel";
 import { FilterGroupSchema } from "@/schemas";
 import { TSearchLabel, TSearchQueryGroup, TTheme } from "@/types";
 import { getFeatureFlags } from "@/utils/featureFlags";
 import { getFeatures } from "@/utils/features";
 import { pluralise } from "@/utils/pluralise";
 import { readConfigFile } from "@/utils/readConfigFile";
+import { conceptFiltersOnly, seedPassageLevel } from "@/utils/search/searchLevels";
 import { joinTailwindClasses } from "@/utils/tailwind";
 
 const columnLayoutCss = "col-start-1 -col-end-1 cols-5:col-start-2 cols-5:-col-end-2";
@@ -48,7 +50,7 @@ const ShadowSearch = ({ theme, themeConfig, features }: TProps) => {
    */
   const setFilters = useCallback(
     (updater: SetStateAction<TSearchQueryGroup>) => {
-      void setFiltersInUrl((prev) => {
+      setFiltersInUrl((prev) => {
         const nextFilters = typeof updater === "function" ? (updater as (p: TSearchQueryGroup) => TSearchQueryGroup)(prev) : updater;
         return nextFilters;
       });
@@ -56,10 +58,32 @@ const ShadowSearch = ({ theme, themeConfig, features }: TProps) => {
     [setFiltersInUrl]
   );
 
-  // Control SearchFilters popover and active category tab (single source of truth)
+  // Manage the nested search levels: SERP -> Principal Drawer -> Document Drawer
+  const principalLevel = useNestedSearchLevel("principal");
+  const documentLevel = useNestedSearchLevel("document");
+
+  // The clicked result names the drawer without waiting on a fetch. It is kept while the drawer
+  // animates closed, and is absent when the level arrives from a shared link.
   const [selectedDocument, setSelectedDocument] = useState<SearchDocument | null>(null);
-  const [drawerOpen, setDrawerOpen] = useState(false);
-  const [drawerTab, setDrawerTab] = useState<TPrincipalDrawerTab>("about");
+  const principalImportId = principalLevel.id ?? selectedDocument?.id ?? null;
+  const principalHasSearch = !!principalLevel.search.query || !!conceptFiltersOnly(principalLevel.search.filters);
+  const documentHasSearch = !!documentLevel.search.query || !!conceptFiltersOnly(documentLevel.search.filters);
+
+  // If we have a document search also active, start on "about" as that is where the document drawer lives
+  const [drawerTab, setDrawerTab] = useState<TPrincipalDrawerTab>(principalHasSearch && !documentHasSearch ? "search" : "about");
+  const [openedPrincipalId, setOpenedPrincipalId] = useState(principalLevel.id);
+
+  // Land on the passages tab whenever a drawer opens onto a search, whether from a click or a link.
+  if (principalLevel.id !== openedPrincipalId) {
+    setOpenedPrincipalId(principalLevel.id);
+    if (principalLevel.id) setDrawerTab(principalHasSearch ? "search" : "about");
+  }
+
+  // Closing a level closes the levels nested inside it.
+  const closePrincipalDrawer = () => {
+    principalLevel.close();
+    documentLevel.close();
+  };
 
   // Control Advanced Filters view
   const [advancedFiltersOpen, setAdvancedFiltersOpen] = useState(false);
@@ -99,8 +123,6 @@ const ShadowSearch = ({ theme, themeConfig, features }: TProps) => {
 
     allFilterLabels.then(([filteredLabels, labelTaxonomy]) => setAvailableFilters([...filteredLabels, ...labelTaxonomy]));
   }, []);
-
-  const hasSearch = query || !isFilterGroupEmpty(filters);
 
   return (
     <FeaturesContext.Provider value={features}>
@@ -144,10 +166,9 @@ const ShadowSearch = ({ theme, themeConfig, features }: TProps) => {
                   }
                   return;
                 }
-                // otherwise open document in drawer
+                // otherwise open document in drawer, carrying over what a passage search can use
                 setSelectedDocument(document);
-                setDrawerTab(hasSearch ? "search" : "about");
-                setDrawerOpen(true);
+                principalLevel.open(document.id, seedPassageLevel({ query, filters }));
               }}
             />
           </div>
@@ -176,7 +197,16 @@ const ShadowSearch = ({ theme, themeConfig, features }: TProps) => {
           onOpenChange={setAdvancedFiltersOpen}
         />
         {/* DRAWER */}
-        <PrincipalDrawer document={selectedDocument} open={drawerOpen} onOpenChange={setDrawerOpen} tab={drawerTab} onTabChange={setDrawerTab} />
+        <PrincipalDrawer
+          document={selectedDocument?.id === principalImportId ? selectedDocument : null}
+          importId={principalImportId}
+          open={!!principalLevel.id}
+          onOpenChange={(open) => {
+            if (!open) closePrincipalDrawer();
+          }}
+          tab={drawerTab}
+          onTabChange={setDrawerTab}
+        />
       </Layout>
     </FeaturesContext.Provider>
   );
