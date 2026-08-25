@@ -117,41 +117,11 @@ jobs:
           role-session-name: GitHub_to_AWS_via_FederatedOIDC
           aws-region: eu-west-1
 
-      # @see: https://github.com/marketplace/actions/amazon-ecs-deploy-express-service-action-for-github-actions#complete-example-with-all-options
+      # Replaces aws-actions/amazon-ecs-deploy-express-service: the RollbackAlarm
+      # correction must land between starting the deployment and waiting on it,
+      # and that action blocks until the deployment finishes. Verification of
+      # the deployment outcome moved into the script. See the script header.
       - name: Deploy to ECS (production)
-        id: deploy-production
-        uses: aws-actions/amazon-ecs-deploy-express-service@v1.2.2
-        with:
-          cluster: frontend-production
-          service-name: ${{ matrix.theme }}-frontend-production
-          image: ${{ steps.build-image.outputs.image }}
-          execution-role-arn: arn:aws:iam::${{ secrets.AWS_ACCOUNT_ID }}:role/frontend-production-ecs-task-execution-role
-          infrastructure-role-arn: arn:aws:iam::${{ secrets.AWS_ACCOUNT_ID }}:role/frontend-production-ecs-task-infrastructure-role
-
-      - name: Verify production deployment outcome
-        env:
-          SERVICE_ARN: ${{ steps.deploy-production.outputs.service-arn }}
-        run: |
-          set -euo pipefail
-          if [[ -z "${SERVICE_ARN}" ]]; then
-            echo "::error::deploy step did not emit a service-arn output"
-            exit 1
-          fi
-          DEPLOY_ARN=$(aws ecs list-service-deployments \
-            --cluster frontend-production \
-            --service "${SERVICE_ARN}" \
-            --query 'serviceDeployments[0].serviceDeploymentArn' \
-            --output text)
-          if [[ -z "${DEPLOY_ARN}" || "${DEPLOY_ARN}" == "None" ]]; then
-            echo "::error::Could not find a service deployment for ${SERVICE_ARN}"
-            exit 1
-          fi
-          STATUS=$(aws ecs describe-service-deployments \
-            --service-deployment-arns "${DEPLOY_ARN}" \
-            --query 'serviceDeployments[0].status' \
-            --output text)
-          echo "Deployment ${DEPLOY_ARN} final status: ${STATUS}"
-          if [[ "${STATUS}" != "SUCCESSFUL" ]]; then
-            echo "::error::Deployment did not succeed (status=${STATUS})"
-            exit 1
-          fi
+        run: >
+          .github/workflows/scripts/deploy_ecs_express.sh
+          frontend-production ${{ matrix.theme }}-frontend-production ${{ steps.build-image.outputs.image }}
