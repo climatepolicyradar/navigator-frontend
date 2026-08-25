@@ -7,8 +7,6 @@ import { COUNTRY_FLAGS } from "@/constants/flags";
 import { IMetadata } from "@/types";
 import { formatDate } from "@/utils/timedate";
 
-const MAX_DESCRIPTION_LENGTH = 275;
-
 const getDocumentGeography = (document: SearchDocument): ReactNode => {
   const allGeographies = document.labels.filter((label) => label.type === "geography");
   const mostSpecificGeoType = ["subdivision", "country", "region"].find((type) => allGeographies.some((geo) => geo.value.type === type));
@@ -80,12 +78,7 @@ export function DocumentCard({ document, onClick, analytics }: TProps) {
     >
       <h2 className="text-xl text-text-brand font-heavy leading-5" dangerouslySetInnerHTML={{ __html: document.title }} />
       {document.description && (
-        <p
-          className="text-base text-text-primary font-normal leading-6"
-          dangerouslySetInnerHTML={{
-            __html: document.description.slice(0, MAX_DESCRIPTION_LENGTH) + (document.description.length > MAX_DESCRIPTION_LENGTH ? "..." : ""),
-          }}
-        />
+        <p className="text-base text-text-primary font-normal leading-6 line-clamp-3" dangerouslySetInnerHTML={{ __html: document.description }} />
       )}
       <div className="flex flex-wrap flex-row gap-6">
         {metadata.map(({ label, value }, metadataIndex) => (
