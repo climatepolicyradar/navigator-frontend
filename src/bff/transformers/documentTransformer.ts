@@ -6,10 +6,15 @@ export const documentTransformer = (documentApiData: TDocumentApiData, errors: E
   try {
     const { document, topicsData, vespaDocumentData } = documentApiData;
 
+    const documentPublic = transformDocument(document, []);
+    const family = transformDocumentFamily(document.documents || []);
+    // Non-displayable documents and documents without a parent family transform to null; the page treats null data as a 404
+    if (documentPublic === null || family === null) return { data: null, errors };
+
     return {
       data: {
-        document: transformDocument(document, []),
-        family: transformDocumentFamily(document.documents || []),
+        document: documentPublic,
+        family,
         topicsData,
         vespaDocumentData,
         debug: {

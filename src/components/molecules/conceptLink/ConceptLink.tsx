@@ -4,7 +4,7 @@ import { Popover } from "@/components/atoms/popover/Popover";
 import { TTopic } from "@/types";
 import { getConceptStoreLink } from "@/utils/getConceptStoreLink";
 import { joinTailwindClasses } from "@/utils/tailwind";
-import { firstCase } from "@/utils/text";
+import { firstCase } from "@/utils/text/firstCase";
 
 interface IProps {
   concept: TTopic;

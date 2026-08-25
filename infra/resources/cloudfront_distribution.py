@@ -56,6 +56,10 @@ class CloudFrontDistribution(pulumi.ComponentResource):
     :param web_acl_id: ARN of the WAFv2 WebACL to attach (despite the field
         name, CloudFront expects the WebACL ARN, not its id)
     :type web_acl_id: Optional[str]
+    :param logging_bucket: Regional domain name of the S3 bucket for access logs
+    :type logging_bucket: Optional[str]
+    :param logging_prefix: Key prefix for access log objects
+    :type logging_prefix: Optional[str]
     :param opts: Resource options
     :type opts: Optional[pulumi.ResourceOptions]
     """
@@ -74,6 +78,8 @@ class CloudFrontDistribution(pulumi.ComponentResource):
         ordered_cache_behaviors: list[dict[str, Any]] | None = None,
         tags: dict[str, str] | None = None,
         web_acl_id: str | None = None,
+        logging_bucket: str | None = None,
+        logging_prefix: str | None = None,
         opts: pulumi.ResourceOptions | None = None,
     ):
 
@@ -107,6 +113,9 @@ class CloudFrontDistribution(pulumi.ComponentResource):
             origin_request_policy_id,
             ordered_cache_behaviors,
             web_acl_id,
+            logging_bucket,
+            logging_prefix,
+            opts,
         )
 
         # Register outputs
@@ -179,6 +188,8 @@ class CloudFrontDistribution(pulumi.ComponentResource):
         origin_request_policy_id: str | None,
         ordered_cache_behaviors: list[dict[str, Any]] | None = None,
         web_acl_id: str | None = None,
+        logging_bucket: str | None = None,
+        logging_prefix: str | None = None,
     ) -> dict[str, Any]:
         config = {
             "aliases": aliases,
@@ -213,6 +224,13 @@ class CloudFrontDistribution(pulumi.ComponentResource):
         if web_acl_id:
             config["web_acl_id"] = web_acl_id
 
+        if logging_bucket:
+            config["logging_config"] = {
+                "bucket": logging_bucket,
+                "include_cookies": False,
+                "prefix": logging_prefix or "",
+            }
+
         return config
 
     def _create_distribution(
@@ -226,6 +244,8 @@ class CloudFrontDistribution(pulumi.ComponentResource):
         origin_request_policy_id: str | None,
         ordered_cache_behaviors: list[dict[str, Any]] | None = None,
         web_acl_id: str | None = None,
+        logging_bucket: str | None = None,
+        logging_prefix: str | None = None,
         opts: pulumi.ResourceOptions | None = None,
     ) -> aws.cloudfront.Distribution:
         # Allow user options to override our defaults.
@@ -247,6 +267,8 @@ class CloudFrontDistribution(pulumi.ComponentResource):
                 origin_request_policy_id,
                 ordered_cache_behaviors,
                 web_acl_id,
+                logging_bucket,
+                logging_prefix,
             ),
             opts=resource_opts,
             tags=self.tags,

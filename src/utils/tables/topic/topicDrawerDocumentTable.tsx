@@ -3,7 +3,7 @@ import sortBy from "lodash/sortBy";
 import { PageLink } from "@/components/atoms/pageLink/PageLink";
 import { QUERY_PARAMS } from "@/constants/queryParams";
 import { IFamilyDocumentTopics, TTopic, TFamilyPublic, TTableColumn, TTableRow } from "@/types";
-import { firstCase } from "@/utils/text";
+import { firstCase } from "@/utils/text/firstCase";
 import { formatDateShort } from "@/utils/timedate";
 
 export type TDocumentMentionsTableColumnId = "document" | "mentions";

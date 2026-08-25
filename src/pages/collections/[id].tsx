@@ -110,7 +110,10 @@ export const getServerSideProps = (async (context) => {
   }
 
   const { data: collectionData, errors } = await getCollectionData(slug);
-  errors.forEach(console.error);
+  errors.forEach((err) => {
+    console.error(`[collections.getServerSideProps]: url: ${context.req.url}, params: ${context.params}`);
+    console.error(err);
+  });
   if (collectionData === null) return { notFound: true };
 
   return {

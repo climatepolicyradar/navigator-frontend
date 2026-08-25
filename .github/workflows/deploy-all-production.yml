@@ -30,7 +30,7 @@ jobs:
 
       - name: Login to Amazon ECR (production)
         id: login-ecr-production
-        uses: aws-actions/amazon-ecr-login@d539f0932e70871a027e9d5a9d8fc38589180a64
+        uses: aws-actions/amazon-ecr-login@03f1aad4c6c7ffd436567f42f9384779290529bd
 
       - name: Build, tag, and push to ECR with 'latest' tag
         id: build-image
@@ -42,7 +42,7 @@ jobs:
           THEME: ${{ matrix.theme }}
         # @related: GITHUB_SHA_ENV_VAR
         run: |
-          docker build --build-arg THEME=${THEME} --build-arg GITHUB_SHA=$(git rev-parse HEAD) -t $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG .
+          docker build --build-arg THEME=${THEME} --build-arg NEXT_STATIC_ENABLED=true --build-arg GITHUB_SHA=$(git rev-parse HEAD) -t $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG .
           docker push $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
           echo "image=$ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG" >> $GITHUB_OUTPUT
 
@@ -117,41 +117,11 @@ jobs:
           role-session-name: GitHub_to_AWS_via_FederatedOIDC
           aws-region: eu-west-1
 
-      # @see: https://github.com/marketplace/actions/amazon-ecs-deploy-express-service-action-for-github-actions#complete-example-with-all-options
+      # Replaces aws-actions/amazon-ecs-deploy-express-service: the RollbackAlarm
+      # correction must land between starting the deployment and waiting on it,
+      # and that action blocks until the deployment finishes. Verification of
+      # the deployment outcome moved into the script. See the script header.
       - name: Deploy to ECS (production)
-        id: deploy-production
-        uses: aws-actions/amazon-ecs-deploy-express-service@v1.2.2
-        with:
-          cluster: frontend-production
-          service-name: ${{ matrix.theme }}-frontend-production
-          image: ${{ steps.build-image.outputs.image }}
-          execution-role-arn: arn:aws:iam::${{ secrets.AWS_ACCOUNT_ID }}:role/frontend-production-ecs-task-execution-role
-          infrastructure-role-arn: arn:aws:iam::${{ secrets.AWS_ACCOUNT_ID }}:role/frontend-production-ecs-task-infrastructure-role
-
-      - name: Verify production deployment outcome
-        env:
-          SERVICE_ARN: ${{ steps.deploy-production.outputs.service-arn }}
-        run: |
-          set -euo pipefail
-          if [[ -z "${SERVICE_ARN}" ]]; then
-            echo "::error::deploy step did not emit a service-arn output"
-            exit 1
-          fi
-          DEPLOY_ARN=$(aws ecs list-service-deployments \
-            --cluster frontend-production \
-            --service "${SERVICE_ARN}" \
-            --query 'serviceDeployments[0].serviceDeploymentArn' \
-            --output text)
-          if [[ -z "${DEPLOY_ARN}" || "${DEPLOY_ARN}" == "None" ]]; then
-            echo "::error::Could not find a service deployment for ${SERVICE_ARN}"
-            exit 1
-          fi
-          STATUS=$(aws ecs describe-service-deployments \
-            --service-deployment-arns "${DEPLOY_ARN}" \
-            --query 'serviceDeployments[0].status' \
-            --output text)
-          echo "Deployment ${DEPLOY_ARN} final status: ${STATUS}"
-          if [[ "${STATUS}" != "SUCCESSFUL" ]]; then
-            echo "::error::Deployment did not succeed (status=${STATUS})"
-            exit 1
-          fi
+        run: >
+          .github/workflows/scripts/deploy_ecs_express.sh
+          frontend-production ${{ matrix.theme }}-frontend-production ${{ steps.build-image.outputs.image }}

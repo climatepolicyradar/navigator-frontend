@@ -13,7 +13,7 @@ import { getCountryName } from "@/helpers/getCountryFields";
 import useConfig from "@/hooks/useConfig";
 import useSubdivisions from "@/hooks/useSubdivisions";
 import { TTopic, TGeography, TThemeConfig, TGeographyWithDocumentCounts, TFeatures } from "@/types";
-import { firstCase } from "@/utils/text";
+import { firstCase } from "@/utils/text/firstCase";
 
 type TFilterChange = (type: string, value: string, clearOthersOfType?: boolean, otherValuesToClear?: string[]) => void;
 
