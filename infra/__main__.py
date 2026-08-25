@@ -495,6 +495,33 @@ if not is_review_stack_or_template:
             ),
         )
 
+        # deploy_ecs_express.sh (deploy-production.yml,
+        # deploy-all-production.yml) runs under this role and corrects the
+        # ECS-generated RollbackAlarm in place around the deployment.
+        # Attached by name for the same reason as above; scoped to this
+        # service's alarm, whose name ECS derives as
+        # {cluster}/{service}/RollbackAlarm.
+        aws.iam.RolePolicy(
+            f"{theme}-{env}-rollback-alarm-cloudwatch",
+            role=DEPLOY_ROLE_NAME,
+            policy=json.dumps(
+                {
+                    "Version": "2012-10-17",
+                    "Statement": [
+                        {
+                            "Effect": "Allow",
+                            "Action": [
+                                "cloudwatch:DescribeAlarms",
+                                "cloudwatch:PutMetricAlarm",
+                                "cloudwatch:DeleteAlarms",
+                            ],
+                            "Resource": f"arn:aws:cloudwatch:{aws.get_region().region}:{aws_account.account_id}:alarm:frontend-{env}/{theme}-frontend-{env}/RollbackAlarm",
+                        }
+                    ],
+                }
+            ),
+        )
+
     ########################################################################
     # Create the CloudFront access log bucket
     ########################################################################
