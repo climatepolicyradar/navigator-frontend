@@ -11,7 +11,7 @@ import {
   TDocumentMentionsTableColumnId,
   TOPIC_DRAWER_DOCUMENTS_TABLE_COLUMNS,
 } from "@/utils/tables/topic/topicDrawerDocumentTable";
-import { firstCase } from "@/utils/text";
+import { firstCase } from "@/utils/text/firstCase";
 
 interface IProps {
   family: TFamilyPublic;

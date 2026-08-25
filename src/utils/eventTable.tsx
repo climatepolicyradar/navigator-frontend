@@ -29,7 +29,7 @@ import {
 import { getMostSpecificCourts } from "./getMostSpecificCourts";
 import { pluralise } from "./pluralise";
 import { joinTailwindClasses } from "./tailwind";
-import { firstCase } from "./text";
+import { firstCase } from "./text/firstCase";
 import { formatDateShort } from "./timedate";
 
 /* Columns */

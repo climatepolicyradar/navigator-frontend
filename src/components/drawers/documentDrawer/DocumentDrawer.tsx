@@ -15,7 +15,7 @@ import { getEventTableRowsData } from "@/utils/eventTable";
 import { flattenLevelToBaseQuery } from "@/utils/search/searchLevels";
 import { DOCUMENT_DRAWER_TOPICS_TABLE_COLUMNS, getDocumentDrawerTopicTableRows } from "@/utils/tables/topic/documentDrawerTopicTable";
 import { TTopicTableColumnId, TTopicTableRow } from "@/utils/tables/topic/topicTable";
-import { firstCase } from "@/utils/text";
+import { firstCase } from "@/utils/text/firstCase";
 import { formatDateShort } from "@/utils/timedate";
 import { getTopFamilyDocumentTopics } from "@/utils/topics/getTopFamilyDocumentTopics";
 

@@ -3,7 +3,7 @@ import { transformFamily } from "@/bff/transformers/partials/transformFamily";
 import { TDataInDocumentRelation } from "@/schemas";
 import { TFamilyPublic } from "@/types";
 
-export const transformDocumentFamily = (relations: TDataInDocumentRelation[]): TFamilyPublic => {
+export const transformDocumentFamily = (relations: TDataInDocumentRelation[]): TFamilyPublic | null => {
   const families = getParentDocuments(relations);
   return families.length === 0 ? null : transformFamily(families[0].value);
 };

@@ -67,6 +67,7 @@ FRONTEND_ENV = {
     "OTEL_EXPORTER_OTLP_PROTOCOL": config.require("otel_exporter_otlp_protocol"),
     "OTEL_SERVICE_NAME": config.require("otel_service_name"),
     "OTEL_RESOURCE_ATTRIBUTES": config.require("otel_resource_attributes"),
+    "NEXT_STATIC_ENABLED": config.require("next_static_enabled"),
 }
 
 ########################################################################
@@ -112,12 +113,19 @@ if "staging" in stack or is_review_stack_or_template:
 if "production" in stack:
     env = "production"
 
+# Review stacks share their VPC, ECR repo, and ECR access role with
+# production rather than staging, so review pulls from prod config.
+# Keep this separate from `env` above -- that one still drives naming,
+# task counts, and WAF settings, which should stay staging-shaped for review.
+shared_resources_env = "production" if is_review_stack_or_template else env
 
 # ECR repository setup.
 # Review stacks use a shared ECR repo managed by frontend-platform to avoid
 # creating/destroying repos per PR and hitting RepositoryAlreadyExistsException.
 # Non-review stacks create their own dedicated ECR repo as before.
-aws_env_stack = pulumi.StackReference(f"climatepolicyradar/aws_env/{env}")
+aws_env_stack = pulumi.StackReference(
+    f"climatepolicyradar/aws_env/{shared_resources_env}"
+)
 docker_tag = config.require("docker_tag")
 pulumi.info(f"Docker tag: {docker_tag}")
 
@@ -141,12 +149,12 @@ if not is_review_stack_or_template:
 
 # Review stack: use the shared ECR repo from frontend-platform.
 shared_resources_stack = pulumi.StackReference(
-    f"climatepolicyradar/frontend-platform/{env}"
+    f"climatepolicyradar/frontend-platform/{shared_resources_env}"
 )
 
 review_ecr_url = None
 frontend_image: docker_build.Image | None = None
-if is_review_stack and env == "staging":
+if is_review_stack and shared_resources_env == "production":
     review_ecr_url = shared_resources_stack.get_output("cpr_review_ecr_repository_url")
 
     # Build and push the Docker image as part of the Pulumi deployment so that
@@ -201,7 +209,7 @@ shared_access_role_arn = None
 if not is_review_template:
     # For review stacks, use the shared ECR access role created in frontend-platform
     # to avoid the 64-character IAM role name limit on ephemeral PR stacks.
-    if is_review_stack and env == "staging":
+    if is_review_stack and shared_resources_env == "production":
         shared_access_role_arn = shared_resources_stack.get_output(
             "apprunner_ecr_access_role_arn"
         )
@@ -488,6 +496,55 @@ if not is_review_stack_or_template:
         )
 
     ########################################################################
+    # Create the CloudFront access log bucket
+    ########################################################################
+
+    # CloudFront's (v1) access logging delivers via an ACL grant rather than a
+    # bucket policy, so Object Ownership has to stay "BucketOwnerPreferred"
+    # instead of the modern "Bucket owner enforced" default, which disables
+    # ACLs entirely.
+    cloudfront_log_bucket = aws.s3.Bucket(
+        f"{name_prefix}-cloudfront-logs",
+        bucket=f"{theme}-frontend-{env}-cloudfront-logs",
+        tags={
+            "CPR-Created-By": "pulumi",
+            "CPR-Pulumi-Stack-Name": pulumi.get_stack(),
+            "CPR-Pulumi-Project-Name": pulumi.get_project(),
+            "CPR-Tag": tag_name(),
+        },
+    )
+
+    aws.s3.BucketLifecycleConfiguration(
+        f"{name_prefix}-cloudfront-logs-lifecycle",
+        bucket=cloudfront_log_bucket.id,
+        rules=[
+            aws.s3.BucketLifecycleConfigurationRuleArgs(
+                id="expire-old-logs",
+                status="Enabled",
+                filter=aws.s3.BucketLifecycleConfigurationRuleFilterArgs(prefix=""),
+                expiration=aws.s3.BucketLifecycleConfigurationRuleExpirationArgs(
+                    days=30
+                ),
+            )
+        ],
+    )
+
+    cloudfront_log_bucket_ownership = aws.s3.BucketOwnershipControls(
+        f"{name_prefix}-cloudfront-logs-ownership",
+        bucket=cloudfront_log_bucket.id,
+        rule=aws.s3.BucketOwnershipControlsRuleArgs(
+            object_ownership="BucketOwnerPreferred",
+        ),
+    )
+
+    aws.s3.BucketAcl(
+        f"{name_prefix}-cloudfront-logs-acl",
+        bucket=cloudfront_log_bucket.id,
+        acl="log-delivery-write",
+        opts=pulumi.ResourceOptions(depends_on=[cloudfront_log_bucket_ownership]),
+    )
+
+    ########################################################################
     # Create CloudFront distribution
     ########################################################################
 
@@ -662,6 +719,8 @@ if not is_review_stack_or_template:
         origin_request_policy_id=cast(str, cors_policy.policy.id),
         ordered_cache_behaviors=ordered_cache_behaviors,
         web_acl_id=cast(str, frontend_web_acl.web_acl.arn),
+        logging_bucket=cast(str, cloudfront_log_bucket.bucket_regional_domain_name),
+        logging_prefix="primary/",
         # Needed for auto-invalidations to work, @related: CUSTOM_APP_THEME
         tags={
             "CUSTOM_APP_THEME": theme,
@@ -713,6 +772,8 @@ if not is_review_stack_or_template:
             origin_request_policy_id=cast(str, cors_policy.policy.id),
             ordered_cache_behaviors=ordered_cache_behaviors,
             web_acl_id=cast(str, frontend_web_acl.web_acl.arn),
+            logging_bucket=cast(str, cloudfront_log_bucket.bucket_regional_domain_name),
+            logging_prefix="cname/",
             # Needed for auto-invalidations to work, @related: CUSTOM_APP_THEME
             tags={
                 "CUSTOM_APP_THEME": theme,
@@ -884,6 +945,8 @@ if not is_review_stack_or_template:
                 ],
             ),
             web_acl_id=cast(str, frontend_web_acl.web_acl.arn),
+            logging_bucket=cast(str, cloudfront_log_bucket.bucket_regional_domain_name),
+            logging_prefix="ccc-redirect/",
             # These are used for cache invalidations
             tags={"CUSTOM_APP_THEME": "ccc", "Environment": "production"},
         )

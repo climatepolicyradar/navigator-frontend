@@ -2,6 +2,8 @@ import { http, HttpResponse } from "msw";
 
 import { TDataInDocument } from "@/schemas";
 
+import { testFamilyDataIn } from "./familyDataHandlers";
+
 export const testDocumentSlug = "test-document-slug";
 export const testDocumentImportId = "document-1";
 
@@ -41,6 +43,7 @@ export const vespaDocumentHandler = () =>
 // A minimal but schema-complete TDataInDocument for a document: satisfies validateDocumentAttributes
 // (status, deprecated_slug), the mandatory "category" label, and the mandatory cdn/source items
 // required by transformDocument (MANDATORY_ITEM_TYPES applies whenever status isn't "awaiting_source_file").
+// The member_of relation is required too: documentTransformer treats a document without a parent family as not found.
 export const testDocumentDataIn: TDataInDocument = {
   id: testDocumentImportId,
   title: "Test Document",
@@ -51,6 +54,7 @@ export const testDocumentDataIn: TDataInDocument = {
     { type: "cdn", url: "https://cdn.example.com/test-document.pdf", content_type: "application/pdf" },
     { type: "source", url: "https://example.com/test-document", content_type: null },
   ],
+  documents: [{ type: "member_of", value: testFamilyDataIn }],
 };
 
 export const dataInDocumentHandler = (overrides: Partial<{ status: number; body: unknown }> = {}) =>

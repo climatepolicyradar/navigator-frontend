@@ -20,7 +20,7 @@ import { TFamilyPresentationalData } from "@/types";
 import { getFamilyHeader } from "@/utils/family-header/getFamilyHeader";
 import { getFamilyMetadata } from "@/utils/family-metadata/getFamilyMetadata";
 import { flattenLevelToBaseQuery } from "@/utils/search/searchLevels";
-import { firstCase } from "@/utils/text";
+import { firstCase } from "@/utils/text/firstCase";
 import { getTopFamilyTopics } from "@/utils/topics/getTopFamilyTopics";
 import { familyTopicsHasTopics } from "@/utils/topics/processFamilyTopics";
 

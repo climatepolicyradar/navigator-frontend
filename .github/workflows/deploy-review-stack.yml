@@ -8,6 +8,8 @@ on:
 
 jobs:
   review-stack:
+    permissions:
+      pull-requests: write
     runs-on: ubuntu-latest
     env:
       PULUMI_ACCESS_TOKEN: ${{ secrets.PULUMI_ACCESS_TOKEN }}
@@ -113,6 +115,7 @@ jobs:
           echo "Deployment settings configured for ${STACK_NAME}"
 
       - name: Trigger update deployment for ${{matrix.theme}}
+        id: trigger_update
         if: steps.decide.outputs.action == 'update'
         env:
           STACK_NAME: ${{ steps.decide.outputs.stack_name }}
@@ -146,6 +149,99 @@ jobs:
           if [ "$status" -lt 200 ] || [ "$status" -ge 300 ]; then
             echo "Failed to trigger deployment"
             exit 1
+          fi
+
+          deployment_id=$(echo "$body" | jq -r '.id')
+          echo "deployment_id=$deployment_id" >> "$GITHUB_OUTPUT"
+
+      - name: Wait for ${{matrix.theme}} deployment to finish
+        id: wait_deployment
+        if: steps.decide.outputs.action == 'update'
+        env:
+          STACK_NAME: ${{ steps.decide.outputs.stack_name }}
+          DEPLOYMENT_ID: ${{ steps.trigger_update.outputs.deployment_id }}
+        run: |
+          # Poll every 15s for up to 10 minutes (40 attempts). A real review
+          # stack deploy observed on 2026-08-12 took ~3.5 minutes end to end.
+          terminal_status=""
+          for _ in $(seq 1 40); do
+            sleep 15
+            response=$(curl -fsSL \
+              -H "Authorization: token ${PULUMI_ACCESS_TOKEN}" \
+              "https://api.pulumi.com/api/stacks/${ORG}/${PROJECT}/${STACK_NAME}/deployments/${DEPLOYMENT_ID}") || {
+              echo "Poll request failed, will retry"
+              continue
+            }
+            current_status=$(echo "$response" | jq -r '.status') || {
+              echo "Could not parse deployment status, will retry"
+              continue
+            }
+            echo "Deployment ${DEPLOYMENT_ID} status: ${current_status}"
+            if [ "$current_status" = "succeeded" ] || [ "$current_status" = "failed" ]; then
+              terminal_status="$current_status"
+              break
+            fi
+          done
+
+          if [ -z "$terminal_status" ]; then
+            echo "Timed out waiting for deployment ${DEPLOYMENT_ID} to finish"
+            exit 1
+          fi
+
+          echo "status=$terminal_status" >> "$GITHUB_OUTPUT"
+
+          if [ "$terminal_status" != "succeeded" ]; then
+            echo "Deployment ${DEPLOYMENT_ID} finished with status: $terminal_status"
+            exit 1
+          fi
+
+      - name: Install pulumi CLI
+        if: steps.wait_deployment.outcome == 'success'
+        uses: pulumi/actions@v7
+
+      - name: Fetch ${{matrix.theme}} review stack URL
+        id: fetch_url
+        if: steps.wait_deployment.outcome == 'success'
+        env:
+          STACK_NAME: ${{ steps.decide.outputs.stack_name }}
+        run: |
+          review_url=$(pulumi stack output ecs_service_url --stack "${ORG}/${PROJECT}/${STACK_NAME}")
+          if [ -z "$review_url" ]; then
+            echo "ecs_service_url stack output was empty"
+            exit 1
+          fi
+          echo "review_url=$review_url" >> "$GITHUB_OUTPUT"
+
+      - name: Post ${{matrix.theme}} review stack URL to PR
+        if: steps.wait_deployment.outcome == 'success'
+        env:
+          GH_TOKEN: ${{ github.token }}
+          THEME: ${{ matrix.theme }}
+          REVIEW_URL: ${{ steps.fetch_url.outputs.review_url }}
+          PR_NUMBER: ${{ github.event.pull_request.number }}
+          DEPLOYMENT_ID: ${{ steps.trigger_update.outputs.deployment_id }}
+          STACK_NAME: ${{ steps.decide.outputs.stack_name }}
+        run: |
+          marker="<!-- review-stack-url:${THEME} -->"
+          logs_url="https://app.pulumi.com/${ORG}/${PROJECT}/${STACK_NAME}/deployments/${DEPLOYMENT_ID}"
+          body="${marker}"$'\n'"**${THEME}** review stack: ${REVIEW_URL}"$'\n\n'"[Deployment logs](${logs_url})"
+
+          existing_comment_id=$(gh api \
+            "repos/${{ github.repository }}/issues/${PR_NUMBER}/comments" \
+            --paginate | jq -s "[.[][] | select(.body | startswith(\"${marker}\"))][0].id")
+
+          if [ -n "$existing_comment_id" ] && [ "$existing_comment_id" != "null" ]; then
+            gh api \
+              --method PATCH \
+              "repos/${{ github.repository }}/issues/comments/${existing_comment_id}" \
+              -f body="$body"
+            echo "Updated existing comment ${existing_comment_id} for theme ${THEME}"
+          else
+            gh api \
+              --method POST \
+              "repos/${{ github.repository }}/issues/${PR_NUMBER}/comments" \
+              -f body="$body"
+            echo "Created new comment for theme ${THEME}"
           fi
 
       - name: Trigger destroy deployment for ${{matrix.theme}}
