@@ -115,6 +115,7 @@ class CloudFrontDistribution(pulumi.ComponentResource):
             web_acl_id,
             logging_bucket,
             logging_prefix,
+            opts,
         )
 
         # Register outputs
