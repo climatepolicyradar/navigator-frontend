@@ -18,8 +18,8 @@ describe("addHighlights", () => {
   it("highlights every range rather than only the last one", () => {
     const ranges = [
       { start: 0, end: 7, className: "one" },
-      { start: 8, end: 18, className: "one" },
-      { start: 23, end: 33, className: "one" },
+      { start: 8, end: 18, className: "two" },
+      { start: 23, end: 33, className: "three" },
     ];
 
     const { container } = render(<>{addHighlights(TEXT, ranges)}</>);
@@ -28,9 +28,20 @@ describe("addHighlights", () => {
     expect([...container.querySelectorAll("span")].map((span) => span.textContent)).toEqual(["Climate", "adaptation", "mitigation"]);
   });
 
+  it("gives each range its own class", () => {
+    const ranges = [
+      { start: 0, end: 7, className: "one" },
+      { start: 8, end: 18, className: "two" },
+    ];
+
+    const { container } = render(<>{addHighlights(TEXT, ranges)}</>);
+
+    expect([...container.querySelectorAll("span")].map((span) => span.className)).toEqual(["one", "two"]);
+  });
+
   it("highlights ranges given out of order", () => {
     const ranges = [
-      { start: 23, end: 33, className: "one" },
+      { start: 23, end: 33, className: "two" },
       { start: 0, end: 7, className: "one" },
     ];
 
@@ -38,47 +49,6 @@ describe("addHighlights", () => {
 
     expect(container.textContent).toBe(TEXT);
     expect([...container.querySelectorAll("span")].map((span) => span.textContent)).toEqual(["Climate", "mitigation"]);
-  });
-
-  it("gives an overlap its own segment carrying both classes", () => {
-    const ranges = [
-      { start: 0, end: 7, className: "one" },
-      { start: 4, end: 18, className: "two" },
-    ];
-
-    const { container } = render(<>{addHighlights(TEXT, ranges)}</>);
-
-    expect(container.textContent).toBe(TEXT);
-    const highlighted = [...container.querySelectorAll("span")];
-    expect(highlighted.map((span) => span.textContent)).toEqual(["Clim", "ate", " adaptation"]);
-    expect(highlighted[0]).toHaveClass("one");
-    expect(highlighted[1]).toHaveClass("one", "two");
-    expect(highlighted[2]).toHaveClass("two");
-  });
-
-  it("resolves the class of an overlapping segment with the given resolver", () => {
-    const ranges = [
-      { start: 0, end: 7, className: "one" },
-      { start: 4, end: 18, className: "two" },
-    ];
-
-    const { container } = render(<>{addHighlights(TEXT, ranges, (classNames) => (classNames.length > 1 ? "both" : classNames[0]))}</>);
-
-    const highlighted = [...container.querySelectorAll("span")];
-    expect(highlighted.map((span) => span.className)).toEqual(["one", "both", "two"]);
-  });
-
-  it("de-duplicates the classes of identical overlapping ranges", () => {
-    const ranges = [
-      { start: 0, end: 7, className: "one" },
-      { start: 0, end: 7, className: "one" },
-    ];
-
-    const { container } = render(<>{addHighlights(TEXT, ranges, (classNames) => (classNames.length > 1 ? "both" : classNames[0]))}</>);
-
-    const highlighted = [...container.querySelectorAll("span")];
-    expect(highlighted).toHaveLength(1);
-    expect(highlighted[0]).toHaveClass("one");
   });
 
   it("keeps adjacent ranges as separate segments", () => {
@@ -124,5 +94,17 @@ describe("addHighlights", () => {
     expect(container.childNodes).toHaveLength(3);
     expect(container.firstChild).toHaveClass("one");
     expect(container.lastChild).toHaveClass("two");
+  });
+
+  it("keeps the text intact if a caller passes overlapping ranges", () => {
+    const ranges = [
+      { start: 0, end: 12, className: "one" },
+      { start: 4, end: 18, className: "two" },
+    ];
+
+    const { container } = render(<>{addHighlights(TEXT, ranges)}</>);
+
+    // Not this util's job to resolve — but the text must never be duplicated or lost
+    expect(container.textContent).toBe(TEXT);
   });
 });

@@ -21,6 +21,7 @@ import { PASSAGE_SORT_OPTIONS } from "@/constants/sort";
 import { loadFilteredLabels } from "@/hooks/useLabelSearch";
 import { FilterGroupSchema } from "@/schemas";
 import { ISearchPassage, TFamilyDocumentPublic, TSearchLabel, TSearchQueryGroup, TTopic } from "@/types";
+import { queryGroupToFilterPaths } from "@/utils/search/queryGroupToFilterPaths";
 
 const FILTER_PARAM_KEY = "filters";
 const SORT_PARAM_KEY = "sort";
@@ -196,6 +197,12 @@ export const PassageSearch = ({ concepts, documents, documentsLabel, enablePrevi
     setPageNumber(firstResultPage + 1);
   }
 
+  // Get the selected topic IDs from the filters
+  const activeTopicsIds = useMemo(
+    () => (filterParam ? [...new Set(queryGroupToFilterPaths(filterParam).map(([label]) => label.id))] : []),
+    [filterParam]
+  );
+
   // Only offer concept filters the scope actually has passages for
   const conceptFilters = useMemo(() => {
     const rankedIds = new Set(concepts.map((concept) => concept.wikibase_id));
@@ -289,7 +296,7 @@ export const PassageSearch = ({ concepts, documents, documentsLabel, enablePrevi
             onDocumentLinkClick={enablePreview ? undefined : handleDocumentLinkClick}
             onPassageClick={handlePassageClick}
             query={queryParam}
-            activeTopicsIds={["concept::Q786"]}
+            activeTopicsIds={activeTopicsIds}
           />
           {hasNextPage && (
             <div className="flex flex-col items-center gap-2 pt-4">

@@ -5,12 +5,18 @@ import { IPassageLabel } from "@/types";
 import { joinNodes } from "@/utils/reactNode";
 import { THighlightRange, addHighlights } from "@/utils/text/addHighlights";
 import { findSubStringMatches } from "@/utils/text/findSubStringMatches";
+import { resolveHighlightRanges } from "@/utils/text/resolveHighlightRanges";
 
 const COPY_FEEDBACK_TIMEOUT = 1000;
 
-const QUERY_HIGHLIGHT = "bg-yellow-200 text-black";
-const TOPIC_HIGHLIGHT = "bg-light-blue text-inky-navy";
-const QUERY_AND_TOPIC_HIGHLIGHT = "bg-linear-to-b from-yellow-200 from-50% to-light-blue to-50% box-decoration-clone text-inky-navy";
+export const QUERY_HIGHLIGHT_COLOUR = "bg-yellow-200 text-text-primary";
+export const TOPIC_HIGHLIGHT_COLOURS = [
+  "bg-cyan-200 text-text-primary",
+  "bg-purple-200 text-text-primary",
+  "bg-pink-200 text-text-primary",
+  "bg-lime-200 text-text-primary",
+  "bg-orange-200 text-text-primary",
+];
 
 type TPassagePage = {
   page_number: number;
@@ -48,22 +54,35 @@ type TProps = {
   showDocument?: boolean;
 };
 
-const resolveHighlightClassName = (classNames: string[]) => (classNames.length > 1 ? QUERY_AND_TOPIC_HIGHLIGHT : classNames[0]);
+// Define the colour for the topic highlight
+const getTopicColours = (activeTopics: IPassageLabel[]) => {
+  const colours = new Map<string, string>();
+  activeTopics.forEach(({ value }) => {
+    if (!colours.has(value.id)) colours.set(value.id, TOPIC_HIGHLIGHT_COLOURS[colours.size % TOPIC_HIGHLIGHT_COLOURS.length]);
+  });
 
-// The topic spans and the query matches are both positions in the passage's own text, so they
-// are gathered into one list and handed to `addHighlights` to be applied in a single pass
+  return colours;
+};
+
+// Define the highlight ranges - highlights are applied later, we just nede their positions and colour
 const getHighlightRanges = ({
   content,
   query,
   activeTopics,
+  topicColours,
 }: {
   content: string;
   query?: string;
   activeTopics: IPassageLabel[];
+  topicColours: Map<string, string>;
 }): THighlightRange[] => [
-  ...activeTopics.map(({ start_index, end_index }) => ({ start: start_index, end: end_index, className: TOPIC_HIGHLIGHT })),
-  // Trimmed so that a query the user typed with surrounding spaces still matches
-  ...findSubStringMatches(content, query?.trim() ?? "").map((match) => ({ ...match, className: QUERY_HIGHLIGHT })),
+  // The query outranks every topic. Trimmed so a query typed with surrounding spaces still matches
+  ...findSubStringMatches(content, query?.trim() ?? "").map((match) => ({ ...match, className: QUERY_HIGHLIGHT_COLOUR })),
+  ...activeTopics.map(({ start_index, end_index, value }) => ({
+    start: start_index,
+    end: end_index,
+    className: topicColours.get(value.id) ?? "",
+  })),
 ];
 
 export const PassageBlock = ({ passage, onCopyClick, onDocumentLinkClick, onPassageClick, query, activeTopicsIds, showDocument = true }: TProps) => {
@@ -81,23 +100,24 @@ export const PassageBlock = ({ passage, onCopyClick, onDocumentLinkClick, onPass
   const hasPages = pageNumbers.length > 0;
   const hasContext = hasPages || !!passage.headingText;
   const activeTopics = passage.labels?.filter((label) => activeTopicsIds?.includes(label.value.id)) ?? [];
+  const topicColours = getTopicColours(activeTopics);
   const highlightedContent = addHighlights(
     passage.content,
-    getHighlightRanges({ content: passage.content, query, activeTopics }),
-    resolveHighlightClassName
+    resolveHighlightRanges(passage.content, getHighlightRanges({ content: passage.content, query, activeTopics, topicColours }))
   );
   // A passage can carry the same label for several matched spans, so each topic is only shown once.
   const topics = [...new Map(passage.labels?.map(({ value }) => [value.value, value.id]) ?? [])];
   const topicsList = joinNodes(
-    topics.map(([value, id]) =>
-      activeTopicsIds?.includes(id) ? (
-        <span key={id} className={TOPIC_HIGHLIGHT}>
+    topics.map(([value, id]) => {
+      const colour = topicColours.get(id);
+      return colour ? (
+        <span key={id} className={colour}>
           {value}
         </span>
       ) : (
         value
-      )
-    ),
+      );
+    }),
     ", "
   );
   const hasFooter = showDocument || hasContext;

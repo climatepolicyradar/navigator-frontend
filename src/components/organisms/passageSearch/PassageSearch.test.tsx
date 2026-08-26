@@ -4,7 +4,8 @@ import userEvent from "@testing-library/user-event";
 import mockRouter from "next-router-mock";
 import * as nextRouterMock from "next-router-mock";
 
-import { ISearchPassage, TFamilyDocumentPublic, TSearchQueryGroup, TTopic } from "@/types";
+import { TOPIC_HIGHLIGHT_COLOURS as TOPIC_COLOURS } from "@/components/molecules/passageBlock/PassageBlock";
+import { IPassageLabel, ISearchPassage, TFamilyDocumentPublic, TSearchQueryGroup, TTopic } from "@/types";
 
 import { PassageSearch } from "./PassageSearch";
 
@@ -148,6 +149,16 @@ const searchFor = async (term: string) => {
 // to the url rather than the popover markup.
 const topicFilter: TSearchQueryGroup = { op: "or", filters: [{ field: "labels.value.id", op: "contains", value: "concept::Q1", checked: true }] };
 
+// A label as the passage API reports it: a concept id and the span of text it marks.
+const makeLabel = (id: string, startIndex: number, endIndex: number): IPassageLabel => ({
+  classifier_id: `classifier-${id}`,
+  start_index: startIndex,
+  end_index: endIndex,
+  labelled_text: "",
+  labellers: ["classifier"],
+  value: { id, type: "concept", value: id },
+});
+
 const filterBy = async (filters: TSearchQueryGroup) => {
   await act(async () => url.seed("filters", filters));
 };
@@ -253,6 +264,64 @@ describe("PassageSearch", () => {
       await filterBy(topicFilter);
 
       await waitFor(() => expect(mockFetchSearchPassages).toHaveBeenLastCalledWith(expect.objectContaining({ filters: topicFilter })));
+    });
+
+    // The topics the reader ticked are the ones highlighted in the passage text, so the
+    // filters are the single source of truth for what counts as an active topic.
+    describe("highlighting the filtered topics", () => {
+      // "Certain ecological and other requirements for the areas used by cultivation."
+      const labelledPassage = buildPassage({
+        labels: [makeLabel("concept::Q1", 8, 18), makeLabel("concept::Q2", 64, 75)],
+      });
+
+      it("highlights the passage text a checked topic marks", async () => {
+        mockFetchSearchPassages.mockResolvedValue({ total_size: 1, results: [labelledPassage] });
+        renderPrincipal();
+
+        await filterBy(topicFilter);
+
+        expect(await screen.findByText("ecological")).toHaveClass(TOPIC_COLOURS[0]);
+        // The other label is on the passage but its topic was not ticked
+        expect(screen.queryByText("cultivation")).not.toBeInTheDocument();
+      });
+
+      it("highlights nothing when there are no filters", async () => {
+        mockFetchSearchPassages.mockResolvedValue({ total_size: 1, results: [labelledPassage] });
+        renderPrincipal({ q: "renewable" });
+
+        expect(await screen.findByText(labelledPassage.text)).toBeInTheDocument();
+        expect(screen.queryByText("ecological")).not.toBeInTheDocument();
+      });
+
+      // A filter path carries its ancestors as unchecked rules to scope their descendants.
+      // Those are not selections, so they must not be highlighted.
+      it("ignores the unchecked rules that only scope a filter path", async () => {
+        mockFetchSearchPassages.mockResolvedValue({ total_size: 1, results: [labelledPassage] });
+        renderPrincipal();
+
+        await filterBy({
+          op: "and",
+          filters: [
+            { field: "labels.value.id", op: "contains", value: "concept::Q2" },
+            { op: "or", filters: [{ field: "labels.value.id", op: "contains", value: "concept::Q1", checked: true }] },
+          ],
+        });
+
+        expect(await screen.findByText("ecological")).toHaveClass(TOPIC_COLOURS[0]);
+        expect(screen.queryByText("cultivation")).not.toBeInTheDocument();
+      });
+
+      it("stops highlighting a topic once its filter is cleared", async () => {
+        mockFetchSearchPassages.mockResolvedValue({ total_size: 1, results: [labelledPassage] });
+        renderPrincipal({ q: "renewable" });
+        await filterBy(topicFilter);
+        await screen.findByText("ecological");
+
+        await clearFilters();
+
+        expect(await screen.findByText(labelledPassage.text)).toBeInTheDocument();
+        expect(screen.queryByText("ecological")).not.toBeInTheDocument();
+      });
     });
   });
 

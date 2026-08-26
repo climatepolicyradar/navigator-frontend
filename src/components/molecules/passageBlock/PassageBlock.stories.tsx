@@ -113,17 +113,27 @@ const makeSpanLabel = (value: string, startIndex: number, endIndex: number): IPa
   end_index: endIndex,
 });
 
-// Shows all three fills at once: the "Land use" span is topic-only, the second "high" is
-// query-only, and the first "high" sits inside the "Biodiversity" span so it is both
+const highlightedLabels = [
+  makeSpanLabel("Land use", 8, 18), // "ecological"
+  makeSpanLabel("Geohazards", 46, 56),
+  makeSpanLabel("Agriculture", 83, 94), // "cultivation"
+  makeSpanLabel("Pollution", 98, 109), // "toxic waste"
+  makeSpanLabel("Land use", 148, 157), // "grassland", so this topic appears twice
+  // "high biological diversity", whose first word the query also matches
+  makeSpanLabel("Biodiversity", 163, 188),
+  makeSpanLabel("Legislation", 211, 235), // "Directive (EU) 2018/2001"
+  makeSpanLabel("Carbon", 256, 269), // "carbon stocks"
+  makeLabel("Renewable energy"), // Never active, so it stays plain in the topics list
+];
+
+// Enough topics to wrap the colour cycle, with "Land use" showing that a topic keeps one
+// colour across both of its spans. The query claims the first "high" outright, so the
+// "Biodiversity" span starts after it; the second "high" is a query match on its own.
 export const WithHighlights: TStory = {
   args: {
-    passage: {
-      ...basePassage,
-      labels: [makeSpanLabel("Biodiversity", 163, 188), makeSpanLabel("Land use", 8, 18), makeLabel("Renewable energy")],
-    },
+    passage: { ...basePassage, labels: highlightedLabels },
     query: "high",
-    // "Renewable energy" is left out, so the topics list shows an active and an inactive topic
-    activeTopicsIds: ["concept-Biodiversity", "concept-Land use"],
+    activeTopicsIds: highlightedLabels.filter(({ value }) => value.value !== "Renewable energy").map(({ value }) => value.id),
   },
 };
 
