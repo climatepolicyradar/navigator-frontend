@@ -19,8 +19,19 @@ export const ROBOTS_BLOCKED_SLUGS = [
  * Routes we do not want crawled, regardless of environment.
  *
  * Will block the above slugs for both documents and family pages, regardless of whether the slug only exists for one.
+ *
+ * Geography pages with a concept-name (`cfn`) filter are disallowed because
+ * crawlers expand the filter into thousands of unique query strings; each one
+ * is a distinct CDN cache key, so every request forces a fresh SSR render and
+ * a full browse search against the backend. The `?` and `&` patterns cover
+ * `cfn` as the first or a subsequent query parameter.
  */
-export const ROBOTS_DISALLOW_ROUTES = ["/_search", ...ROBOTS_BLOCKED_SLUGS.flatMap((slug) => [`/document/${slug}`, `/documents/${slug}`])] as const;
+export const ROBOTS_DISALLOW_ROUTES = [
+  "/_search",
+  "/geographies/*?cfn=",
+  "/geographies/*&cfn=",
+  ...ROBOTS_BLOCKED_SLUGS.flatMap((slug) => [`/document/${slug}`, `/documents/${slug}`]),
+] as const;
 
 /**
  * Standard header value to request no indexing of a response.
