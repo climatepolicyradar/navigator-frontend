@@ -73,8 +73,8 @@ type TSeedSource = {
 export const seedPassageLevel = ({ filters = null, query = null, sort = null }: TSeedSource): TSearchLevelValues => ({
   documents: null,
   filters: conceptFiltersOnly(filters),
-  query: query,
-  sort: sort,
+  query: query || null, // cleanses an empty string
+  sort: sort || null,
 });
 
 /**
