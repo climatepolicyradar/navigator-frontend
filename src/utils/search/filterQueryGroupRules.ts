@@ -14,7 +14,10 @@ export const isLabelRuleOfTypes =
  * Empty-value rules are always dropped: they carry no filter, and are what an untouched
  * DEFAULT_SEARCH_QUERY_GROUP / createGroup() is made of.
  */
-export const filterQueryGroupRules = (group: TSearchQueryGroup | null, keepRule: (rule: TSearchQueryRule) => boolean): TSearchQueryGroup | null => {
+export const filterQueryGroupRules = (
+  group: TSearchQueryGroup | null,
+  filterRuleCallback: (rule: TSearchQueryRule) => boolean
+): TSearchQueryGroup | null => {
   if (!group) return null;
 
   const filters: (TSearchQueryGroup | TSearchQueryRule)[] = [];
@@ -22,11 +25,11 @@ export const filterQueryGroupRules = (group: TSearchQueryGroup | null, keepRule:
   for (const filter of group.filters) {
     if (isRule(filter)) {
       if (filter.value.trim().length === 0) continue;
-      if (keepRule(filter)) filters.push(filter);
+      if (filterRuleCallback(filter)) filters.push(filter);
       continue;
     }
 
-    const prunedGroup = filterQueryGroupRules(filter, keepRule);
+    const prunedGroup = filterQueryGroupRules(filter, filterRuleCallback);
     if (prunedGroup) filters.push(prunedGroup);
   }
 

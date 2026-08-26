@@ -3,28 +3,18 @@ import type { UrlKeys } from "nuqs";
 
 import { QUERY_PARAMS } from "@/constants/queryParams";
 import { FilterGroupSchema } from "@/schemas";
-import { TSearchQueryGroup } from "@/types";
+import { TNestedSearchLevel, TSearchLevel, TSearchLevelValues, TSearchParamKeys, TSearchQueryGroup } from "@/types";
 
 import { filterQueryGroupRules, isLabelRuleOfTypes } from "./filterQueryGroupRules";
 
 /**
  * Nested drawers within search need to be scoped to their own search
- * Transfer of filters goes SERP -> Principal -> Document
- * Filters do not transfer back up
+ * Transfer of filters goes: SERP -> Principal -> Document
+ * Filters do not transfer back up, i.e. these arrows above are strictly one-way
  */
-export type TSearchLevel = "base" | "principal" | "document";
-export type TNestedSearchLevel = Exclude<TSearchLevel, "base">;
 
 export const SORT_PARAM_KEY = "sort";
 export const PAGE_TOKEN_PARAM_KEY = "page_token";
-
-export type TSearchParamKeys = {
-  documents: string;
-  filters: string;
-  pageToken: string;
-  query: string;
-  sort: string;
-};
 
 const BASE_PARAM_KEYS: TSearchParamKeys = {
   documents: QUERY_PARAMS.documents,
@@ -35,7 +25,7 @@ const BASE_PARAM_KEYS: TSearchParamKeys = {
 };
 
 // Nested levels namespace the base keys. They are deliberately absent from QUERY_PARAMS so that
-// CleanRouterQuery strips them from any link leaving the page.
+// CleanRouterQuery strips them from any link leaving the page
 export const levelParamKeys = (level: TSearchLevel): TSearchParamKeys => {
   if (level === "base") return BASE_PARAM_KEYS;
 
@@ -57,13 +47,6 @@ export const searchLevelParsers = {
   filters: parseAsJson<TSearchQueryGroup>(FilterGroupSchema),
   query: parseAsString,
   sort: parseAsString,
-};
-
-export type TSearchLevelValues = {
-  documents: string[] | null;
-  filters: TSearchQueryGroup | null;
-  query: string | null;
-  sort: string | null;
 };
 
 export const searchLevelUrlKeys = (level: TSearchLevel): UrlKeys<typeof searchLevelParsers> => {
@@ -90,8 +73,8 @@ type TSeedSource = {
 export const seedPassageLevel = ({ filters = null, query = null, sort = null }: TSeedSource): TSearchLevelValues => ({
   documents: null,
   filters: conceptFiltersOnly(filters),
-  query: query || null,
-  sort: sort || null,
+  query: query,
+  sort: sort,
 });
 
 /**
