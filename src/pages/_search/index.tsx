@@ -108,11 +108,6 @@ const ShadowSearch = ({ theme, themeConfig, features }: TProps) => {
           op: "contains",
           value: "country",
         },
-        {
-          field: "type",
-          op: "contains",
-          value: "subdivision",
-        },
       ],
     });
 

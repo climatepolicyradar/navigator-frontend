@@ -6,7 +6,7 @@ import { SearchFilterLevel } from "@/components/organisms/searchFilterLevel/Sear
 import { FiltersContext } from "@/context/FiltersContext";
 import { TCheckboxState, TFilterPathLabel, TNestedSearchLabel } from "@/types";
 import { filterHasSelectedChildren } from "@/utils/filters/filterHasSelectedChildren";
-import { getFilterPathLabel } from "@/utils/filters/filterPaths";
+import { getFilterPathLabels } from "@/utils/filters/filterPaths";
 import { getFilterStatus } from "@/utils/filters/getFilterStatus";
 import { joinTailwindClasses } from "@/utils/tailwind";
 import { firstCase } from "@/utils/text/firstCase";
@@ -23,7 +23,7 @@ export const SearchFilterParent = ({ ancestorPath, defaultOpen = false, label, l
   const [isExpanded, setIsExpanded] = useState(defaultOpen);
 
   const isGroupLabel = label.type === "group";
-  const pathLabels = isGroupLabel ? [...ancestorPath] : [getFilterPathLabel(label), ...ancestorPath];
+  const pathLabels = isGroupLabel ? [...ancestorPath] : getFilterPathLabels(label, ancestorPath);
   const checked = getFilterStatus(pathLabels, checkedLabelPaths);
   const hasChildren = label.children.length > 0;
 

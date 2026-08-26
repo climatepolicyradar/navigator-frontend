@@ -34,11 +34,11 @@ function SearchResults({
 
   return (
     <div>
-      <ul className="">
+      <ul className="flex flex-col gap-4 highlights">
         {data.results.map((result) => (
           <Fragment key={result.id}>
             {isPrincipal(result) && (
-              <li className={`flex flex-col highlights`}>
+              <li>
                 <DocumentCard document={result} onClick={onResultClicked} />
               </li>
             )}

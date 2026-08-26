@@ -495,6 +495,34 @@ if not is_review_stack_or_template:
             ),
         )
 
+        # deploy_ecs_express.sh (deploy-production.yml,
+        # deploy-all-production.yml, deploy-staging.yml) runs under this role
+        # and corrects the
+        # ECS-generated RollbackAlarm in place around the deployment.
+        # Attached by name for the same reason as above; scoped to this
+        # service's alarm, whose name ECS derives as
+        # {cluster}/{service}/RollbackAlarm.
+        aws.iam.RolePolicy(
+            f"{theme}-{env}-rollback-alarm-cloudwatch",
+            role=DEPLOY_ROLE_NAME,
+            policy=json.dumps(
+                {
+                    "Version": "2012-10-17",
+                    "Statement": [
+                        {
+                            "Effect": "Allow",
+                            "Action": [
+                                "cloudwatch:DescribeAlarms",
+                                "cloudwatch:PutMetricAlarm",
+                                "cloudwatch:DeleteAlarms",
+                            ],
+                            "Resource": f"arn:aws:cloudwatch:{aws.get_region().region}:{aws_account.account_id}:alarm:frontend-{env}/{theme}-frontend-{env}/RollbackAlarm",
+                        }
+                    ],
+                }
+            ),
+        )
+
     ########################################################################
     # Create the CloudFront access log bucket
     ########################################################################
@@ -537,7 +565,11 @@ if not is_review_stack_or_template:
         ),
     )
 
-    aws.s3.BucketAcl(
+    # CloudFront validates the log bucket's ACL at UpdateDistribution time, so
+    # every distribution that logs here must depend_on this resource — without
+    # the edge, the distribution update races the ACL grant and fails with
+    # AccessDenied.
+    cloudfront_log_bucket_acl = aws.s3.BucketAcl(
         f"{name_prefix}-cloudfront-logs-acl",
         bucket=cloudfront_log_bucket.id,
         acl="log-delivery-write",
@@ -727,6 +759,7 @@ if not is_review_stack_or_template:
             "Environment": env,
             "Domain_Visibility": DomainVisibility.INTERNAL.value,
         },
+        opts=pulumi.ResourceOptions(depends_on=[cloudfront_log_bucket_acl]),
     )
 
     # Every distribution serving /_next/static/* has to be listed on the bucket
@@ -780,6 +813,7 @@ if not is_review_stack_or_template:
                 "Environment": env,
                 "Domain_Visibility": DomainVisibility.EXTERNAL.value,
             },
+            opts=pulumi.ResourceOptions(depends_on=[cloudfront_log_bucket_acl]),
         )
         cname_route53_record = aws.route53.Record(
             f"{cname}-alias",
@@ -949,4 +983,5 @@ if not is_review_stack_or_template:
             logging_prefix="ccc-redirect/",
             # These are used for cache invalidations
             tags={"CUSTOM_APP_THEME": "ccc", "Environment": "production"},
+            opts=pulumi.ResourceOptions(depends_on=[cloudfront_log_bucket_acl]),
         )
