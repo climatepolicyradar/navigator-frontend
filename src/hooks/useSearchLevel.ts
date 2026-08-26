@@ -1,14 +1,8 @@
 import { parseAsString, useQueryState, useQueryStates } from "nuqs";
 import { useCallback } from "react";
 
-import {
-  TNestedSearchLevel,
-  TSearchLevel,
-  TSearchLevelValues,
-  levelIdParamKey,
-  searchLevelParsers,
-  searchLevelUrlKeys,
-} from "@/utils/search/searchLevels";
+import { TNestedSearchLevel, TSearchLevel, TSearchLevelValues } from "@/types";
+import { levelIdParamKey, searchLevelParsers, searchLevelUrlKeys } from "@/utils/search/searchLevels";
 
 /** A level's search values, on the params that level owns. */
 export const useSearchLevelValues = (level: TSearchLevel) => useQueryStates(searchLevelParsers, { urlKeys: searchLevelUrlKeys(level) });

@@ -1,6 +1,6 @@
 import { createContext } from "react";
 
-import { TSearchLevel } from "@/utils/search/searchLevels";
+import { TSearchLevel } from "@/types";
 
 /**
  * The search level the subtree belongs to, which decides the URL params its controls read and
