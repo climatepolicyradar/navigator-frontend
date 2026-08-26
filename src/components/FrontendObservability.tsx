@@ -1,21 +1,21 @@
 "use client";
 
-import { faro, getWebInstrumentations, initializeFaro } from "@grafana/faro-web-sdk";
+import { getWebInstrumentations, initializeFaro, isInternalFaroOnGlobalObject } from "@grafana/faro-web-sdk";
 import { TracingInstrumentation } from "@grafana/faro-web-tracing";
 
 export const FrontendObservability = (): null => {
-  // skip if already initialized
-  if (faro.api) return null;
+  // skip if already initialized (faro.api is a truthy no-op stub before init, so it can't be used as the check)
+  if (isInternalFaroOnGlobalObject()) return null;
 
   try {
     if (typeof window !== "undefined") {
       initializeFaro({
         url: "https://faro-collector-prod-gb-south-0.grafana.net/collect/74f6d4bd78b7bb2cc270036193aaa3a6",
         app: {
-          name: "cpr-frontend",
+          name: `${process.env.THEME}-frontend`,
           namespace: "frontend",
           version: "1",
-          environment: "local",
+          environment: process.env.NEXT_PUBLIC_FARO_ENVIRONMENT ?? "local",
         },
         sessionTracking: {
           samplingRate: 0.2,
