@@ -1,47 +1,43 @@
-import { DocumentLabelRelationship, SearchDocument } from "@/api/search";
+import sortBy from "lodash/sortBy";
+import { MouseEventHandler, ReactNode } from "react";
+
+import { SearchDocument } from "@/api/search";
+import { ID_SEPARATOR } from "@/constants/chars";
+import { COUNTRY_FLAGS } from "@/constants/flags";
+import { IMetadata } from "@/types";
 import { formatDate } from "@/utils/timedate";
 
-const MAX_DESCRIPTION_LENGTH = 275;
-const MAX_COUNTRIES_TO_DISPLAY = 3;
+const getDocumentGeography = (document: SearchDocument): ReactNode => {
+  const allGeographies = document.labels.filter((label) => label.type === "geography");
+  const mostSpecificGeoType = ["subdivision", "country", "region"].find((type) => allGeographies.some((geo) => geo.value.type === type));
+  const mostSpecificGeographies = sortBy(
+    allGeographies.filter((geo) => geo.value.type === mostSpecificGeoType),
+    "value.value"
+  );
+  const geography = mostSpecificGeographies[0];
+  const otherGeographies = geography ? mostSpecificGeographies.length - 1 : 0;
+  let geographyEmoji = "";
+  if (geography) {
+    const geoId = geography.value.id.split(ID_SEPARATOR)[1] ?? "";
+    if (geoId in COUNTRY_FLAGS) geographyEmoji = COUNTRY_FLAGS[geoId];
+  }
 
-const getDocumentPublishedYear = (doc: SearchDocument) => {
+  return geography ? (
+    <>
+      {geographyEmoji && <>{geographyEmoji} </>}
+      {geography.value.value}
+      {otherGeographies > 0 && <> +{otherGeographies}</>}
+    </>
+  ) : null;
+};
+
+const getDocumentPublishedYear = (doc: SearchDocument): ReactNode => {
   return doc.attributes.published_date ? formatDate(doc.attributes.published_date as string)[0] : undefined;
 };
 
-const getContextualDocumentInfo = (doc: SearchDocument) => {
-  const category = doc.labels.find((label) => label.type === "category")?.value.value;
-  let contextualInfo: DocumentLabelRelationship[][] = [[], []];
-  switch (category) {
-    case "Multilateral Climate Fund project":
-      contextualInfo = [
-        [...doc.labels.filter((label) => label.type === "provider")],
-        // TODO: decide on which status to display
-        // [...doc.labels.filter((label) => label.type === "activity_status")],
-      ];
-      break;
-    case "Report":
-    case "Corporate Disclosure":
-      contextualInfo = [[...doc.labels.filter((label) => label.type === "author")]];
-      break;
-    case "Litigation":
-      contextualInfo = [
-        [
-          doc.attributes["identifier::case_number"]
-            ? {
-                type: "case_number",
-                count: null,
-                timestamp: null,
-                value: { id: "", type: "string", value: doc.attributes["identifier::case_number"] as string },
-              }
-            : null,
-        ].filter((v): v is NonNullable<typeof v> => !!v),
-        [...doc.labels.filter((label) => label.type === "geography" && label.value.type === "subdivision")],
-        [...doc.labels.filter((label) => label.type === "activity_status")],
-        [...doc.labels.filter((label) => label.type === "legal_concept" && label.value.type === "jurisdiction")],
-      ];
-      break;
-  }
-  return contextualInfo;
+const getDocumentType = (document: SearchDocument): ReactNode => {
+  const category = document.labels.filter((label) => label.type === "category")[0];
+  return category?.value.value ?? null;
 };
 
 type TDocumentAnalytics = {
@@ -59,63 +55,39 @@ type TProps = {
 export function DocumentCard({ document, onClick, analytics }: TProps) {
   const { context, page, positionOffset } = analytics || {};
 
-  const numberOfCountries = document.labels.filter((label) => label.type === "geography" && label.value.type === "country").length;
+  const onClickCard: MouseEventHandler<HTMLButtonElement> = (event) => {
+    event.currentTarget.blur();
+    event.preventDefault();
+    onClick?.(document, event);
+  };
+
+  const metadata: IMetadata[] = [
+    { label: "Geography", value: getDocumentGeography(document) },
+    { label: "Year", value: getDocumentPublishedYear(document) },
+    { label: "Type", value: getDocumentType(document) },
+  ];
 
   return (
     <button
       type="button"
-      onClick={(e) => {
-        e.currentTarget.blur();
-        e.preventDefault();
-        onClick?.(document, e);
-      }}
-      className="group text-left w-full p-4 py-5 flex gap-4 transition hocus:rounded-md hocus:bg-inky-blue/4 hocus:border-transparent"
+      onClick={onClickCard}
       data-ph-capture-attribute-link-purpose={context ?? "document-card"}
       data-ph-capture-attribute-position-page={page}
       data-ph-capture-attribute-position-total={page !== undefined && positionOffset !== undefined ? positionOffset + page : undefined}
+      className="w-full p-8 flex flex-col gap-6 bg-bg-primary border border-border-normal rounded-xl shadow-[0_1px_2px_0_rgba(0,0,0,0.05)] text-left"
     >
-      <span className="basis-12.5 grow-0 shrink-0">
-        <span>{getDocumentPublishedYear(document)}</span>
-      </span>
-      <span className="grow">
-        {/* CORE DETAILS */}
-        <h3 className="font-semibold text-base mb-3">
-          <span className="text-inky-blue group-hover:underline group-focus:underline" dangerouslySetInnerHTML={{ __html: document.title }} />
-        </h3>
-        {document.description && (
-          <p
-            className="text-base text-neutral-600 mb-3"
-            dangerouslySetInnerHTML={{
-              __html: document.description.slice(0, MAX_DESCRIPTION_LENGTH) + (document.description.length > MAX_DESCRIPTION_LENGTH ? "..." : ""),
-            }}
-          />
-        )}
-        <span className="flex gap-4">
-          <span>{document.labels.find((label) => label.type === "category")?.value.value}</span>
-          {/* DISPLAYING GEOS */}
-          <span className="flex flex-wrap gap-1">
-            <ul className="text-base text-neutral-600">
-              {document.labels
-                .filter((label) => label.type === "geography" && label.value.type === "country")
-                .slice(0, MAX_COUNTRIES_TO_DISPLAY)
-                .map((label, i) => (
-                  <li key={label.value.value} className="inline">
-                    {label.value.value}
-                    {i < numberOfCountries - 1 ? ", " : ""}
-                  </li>
-                ))}
-            </ul>
-            {numberOfCountries > MAX_COUNTRIES_TO_DISPLAY && (
-              <span className="text-base text-neutral-600">+{numberOfCountries - MAX_COUNTRIES_TO_DISPLAY} more</span>
-            )}
-          </span>
-        </span>
-      </span>
-      <span className="basis-40 grow-0 shrink-0 flex flex-col gap-2">
-        {getContextualDocumentInfo(document).map((info, index) => (
-          <span key={index}>{info.map((v) => v.value.value).join(", ")}</span>
+      <h2 className="text-xl text-text-brand font-heavy leading-5" dangerouslySetInnerHTML={{ __html: document.title }} />
+      {document.description && (
+        <p className="text-base text-text-primary font-normal leading-6 line-clamp-3" dangerouslySetInnerHTML={{ __html: document.description }} />
+      )}
+      <div className="flex flex-wrap flex-row gap-6">
+        {metadata.map(({ label, value }, metadataIndex) => (
+          <div key={metadataIndex}>
+            <span className="block mb-1 text-sm text-text-secondary leading-5">{label}</span>
+            <span className="block text-base text-text-primary font-medium leading-5">{value}</span>
+          </div>
         ))}
-      </span>
+      </div>
     </button>
   );
 }
