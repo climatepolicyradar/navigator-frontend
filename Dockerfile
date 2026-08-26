@@ -17,6 +17,10 @@ ENV GITHUB_SHA=${GITHUB_SHA}
 ARG NEXT_STATIC_ENABLED
 ENV NEXT_STATIC_ENABLED=${NEXT_STATIC_ENABLED}
 
+# Faro environment tag; NEXT_PUBLIC_ vars are inlined into the client bundle at build time
+ARG NEXT_PUBLIC_FARO_ENVIRONMENT
+ENV NEXT_PUBLIC_FARO_ENVIRONMENT=${NEXT_PUBLIC_FARO_ENVIRONMENT}
+
 # Generate tsconfig.json from template with the selected THEME
 RUN sed "s/__THEME__/${THEME}/g" tsconfig.base.json > tsconfig.json
 

@@ -123,7 +123,7 @@ jobs:
           THEME: ${{ matrix.theme }}
         # @related: GITHUB_SHA_ENV_VAR
         run: |
-          docker build --build-arg THEME=${THEME} --build-arg GITHUB_SHA=$(git rev-parse HEAD) -t $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG .
+          docker build --build-arg THEME=${THEME} --build-arg NEXT_PUBLIC_FARO_ENVIRONMENT=staging --build-arg GITHUB_SHA=$(git rev-parse HEAD) -t $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG .
           docker push $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
           echo "image=$ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG" >> $GITHUB_OUTPUT
 
