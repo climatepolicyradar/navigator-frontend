@@ -14,7 +14,10 @@ const getAppliedFilterLabel = (labelValues: Record<string, string>, labelPath: T
 
   // Geographies are arrow separated paths with country emojis
   if (isGeography) {
-    return [...labelPath]
+    // Only show the region if it itself is checked
+    const displayPath = labelPath.length > 1 ? labelPath.filter((label) => label.type !== "region") : labelPath;
+
+    return [...displayPath]
       .reverse()
       .map((label) => {
         const emoji = COUNTRY_FLAGS[label.value] ?? "";
