@@ -9,6 +9,13 @@ export const getFilterPathLabel = (nestedSearchLabel: TNestedSearchLabel): TFilt
   value: nestedSearchLabel.value,
 });
 
+// Includes a label's virtual parentPath (e.g. a flattened geography's region), which isn't reflected in the render tree
+export const getFilterPathLabels = (label: TNestedSearchLabel, ancestorPath: TFilterPathLabel[]): TFilterPathLabel[] => [
+  getFilterPathLabel(label),
+  ...(label.parentPath ?? []),
+  ...ancestorPath,
+];
+
 export const getLabelPathSignature = (labelPath: TFilterPathLabel[]) =>
   labelPath
     .map((label) => label.id)

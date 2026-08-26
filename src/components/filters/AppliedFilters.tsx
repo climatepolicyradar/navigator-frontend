@@ -72,6 +72,7 @@ const handleFilterDisplay = (
   let filterPrefix: string = "";
   let filterValue = value;
   let otherValuesToClear: string[] = [];
+
   switch (key) {
     case "category":
       const configCategory = themeConfig?.categories?.options.find((c) => c.slug === value);
