@@ -105,7 +105,7 @@ export const PassageBlock = ({ passage, onCopyClick, onDocumentLinkClick, onPass
     passage.content,
     resolveHighlightRanges(passage.content, getHighlightRanges({ content: passage.content, query, activeTopics, topicColours }))
   );
-  // A passage can carry the same label for several matched spans, so each topic is only shown once.
+  // A passage can contain multiple instances of the same topic
   const topics = [...new Map(passage.labels?.map(({ value }) => [value.value, value.id]) ?? [])];
   const topicsList = joinNodes(
     topics.map(([value, id]) => {
