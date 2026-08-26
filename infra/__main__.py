@@ -496,7 +496,8 @@ if not is_review_stack_or_template:
         )
 
         # deploy_ecs_express.sh (deploy-production.yml,
-        # deploy-all-production.yml) runs under this role and corrects the
+        # deploy-all-production.yml, deploy-staging.yml) runs under this role
+        # and corrects the
         # ECS-generated RollbackAlarm in place around the deployment.
         # Attached by name for the same reason as above; scoped to this
         # service's alarm, whose name ECS derives as
