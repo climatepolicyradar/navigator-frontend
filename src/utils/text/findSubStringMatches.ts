@@ -21,7 +21,7 @@ export const findSubStringMatches = (text: string, match: string): TSubStringMat
   chars.forEach((char, originalIndex) => {
     const searchableChar = toSearchableText(char);
     searchableText += searchableChar;
-    for (let i = 0; i < searchableChar.length; i++) originalIndexForSearchableIndex.push(originalIndex);
+    for (let index = 0; index < searchableChar.length; index++) originalIndexForSearchableIndex.push(originalIndex);
   });
 
   const matches: TSubStringMatch[] = [];
