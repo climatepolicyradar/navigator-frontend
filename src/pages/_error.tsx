@@ -8,7 +8,7 @@ import Layout from "../components/layouts/Main";
 
 function Error({ statusCode }: { statusCode: number }) {
   return (
-    <Layout title={statusCode.toString()}>
+    <Layout title={(statusCode ?? 500).toString()}>
       <section>
         <SiteWidth extraClasses="text-content my-12">
           <Heading level={1}>{statusCode === 404 ? "Sorry, we can't find that page" : "Sorry, an error has occurred loading this page"}</Heading>
