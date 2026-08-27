@@ -1,10 +1,13 @@
-import { useEffect, useMemo, useState } from "react";
+import { useCallback, useContext, useEffect, useMemo, useState } from "react";
 
 import { DocumentDrawer } from "@/components/drawers/documentDrawer/DocumentDrawer";
 import { Section } from "@/components/molecules/section/Section";
 import { InteractiveTable } from "@/components/organisms/interactiveTable/InteractiveTable";
+import { SearchLevelContext } from "@/context/SearchLevelContext";
+import { useNestedSearchLevel, useSearchLevelValues } from "@/hooks/useSearchLevel";
 import { IFamilyDocumentTopics, TFamilyPublic, TLanguages, TLoadingStatus, TMatchedFamily } from "@/types";
 import { getEventTableColumns, getEventTableRows, TEventTableColumnId, TEventTableRow } from "@/utils/eventTable";
+import { seedPassageLevel } from "@/utils/search/searchLevels";
 import { familyTopicsHasTopics } from "@/utils/topics/processFamilyTopics";
 
 interface IProps {
@@ -18,16 +21,23 @@ interface IProps {
 
 export const DocumentsBlock = ({ family, familyTopics, languages, matchesFamily, matchesStatus, showMatches = false }: IProps) => {
   const [updatedRowsWithLocalisedDates, setUpdatedRowsWithLocalisedDates] = useState<TEventTableRow[]>(null);
-  const [documentDrawerId, setDocumentDrawerId] = useState<string | null>(null);
-  const [showDocumentDrawer, setShowDocumentDrawer] = useState(false); // Separate state so that document in drawer persists while closing
+  // Ensure we have the latest search controls when opening the drawer
+  const enclosingLevel = useContext(SearchLevelContext);
+  const [enclosingSearch] = useSearchLevelValues(enclosingLevel);
+  const { close: closeDocumentLevel, id: documentLevelId, open: openDocumentLevel } = useNestedSearchLevel("document");
+  const [lastDocumentDrawerId, setLastDocumentDrawerId] = useState<string | null>(null); // Keeps the document in the drawer while it closes
 
-  const onRowClick = (rowId: string) => {
-    setDocumentDrawerId(rowId.split(":")[0]);
-    setShowDocumentDrawer(true);
-  };
+  const onRowClick = useCallback(
+    (rowId: string) => {
+      const importId = rowId.split(":")[0];
+      setLastDocumentDrawerId(importId);
+      openDocumentLevel(importId, seedPassageLevel(enclosingSearch));
+    },
+    [enclosingSearch, openDocumentLevel]
+  );
 
   const onDocumentDrawerOpenChange = (open: boolean) => {
-    if (!open) setShowDocumentDrawer(false);
+    if (!open) closeDocumentLevel();
   };
 
   const isLitigation = family.attribution.category === "Litigation";
@@ -48,7 +58,7 @@ export const DocumentsBlock = ({ family, familyTopics, languages, matchesFamily,
         matchesFamily,
         matchesStatus,
       }),
-    [family, familyTopics, isLitigation, languages, matchesFamily, matchesStatus]
+    [family, familyTopics, isLitigation, languages, matchesFamily, matchesStatus, onRowClick]
   );
 
   // If the case is new, there can be one placeholder document with no events. Handle this interim state
@@ -70,7 +80,7 @@ export const DocumentsBlock = ({ family, familyTopics, languages, matchesFamily,
         matchesStatus,
       })
     );
-  }, [family, familyTopics, isLitigation, languages, matchesFamily, matchesStatus]);
+  }, [family, familyTopics, isLitigation, languages, matchesFamily, matchesStatus, onRowClick]);
 
   return (
     <Section block="documents" title="Documents" wide>
@@ -87,12 +97,12 @@ export const DocumentsBlock = ({ family, familyTopics, languages, matchesFamily,
       </div>
 
       <DocumentDrawer
-        documentImportId={documentDrawerId}
+        documentImportId={documentLevelId ?? lastDocumentDrawerId}
         family={family}
         familyTopics={familyTopics}
         languages={languages}
         onOpenChange={onDocumentDrawerOpenChange}
-        open={showDocumentDrawer}
+        open={!!documentLevelId}
       />
     </Section>
   );
