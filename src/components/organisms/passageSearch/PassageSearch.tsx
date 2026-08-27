@@ -21,6 +21,7 @@ import { SearchLevelContext } from "@/context/SearchLevelContext";
 import { loadFilteredLabels } from "@/hooks/useLabelSearch";
 import { FilterGroupSchema } from "@/schemas";
 import { ISearchPassage, TFamilyDocumentPublic, TSearchLabel, TSearchQueryGroup, TTopic } from "@/types";
+import { queryGroupToFilterPaths } from "@/utils/search/queryGroupToFilterPaths";
 import { conceptFiltersOnly, flattenLevelToBaseQuery, levelParamKeys } from "@/utils/search/searchLevels";
 
 type TProps = {
@@ -49,16 +50,20 @@ type TPassageResultsProps = {
   onDocumentLinkClick?: (passage: TPassageBlock) => void;
   onPassageClick: (passage: TPassageBlock) => void;
   passages: TPassageBlock[];
+  query?: string;
+  activeTopicsIds?: string[];
   showDocument: boolean;
 };
 
 // Memoised so that typing in the search input does not re-render every result card.
-const PassageResults = memo(({ onDocumentLinkClick, onPassageClick, passages, showDocument }: TPassageResultsProps) => (
+const PassageResults = memo(({ onDocumentLinkClick, onPassageClick, passages, query, activeTopicsIds, showDocument }: TPassageResultsProps) => (
   <ul className="flex flex-col gap-4" id="passage-matches" aria-label="Passage matches">
     {passages.map((passage) => (
       <li key={passage.id}>
         <PassageBlock
           passage={passage}
+          query={query}
+          activeTopicsIds={activeTopicsIds}
           showDocument={showDocument}
           onDocumentLinkClick={onDocumentLinkClick && (() => onDocumentLinkClick(passage))}
           onPassageClick={onPassageClick}
@@ -196,6 +201,12 @@ export const PassageSearch = ({ concepts, documents, documentsLabel, enablePrevi
     setPageNumber(firstResultPage + 1);
   }
 
+  // Get the selected topic IDs from the filters
+  const activeTopicsIds = useMemo(
+    () => (filterParam ? [...new Set(queryGroupToFilterPaths(filterParam).map(([label]) => label.id))] : []),
+    [filterParam]
+  );
+
   // Only offer concept filters the scope actually has passages for
   const conceptFilters = useMemo(() => {
     const rankedIds = new Set(concepts.map((concept) => concept.wikibase_id));
@@ -298,6 +309,8 @@ export const PassageSearch = ({ concepts, documents, documentsLabel, enablePrevi
             showDocument={!enablePreview}
             onDocumentLinkClick={enablePreview ? undefined : handleDocumentLinkClick}
             onPassageClick={handlePassageClick}
+            query={queryParam}
+            activeTopicsIds={activeTopicsIds}
           />
           {hasNextPage && (
             <div className="flex flex-col items-center gap-2 pt-4">
