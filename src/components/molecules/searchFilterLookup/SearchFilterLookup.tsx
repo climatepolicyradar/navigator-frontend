@@ -5,7 +5,7 @@ import { Input } from "@/components/atoms/input/Input";
 import { SearchFilter } from "@/components/molecules/searchFilter/SearchFilter";
 import { FiltersLookupContext } from "@/context/FiltersLookupContext";
 import { TFilterPathLabel, TNestedSearchLabel } from "@/types";
-import { getFilterPathLabel, getLabelPathSignature } from "@/utils/filters/filterPaths";
+import { getFilterPathLabels, getLabelPathSignature } from "@/utils/filters/filterPaths";
 import { toSearchableText } from "@/utils/text/toSearchableText";
 
 const LABELS_OVERFLOWING_THRESHOLD = 8;
@@ -22,7 +22,7 @@ interface IProps {
 const getMatchingLabelPathSignatures = (labels: TNestedSearchLabel[], ancestorPath: TFilterPathLabel[], searchableSearchText: string): string[] => {
   return labels.flatMap((label) => {
     const isMatch = toSearchableText(label.value).includes(searchableSearchText) || toSearchableText(label.id).includes(searchableSearchText);
-    const pathLabels = [getFilterPathLabel(label), ...ancestorPath];
+    const pathLabels = getFilterPathLabels(label, ancestorPath);
     return [
       ...(isMatch ? [getLabelPathSignature(pathLabels)] : []),
       ...getMatchingLabelPathSignatures(label.children, pathLabels, searchableSearchText),

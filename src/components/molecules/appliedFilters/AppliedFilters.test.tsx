@@ -12,6 +12,16 @@ const nestedPath: TFilterPathLabel[] = [
   { id: "paris", type: "city", value: "Paris" },
   { id: "france", type: "country", value: "France" },
 ];
+const countryWithRegionContextPath: TFilterPathLabel[] = [
+  { id: "country::gb", type: "country", value: "United Kingdom" },
+  { id: "region::europe", type: "region", value: "Europe" },
+];
+const subdivisionWithRegionContextPath: TFilterPathLabel[] = [
+  { id: "subdivision::wales", type: "subdivision", value: "Wales" },
+  { id: "country::gb", type: "country", value: "United Kingdom" },
+  { id: "region::europe", type: "region", value: "Europe" },
+];
+const regionOnlyPath: TFilterPathLabel[] = [{ id: "region::europe", type: "region", value: "Europe" }];
 
 const renderWithFiltersContext = (checkedLabelPaths: TFilterPathLabel[][], clearFilters = vi.fn(), toggleFilter = vi.fn()) =>
   render(
@@ -29,6 +39,23 @@ describe("AppliedFilters", () => {
   it("renders a nested label", () => {
     renderWithFiltersContext([nestedPath]);
     expect(screen.getByText("France → Paris")).toBeInTheDocument();
+  });
+
+  it("hides the region from a checked country's label when the region is just query context", () => {
+    renderWithFiltersContext([countryWithRegionContextPath]);
+    expect(screen.getByText("United Kingdom")).toBeInTheDocument();
+    expect(screen.queryByText(/Europe/)).not.toBeInTheDocument();
+  });
+
+  it("hides the region from a checked subdivision's label when the region is just query context", () => {
+    renderWithFiltersContext([subdivisionWithRegionContextPath]);
+    expect(screen.getByText("United Kingdom → Wales")).toBeInTheDocument();
+    expect(screen.queryByText(/Europe/)).not.toBeInTheDocument();
+  });
+
+  it("still renders a region's own label when the region itself is checked", () => {
+    renderWithFiltersContext([regionOnlyPath]);
+    expect(screen.getByText("Europe")).toBeInTheDocument();
   });
 
   it("calls toggleFilter when removing an applied filter", async () => {
