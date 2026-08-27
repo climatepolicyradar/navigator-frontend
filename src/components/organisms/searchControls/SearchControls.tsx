@@ -4,6 +4,7 @@ import { Fragment, ReactNode, SubmitEventHandler, useMemo, useState } from "reac
 
 import { Input } from "@/components/atoms/input/Input";
 import { AppliedFilters } from "@/components/molecules/appliedFilters/AppliedFilters";
+import { SearchFiltersDate } from "@/components/molecules/searchFiltersDate/SearchFiltersDate";
 import { SearchFiltersDrawer } from "@/components/molecules/searchFiltersDrawer/SearchFiltersDrawer";
 import { SearchFiltersPopover } from "@/components/molecules/searchFiltersPopover/SearchFiltersPopover";
 import { Sort } from "@/components/molecules/sort/Sort";
@@ -18,6 +19,12 @@ import { updateCheckedLabelPaths } from "@/utils/filters/updateCheckedLabelPaths
 import { DEFAULT_SEARCH_QUERY_GROUP, filterPathsToQueryGroup } from "@/utils/search/filterPathsToQueryGroup";
 import { queryGroupToFilterPaths } from "@/utils/search/queryGroupToFilterPaths";
 import { formatDateShort } from "@/utils/timedate";
+
+const SEARCH_FILTERS_LOOKUP = {
+  datepicker: SearchFiltersDate,
+  drawer: SearchFiltersDrawer,
+  popover: SearchFiltersPopover,
+};
 
 interface IProps {
   extraContent?: ReactNode; // Benefits from FiltersContext for rendering suggestions / zero state
@@ -107,7 +114,7 @@ export const SearchControls = ({
         <div className="flex flex-wrap gap-1 items-center">
           {filtersSlot}
           {filterGroupsWithLabels.map((group) => {
-            const SearchFilters = group.container === "drawer" ? SearchFiltersDrawer : SearchFiltersPopover;
+            const SearchFilters = SEARCH_FILTERS_LOOKUP[group.container] ?? SearchFiltersPopover;
 
             return (
               <Fragment key={group.title}>

@@ -20,7 +20,7 @@ type TFiltersGroupPopoverConfig = {
   subtitle?: never;
   Icon?: never;
   afterPartition?: boolean;
-  container: "popover";
+  container: "popover" | "datepicker";
   rootLabelTypes: string[];
   prepareRootLabels?: (rootLabels: TNestedSearchLabel[]) => TNestedSearchLabel[];
   filterParentsDefaultOpen?: boolean;
