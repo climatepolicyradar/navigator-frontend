@@ -4,8 +4,8 @@ import userEvent from "@testing-library/user-event";
 import mockRouter from "next-router-mock";
 import * as nextRouterMock from "next-router-mock";
 
-import { SearchLevelContext } from "@/context/SearchLevelContext";
 import { TOPIC_HIGHLIGHT_COLOURS as TOPIC_COLOURS } from "@/components/molecules/passageBlock/PassageBlock";
+import { SearchLevelContext } from "@/context/SearchLevelContext";
 import { IPassageLabel, ISearchPassage, TFamilyDocumentPublic, TSearchQueryGroup, TTopic } from "@/types";
 
 import { PassageSearch } from "./PassageSearch";
