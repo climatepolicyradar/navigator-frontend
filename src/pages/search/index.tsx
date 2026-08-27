@@ -63,7 +63,7 @@ const SETTINGS_ANIMATION_VARIANTS = {
 
 const getSelectedSortOptionText = (sortOption: string) => {
   const selectedOptionValue = sortOptions.find(({ value }) => value === sortOption);
-  return selectedOptionValue.label;
+  return selectedOptionValue?.label ?? sortOptions[0].label;
 };
 
 // We want to show information when using specific litigation filters
