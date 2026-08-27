@@ -8,7 +8,7 @@ import { SearchFiltersDate } from "@/components/molecules/searchFiltersDate/Sear
 import { SearchFiltersDrawer } from "@/components/molecules/searchFiltersDrawer/SearchFiltersDrawer";
 import { SearchFiltersPopover } from "@/components/molecules/searchFiltersPopover/SearchFiltersPopover";
 import { Sort } from "@/components/molecules/sort/Sort";
-import { FiltersContext, TToggleFilterCallback } from "@/context/FiltersContext";
+import { FiltersContext, TDateRange, TToggleFilterCallback } from "@/context/FiltersContext";
 import { FilterGroupSchema } from "@/schemas";
 import { TFiltersGroupConfig, TSearchLabel, TSearchQueryGroup, TSortOptionConfig } from "@/types";
 import { sortFilterPathLabels } from "@/utils/filters/filterPaths";
@@ -63,8 +63,8 @@ export const SearchControls = ({
   const [_currentPage, setCurrentPage] = useQueryState("page_token", parseAsString.withDefault("1"));
 
   const [searchInput, setSearchInput] = useState(queryParam);
-  // Keep input in sync with query
-  const [lastQueryParam, setLastQueryParam] = useState(queryParam);
+  const [lastQueryParam, setLastQueryParam] = useState(queryParam); // Keep input in sync with query
+  const [dateRange, setDateRange] = useState<TDateRange>(null);
 
   if (queryParam !== lastQueryParam) {
     setLastQueryParam(queryParam);
@@ -84,6 +84,8 @@ export const SearchControls = ({
     setFilterParam(null);
   };
 
+  const onSetDateRange = (newDateRange: TDateRange) => setDateRange(newDateRange);
+
   const onSort = (sortValue: string) => {
     setSortParam(sortValue);
     if (resetPageOnSort) setCurrentPage("1");
@@ -95,7 +97,8 @@ export const SearchControls = ({
   };
 
   return (
-    <FiltersContext value={{ checkedLabelPaths, clearFilters, labelValues, toggleFilter }}>
+    <FiltersContext value={{ checkedLabelPaths, clearFilters, dateRange, labelValues, setDateRange: onSetDateRange, toggleFilter }}>
+      {JSON.stringify(dateRange)}
       <form onSubmit={onQuerySubmit} className="col-start-1 -col-end-1 cols-5:col-start-2 cols-5:-col-end-2">
         <Input
           containerClasses="px-4 py-3 bg-bg-flat border border-border-normal rounded-lg placeholder-text-tertiary"

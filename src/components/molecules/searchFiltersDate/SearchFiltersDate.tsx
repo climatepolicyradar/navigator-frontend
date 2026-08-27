@@ -1,13 +1,16 @@
 import { Radio, RadioGroup } from "@base-ui/react";
 import { Popover as BasePopover } from "@base-ui/react/popover";
 import { ChevronDown } from "lucide-react";
-import { useState } from "react";
+import { useContext, useState } from "react";
 
 import { Input } from "@/components/atoms/input/Input";
+import { FiltersContext } from "@/context/FiltersContext";
 import { TFiltersGroup } from "@/types";
 
-const RADIO_OPTIONS: { label: string; value: number }[] = [
-  { label: "All time", value: 0 },
+type TRadioValue = number | null | undefined;
+
+const RADIO_OPTIONS: { label: string; value: TRadioValue | null }[] = [
+  { label: "All time", value: null },
   { label: "Last year", value: 1 },
   { label: "Last 5 years", value: 5 },
 ];
@@ -17,37 +20,38 @@ interface IProps {
 }
 
 export const SearchFiltersDate = ({ filterGroup }: IProps) => {
-  const [radioValue, setRadioValue] = useState<number | null>(RADIO_OPTIONS[0].value);
+  const { setDateRange } = useContext(FiltersContext);
+  const [radioValue, setRadioValue] = useState<TRadioValue>(RADIO_OPTIONS[0].value);
   const [earliestYear, setEarliestYear] = useState("");
   const [latestYear, setLatestYear] = useState("");
 
-  const onRadioValueChange = (value: number) => {
+  const onRadioValueChange = (value: TRadioValue) => {
     setRadioValue(value);
   };
 
   const onEarliestYearChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setEarliestYear(event.target.value);
-    setRadioValue(null);
+    setRadioValue(undefined);
   };
 
   const onLatestYearChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setLatestYear(event.target.value);
-    setRadioValue(null);
+    setRadioValue(undefined);
   };
 
   const onApply = () => {
     if (radioValue === RADIO_OPTIONS[0].value) {
-      console.log(null);
+      setDateRange(null);
       return;
     }
 
-    if (radioValue !== null) {
+    if (radioValue !== undefined) {
       const currentYear = new Date().getFullYear();
-      console.log([currentYear - radioValue, currentYear]);
+      setDateRange([currentYear - radioValue, currentYear]);
       return;
     }
 
-    console.log([Number(earliestYear), Number(latestYear)]);
+    setDateRange([Number(earliestYear), Number(latestYear)]);
   };
 
   if (filterGroup.container !== "datepicker") return null;
@@ -65,7 +69,7 @@ export const SearchFiltersDate = ({ filterGroup }: IProps) => {
             <span className="block text-sm text-text-primary font-medium leading-5">Date range</span>
             <RadioGroup value={radioValue} onValueChange={onRadioValueChange} className="pt-2 pb-6 flex flex-col gap-2">
               {RADIO_OPTIONS.map((option) => (
-                <label key={option.value} className="flex items-center gap-2 text-sm text-text-primary font-normal leading-5 cursor-pointer">
+                <label key={option.label} className="flex items-center gap-2 text-sm text-text-primary font-normal leading-5 cursor-pointer">
                   <Radio.Root
                     value={option.value}
                     className="flex size-4 shrink-0 items-center justify-center border border-border-input rounded-full p-0 text-white data-checked:bg-inky-blue focus-visible:outline-2 outline-inky-blue outline-offset-2"
