@@ -67,9 +67,10 @@ export const SearchControls = ({
     setSearchInput(queryParam);
   }
 
-  const labelValues = useMemo(() => getSearchLabelValues(labels), [labels]);
+  const nestedLabels = useMemo(() => nestSearchLabels(labels), [labels]);
+  const labelValues = useMemo(() => getSearchLabelValues(nestedLabels), [nestedLabels]);
   const checkedLabelPaths = useMemo(() => sortFilterPathLabels(queryGroupToFilterPaths(filterParam)), [filterParam]);
-  const filterGroupsWithLabels = useMemo(() => groupSearchLabels(nestSearchLabels(labels), filterGroups), [filterGroups, labels]);
+  const filterGroupsWithLabels = useMemo(() => groupSearchLabels(nestedLabels, filterGroups), [filterGroups, nestedLabels]);
 
   const toggleFilter: TToggleFilterCallback = (labelPath, checked) => {
     const updatedCheckedLabelPaths = updateCheckedLabelPaths(checkedLabelPaths, labelPath, checked);
