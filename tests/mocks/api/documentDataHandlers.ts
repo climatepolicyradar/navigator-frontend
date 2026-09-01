@@ -41,7 +41,7 @@ export const vespaDocumentHandler = () =>
   });
 
 // A minimal but schema-complete TDataInDocument for a document: satisfies validateDocumentAttributes
-// (status, deprecated_slug), the mandatory "category" label, and the mandatory cdn/source items
+// (status, deprecated_slug), the mandatory "category" label, and the mandatory cdn item
 // required by transformDocument (MANDATORY_ITEM_TYPES applies whenever status isn't "awaiting_source_file").
 // The member_of relation is required too: documentTransformer treats a document without a parent family as not found.
 export const testDocumentDataIn: TDataInDocument = {
