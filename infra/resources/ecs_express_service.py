@@ -16,8 +16,8 @@ from pulumi_aws.ecs.express_gateway_service import (
 class ExpressGatewayConfig:
     port: int = 8080
     health_check_path: str = "/"
-    cpu: str = "4096"
-    memory: str = "8192"
+    cpu: str = "2048"
+    memory: str = "4096"
     min_task_count: int = 1
     max_task_count: int = 4
 
