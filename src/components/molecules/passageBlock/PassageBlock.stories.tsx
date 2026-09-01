@@ -105,6 +105,38 @@ export const WithMultipleTopics: TStory = {
   },
 };
 
+// `makeLabel` leaves the span indices at zero, which is enough for the topic list but not
+// for the highlighting, so this label is positioned against the base content
+const makeSpanLabel = (value: string, startIndex: number, endIndex: number): IPassageLabel => ({
+  ...makeLabel(value),
+  start_index: startIndex,
+  end_index: endIndex,
+});
+
+const highlightedLabels = [
+  makeSpanLabel("Land use", 8, 18), // "ecological"
+  makeSpanLabel("Geohazards", 46, 56),
+  makeSpanLabel("Agriculture", 83, 94), // "cultivation"
+  makeSpanLabel("Pollution", 98, 109), // "toxic waste"
+  makeSpanLabel("Land use", 148, 157), // "grassland", so this topic appears twice
+  // "high biological diversity", whose first word the query also matches
+  makeSpanLabel("Biodiversity", 163, 188),
+  makeSpanLabel("Legislation", 211, 235), // "Directive (EU) 2018/2001"
+  makeSpanLabel("Carbon", 256, 269), // "carbon stocks"
+  makeLabel("Renewable energy"), // Never active, so it stays plain in the topics list
+];
+
+// Enough topics to wrap the colour cycle, with "Land use" showing that a topic keeps one
+// colour across both of its spans. The query claims the first "high" outright, so the
+// "Biodiversity" span starts after it; the second "high" is a query match on its own.
+export const WithHighlights: TStory = {
+  args: {
+    passage: { ...basePassage, labels: highlightedLabels },
+    query: "high",
+    activeTopicsIds: highlightedLabels.filter(({ value }) => value.value !== "Renewable energy").map(({ value }) => value.id),
+  },
+};
+
 export const ClickableWithTopics: TStory = {
   args: {
     passage: {

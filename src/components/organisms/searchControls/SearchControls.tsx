@@ -18,6 +18,7 @@ import { nestSearchLabels } from "@/utils/filters/nestSearchLabels";
 import { updateCheckedLabelPaths } from "@/utils/filters/updateCheckedLabelPaths";
 import { DEFAULT_SEARCH_QUERY_GROUP, filterPathsToQueryGroup } from "@/utils/search/filterPathsToQueryGroup";
 import { queryGroupToFilterPaths } from "@/utils/search/queryGroupToFilterPaths";
+import { PAGE_TOKEN_PARAM_KEY } from "@/utils/search/searchLevels";
 import { formatDateShort } from "@/utils/timedate";
 
 const SEARCH_FILTERS_LOOKUP = {
@@ -32,6 +33,7 @@ interface IProps {
   filterParamKey: string;
   filtersSlot?: ReactNode;
   labels: TSearchLabel[];
+  pageParamKey?: string;
   queryParamKey: string;
   resetPageOnSort?: boolean;
   resultsNode?: ReactNode;
@@ -46,6 +48,7 @@ export const SearchControls = ({
   filterParamKey,
   filtersSlot,
   labels,
+  pageParamKey = PAGE_TOKEN_PARAM_KEY,
   queryParamKey,
   resetPageOnSort = false,
   resultsNode,
@@ -60,7 +63,7 @@ export const SearchControls = ({
   );
   const [sortParam, setSortParam] = useQueryState(sortParamKey, parseAsString.withDefault(sortOptions[0]?.paramValue || ""));
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  const [_currentPage, setCurrentPage] = useQueryState("page_token", parseAsString.withDefault("1"));
+  const [_currentPage, setCurrentPage] = useQueryState(pageParamKey, parseAsString.withDefault("1"));
 
   const [searchInput, setSearchInput] = useState(queryParam);
   const [lastQueryParam, setLastQueryParam] = useState(queryParam); // Keep input in sync with query

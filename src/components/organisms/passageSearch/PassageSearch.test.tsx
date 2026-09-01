@@ -4,7 +4,9 @@ import userEvent from "@testing-library/user-event";
 import mockRouter from "next-router-mock";
 import * as nextRouterMock from "next-router-mock";
 
-import { ISearchPassage, TFamilyDocumentPublic, TSearchQueryGroup, TTopic } from "@/types";
+import { TOPIC_HIGHLIGHT_COLOURS as TOPIC_COLOURS } from "@/components/molecules/passageBlock/PassageBlock";
+import { SearchLevelContext } from "@/context/SearchLevelContext";
+import { IPassageLabel, ISearchPassage, TFamilyDocumentPublic, TSearchQueryGroup, TTopic } from "@/types";
 
 import { PassageSearch } from "./PassageSearch";
 
@@ -47,7 +49,10 @@ const url = vi.hoisted(() => {
     read: (key: string, fallback: unknown) => (values.has(key) ? values.get(key) : fallback),
     write: (key: string, value: unknown, fallback?: unknown) => {
       url.writes.push({ key, value });
-      values.set(key, value ?? fallback);
+      // Clearing a param removes it from the url, leaving every reader on its own default rather
+      // than on a shared null - two components read `filters` with different defaults.
+      if (value === null || value === undefined) values.delete(key);
+      else values.set(key, value ?? fallback);
       notify();
     },
     // nuqs drops a param from the url once it is set back to its parser default, leaving
@@ -147,6 +152,19 @@ const searchFor = async (term: string) => {
 // The topic checkboxes belong to SearchControls, so these drive the filter group it writes
 // to the url rather than the popover markup.
 const topicFilter: TSearchQueryGroup = { op: "or", filters: [{ field: "labels.value.id", op: "contains", value: "concept::Q1", checked: true }] };
+
+// A label as the passage API reports it: a concept id and the span of text it marks.
+const makeLabel = (id: string, startIndex: number, endIndex: number): IPassageLabel => ({
+  classifier_id: `classifier-${id}`,
+  start_index: startIndex,
+  end_index: endIndex,
+  labelled_text: "",
+  labellers: ["classifier"],
+  value: { id, type: "concept", value: id },
+});
+
+// A geography filter, as the results page writes it - not this search's to apply.
+const countryRule = { field: "labels.value.id", op: "contains", value: "country::LVA", checked: true } as const;
 
 const filterBy = async (filters: TSearchQueryGroup) => {
   await act(async () => url.seed("filters", filters));
@@ -253,6 +271,146 @@ describe("PassageSearch", () => {
       await filterBy(topicFilter);
 
       await waitFor(() => expect(mockFetchSearchPassages).toHaveBeenLastCalledWith(expect.objectContaining({ filters: topicFilter })));
+    });
+
+    // The topics the reader ticked are the ones highlighted in the passage text, so the
+    // filters are the single source of truth for what counts as an active topic.
+    describe("highlighting the filtered topics", () => {
+      // "Certain ecological and other requirements for the areas used by cultivation."
+      const labelledPassage = buildPassage({
+        labels: [makeLabel("concept::Q1", 8, 18), makeLabel("concept::Q2", 64, 75)],
+      });
+
+      it("highlights the passage text a checked topic marks", async () => {
+        mockFetchSearchPassages.mockResolvedValue({ total_size: 1, results: [labelledPassage] });
+        renderPrincipal();
+
+        await filterBy(topicFilter);
+
+        expect(await screen.findByText("ecological")).toHaveClass(TOPIC_COLOURS[0]);
+        // The other label is on the passage but its topic was not ticked
+        expect(screen.queryByText("cultivation")).not.toBeInTheDocument();
+      });
+
+      it("highlights nothing when there are no filters", async () => {
+        mockFetchSearchPassages.mockResolvedValue({ total_size: 1, results: [labelledPassage] });
+        renderPrincipal({ q: "renewable" });
+
+        expect(await screen.findByText(labelledPassage.text)).toBeInTheDocument();
+        expect(screen.queryByText("ecological")).not.toBeInTheDocument();
+      });
+
+      // A filter path carries its ancestors as unchecked rules to scope their descendants.
+      // Those are not selections, so they must not be highlighted.
+      it("ignores the unchecked rules that only scope a filter path", async () => {
+        mockFetchSearchPassages.mockResolvedValue({ total_size: 1, results: [labelledPassage] });
+        renderPrincipal();
+
+        await filterBy({
+          op: "and",
+          filters: [
+            { field: "labels.value.id", op: "contains", value: "concept::Q2" },
+            { op: "or", filters: [{ field: "labels.value.id", op: "contains", value: "concept::Q1", checked: true }] },
+          ],
+        });
+
+        expect(await screen.findByText("ecological")).toHaveClass(TOPIC_COLOURS[0]);
+        expect(screen.queryByText("cultivation")).not.toBeInTheDocument();
+      });
+
+      it("stops highlighting a topic once its filter is cleared", async () => {
+        mockFetchSearchPassages.mockResolvedValue({ total_size: 1, results: [labelledPassage] });
+        renderPrincipal({ q: "renewable" });
+        await filterBy(topicFilter);
+        await screen.findByText("ecological");
+
+        await clearFilters();
+
+        expect(await screen.findByText(labelledPassage.text)).toBeInTheDocument();
+        expect(screen.queryByText("ecological")).not.toBeInTheDocument();
+      });
+    });
+
+    /*
+      Only topics are offered here, so anything else in the parameter belongs to another search -
+      the results page filters documents by geography and category on the same shape.
+    */
+    describe("filters it does not own", () => {
+      it("searches on the topics alone, leaving the rest of the filters behind", async () => {
+        renderWithPreview({ q: "renewable", filters: { op: "and", filters: [...topicFilter.filters, countryRule] } });
+
+        await waitFor(() => expect(mockFetchSearchPassages).toHaveBeenCalledTimes(1));
+        expect(mockFetchSearchPassages).toHaveBeenCalledWith(expect.objectContaining({ filters: { op: "and", filters: topicFilter.filters } }));
+      });
+
+      it("does not narrow a search when one changes", async () => {
+        renderWithPreview({ q: "renewable" });
+        await waitFor(() => expect(mockFetchSearchPassages).toHaveBeenCalledTimes(1));
+
+        await filterBy({ op: "and", filters: [countryRule] });
+
+        expect(mockFetchSearchPassages).toHaveBeenCalledTimes(1);
+        expect(mockFetchSearchPassages).toHaveBeenLastCalledWith(expect.objectContaining({ filters: null }));
+      });
+
+      it("is not a search of its own", async () => {
+        renderWithPreview({ filters: { op: "and", filters: [countryRule] } });
+
+        expect(await screen.findByText("Search passages")).toBeInTheDocument();
+        expect(mockFetchSearchPassages).not.toHaveBeenCalled();
+      });
+    });
+  });
+
+  /*
+    A drawer searches at its own level, on namespaced params, so the search on the page behind it
+    is left alone.
+  */
+  describe("searching at a nested level", () => {
+    const renderInDrawer = (initialParams: Record<string, unknown> = {}) => {
+      Object.entries(initialParams).forEach(([key, value]) => url.seed(key, value));
+      return renderWith(
+        <SearchLevelContext value="principal">
+          <PassageSearch documents={principalDocuments} concepts={concepts} subject="these documents" />
+        </SearchLevelContext>
+      );
+    };
+
+    it("searches on the level's own params", async () => {
+      renderInDrawer({ principal_q: "renewable", principal_filters: topicFilter, principal_sort: "idx asc", principal_docs: ["CCLW.document.1.2"] });
+
+      await waitFor(() => expect(mockFetchSearchPassages).toHaveBeenCalledTimes(1));
+      expect(mockFetchSearchPassages).toHaveBeenCalledWith(
+        expect.objectContaining({ query: "renewable", filters: topicFilter, sort: "idx asc", documents: ["CCLW.document.1.2"] })
+      );
+    });
+
+    it("ignores the search on the page behind it", async () => {
+      renderInDrawer({ q: "renewable", filters: topicFilter, sort: "idx asc" });
+
+      expect(await screen.findByText("Search passages")).toBeInTheDocument();
+      expect(mockFetchSearchPassages).not.toHaveBeenCalled();
+    });
+
+    it("writes only its own params", async () => {
+      renderInDrawer({ principal_q: "renewable" });
+
+      await userEvent.type(screen.getByRole("textbox"), " targets{Enter}");
+
+      await waitFor(() => expect(url.writes).toEqual([{ key: "principal_q", value: "renewable targets" }]));
+    });
+
+    it("clears only its own search", async () => {
+      mockFetchSearchPassages.mockResolvedValue({ total_size: 0, results: [] });
+      renderInDrawer({ principal_q: "renewable", principal_filters: topicFilter });
+      await screen.findByText("No matching passages");
+
+      await userEvent.click(screen.getByRole("button", { name: "clear your search" }));
+
+      expect(url.writes).toEqual([
+        { key: "principal_q", value: "" },
+        { key: "principal_filters", value: null },
+      ]);
     });
   });
 
@@ -550,14 +708,24 @@ describe("PassageSearch", () => {
       await waitFor(() => expect(mockRouter.asPath).toBe("/documents/main-document?q=renewable"));
     });
 
-    it("opens the document in a new tab from the footer link", async () => {
+    it("opens the document in a new tab from the footer link, carrying the search over", async () => {
       const open = vi.spyOn(window, "open").mockImplementation(() => null);
       renderPrincipal({ q: "renewable" });
 
       await userEvent.click(await screen.findByRole("button", { name: "View document" }));
 
-      expect(open).toHaveBeenCalledWith("/documents/main-document", "_blank");
+      expect(open).toHaveBeenCalledWith("/documents/main-document?q=renewable", "_blank");
       open.mockRestore();
+    });
+
+    it("carries the topics over to the document page, on its own base params", async () => {
+      renderPrincipal({ q: "renewable", filters: topicFilter });
+
+      await userEvent.click(await screen.findByRole("button", { name: /Certain ecological/ }));
+
+      await waitFor(() =>
+        expect(mockRouter.asPath).toBe(`/documents/main-document?filters=${encodeURIComponent(JSON.stringify(topicFilter))}&q=renewable`)
+      );
     });
   });
 

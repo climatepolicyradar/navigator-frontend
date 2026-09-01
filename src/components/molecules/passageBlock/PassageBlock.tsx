@@ -2,8 +2,21 @@ import { Check, Copy, ExternalLink, File, LocateFixed } from "lucide-react";
 import { useEffect, useState } from "react";
 
 import { IPassageLabel } from "@/types";
+import { joinNodes } from "@/utils/reactNode";
+import { THighlightRange, addHighlights } from "@/utils/text/addHighlights";
+import { findSubStringMatches } from "@/utils/text/findSubStringMatches";
+import { resolveHighlightRanges } from "@/utils/text/resolveHighlightRanges";
 
 const COPY_FEEDBACK_TIMEOUT = 1000;
+
+export const QUERY_HIGHLIGHT_COLOUR = "bg-yellow-200 text-text-primary";
+export const TOPIC_HIGHLIGHT_COLOURS = [
+  "bg-cyan-200 text-text-primary",
+  "bg-purple-200 text-text-primary",
+  "bg-pink-200 text-text-primary",
+  "bg-lime-200 text-text-primary",
+  "bg-orange-200 text-text-primary",
+];
 
 type TPassagePage = {
   page_number: number;
@@ -34,12 +47,45 @@ type TProps = {
   onCopyClick?: () => void;
   onDocumentLinkClick?: () => void;
   onPassageClick?: (passage: TPassage) => void;
+  query?: string;
+  activeTopicsIds?: string[];
   // Hide the document title and its link when the passage is already shown in the
   // context of that document, e.g. on the document page.
   showDocument?: boolean;
 };
 
-export const PassageBlock = ({ passage, onCopyClick, onDocumentLinkClick, onPassageClick, showDocument = true }: TProps) => {
+// Define the colour for the topic highlight
+const getTopicColours = (activeTopics: IPassageLabel[]) => {
+  const colours = new Map<string, string>();
+  activeTopics.forEach(({ value }) => {
+    if (!colours.has(value.id)) colours.set(value.id, TOPIC_HIGHLIGHT_COLOURS[colours.size % TOPIC_HIGHLIGHT_COLOURS.length]);
+  });
+
+  return colours;
+};
+
+// Define the highlight ranges - highlights are applied later, we just nede their positions and colour
+const getHighlightRanges = ({
+  content,
+  query,
+  activeTopics,
+  topicColours,
+}: {
+  content: string;
+  query?: string;
+  activeTopics: IPassageLabel[];
+  topicColours: Map<string, string>;
+}): THighlightRange[] => [
+  // The query outranks every topic. Trimmed so a query typed with surrounding spaces still matches
+  ...findSubStringMatches(content, query?.trim() ?? "").map((match) => ({ ...match, className: QUERY_HIGHLIGHT_COLOUR })),
+  ...activeTopics.map(({ start_index, end_index, value }) => ({
+    start: start_index,
+    end: end_index,
+    className: topicColours.get(value.id) ?? "",
+  })),
+];
+
+export const PassageBlock = ({ passage, onCopyClick, onDocumentLinkClick, onPassageClick, query, activeTopicsIds, showDocument = true }: TProps) => {
   const [hasCopied, setHasCopied] = useState(false);
 
   useEffect(() => {
@@ -53,8 +99,27 @@ export const PassageBlock = ({ passage, onCopyClick, onDocumentLinkClick, onPass
   const pageNumbers = passage.pages?.map(({ page_number }) => page_number + 1) ?? [];
   const hasPages = pageNumbers.length > 0;
   const hasContext = hasPages || !!passage.headingText;
-  // A passage can carry the same label for several matched spans, so each topic is only shown once.
-  const topics = [...new Set(passage.labels?.map((label) => label.value.value) ?? [])];
+  const activeTopics = passage.labels?.filter((label) => activeTopicsIds?.includes(label.value.id)) ?? [];
+  const topicColours = getTopicColours(activeTopics);
+  const highlightedContent = addHighlights(
+    passage.content,
+    resolveHighlightRanges(passage.content, getHighlightRanges({ content: passage.content, query, activeTopics, topicColours }))
+  );
+  // A passage can contain multiple instances of the same topic
+  const topics = [...new Map(passage.labels?.map(({ value }) => [value.value, value.id]) ?? [])];
+  const topicsList = joinNodes(
+    topics.map(([value, id]) => {
+      const colour = topicColours.get(id);
+      return colour ? (
+        <span key={id} className={colour}>
+          {value}
+        </span>
+      ) : (
+        value
+      );
+    }),
+    ", "
+  );
   const hasFooter = showDocument || hasContext;
 
   const handleCopyClick = () => {
@@ -74,13 +139,13 @@ export const PassageBlock = ({ passage, onCopyClick, onDocumentLinkClick, onPass
             onClick={() => onPassageClick(passage)}
             className="text-left w-full text-sm text-text-primary px-8 py-7 hocus:bg-paper"
           >
-            <p>{passage.content}</p>
-            {passage.labels?.length > 0 && <p className="text-text-secondary mt-2">Contains topics: {topics.join(", ")}</p>}
+            <p>{highlightedContent}</p>
+            {passage.labels?.length > 0 && <p className="text-text-secondary mt-2">Contains topics: {topicsList}</p>}
           </button>
         ) : (
           <div className="px-8 py-7">
-            <p>{passage.content}</p>
-            {passage.labels?.length > 0 && <p className="text-text-secondary mt-2">Contains topics: {topics.join(", ")}</p>}
+            <p>{highlightedContent}</p>
+            {passage.labels?.length > 0 && <p className="text-text-secondary mt-2">Contains topics: {topicsList}</p>}
           </div>
         )}
       </div>
