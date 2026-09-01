@@ -203,7 +203,7 @@ export const PassageSearch = ({ concepts, documents, documentsLabel, enablePrevi
 
   // Get the selected topic IDs from the filters
   const activeTopicsIds = useMemo(
-    () => (filterParam ? [...new Set(queryGroupToFilterPaths(filterParam).map(([label]) => label.id))] : []),
+    () => (filterParam ? [...new Set(queryGroupToFilterPaths(filterParam).filterPathLabels.map(([label]) => label.id))] : []),
     [filterParam]
   );
 
