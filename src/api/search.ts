@@ -77,12 +77,19 @@ export function normaliseSearchDocumentsSortKey(raw: string | null | undefined):
   return raw && isSearchDocumentsSortKey(raw) ? raw : "relevance";
 }
 
+// The HTTP status is attached to the thrown error so callers can tell an over-long
+// request (414 — too many filters to fit in the query string) from a generic failure.
+export function getSearchApiStatus(error: unknown): number | undefined {
+  return error instanceof Error ? (error as Error & { status?: number }).status : undefined;
+}
+
 interface SearchDocumentsParams {
   query?: string;
   filters?: TSearchQueryGroup;
   page_size?: string;
   page_token?: string;
   sort?: SearchDocumentsSortKey;
+  signal?: AbortSignal;
 }
 
 function searchDocumentsUrl(): string {
@@ -162,7 +169,7 @@ export async function fetchSearchDocuments(params: SearchDocumentsParams = {}): 
   const sortKey = params.sort ?? "relevance";
   url.searchParams.set("order_by", SEARCH_DOCUMENT_SORT_PARAMS[sortKey]);
 
-  const res = await fetch(url);
-  if (!res.ok) throw new Error(`Search API error: ${res.status}`);
+  const res = await fetch(url, { signal: params.signal });
+  if (!res.ok) throw Object.assign(new Error(`Search API error: ${res.status}`), { status: res.status });
   return res.json() as Promise<SearchDocumentsResponse>;
 }

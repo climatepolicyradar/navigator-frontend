@@ -1,7 +1,8 @@
-import { LucideCog } from "lucide-react";
-import React, { Fragment, Suspense, use, useEffect, useMemo } from "react";
+import { useQuery } from "@tanstack/react-query";
+import React, { Fragment, useEffect, useMemo } from "react";
 
-import { fetchSearchDocuments, SearchDocument, SearchDocumentsResponse, SearchDocumentsSortKey } from "@/api/search";
+import { fetchSearchDocuments, getSearchApiStatus, SearchDocument, SearchDocumentsResponse, SearchDocumentsSortKey } from "@/api/search";
+import Loader from "@/components/Loader";
 import { DocumentCard } from "@/components/molecules/documentCard/DocumentCard";
 import { TSearchQueryGroup } from "@/types";
 import { sanitiseSearchQueryGroup } from "@/utils/filters/advancedFilters";
@@ -16,24 +17,28 @@ const isPrincipal = (result: SearchDocument): boolean => {
   return result.labels.some((label) => label.type === "status" && label.value.value === "Principal");
 };
 
+export const shouldRetrySearch = (failureCount: number, error: unknown): boolean => {
+  return (getSearchApiStatus(error) ?? 500) >= 500 && failureCount < 3;
+};
+
+// 414 means the filters no longer fit in the request URL, so the user can act on it
+// by removing some. Anything else is not actionable.
+const searchErrorMessage = (error: unknown): string => {
+  if (getSearchApiStatus(error) === 414) {
+    return "This search has too many filters for us to run. Remove some filters and try again.";
+  }
+  return "Something went wrong with your search. Please try again.";
+};
+
 function SearchResults({
-  promise,
-  onTotalResultsChange,
+  data,
   onResultClicked,
 }: {
-  promise: Promise<SearchDocumentsResponse>;
-  onTotalResultsChange?: (total: number | null) => void;
+  data: SearchDocumentsResponse;
   onResultClicked?: (document: SearchDocument, event: React.MouseEvent<HTMLButtonElement>) => void;
 }) {
-  const data = use(promise);
-
-  // notify parent of the number of results
-  useEffect(() => {
-    onTotalResultsChange?.(data.total_size ?? null);
-  }, [data.total_size, onTotalResultsChange]);
-
   return (
-    <div>
+    <div data-cy="search-results">
       <ul className="flex flex-col gap-4 highlights">
         {data.results.map((result) => (
           <Fragment key={result.id}>
@@ -61,6 +66,7 @@ export function SearchContainer({
   page_token,
   sort,
   onTotalResultsChange,
+  onSearchingChange,
   onResultClicked,
 }: {
   selectedLabels?: string[];
@@ -69,6 +75,7 @@ export function SearchContainer({
   page_token?: string;
   sort?: SearchDocumentsSortKey;
   onTotalResultsChange?: (total: number | null) => void;
+  onSearchingChange?: (isSearching: boolean) => void;
   onResultClicked?: (document: SearchDocument, event: React.MouseEvent<HTMLButtonElement>) => void;
 }) {
   // Drop placeholder rules (e.g. default empty label row) so date-only filters still fetch.
@@ -78,33 +85,49 @@ export function SearchContainer({
     return isFilterGroupEmpty(sanitised) ? undefined : sanitised;
   }, [filters]);
 
-  const searchPromise = useMemo(() => {
-    if (!query && !nonEmptyFilters) return null;
+  const hasSearch = !!query || !!nonEmptyFilters;
 
-    return fetchSearchDocuments({
-      query,
-      page_size: SEARCH_RESULTS_PAGE_SIZE.toString(),
-      page_token,
-      filters: nonEmptyFilters,
-      sort,
-    });
-  }, [query, nonEmptyFilters, page_token, sort]);
+  const { data, error, isError, isPending } = useQuery({
+    queryKey: ["searchDocuments", query, nonEmptyFilters, page_token, sort],
+    queryFn: ({ signal }) =>
+      fetchSearchDocuments({
+        query,
+        page_size: SEARCH_RESULTS_PAGE_SIZE.toString(),
+        page_token,
+        filters: nonEmptyFilters,
+        sort,
+        signal,
+      }),
+    enabled: hasSearch,
+    retry: shouldRetrySearch,
+    // A term's results do not change within a session.
+    refetchOnWindowFocus: false,
+  });
 
-  return (
-    <>
-      {searchPromise ? (
-        <Suspense
-          fallback={
-            <p className="text-sm text-text-secondary flex gap-2 items-center">
-              <LucideCog className="animate-spin" /> Loading results…
-            </p>
-          }
-        >
-          <SearchResults promise={searchPromise} onTotalResultsChange={onTotalResultsChange} onResultClicked={onResultClicked} />
-        </Suspense>
-      ) : (
-        <EmptySearch />
-      )}
-    </>
-  );
+  const isSearching = hasSearch && isPending;
+
+  // notify parent of the number of results, clearing it while a search runs and when one
+  // fails so the count and pagination do not linger from the previous search
+  const totalResults = isError ? null : (data?.total_size ?? null);
+  useEffect(() => {
+    onTotalResultsChange?.(totalResults);
+  }, [totalResults, onTotalResultsChange]);
+
+  useEffect(() => {
+    onSearchingChange?.(isSearching);
+  }, [isSearching, onSearchingChange]);
+
+  if (!hasSearch) return <EmptySearch />;
+
+  if (isSearching) {
+    return (
+      <div className="flex justify-center" data-cy="search-loading">
+        <Loader />
+      </div>
+    );
+  }
+
+  if (isError) return <p className="py-10 text-center text-sm text-text-secondary">{searchErrorMessage(error)}</p>;
+
+  return <SearchResults data={data} onResultClicked={onResultClicked} />;
 }
