@@ -6,18 +6,18 @@ export type TToggleFilterCallback = (labelPath: TFilterPathLabel[], checked: TCh
 export type TDateRange = [number, number] | null;
 
 interface IFiltersContext {
+  appliedDateRange: TDateRange;
   checkedLabelPaths: TFilterPathLabel[][];
   clearFilters: () => void;
-  dateRange: TDateRange;
   labelValues: Record<string, string>;
   setDateRange: (dateRange: TDateRange) => void;
   toggleFilter: TToggleFilterCallback;
 }
 
 export const FiltersContext = createContext<IFiltersContext>({
+  appliedDateRange: null,
   checkedLabelPaths: [],
   clearFilters: () => {},
-  dateRange: null,
   labelValues: {},
   setDateRange: () => {},
   toggleFilter: () => {},

@@ -64,7 +64,6 @@ export const SearchControls = ({
 
   const [searchInput, setSearchInput] = useState(queryParam);
   const [lastQueryParam, setLastQueryParam] = useState(queryParam); // Keep input in sync with query
-  const [dateRange, setDateRange] = useState<TDateRange>(null);
 
   if (queryParam !== lastQueryParam) {
     setLastQueryParam(queryParam);
@@ -72,19 +71,27 @@ export const SearchControls = ({
   }
 
   const labelValues = useMemo(() => getSearchLabelValues(labels), [labels]);
-  const checkedLabelPaths = useMemo(() => sortFilterPathLabels(queryGroupToFilterPaths(filterParam)), [filterParam]);
   const filterGroupsWithLabels = useMemo(() => groupSearchLabels(nestSearchLabels(labels), filterGroups), [filterGroups, labels]);
+  const { appliedDateRange, checkedLabelPaths } = useMemo(() => {
+    const fromFilterParam = queryGroupToFilterPaths(filterParam);
+    return {
+      appliedDateRange: fromFilterParam.dateRange,
+      checkedLabelPaths: sortFilterPathLabels(fromFilterParam.filterPathLabels),
+    };
+  }, [filterParam]);
 
   const toggleFilter: TToggleFilterCallback = (labelPath, checked) => {
     const updatedCheckedLabelPaths = updateCheckedLabelPaths(checkedLabelPaths, labelPath, checked);
-    setFilterParam(filterPathsToQueryGroup(updatedCheckedLabelPaths));
+    setFilterParam(filterPathsToQueryGroup(updatedCheckedLabelPaths, appliedDateRange));
   };
 
   const clearFilters = () => {
     setFilterParam(null);
   };
 
-  const onSetDateRange = (newDateRange: TDateRange) => setDateRange(newDateRange);
+  const onSetDateRange = (dateRange: TDateRange) => {
+    setFilterParam(filterPathsToQueryGroup(checkedLabelPaths, dateRange));
+  };
 
   const onSort = (sortValue: string) => {
     setSortParam(sortValue);
@@ -97,8 +104,7 @@ export const SearchControls = ({
   };
 
   return (
-    <FiltersContext value={{ checkedLabelPaths, clearFilters, dateRange, labelValues, setDateRange: onSetDateRange, toggleFilter }}>
-      {JSON.stringify(dateRange)}
+    <FiltersContext value={{ appliedDateRange, checkedLabelPaths, clearFilters, labelValues, setDateRange: onSetDateRange, toggleFilter }}>
       <form onSubmit={onQuerySubmit} className="col-start-1 -col-end-1 cols-5:col-start-2 cols-5:-col-end-2">
         <Input
           containerClasses="px-4 py-3 bg-bg-flat border border-border-normal rounded-lg placeholder-text-tertiary"
@@ -146,7 +152,7 @@ export const SearchControls = ({
           <Sort sortOptions={sortOptions} value={sortParam} onChange={onSort} />
         </div>
       </div>
-      <AppliedFilters showClearAll />
+      <AppliedFilters showClearAll includeDateRange />
       {extraContent}
     </FiltersContext>
   );
