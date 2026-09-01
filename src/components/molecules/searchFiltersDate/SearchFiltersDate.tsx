@@ -60,6 +60,7 @@ export const SearchFiltersDate = ({ filterGroup }: IProps) => {
   const { appliedDateRange, setDateRange } = useContext(FiltersContext);
   const [dateFilterState, setDateFilterState] = useState<TDateFilterState>(() => dateRangeToFilterState(appliedDateRange));
   const [prevAppliedDateRange, setPrevAppliedDateRange] = useState(appliedDateRange); // Avoids needing a useEffect to listen to appliedDateRange changing beyond this component
+  const [isOpen, setIsOpen] = useState(false);
   const { radioValue, earliestYear, latestYear } = dateFilterState;
 
   if (appliedDateRange !== prevAppliedDateRange) {
@@ -84,16 +85,18 @@ export const SearchFiltersDate = ({ filterGroup }: IProps) => {
 
   const onApply = () => {
     setDateRange(currentDateRange);
+    setIsOpen(false);
   };
 
   const onOpenChange = (open: boolean) => {
+    setIsOpen(open);
     if (!open) setDateFilterState(dateRangeToFilterState(appliedDateRange));
   };
 
   if (filterGroup.container !== "datepicker") return null;
 
   return (
-    <BasePopover.Root onOpenChange={onOpenChange}>
+    <BasePopover.Root open={isOpen} onOpenChange={onOpenChange}>
       <BasePopover.Trigger className="flex gap-2 items-center px-3 py-2 bg-bg-primary data-popup-open:bg-bg-flat text-sm text-text-primary font-medium leading-5 border border-border-normal rounded-full">
         <span>{filterGroup.title}</span>
         <ChevronDown size={16} className="text-elem-icon" />
