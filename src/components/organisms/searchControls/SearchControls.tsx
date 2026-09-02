@@ -26,6 +26,7 @@ interface IProps {
   filterParamKey: string;
   filtersSlot?: ReactNode;
   labels: TSearchLabel[];
+  nameLabels?: TSearchLabel[];
   pageParamKey?: string;
   queryParamKey: string;
   resetPageOnSort?: boolean;
@@ -41,6 +42,7 @@ export const SearchControls = ({
   filterParamKey,
   filtersSlot,
   labels,
+  nameLabels,
   pageParamKey = PAGE_TOKEN_PARAM_KEY,
   queryParamKey,
   resetPageOnSort = false,
@@ -68,7 +70,13 @@ export const SearchControls = ({
   }
 
   const nestedLabels = useMemo(() => nestSearchLabels(labels), [labels]);
-  const labelValues = useMemo(() => getSearchLabelValues(nestedLabels), [nestedLabels]);
+  // Chips for already-checked filters must resolve to a name even if that label falls
+  // outside the (possibly narrower) set offered in the menu, so fall back to `nameLabels`.
+  const nestedNameLabels = useMemo(() => {
+    const extra = (nameLabels ?? []).filter((label) => !labels.some((l) => l.id === label.id));
+    return nestSearchLabels([...labels, ...extra]);
+  }, [labels, nameLabels]);
+  const labelValues = useMemo(() => getSearchLabelValues(nestedNameLabels), [nestedNameLabels]);
   const checkedLabelPaths = useMemo(() => sortFilterPathLabels(queryGroupToFilterPaths(filterParam)), [filterParam]);
   const filterGroupsWithLabels = useMemo(() => groupSearchLabels(nestedLabels, filterGroups), [filterGroups, nestedLabels]);
 
