@@ -21,13 +21,6 @@ export const shouldRetrySearch = (failureCount: number, error: unknown): boolean
   return (getSearchApiStatus(error) ?? 500) >= 500 && failureCount < 3;
 };
 
-const searchErrorMessage = (error: unknown): string => {
-  if (getSearchApiStatus(error) === 414) {
-    return "This search has too many filters for us to run. Remove some filters and try again.";
-  }
-  return "Something went wrong with your search. Please try again.";
-};
-
 function SearchResults({
   data,
   onResultClicked,
@@ -85,7 +78,7 @@ export function SearchContainer({
 
   const hasSearch = !!query || !!nonEmptyFilters;
 
-  const { data, error, isError, isPending } = useQuery({
+  const { data, isError, isPending } = useQuery({
     queryKey: ["searchDocuments", query, nonEmptyFilters, page_token, sort],
     queryFn: ({ signal }) =>
       fetchSearchDocuments({
@@ -124,7 +117,7 @@ export function SearchContainer({
     );
   }
 
-  if (isError) return <p className="py-10 text-center text-sm text-text-secondary">{searchErrorMessage(error)}</p>;
+  if (isError) return <p className="py-10 text-center text-sm text-text-secondary">Something went wrong with your search. Please try again.</p>;
 
   return <SearchResults data={data} onResultClicked={onResultClicked} />;
 }
