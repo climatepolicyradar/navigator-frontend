@@ -1,6 +1,7 @@
 import { Check, Copy, ExternalLink, File, LocateFixed } from "lucide-react";
 import { useEffect, useState } from "react";
 
+import { EN_DASH } from "@/constants/chars";
 import { IPassageLabel } from "@/types";
 import { joinNodes } from "@/utils/reactNode";
 import { THighlightRange, addHighlights } from "@/utils/text/addHighlights";
@@ -62,6 +63,13 @@ const getTopicColours = (activeTopics: IPassageLabel[]) => {
   });
 
   return colours;
+};
+
+const formatPageRange = (pageNumbers: number[]): string => {
+  if (pageNumbers.length <= 1) return pageNumbers[0].toString() ?? "";
+
+  const sortedPageNumbers = [...pageNumbers].sort();
+  return [sortedPageNumbers[0], sortedPageNumbers[sortedPageNumbers.length - 1]].join(EN_DASH);
 };
 
 // Define the highlight ranges - highlights are applied later, we just nede their positions and colour
@@ -164,7 +172,7 @@ export const PassageBlock = ({ passage, onCopyClick, onDocumentLinkClick, onPass
                   <div className="flex gap-2 items-center shrink-0">
                     <LocateFixed size={16} className="text-elem-icon" />
                     <p className="text-sm text-text-primary whitespace-nowrap">
-                      {pageNumbers.length === 1 ? "Pg." : "Pgs."} {pageNumbers.join(", ")}
+                      {pageNumbers.length === 1 ? "Page" : "Pages"} {formatPageRange(pageNumbers)}
                     </p>
                   </div>
                 )}
