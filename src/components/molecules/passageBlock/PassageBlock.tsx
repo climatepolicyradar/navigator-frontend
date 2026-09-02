@@ -113,19 +113,14 @@ export const PassageBlock = ({ passage, onCopyClick, onDocumentLinkClick, onPass
     passage.content,
     resolveHighlightRanges(passage.content, getHighlightRanges({ content: passage.content, query, activeTopics, topicColours }))
   );
-  // A passage can contain multiple instances of the same topic
-  const topics = [...new Map(passage.labels?.map(({ value }) => [value.value, value.id]) ?? [])];
+  // A passage can contain multiple spans of the same highlighted topic
+  const topics = [...new Map(activeTopics.map(({ value }) => [value.value, value.id]))];
   const topicsList = joinNodes(
-    topics.map(([value, id]) => {
-      const colour = topicColours.get(id);
-      return colour ? (
-        <span key={id} className={colour}>
-          {value}
-        </span>
-      ) : (
-        value
-      );
-    }),
+    topics.map(([value, id]) => (
+      <span key={id} className={topicColours.get(id)}>
+        {value}
+      </span>
+    )),
     ", "
   );
   const hasFooter = showDocument || hasContext;
@@ -148,12 +143,12 @@ export const PassageBlock = ({ passage, onCopyClick, onDocumentLinkClick, onPass
             className="text-left w-full text-sm text-text-primary px-8 py-7 hocus:bg-paper"
           >
             <p>{highlightedContent}</p>
-            {passage.labels?.length > 0 && <p className="text-text-secondary mt-2">Contains topics: {topicsList}</p>}
+            {activeTopics.length > 0 && <p className="text-text-secondary mt-2">Contains: {topicsList}</p>}
           </button>
         ) : (
           <div className="px-8 py-7">
             <p>{highlightedContent}</p>
-            {passage.labels?.length > 0 && <p className="text-text-secondary mt-2">Contains topics: {topicsList}</p>}
+            {activeTopics.length > 0 && <p className="text-text-secondary mt-2">Contains: {topicsList}</p>}
           </div>
         )}
       </div>
