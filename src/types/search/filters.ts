@@ -12,7 +12,7 @@ type TFiltersGroupDrawerConfig = {
   container: "drawer";
   rootLabelTypes: string[];
   prepareRootLabels?: (rootLabels: TNestedSearchLabel[]) => TNestedSearchLabel[];
-  filterParentsDefaultOpen?: boolean;
+  topLevelDefaultOpen?: boolean;
 };
 
 type TFiltersGroupPopoverConfig = {
@@ -23,7 +23,7 @@ type TFiltersGroupPopoverConfig = {
   container: "popover" | "datepicker";
   rootLabelTypes: string[];
   prepareRootLabels?: (rootLabels: TNestedSearchLabel[]) => TNestedSearchLabel[];
-  filterParentsDefaultOpen?: boolean;
+  topLevelDefaultOpen?: boolean;
 };
 
 export type TFiltersGroupConfig = TFiltersGroupDrawerConfig | TFiltersGroupPopoverConfig;

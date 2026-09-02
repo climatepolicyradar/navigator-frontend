@@ -14,6 +14,7 @@ const MIN_SEARCH_LENGTH = 2;
 
 interface IProps {
   ancestorPath: TFilterPathLabel[];
+  defaultOpen?: boolean;
   labels: TNestedSearchLabel[];
   level: number;
 }
@@ -30,9 +31,9 @@ const getMatchingLabelPathSignatures = (labels: TNestedSearchLabel[], ancestorPa
   });
 };
 
-export const SearchFilterLookup = ({ ancestorPath, labels, level }: IProps) => {
+export const SearchFilterLookup = ({ ancestorPath, defaultOpen, labels, level }: IProps) => {
   const [searchText, setSearchText] = useState("");
-  const [showAll, setShowAll] = useState(false);
+  const [showAll, setShowAll] = useState(defaultOpen);
 
   const searchTerm = searchText.length >= MIN_SEARCH_LENGTH ? searchText : "";
   const matchingLabelPathSignatures = useMemo(
@@ -63,7 +64,7 @@ export const SearchFilterLookup = ({ ancestorPath, labels, level }: IProps) => {
           ))}
         </ul>
       </FiltersLookupContext.Provider>
-      {isOverflowing && (
+      {!defaultOpen && isOverflowing && (
         <button
           type="button"
           className="self-start text-xs text-text-primary leading-5 underline"
