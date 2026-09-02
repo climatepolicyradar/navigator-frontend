@@ -9,7 +9,7 @@ export const getLabelDisplay = (label: TNestedSearchLabel, ancestorPath: TFilter
   const displayReplacement = LABEL_DISPLAY_REPLACEMENTS.find(
     (replacement) =>
       label.id.toLowerCase().includes(replacement.idMatch.toLowerCase()) &&
-      (!("parentId" in replacement) || parentLabelId.toLowerCase() === replacement.parentId.toLowerCase())
+      (!("parentId" in replacement) || (parentLabelId !== null && parentLabelId.toLowerCase() === replacement.parentId.toLowerCase()))
   );
 
   return {
