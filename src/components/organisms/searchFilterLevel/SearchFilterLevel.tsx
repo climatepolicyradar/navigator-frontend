@@ -22,10 +22,11 @@ interface IProps {
   level: number;
   renderParents?: boolean;
   parentsDefaultOpen?: boolean;
+  filtersPlural?: string;
 }
 
 // Render a set of label peers depending on content and composition
-export const SearchFilterLevel = ({ ancestorPath, indented, labels, level, parentsDefaultOpen, renderParents }: IProps) => {
+export const SearchFilterLevel = ({ ancestorPath, indented, labels, level, parentsDefaultOpen, renderParents, filtersPlural }: IProps) => {
   const { inUse: isLookupAtHigherLevel } = useContext(FiltersLookupContext);
 
   const levelIsGroups = labels.every((label) => label.type === "group");
@@ -41,9 +42,9 @@ export const SearchFilterLevel = ({ ancestorPath, indented, labels, level, paren
         <div className="p-3 bg-[#1A4F8C0D] rounded-full">
           <LucideScanSearch size={24} className="text-text-brand" />
         </div>
-        <span className="mt-2 mb-1 text-sm text-text-primary font-medium leading-6">No topics</span>
+        <span className="mt-2 mb-1 text-sm text-text-primary font-medium leading-6">No {filtersPlural || "filters"}</span>
         <p className="text-sm text-text-secondary font-normal leading-6 text-center">
-          There are no topics assigned to this document or group of documents
+          There are no {filtersPlural || "filters"} assigned to this document or group of documents
           <button
             type="button"
             onClick={() => {
@@ -51,7 +52,7 @@ export const SearchFilterLevel = ({ ancestorPath, indented, labels, level, paren
             }}
             className="inline text-text-brand underline"
           >
-            Learn more about topics
+            Learn more about {filtersPlural || "filters"}
           </button>
         </p>
       </div>

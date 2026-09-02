@@ -32,17 +32,17 @@ describe("groupSearchLabels", () => {
     expect(grouped).toEqual([]);
   });
 
-  it("keeps a group with no matching labels when renderWhenEmpty is set", () => {
-    const grouped = groupSearchLabels([label("region", "europe")], [popoverGroup({ renderWhenEmpty: true })]);
+  it("keeps a group with no matching labels when displayWhenEmpty is set", () => {
+    const grouped = groupSearchLabels([label("region", "europe")], [popoverGroup({ displayWhenEmpty: true })]);
 
     expect(grouped).toHaveLength(1);
     expect(grouped[0].nestedLabels).toEqual([]);
   });
 
-  it("still runs prepareRootLabels for a group kept by renderWhenEmpty", () => {
+  it("still runs prepareRootLabels for a group kept by displayWhenEmpty", () => {
     const placeholder = label("concept", "placeholder");
     const prepareRootLabels = vi.fn(() => [placeholder]);
-    const grouped = groupSearchLabels([], [popoverGroup({ renderWhenEmpty: true, prepareRootLabels })]);
+    const grouped = groupSearchLabels([], [popoverGroup({ displayWhenEmpty: true, prepareRootLabels })]);
 
     expect(prepareRootLabels).toHaveBeenCalledWith([]);
     expect(grouped[0].nestedLabels).toEqual([placeholder]);

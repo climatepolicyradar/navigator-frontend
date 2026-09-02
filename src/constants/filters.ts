@@ -32,7 +32,7 @@ export const SEARCH_FILTER_GROUPS: TFiltersGroupConfig[] = [
     title: "Date",
     container: "datepicker",
     rootLabelTypes: [],
-    renderWhenEmpty: true,
+    displayWhenEmpty: true,
   },
 ];
 
@@ -42,6 +42,7 @@ export const PASSAGE_FILTER_GROUPS: TFiltersGroupConfig[] = [
     container: "popover",
     rootLabelTypes: ["concept"],
     prepareRootLabels: prepareTopicFilters,
-    renderWhenEmpty: true,
+    displayWhenEmpty: true,
+    filtersPlural: "topics",
   },
 ];

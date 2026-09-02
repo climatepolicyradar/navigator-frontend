@@ -10,7 +10,7 @@ interface IProps {
 
 export const SearchFiltersPopover = ({ filterGroup }: IProps) => {
   if (filterGroup.container !== "popover") return null;
-  const { nestedLabels, title } = filterGroup;
+  const { nestedLabels, title, filtersPlural } = filterGroup;
 
   return (
     <BasePopover.Root>
@@ -21,7 +21,7 @@ export const SearchFiltersPopover = ({ filterGroup }: IProps) => {
       <BasePopover.Portal>
         <BasePopover.Positioner positionMethod="fixed" side="bottom" sideOffset={8} align="start" className="">
           <BasePopover.Popup className="w-83 max-h-[50dvh] px-6 py-5 bg-bg-primary border border-border-normal rounded-xl shadow-2xl overflow-y-auto">
-            <SearchFilterLevel ancestorPath={[]} labels={nestedLabels} level={1} />
+            <SearchFilterLevel ancestorPath={[]} labels={nestedLabels} level={1} filtersPlural={filtersPlural || "labels"} />
           </BasePopover.Popup>
         </BasePopover.Positioner>
       </BasePopover.Portal>
