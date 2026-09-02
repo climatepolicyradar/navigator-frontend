@@ -106,8 +106,7 @@ export function SearchContainer({
 
   const isSearching = hasSearch && isPending;
 
-  // notify parent of the number of results, clearing it while a search runs and when one
-  // fails so the count and pagination do not linger from the previous search
+  // callback to parent if needed
   const totalResults = isError ? null : (data?.total_size ?? null);
   useEffect(() => {
     onTotalResultsChange?.(totalResults);
