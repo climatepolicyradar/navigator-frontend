@@ -33,6 +33,7 @@ interface IProps {
   filterParamKey: string;
   filtersSlot?: ReactNode;
   labels: TSearchLabel[];
+  nameLabels?: TSearchLabel[];
   pageParamKey?: string;
   queryParamKey: string;
   resetPageOnSort?: boolean;
@@ -48,6 +49,7 @@ export const SearchControls = ({
   filterParamKey,
   filtersSlot,
   labels,
+  nameLabels,
   pageParamKey = PAGE_TOKEN_PARAM_KEY,
   queryParamKey,
   resetPageOnSort = false,
@@ -73,8 +75,16 @@ export const SearchControls = ({
     setSearchInput(queryParam);
   }
 
-  const labelValues = useMemo(() => getSearchLabelValues(labels), [labels]);
-  const filterGroupsWithLabels = useMemo(() => groupSearchLabels(nestSearchLabels(labels), filterGroups), [filterGroups, labels]);
+  // Chips for already-checked filters must resolve to a name even if that label falls outside the (possibly narrower) set offered in the menu, so fall back to `nameLabels`.
+  const nestedLabels = useMemo(() => nestSearchLabels(labels), [labels]);
+  const nestedNameLabels = useMemo(() => {
+    const extra = (nameLabels ?? []).filter((label) => !labels.some((l) => l.id === label.id));
+    return nestSearchLabels([...labels, ...extra]);
+  }, [labels, nameLabels]);
+
+  const labelValues = useMemo(() => getSearchLabelValues(nestedNameLabels), [nestedNameLabels]);
+  const filterGroupsWithLabels = useMemo(() => groupSearchLabels(nestedLabels, filterGroups), [filterGroups, nestedLabels]);
+
   const { appliedDateRange, checkedLabelPaths } = useMemo(() => {
     const fromFilterParam = queryGroupToFilterPaths(filterParam);
     return {

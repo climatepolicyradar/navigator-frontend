@@ -280,6 +280,7 @@ export const PassageSearch = ({ concepts, documents, documentsLabel, enablePrevi
         )
       }
       labels={conceptFilters}
+      nameLabels={availableConcepts}
       pageParamKey={paramKeys.pageToken}
       queryParamKey={paramKeys.query}
       sortOptions={PASSAGE_SORT_OPTIONS}

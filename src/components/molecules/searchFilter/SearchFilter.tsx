@@ -9,9 +9,9 @@ import { TCheckboxState, TFilterPathLabel, TNestedSearchLabel } from "@/types";
 import { filterHasSelectedChildren } from "@/utils/filters/filterHasSelectedChildren";
 import { getFilterPathLabels, getLabelPathSignature } from "@/utils/filters/filterPaths";
 import { getFilterStatus } from "@/utils/filters/getFilterStatus";
+import { getLabelDisplay } from "@/utils/filters/getLabelDisplay";
 import { joinTailwindClasses } from "@/utils/tailwind";
 import { addSubStringHighlights } from "@/utils/text/addSubStringHighlights";
-import { firstCase } from "@/utils/text/firstCase";
 
 interface IProps {
   ancestorPath: TFilterPathLabel[];
@@ -59,7 +59,8 @@ export const SearchFilter = ({ ancestorPath, label, level }: IProps) => {
     ? { onClick: (event: MouseEvent) => event.stopPropagation(), noClickLabel: true }
     : { onClick: undefined, noClickLabel: false };
 
-  const labelValue = isFiltered ? addSubStringHighlights(firstCase(label.value), searchTerm, "bg-yellow-200") : firstCase(label.value);
+  const labelName = getLabelDisplay(label, ancestorPath).name;
+  const labelValue = isFiltered ? addSubStringHighlights(labelName, searchTerm, "bg-yellow-200") : labelName;
 
   return (
     <li>
