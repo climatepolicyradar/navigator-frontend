@@ -13,6 +13,7 @@ type TFiltersGroupDrawerConfig = {
   rootLabelTypes: string[];
   prepareRootLabels?: (rootLabels: TNestedSearchLabel[]) => TNestedSearchLabel[];
   filterParentsDefaultOpen?: boolean;
+  renderWhenEmpty?: boolean;
 };
 
 type TFiltersGroupPopoverConfig = {
@@ -24,6 +25,7 @@ type TFiltersGroupPopoverConfig = {
   rootLabelTypes: string[];
   prepareRootLabels?: (rootLabels: TNestedSearchLabel[]) => TNestedSearchLabel[];
   filterParentsDefaultOpen?: boolean;
+  renderWhenEmpty?: boolean;
 };
 
 export type TFiltersGroupConfig = TFiltersGroupDrawerConfig | TFiltersGroupPopoverConfig;
