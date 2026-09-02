@@ -28,7 +28,9 @@ const getDocumentGeography = (document: SearchDocument): ReactNode => {
       {geography.value.value}
       {otherGeographies > 0 && <> +{otherGeographies}</>}
     </>
-  ) : null;
+  ) : (
+    <span className="text-text-tertiary">No Geography</span>
+  );
 };
 
 const getDocumentPublishedYear = (doc: SearchDocument): ReactNode => {
