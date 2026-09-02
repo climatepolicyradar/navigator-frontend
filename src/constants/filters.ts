@@ -28,6 +28,11 @@ export const SEARCH_FILTER_GROUPS: TFiltersGroupConfig[] = [
     rootLabelTypes: ["concept"],
     prepareRootLabels: prepareTopicFilters,
   },
+  {
+    title: "Date",
+    container: "datepicker",
+    rootLabelTypes: [],
+  },
 ];
 
 export const PASSAGE_FILTER_GROUPS: TFiltersGroupConfig[] = [

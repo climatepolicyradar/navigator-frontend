@@ -29,7 +29,9 @@ const meta = {
     };
 
     return (
-      <FiltersContext value={{ checkedLabelPaths, clearFilters: () => {}, labelValues: {}, toggleFilter }}>
+      <FiltersContext
+        value={{ appliedDateRange: null, checkedLabelPaths, clearFilters: () => {}, labelValues: {}, setDateRange: () => {}, toggleFilter }}
+      >
         <ul className="list-none w-100">
           <SearchFilter {...props} />
         </ul>

@@ -4,10 +4,11 @@ import { Fragment, ReactNode, SubmitEventHandler, useMemo, useState } from "reac
 
 import { Input } from "@/components/atoms/input/Input";
 import { AppliedFilters } from "@/components/molecules/appliedFilters/AppliedFilters";
+import { SearchFiltersDate } from "@/components/molecules/searchFiltersDate/SearchFiltersDate";
 import { SearchFiltersDrawer } from "@/components/molecules/searchFiltersDrawer/SearchFiltersDrawer";
 import { SearchFiltersPopover } from "@/components/molecules/searchFiltersPopover/SearchFiltersPopover";
 import { Sort } from "@/components/molecules/sort/Sort";
-import { FiltersContext, TToggleFilterCallback } from "@/context/FiltersContext";
+import { FiltersContext, TDateRange, TToggleFilterCallback } from "@/context/FiltersContext";
 import { FilterGroupSchema } from "@/schemas";
 import { TFiltersGroupConfig, TSearchLabel, TSearchQueryGroup, TSortOptionConfig } from "@/types";
 import { sortFilterPathLabels } from "@/utils/filters/filterPaths";
@@ -19,6 +20,12 @@ import { DEFAULT_SEARCH_QUERY_GROUP, filterPathsToQueryGroup } from "@/utils/sea
 import { queryGroupToFilterPaths } from "@/utils/search/queryGroupToFilterPaths";
 import { PAGE_TOKEN_PARAM_KEY } from "@/utils/search/searchLevels";
 import { formatDateShort } from "@/utils/timedate";
+
+const SEARCH_FILTERS_LOOKUP = {
+  datepicker: SearchFiltersDate,
+  drawer: SearchFiltersDrawer,
+  popover: SearchFiltersPopover,
+};
 
 interface IProps {
   extraContent?: ReactNode; // Benefits from FiltersContext for rendering suggestions / zero state
@@ -61,32 +68,42 @@ export const SearchControls = ({
   const [_currentPage, setCurrentPage] = useQueryState(pageParamKey, parseAsString.withDefault("1"));
 
   const [searchInput, setSearchInput] = useState(queryParam);
-  // Keep input in sync with query
-  const [lastQueryParam, setLastQueryParam] = useState(queryParam);
+  const [lastQueryParam, setLastQueryParam] = useState(queryParam); // Keep input in sync with query
 
   if (queryParam !== lastQueryParam) {
     setLastQueryParam(queryParam);
     setSearchInput(queryParam);
   }
 
+  // Chips for already-checked filters must resolve to a name even if that label falls outside the (possibly narrower) set offered in the menu, so fall back to `nameLabels`.
   const nestedLabels = useMemo(() => nestSearchLabels(labels), [labels]);
-  // Chips for already-checked filters must resolve to a name even if that label falls
-  // outside the (possibly narrower) set offered in the menu, so fall back to `nameLabels`.
   const nestedNameLabels = useMemo(() => {
     const extra = (nameLabels ?? []).filter((label) => !labels.some((l) => l.id === label.id));
     return nestSearchLabels([...labels, ...extra]);
   }, [labels, nameLabels]);
+
   const labelValues = useMemo(() => getSearchLabelValues(nestedNameLabels), [nestedNameLabels]);
-  const checkedLabelPaths = useMemo(() => sortFilterPathLabels(queryGroupToFilterPaths(filterParam)), [filterParam]);
   const filterGroupsWithLabels = useMemo(() => groupSearchLabels(nestedLabels, filterGroups), [filterGroups, nestedLabels]);
+
+  const { appliedDateRange, checkedLabelPaths } = useMemo(() => {
+    const fromFilterParam = queryGroupToFilterPaths(filterParam);
+    return {
+      appliedDateRange: fromFilterParam.dateRange,
+      checkedLabelPaths: sortFilterPathLabels(fromFilterParam.filterPathLabels),
+    };
+  }, [filterParam]);
 
   const toggleFilter: TToggleFilterCallback = (labelPath, checked) => {
     const updatedCheckedLabelPaths = updateCheckedLabelPaths(checkedLabelPaths, labelPath, checked);
-    setFilterParam(filterPathsToQueryGroup(updatedCheckedLabelPaths));
+    setFilterParam(filterPathsToQueryGroup(updatedCheckedLabelPaths, appliedDateRange));
   };
 
   const clearFilters = () => {
     setFilterParam(null);
+  };
+
+  const onSetDateRange = (dateRange: TDateRange) => {
+    setFilterParam(filterPathsToQueryGroup(checkedLabelPaths, dateRange));
   };
 
   const onSort = (sortValue: string) => {
@@ -100,7 +117,7 @@ export const SearchControls = ({
   };
 
   return (
-    <FiltersContext value={{ checkedLabelPaths, clearFilters, labelValues, toggleFilter }}>
+    <FiltersContext value={{ appliedDateRange, checkedLabelPaths, clearFilters, labelValues, setDateRange: onSetDateRange, toggleFilter }}>
       <form onSubmit={onQuerySubmit} className="col-start-1 -col-end-1 cols-5:col-start-2 cols-5:-col-end-2">
         <Input
           containerClasses="px-4 py-3 bg-bg-flat border border-border-normal rounded-lg placeholder-text-tertiary"
@@ -119,7 +136,7 @@ export const SearchControls = ({
         <div className="flex flex-wrap gap-1 items-center">
           {filtersSlot}
           {filterGroupsWithLabels.map((group) => {
-            const SearchFilters = group.container === "drawer" ? SearchFiltersDrawer : SearchFiltersPopover;
+            const SearchFilters = SEARCH_FILTERS_LOOKUP[group.container] ?? SearchFiltersPopover;
 
             return (
               <Fragment key={group.title}>
@@ -148,7 +165,7 @@ export const SearchControls = ({
           <Sort sortOptions={sortOptions} value={sortParam} onChange={onSort} />
         </div>
       </div>
-      <AppliedFilters showClearAll />
+      <AppliedFilters showClearAll includeDateRange />
       {extraContent}
     </FiltersContext>
   );

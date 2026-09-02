@@ -1,3 +1,4 @@
+import { TDateRange } from "@/context/FiltersContext";
 import { TFilterPathLabel, TSearchQueryGroup, TSearchQueryRule } from "@/types";
 
 export const DEFAULT_SEARCH_QUERY_GROUP: TSearchQueryGroup = { op: "and", filters: [{ field: "labels.value.id", op: "contains", value: "" }] };
@@ -52,23 +53,38 @@ const buildGroupFromPaths = (labelPaths: TFilterPathLabel[][], checkedIds: Set<s
   return { op: "and", filters: typeGroupResults };
 };
 
-export const filterPathsToQueryGroup = (allLabelPaths: TFilterPathLabel[][]): TSearchQueryGroup => {
-  if (allLabelPaths.length === 0) return DEFAULT_SEARCH_QUERY_GROUP;
+const buildDateRangeFilters = ([startYear, endYear]: [number, number]): TSearchQueryRule[] => [
+  { field: "attributes.published_date", key: "published_date", op: "gte", value: `${startYear}-01-01T00:00:00.000Z` },
+  { field: "attributes.published_date", key: "published_date", op: "lte", value: `${endYear}-12-31T23:59:59.999Z` },
+];
 
-  // Keep track of which actual checkboxes were checked by the user
-  const checkedIds = new Set(allLabelPaths.map((path) => path[0].id));
+export const filterPathsToQueryGroup = (allLabelPaths: TFilterPathLabel[][], dateRange: TDateRange): TSearchQueryGroup => {
+  let result: TSearchQueryGroup;
 
-  // Build from least to most specific label in the path
-  const reversedLabelPaths = allLabelPaths.map((labelPath) => [...labelPath].reverse());
-  const deduplicatedLabelPaths = reversedLabelPaths.filter(
-    (labelPath) =>
-      !reversedLabelPaths.some(
-        (otherLabelPath) =>
-          otherLabelPath !== labelPath &&
-          otherLabelPath.length > labelPath.length &&
-          labelPath.every((label, labelIndex) => label.id === otherLabelPath[labelIndex].id)
-      )
-  );
+  if (allLabelPaths.length === 0) {
+    result = DEFAULT_SEARCH_QUERY_GROUP;
+  } else {
+    // Keep track of which actual checkboxes were checked by the user
+    const checkedIds = new Set(allLabelPaths.map((path) => path[0].id));
 
-  return wrapInGroup(buildGroupFromPaths(deduplicatedLabelPaths, checkedIds));
+    // Build from least to most specific label in the path
+    const reversedLabelPaths = allLabelPaths.map((labelPath) => [...labelPath].reverse());
+    const deduplicatedLabelPaths = reversedLabelPaths.filter(
+      (labelPath) =>
+        !reversedLabelPaths.some(
+          (otherLabelPath) =>
+            otherLabelPath !== labelPath &&
+            otherLabelPath.length > labelPath.length &&
+            labelPath.every((label, labelIndex) => label.id === otherLabelPath[labelIndex].id)
+        )
+    );
+
+    result = wrapInGroup(buildGroupFromPaths(deduplicatedLabelPaths, checkedIds));
+  }
+
+  if (dateRange === null) return result;
+
+  // Add the date range to the top level AND group or create one
+  const dateFilters = buildDateRangeFilters(dateRange);
+  return result.op === "and" ? { ...result, filters: [...result.filters, ...dateFilters] } : { op: "and", filters: [result, ...dateFilters] };
 };

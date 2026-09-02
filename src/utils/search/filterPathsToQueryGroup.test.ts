@@ -730,7 +730,31 @@ describe("filterPathsToQueryGroup", () => {
   it.each(FILTER_TEST_CASES.map(({ name, filterPathLabels, searchQueryGroup }) => [name, filterPathLabels, searchQueryGroup]))(
     "builds a filter for %s",
     (_name, filterPathLabels, expectedFilterGroup) => {
-      expect(filterPathsToQueryGroup(filterPathLabels)).toEqual(expectedFilterGroup);
+      expect(filterPathsToQueryGroup(filterPathLabels, null)).toEqual(expectedFilterGroup);
     }
   );
+
+  describe("date range", () => {
+    const dateRange: [number, number] = [2020, 2024];
+    const gteFilter = { field: "attributes.published_date", key: "published_date", op: "gte", value: "2020-01-01T00:00:00.000Z" };
+    const lteFilter = { field: "attributes.published_date", key: "published_date", op: "lte", value: "2024-12-31T23:59:59.999Z" };
+
+    it("appends date filters directly when the result is an AND group", () => {
+      const andCase = FILTER_TEST_CASES.find((testCase) => testCase.name === "one second level filter")!;
+
+      expect(filterPathsToQueryGroup(andCase.filterPathLabels, dateRange)).toEqual({
+        op: "and",
+        filters: [...(andCase.searchQueryGroup as TSearchQueryGroup).filters, gteFilter, lteFilter],
+      });
+    });
+
+    it("wraps the result in a new AND group when the result is an OR group", () => {
+      const orCase = FILTER_TEST_CASES.find((testCase) => testCase.name === "one first level filter")!;
+
+      expect(filterPathsToQueryGroup(orCase.filterPathLabels, dateRange)).toEqual({
+        op: "and",
+        filters: [orCase.searchQueryGroup, gteFilter, lteFilter],
+      });
+    });
+  });
 });

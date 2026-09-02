@@ -8,6 +8,8 @@ import { TFilterPathLabel } from "@/types";
 import { getLabelPathSignature, sortFilterPathLabels } from "@/utils/filters/filterPaths";
 import { joinTailwindClasses } from "@/utils/tailwind";
 
+const getDateRangeLabel = (dateRange: [number, number]): string => `${dateRange[0]}-${dateRange[1]}`;
+
 const getAppliedFilterLabel = (labelValues: Record<string, string>, labelPath: TFilterPathLabel[]): string => {
   const getLabelValue = (label: TFilterPathLabel) => labelValues[label.id] || label.value;
   const isGeography = labelPath.some((label) => ["country", "geography"].includes(label.type));
@@ -33,11 +35,12 @@ const getAppliedFilterLabel = (labelValues: Record<string, string>, labelPath: T
 interface IProps {
   ancestorPath?: TFilterPathLabel[];
   className?: string;
+  includeDateRange?: boolean;
   showClearAll?: boolean;
 }
 
-export const AppliedFilters = ({ ancestorPath = [], className, showClearAll }: IProps) => {
-  const { checkedLabelPaths, clearFilters, labelValues, toggleFilter } = useContext(FiltersContext);
+export const AppliedFilters = ({ ancestorPath = [], className, includeDateRange, showClearAll }: IProps) => {
+  const { appliedDateRange, checkedLabelPaths, clearFilters, labelValues, setDateRange, toggleFilter } = useContext(FiltersContext);
 
   const labels = useMemo(() => {
     const ancestorSignature = getLabelPathSignature(ancestorPath);
@@ -48,7 +51,9 @@ export const AppliedFilters = ({ ancestorPath = [], className, showClearAll }: I
     return sortFilterPathLabels(descendantLabelPaths);
   }, [checkedLabelPaths, ancestorPath]);
 
-  if (labels.length === 0) return null;
+  const showDateRange = includeDateRange && appliedDateRange !== null;
+
+  if (labels.length === 0 && !showDateRange) return null;
 
   const allClasses = joinTailwindClasses(
     "col-start-1 -col-end-1 cols-5:col-start-2 cols-5:-col-end-2 flex flex-wrap items-center gap-2 list-none",
@@ -74,6 +79,14 @@ export const AppliedFilters = ({ ancestorPath = [], className, showClearAll }: I
           </li>
         );
       })}
+      {showDateRange && appliedDateRange && (
+        <li className="flex flex-nowrap gap-1 pl-3 pr-2 py-1 bg-[#1A4F8C1A] rounded-full">
+          <span className="block text-sm text-text-primary text-nowrap font-medium leading-5">{getDateRangeLabel(appliedDateRange)}</span>
+          <button type="button" className="p-1 -m-1 text-inky-blue" aria-label="Remove date range" onClick={() => setDateRange(null)}>
+            <LucideX size={16} aria-hidden={true} />
+          </button>
+        </li>
+      )}
       {showClearAll && (
         <li>
           <button

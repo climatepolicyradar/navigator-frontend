@@ -16,9 +16,11 @@ const meta = {
   render: (props) => (
     <FiltersContext
       value={{
+        appliedDateRange: null,
         checkedLabelPaths: [],
         clearFilters: () => {},
         labelValues: {},
+        setDateRange: () => {},
         // eslint-disable-next-line no-console
         toggleFilter: (labelPath, checked) => console.info({ labelPath, checked }),
       }}
