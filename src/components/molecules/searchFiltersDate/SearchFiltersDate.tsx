@@ -22,6 +22,9 @@ const RADIO_OPTIONS: { label: string; value: TRadioValue | null }[] = [
   { label: "Last 5 years", value: 5 },
 ];
 
+// RadioGroup treats value={undefined} as uncontrolled, so swap in a value that matches no option instead
+const RADIO_VALUE_UNSELECTED = -1;
+
 const dateRangeToFilterState = (dateRange: TDateRange): TDateFilterState => {
   if (dateRange === null) return { radioValue: null, earliestYear: "", latestYear: "" };
 
@@ -35,23 +38,13 @@ const dateRangeToFilterState = (dateRange: TDateRange): TDateFilterState => {
   return { radioValue: undefined, earliestYear: String(dateRange[0]), latestYear: String(dateRange[1]) };
 };
 
-const filterStateToDateRange = ({ radioValue, earliestYear, latestYear }: TDateFilterState): TDateRange => {
-  if (radioValue === RADIO_OPTIONS[0].value) return null;
-
-  if (radioValue !== undefined) {
-    const currentYear = new Date().getFullYear();
-    return [currentYear - radioValue, currentYear];
-  }
-
-  return [Number(earliestYear), Number(latestYear)];
+const radioOptionToDateRange = (value: TRadioValue): TDateRange => {
+  if (value === null) return null;
+  const currentYear = new Date().getFullYear();
+  return [currentYear - Number(value), currentYear];
 };
 
-const dateRangesEqual = (a: TDateRange, b: TDateRange): boolean => {
-  if (a === null || b === null) return a === b;
-  return a[0] === b[0] && a[1] === b[1];
-};
-
-const isValidYear = (value: string): boolean => value !== "" && !Number.isNaN(Number(value));
+const isValidYear = (value: string): boolean => value.length === 4 && !Number.isNaN(Number(value));
 
 interface IProps {
   filterGroup: TFiltersGroup;
@@ -69,23 +62,24 @@ export const SearchFiltersDate = ({ filterGroup }: IProps) => {
     setDateFilterState(dateRangeToFilterState(appliedDateRange));
   }
 
-  const currentDateRange = filterStateToDateRange(dateFilterState);
-  const hasInvalidCustomInput = radioValue === undefined && (!isValidYear(earliestYear) || !isValidYear(latestYear));
+  const isCustomApplyDisabled = !isValidYear(earliestYear) || !isValidYear(latestYear);
 
   const onRadioValueChange = (value: TRadioValue) => {
     setDateFilterState((prev) => ({ ...prev, radioValue: value }));
+    setDateRange(radioOptionToDateRange(value));
+    setIsOpen(false);
   };
 
   const onEarliestYearChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    setDateFilterState((prev) => ({ ...prev, earliestYear: event.target.value, radioValue: undefined }));
+    setDateFilterState((prev) => ({ ...prev, earliestYear: event.target.value }));
   };
 
   const onLatestYearChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    setDateFilterState((prev) => ({ ...prev, latestYear: event.target.value, radioValue: undefined }));
+    setDateFilterState((prev) => ({ ...prev, latestYear: event.target.value }));
   };
 
-  const onApply = () => {
-    setDateRange(currentDateRange);
+  const onApplyCustom = () => {
+    setDateRange([Number(earliestYear), Number(latestYear)]);
     setIsOpen(false);
   };
 
@@ -105,9 +99,9 @@ export const SearchFiltersDate = ({ filterGroup }: IProps) => {
       <BasePopover.Portal>
         <BasePopover.Positioner positionMethod="fixed" side="bottom" sideOffset={8} align="start" className="">
           <BasePopover.Popup className="w-95 max-h-[50dvh] px-6 py-5 bg-bg-primary border border-border-normal rounded-xl shadow-2xl overflow-y-auto">
-            <BaseAccordion.Root className="flex flex-col gap-6">
+            <BaseAccordion.Root className="flex flex-col gap-6" defaultValue={radioValue === undefined ? ["custom"] : ["date-range"]}>
               {/* Date range */}
-              <BaseAccordion.Item>
+              <BaseAccordion.Item value="date-range">
                 <BaseAccordion.Header>
                   <BaseAccordion.Trigger className="flex items-center text-sm text-text-primary font-medium leading-5 group">
                     Date range
@@ -115,7 +109,11 @@ export const SearchFiltersDate = ({ filterGroup }: IProps) => {
                   </BaseAccordion.Trigger>
                 </BaseAccordion.Header>
                 <BaseAccordion.Panel>
-                  <RadioGroup value={radioValue} onValueChange={onRadioValueChange} className="pt-2 flex flex-col gap-2">
+                  <RadioGroup
+                    value={radioValue === undefined ? RADIO_VALUE_UNSELECTED : radioValue}
+                    onValueChange={onRadioValueChange}
+                    className="pt-2 flex flex-col gap-2"
+                  >
                     {RADIO_OPTIONS.map((option) => (
                       <label key={option.label} className="flex items-center gap-2 text-sm text-text-primary font-normal leading-5 cursor-pointer">
                         <Radio.Root
@@ -132,7 +130,7 @@ export const SearchFiltersDate = ({ filterGroup }: IProps) => {
               </BaseAccordion.Item>
 
               {/* Custom */}
-              <BaseAccordion.Item>
+              <BaseAccordion.Item value="custom">
                 <BaseAccordion.Header>
                   <BaseAccordion.Trigger className="flex items-center text-sm text-text-primary font-medium leading-5 group">
                     Custom
@@ -166,8 +164,8 @@ export const SearchFiltersDate = ({ filterGroup }: IProps) => {
                   </div>
                   <button
                     type="button"
-                    onClick={onApply}
-                    disabled={dateRangesEqual(currentDateRange, appliedDateRange) || hasInvalidCustomInput}
+                    onClick={onApplyCustom}
+                    disabled={isCustomApplyDisabled}
                     className="px-3 py-1 text-sm text-text-inverse font-medium leading-5 bg-bg-brand disabled:bg-text-disabled rounded-full"
                   >
                     Apply
