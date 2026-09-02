@@ -23,7 +23,9 @@ const renderWithFiltersContext = (
   toggleFilter = vi.fn()
 ) =>
   render(
-    <FiltersContext.Provider value={{ checkedLabelPaths, clearFilters: vi.fn(), labelValues: {}, toggleFilter }}>
+    <FiltersContext.Provider
+      value={{ appliedDateRange: null, checkedLabelPaths, clearFilters: vi.fn(), labelValues: {}, setDateRange: vi.fn(), toggleFilter }}
+    >
       <ul>
         <SearchFilter ancestorPath={ancestorPath} label={label} level={3} />
       </ul>

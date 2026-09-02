@@ -9,7 +9,9 @@ import { SearchFilterLookup } from "./SearchFilterLookup";
 
 const renderAndSearch = async (labels: TNestedSearchLabel[], searchText: string) => {
   render(
-    <FiltersContext.Provider value={{ checkedLabelPaths: [], clearFilters: vi.fn(), labelValues: {}, toggleFilter: vi.fn() }}>
+    <FiltersContext.Provider
+      value={{ appliedDateRange: null, checkedLabelPaths: [], clearFilters: vi.fn(), labelValues: {}, setDateRange: vi.fn(), toggleFilter: vi.fn() }}
+    >
       <SearchFilterLookup ancestorPath={[]} labels={labels} level={1} />
     </FiltersContext.Provider>
   );
