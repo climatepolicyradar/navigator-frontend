@@ -40,5 +40,6 @@ export const PASSAGE_FILTER_GROUPS: TFiltersGroupConfig[] = [
     title: "Topic",
     container: "popover",
     rootLabelTypes: ["concept"],
+    prepareRootLabels: prepareTopicFilters,
   },
 ];
