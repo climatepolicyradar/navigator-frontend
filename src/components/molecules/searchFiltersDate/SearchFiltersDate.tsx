@@ -1,4 +1,5 @@
 import { Radio, RadioGroup } from "@base-ui/react";
+import { Accordion as BaseAccordion } from "@base-ui/react/accordion";
 import { Popover as BasePopover } from "@base-ui/react/popover";
 import { ChevronDown } from "lucide-react";
 import { useContext, useState } from "react";
@@ -104,57 +105,76 @@ export const SearchFiltersDate = ({ filterGroup }: IProps) => {
       <BasePopover.Portal>
         <BasePopover.Positioner positionMethod="fixed" side="bottom" sideOffset={8} align="start" className="">
           <BasePopover.Popup className="w-95 max-h-[50dvh] px-6 py-5 bg-bg-primary border border-border-normal rounded-xl shadow-2xl overflow-y-auto">
-            {/* Date range */}
-            <span className="block text-sm text-text-primary font-medium leading-5">Date range</span>
-            <RadioGroup value={radioValue} onValueChange={onRadioValueChange} className="pt-2 pb-6 flex flex-col gap-2">
-              {RADIO_OPTIONS.map((option) => (
-                <label key={option.label} className="flex items-center gap-2 text-sm text-text-primary font-normal leading-5 cursor-pointer">
-                  <Radio.Root
-                    value={option.value}
-                    className="flex size-4 shrink-0 items-center justify-center border border-border-input rounded-full p-0 text-white data-checked:bg-inky-blue focus-visible:outline-2 outline-inky-blue outline-offset-2"
+            <BaseAccordion.Root className="flex flex-col gap-6">
+              {/* Date range */}
+              <BaseAccordion.Item>
+                <BaseAccordion.Header>
+                  <BaseAccordion.Trigger className="flex items-center text-sm text-text-primary font-medium leading-5 group">
+                    Date range
+                    <ChevronDown size={14} className="inline ml-1 text-elem-icon transition-transform group-data-panel-open:rotate-180" />
+                  </BaseAccordion.Trigger>
+                </BaseAccordion.Header>
+                <BaseAccordion.Panel>
+                  <RadioGroup value={radioValue} onValueChange={onRadioValueChange} className="pt-2 flex flex-col gap-2">
+                    {RADIO_OPTIONS.map((option) => (
+                      <label key={option.label} className="flex items-center gap-2 text-sm text-text-primary font-normal leading-5 cursor-pointer">
+                        <Radio.Root
+                          value={option.value}
+                          className="flex size-4 shrink-0 items-center justify-center border border-border-input rounded-full p-0 text-white data-checked:bg-inky-blue focus-visible:outline-2 outline-inky-blue outline-offset-2"
+                        >
+                          <Radio.Indicator className="flex items-center justify-center data-unchecked:hidden before:size-2 before:rounded-full before:bg-current" />
+                        </Radio.Root>
+                        {option.label}
+                      </label>
+                    ))}
+                  </RadioGroup>
+                </BaseAccordion.Panel>
+              </BaseAccordion.Item>
+
+              {/* Custom */}
+              <BaseAccordion.Item>
+                <BaseAccordion.Header>
+                  <BaseAccordion.Trigger className="flex items-center text-sm text-text-primary font-medium leading-5 group">
+                    Custom
+                    <ChevronDown size={14} className="inline ml-1 text-elem-icon transition-transform group-data-panel-open:rotate-180" />
+                  </BaseAccordion.Trigger>
+                </BaseAccordion.Header>
+                <BaseAccordion.Panel>
+                  <div className="pt-4 pb-2 flex justify-between gap-6">
+                    <div className="w-38 flex flex-col gap-2">
+                      <span className="text-sm text-text-primary font-medium leading-5">Earliest year</span>
+                      <Input
+                        type="number"
+                        placeholder="eg: 1992"
+                        value={earliestYear}
+                        onChange={onEarliestYearChange}
+                        containerClasses="bg-white border border-border-normal rounded-sm"
+                        inputClasses="w-full py-2.5 [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
+                      />
+                    </div>
+                    <div className="w-38 flex flex-col gap-2">
+                      <span className="text-sm text-text-primary font-medium leading-5">Latest year</span>
+                      <Input
+                        type="number"
+                        placeholder="eg: 2025"
+                        value={latestYear}
+                        onChange={onLatestYearChange}
+                        containerClasses="bg-white border border-border-normal rounded-sm"
+                        inputClasses="w-full py-2.5 [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
+                      />
+                    </div>
+                  </div>
+                  <button
+                    type="button"
+                    onClick={onApply}
+                    disabled={dateRangesEqual(currentDateRange, appliedDateRange) || hasInvalidCustomInput}
+                    className="px-3 py-1 text-sm text-text-inverse font-medium leading-5 bg-bg-brand disabled:bg-text-disabled rounded-full"
                   >
-                    <Radio.Indicator className="flex items-center justify-center data-unchecked:hidden before:size-2 before:rounded-full before:bg-current" />
-                  </Radio.Root>
-                  {option.label}
-                </label>
-              ))}
-            </RadioGroup>
-
-            {/* Custom */}
-            <span className="block text-sm text-text-primary font-medium leading-5">Custom</span>
-            <div className="pt-4 pb-2 flex justify-between gap-6">
-              <div className="w-38 flex flex-col gap-2">
-                <span className="text-sm text-text-primary font-medium leading-5">Earliest year</span>
-                <Input
-                  type="number"
-                  placeholder="eg: 1992"
-                  value={earliestYear}
-                  onChange={onEarliestYearChange}
-                  containerClasses="bg-white border border-border-normal rounded-sm"
-                  inputClasses="w-full py-2.5 [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
-                />
-              </div>
-              <div className="w-38 flex flex-col gap-2">
-                <span className="text-sm text-text-primary font-medium leading-5">Latest year</span>
-                <Input
-                  type="number"
-                  placeholder="eg: 2025"
-                  value={latestYear}
-                  onChange={onLatestYearChange}
-                  containerClasses="bg-white border border-border-normal rounded-sm"
-                  inputClasses="w-full py-2.5 [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
-                />
-              </div>
-            </div>
-
-            <button
-              type="button"
-              onClick={onApply}
-              disabled={dateRangesEqual(currentDateRange, appliedDateRange) || hasInvalidCustomInput}
-              className="px-3 py-1 text-sm text-text-inverse font-medium leading-5 bg-bg-brand disabled:bg-text-disabled rounded-full"
-            >
-              Apply
-            </button>
+                    Apply
+                  </button>
+                </BaseAccordion.Panel>
+              </BaseAccordion.Item>
+            </BaseAccordion.Root>
           </BasePopover.Popup>
         </BasePopover.Positioner>
       </BasePopover.Portal>
