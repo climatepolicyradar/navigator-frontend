@@ -21,8 +21,6 @@ export const shouldRetrySearch = (failureCount: number, error: unknown): boolean
   return (getSearchApiStatus(error) ?? 500) >= 500 && failureCount < 3;
 };
 
-// 414 means the filters no longer fit in the request URL, so the user can act on it
-// by removing some. Anything else is not actionable.
 const searchErrorMessage = (error: unknown): string => {
   if (getSearchApiStatus(error) === 414) {
     return "This search has too many filters for us to run. Remove some filters and try again.";

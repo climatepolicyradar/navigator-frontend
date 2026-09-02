@@ -120,7 +120,6 @@ const ShadowSearch = ({ theme, themeConfig, features }: TProps) => {
     allFilterLabels.then(([filteredLabels, labelTaxonomy]) => setAvailableFilters([...filteredLabels, ...labelTaxonomy]));
   }, []);
 
-  // The count is cleared while a search runs, so say what is happening in its place.
   const resultsSummary = isSearching
     ? "Searching…"
     : totalNoOfResults

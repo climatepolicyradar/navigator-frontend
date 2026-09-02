@@ -77,8 +77,6 @@ export function normaliseSearchDocumentsSortKey(raw: string | null | undefined):
   return raw && isSearchDocumentsSortKey(raw) ? raw : "relevance";
 }
 
-// The HTTP status is attached to the thrown error so callers can tell an over-long
-// request (414 — too many filters to fit in the query string) from a generic failure.
 export function getSearchApiStatus(error: unknown): number | undefined {
   return error instanceof Error ? (error as Error & { status?: number }).status : undefined;
 }
