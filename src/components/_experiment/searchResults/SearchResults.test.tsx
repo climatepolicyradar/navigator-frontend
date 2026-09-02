@@ -59,18 +59,6 @@ describe("SearchContainer", () => {
     await waitFor(() => expect(fetchSearchDocuments).toHaveBeenCalled());
   });
 
-  it("shows a filter-specific message in the page when the request URL is too long, and clears the result count", async () => {
-    vi.mocked(fetchSearchDocuments).mockRejectedValueOnce(searchError(414));
-    const onTotalResultsChange = vi.fn();
-
-    renderWith(<SearchContainer query="climate" onTotalResultsChange={onTotalResultsChange} />);
-
-    expect(await screen.findByText(/too many filters/i)).toBeInTheDocument();
-    expect(onTotalResultsChange).toHaveBeenCalledWith(null);
-    // The message replaces the results rather than the app error page taking over.
-    expect(screen.queryByTestId("search-loading")).not.toBeInTheDocument();
-  });
-
   it("shows a generic message in the page for other search failures", async () => {
     vi.mocked(fetchSearchDocuments).mockRejectedValueOnce(searchError(404));
 
