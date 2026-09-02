@@ -17,9 +17,4 @@ export const LABEL_DISPLAY_REPLACEMENTS: TLabelDisplayReplacement[] = [
     idMatch: `topic${SEP}`,
     type: "Response Area",
   },
-  {
-    parentId: `category${SEP}Report`,
-    idMatch: `author_type${SEP}`,
-    type: "Type",
-  },
 ];
