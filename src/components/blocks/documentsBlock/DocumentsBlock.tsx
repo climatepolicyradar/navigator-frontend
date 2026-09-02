@@ -62,6 +62,7 @@ export const DocumentsBlock = ({ family, familyTopics, languages, matchesFamily,
   );
 
   // If the case is new, there can be one placeholder document with no events. Handle this interim state
+  // @related LITIGATION_PLACEHOLDER
   const hasDocumentsToDisplay = tableRows.length > 0;
 
   useEffect(() => {
