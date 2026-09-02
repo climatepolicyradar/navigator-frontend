@@ -1,6 +1,6 @@
 import { Meta, StoryObj } from "@storybook/nextjs-vite";
 
-import { FiltersContext } from "@/context/FiltersContext";
+import { FiltersContext, TDateRange } from "@/context/FiltersContext";
 import { TFilterPathLabel } from "@/types";
 
 import { AppliedFilters } from "./AppliedFilters";
@@ -60,19 +60,22 @@ type TStory = StoryObj<typeof AppliedFilters>;
 
 export default meta;
 
-const useFiltersContext = (checkedLabelPaths: TFilterPathLabel[][]) => {
+const useFiltersContext = (checkedLabelPaths: TFilterPathLabel[][], appliedDateRange: TDateRange = null, includeDateRange = false) => {
   return (
     <FiltersContext
       value={{
+        appliedDateRange,
         checkedLabelPaths,
         // eslint-disable-next-line no-console
         clearFilters: () => console.info("clearFilters"),
         labelValues: {},
         // eslint-disable-next-line no-console
+        setDateRange: (dateRange) => console.info({ dateRange }),
+        // eslint-disable-next-line no-console
         toggleFilter: (labelPath, checked) => console.info({ labelPath, checked }),
       }}
     >
-      <AppliedFilters />
+      <AppliedFilters includeDateRange={includeDateRange} />
     </FiltersContext>
   );
 };
@@ -83,4 +86,8 @@ export const Default: TStory = {
 
 export const SingleFilter: TStory = {
   render: () => useFiltersContext([[{ id: "region::Europe", type: "region", value: "Europe" }]]),
+};
+
+export const WithDateRange: TStory = {
+  render: () => useFiltersContext(CHECKED_LABEL_PATHS, [1992, 2002], true),
 };

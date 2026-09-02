@@ -2,7 +2,7 @@ import { render, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { describe, expect, it, vi } from "vitest";
 
-import { FiltersContext } from "@/context/FiltersContext";
+import { FiltersContext, TDateRange } from "@/context/FiltersContext";
 import { TFilterPathLabel } from "@/types";
 
 import { AppliedFilters } from "./AppliedFilters";
@@ -23,10 +23,19 @@ const subdivisionWithRegionContextPath: TFilterPathLabel[] = [
 ];
 const regionOnlyPath: TFilterPathLabel[] = [{ id: "region::europe", type: "region", value: "Europe" }];
 
-const renderWithFiltersContext = (checkedLabelPaths: TFilterPathLabel[][], clearFilters = vi.fn(), toggleFilter = vi.fn()) =>
+const renderWithFiltersContext = (
+  checkedLabelPaths: TFilterPathLabel[][],
+  clearFilters = vi.fn(),
+  toggleFilter = vi.fn(),
+  {
+    appliedDateRange = null,
+    includeDateRange,
+    setDateRange = vi.fn(),
+  }: { appliedDateRange?: TDateRange; includeDateRange?: boolean; setDateRange?: (dateRange: TDateRange) => void } = {}
+) =>
   render(
-    <FiltersContext.Provider value={{ checkedLabelPaths, clearFilters, labelValues: {}, toggleFilter }}>
-      <AppliedFilters showClearAll />
+    <FiltersContext.Provider value={{ appliedDateRange, checkedLabelPaths, clearFilters, labelValues: {}, setDateRange, toggleFilter }}>
+      <AppliedFilters showClearAll includeDateRange={includeDateRange} />
     </FiltersContext.Provider>
   );
 
@@ -70,5 +79,27 @@ describe("AppliedFilters", () => {
     renderWithFiltersContext([topLevelPath], clearFilters);
     await userEvent.click(screen.getByRole("button", { name: "Clear all filters" }));
     expect(clearFilters).toHaveBeenCalledOnce();
+  });
+
+  it("renders the date range when includeDateRange is true", () => {
+    renderWithFiltersContext([topLevelPath], vi.fn(), vi.fn(), { appliedDateRange: [1992, 2002], includeDateRange: true });
+    expect(screen.getByText("1992-2002")).toBeInTheDocument();
+  });
+
+  it("does not render the date range when includeDateRange is false", () => {
+    renderWithFiltersContext([topLevelPath], vi.fn(), vi.fn(), { appliedDateRange: [1992, 2002], includeDateRange: false });
+    expect(screen.queryByText("1992-2002")).not.toBeInTheDocument();
+  });
+
+  it("calls setDateRange with null when removing the date range", async () => {
+    const setDateRange = vi.fn();
+    renderWithFiltersContext([topLevelPath], vi.fn(), vi.fn(), { appliedDateRange: [1992, 2002], includeDateRange: true, setDateRange });
+    await userEvent.click(screen.getByRole("button", { name: "Remove date range" }));
+    expect(setDateRange).toHaveBeenCalledWith(null);
+  });
+
+  it("renders the date range even when there are no label filters", () => {
+    renderWithFiltersContext([], vi.fn(), vi.fn(), { appliedDateRange: [1992, 2002], includeDateRange: true });
+    expect(screen.getByText("1992-2002")).toBeInTheDocument();
   });
 });
