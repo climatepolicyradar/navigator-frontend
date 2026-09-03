@@ -137,11 +137,7 @@ export const PassageBlock = ({ passage, onCopyClick, onDocumentLinkClick, onPass
     >
       <div className="text-sm text-text-primary">
         {isClickable ? (
-          <button
-            type="button"
-            onClick={() => onPassageClick(passage)}
-            className="text-left w-full text-sm text-text-primary px-8 py-7 hocus:bg-paper"
-          >
+          <button type="button" onClick={() => onPassageClick(passage)} className="text-left w-full text-sm text-text-primary px-8 py-7">
             <p>{highlightedContent}</p>
             {activeTopics.length > 0 && <p className="text-text-secondary mt-2">Contains: {topicsList}</p>}
           </button>
