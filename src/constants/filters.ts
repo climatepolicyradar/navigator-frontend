@@ -1,5 +1,6 @@
 import { Earth, ListFilter } from "lucide-react";
 
+import { EmptyTopicsFilter } from "@/components/atoms/misc/EmptyTopicsFilter";
 import { TFiltersGroupConfig } from "@/types";
 import { prepareGeographyFilters } from "@/utils/filters/prepareGeographyFilter";
 import { prepareTopicFilters } from "@/utils/filters/prepareTopicFilters";
@@ -32,7 +33,6 @@ export const SEARCH_FILTER_GROUPS: TFiltersGroupConfig[] = [
     title: "Date",
     container: "datepicker",
     rootLabelTypes: [],
-    displayWhenEmpty: true,
   },
 ];
 
@@ -42,7 +42,6 @@ export const PASSAGE_FILTER_GROUPS: TFiltersGroupConfig[] = [
     container: "popover",
     rootLabelTypes: ["concept"],
     prepareRootLabels: prepareTopicFilters,
-    displayWhenEmpty: true,
-    filtersPlural: "topics",
+    emptyStateRender: EmptyTopicsFilter,
   },
 ];

@@ -1,4 +1,5 @@
 import type { LucideIcon } from "lucide-react";
+import { ReactNode } from "react";
 
 import { TNestedSearchLabel } from "./labels";
 
@@ -14,6 +15,7 @@ type TFiltersGroupDrawerConfig = {
   prepareRootLabels?: (rootLabels: TNestedSearchLabel[]) => TNestedSearchLabel[];
   filterParentsDefaultOpen?: boolean;
   displayWhenEmpty?: boolean;
+  emptyStateRender?: () => ReactNode;
 };
 
 type TFiltersGroupPopoverConfig = {
@@ -25,8 +27,7 @@ type TFiltersGroupPopoverConfig = {
   rootLabelTypes: string[];
   prepareRootLabels?: (rootLabels: TNestedSearchLabel[]) => TNestedSearchLabel[];
   filterParentsDefaultOpen?: boolean;
-  displayWhenEmpty?: boolean;
-  filtersPlural?: string;
+  emptyStateRender?: () => ReactNode;
 };
 
 export type TFiltersGroupConfig = TFiltersGroupDrawerConfig | TFiltersGroupPopoverConfig;
