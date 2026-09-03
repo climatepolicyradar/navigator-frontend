@@ -67,7 +67,7 @@ export const DocumentHead = ({ document, family, handleViewOtherDocsClick, handl
 
             <div className="text-content" dangerouslySetInnerHTML={{ __html: summary.replace(/\r?\n/g, "<br/>") }} />
             {family.summary.length > MAX_FAMILY_SUMMARY_LENGTH_BRIEF && (
-              <div className="mt-4">
+              <div className="mt-1">
                 <button onClick={() => setShowFullSummary(!showFullSummary)} className="anchor alt text-sm">
                   {showFullSummary ? "Hide full summary" : "Read more"}
                 </button>
