@@ -32,17 +32,24 @@ describe("groupSearchLabels", () => {
     expect(grouped).toEqual([]);
   });
 
-  it("keeps a group with no matching labels when displayWhenEmpty is set", () => {
-    const grouped = groupSearchLabels([label("region", "europe")], [popoverGroup({ displayWhenEmpty: true })]);
+  it("keeps a group with no matching labels if of container datepicker", () => {
+    const grouped = groupSearchLabels([label("region", "europe")], [popoverGroup({ container: "datepicker" })]);
 
     expect(grouped).toHaveLength(1);
     expect(grouped[0].nestedLabels).toEqual([]);
   });
 
-  it("still runs prepareRootLabels for a group kept by displayWhenEmpty", () => {
+  it("keeps a group with no matching labels when emptyStateRender is set", () => {
+    const grouped = groupSearchLabels([label("region", "europe")], [popoverGroup({ emptyStateRender: () => "Keep me" })]);
+
+    expect(grouped).toHaveLength(1);
+    expect(grouped[0].nestedLabels).toEqual([]);
+  });
+
+  it("still runs prepareRootLabels for a group with emptyStateRender", () => {
     const placeholder = label("concept", "placeholder");
     const prepareRootLabels = vi.fn(() => [placeholder]);
-    const grouped = groupSearchLabels([], [popoverGroup({ displayWhenEmpty: true, prepareRootLabels })]);
+    const grouped = groupSearchLabels([], [popoverGroup({ emptyStateRender: () => "Keep me", prepareRootLabels })]);
 
     expect(prepareRootLabels).toHaveBeenCalledWith([]);
     expect(grouped[0].nestedLabels).toEqual([placeholder]);
