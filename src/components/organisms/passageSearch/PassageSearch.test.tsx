@@ -474,7 +474,7 @@ describe("PassageSearch", () => {
       renderWithPreview({ q: "renewable" });
 
       expect(await screen.findByText(/Certain ecological/)).toBeInTheDocument();
-      expect(screen.getByText("Pg. 17")).toBeInTheDocument();
+      expect(screen.getByText("Page 17")).toBeInTheDocument();
       expect(screen.getByText("Section 4: National Target 16")).toBeInTheDocument();
       // The reader is already on this document, so its title is not repeated per passage.
       expect(screen.queryByText(mainDocument.title)).not.toBeInTheDocument();
