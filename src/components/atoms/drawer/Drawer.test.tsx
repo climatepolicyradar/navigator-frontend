@@ -21,6 +21,20 @@ describe("Drawer", () => {
     expect(scrollRoots()).toEqual([drawerContent("tracked")]);
   });
 
+  it("keeps the scroll root when a nested drawer is rendered but closed", () => {
+    // Blocks render their drawers unconditionally, so a closed one must not claim the root
+    render(
+      <Drawer open trackScroll>
+        underneath
+        <Drawer open={false} trackScroll>
+          never opened
+        </Drawer>
+      </Drawer>
+    );
+
+    expect(scrollRoots()).toEqual([drawerContent("underneath")]);
+  });
+
   it("hands the scroll root to the drawer opened on top, and back again when it closes", () => {
     const Drawers = ({ nestedOpen }: { nestedOpen: boolean }) => (
       <Drawer open trackScroll>
