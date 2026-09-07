@@ -36,8 +36,8 @@ export const TEST_DOCUMENTS: TTestDocument[] = [
   },
   {
     titleForTests: "Policy, many documents",
-    slug: "decision-introducing-the-natural-resources-and-environment-action-program-for-implementation-of-the-national-green-growth-strategy-8d83",
-    withSearch: "National Green Growth Strategy",
+    slug: "blue-economy-development-framework-for-indonesias-economic-transformation_7e1e",
+    withSearch: "construction",
     withTopic: "Construction sector",
     withParentTopic: "Economic sector",
     availableOn: ["cpr", "cclw"],

@@ -32,8 +32,8 @@ export const TEST_FAMILIES: TTestFamily[] = [
   },
   {
     titleForTests: "Policy, many documents",
-    slug: "national-green-growth-strategy_0ea0",
-    withSearch: "National+Green+Growth+Strategy",
+    slug: "blue-economy-development-framework-for-indonesias-economic-transformation_ebbb",
+    withSearch: "construction",
     withTopic: "construction+sector",
     availableOn: ["cpr", "cclw"],
   },

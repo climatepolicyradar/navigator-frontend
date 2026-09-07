@@ -81,15 +81,30 @@ caused a real container to freeze and get killed by ECS. Never send a slug to
      but re-check the fixture's intent (it should be a specific document, not a
      family root) — flag this rather than guessing if it looks wrong.
 
-2. **Get a production app token** (public endpoint, safe to call — this is the exact
-   token the production site itself hands to any browser client-side, not a
-   privileged secret):
+2. **Get a production app token — one per theme, not one for everything.** Each
+   theme's deployment hands out a token scoped to only the corpora that theme is
+   allowed to see (`allowed_corpora_ids` in the JWT payload). A CPR-scoped token
+   cannot query the CCC/litigation corpus (and vice versa) — it doesn't error
+   loudly, it just returns zero hits, which looks exactly like a genuinely broken
+   fixture. **Using the wrong theme's token is a false-positive trap** — always
+   fetch the token for the specific theme you're about to check.
+
+   Each theme's production `baseURL` is listed in `playwright.config.ts` (e.g.
+   `cpr_production`, `cclw_production`, `mcf_production`, `ccc_production`). For a
+   fixture with `availableOn: ["cpr", "cclw"]`, you can use either theme's token,
+   since one entry's health only needs to be confirmed from one working angle — but
+   if a check comes back with zero hits, retry with a token from a *different* theme
+   in that fixture's `availableOn` before concluding it's actually broken.
+
    ```bash
-   curl -s "https://app.climatepolicyradar.org/api/env"
+   curl -s "https://{theme_production_baseURL}/api/env"
    ```
    Returns `{"env": {"api_url": "...", "app_token": "...", "theme": "..."}}`. Use
-   `api_url` (the search API base) and `app_token` (the `app-token` header value) from
-   this response — don't hardcode them, they can rotate.
+   `api_url` (the search API base — same host across all themes) and `app_token`
+   (the `app-token` header value, theme-scoped) from this response — don't hardcode
+   them, they can rotate. This is a public endpoint, safe to call — it's the exact
+   token each production site already hands to any browser client-side, not a
+   privileged secret.
 
 3. **Query the search API** with the resolved import ID, never the slug:
    ```bash
@@ -104,8 +119,14 @@ caused a real container to freeze and get killed by ECS. Never send a slug to
    A fixture is **healthy** if the response has at least one family with at least one
    `document_passage_matches[].concepts[]` entry whose `name` matches the expected
    topic (case-insensitive comparison is fine — check exact matches first, don't
-   assume mismatches are broken without checking). A fixture is **broken** if there
-   are no families, no passage matches, or matches with no concept of that name.
+   assume mismatches are broken without checking).
+
+   A zero-hit result (`total_family_hits: 0`, or `"detail": "Error validating corpora IDs."`)
+   is **not** proof the fixture is broken — it's equally consistent with the token
+   being scoped to the wrong theme (see step 2). Before reporting BROKEN, retry the
+   same query with a token from a different theme in the fixture's `availableOn` list.
+   Only report BROKEN once you've confirmed the zero-hit result holds across every
+   theme the fixture claims to be available on.
 
 ## How to run a check-and-repair pass
 
@@ -118,7 +139,11 @@ caused a real container to freeze and get killed by ECS. Never send a slug to
 4. For each **broken** entry, find a replacement:
    - Query the search API again, this time with no `family_ids`/`document_ids` filter
      — just `query_string` and `concept_filters` for the same topic name — to find
-     other documents/families that currently have that topic.
+     other documents/families that currently have that topic. Use a token from one of
+     the fixture's `availableOn` themes; results outside that token's
+     `allowed_corpora_ids` simply won't appear, so prefer the broadest-access token
+     you have available (e.g. `cpr`'s token typically sees the most corpora) unless
+     the fixture is theme-restricted to something narrower (like `ccc`).
    - From the results, pick a candidate that:
      - Is available on every theme listed in the fixture's `availableOn`. Check this
        via the result's `corpus_import_id` field against each theme's corpus list in
