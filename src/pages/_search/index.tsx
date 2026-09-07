@@ -41,6 +41,7 @@ const ShadowSearch = ({ theme, themeConfig, features }: TProps) => {
   const [sortParam] = useQueryState("sort", parseAsString.withDefault("relevance"));
   const sortKey = normaliseSearchDocumentsSortKey(sortParam);
   const [totalNoOfResults, setTotalNoOfResults] = useState<number | null>(null);
+  const [isSearching, setIsSearching] = useState(false);
 
   /**
    * Drops aggregations only when the filter tree becomes empty so greyed options
@@ -119,6 +120,12 @@ const ShadowSearch = ({ theme, themeConfig, features }: TProps) => {
     allFilterLabels.then(([filteredLabels, labelTaxonomy]) => setAvailableFilters([...filteredLabels, ...labelTaxonomy]));
   }, []);
 
+  const resultsSummary = isSearching
+    ? "Searching…"
+    : totalNoOfResults
+      ? `${totalNoOfResults} ${pluralise(totalNoOfResults, ["result", "results"])}`
+      : null;
+
   return (
     <FeaturesContext.Provider value={features}>
       <Layout theme={theme as TTheme} themeConfig={themeConfig} metadataKey="search">
@@ -133,13 +140,7 @@ const ShadowSearch = ({ theme, themeConfig, features }: TProps) => {
             filterParamKey="filters"
             labels={availableFilters}
             queryParamKey="q"
-            resultsNode={
-              totalNoOfResults ? (
-                <div>
-                  {totalNoOfResults} {pluralise(totalNoOfResults, ["result", "results"])}
-                </div>
-              ) : null
-            }
+            resultsNode={resultsSummary ? <div aria-live="polite">{resultsSummary}</div> : null}
             sortOptions={SEARCH_SORT_OPTIONS}
             sortParamKey="sort"
           />
@@ -151,6 +152,7 @@ const ShadowSearch = ({ theme, themeConfig, features }: TProps) => {
               page_token={currentPage}
               sort={sortKey}
               onTotalResultsChange={setTotalNoOfResults}
+              onSearchingChange={setIsSearching}
               onResultClicked={(document, event) => {
                 // If command or ctrl is clicked open document new tab
                 if (event.metaKey || event.ctrlKey) {

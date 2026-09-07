@@ -1,5 +1,5 @@
 import sortBy from "lodash/sortBy";
-import { useContext, useMemo } from "react";
+import { ReactNode, useContext, useMemo } from "react";
 
 import { SearchFilterGroups } from "@/components/molecules/searchFilterGroups/SearchFilterGroups";
 import { SearchFilterLookup } from "@/components/molecules/searchFilterLookup/SearchFilterLookup";
@@ -16,6 +16,7 @@ const countLabelsAndDescendants = (labels: TNestedSearchLabel[]): number =>
 
 interface IProps {
   ancestorPath: TFilterPathLabel[];
+  emptyStateRender?: () => ReactNode;
   indented?: boolean;
   labels: TNestedSearchLabel[];
   level: number;
@@ -24,7 +25,7 @@ interface IProps {
 }
 
 // Render a set of label peers depending on content and composition
-export const SearchFilterLevel = ({ ancestorPath, indented, labels, level, renderParents, topLevelDefaultOpen }: IProps) => {
+export const SearchFilterLevel = ({ ancestorPath, emptyStateRender, indented, labels, level, renderParents, topLevelDefaultOpen }: IProps) => {
   const { inUse: isLookupAtHigherLevel } = useContext(FiltersLookupContext);
 
   const levelIsGroups = labels.every((label) => label.type === "group");
@@ -32,6 +33,11 @@ export const SearchFilterLevel = ({ ancestorPath, indented, labels, level, rende
 
   const indentedClasses = indented && "ml-8 mt-2 not-last:mb-2";
   const labelTypes = new Set(labels.map((label) => label.type));
+
+  // This shouldn't be possible without an empty state being provided
+  if (level === 1 && labels.length === 0) {
+    return emptyStateRender?.() || null;
+  }
 
   // Parents
   if (level === 1 && renderParents) {
