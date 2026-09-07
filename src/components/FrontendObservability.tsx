@@ -3,6 +3,8 @@
 import { getWebInstrumentations, initializeFaro, isInternalFaroOnGlobalObject } from "@grafana/faro-web-sdk";
 import { TracingInstrumentation } from "@grafana/faro-web-tracing";
 
+import { getCookie } from "@/utils/cookies";
+
 export const FrontendObservability = (): null => {
   // skip if already initialized (faro.api is a truthy no-op stub before init, so it can't be used as the check)
   if (isInternalFaroOnGlobalObject()) return null;
@@ -18,7 +20,8 @@ export const FrontendObservability = (): null => {
           environment: process.env.NEXT_PUBLIC_FARO_ENVIRONMENT ?? "local",
         },
         sessionTracking: {
-          samplingRate: 0.2,
+          // WAF-tagged bots (is_waf_bot cookie, set by middleware.ts) send no telemetry
+          sampler: () => (getCookie("is_waf_bot") === "true" ? 0 : 0.2),
         },
         instrumentations: [
           // Mandatory, omits default instrumentations otherwise.
