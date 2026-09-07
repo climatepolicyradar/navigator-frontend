@@ -4,14 +4,13 @@ import { useEffect, useState } from "react";
 import { Alert } from "@/components/Alert";
 import { ExternalLink } from "@/components/ExternalLink";
 import { Button } from "@/components/atoms/button/Button";
+import { FiveColumns } from "@/components/atoms/columns/FiveColumns";
 import { BreadCrumbs } from "@/components/breadcrumbs/Breadcrumbs";
 import { DocumentMetaRenderer } from "@/components/documents/renderers/DocumentMetaRenderer";
 import { Heading } from "@/components/typography/Heading";
 import { MAX_FAMILY_SUMMARY_LENGTH_BRIEF } from "@/constants/document";
 import { TFamilyDocumentPublic, TFamilyPublic } from "@/types";
 import { truncateString } from "@/utils/truncateString";
-
-import { FiveColumns } from "../atoms/columns/FiveColumns";
 
 interface IProps {
   document: TFamilyDocumentPublic;
