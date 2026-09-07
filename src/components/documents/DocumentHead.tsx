@@ -59,7 +59,7 @@ export const DocumentHead = ({ document, family, handleViewOtherDocsClick, handl
         label={breadcrumbLabel ? <span className="capitalize">{breadcrumbLabel}</span> : document.title}
       />
       <FiveColumns>
-        <div className="col-start-1 -col-end-1 flex flex-col justify-between lg:flex-row flex-wrap">
+        <div className="col-start-1 -col-end-1 flex flex-col justify-between gap-x-10 lg:flex-row flex-wrap">
           <div className="flex-1 my-4">
             <Heading level={1}>{document.title}</Heading>
             <DocumentMetaRenderer family={family} isMain={isMain} document={document} />
