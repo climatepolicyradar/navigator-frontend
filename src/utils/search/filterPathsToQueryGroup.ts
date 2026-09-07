@@ -45,8 +45,9 @@ const buildGroupFromPaths = (labelPaths: TFilterPathLabel[][], checkedIds: Set<s
   }
 
   const typeGroupResults: (TSearchQueryGroup | TSearchQueryRule)[] = [];
-  for (const results of labelsByType.values()) {
-    typeGroupResults.push(results.length === 1 ? results[0] : { op: "or", filters: results });
+  for (const [type, results] of labelsByType.entries()) {
+    const op = type === "concept" ? "and" : "or";
+    typeGroupResults.push(results.length === 1 ? results[0] : { op, filters: results });
   }
 
   if (typeGroupResults.length === 1) return typeGroupResults[0];

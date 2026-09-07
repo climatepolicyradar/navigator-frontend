@@ -6,7 +6,7 @@ import { DEFAULT_SEARCH_QUERY_GROUP, filterPathsToQueryGroup } from "./filterPat
  * RULES:
  * 1. all TFilterPathLabel are represented in the output by a TSearchQueryRule
  * 2. TFilterPathLabel that are children of another TFilterPathLabel are surrounded by an AND
- * 3. sibling TFilterPathLabel with the same type are surrounded by an OR
+ * 3. sibling TFilterPathLabel with the same type are surrounded by an OR, except type "concept" which is surrounded by an AND
  * 4. sibling TFilterPathLabel with different types are surrounded by an AND
  * 5. nested TFilterPathLabel are separated from each other by at least one TSearchQueryGroup
  */
@@ -77,6 +77,42 @@ export const FILTER_TEST_CASES: TFilterTestCase[] = [
           field: "labels.value.id",
           op: "contains",
           value: "category::UN submission",
+          checked: true,
+        },
+      ],
+    },
+  },
+  {
+    name: "multiple first level concept filters",
+    filterPathLabels: [
+      [
+        {
+          id: "concept::Adaptation",
+          type: "concept",
+          value: "Adaptation",
+        },
+      ],
+      [
+        {
+          id: "concept::Mitigation",
+          type: "concept",
+          value: "Mitigation",
+        },
+      ],
+    ],
+    searchQueryGroup: {
+      op: "and",
+      filters: [
+        {
+          field: "labels.value.id",
+          op: "contains",
+          value: "concept::Adaptation",
+          checked: true,
+        },
+        {
+          field: "labels.value.id",
+          op: "contains",
+          value: "concept::Mitigation",
           checked: true,
         },
       ],
@@ -215,6 +251,62 @@ export const FILTER_TEST_CASES: TFilterTestCase[] = [
               field: "labels.value.id",
               op: "contains",
               value: "author_type::Individual",
+              checked: true,
+            },
+          ],
+        },
+      ],
+    },
+  },
+  {
+    name: "multiple second level filters, siblings + same type (concept)",
+    filterPathLabels: [
+      [
+        {
+          id: "concept::Adaptation",
+          type: "concept",
+          value: "Adaptation",
+        },
+        {
+          id: "category::Report",
+          type: "category",
+          value: "Report",
+        },
+      ],
+      [
+        {
+          id: "concept::Mitigation",
+          type: "concept",
+          value: "Mitigation",
+        },
+        {
+          id: "category::Report",
+          type: "category",
+          value: "Report",
+        },
+      ],
+    ],
+    searchQueryGroup: {
+      op: "and",
+      filters: [
+        {
+          field: "labels.value.id",
+          op: "contains",
+          value: "category::Report",
+        },
+        {
+          op: "and",
+          filters: [
+            {
+              field: "labels.value.id",
+              op: "contains",
+              value: "concept::Adaptation",
+              checked: true,
+            },
+            {
+              field: "labels.value.id",
+              op: "contains",
+              value: "concept::Mitigation",
               checked: true,
             },
           ],
