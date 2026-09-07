@@ -14,6 +14,8 @@ type TProps = Omit<DrawerRootProps, "swipeDirection"> & {
   title?: ReactNode;
   titleExtras?: ReactNode;
   direction?: TDirection;
+  /** Marks this drawer's content as the root PostHog measures scroll depth against while it is open */
+  trackScroll?: boolean;
   wide?: boolean;
 };
 
@@ -24,7 +26,37 @@ const swipeDirectionMap: Record<TDirection, "left" | "right" | "up" | "down"> = 
   bottom: "down",
 };
 
-export const Drawer = ({ children, childrenClassName, title, titleExtras, direction = "right", wide, ...rootProps }: TProps) => {
+/**
+ * PostHog measures scroll depth against the first element matching its `scroll_root_selector`, and
+ * drawers portal to the body, so only the most recently opened container is marked.
+ *
+ * Opted into per drawer: swapping the scroll root mid-page-view mixes two elements into one
+ * measurement, so only drawers that open on a URL change - and so start their own page view - mark
+ * themselves.
+ */
+const DRAWER_SCROLL_ATTRIBUTE = "data-drawer-scroll";
+const openScrollContainers: HTMLElement[] = [];
+
+const markActiveScrollContainer = () => {
+  openScrollContainers.forEach((container, containerIndex) => {
+    if (containerIndex === openScrollContainers.length - 1) container.setAttribute(DRAWER_SCROLL_ATTRIBUTE, "");
+    else container.removeAttribute(DRAWER_SCROLL_ATTRIBUTE);
+  });
+};
+
+const registerScrollContainer = (container: HTMLDivElement | null) => {
+  if (!container) return;
+
+  openScrollContainers.push(container);
+  markActiveScrollContainer();
+
+  return () => {
+    openScrollContainers.splice(openScrollContainers.indexOf(container), 1);
+    markActiveScrollContainer();
+  };
+};
+
+export const Drawer = ({ children, childrenClassName, title, titleExtras, direction = "right", trackScroll, wide, ...rootProps }: TProps) => {
   return (
     <BaseDrawer.Root {...rootProps} swipeDirection={swipeDirectionMap[direction]}>
       <BaseDrawer.Portal>
@@ -44,7 +76,11 @@ export const Drawer = ({ children, childrenClassName, title, titleExtras, direct
                 </BaseDrawer.Close>
               </div>
             </div>
-            <div data-base-ui-swipe-ignore className={joinTailwindClasses("overflow-y-auto px-8 pb-8", childrenClassName)}>
+            <div
+              ref={trackScroll ? registerScrollContainer : undefined}
+              data-base-ui-swipe-ignore
+              className={joinTailwindClasses("overflow-y-auto px-8 pb-8", childrenClassName)}
+            >
               {children}
             </div>
           </BaseDrawer.Popup>
