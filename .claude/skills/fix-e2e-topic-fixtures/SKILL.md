@@ -24,7 +24,7 @@ pre-built script. Follow the steps below directly.
 - `tests/generic/testFamilies.ts` — exports `TEST_FAMILIES: TTestFamily[]`. Each entry:
   ```ts
   {
-    titleForTests: string;      // human label, used in test names — do not change
+    titleForTests: string;      // human label, used in test names — describes the replacement doc/family's actual nature (e.g. "Offshore Wind Report", "Litigation"); if the best verified replacement for a broken entry is a different kind of document, update this label to match rather than leaving a now-inaccurate title, but keep it short and in the same style as its neighbours
     slug: string;               // the family slug, e.g. "clean-electricity-regulations-sor-2024-263_3e84"
     withSearch: string;         // URL-param-encoded search term with passage matches on the family (+ instead of spaces)
     withTopic: string;          // URL-param-encoded topic/concept name that exists on the family (+ instead of spaces)
@@ -56,18 +56,30 @@ pre-built script. Follow the steps below directly.
 **The API mechanism — READ THIS CAREFULLY, it's the part that's easy to get wrong:**
 
 A fixture's `slug` is a human-readable URL slug (e.g.
-`clean-electricity-regulations-sor-2024-263_3e84`). The search API does **not**
-accept slugs — it requires a dotted "import ID" (e.g. `CCLW.family.i00003201.n0000`).
-The frontend resolves slug → import ID via a separate endpoint before ever calling
-search. You must do the same two-step resolution — **never pass a slug directly to
-`/searches`**.
+`clean-electricity-regulations-sor-2024-263_3e84`). Neither the search API nor the
+families/document endpoints below accept slugs — they require a dotted "import ID"
+(e.g. `CCLW.family.i00003201.n0000`). The frontend resolves slug → import ID via a
+separate endpoint before ever calling either. You must do the same two-step
+resolution — **never pass a slug directly as `family_ids`/`document_ids` on
+`/searches`, or as the `{id}` path segment on `/families/{id}` or `/document/{id}`**.
 
-⚠️ **Do not skip the resolve step.** Passing a slug directly into `family_ids` or
-`document_ids` on `/searches` does not merely fail cleanly — it hits a known
-production bug (a catastrophically-backtracking regex validating that field,
-tracked as FUS-406) that can hang for a very long time and, in production, has
-caused a real container to freeze and get killed by ECS. Never send a slug to
-`/searches` `family_ids`/`document_ids`, including for quick manual checks.
+⚠️ **Do not skip the resolve step.** Passing a slug directly into any of these
+`{id}`-shaped fields does not merely fail cleanly — it hits a known production bug
+(a catastrophically-backtracking regex validating that field, tracked as FUS-406)
+that can hang for a very long time and, in production, has caused a real container
+to freeze and get killed by ECS. Never send a slug into an id field, including for
+quick manual checks.
+
+⚠️ **`/searches` is the wrong endpoint to check fixture health against — do not use
+it for that.** It was the first thing that looks plausible here, and using it
+produces convincing-looking but *wrong* results: it can report a family/document as
+healthy (passage matches present, with the right concept name attached to a matched
+passage) even when the actual field the frontend renders from is empty. Verified by
+direct comparison: a family with `concept_counts: null` on `/families/{id}` — which
+means the "Topics mentioned most" region renders empty and the test fails — still
+returns hits with matching concepts from `/searches`. These are two different views
+over the same document and they can disagree. Only the endpoints in step 3 below
+reflect what the E2E tests actually depend on.
 
 1. **Resolve slug → import ID** (public endpoint, no auth needed):
    ```bash
@@ -106,27 +118,42 @@ caused a real container to freeze and get killed by ECS. Never send a slug to
    token each production site already hands to any browser client-side, not a
    privileged secret.
 
-3. **Query the search API** with the resolved import ID, never the slug:
-   ```bash
-   curl -s -X POST "{api_url}/searches" \
-     -H "Content-Type: application/json" \
-     -H "app-token: {app_token}" \
-     -d '{"query_string": "{withSearch, decoded}", "family_ids": ["{import_id}"], "concept_filters": [{"name": "name", "value": "{withTopic, decoded}"}]}'
-   ```
-   (For document fixtures, use `"document_ids": ["{import_id}"]` instead of
-   `family_ids`.)
+3. **Query the endpoint the frontend actually uses**, with the resolved import ID,
+   never the slug:
+   - **Family fixture:**
+     ```bash
+     curl -s "{api_url}/families/{import_id}?max_hits_per_family=100" \
+       -H "app-token: {app_token}"
+     ```
+     (mirrors `src/bff/methods/getFamilyData.ts`)
+   - **Document fixture:**
+     ```bash
+     curl -s "{api_url}/document/{import_id}" \
+       -H "app-token: {app_token}"
+     ```
+     (mirrors `src/bff/methods/getDocumentData.ts`)
 
-   A fixture is **healthy** if the response has at least one family with at least one
-   `document_passage_matches[].concepts[]` entry whose `name` matches the expected
-   topic (case-insensitive comparison is fine — check exact matches first, don't
-   assume mismatches are broken without checking).
+   Both are GET requests to `{api_url}` (the same host `/searches` uses), returning
+   `{"families": [{"id": ..., "hits": [{..., "concept_counts": {...} | null, ...}]}]}`.
+
+   A fixture is **healthy** if any `hits[].concept_counts` object contains a key
+   whose label (the part after the `Q1234:` id prefix, e.g. `"Q764:construction sector"`
+   → `construction sector`) matches the expected topic name (case-insensitive).
+   A fixture is **broken** if `concept_counts` is `null`/empty on every hit, or none
+   of the keys match the expected topic.
+
+   This is the field `processFamilyTopics.ts`/`extractTopicIds.ts` read to build the
+   "Topics mentioned most" region and the document topic checkboxes — it is a
+   different signal from passage-level search matches and can be empty even when
+   `/searches` finds matching passages for the same document. Do not substitute a
+   `/searches` check for this one.
 
    A zero-hit result (`total_family_hits: 0`, or `"detail": "Error validating corpora IDs."`)
    is **not** proof the fixture is broken — it's equally consistent with the token
    being scoped to the wrong theme (see step 2). Before reporting BROKEN, retry the
    same query with a token from a different theme in the fixture's `availableOn` list.
-   Only report BROKEN once you've confirmed the zero-hit result holds across every
-   theme the fixture claims to be available on.
+   Only report BROKEN once you've confirmed the result holds across every theme the
+   fixture claims to be available on.
 
 ## How to run a check-and-repair pass
 
@@ -134,16 +161,27 @@ caused a real container to freeze and get killed by ECS. Never send a slug to
    `tests/generic/testDocuments.ts`) to get the current entries.
 2. Fetch a fresh app token (step 2 above) once — reuse it for all checks in this pass.
 3. For every entry in both files: resolve its slug to an import ID (step 1), then run
-   the search query (step 3) to determine healthy vs broken. Do this for every entry,
-   not just ones you suspect — any entry can silently break the same way.
+   the `/families/{id}` or `/document/{id}` check (step 3) to determine healthy vs
+   broken. Do this for every entry, not just ones you suspect — any entry can
+   silently break the same way.
 4. For each **broken** entry, find a replacement:
-   - Query the search API again, this time with no `family_ids`/`document_ids` filter
-     — just `query_string` and `concept_filters` for the same topic name — to find
-     other documents/families that currently have that topic. Use a token from one of
-     the fixture's `availableOn` themes; results outside that token's
-     `allowed_corpora_ids` simply won't appear, so prefer the broadest-access token
-     you have available (e.g. `cpr`'s token typically sees the most corpora) unless
-     the fixture is theme-restricted to something narrower (like `ccc`).
+   - Use `POST {api_url}/searches` with no `family_ids`/`document_ids` filter — just
+     `query_string` and `concept_filters` for the same topic name — to *discover*
+     candidate documents/families that mention that topic. This is a reasonable way
+     to generate candidates (it searches a much larger set at once than checking
+     families one at a time), but a `/searches` hit is only a lead, not proof — see
+     the next bullet. Use a token from one of the fixture's `availableOn` themes;
+     results outside that token's `allowed_corpora_ids` simply won't appear, so
+     prefer the broadest-access token you have available (e.g. `cpr`'s token
+     typically sees the most corpora) unless the fixture is theme-restricted to
+     something narrower (like `ccc`).
+   - ⚠️ **Before accepting any candidate, re-verify it the same way you checked the
+     original fixture** — resolve its slug/id and query `/families/{id}` or
+     `/document/{id}` directly, confirming `concept_counts` actually contains the
+     topic. A `/searches` hit does not guarantee `concept_counts` is populated for
+     that same document (that mismatch is the exact reason the original fixture
+     broke) — skipping this re-verification risks replacing one broken fixture with
+     another.
    - From the results, pick a candidate that:
      - Is available on every theme listed in the fixture's `availableOn`. Check this
        via the result's `corpus_import_id` field against each theme's corpus list in
@@ -158,9 +196,12 @@ caused a real container to freeze and get killed by ECS. Never send a slug to
 5. For resolved fixes, edit only that entry's fields in the fixture file (`slug`, and
    `withSearch`/`withTopic`/`withParentTopic` only if they genuinely had to change to
    find a working replacement — prefer keeping them if the original topic/search term
-   still works on the new slug). Leave every other entry byte-for-byte untouched.
+   still works on the new slug; also update `titleForTests` if the replacement is a
+   meaningfully different kind of document than the original title implies). Leave
+   every other entry byte-for-byte untouched.
 6. Report a summary: which entries were checked, which were healthy, which were fixed
-   (old slug → new slug), and any left unresolved needing manual attention.
+   (old slug → new slug, noting any title change), and any left unresolved needing
+   manual attention.
 
 ## After running
 
