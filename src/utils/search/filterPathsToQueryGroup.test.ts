@@ -822,7 +822,7 @@ describe("filterPathsToQueryGroup", () => {
   it.each(FILTER_TEST_CASES.map(({ name, filterPathLabels, searchQueryGroup }) => [name, filterPathLabels, searchQueryGroup]))(
     "builds a filter for %s",
     (_name, filterPathLabels, expectedFilterGroup) => {
-      expect(filterPathsToQueryGroup(filterPathLabels, null)).toEqual(expectedFilterGroup);
+      expect(filterPathsToQueryGroup(filterPathLabels, null, "and")).toEqual(expectedFilterGroup);
     }
   );
 
@@ -834,7 +834,7 @@ describe("filterPathsToQueryGroup", () => {
     it("appends date filters directly when the result is an AND group", () => {
       const andCase = FILTER_TEST_CASES.find((testCase) => testCase.name === "one second level filter")!;
 
-      expect(filterPathsToQueryGroup(andCase.filterPathLabels, dateRange)).toEqual({
+      expect(filterPathsToQueryGroup(andCase.filterPathLabels, dateRange, "and")).toEqual({
         op: "and",
         filters: [...(andCase.searchQueryGroup as TSearchQueryGroup).filters, gteFilter, lteFilter],
       });
@@ -843,7 +843,7 @@ describe("filterPathsToQueryGroup", () => {
     it("wraps the result in a new AND group when the result is an OR group", () => {
       const orCase = FILTER_TEST_CASES.find((testCase) => testCase.name === "one first level filter")!;
 
-      expect(filterPathsToQueryGroup(orCase.filterPathLabels, dateRange)).toEqual({
+      expect(filterPathsToQueryGroup(orCase.filterPathLabels, dateRange, "and")).toEqual({
         op: "and",
         filters: [orCase.searchQueryGroup, gteFilter, lteFilter],
       });
