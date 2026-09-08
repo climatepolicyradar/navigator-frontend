@@ -28,6 +28,7 @@ const SEARCH_FILTERS_LOOKUP = {
 };
 
 interface IProps {
+  conceptsLogic: "and" | "or";
   extraContent?: ReactNode; // Benefits from FiltersContext for rendering suggestions / zero state
   filterGroups: TFiltersGroupConfig[];
   filterParamKey: string;
@@ -43,6 +44,7 @@ interface IProps {
 }
 
 export const SearchControls = ({
+  conceptsLogic,
   extraContent = null,
   filterGroups,
   filterParamKey,
@@ -93,7 +95,7 @@ export const SearchControls = ({
 
   const toggleFilter: TToggleFilterCallback = (labelPath, checked) => {
     const updatedCheckedLabelPaths = updateCheckedLabelPaths(checkedLabelPaths, labelPath, checked);
-    setFilterParam(filterPathsToQueryGroup(updatedCheckedLabelPaths, appliedDateRange));
+    setFilterParam(filterPathsToQueryGroup(updatedCheckedLabelPaths, appliedDateRange, conceptsLogic));
     setCurrentPage("1");
   };
 
@@ -103,7 +105,7 @@ export const SearchControls = ({
   };
 
   const onSetDateRange = (dateRange: TDateRange) => {
-    setFilterParam(filterPathsToQueryGroup(checkedLabelPaths, dateRange));
+    setFilterParam(filterPathsToQueryGroup(checkedLabelPaths, dateRange, conceptsLogic));
     setCurrentPage("1");
   };
 

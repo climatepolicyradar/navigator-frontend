@@ -57,7 +57,7 @@ describe("seedPassageLevel", () => {
   it("carries the query and only the concept filters", () => {
     expect(seedPassageLevel({ query: "flood risk", filters: mixedFilters })).toEqual({
       documents: null,
-      filters: { op: "and", filters: [conceptRule] },
+      filters: { op: "or", filters: [conceptRule] },
       query: "flood risk",
       sort: null,
     });

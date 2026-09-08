@@ -3,7 +3,7 @@ import type { UrlKeys } from "nuqs";
 
 import { QUERY_PARAMS } from "@/constants/queryParams";
 import { FilterGroupSchema } from "@/schemas";
-import { TNestedSearchLevel, TSearchLevel, TSearchLevelValues, TSearchParamKeys, TSearchQueryGroup } from "@/types";
+import { TNestedSearchLevel, TSearchLevel, TSearchLevelValues, TSearchParamKeys, TSearchQueryGroup, TSearchQueryRule, isRule } from "@/types";
 
 import { filterQueryGroupRules, isLabelRuleOfTypes } from "./filterQueryGroupRules";
 
@@ -58,6 +58,11 @@ export const searchLevelUrlKeys = (level: TSearchLevel): UrlKeys<typeof searchLe
 
 export const levelIdParamKey = (level: TNestedSearchLevel): string => level;
 
+// Any group left after pruning to concept-only rules relates concept filters to one another,
+// so we widen it to OR: a passage should surface if it matches any of the selected concepts
+const groupToOr = (node: TSearchQueryGroup | TSearchQueryRule): TSearchQueryGroup | TSearchQueryRule =>
+  isRule(node) ? node : { ...node, op: "or", filters: node.filters.map(groupToOr) };
+
 export const SEARCH_PATH = "_search";
 
 /**
@@ -71,8 +76,10 @@ export const searchLevelFromParams = (pathname: string, searchParams: URLSearchP
   return "base";
 };
 
-export const conceptFiltersOnly = (filters: TSearchQueryGroup | null): TSearchQueryGroup | null =>
-  filterQueryGroupRules(filters, isLabelRuleOfTypes(["concept"]));
+export const conceptFiltersOnly = (filters: TSearchQueryGroup | null): TSearchQueryGroup | null => {
+  const conceptFilters = filterQueryGroupRules(filters, isLabelRuleOfTypes(["concept"]));
+  return conceptFilters && (groupToOr(conceptFilters) as TSearchQueryGroup);
+};
 
 type TSeedSource = {
   filters?: TSearchQueryGroup | null;
