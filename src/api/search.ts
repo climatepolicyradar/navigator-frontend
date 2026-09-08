@@ -97,6 +97,17 @@ function searchDocumentsUrl(): string {
 
 // Add default filters exclusive of searfh parameters to ensure they are always applied
 function configureDocumentsFilters(filters: TSearchQueryGroup | undefined): TSearchQueryGroup {
+  // TODO: update this when we apply a more custom-app focused approach to categories
+  const litigationFilter: TSearchQueryGroup = {
+    op: "and",
+    filters: [
+      {
+        field: "labels.value.id",
+        op: "not_contains",
+        value: "category::Litigation",
+      },
+    ],
+  };
   // Keep for now to ensure we only return principals
   const principalDocumentsFilter: TSearchQueryGroup = {
     op: "and",
@@ -138,15 +149,13 @@ function configureDocumentsFilters(filters: TSearchQueryGroup | undefined): TSea
 
   // Always constrain document searches to published documents. Add default date
   // bounds only when the user has not provided any published_date rule.
-  const filtersWithConditionals: TSearchQueryGroup[] = [publishedStatusFilter];
+  const filtersWithConditionals: TSearchQueryGroup[] = [litigationFilter, principalDocumentsFilter, publishedStatusFilter];
   if (!hasPublishedDateRule(filters)) {
     filtersWithConditionals.push(publishedDateBoundsFilter);
   }
   if (filters) {
     filtersWithConditionals.push(filters);
   }
-
-  filtersWithConditionals.push(principalDocumentsFilter);
 
   return {
     op: "and",
