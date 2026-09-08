@@ -36,7 +36,6 @@ interface IProps {
   nameLabels?: TSearchLabel[];
   pageParamKey?: string;
   queryParamKey: string;
-  resetPageOnSort?: boolean;
   resultsNode?: ReactNode;
   resultsMostRecent?: Date | null;
   sortOptions: TSortOptionConfig[];
@@ -52,7 +51,6 @@ export const SearchControls = ({
   nameLabels,
   pageParamKey = PAGE_TOKEN_PARAM_KEY,
   queryParamKey,
-  resetPageOnSort = false,
   resultsNode,
   resultsMostRecent,
   sortOptions,
@@ -96,24 +94,28 @@ export const SearchControls = ({
   const toggleFilter: TToggleFilterCallback = (labelPath, checked) => {
     const updatedCheckedLabelPaths = updateCheckedLabelPaths(checkedLabelPaths, labelPath, checked);
     setFilterParam(filterPathsToQueryGroup(updatedCheckedLabelPaths, appliedDateRange));
+    setCurrentPage("1");
   };
 
   const clearFilters = () => {
     setFilterParam(null);
+    setCurrentPage("1");
   };
 
   const onSetDateRange = (dateRange: TDateRange) => {
     setFilterParam(filterPathsToQueryGroup(checkedLabelPaths, dateRange));
+    setCurrentPage("1");
   };
 
   const onSort = (sortValue: string) => {
     setSortParam(sortValue);
-    if (resetPageOnSort) setCurrentPage("1");
+    setCurrentPage("1");
   };
 
   const onQuerySubmit: SubmitEventHandler<HTMLFormElement> = (event) => {
     event.preventDefault();
     setQueryParam(searchInput.trim());
+    setCurrentPage("1");
   };
 
   return (
@@ -128,6 +130,7 @@ export const SearchControls = ({
           onClear={() => {
             setSearchInput("");
             setQueryParam("");
+            setCurrentPage("1");
           }}
           value={searchInput}
         />
