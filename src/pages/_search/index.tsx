@@ -146,6 +146,7 @@ const ShadowSearch = ({ theme, themeConfig, features }: TProps) => {
           {/* CONTROLS - FILTERS, SORT, etc */}
           {/* TODO add most recent date from search results */}
           <SearchControls
+            conceptsLogic="and"
             extraContent={
               <>
                 {!hasSearch && <ZeroStateSERPNoSearch />}

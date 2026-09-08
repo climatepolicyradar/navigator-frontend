@@ -1,4 +1,5 @@
 import { LucideTextSearch } from "lucide-react";
+import { parseAsString, useQueryState } from "nuqs";
 import { useState } from "react";
 
 import { PageLink } from "@/components/atoms/pageLink/PageLink";
@@ -7,6 +8,7 @@ import { Section } from "@/components/molecules/section/Section";
 import { InteractiveTable } from "@/components/organisms/interactiveTable/InteractiveTable";
 import { TCategoryDictionaryKey } from "@/constants/text";
 import { IFamilyDocumentTopics, TFamilyPublic } from "@/types";
+import { TOPIC_PARAM_KEY } from "@/utils/search/searchLevels";
 import { getTopicTableRows, topicTableColumns, TTopicTableColumnId } from "@/utils/tables/topic/topicTable";
 
 type TProps = {
@@ -16,16 +18,17 @@ type TProps = {
 };
 
 export const TopicsBlock = ({ family, familyTopics, getCategoryText }: TProps) => {
-  const [topicDrawerId, setTopicDrawerId] = useState<string | null>(null);
-  const [showTopicDrawer, setShowTopicDrawer] = useState(false); // Separate state so that topic in drawer persists while closing
+  const [topicDrawerId, setTopicDrawerId] = useQueryState(TOPIC_PARAM_KEY, parseAsString);
+  // Keeps the topic in the drawer while it closes. Derived in render as an effect would cascade renders
+  const [lastTopicDrawerId, setLastTopicDrawerId] = useState<string | null>(topicDrawerId);
+  if (topicDrawerId && topicDrawerId !== lastTopicDrawerId) setLastTopicDrawerId(topicDrawerId);
 
   const onTopicClick = (wikibaseId: string) => {
-    setTopicDrawerId(wikibaseId);
-    setShowTopicDrawer(true);
+    setTopicDrawerId(wikibaseId, { history: "push" });
   };
 
   const onTopicDrawerOpenChange = (open: boolean) => {
-    if (!open) setShowTopicDrawer(false);
+    if (!open) setTopicDrawerId(null);
   };
 
   const topicTableRows = getTopicTableRows(familyTopics, onTopicClick);
@@ -47,9 +50,9 @@ export const TopicsBlock = ({ family, familyTopics, getCategoryText }: TProps) =
       <TopicDrawer
         family={family}
         familyTopics={familyTopics}
-        topicWikibaseId={topicDrawerId}
+        topicWikibaseId={lastTopicDrawerId}
         onOpenChange={onTopicDrawerOpenChange}
-        open={showTopicDrawer}
+        open={!!topicDrawerId}
       />
     </Section>
   );

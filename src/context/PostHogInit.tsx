@@ -6,6 +6,10 @@ import { PostHogProvider as PHProvider, usePostHog } from "posthog-js/react";
 import { Suspense, useEffect } from "react";
 
 import { getCookie } from "@/utils/cookies";
+import { levelIdParamKey, searchLevelFromParams, TOPIC_PARAM_KEY } from "@/utils/search/searchLevels";
+
+// A stable default: a fresh object each render would re-run the pageview effect and duplicate views
+const NO_PAGE_VIEW_PROPS: Record<string, unknown> = {};
 
 type TPostHogPageViewProps = {
   consent?: boolean;
@@ -43,6 +47,10 @@ function PostHogPageView({ consent, pageViewProps }: TPostHogPageViewProps): nul
         geographyType = subdivisionMatcher.test(pathParts[2]) ? "subdivision" : "country";
       }
 
+      const principalId = searchParams.get(levelIdParamKey("principal"));
+      const documentId = searchParams.get(levelIdParamKey("document"));
+      const topicId = searchParams.get(TOPIC_PARAM_KEY);
+
       posthog.capture("$pageview", {
         $current_url: url,
         consent,
@@ -50,6 +58,10 @@ function PostHogPageView({ consent, pageViewProps }: TPostHogPageViewProps): nul
         geographyType,
         pageType,
         pageTypeSlug,
+        search_level: searchLevelFromParams(pathname, searchParams),
+        result_id: principalId ?? undefined,
+        document_id: documentId ?? undefined,
+        topic_id: topicId ?? undefined,
         ...pageViewProps,
       });
     }
@@ -70,7 +82,7 @@ type TPostHogInitProps = {
  *
  * @see: https://posthog.com/tutorials/nextjs-cookie-banner
  */
-export default function PostHogInit({ consent = false, pageViewProps = {} }: TPostHogInitProps) {
+export default function PostHogInit({ consent = false, pageViewProps = NO_PAGE_VIEW_PROPS }: TPostHogInitProps) {
   /**
    * The sessionStorage is read by tag manager to not re-init posthog.
    * We don't use posthog.__loaded as posthog isn't available on the window
@@ -84,6 +96,8 @@ export default function PostHogInit({ consent = false, pageViewProps = {} }: TPo
       api_host: "https://eu.i.posthog.com",
       capture_pageview: true,
       capture_pageleave: true,
+      // Drawers scroll their own container. `html` keeps page scroll measured when none is open
+      scroll_root_selector: ["[data-drawer-scroll]", "html"],
     });
     window.sessionStorage.setItem("posthogLoaded", "true");
   }, []);

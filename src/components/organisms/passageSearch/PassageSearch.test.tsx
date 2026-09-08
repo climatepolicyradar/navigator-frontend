@@ -340,7 +340,7 @@ describe("PassageSearch", () => {
         renderWithPreview({ q: "renewable", filters: { op: "and", filters: [...topicFilter.filters, countryRule] } });
 
         await waitFor(() => expect(mockFetchSearchPassages).toHaveBeenCalledTimes(1));
-        expect(mockFetchSearchPassages).toHaveBeenCalledWith(expect.objectContaining({ filters: { op: "and", filters: topicFilter.filters } }));
+        expect(mockFetchSearchPassages).toHaveBeenCalledWith(expect.objectContaining({ filters: { op: "or", filters: topicFilter.filters } }));
       });
 
       it("does not narrow a search when one changes", async () => {
@@ -474,7 +474,7 @@ describe("PassageSearch", () => {
       renderWithPreview({ q: "renewable" });
 
       expect(await screen.findByText(/Certain ecological/)).toBeInTheDocument();
-      expect(screen.getByText("Pg. 17")).toBeInTheDocument();
+      expect(screen.getByText("Page 17")).toBeInTheDocument();
       expect(screen.getByText("Section 4: National Target 16")).toBeInTheDocument();
       // The reader is already on this document, so its title is not repeated per passage.
       expect(screen.queryByText(mainDocument.title)).not.toBeInTheDocument();

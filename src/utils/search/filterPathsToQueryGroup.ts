@@ -14,7 +14,11 @@ const makeRule = (value: string, checked?: true): TSearchQueryRule => ({
 const wrapInGroup = (result: TSearchQueryGroup | TSearchQueryRule): TSearchQueryGroup =>
   "field" in result ? { op: "or", filters: [result] } : result;
 
-const buildGroupFromPaths = (labelPaths: TFilterPathLabel[][], checkedIds: Set<string>): TSearchQueryGroup | TSearchQueryRule => {
+const buildGroupFromPaths = (
+  labelPaths: TFilterPathLabel[][],
+  checkedIds: Set<string>,
+  conceptsLogic: "and" | "or"
+): TSearchQueryGroup | TSearchQueryRule => {
   const rootLabelsById = new Map<string, TFilterPathLabel[][]>();
   for (const labelPath of labelPaths) {
     const key = labelPath[0].id;
@@ -32,7 +36,7 @@ const buildGroupFromPaths = (labelPaths: TFilterPathLabel[][], checkedIds: Set<s
     if (childPaths.length === 0) {
       rootResults.push([rootType, rootRule]);
     } else {
-      const childResult = buildGroupFromPaths(childPaths, checkedIds);
+      const childResult = buildGroupFromPaths(childPaths, checkedIds, conceptsLogic);
       rootResults.push([rootType, { op: "and", filters: [rootRule, wrapInGroup(childResult)] }]);
     }
   }
@@ -45,8 +49,9 @@ const buildGroupFromPaths = (labelPaths: TFilterPathLabel[][], checkedIds: Set<s
   }
 
   const typeGroupResults: (TSearchQueryGroup | TSearchQueryRule)[] = [];
-  for (const results of labelsByType.values()) {
-    typeGroupResults.push(results.length === 1 ? results[0] : { op: "or", filters: results });
+  for (const [type, results] of labelsByType.entries()) {
+    const op = type === "concept" ? conceptsLogic : "or";
+    typeGroupResults.push(results.length === 1 ? results[0] : { op, filters: results });
   }
 
   if (typeGroupResults.length === 1) return typeGroupResults[0];
@@ -58,7 +63,11 @@ const buildDateRangeFilters = ([startYear, endYear]: [number, number]): TSearchQ
   { field: "attributes.published_date", key: "published_date", op: "lte", value: `${endYear}-12-31T23:59:59.999Z` },
 ];
 
-export const filterPathsToQueryGroup = (allLabelPaths: TFilterPathLabel[][], dateRange: TDateRange): TSearchQueryGroup => {
+export const filterPathsToQueryGroup = (
+  allLabelPaths: TFilterPathLabel[][],
+  dateRange: TDateRange,
+  conceptsLogic: "and" | "or"
+): TSearchQueryGroup => {
   let result: TSearchQueryGroup;
 
   if (allLabelPaths.length === 0) {
@@ -79,7 +88,7 @@ export const filterPathsToQueryGroup = (allLabelPaths: TFilterPathLabel[][], dat
         )
     );
 
-    result = wrapInGroup(buildGroupFromPaths(deduplicatedLabelPaths, checkedIds));
+    result = wrapInGroup(buildGroupFromPaths(deduplicatedLabelPaths, checkedIds, conceptsLogic));
   }
 
   if (dateRange === null) return result;

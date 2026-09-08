@@ -116,10 +116,12 @@ describe("DocumentCard", () => {
   });
 
   it("sets analytics data attributes on the button", () => {
-    render(<DocumentCard document={baseDocument} onClick={() => {}} analytics={{ context: "search-results", page: 2, positionOffset: 10 }} />);
+    const analytics = { context: "search-results", positionInPage: 2, positionInResults: 12, resultsTotal: 43 };
+    render(<DocumentCard document={baseDocument} onClick={() => {}} analytics={analytics} />);
     const button = screen.getByRole("button");
     expect(button).toHaveAttribute("data-ph-capture-attribute-link-purpose", "search-results");
     expect(button).toHaveAttribute("data-ph-capture-attribute-position-page", "2");
     expect(button).toHaveAttribute("data-ph-capture-attribute-position-total", "12");
+    expect(button).toHaveAttribute("data-ph-capture-attribute-results-total", "43");
   });
 });

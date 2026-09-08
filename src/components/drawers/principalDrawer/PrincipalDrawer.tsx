@@ -132,6 +132,7 @@ export function PrincipalDrawer({ document, importId, open, onOpenChange, tab, o
           </PageLink>
         ) : undefined
       }
+      trackScroll
       wide
     >
       {isLoading && (

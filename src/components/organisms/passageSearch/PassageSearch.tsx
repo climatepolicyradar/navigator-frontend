@@ -7,12 +7,12 @@ import { fetchSearchPassages } from "@/api/passages";
 import EmbeddedPDF from "@/components/EmbeddedPDF";
 import Loader from "@/components/Loader";
 import { Button } from "@/components/atoms/button/Button";
+import { FiveColumns } from "@/components/atoms/columns/FiveColumns";
 import { EmptyDocument } from "@/components/documents/EmptyDocument";
 import { DocumentsFilter, TFilterableDocument } from "@/components/molecules/documentsFilter/DocumentsFilter";
 import { PassageBlock, TPassage as TPassageBlock } from "@/components/molecules/passageBlock/PassageBlock";
 import { SearchControls } from "@/components/organisms/searchControls/SearchControls";
 import { ZeroStatePassages } from "@/components/organisms/zeroStates/ZeroStatePassages";
-import { FullWidth } from "@/components/panels/FullWidth";
 import { ID_SEPARATOR } from "@/constants/chars";
 import { PASSAGE_FILTER_GROUPS } from "@/constants/filters";
 import { RESULTS_PER_PAGE } from "@/constants/paging";
@@ -267,6 +267,7 @@ export const PassageSearch = ({ concepts, documents, documentsLabel, enablePrevi
 
   const controls = (
     <SearchControls
+      conceptsLogic="or"
       filterGroups={PASSAGE_FILTER_GROUPS}
       filterParamKey={paramKeys.filters}
       filtersSlot={
@@ -339,14 +340,18 @@ export const PassageSearch = ({ concepts, documents, documentsLabel, enablePrevi
   if (!enablePreview)
     return (
       <section className="flex flex-col gap-4" id="passage-search">
-        {controls}
-        {results}
+        <FiveColumns>
+          <div className="col-start-1 -col-end-1 py-4 flex flex-col gap-y-4">{controls}</div>
+          <div className="col-start-1 -col-end-1">{results}</div>
+        </FiveColumns>
       </section>
     );
 
   return (
     <section className="flex-1 flex flex-col" id="passage-search">
-      <FullWidth extraClasses="flex flex-col gap-4 py-4">{controls}</FullWidth>
+      <FiveColumns>
+        <div className="col-start-1 -col-end-1 py-4 flex flex-col gap-y-4">{controls}</div>
+      </FiveColumns>
 
       <div className="flex flex-col border-t border-border-light lg:flex-row lg:h-[80vh]">
         <div

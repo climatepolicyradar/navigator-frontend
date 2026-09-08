@@ -1,6 +1,13 @@
 import { TSearchQueryGroup } from "@/types";
 
-import { flattenLevelToBaseQuery, levelIdParamKey, levelParamKeys, searchLevelUrlKeys, seedPassageLevel } from "./searchLevels";
+import {
+  flattenLevelToBaseQuery,
+  levelIdParamKey,
+  levelParamKeys,
+  searchLevelFromParams,
+  searchLevelUrlKeys,
+  seedPassageLevel,
+} from "./searchLevels";
 
 const conceptRule = { field: "labels.value.id", op: "contains", value: "concept::Q786", checked: true } as const;
 const countryRule = { field: "labels.value.id", op: "contains", value: "country::LVA", checked: true } as const;
@@ -50,7 +57,7 @@ describe("seedPassageLevel", () => {
   it("carries the query and only the concept filters", () => {
     expect(seedPassageLevel({ query: "flood risk", filters: mixedFilters })).toEqual({
       documents: null,
-      filters: { op: "and", filters: [conceptRule] },
+      filters: { op: "or", filters: [conceptRule] },
       query: "flood risk",
       sort: null,
     });
@@ -82,5 +89,22 @@ describe("flattenLevelToBaseQuery", () => {
 
   it("nulls the params it has no value for, so nothing is inherited", () => {
     expect(flattenLevelToBaseQuery({ documents: [], filters: null, query: "" })).toEqual({ docs: null, filters: null, q: null });
+  });
+});
+
+describe("searchLevelFromParams", () => {
+  const level = (pathname: string, search: string) => searchLevelFromParams(pathname, new URLSearchParams(search));
+
+  it("reads the deepest open level from the params", () => {
+    expect(level("/_search", "")).toBe("base");
+    expect(level("/_search", "q=flood+risk")).toBe("base");
+    expect(level("/_search", "principal=CCLW.family.1.0")).toBe("principal");
+    expect(level("/_search", "principal=CCLW.family.1.0&document=CCLW.document.1.2")).toBe("document");
+  });
+
+  it("is unset away from the results page, so pages with no levels are not read as the results page", () => {
+    expect(level("/document/a-climate-law", "")).toBeUndefined();
+    // A topic drawer opened on a family page is not a search level
+    expect(level("/document/a-climate-law", "topic=Q786")).toBeUndefined();
   });
 });
