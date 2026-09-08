@@ -44,8 +44,9 @@ const getDocumentType = (document: SearchDocument): ReactNode => {
 
 type TDocumentAnalytics = {
   context?: string;
-  page?: number;
-  positionOffset?: number;
+  positionInPage?: number;
+  positionInResults?: number;
+  resultsTotal?: number;
 };
 
 type TProps = {
@@ -55,7 +56,7 @@ type TProps = {
 };
 
 export function DocumentCard({ document, onClick, analytics }: TProps) {
-  const { context, page, positionOffset } = analytics || {};
+  const { context, positionInPage, positionInResults, resultsTotal } = analytics || {};
 
   const onClickCard: MouseEventHandler<HTMLButtonElement> = (event) => {
     event.currentTarget.blur();
@@ -74,8 +75,9 @@ export function DocumentCard({ document, onClick, analytics }: TProps) {
       type="button"
       onClick={onClickCard}
       data-ph-capture-attribute-link-purpose={context ?? "document-card"}
-      data-ph-capture-attribute-position-page={page}
-      data-ph-capture-attribute-position-total={page !== undefined && positionOffset !== undefined ? positionOffset + page : undefined}
+      data-ph-capture-attribute-position-page={positionInPage}
+      data-ph-capture-attribute-position-total={positionInResults}
+      data-ph-capture-attribute-results-total={resultsTotal}
       className="w-full p-8 flex flex-col gap-6 bg-bg-primary border border-border-normal rounded-xl shadow-[0_1px_2px_0_rgba(0,0,0,0.05)] text-left"
     >
       <h2 className="text-xl text-text-brand font-heavy leading-5" dangerouslySetInnerHTML={{ __html: document.title }} />
