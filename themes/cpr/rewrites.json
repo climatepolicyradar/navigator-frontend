@@ -1,0 +1,6 @@
+[
+  {
+    "source": "/search",
+    "destination": "/_search"
+  }
+]
