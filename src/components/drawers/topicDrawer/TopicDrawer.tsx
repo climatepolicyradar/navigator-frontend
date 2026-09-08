@@ -31,7 +31,7 @@ export const TopicDrawer = ({ family, familyTopics, onOpenChange, open, topicWik
   // Returns an empty drawer if there is no matching topic (zero state, ensures drawer is always rendered)
   if (!topic) {
     return (
-      <Drawer open={open} onOpenChange={onOpenChange} title="Topic">
+      <Drawer open={open} onOpenChange={onOpenChange} title="Topic" trackScroll>
         {null}
       </Drawer>
     );
@@ -41,7 +41,7 @@ export const TopicDrawer = ({ family, familyTopics, onOpenChange, open, topicWik
   const documentRows = getTopicDrawerDocumentTableRows(family, familyTopics, topic);
 
   return (
-    <Drawer open={open} onOpenChange={onOpenChange} title={topicName}>
+    <Drawer open={open} onOpenChange={onOpenChange} title={topicName} trackScroll>
       <div className="grid grid-cols-[120px_auto] gap-x-3 gap-y-2 text-sm text-text-secondary leading-5">
         <div className="font-medium">Definition</div>
         <p>{firstCase(topic.description)}</p>

@@ -16,16 +16,16 @@ const countLabelsAndDescendants = (labels: TNestedSearchLabel[]): number =>
 
 interface IProps {
   ancestorPath: TFilterPathLabel[];
+  emptyStateRender?: () => ReactNode;
   indented?: boolean;
   labels: TNestedSearchLabel[];
   level: number;
   renderParents?: boolean;
-  parentsDefaultOpen?: boolean;
-  emptyStateRender?: () => ReactNode;
+  topLevelDefaultOpen?: boolean;
 }
 
 // Render a set of label peers depending on content and composition
-export const SearchFilterLevel = ({ ancestorPath, indented, labels, level, parentsDefaultOpen, renderParents, emptyStateRender }: IProps) => {
+export const SearchFilterLevel = ({ ancestorPath, emptyStateRender, indented, labels, level, renderParents, topLevelDefaultOpen }: IProps) => {
   const { inUse: isLookupAtHigherLevel } = useContext(FiltersLookupContext);
 
   const levelIsGroups = labels.every((label) => label.type === "group");
@@ -44,7 +44,7 @@ export const SearchFilterLevel = ({ ancestorPath, indented, labels, level, paren
     return (
       <ul className={joinTailwindClasses("flex flex-col gap-4 list-none", indentedClasses)}>
         {sortedLabels.map((label) => (
-          <SearchFilterParent key={label.id} ancestorPath={ancestorPath} defaultOpen={parentsDefaultOpen} label={label} level={level} />
+          <SearchFilterParent key={label.id} ancestorPath={ancestorPath} defaultOpen={topLevelDefaultOpen} label={label} level={level} />
         ))}
       </ul>
     );
@@ -59,7 +59,7 @@ export const SearchFilterLevel = ({ ancestorPath, indented, labels, level, paren
   if (countLabelsAndDescendants(labels) > LOOKUP_THRESHOLD && !isLookupAtHigherLevel) {
     return (
       <div className={joinTailwindClasses(indentedClasses, "max-h-full overflow-y-auto")}>
-        <SearchFilterLookup ancestorPath={ancestorPath} labels={sortedLabels} level={level} />
+        <SearchFilterLookup ancestorPath={ancestorPath} defaultOpen={level === 1 && topLevelDefaultOpen} labels={sortedLabels} level={level} />
       </div>
     );
   }
