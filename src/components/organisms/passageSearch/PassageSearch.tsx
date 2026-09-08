@@ -9,9 +9,9 @@ import Loader from "@/components/Loader";
 import { Button } from "@/components/atoms/button/Button";
 import { EmptyDocument } from "@/components/documents/EmptyDocument";
 import { DocumentsFilter, TFilterableDocument } from "@/components/molecules/documentsFilter/DocumentsFilter";
-import { EmptyPassages } from "@/components/molecules/emptyPassages/EmptyPassages";
 import { PassageBlock, TPassage as TPassageBlock } from "@/components/molecules/passageBlock/PassageBlock";
 import { SearchControls } from "@/components/organisms/searchControls/SearchControls";
+import { ZeroStatePassages } from "@/components/organisms/zeroStates/ZeroStatePassages";
 import { FullWidth } from "@/components/panels/FullWidth";
 import { ID_SEPARATOR } from "@/constants/chars";
 import { PASSAGE_FILTER_GROUPS } from "@/constants/filters";
@@ -326,10 +326,10 @@ export const PassageSearch = ({ concepts, documents, documentsLabel, enablePrevi
         </>
       )}
       {!isLoading && !isError && passages.length === 0 && (
-        <EmptyPassages
-          cssClass={enablePreview ? undefined : "!p-8 border border-border-normal rounded-lg"}
+        <ZeroStatePassages
+          className={enablePreview ? "px-0 py-10 border-0!" : ""}
           hasQuery={hasSearch}
-          onClearClick={handleClear}
+          onClearSearch={handleClear}
           subject={subject}
         />
       )}
