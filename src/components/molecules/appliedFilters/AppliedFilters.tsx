@@ -91,7 +91,7 @@ export const AppliedFilters = ({ ancestorPath = [], className, includeDateRange,
         <li>
           <button
             type="button"
-            className="px-3 py-1 text-sm text-text-primary font-normal leading-5"
+            className="px-3 py-1 text-sm text-text-brand font-normal leading-5 underline"
             aria-label="Clear all filters"
             onClick={() => clearFilters()}
           >

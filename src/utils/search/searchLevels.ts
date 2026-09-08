@@ -15,6 +15,7 @@ import { filterQueryGroupRules, isLabelRuleOfTypes } from "./filterQueryGroupRul
 
 export const SORT_PARAM_KEY = "sort";
 export const PAGE_TOKEN_PARAM_KEY = "page_token";
+export const TOPIC_PARAM_KEY = "topic";
 
 const BASE_PARAM_KEYS: TSearchParamKeys = {
   documents: QUERY_PARAMS.documents,
@@ -61,6 +62,19 @@ export const levelIdParamKey = (level: TNestedSearchLevel): string => level;
 // so we widen it to OR: a passage should surface if it matches any of the selected concepts
 const groupToOr = (node: TSearchQueryGroup | TSearchQueryRule): TSearchQueryGroup | TSearchQueryRule =>
   isRule(node) ? node : { ...node, op: "or", filters: node.filters.map(groupToOr) };
+
+export const SEARCH_PATH = "_search";
+
+/**
+ * The level a page view is looking at, for analytics. Left undefined away from the results page, so
+ * a plain results view stays distinguishable from a page that has no search levels at all.
+ */
+export const searchLevelFromParams = (pathname: string, searchParams: URLSearchParams): TSearchLevel | undefined => {
+  if (pathname.split("/")[1] !== SEARCH_PATH) return undefined;
+  if (searchParams.get(levelIdParamKey("document"))) return "document";
+  if (searchParams.get(levelIdParamKey("principal"))) return "principal";
+  return "base";
+};
 
 export const conceptFiltersOnly = (filters: TSearchQueryGroup | null): TSearchQueryGroup | null => {
   const conceptFilters = filterQueryGroupRules(filters, isLabelRuleOfTypes(["concept"]));

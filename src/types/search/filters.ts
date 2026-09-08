@@ -13,7 +13,7 @@ type TFiltersGroupDrawerConfig = {
   container: "drawer";
   rootLabelTypes: string[];
   prepareRootLabels?: (rootLabels: TNestedSearchLabel[]) => TNestedSearchLabel[];
-  filterParentsDefaultOpen?: boolean;
+  topLevelDefaultOpen?: boolean;
   displayWhenEmpty?: boolean;
   emptyStateRender?: () => ReactNode;
 };
@@ -26,7 +26,7 @@ type TFiltersGroupPopoverConfig = {
   container: "popover" | "datepicker";
   rootLabelTypes: string[];
   prepareRootLabels?: (rootLabels: TNestedSearchLabel[]) => TNestedSearchLabel[];
-  filterParentsDefaultOpen?: boolean;
+  topLevelDefaultOpen?: boolean;
   emptyStateRender?: () => ReactNode;
 };
 

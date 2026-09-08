@@ -28,14 +28,26 @@ function SearchResults({
   data: SearchDocumentsResponse;
   onResultClicked?: (document: SearchDocument, event: React.MouseEvent<HTMLButtonElement>) => void;
 }) {
+  // Number of results on the pages before this one
+  const positionOffset = (data.page - 1) * data.page_size;
+
   return (
     <div data-cy="search-results">
       <ul className="flex flex-col gap-4 highlights">
-        {data.results.map((result) => (
+        {data.results.map((result, resultIndex) => (
           <Fragment key={result.id}>
             {isPrincipal(result) && (
               <li>
-                <DocumentCard document={result} onClick={onResultClicked} />
+                <DocumentCard
+                  document={result}
+                  onClick={onResultClicked}
+                  analytics={{
+                    context: "search-results",
+                    positionInPage: resultIndex + 1,
+                    positionInResults: positionOffset + resultIndex + 1,
+                    resultsTotal: data.total_size ?? undefined,
+                  }}
+                />
               </li>
             )}
             {/* TODO: remove non-principal results */}

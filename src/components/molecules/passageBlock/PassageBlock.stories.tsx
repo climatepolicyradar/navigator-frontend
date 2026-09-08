@@ -93,6 +93,7 @@ export const WithTopic: TStory = {
       ...basePassage,
       labels: [makeLabel("Biodiversity")],
     },
+    activeTopicsIds: ["concept-Biodiversity"],
   },
 };
 
@@ -102,6 +103,7 @@ export const WithMultipleTopics: TStory = {
       ...basePassage,
       labels: [makeLabel("Biodiversity"), makeLabel("Renewable energy"), makeLabel("Land use")],
     },
+    activeTopicsIds: ["concept-Biodiversity", "concept-Renewable energy", "concept-Land use"],
   },
 };
 
@@ -123,7 +125,7 @@ const highlightedLabels = [
   makeSpanLabel("Biodiversity", 163, 188),
   makeSpanLabel("Legislation", 211, 235), // "Directive (EU) 2018/2001"
   makeSpanLabel("Carbon", 256, 269), // "carbon stocks"
-  makeLabel("Renewable energy"), // Never active, so it stays plain in the topics list
+  makeLabel("Renewable energy"), // Never active, so it's excluded from the topics list
 ];
 
 // Enough topics to wrap the colour cycle, with "Land use" showing that a topic keeps one
@@ -143,6 +145,7 @@ export const ClickableWithTopics: TStory = {
       ...basePassage,
       labels: [makeLabel("Biodiversity"), makeLabel("Renewable energy")],
     },
+    activeTopicsIds: ["concept-Biodiversity", "concept-Renewable energy"],
     onPassageClick: () => {},
   },
 };

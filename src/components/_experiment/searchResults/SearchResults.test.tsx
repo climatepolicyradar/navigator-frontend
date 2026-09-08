@@ -30,7 +30,7 @@ const emptyResponse: SearchDocumentsResponse = {
   previous_page: null,
 };
 
-import { fetchSearchDocuments, SearchDocumentsResponse } from "@/api/search";
+import { fetchSearchDocuments, SearchDocument, SearchDocumentsResponse } from "@/api/search";
 import { createGroup } from "@/components/_experiment/advancedFilters/AdvancedFilters";
 import { upsertPublishedDateRangeRules } from "@/utils/_experiment/dateRangeFilters";
 
@@ -47,6 +47,16 @@ const renderWith = (ui: React.ReactElement) => {
     rerenderWith: (next: React.ReactElement) => result.rerender(<QueryClientProvider client={queryClient}>{next}</QueryClientProvider>),
   };
 };
+
+const principalResult = (id: string): SearchDocument => ({
+  id,
+  title: id,
+  description: null,
+  labels: [{ type: "status", value: { id: "status-principal", type: "status", value: "Principal" }, count: null, timestamp: null }],
+  documents: [],
+  items: [],
+  attributes: {},
+});
 
 describe("SearchContainer", () => {
   afterEach(() => vi.clearAllMocks());
@@ -110,5 +120,23 @@ describe("SearchContainer", () => {
       expect(shouldRetrySearch(0, new TypeError("Failed to fetch"))).toBe(true);
       expect(shouldRetrySearch(3, searchError(500))).toBe(false);
     });
+  });
+
+  it("ranks results by their position in the whole result set, not the page", async () => {
+    vi.mocked(fetchSearchDocuments).mockResolvedValueOnce({
+      ...emptyResponse,
+      results: [principalResult("first"), principalResult("second")],
+      total_size: 43,
+      page: 3,
+      total_pages: 5,
+    });
+
+    renderWith(<SearchContainer query="climate" />);
+
+    const [firstResult, secondResult] = await screen.findAllByRole("button");
+    expect(firstResult).toHaveAttribute("data-ph-capture-attribute-position-page", "1");
+    expect(firstResult).toHaveAttribute("data-ph-capture-attribute-position-total", "21");
+    expect(firstResult).toHaveAttribute("data-ph-capture-attribute-results-total", "43");
+    expect(secondResult).toHaveAttribute("data-ph-capture-attribute-position-total", "22");
   });
 });
