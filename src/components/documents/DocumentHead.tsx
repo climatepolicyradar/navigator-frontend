@@ -4,9 +4,9 @@ import { useEffect, useState } from "react";
 import { Alert } from "@/components/Alert";
 import { ExternalLink } from "@/components/ExternalLink";
 import { Button } from "@/components/atoms/button/Button";
+import { FiveColumns } from "@/components/atoms/columns/FiveColumns";
 import { BreadCrumbs } from "@/components/breadcrumbs/Breadcrumbs";
 import { DocumentMetaRenderer } from "@/components/documents/renderers/DocumentMetaRenderer";
-import { SiteWidth } from "@/components/panels/SiteWidth";
 import { Heading } from "@/components/typography/Heading";
 import { MAX_FAMILY_SUMMARY_LENGTH_BRIEF } from "@/constants/document";
 import { TFamilyDocumentPublic, TFamilyPublic } from "@/types";
@@ -58,15 +58,15 @@ export const DocumentHead = ({ document, family, handleViewOtherDocsClick, handl
         family={breadcrumbFamily}
         label={breadcrumbLabel ? <span className="capitalize">{breadcrumbLabel}</span> : document.title}
       />
-      <SiteWidth>
-        <div className="flex flex-col justify-between lg:flex-row flex-wrap">
+      <FiveColumns>
+        <div className="col-start-1 -col-end-1 flex flex-col justify-between gap-x-10 lg:flex-row flex-wrap">
           <div className="flex-1 my-4">
             <Heading level={1}>{document.title}</Heading>
             <DocumentMetaRenderer family={family} isMain={isMain} document={document} />
 
             <div className="text-content" dangerouslySetInnerHTML={{ __html: summary.replace(/\r?\n/g, "<br/>") }} />
             {family.summary.length > MAX_FAMILY_SUMMARY_LENGTH_BRIEF && (
-              <div className="mt-4">
+              <div className="mt-1">
                 <button onClick={() => setShowFullSummary(!showFullSummary)} className="anchor alt text-sm">
                   {showFullSummary ? "Hide full summary" : "Read more"}
                 </button>
@@ -98,7 +98,7 @@ export const DocumentHead = ({ document, family, handleViewOtherDocsClick, handl
         </div>
 
         {translated && (
-          <div className="flex my-4">
+          <div className="col-start-1 -col-end-1 flex my-4">
             <Alert
               message={
                 <>
@@ -112,7 +112,7 @@ export const DocumentHead = ({ document, family, handleViewOtherDocsClick, handl
             />
           </div>
         )}
-      </SiteWidth>
+      </FiveColumns>
     </div>
   );
 };
