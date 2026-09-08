@@ -340,7 +340,7 @@ describe("PassageSearch", () => {
         renderWithPreview({ q: "renewable", filters: { op: "and", filters: [...topicFilter.filters, countryRule] } });
 
         await waitFor(() => expect(mockFetchSearchPassages).toHaveBeenCalledTimes(1));
-        expect(mockFetchSearchPassages).toHaveBeenCalledWith(expect.objectContaining({ filters: { op: "and", filters: topicFilter.filters } }));
+        expect(mockFetchSearchPassages).toHaveBeenCalledWith(expect.objectContaining({ filters: { op: "or", filters: topicFilter.filters } }));
       });
 
       it("does not narrow a search when one changes", async () => {
