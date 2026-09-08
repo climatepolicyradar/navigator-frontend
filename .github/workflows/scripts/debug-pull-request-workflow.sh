@@ -81,8 +81,6 @@ test_all_jobs() {
 
 	local jobs=(
 		"size:Bundle size check"
-		"lhci-desktop:Lighthouse Desktop tests"
-		"lhci-mobile:Lighthouse Mobile tests"
 		"percy:Visual regression tests"
 		"code-quality:Code quality checks"
 		"test:Unit tests"
@@ -139,13 +137,11 @@ show_menu() {
 	echo "=================================="
 	echo "1. Test all jobs (list only)"
 	echo "2. Test size job"
-	echo "3. Test lhci-desktop job"
-	echo "4. Test lhci-mobile job"
-	echo "5. Test percy job"
-	echo "6. Test code-quality job"
-	echo "7. Test test job"
-	echo "8. Test test-e2e job"
-	echo "9. Test specific job (custom)"
+	echo "3. Test percy job"
+	echo "4. Test code-quality job"
+	echo "5. Test test job"
+	echo "6. Test test-e2e job"
+	echo "7. Test specific job (custom)"
 	echo "0. Exit"
 	echo
 }
@@ -170,24 +166,18 @@ main() {
 			test_job_execution "size"
 			;;
 		3)
-			test_job_execution "lhci-desktop"
-			;;
-		4)
-			test_job_execution "lhci-mobile"
-			;;
-		5)
 			test_job_execution "percy"
 			;;
-		6)
+		4)
 			test_job_execution "code-quality"
 			;;
-		7)
+		5)
 			test_job_execution "test"
 			;;
-		8)
+		6)
 			test_job_execution "test-e2e"
 			;;
-		9)
+		7)
 			read -r -p "Enter job name: " job_name
 			test_job_execution "${job_name}"
 			;;

@@ -25,95 +25,6 @@ jobs:
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
 
-  # lhci-desktop:
-  #   name: Lighthouse Desktop (${{ matrix.theme }})
-  #   runs-on: ubuntu-latest
-  #   strategy:
-  #     fail-fast: false
-  #     matrix:
-  #       theme: [cpr, cclw, mcf, ccc]
-  #   permissions:
-  #     checks: write
-  #     contents: read
-  #   steps:
-  #     - uses: actions/checkout@v7
-  #     - name: Use Node.js 24.x
-  #       uses: actions/setup-node@v7
-  #       with:
-  #         node-version-file: .nvmrc
-  #     - run: npm install
-  #     - run: cp .env.example .env
-  #     - run: THEME=${{ matrix.theme }} ROBOTS=true npm run build
-  #     - name: install Lighthouse CI
-  #       run: npm install -g @lhci/cli@0.14.x
-  #     - id: upper-theme
-  #       name: Theme to uppercase
-  #       run: |
-  #         theme=$(echo ${{ matrix.theme }} | tr '[:lower:]' '[:upper:]')
-  #         echo "theme=$theme" >> $GITHUB_OUTPUT
-
-  #     - name: Fetch latest base branch SHA
-  #       id: base-sha
-  #       run: |
-  #         git fetch origin ${{ github.event.pull_request.base.ref }}
-  #         echo "sha=$(git rev-parse origin/${{ github.event.pull_request.base.ref }})" >> $GITHUB_OUTPUT
-
-  #     - name: run Lighthouse Desktop
-  #       # The --baseHash parameter compares the current commit (the one being tested) against the specified base hash.
-  #       # E.g., if your PR branch has commit abc123, and the main branch has commit def456,
-  #       # --baseHash=def456 tells Lighthouse: "Compare abc123 against def456"
-  #       run: lhci autorun --config=lighthouserc.desktop.js --collect.settings.preset=desktop --baseHash=${{ steps.base-sha.outputs.sha }}
-
-  #       env:
-  #         LHCI_GITHUB_APP_TOKEN: ${{ secrets.LHCI_GITHUB_APP_TOKEN }}
-  #         LHCI_TOKEN: ${{ secrets[format('LHCI_{0}_DESKTOP_TOKEN', steps.upper-theme.outputs.theme)] }}
-  #         ROBOTS: true
-
-  # lhci-mobile:
-  #   name: Lighthouse Mobile (${{ matrix.theme }})
-  #   runs-on: ubuntu-latest
-  #   strategy:
-  #     fail-fast: false
-  #     matrix:
-  #       theme: [cpr, cclw, mcf, ccc]
-  #   permissions:
-  #     checks: write
-  #     contents: read
-  #   steps:
-  #     - uses: actions/checkout@v7
-  #     - name: Use Node.js 24.x
-  #       uses: actions/setup-node@v7
-  #       with:
-  #         node-version-file: .nvmrc
-  #     - run: npm install
-  #     - run: cp .env.example .env
-  #     - run: THEME=${{ matrix.theme }} ROBOTS=true npm run build
-  #     - name: install Lighthouse CI
-  #       run: npm install -g @lhci/cli@0.14.x
-
-  #     - id: upper-theme
-  #       name: Theme to uppercase
-  #       run: |
-  #         theme=$(echo ${{ matrix.theme }} | tr '[:lower:]' '[:upper:]')
-  #         echo "theme=$theme" >> $GITHUB_OUTPUT
-
-  #     - name: Fetch latest base branch SHA
-  #       id: base-sha
-  #       run: |
-  #         git fetch origin ${{ github.event.pull_request.base.ref }}
-  #         echo "sha=$(git rev-parse origin/${{ github.event.pull_request.base.ref }})" >> $GITHUB_OUTPUT
-
-  #     - name: run Lighthouse Mobile
-  #       # The --baseHash parameter compares the current commit (the one being tested) against the specified base hash.
-  #       # E.g., if your PR branch has commit abc123, and the main branch has commit def456,
-  #       # --baseHash=def456 tells Lighthouse: "Compare abc123 against def456"
-  #       run: lhci autorun --config=lighthouserc.mobile.js --baseHash=${{ steps.base-sha.outputs.sha }}
-
-  #       env:
-  #         LHCI_GITHUB_APP_TOKEN: ${{ secrets.LHCI_GITHUB_APP_TOKEN }}
-  #         LHCI_TOKEN: ${{ secrets[format('LHCI_{0}_MOBILE_TOKEN', steps.upper-theme.outputs.theme)] }}
-  #         ROBOTS: true
-
   code-quality:
     runs-on: ubuntu-latest
     env:
@@ -314,7 +225,7 @@ jobs:
 
             staging-shared-resources:
               - 'infra/platform/**'
-            
+
             # We have removed these for now as
             # we need environment: production to get the AWS creds for that environment
             # but that environment has GitHub protection rules, so we get stuck
