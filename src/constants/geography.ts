@@ -22,6 +22,6 @@ export const GEOGRAPHY_SLUG_CONVERSIONS: Record<string, string> = {
   turkiye: "turkey",
   "united-states": "united-states-of-america",
   "venezuela-bolivarian-republic-of": "venezuela",
-  "viet-nam": "vietnam",
+  "viet-name": "vietnam",
   "western-sahara": "sahrawi-republic",
 };
