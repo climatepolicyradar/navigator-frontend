@@ -1,5 +1,6 @@
 import { render, screen, fireEvent } from "@testing-library/react";
 
+import { EN_DASH } from "@/constants/chars";
 import { IPassageLabel } from "@/types";
 
 import { PassageBlock, QUERY_HIGHLIGHT_COLOUR as QUERY_COLOUR, TOPIC_HIGHLIGHT_COLOURS as TOPIC_COLOURS, TPassage } from "./PassageBlock";
@@ -49,25 +50,25 @@ describe("PassageBlock", () => {
 
   it("renders the page number when present, shifted from the 0-indexed model", () => {
     render(<PassageBlock passage={basePassage} />);
-    expect(screen.getByText("Pg. 17")).toBeInTheDocument();
+    expect(screen.getByText("Page 17")).toBeInTheDocument();
   });
 
-  it("lists every page when a passage spans more than one", () => {
+  it("shows the page range when a passage spans more than one", () => {
     const passage: TPassage = { ...basePassage, pages: [{ page_number: 0 }, { page_number: 1 }, { page_number: 2 }] };
     render(<PassageBlock passage={passage} />);
-    expect(screen.getByText("Pgs. 1, 2, 3")).toBeInTheDocument();
+    expect(screen.getByText(`Pages 1${EN_DASH}3`)).toBeInTheDocument();
   });
 
   it("does not render a page number for an empty pages array", () => {
     const passage: TPassage = { ...basePassage, pages: [] };
     render(<PassageBlock passage={passage} />);
-    expect(screen.queryByText(/^Pgs?\./)).not.toBeInTheDocument();
+    expect(screen.queryByText(/^Pages?\b/)).not.toBeInTheDocument();
   });
 
   it("does not render a page number when absent", () => {
     const passage: TPassage = { ...basePassage, pages: undefined };
     render(<PassageBlock passage={passage} />);
-    expect(screen.queryByText(/^Pgs?\./)).not.toBeInTheDocument();
+    expect(screen.queryByText(/^Pages?\b/)).not.toBeInTheDocument();
   });
 
   it("renders the heading text when present", () => {
@@ -83,25 +84,25 @@ describe("PassageBlock", () => {
 
   it("renders the label values as topics when labels are present", () => {
     const passage: TPassage = { ...basePassage, labels: [makeLabel("Biodiversity"), makeLabel("Renewable energy")] };
-    render(<PassageBlock passage={passage} />);
-    expect(screen.getByText("Contains topics: Biodiversity, Renewable energy")).toBeInTheDocument();
+    render(<PassageBlock passage={passage} activeTopicsIds={["concept-Biodiversity", "concept-Renewable energy"]} />);
+    expect(screen.getByText(/^Contains:/)).toHaveTextContent("Contains: Biodiversity, Renewable energy");
   });
 
   it("does not render topics when labels are absent", () => {
     render(<PassageBlock passage={basePassage} />);
-    expect(screen.queryByText(/Contains topics:/)).not.toBeInTheDocument();
+    expect(screen.queryByText(/Contains:/)).not.toBeInTheDocument();
   });
 
   it("does not render topics for an empty labels array", () => {
     const passage: TPassage = { ...basePassage, labels: [] };
     render(<PassageBlock passage={passage} />);
-    expect(screen.queryByText(/Contains topics:/)).not.toBeInTheDocument();
+    expect(screen.queryByText(/Contains:/)).not.toBeInTheDocument();
   });
 
   it("renders topics inside the clickable passage button", () => {
     const passage: TPassage = { ...basePassage, labels: [makeLabel("Biodiversity")] };
-    render(<PassageBlock passage={passage} onPassageClick={() => {}} />);
-    expect(screen.getByRole("button", { name: /Contains topics: Biodiversity/ })).toBeInTheDocument();
+    render(<PassageBlock passage={passage} activeTopicsIds={["concept-Biodiversity"]} onPassageClick={() => {}} />);
+    expect(screen.getByRole("button", { name: /Contains: Biodiversity/ })).toBeInTheDocument();
   });
 
   it("renders the passage text as plain text when onPassageClick is not provided", () => {
@@ -258,10 +259,9 @@ describe("PassageBlock", () => {
     it("highlights an active topic in the topics list in its own colour", () => {
       render(<PassageBlock passage={topicPassage} activeTopicsIds={["concept-Ecology"]} />);
 
-      // The active topic is its own element now, so the list reads as one string but is not one node
-      expect(screen.getByText(/^Contains topics:/)).toHaveTextContent("Contains topics: Ecology, Geohazards");
+      expect(screen.getByText(/^Contains:/)).toHaveTextContent("Contains: Ecology");
       expect(screen.getByText("Ecology")).toHaveClass(TOPIC_COLOURS[0]);
-      // The inactive topic stays as plain text alongside it
+      // The inactive topic is excluded from the list entirely
       expect(screen.queryByText("Geohazards")).not.toBeInTheDocument();
     });
 
@@ -274,11 +274,10 @@ describe("PassageBlock", () => {
       expect(screen.getByText("geohazards")).toHaveClass(TOPIC_COLOURS[1]);
     });
 
-    it("does not highlight any topic in the list when none are active", () => {
+    it("does not render the topics list when no topic is active", () => {
       render(<PassageBlock passage={topicPassage} />);
 
-      expect(screen.getByText("Contains topics: Ecology, Geohazards")).toBeInTheDocument();
-      expect(screen.queryByText("Ecology")).not.toBeInTheDocument();
+      expect(screen.queryByText(/Contains:/)).not.toBeInTheDocument();
     });
 
     it("highlights the content when the passage is clickable", () => {

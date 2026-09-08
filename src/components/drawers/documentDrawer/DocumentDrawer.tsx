@@ -53,7 +53,7 @@ export const DocumentDrawer = ({ documentImportId, family, familyTopics, languag
   /* Return an empty drawer if there is no matching document */
   if (!document) {
     return (
-      <Drawer open={open} onOpenChange={onOpenChange} title="Document" wide>
+      <Drawer open={open} onOpenChange={onOpenChange} title="Document" trackScroll wide>
         <Loader height="18" width="18" className="animate-spin" />
       </Drawer>
     );
@@ -128,6 +128,7 @@ export const DocumentDrawer = ({ documentImportId, family, familyTopics, languag
           </PageLink>
         ) : undefined
       }
+      trackScroll
       wide
     >
       {features["new-search"] ? (

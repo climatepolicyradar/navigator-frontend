@@ -1,6 +1,6 @@
 import { Drawer as BaseDrawer, DrawerRootProps } from "@base-ui/react/drawer";
 import { LucideX } from "lucide-react";
-import { ReactNode } from "react";
+import { createContext, ReactNode, useContext, useEffect, useMemo, useState } from "react";
 
 import { joinTailwindClasses } from "@/utils/tailwind";
 
@@ -14,6 +14,8 @@ type TProps = Omit<DrawerRootProps, "swipeDirection"> & {
   title?: ReactNode;
   titleExtras?: ReactNode;
   direction?: TDirection;
+  /** Marks this drawer's content as the root PostHog measures scroll depth against while it is open */
+  trackScroll?: boolean;
   wide?: boolean;
 };
 
@@ -24,7 +26,46 @@ const swipeDirectionMap: Record<TDirection, "left" | "right" | "up" | "down"> = 
   bottom: "down",
 };
 
-export const Drawer = ({ children, childrenClassName, title, titleExtras, direction = "right", wide, ...rootProps }: TProps) => {
+/**
+ * PostHog measures scroll depth against the first element matching its `scroll_root_selector`, so
+ * when drawers are nested only the innermost open one may be marked.
+ *
+ * Tracked drawers tell their nearest tracked ancestor when they open, so the ancestor can stand
+ * down while they are on top. This only reaches drawers rendered inside one another, which is how
+ * every nested drawer works today (a principal drawer renders the document and topic drawers).
+ *
+ * Opted into per drawer: swapping the scroll root mid-page-view mixes two elements into one
+ * measurement, so only drawers that open on a URL change - and so start their own page view - mark
+ * themselves. `trackScroll` therefore needs the controlled `open` prop.
+ */
+type TScrollRootContext = {
+  onNestedOpen: () => void;
+  onNestedClose: () => void;
+};
+
+const ScrollRootContext = createContext<TScrollRootContext | null>(null);
+
+export const Drawer = ({ children, childrenClassName, title, titleExtras, direction = "right", trackScroll, wide, ...rootProps }: TProps) => {
+  const trackedAncestor = useContext(ScrollRootContext);
+  const [openNestedCount, setOpenNestedCount] = useState(0);
+
+  const scrollRootContext = useMemo(
+    () => ({
+      onNestedOpen: () => setOpenNestedCount((count) => count + 1),
+      onNestedClose: () => setOpenNestedCount((count) => count - 1),
+    }),
+    []
+  );
+
+  const isTracking = !!trackScroll && !!rootProps.open;
+
+  useEffect(() => {
+    if (!isTracking || !trackedAncestor) return;
+
+    trackedAncestor.onNestedOpen();
+    return trackedAncestor.onNestedClose;
+  }, [isTracking, trackedAncestor]);
+
   return (
     <BaseDrawer.Root {...rootProps} swipeDirection={swipeDirectionMap[direction]}>
       <BaseDrawer.Portal>
@@ -44,8 +85,12 @@ export const Drawer = ({ children, childrenClassName, title, titleExtras, direct
                 </BaseDrawer.Close>
               </div>
             </div>
-            <div data-base-ui-swipe-ignore className={joinTailwindClasses("overflow-y-auto px-8 pb-8", childrenClassName)}>
-              {children}
+            <div
+              data-drawer-scroll={isTracking && openNestedCount === 0 ? "" : undefined}
+              data-base-ui-swipe-ignore
+              className={joinTailwindClasses("overflow-y-auto px-8 pb-8", childrenClassName)}
+            >
+              <ScrollRootContext.Provider value={isTracking ? scrollRootContext : trackedAncestor}>{children}</ScrollRootContext.Provider>
             </div>
           </BaseDrawer.Popup>
         </BaseDrawer.Viewport>
