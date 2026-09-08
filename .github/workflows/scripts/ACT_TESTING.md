@@ -65,22 +65,12 @@ will use the container.
 
 ### 3. Dependencies
 
-Some jobs require external services (Lighthouse CI, Percy, etc.). These will
-fail locally without proper tokens.
-
-### 4. Matrix Jobs
-
-Jobs like `lhci-desktop` and `lhci-mobile` run matrix builds. Test with:
-
-```bash
-act pull_request --workflows .github/workflows/pull_request.yml --job lhci-desktop --matrix theme:cpr
-```
+Some jobs require external services (Percy, etc.). These will fail locally
+without proper tokens.
 
 ## Job Descriptions
 
 - **size**: Bundle size checking with size-limit
-- **lhci-desktop**: Lighthouse CI desktop performance tests
-- **lhci-mobile**: Lighthouse CI mobile performance tests
 - **percy**: Visual regression testing
 - **code-quality**: Trunk.io code quality checks + TypeScript
 - **test**: Unit tests with Vitest
@@ -112,7 +102,6 @@ Create a `.secrets` file for testing:
 
 ```env
 GITHUB_TOKEN=your-token
-LHCI_GITHUB_APP_TOKEN=your-lighthouse-token
 PERCY_TOKEN=your-percy-token
 ```
 
@@ -122,8 +111,7 @@ Based on the workflow analysis, the most common failure points are:
 
 1. **test job**: Unit tests failing (vitest)
 2. **code-quality job**: Trunk.io or TypeScript errors
-3. **lhci-\* jobs**: Missing Lighthouse CI tokens
-4. **percy job**: Missing Percy token or visual regressions
-5. **test-e2e\* jobs**: App behaviour regression (playright)
+3. **percy job**: Missing Percy token or visual regressions
+4. **test-e2e\* jobs**: App behaviour regression (playright)
 
 Start with the `test` job as it's the most straightforward to debug locally.
