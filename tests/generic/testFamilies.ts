@@ -32,7 +32,7 @@ export const TEST_FAMILIES: TTestFamily[] = [
   },
   {
     titleForTests: "Policy, many documents",
-    slug: "blue-economy-development-framework-for-indonesias-economic-transformation_ebbb",
+    slug: "spain-integrated-national-energy-and-climate-plan-necp-2021-2030_71db",
     withSearch: "construction",
     withTopic: "construction+sector",
     availableOn: ["cpr", "cclw"],
