@@ -14,14 +14,20 @@ export const SearchFiltersPopover = ({ filterGroup }: IProps) => {
 
   return (
     <BasePopover.Root>
-      <BasePopover.Trigger className="flex gap-2 items-center px-3 py-2 bg-bg-primary data-popup-open:bg-bg-flat text-sm text-text-primary font-medium leading-5 border border-border-normal rounded-full">
+      <BasePopover.Trigger className="group flex gap-2 items-center px-3 py-2 bg-bg-primary data-popup-open:bg-bg-flat text-sm text-text-primary font-medium leading-5 border border-border-normal rounded-full">
         <span>{title}</span>
-        <ChevronDown size={16} className="text-elem-icon" />
+        <ChevronDown size={16} className="text-elem-icon transition-transform group-data-popup-open:rotate-180" />
       </BasePopover.Trigger>
       <BasePopover.Portal>
         <BasePopover.Positioner positionMethod="fixed" side="bottom" sideOffset={8} align="start" className="">
           <BasePopover.Popup className="w-83 max-h-[50dvh] px-6 py-5 bg-bg-primary border border-border-normal rounded-xl shadow-2xl overflow-y-auto">
-            <SearchFilterLevel ancestorPath={[]} labels={nestedLabels} level={1} emptyStateRender={filterGroup.emptyStateRender} />
+            <SearchFilterLevel
+              ancestorPath={[]}
+              labels={nestedLabels}
+              level={1}
+              emptyStateRender={filterGroup.emptyStateRender}
+              topLevelDefaultOpen={filterGroup.topLevelDefaultOpen}
+            />
           </BasePopover.Popup>
         </BasePopover.Positioner>
       </BasePopover.Portal>

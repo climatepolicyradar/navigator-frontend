@@ -20,7 +20,7 @@ export const SEARCH_FILTER_GROUPS: TFiltersGroupConfig[] = [
     container: "drawer",
     rootLabelTypes: ["region"],
     prepareRootLabels: prepareGeographyFilters,
-    filterParentsDefaultOpen: true,
+    topLevelDefaultOpen: true,
   },
   {
     title: "Topic",
@@ -28,6 +28,7 @@ export const SEARCH_FILTER_GROUPS: TFiltersGroupConfig[] = [
     afterPartition: true,
     rootLabelTypes: ["concept"],
     prepareRootLabels: prepareTopicFilters,
+    topLevelDefaultOpen: true,
   },
   {
     title: "Date",

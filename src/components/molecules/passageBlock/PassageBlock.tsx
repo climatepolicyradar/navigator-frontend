@@ -1,6 +1,7 @@
 import { Check, Copy, ExternalLink, File, LocateFixed } from "lucide-react";
 import { useEffect, useState } from "react";
 
+import { EN_DASH } from "@/constants/chars";
 import { IPassageLabel } from "@/types";
 import { joinNodes } from "@/utils/reactNode";
 import { THighlightRange, addHighlights } from "@/utils/text/addHighlights";
@@ -64,6 +65,13 @@ const getTopicColours = (activeTopics: IPassageLabel[]) => {
   return colours;
 };
 
+const formatPageRange = (pageNumbers: number[]): string => {
+  if (pageNumbers.length <= 1) return pageNumbers[0].toString() ?? "";
+
+  const sortedPageNumbers = [...pageNumbers].sort();
+  return [sortedPageNumbers[0], sortedPageNumbers[sortedPageNumbers.length - 1]].join(EN_DASH);
+};
+
 // Define the highlight ranges - highlights are applied later, we just nede their positions and colour
 const getHighlightRanges = ({
   content,
@@ -105,19 +113,14 @@ export const PassageBlock = ({ passage, onCopyClick, onDocumentLinkClick, onPass
     passage.content,
     resolveHighlightRanges(passage.content, getHighlightRanges({ content: passage.content, query, activeTopics, topicColours }))
   );
-  // A passage can contain multiple instances of the same topic
-  const topics = [...new Map(passage.labels?.map(({ value }) => [value.value, value.id]) ?? [])];
+  // A passage can contain multiple spans of the same highlighted topic
+  const topics = [...new Map(activeTopics.map(({ value }) => [value.value, value.id]))];
   const topicsList = joinNodes(
-    topics.map(([value, id]) => {
-      const colour = topicColours.get(id);
-      return colour ? (
-        <span key={id} className={colour}>
-          {value}
-        </span>
-      ) : (
-        value
-      );
-    }),
+    topics.map(([value, id]) => (
+      <span key={id} className={topicColours.get(id)}>
+        {value}
+      </span>
+    )),
     ", "
   );
   const hasFooter = showDocument || hasContext;
@@ -137,20 +140,20 @@ export const PassageBlock = ({ passage, onCopyClick, onDocumentLinkClick, onPass
           <button
             type="button"
             onClick={() => onPassageClick(passage)}
-            className="text-left w-full text-sm text-text-primary px-8 py-7 hocus:bg-paper"
+            className="text-left w-full text-sm text-text-primary p-6 cols-3:px-8 cols-3:py-7"
           >
             <p>{highlightedContent}</p>
-            {passage.labels?.length > 0 && <p className="text-text-secondary mt-2">Contains topics: {topicsList}</p>}
+            {activeTopics.length > 0 && <p className="text-text-secondary mt-2">Contains: {topicsList}</p>}
           </button>
         ) : (
-          <div className="px-8 py-7">
+          <div className="p-6 cols-3:px-8 cols-3:py-7">
             <p>{highlightedContent}</p>
-            {passage.labels?.length > 0 && <p className="text-text-secondary mt-2">Contains topics: {topicsList}</p>}
+            {activeTopics.length > 0 && <p className="text-text-secondary mt-2">Contains: {topicsList}</p>}
           </div>
         )}
       </div>
       {hasFooter && (
-        <div className="bg-paper px-8 py-3 flex gap-16 items-start">
+        <div className="bg-paper px-6 cols-3:px-8 py-3 flex gap-16 items-start">
           <div className="flex-1 min-w-0 flex flex-col gap-2.5">
             {showDocument && (
               <div className="flex gap-2 items-center">
@@ -164,7 +167,7 @@ export const PassageBlock = ({ passage, onCopyClick, onDocumentLinkClick, onPass
                   <div className="flex gap-2 items-center shrink-0">
                     <LocateFixed size={16} className="text-elem-icon" />
                     <p className="text-sm text-text-primary whitespace-nowrap">
-                      {pageNumbers.length === 1 ? "Pg." : "Pgs."} {pageNumbers.join(", ")}
+                      {pageNumbers.length === 1 ? "Page" : "Pages"} {formatPageRange(pageNumbers)}
                     </p>
                   </div>
                 )}
