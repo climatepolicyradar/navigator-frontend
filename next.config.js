@@ -7,7 +7,9 @@ const configureRedirects = (theme) => {
 };
 
 const configureRewrites = (theme) => {
-  const rewriteRules = JSON.parse(fs.readFileSync(`./themes/${theme}/rewrites.json`, "utf-8"));
+  // Uncomment the following line when we're ready to deploy
+  // const rewriteRules = JSON.parse(fs.readFileSync(`./themes/${theme}/rewrites.json`, "utf-8"));
+  const rewriteRules = [];
 
   /**
    * beforeFiles, not the afterFiles a bare array would become: these rewrites deliberately
