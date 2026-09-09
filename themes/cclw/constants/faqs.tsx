@@ -1,15 +1,8 @@
-import { JSX } from "react";
-
 import { LinkWithQuery } from "@/components/LinkWithQuery";
 import { PageLink } from "@/components/atoms/pageLink/PageLink";
+import { TFAQ } from "@/types";
 
-type TFAQ = {
-  id?: string;
-  title: string;
-  content: JSX.Element;
-};
-
-export const FAQS: TFAQ[] = [
+export const APP_FAQS: TFAQ[] = [
   {
     title: "How to use this tool?",
     content: (

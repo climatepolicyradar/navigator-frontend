@@ -1,15 +1,7 @@
-import { JSX } from "react";
-
 import { ExternalLink } from "@/components/ExternalLink";
-import { PLATFORM_FAQS as GENERIC_PLATFORM_FAQS } from "@/constants/platformFaqs";
+import { TFAQ } from "@/types";
 
-type TFAQ = {
-  id?: string;
-  title: string;
-  content: JSX.Element;
-};
-
-export const FAQS: TFAQ[] = [
+export const APP_FAQS: TFAQ[] = [
   {
     title: "What happened to the individual fund websites?",
     content: (
@@ -120,49 +112,4 @@ export const FAQS: TFAQ[] = [
       </>
     ),
   },
-];
-
-export const PLATFORM_FAQS: TFAQ[] = [
-  {
-    title: "What can I do with the Climate Project Explorer?",
-    content: (
-      <>
-        <p>The Climate Project Explorer makes it easier for you to:</p>
-        <ul>
-          <li>Find data from all 4 MCF funds, including project summaries, implementation documents and project guidance.</li>
-          <li>Search for keywords and focus areas across the full text of documents from all 4 funds.</li>
-          <li>See where your search terms show up in your results.</li>
-          <li>Browse country profiles to find and compare initiatives from all 4 funds.</li>
-          <li>
-            Contact CPR for a copy of the raw data by{" "}
-            <ExternalLink url="https://form.jotform.com/242902819253357">filling out this form</ExternalLink>
-          </li>
-        </ul>
-      </>
-    ),
-  },
-  {
-    title: "How do I download all your data?",
-    content: (
-      <>
-        <p>
-          Please <ExternalLink url="https://form.jotform.com/242902819253357">fill out this form </ExternalLink>
-          to request our entire dataset.
-        </p>
-      </>
-    ),
-  },
-  {
-    title: "What are the limitations of our search?",
-    content: (
-      <>
-        <p>
-          The database is not exhaustive. We don't have access to some MCF documents. Others aren't currently machine-readable: we can't yet extract
-          the text from them. We also limit the number of matches you can see in a document to 500, so you get quickest, most accurate results. For
-          very long documents, or very broad search terms, you might miss some matches.
-        </p>
-      </>
-    ),
-  },
-  ...GENERIC_PLATFORM_FAQS,
 ];
