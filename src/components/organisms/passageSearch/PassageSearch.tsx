@@ -53,25 +53,30 @@ type TPassageResultsProps = {
   query?: string;
   activeTopicsIds?: string[];
   showDocument: boolean;
+  sort?: string;
+  total?: number;
 };
 
 // Memoised so that typing in the search input does not re-render every result card.
-const PassageResults = memo(({ onDocumentLinkClick, onPassageClick, passages, query, activeTopicsIds, showDocument }: TPassageResultsProps) => (
-  <ul className="flex flex-col gap-4" id="passage-matches" aria-label="Passage matches">
-    {passages.map((passage) => (
-      <li key={passage.id}>
-        <PassageBlock
-          passage={passage}
-          query={query}
-          activeTopicsIds={activeTopicsIds}
-          showDocument={showDocument}
-          onDocumentLinkClick={onDocumentLinkClick && (() => onDocumentLinkClick(passage))}
-          onPassageClick={onPassageClick}
-        />
-      </li>
-    ))}
-  </ul>
-));
+const PassageResults = memo(
+  ({ onDocumentLinkClick, onPassageClick, passages, query, activeTopicsIds, showDocument, sort, total }: TPassageResultsProps) => (
+    <ul className="flex flex-col gap-4" id="passage-matches" aria-label="Passage matches">
+      {passages.map((passage, passageIndex) => (
+        <li key={passage.id}>
+          <PassageBlock
+            passage={passage}
+            analytics={{ position: passageIndex + 1, sort, total }}
+            query={query}
+            activeTopicsIds={activeTopicsIds}
+            showDocument={showDocument}
+            onDocumentLinkClick={onDocumentLinkClick && (() => onDocumentLinkClick(passage))}
+            onPassageClick={onPassageClick}
+          />
+        </li>
+      ))}
+    </ul>
+  )
+);
 PassageResults.displayName = "PassageResults";
 
 type TDocumentPreviewProps = {
@@ -309,6 +314,8 @@ export const PassageSearch = ({ concepts, documents, documentsLabel, enablePrevi
           <PassageResults
             passages={passages}
             showDocument={!enablePreview}
+            sort={sort}
+            total={totalMatches}
             onDocumentLinkClick={enablePreview ? undefined : handleDocumentLinkClick}
             onPassageClick={handlePassageClick}
             query={queryParam}
