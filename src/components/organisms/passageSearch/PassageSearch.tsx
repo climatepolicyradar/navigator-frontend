@@ -10,9 +10,9 @@ import { Button } from "@/components/atoms/button/Button";
 import { FiveColumns } from "@/components/atoms/columns/FiveColumns";
 import { EmptyDocument } from "@/components/documents/EmptyDocument";
 import { DocumentsFilter, TFilterableDocument } from "@/components/molecules/documentsFilter/DocumentsFilter";
-import { EmptyPassages } from "@/components/molecules/emptyPassages/EmptyPassages";
 import { PassageBlock, TPassage as TPassageBlock } from "@/components/molecules/passageBlock/PassageBlock";
 import { SearchControls } from "@/components/organisms/searchControls/SearchControls";
+import { ZeroStatePassages } from "@/components/organisms/zeroStates/ZeroStatePassages";
 import { ID_SEPARATOR } from "@/constants/chars";
 import { PASSAGE_FILTER_GROUPS } from "@/constants/filters";
 import { RESULTS_PER_PAGE } from "@/constants/paging";
@@ -53,25 +53,30 @@ type TPassageResultsProps = {
   query?: string;
   activeTopicsIds?: string[];
   showDocument: boolean;
+  sort?: string;
+  total?: number;
 };
 
 // Memoised so that typing in the search input does not re-render every result card.
-const PassageResults = memo(({ onDocumentLinkClick, onPassageClick, passages, query, activeTopicsIds, showDocument }: TPassageResultsProps) => (
-  <ul className="flex flex-col gap-4" id="passage-matches" aria-label="Passage matches">
-    {passages.map((passage) => (
-      <li key={passage.id}>
-        <PassageBlock
-          passage={passage}
-          query={query}
-          activeTopicsIds={activeTopicsIds}
-          showDocument={showDocument}
-          onDocumentLinkClick={onDocumentLinkClick && (() => onDocumentLinkClick(passage))}
-          onPassageClick={onPassageClick}
-        />
-      </li>
-    ))}
-  </ul>
-));
+const PassageResults = memo(
+  ({ onDocumentLinkClick, onPassageClick, passages, query, activeTopicsIds, showDocument, sort, total }: TPassageResultsProps) => (
+    <ul className="flex flex-col gap-4" id="passage-matches" aria-label="Passage matches">
+      {passages.map((passage, passageIndex) => (
+        <li key={passage.id}>
+          <PassageBlock
+            passage={passage}
+            analytics={{ position: passageIndex + 1, sort, total }}
+            query={query}
+            activeTopicsIds={activeTopicsIds}
+            showDocument={showDocument}
+            onDocumentLinkClick={onDocumentLinkClick && (() => onDocumentLinkClick(passage))}
+            onPassageClick={onPassageClick}
+          />
+        </li>
+      ))}
+    </ul>
+  )
+);
 PassageResults.displayName = "PassageResults";
 
 type TDocumentPreviewProps = {
@@ -309,6 +314,8 @@ export const PassageSearch = ({ concepts, documents, documentsLabel, enablePrevi
           <PassageResults
             passages={passages}
             showDocument={!enablePreview}
+            sort={sort}
+            total={totalMatches}
             onDocumentLinkClick={enablePreview ? undefined : handleDocumentLinkClick}
             onPassageClick={handlePassageClick}
             query={queryParam}
@@ -327,10 +334,10 @@ export const PassageSearch = ({ concepts, documents, documentsLabel, enablePrevi
         </>
       )}
       {!isLoading && !isError && passages.length === 0 && (
-        <EmptyPassages
-          cssClass={enablePreview ? undefined : "!p-8 border border-border-normal rounded-lg"}
+        <ZeroStatePassages
+          className={enablePreview ? "px-0 py-10 border-0!" : ""}
           hasQuery={hasSearch}
-          onClearClick={handleClear}
+          onClearSearch={handleClear}
           subject={subject}
         />
       )}
