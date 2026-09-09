@@ -169,7 +169,7 @@ export const FamilyPage = ({ collections, debug, errors, family, familyTopics, f
         title={family.title}
         description={getFamilyMetaDescription(
           family?.metadata?.core_object?.[0] ?? family.summary,
-          family.geographies.join(", "),
+          family.geographies.map((geo) => geo.name).join(", "),
           family.attribution.taxonomy
         )}
         theme={theme as TTheme}

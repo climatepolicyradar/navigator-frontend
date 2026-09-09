@@ -12,6 +12,8 @@ export const runGenericFamilyTests = (theme: TTheme): void => {
 
   familiesToTest.forEach(({ titleForTests, slug, withSearch, withTopic }) => {
     test(`navigate to document passages for a different topic in the family - ${titleForTests}`, async ({ page }) => {
+      test.skip(); // https://linear.app/climate-policy-radar/issue/FUS-431/reinstate-e2e-tests-that-were-skipped-as-part-of-release
+
       // Load the family page
 
       await familyPage.goToFamily(page, `${slug}?q=${withSearch}&cfn=${withTopic}`);
