@@ -1,7 +1,6 @@
 import { useContext } from "react";
 
 import { Modal } from "@/components/molecules/modal/Modal";
-import { TutorialButton } from "@/components/molecules/tutorials/TutorialButton";
 import { TutorialContext } from "@/context/TutorialContext";
 import { TFeatures, TTutorialButtonAction, TTutorialModal, TTutorialName } from "@/types";
 
@@ -11,12 +10,12 @@ interface IProps {
   features: TFeatures;
 }
 
-export const TutorialModal = ({ name, modal: { buttonPrimary, buttonSecondary, close, content, headerImage, title }, features }: IProps) => {
+export const TutorialModal = ({ name, modal: { getModalProps }, features }: IProps) => {
   const { addCompletedTutorial, displayTutorial, setDisplayTutorial } = useContext(TutorialContext);
 
   if (displayTutorial !== name) return null; // The modal hasn't been opened yet
 
-  const buttonActions: Record<TTutorialButtonAction, () => void> = {
+  const actions: Record<TTutorialButtonAction, () => void> = {
     dismiss: () => {
       addCompletedTutorial(name);
       setDisplayTutorial(null);
@@ -24,15 +23,11 @@ export const TutorialModal = ({ name, modal: { buttonPrimary, buttonSecondary, c
     showModal: () => null, // Nothing to do here!
   };
 
+  const { children, ...modalProps } = getModalProps({ actions, features, name });
+
   return (
-    <Modal isOpen={true} showCloseButton={close} onClose={buttonActions.dismiss} title={title} headerImage={headerImage}>
-      {content(features)}
-      {(buttonPrimary || buttonSecondary) && (
-        <div className="flex gap-2">
-          {buttonPrimary && <TutorialButton {...buttonPrimary} actions={buttonActions} name={name} use="modal" />}
-          {buttonSecondary && <TutorialButton {...buttonSecondary} actions={buttonActions} name={name} use="modal" />}
-        </div>
-      )}
+    <Modal isOpen={true} onClose={actions.dismiss} {...modalProps}>
+      {children}
     </Modal>
   );
 };

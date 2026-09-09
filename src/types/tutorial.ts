@@ -1,11 +1,10 @@
-import { ReactNode } from "react";
-
 import { TButtonColor, TButtonVariant } from "@/components/atoms/button/Button";
 import { IProps as IPageLinkProps } from "@/components/atoms/pageLink/PageLink";
+import { IModalProps } from "@/components/molecules/modal/Modal";
 
 import { TFeature, TFeatures } from "./features";
 
-export const TUTORIAL_NAMES = ["knowledgeGraph", "climateLitigationDatabase"] as const;
+export const TUTORIAL_NAMES = ["knowledgeGraph", "climateLitigationDatabase", "newSearch"] as const;
 export type TTutorialName = (typeof TUTORIAL_NAMES)[number];
 
 export type TTutorialButtonAction = "dismiss" | "showModal" | null;
@@ -32,14 +31,18 @@ export type TTutorialBanner = {
   buttonSecondary?: ITutorialButton;
 };
 
+export interface ITutorialModalButtonProps {
+  action: TTutorialButtonAction;
+  className?: string;
+}
+
 export type TTutorialModal = {
   defaultOpen: boolean;
-  headerImage?: ReactNode;
-  title?: string;
-  close: boolean;
-  content: (features: TFeatures) => ReactNode;
-  buttonPrimary?: ITutorialButton;
-  buttonSecondary?: ITutorialButton;
+  getModalProps: (context: {
+    actions: Record<TTutorialButtonAction, () => void>;
+    features: TFeatures;
+    name: TTutorialName;
+  }) => Omit<IModalProps, "isOpen" | "onClose">;
 };
 
 type TTutorial = {
