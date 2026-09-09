@@ -13,6 +13,7 @@ export const QUERY_PARAMS = {
   passages_by_position: "sp",
   query_string: "q",
   region: "r",
+  sort: "sort",
   sort_field: "sf",
   sort_order: "so",
   subdivision: "sd",

@@ -1,17 +1,17 @@
 import { Meta, StoryObj } from "@storybook/nextjs-vite";
 
-import { EmptyPassages } from "./EmptyPassages";
+import { ZeroStatePassages } from "./ZeroStatePassages";
 
 const meta = {
-  title: "Molecules/EmptyPassages",
-  component: EmptyPassages,
+  title: "Molecules/ZeroStatePassages",
+  component: ZeroStatePassages,
   parameters: { layout: "centered" },
-  args: { onClearClick: () => {} },
+  args: { onClearSearch: () => {} },
   argTypes: {
-    onClearClick: { control: false },
+    onClearSearch: { control: false },
   },
-} satisfies Meta<typeof EmptyPassages>;
-type TStory = StoryObj<typeof EmptyPassages>;
+} satisfies Meta<typeof ZeroStatePassages>;
+type TStory = StoryObj<typeof ZeroStatePassages>;
 
 export default meta;
 
