@@ -397,7 +397,15 @@ describe("PassageSearch", () => {
 
       await userEvent.type(screen.getByRole("textbox"), " targets{Enter}");
 
-      await waitFor(() => expect(url.writes).toEqual([{ key: "principal_q", value: "renewable targets" }]));
+      await waitFor(() =>
+        expect(url.writes).toEqual([
+          { key: "principal_q", value: "renewable targets" },
+          {
+            key: "principal_page_token",
+            value: "1",
+          },
+        ])
+      );
     });
 
     it("clears only its own search", async () => {

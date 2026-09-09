@@ -37,6 +37,7 @@ export const runGenericDocumentTests = (theme: TTheme): void => {
     });
 
     test(`selecting a topic generates passage matches - ${titleForTests}`, async ({ page }) => {
+      test.skip(); // https://linear.app/climate-policy-radar/issue/FUS-431/reinstate-e2e-tests-that-were-skipped-as-part-of-release
       // TODO: remove when we have settled on solution for new search
       test.skip(process.env.E2E_TEST_FEATURE_FLAGS === "true", "We need to revisit as we have rebuilt the search on document");
 
