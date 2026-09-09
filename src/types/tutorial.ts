@@ -38,6 +38,7 @@ export interface ITutorialModalButtonProps {
 
 export type TTutorialModal = {
   defaultOpen: boolean;
+  pages?: string[];
   getModalProps: (context: {
     actions: Record<TTutorialButtonAction, () => void>;
     features: TFeatures;

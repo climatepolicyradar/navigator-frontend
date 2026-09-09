@@ -52,7 +52,7 @@ export const Modal = ({
     cardClasses
   );
 
-  const allContentClasses = joinTailwindClasses(headerImage ? "px-8 py-6" : "", contentClasses);
+  const allContentClasses = joinTailwindClasses("max-h-full overflow-y-auto", headerImage ? "px-8 py-6" : "", contentClasses);
 
   return (
     <div

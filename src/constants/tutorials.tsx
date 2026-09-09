@@ -106,6 +106,7 @@ export const TUTORIALS: TTutorials = {
     featureKey: "new-search",
     modal: {
       defaultOpen: true,
+      pages: ["/_search"],
       getModalProps: ({ actions, name }) => ({
         cardClasses: "max-w-90! sm:max-w-180! px-10! py-10!",
         children: (
@@ -153,7 +154,7 @@ export const TUTORIALS: TTutorials = {
                 <p className="max-w-50">See exact matches and related phrases highlighted in the text {EN_DASH} including translations</p>
               </div>
             </div>
-            <div className="flex gap-3 justify-center">
+            <div className="flex flex-col sm:flex-row gap-3 items-center justify-center">
               <TutorialButton
                 pageLink={{ href: "/faq" }}
                 action="dismiss"
