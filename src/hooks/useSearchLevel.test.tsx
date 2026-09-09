@@ -50,7 +50,7 @@ describe("useNestedSearchLevel", () => {
     expect(options.history).toBe("push");
     expect(searchParams.get("principal")).toBe("CCLW.family.1.0");
     expect(searchParams.get("principal_q")).toBe("flood risk");
-    expect(JSON.parse(searchParams.get("principal_filters") ?? "null")).toEqual({ op: "and", filters: [conceptRule] });
+    expect(JSON.parse(searchParams.get("principal_filters") ?? "null")).toEqual({ op: "or", filters: [conceptRule] });
     expect(await screen.findByText("showing: CCLW.family.1.0")).toBeInTheDocument();
   });
 

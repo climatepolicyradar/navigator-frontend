@@ -1,17 +1,15 @@
 import kebabCase from "lodash/kebabCase";
 
-import { EXCLUDED_ISO_CODES, INCLUDED_GEO_TYPES } from "@/constants/geography";
+import { EXCLUDED_ISO_CODES, GEOGRAPHY_SLUG_CONVERSIONS, INCLUDED_GEO_TYPES } from "@/constants/geography";
 import { TDataNode, TGeography } from "@/types";
-
-const COUNTRY_SLUGS: Record<string, string> = {
-  "United States": "united-states-of-america",
-};
 
 export const codeIsCountry = (geoCode: string) => !geoCode.includes("-");
 
 export const getGeographySlug = (geoCode: string, geoName: string) => {
-  const isCountry = codeIsCountry(geoCode);
-  return isCountry ? (COUNTRY_SLUGS[geoName] ?? kebabCase(geoName)) : geoCode.toLowerCase();
+  if (!codeIsCountry(geoCode)) return geoCode.toLowerCase();
+
+  const slug = kebabCase(geoName);
+  return GEOGRAPHY_SLUG_CONVERSIONS[slug] ?? slug;
 };
 
 // Recursively transform node structure into flat list of geo slugs

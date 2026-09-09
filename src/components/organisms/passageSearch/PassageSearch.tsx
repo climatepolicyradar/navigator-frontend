@@ -272,6 +272,7 @@ export const PassageSearch = ({ concepts, documents, documentsLabel, enablePrevi
 
   const controls = (
     <SearchControls
+      conceptsLogic="or"
       filterGroups={PASSAGE_FILTER_GROUPS}
       filterParamKey={paramKeys.filters}
       filtersSlot={
