@@ -89,11 +89,16 @@ function MyApp({ Component, pageProps, theme, adobeApiKey }: IProps) {
     });
   };
 
+  const removeCompletedTutorial = (tutorialName: TTutorialName) => {
+    setCompletedTutorials((alreadyCompletedTutorials) => alreadyCompletedTutorials.filter((tutorial) => tutorial !== tutorialName));
+  };
+
   const tutorialContextProviderValue = {
     displayTutorial,
     setDisplayTutorial,
     completedTutorials,
     addCompletedTutorial,
+    removeCompletedTutorial,
   };
 
   /* Render */

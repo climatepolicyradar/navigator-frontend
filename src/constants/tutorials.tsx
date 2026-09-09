@@ -129,7 +129,7 @@ export const TUTORIALS: TTutorials = {
                   height={328}
                   className="w-40 h-40"
                 />
-                <p className="max-w-50">Search full document text, titles, summaries, and metadata in one place</p>
+                <p className="max-w-50">Search full document text, titles, summaries, and metadata in one place.</p>
               </div>
               <div className="flex flex-col gap-3 items-center">
                 <Image
@@ -140,7 +140,7 @@ export const TUTORIALS: TTutorials = {
                   className="w-40 h-40"
                 />
                 <p className="max-w-50">
-                  Use 100+ Topic filters to find results relevant to key Topics (like '<em>wind energy</em>' or '<em>drought</em>')
+                  Use 100+ Topic filters to find results relevant to key Topics (like '<em>wind energy</em>' or '<em>drought</em>').
                 </p>
               </div>
               <div className="flex flex-col gap-3 items-center">
@@ -151,7 +151,7 @@ export const TUTORIALS: TTutorials = {
                   height={328}
                   className="w-40 h-40"
                 />
-                <p className="max-w-50">See exact matches and related phrases highlighted in the text {EN_DASH} including translations</p>
+                <p className="max-w-50">See exact matches and related phrases highlighted in the text {EN_DASH} including translations.</p>
               </div>
             </div>
             <div className="flex flex-col sm:flex-row gap-3 items-center justify-center">

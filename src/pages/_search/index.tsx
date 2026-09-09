@@ -1,11 +1,12 @@
 import { GetServerSideProps, InferGetServerSidePropsType } from "next";
 import { useQueryState, parseAsString, parseAsJson } from "nuqs";
-import { useCallback, useEffect, useState, type SetStateAction } from "react";
+import { useCallback, useContext, useEffect, useState, type SetStateAction } from "react";
 
 import { normaliseSearchDocumentsSortKey, SearchDocument } from "@/api/search";
 import { createGroup, isFilterGroupEmpty, AdvancedFilters } from "@/components/_experiment/advancedFilters/AdvancedFilters";
 import { SEARCH_RESULTS_PAGE_SIZE, SearchContainer } from "@/components/_experiment/searchResults/SearchResults";
 import { FiveColumns } from "@/components/atoms/columns/FiveColumns";
+import { PageLink } from "@/components/atoms/pageLink/PageLink";
 import { PrincipalDrawer, TPrincipalDrawerTab } from "@/components/drawers/principalDrawer/PrincipalDrawer";
 import Layout from "@/components/layouts/Main";
 import { Pagination } from "@/components/molecules/pagination/Pagination";
@@ -14,6 +15,7 @@ import { SEARCH_FILTER_GROUPS } from "@/constants/filters";
 import { SEARCH_SORT_OPTIONS } from "@/constants/sort";
 import { withEnvConfig } from "@/context/EnvConfig";
 import { FeaturesContext } from "@/context/FeaturesContext";
+import { TutorialContext } from "@/context/TutorialContext";
 import { loadFilteredLabels, loadLabelTaxonomy } from "@/hooks/useLabelSearch";
 import { useNestedSearchLevel } from "@/hooks/useSearchLevel";
 import { FilterGroupSchema } from "@/schemas";
@@ -30,6 +32,7 @@ const columnLayoutCss = "col-start-1 -col-end-1 cols-5:col-start-2 cols-5:-col-e
 type TProps = InferGetServerSidePropsType<typeof getServerSideProps>;
 
 const ShadowSearch = ({ theme, themeConfig, features }: TProps) => {
+  const { removeCompletedTutorial } = useContext(TutorialContext);
   const [availableFilters, setAvailableFilters] = useState<TSearchLabel[]>([]);
 
   // search query that is typed into the search box
@@ -130,8 +133,27 @@ const ShadowSearch = ({ theme, themeConfig, features }: TProps) => {
     <FeaturesContext.Provider value={features}>
       <Layout theme={theme as TTheme} themeConfig={themeConfig} metadataKey="search">
         <FiveColumns className="mt-4 gap-y-4 pb-12">
-          <div className={joinTailwindClasses(columnLayoutCss, "sr-only")}>
-            <h1 className="text-5xl font-bold text-inky-black">Search</h1>
+          <div className={joinTailwindClasses("flex flex-wrap items-end justify-between gap-y-2", columnLayoutCss)}>
+            <h1 className="text-5xl text-text-primary font-heavy leading-12.5 tracking-tight">Search</h1>
+            <div className="w-full md:w-auto">
+              <span>Welcome to our new search experience.</span>{" "}
+              <span className="inline-block">
+                <button
+                  type="button"
+                  onClick={() => removeCompletedTutorial("newSearch")}
+                  className="inline text-text-brand underline underline-offset-2 decoration-slate-300 hocus:decoration-text-brand"
+                >
+                  Find out more.
+                </button>{" "}
+                <PageLink
+                  href="TODO"
+                  external
+                  className="inline text-text-brand underline underline-offset-2 decoration-slate-300 hocus:decoration-text-brand"
+                >
+                  Leave feedback
+                </PageLink>
+              </span>
+            </div>
           </div>
           {/* CONTROLS - FILTERS, SORT, etc */}
           {/* TODO add most recent date from search results */}
