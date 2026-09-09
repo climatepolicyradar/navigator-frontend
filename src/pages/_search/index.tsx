@@ -10,6 +10,8 @@ import { PrincipalDrawer, TPrincipalDrawerTab } from "@/components/drawers/princ
 import Layout from "@/components/layouts/Main";
 import { Pagination } from "@/components/molecules/pagination/Pagination";
 import { SearchControls } from "@/components/organisms/searchControls/SearchControls";
+import { ZeroStateSERPNoResults } from "@/components/organisms/zeroStates/ZeroStateSERPNoResults";
+import { ZeroStateSERPNoSearch } from "@/components/organisms/zeroStates/ZeroStateSERPNoSearch";
 import { SEARCH_FILTER_GROUPS } from "@/constants/filters";
 import { SEARCH_SORT_OPTIONS } from "@/constants/sort";
 import { withEnvConfig } from "@/context/EnvConfig";
@@ -33,12 +35,12 @@ const ShadowSearch = ({ theme, themeConfig, features }: TProps) => {
   const [availableFilters, setAvailableFilters] = useState<TSearchLabel[]>([]);
 
   // search query that is typed into the search box
-  const [query] = useQueryState("q", parseAsString.withDefault(""));
+  const [query, setQuery] = useQueryState("q", parseAsString.withDefault(""));
   // structured filters built in QueryBuilder
   const [filters, setFiltersInUrl] = useQueryState("filters", parseAsJson<TSearchQueryGroup>(FilterGroupSchema).withDefault(createGroup()));
   // pagination state
   const [currentPage, setCurrentPage] = useQueryState("page_token", parseAsString.withDefault("1"));
-  const [sortParam] = useQueryState("sort", parseAsString.withDefault("relevance"));
+  const [sortParam, setSortParam] = useQueryState("sort", parseAsString.withDefault("relevance"));
   const sortKey = normaliseSearchDocumentsSortKey(sortParam);
   const [totalNoOfResults, setTotalNoOfResults] = useState<number | null>(null);
   const [isSearching, setIsSearching] = useState(false);
@@ -120,11 +122,19 @@ const ShadowSearch = ({ theme, themeConfig, features }: TProps) => {
     allFilterLabels.then(([filteredLabels, labelTaxonomy]) => setAvailableFilters([...filteredLabels, ...labelTaxonomy]));
   }, []);
 
+  const hasSearch = !!query || !isFilterGroupEmpty(filters);
+
   const resultsSummary = isSearching
     ? "Searching…"
     : totalNoOfResults
       ? `${totalNoOfResults} ${pluralise(totalNoOfResults, ["result", "results"])}`
       : null;
+
+  const onClearSearch = () => {
+    setQuery(null);
+    setFiltersInUrl(null);
+    setSortParam(null);
+  };
 
   return (
     <FeaturesContext.Provider value={features}>
@@ -137,6 +147,12 @@ const ShadowSearch = ({ theme, themeConfig, features }: TProps) => {
           {/* TODO add most recent date from search results */}
           <SearchControls
             conceptsLogic="and"
+            extraContent={
+              <>
+                {!hasSearch && <ZeroStateSERPNoSearch />}
+                {hasSearch && totalNoOfResults === 0 && !isSearching && <ZeroStateSERPNoResults onClearSearch={onClearSearch} />}
+              </>
+            }
             filterGroups={SEARCH_FILTER_GROUPS}
             filterParamKey="filters"
             labels={availableFilters}
@@ -171,7 +187,7 @@ const ShadowSearch = ({ theme, themeConfig, features }: TProps) => {
             />
           </div>
           {/* PAGINATION */}
-          {totalNoOfResults !== null && totalNoOfResults > 0 && (query || !isFilterGroupEmpty(filters)) && (
+          {totalNoOfResults !== null && totalNoOfResults > 0 && hasSearch && (
             <div className={columnLayoutCss}>
               <Pagination
                 currentPage={parseInt(currentPage)}

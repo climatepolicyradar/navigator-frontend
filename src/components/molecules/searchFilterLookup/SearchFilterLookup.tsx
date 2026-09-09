@@ -1,8 +1,8 @@
-import { LucideScanSearch } from "lucide-react";
 import { useMemo, useState } from "react";
 
 import { Input } from "@/components/atoms/input/Input";
 import { SearchFilter } from "@/components/molecules/searchFilter/SearchFilter";
+import { ZeroStateSearchFilterLookup } from "@/components/organisms/zeroStates/ZeroStateSearchFilterLookup";
 import { FiltersLookupContext } from "@/context/FiltersLookupContext";
 import { TFilterPathLabel, TNestedSearchLabel } from "@/types";
 import { getFilterPathLabels, getLabelPathSignature } from "@/utils/filters/filterPaths";
@@ -73,20 +73,7 @@ export const SearchFilterLookup = ({ ancestorPath, defaultOpen, labels, level }:
           {showAll ? "Show less" : "Show more"}
         </button>
       )}
-      {hasNoMatches && (
-        <div className="p-4 flex flex-col items-center">
-          <div className="p-3 bg-[#1A4F8C0D] rounded-full">
-            <LucideScanSearch size={24} className="text-text-brand" />
-          </div>
-          <span className="mt-2 mb-1 text-sm text-text-primary font-medium leading-6">No matching {labelTaxonomy}</span>
-          <p className="text-sm text-text-secondary font-normal leading-6">
-            <button type="button" onClick={() => setSearchText("")} className="inline text-text-brand underline">
-              Clear quick search
-            </button>{" "}
-            to continue
-          </p>
-        </div>
-      )}
+      {hasNoMatches && <ZeroStateSearchFilterLookup labelTaxonomy={labelTaxonomy} setSearchText={setSearchText} />}
     </div>
   );
 };

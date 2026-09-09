@@ -8,7 +8,6 @@ import { TSearchQueryGroup } from "@/types";
 import { sanitiseSearchQueryGroup } from "@/utils/filters/advancedFilters";
 
 import { isFilterGroupEmpty } from "../advancedFilters/AdvancedFilters";
-import { EmptySearch } from "../emptySearch/EmptySearch";
 
 export const SEARCH_RESULTS_PAGE_SIZE = 10;
 
@@ -119,7 +118,7 @@ export function SearchContainer({
     onSearchingChange?.(isSearching);
   }, [isSearching, onSearchingChange]);
 
-  if (!hasSearch) return <EmptySearch />;
+  if (!hasSearch) return null;
 
   if (isSearching) {
     return (

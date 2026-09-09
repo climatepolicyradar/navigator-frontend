@@ -413,7 +413,7 @@ describe("PassageSearch", () => {
       renderInDrawer({ principal_q: "renewable", principal_filters: topicFilter });
       await screen.findByText("No matching passages");
 
-      await userEvent.click(screen.getByRole("button", { name: "clear your search" }));
+      await userEvent.click(screen.getByRole("button", { name: "Clear your search" }));
 
       expect(url.writes).toEqual([
         { key: "principal_q", value: "" },
