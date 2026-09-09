@@ -9,6 +9,7 @@ export const SUGGESTED_SEARCHES: TSuggestedSearch[] = [
       [QUERY_PARAMS["_document.type"]]: "Nationally Determined Contribution",
       [QUERY_PARAMS.author_type]: "Party",
     },
+    newParams: {},
   },
   {
     label: "Indigenous people + Brazil + Laws",
@@ -17,6 +18,7 @@ export const SUGGESTED_SEARCHES: TSuggestedSearch[] = [
       [QUERY_PARAMS.category]: "laws",
       [QUERY_PARAMS.concept_name]: "indigenous people",
     },
+    newParams: {},
   },
   {
     label: "Zoning and spatial planning + marine",
@@ -25,6 +27,7 @@ export const SUGGESTED_SEARCHES: TSuggestedSearch[] = [
       [QUERY_PARAMS.query_string]: "marine",
       [QUERY_PARAMS.exact_match]: "true",
     },
+    newParams: {},
   },
   {
     label: "Climate framework laws",
@@ -32,5 +35,6 @@ export const SUGGESTED_SEARCHES: TSuggestedSearch[] = [
       [QUERY_PARAMS.category]: "laws",
       [QUERY_PARAMS.framework_laws]: "true",
     },
+    newParams: {},
   },
 ];
