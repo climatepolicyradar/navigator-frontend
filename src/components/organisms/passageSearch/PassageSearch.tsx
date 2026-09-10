@@ -164,18 +164,17 @@ export const PassageSearch = ({ concepts, documents, documentsLabel, enablePrevi
         signal,
       });
 
-      // Reported from the fetcher to run once per search, and only for the first page so that
-      // loading more does not report it again. `search_index` 1 is the search the view opened with
-      if (pageParam === 1) {
-        searchCount.current += 1;
-        posthog?.capture(posthogEventName("search", "results", "fetch"), {
-          search_level: searchLevel,
-          search_query: queryParam || undefined,
-          search_index: searchCount.current,
-          results_total: response.total_size ?? 0,
-          documents_total: selectedDocumentIds.length,
-        });
-      }
+      // Reported from the fetcher so each page is reported once, rather than on every render.
+      // `search_index` 1 is the search the view opened with; `page` above 1 is loading more of it
+      if (pageParam === 1) searchCount.current += 1;
+      posthog?.capture(posthogEventName("search", "results", "fetch"), {
+        search_level: searchLevel,
+        search_query: queryParam || undefined,
+        search_index: searchCount.current,
+        page: pageParam,
+        results_total: response.total_size ?? 0,
+        documents_total: selectedDocumentIds.length,
+      });
 
       return response;
     },

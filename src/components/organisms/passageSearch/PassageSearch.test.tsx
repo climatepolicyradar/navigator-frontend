@@ -814,6 +814,7 @@ describe("PassageSearch", () => {
           search_level: "base",
           search_query: "flooding",
           search_index: 1,
+          page: 1,
           results_total: 0,
           documents_total: 3,
         })
@@ -834,7 +835,7 @@ describe("PassageSearch", () => {
       expect(mockCapture.mock.calls[1][1]).toMatchObject({ search_index: 2, search_query: "bananas" });
     });
 
-    it("reports once for the search, not again when more results are loaded", async () => {
+    it("reports loading more as another page of the same search", async () => {
       mockFetchSearchPassages.mockResolvedValue({ total_size: 2, results: [buildPassage()] });
       renderPrincipal();
 
@@ -842,9 +843,9 @@ describe("PassageSearch", () => {
       await waitFor(() => expect(mockCapture).toHaveBeenCalledTimes(1));
 
       await userEvent.click(screen.getByRole("button", { name: /Load more/ }));
-      await waitFor(() => expect(mockFetchSearchPassages).toHaveBeenCalledTimes(2));
 
-      expect(mockCapture).toHaveBeenCalledTimes(1);
+      await waitFor(() => expect(mockCapture).toHaveBeenCalledTimes(2));
+      expect(mockCapture.mock.calls[1][1]).toMatchObject({ search_index: 1, page: 2 });
     });
   });
 });
