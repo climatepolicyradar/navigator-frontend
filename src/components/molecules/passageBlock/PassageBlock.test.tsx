@@ -286,4 +286,18 @@ describe("PassageBlock", () => {
       expect(screen.getByText("ecological")).toHaveClass(TOPIC_COLOURS[0]);
     });
   });
+
+  describe("analytics", () => {
+    it("sets analytics data attributes on the clickable passage", () => {
+      render(<PassageBlock passage={basePassage} onPassageClick={() => {}} analytics={{ position: 3, sort: "relevance desc", total: 42 }} />);
+      const button = screen.getByRole("button", { name: new RegExp(basePassage.content) });
+
+      expect(button).toHaveAttribute("data-ph-capture-attribute-link-purpose", "passage");
+      expect(button).toHaveAttribute("data-ph-capture-attribute-position-total", "3");
+      expect(button).toHaveAttribute("data-ph-capture-attribute-results-total", "42");
+      expect(button).toHaveAttribute("data-ph-capture-attribute-passage-idx", "12");
+      expect(button).toHaveAttribute("data-ph-capture-attribute-document-id", "doc-1");
+      expect(button).toHaveAttribute("data-ph-capture-attribute-sort", "relevance desc");
+    });
+  });
 });
