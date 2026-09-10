@@ -1,9 +1,9 @@
 import { PageLink } from "@/components/atoms/pageLink/PageLink";
 import { EN_DASH } from "@/constants/chars";
-import { TFAQ } from "@/types";
+import { TFAQ, TFAQKey } from "@/types";
 
-export const PLATFORM_FAQS: TFAQ[] = [
-  {
+const FAQS_DICTIONARY: Record<TFAQKey, TFAQ> = {
+  howTextSearch: {
     title: "How does the full text search feature work?",
     content: (
       <>
@@ -19,7 +19,7 @@ export const PLATFORM_FAQS: TFAQ[] = [
       </>
     ),
   },
-  {
+  whyTopicsNoHighlight: {
     title: "Why do some Topics not highlight specific text in the document?",
     content: (
       <>
@@ -34,7 +34,7 @@ export const PLATFORM_FAQS: TFAQ[] = [
       </>
     ),
   },
-  {
+  howFilter: {
     title: "How do I filter my results?",
     content: (
       <p>
@@ -44,7 +44,7 @@ export const PLATFORM_FAQS: TFAQ[] = [
       </p>
     ),
   },
-  {
+  howDownload: {
     title: "How do I download search results?",
     content: (
       <>
@@ -63,7 +63,7 @@ export const PLATFORM_FAQS: TFAQ[] = [
       </>
     ),
   },
-  {
+  canAPI: {
     title: "Can I access your data via API or MCP?",
     content: (
       <p>
@@ -72,7 +72,7 @@ export const PLATFORM_FAQS: TFAQ[] = [
       </p>
     ),
   },
-  {
+  whyNoMatches: {
     title: "Why can't I see matches in some documents?",
     content: (
       <>
@@ -85,7 +85,7 @@ export const PLATFORM_FAQS: TFAQ[] = [
       </>
     ),
   },
-  {
+  whyExternalRedirect: {
     title: "Why am I being redirected to an external site for some documents?",
     content: (
       <p>
@@ -94,7 +94,7 @@ export const PLATFORM_FAQS: TFAQ[] = [
       </p>
     ),
   },
-  {
+  howWeDate: {
     title: "How do we assign dates to documents?",
     content: (
       <p>
@@ -104,7 +104,7 @@ export const PLATFORM_FAQS: TFAQ[] = [
       </p>
     ),
   },
-  {
+  whichDateMostRecent: {
     title: "Which date does sorting by 'most recent' sort by?",
     content: (
       <p>
@@ -113,7 +113,7 @@ export const PLATFORM_FAQS: TFAQ[] = [
       </p>
     ),
   },
-  {
+  howLink: {
     title: "How do I link to one of your documents?",
     content: (
       <p>
@@ -123,7 +123,7 @@ export const PLATFORM_FAQS: TFAQ[] = [
       </p>
     ),
   },
-  {
+  howWeTranslate: {
     title: "How are the documents translated to English?",
     content: (
       <p>
@@ -132,7 +132,7 @@ export const PLATFORM_FAQS: TFAQ[] = [
       </p>
     ),
   },
-  {
+  howBugReport: {
     title: "How do I report bugs?",
     content: (
       <p>
@@ -140,7 +140,7 @@ export const PLATFORM_FAQS: TFAQ[] = [
       </p>
     ),
   },
-  {
+  whatLimitations: {
     title: "What are the limitations of your search?",
     content: (
       <ul>
@@ -161,10 +161,7 @@ export const PLATFORM_FAQS: TFAQ[] = [
       </ul>
     ),
   },
-];
-
-export const TOPICS_FAQS: TFAQ[] = [
-  {
+  searchDocsForTopics: {
     title: "Searching Topics within documents",
     content: (
       <>
@@ -183,7 +180,7 @@ export const TOPICS_FAQS: TFAQ[] = [
       </>
     ),
   },
-  {
+  howUseTopics: {
     title: "How should I use this feature?",
     content: (
       <>
@@ -200,7 +197,7 @@ export const TOPICS_FAQS: TFAQ[] = [
       </>
     ),
   },
-  {
+  whatMultipleTopics: {
     title: "What happens if I select multiple Topics or add a text search?",
     content: (
       <>
@@ -222,7 +219,7 @@ export const TOPICS_FAQS: TFAQ[] = [
       </>
     ),
   },
-  {
+  whichTopicsAvailable: {
     title: "Which Topics are currently available?",
     content: (
       <>
@@ -251,7 +248,7 @@ export const TOPICS_FAQS: TFAQ[] = [
       </>
     ),
   },
-  {
+  howWeBuildTopic: {
     title: "How do we select and build a new Topic?",
     content: (
       <>
@@ -283,7 +280,7 @@ export const TOPICS_FAQS: TFAQ[] = [
       </>
     ),
   },
-  {
+  howAccurateResults: {
     title: "How accurate are the results?",
     content: (
       <>
@@ -305,7 +302,7 @@ export const TOPICS_FAQS: TFAQ[] = [
       </>
     ),
   },
-  {
+  shouldConcernedImpact: {
     title: "Should I be concerned about the climate impact of this feature?",
     content: (
       <>
@@ -318,7 +315,7 @@ export const TOPICS_FAQS: TFAQ[] = [
       </>
     ),
   },
-  {
+  canDownloadTopicsResults: {
     title: "Can I download the Topic results?",
     content: (
       <p>
@@ -330,7 +327,7 @@ export const TOPICS_FAQS: TFAQ[] = [
       </p>
     ),
   },
-  {
+  whatImprovementsNext: {
     title: "What improvements are coming?",
     content: (
       <>
@@ -345,7 +342,7 @@ export const TOPICS_FAQS: TFAQ[] = [
       </>
     ),
   },
-  {
+  howMistakeReport: {
     title: "What should I do if I spot a mistake?",
     content: (
       <p>
@@ -357,4 +354,35 @@ export const TOPICS_FAQS: TFAQ[] = [
       </p>
     ),
   },
+};
+
+const PLATFORM_FAQS_KEYS: TFAQKey[] = [
+  "howTextSearch",
+  "whyTopicsNoHighlight",
+  "howFilter",
+  "howDownload",
+  "canAPI",
+  "whyNoMatches",
+  "whyExternalRedirect",
+  "howWeDate",
+  "whichDateMostRecent",
+  "howLink",
+  "howWeTranslate",
+  "howBugReport",
+  "whatLimitations",
 ];
+export const PLATFORM_FAQS: TFAQ[] = PLATFORM_FAQS_KEYS.map((key) => FAQS_DICTIONARY[key]);
+
+const TOPICS_FAQS_KEYS: TFAQKey[] = [
+  "searchDocsForTopics",
+  "howUseTopics",
+  "whatMultipleTopics",
+  "whichTopicsAvailable",
+  "howWeBuildTopic",
+  "howAccurateResults",
+  "shouldConcernedImpact",
+  "canDownloadTopicsResults",
+  "whatImprovementsNext",
+  "howMistakeReport",
+];
+export const TOPICS_FAQS: TFAQ[] = TOPICS_FAQS_KEYS.map((key) => FAQS_DICTIONARY[key]);
