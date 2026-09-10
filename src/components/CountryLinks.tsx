@@ -20,31 +20,34 @@ const standardiseGeo = (geography: string | TFamilyGeography, countries: TGeogra
       }
     : geography;
 
-export const CountryLinks = ({ geographies, countries, showFlag = true }: TCountriesLink) => (
-  <>
-    {geographies?.map((geography) => {
-      const geo = standardiseGeo(geography, countries);
-      if (!geo.name) return null;
+export const CountryLinks = ({ geographies, countries, showFlag = true }: TCountriesLink) =>
+  geographies?.length > 0 ? (
+    <>
+      {geographies.map((geography) => {
+        const geo = standardiseGeo(geography, countries);
+        if (!geo.name) return null;
 
-      return (
-        <Fragment key={geo.code}>
-          {isSystemInternational(geo.code) && (
-            <span className="flex gap-1">
-              <>{geo.name}</>
-            </span>
-          )}
-          {!isSystemGeo(geo.code) && (
-            <span className="flex gap-1">
-              <CountryLink countryCode={geo.code} showFlag={showFlag} className="text-[#202020] no-underline">
-                <span>{geo.name}</span>
-              </CountryLink>
-            </span>
-          )}
-        </Fragment>
-      );
-    })}
-  </>
-);
+        return (
+          <Fragment key={geo.code}>
+            {isSystemInternational(geo.code) && (
+              <span className="flex gap-1">
+                <>{geo.name}</>
+              </span>
+            )}
+            {!isSystemGeo(geo.code) && (
+              <span className="flex gap-1">
+                <CountryLink countryCode={geo.code} showFlag={showFlag} className="text-[#202020] no-underline">
+                  <span>{geo.name}</span>
+                </CountryLink>
+              </span>
+            )}
+          </Fragment>
+        );
+      })}
+    </>
+  ) : (
+    <span className="text-text-tertiary">No geographies</span>
+  );
 
 export const CountryLinksAsList = ({ geographies, countries, showFlag = true }: TCountriesLink) => (
   <>

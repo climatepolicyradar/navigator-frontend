@@ -21,5 +21,15 @@ export const prepareGeographyFilters = (rootLabels: TNestedSearchLabel[]): TNest
   );
   const regionLabels = validRootLabels.map<TNestedSearchLabel>((regionLabel) => ({ ...regionLabel, children: [] }));
 
-  return [createGroupLabel("region", regionLabels), createGroupLabel("geography", geographyLabels)];
+  return [
+    createGroupLabel("region", regionLabels),
+    createGroupLabel("geography", geographyLabels),
+    {
+      id: "country::XAB",
+      type: "country",
+      value: "International",
+      alternative_labels: [],
+      children: [],
+    },
+  ];
 };
