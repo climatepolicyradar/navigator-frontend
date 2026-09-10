@@ -1,7 +1,7 @@
 import { useQuery } from "@tanstack/react-query";
 import React, { Fragment, useEffect, useMemo } from "react";
 
-import { fetchSearchDocuments, getSearchApiStatus, SearchDocument, SearchDocumentsResponse, SearchDocumentsSortKey } from "@/api/search";
+import { fetchSearchPrincipalDocuments, getSearchApiStatus, SearchDocument, SearchDocumentsResponse, SearchDocumentsSortKey } from "@/api/search";
 import Loader from "@/components/Loader";
 import { DocumentCard } from "@/components/molecules/documentCard/DocumentCard";
 import { TSearchQueryGroup } from "@/types";
@@ -92,7 +92,7 @@ export function SearchContainer({
   const { data, isError, isPending } = useQuery({
     queryKey: ["searchDocuments", query, nonEmptyFilters, page_token, sort],
     queryFn: ({ signal }) =>
-      fetchSearchDocuments({
+      fetchSearchPrincipalDocuments({
         query,
         page_size: SEARCH_RESULTS_PAGE_SIZE.toString(),
         page_token,
