@@ -1,100 +1,120 @@
-import { JSX } from "react";
+import { PageLink } from "@/components/atoms/pageLink/PageLink";
+import { EN_DASH } from "@/constants/chars";
+import { TFAQ } from "@/types";
 
-import { ExternalLink } from "@/components/ExternalLink";
-import { PLATFORM_FAQS as GENERIC_PLATFORM_FAQS } from "@/constants/platformFaqs";
-
-type TFAQ = {
-  id?: string;
-  title: string;
-  content: JSX.Element;
-};
-
-export const FAQS: TFAQ[] = [
+export const APP_FAQS: TFAQ[] = [
   {
-    title: "What is Climate Policy Radar?",
+    title: "What can I do with your tool?",
     content: (
-      <>
-        <p>
-          Climate Policy Radar builds responsible AI tools for climate action. A UK-based not-for-profit, our data and tools support governments,
-          researchers, international organisations, civil society, and the private sector in their decision-making pertaining to climate policy, law
-          and/or finance.
-        </p>
-      </>
+      <ul>
+        <li>Find climate and climate-related laws, policies, UN submissions, finance projects and reports from every country.</li>
+        <li>Search all documents at once, or narrow to the categories that most interest you - document type, geography, Topics, and more.</li>
+        <li>Search the full text of all documents, with highlights showing exactly where your search terms and related phrases appear.</li>
+        <li>
+          Find documents from all languages translated to English, increasing accessibility. Browse country profiles to find and compare their climate
+          and nature laws, policies, and strategies.
+        </li>
+        <li>Find mentions of key Topics like targets, adaptation, and finance flows in the text of documents.</li>
+        <li>Export data files for search results or for the entire database.</li>
+        <li>Connect it directly into your own systems via API and MCP. Get in touch for early access: partners@climatepolicyradar.org</li>
+      </ul>
+    ),
+  },
+  {
+    title: "Who is Climate Policy Radar?",
+    content: (
+      <p>
+        Climate Policy Radar is an independent non-profit building open, credible databases and responsible AI tools to support informed action on
+        climate and nature. Our data and tools help governments, researchers, international institutions, and the private sector to understand and
+        strengthen action on climate and nature worldwide.{" "}
+      </p>
     ),
   },
   {
     title: "Am I free to download and use the data?",
     content: (
-      <>
-        <p>
-          Yes - and we encourage you to do so! The content of our database is available under the Creative Commons Attribution Licence{" "}
-          <ExternalLink url="https://creativecommons.org/licenses/by/4.0/">(CC-BY)</ExternalLink>. Before doing so, you should read our Terms of Use
-          for more information and to find out how to cite and credit the resources. If you wish to download the data as a .csv file, please{" "}
-          <ExternalLink url="https://form.jotform.com/250202141318339">fill out our form</ExternalLink>.
-        </p>
-      </>
+      <p>
+        Yes {EN_DASH} and we encourage you to do so! The content of our database is available under the Creative Commons Attribution Licence{" "}
+        <PageLink external href="https://creativecommons.org/licenses/by/4.0/">
+          (CC-BY)
+        </PageLink>
+        . Before doing so, please read our Terms of Use for more information and to find out how to cite and credit our tools. If you wish to download
+        the full database as a csv file, please{" "}
+        <PageLink external href="https://form.jotform.com/250202141318339">
+          fill out this form
+        </PageLink>
+        .
+      </p>
+    ),
+  },
+  {
+    title: "What data do you include?",
+    content: (
+      <p>
+        Our data is sourced from, and kept up to date by, an expert network of partners across academia, research institutes, NGOs, and international
+        institutions.{" "}
+        <PageLink external href="https://www.climatepolicyradar.org/what-we-do#data">
+          Explore our data partners here
+        </PageLink>
+        , or read our{" "}
+        <PageLink external href="https://github.com/climatepolicyradar/methodology/blob/main/METHODOLOGY.md">
+          methodology
+        </PageLink>{" "}
+        to learn more about our data.
+      </p>
     ),
   },
   {
     title: "How up-to-date is the data?",
     content: (
-      <>
-        <p>
-          New data, and updates to existing data, are collected from official sources such as government websites, parliamentary records and court
-          documents. We add these to the database on a rolling basis. Submissions to the UN portals were first added on the 23rd of May 2023, and are
-          checked for updates regularly. If you're aware of documents that are missing, please let us know using our{" "}
-          <ExternalLink url="https://form.jotform.com/250974303048355">data contributors form</ExternalLink>.
-        </p>
-      </>
+      <p>
+        New data, and updates to existing data, are collected from official sources including government websites, parliamentary records, court
+        documents, and UN portals. Our data partners update the database on a rolling basis.. We update the documents in our app and our CSV download
+        every day. If you’re aware of documents that are missing, please let us know using our{" "}
+        <PageLink external href="https://form.jotform.com/250974303048355">
+          data contributors form
+        </PageLink>
+        .
+      </p>
     ),
   },
-];
-
-export const PLATFORM_FAQS: TFAQ[] = [
   {
-    title: "What can I do with your tool?",
+    title:
+      "What is the difference between Climate Policy Radar, Climate Change Laws of the World, the Climate Litigation Database, and Climate Project Explorer?",
     content: (
       <>
+        <p>
+          Climate Policy Radar powers{" "}
+          <PageLink external href="https://www.climatepolicyradar.org/what-we-do#tools">
+            tools
+          </PageLink>{" "}
+          from different communities:
+        </p>
         <ul>
-          <li>
-            Find climate and climate-related laws, policies, strategies and action plans from every country and submissions to UN Conventions relevant
-            to country level action
-          </li>
-          <li>Find data from 4 biggest Multilateral Climate Funds, including project summaries, implementation documents and project guidance</li>
-          <li>Search for keywords and policy topics (like 'electric vehicles' or 'gender equality') across the full text of all documents</li>
-          <li>View your search term (and related phrases) highlighted in search results</li>
-          <li>Browse country profiles to find and compare their climate laws, policies and strategies</li>
-          <li>
-            Access the raw data: you just need to fill out <ExternalLink url="https://form.jotform.com/250202141318339">this form</ExternalLink> to
-            request a copy of the entire dataset
-          </li>
+          <li>Climate Change Laws of the World: How governments plan and act on climate change {EN_DASH} laws, policies, NDCs, and more.</li>
+          <li>Climate Litigation Database: Search and analyse the court cases shaping climate accountability worldwide.</li>
+          <li>Climate Project Explorer: Projects and funding flows across the four largest multilateral climate funds.</li>
         </ul>
-      </>
-    ),
-  },
-
-  {
-    title: "How do I download all your data?",
-    content: (
-      <>
-        <p>
-          Please <ExternalLink url="https://form.jotform.com/250202141318339">fill out this form </ExternalLink>
-          to request our entire dataset.
-        </p>
+        Climate Policy Radar enables you to search everything {EN_DASH} laws, policies, finance projects, and more {EN_DASH} in one place.
       </>
     ),
   },
   {
-    title: "What are the limitations of our search?",
+    title: "How should I cite the database?",
     content: (
       <>
+        <p>When citing use of the Database, you may use this text:</p>
         <p>
-          The database is not exhaustive and we are continuously looking for new documents. Some documents aren't currently machine-readable: we can't
-          yet extract the text from them. We also limit the number of matches you can see in a document to 500, so you get quickest, most accurate
-          results. For very long documents, or very broad search terms, you might miss some matches.
+          <em>"Sourced from Climate Policy Radar (app.climatepolicyradar.org). Accessed [DATE]."</em>
+        </p>
+        <p>
+          When citing a specific data point(s) (for example, if citing a summary of a document), please refer to Terms and Conditions by our{" "}
+          <PageLink external href="https://app.climatepolicyradar.org/terms-of-use#data-from-third-party-sources">
+            third party data providers
+          </PageLink>
+          .
         </p>
       </>
     ),
   },
-  ...GENERIC_PLATFORM_FAQS,
 ];

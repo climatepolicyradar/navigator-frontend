@@ -1,20 +1,16 @@
-import { Fragment, JSX, useEffect } from "react";
+import { Fragment, useEffect } from "react";
 
 import { Accordion } from "@/components/accordion/Accordion";
 import { SingleCol } from "@/components/panels/SingleCol";
 import { Heading } from "@/components/typography/Heading";
 import { VerticalSpacing } from "@/components/utility/VerticalSpacing";
+import { TFAQ } from "@/types";
 
-import { LinkWithQuery } from "./LinkWithQuery";
+import { PageLink } from "./atoms/pageLink/PageLink";
 
 interface IProps {
   title?: string;
-  faqs: {
-    id?: string;
-    title: string;
-    content: JSX.Element;
-    headContent?: JSX.Element;
-  }[];
+  faqs: TFAQ[];
   accordionMaxHeight?: string;
   sectionId: string;
   showMore?: boolean;
@@ -61,9 +57,9 @@ export const FaqSection = ({ title, faqs, accordionMaxHeight = "464px", sectionI
           </Fragment>
         ))}
         {showMore && (
-          <LinkWithQuery href="/faq" className="!text-[#002ca3] font-semibold text-sm !no-underline">
+          <PageLink keepQuery href="/faq" className="text-[#002ca3]! font-semibold text-sm no-underline!">
             See more FAQs →
-          </LinkWithQuery>
+          </PageLink>
         )}
       </div>
     </Wrapper>

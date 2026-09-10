@@ -4,6 +4,7 @@ export * from "./bff/collection";
 export * from "./bff/document";
 export * from "./bff/family";
 export * from "./display";
+export * from "./faq";
 export * from "./features";
 export * from "./passage/passages";
 export * from "./passage/search";

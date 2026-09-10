@@ -23,6 +23,7 @@ const useTutorialContext = ({ ...props }: React.ComponentProps<typeof TutorialBa
     completedTutorials: [],
     // eslint-disable-next-line no-console
     addCompletedTutorial: (name: TTutorialName) => console.info("addCompletedTutorial", name),
+    removeCompletedTutorial: () => {},
   };
 
   return (
