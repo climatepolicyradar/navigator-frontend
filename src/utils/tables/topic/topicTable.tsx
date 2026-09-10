@@ -1,7 +1,7 @@
 import orderBy from "lodash/orderBy";
 
 import { LabelButton } from "@/components/atoms/labelButton/LabelButton";
-import { IFamilyDocumentTopics, TTableColumn, TTableRow } from "@/types";
+import { IFamilyDocumentTopics, TFeatures, TTableColumn, TTableRow } from "@/types";
 import { firstCase } from "@/utils/text/firstCase";
 
 export type TTopicTableColumnId = "group" | "topics";
@@ -13,7 +13,11 @@ export const topicTableColumns: TTableColumn<TTopicTableColumnId>[] = [
 
 export type TTopicTableRow = TTableRow<TTopicTableColumnId>;
 
-export const getTopicTableRows = (familyTopics: IFamilyDocumentTopics, onClickTopic: (wikibaseId: string) => void): TTopicTableRow[] => {
+export const getTopicTableRows = (
+  familyTopics: IFamilyDocumentTopics,
+  features: TFeatures,
+  onClickTopic: (wikibaseId: string) => void
+): TTopicTableRow[] => {
   const rows: TTopicTableRow[] = [];
 
   familyTopics.rootConcepts.forEach((rootConcept) => {
@@ -37,9 +41,15 @@ export const getTopicTableRows = (familyTopics: IFamilyDocumentTopics, onClickTo
           label: (
             <div className="flex flex-col gap-1 items-start">
               {sortedConcepts.map((concept) => (
-                <LabelButton key={concept.wikibase_id} onClick={() => onClickTopic(concept.wikibase_id)}>
-                  {firstCase(concept.preferred_label)}
-                </LabelButton>
+                <>
+                  {features["new-search"] ? (
+                    <span key={concept.wikibase_id}>{firstCase(concept.preferred_label)}</span>
+                  ) : (
+                    <LabelButton key={concept.wikibase_id} onClick={() => onClickTopic(concept.wikibase_id)}>
+                      {firstCase(concept.preferred_label)}
+                    </LabelButton>
+                  )}
+                </>
               ))}
             </div>
           ),

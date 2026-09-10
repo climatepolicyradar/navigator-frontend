@@ -214,12 +214,13 @@ const ShadowSearch = ({ theme, themeConfig, features }: TProps) => {
         <PrincipalDrawer
           document={selectedDocument?.id === principalImportId ? selectedDocument : null}
           importId={principalImportId}
-          open={!!principalLevel.id}
+          features={features}
           onOpenChange={(open) => {
             if (!open) closePrincipalDrawer();
           }}
-          tab={drawerTab}
           onTabChange={setDrawerTab}
+          open={!!principalLevel.id}
+          tab={drawerTab}
         />
       </Layout>
     </FeaturesContext.Provider>

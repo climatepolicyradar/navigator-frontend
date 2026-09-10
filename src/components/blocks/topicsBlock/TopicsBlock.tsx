@@ -7,17 +7,18 @@ import { TopicDrawer } from "@/components/drawers/topicDrawer/TopicDrawer";
 import { Section } from "@/components/molecules/section/Section";
 import { InteractiveTable } from "@/components/organisms/interactiveTable/InteractiveTable";
 import { TCategoryDictionaryKey } from "@/constants/text";
-import { IFamilyDocumentTopics, TFamilyPublic } from "@/types";
+import { IFamilyDocumentTopics, TFamilyPublic, TFeatures } from "@/types";
 import { TOPIC_PARAM_KEY } from "@/utils/search/searchLevels";
 import { getTopicTableRows, topicTableColumns, TTopicTableColumnId } from "@/utils/tables/topic/topicTable";
 
 type TProps = {
   family: TFamilyPublic;
   familyTopics: IFamilyDocumentTopics;
+  features: TFeatures;
   getCategoryText: (textKey: TCategoryDictionaryKey) => string;
 };
 
-export const TopicsBlock = ({ family, familyTopics, getCategoryText }: TProps) => {
+export const TopicsBlock = ({ family, familyTopics, features, getCategoryText }: TProps) => {
   const [topicDrawerId, setTopicDrawerId] = useQueryState(TOPIC_PARAM_KEY, parseAsString);
   // Keeps the topic in the drawer while it closes. Derived in render as an effect would cascade renders
   const [lastTopicDrawerId, setLastTopicDrawerId] = useState<string | null>(topicDrawerId);
@@ -31,7 +32,7 @@ export const TopicsBlock = ({ family, familyTopics, getCategoryText }: TProps) =
     if (!open) setTopicDrawerId(null);
   };
 
-  const topicTableRows = getTopicTableRows(familyTopics, onTopicClick);
+  const topicTableRows = getTopicTableRows(familyTopics, features, onTopicClick);
   if (topicTableRows.length === 0) return null;
 
   return (

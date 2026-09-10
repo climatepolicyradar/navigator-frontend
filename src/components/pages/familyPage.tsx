@@ -123,13 +123,14 @@ export const FamilyPage = ({ collections, debug, errors, family, familyTopics, f
             key="documents"
             family={family}
             familyTopics={familyTopics}
+            features={features}
             matchesFamily={matchesFamily}
             matchesStatus={matchesStatus}
             showMatches={hasSearch}
             languages={languages}
           />
         ),
-        [family, familyTopics, hasSearch, matchesFamily, matchesStatus, languages]
+        [family, familyTopics, features, hasSearch, matchesFamily, matchesStatus, languages]
       ),
     },
     metadata: {
@@ -158,8 +159,8 @@ export const FamilyPage = ({ collections, debug, errors, family, familyTopics, f
     topics: {
       render: useCallback(() => {
         if (!familyTopicsHasTopics(familyTopics)) return null;
-        return <TopicsBlock key="topics" family={family} familyTopics={familyTopics} getCategoryText={getCategoryText} />;
-      }, [family, familyTopics, getCategoryText]),
+        return <TopicsBlock key="topics" family={family} familyTopics={familyTopics} features={features} getCategoryText={getCategoryText} />;
+      }, [family, familyTopics, features, getCategoryText]),
     },
   };
 
