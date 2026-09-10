@@ -27,7 +27,7 @@ function PostHogPageView({ consent, pageViewProps }: TPostHogPageViewProps): nul
    * sees. Search levels belong to the page, so they have to be read off the route.
    *
    * pathname above is "/search" but the route below is "/_search" for CPR
-   * searhpath in searchLevelFromParams needs the "/_search" route
+   * searchpath in searchLevelFromParams needs the "/_search" route
    */
   const { pathname: route } = useRouter();
 
