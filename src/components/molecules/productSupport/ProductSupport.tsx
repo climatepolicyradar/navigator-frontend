@@ -1,7 +1,7 @@
 import { Accordion } from "@base-ui/react/accordion";
 import { ChevronDown, LucideInfo } from "lucide-react";
 import Image from "next/image";
-import { ReactNode, useState } from "react";
+import { MouseEventHandler, ReactNode, useState } from "react";
 
 import { Drawer } from "@/components/atoms/drawer/Drawer";
 import { FAQS_DICTIONARY } from "@/constants/faqs";
@@ -15,6 +15,7 @@ interface IProductSupportTooltip {
   children?: never;
   className?: string;
   content: TProductSupportKey;
+  nestedButton?: boolean;
   tooltip: true;
 }
 
@@ -22,25 +23,37 @@ interface IProductSupportNode {
   children: ReactNode;
   className?: string;
   content: TProductSupportKey;
+  nestedButton?: boolean;
   tooltip?: never;
 }
 
 type TProps = IProductSupportTooltip | IProductSupportNode;
 
-export const ProductSupport = ({ children, className, content, tooltip }: TProps) => {
+export const ProductSupport = ({ children, className, content, nestedButton, tooltip }: TProps) => {
   const [isOpen, setIsOpen] = useState(false);
 
   const { title, items } = PRODUCT_SUPPORT[content];
   const defaultOpenItems = items.length < COLLAPSE_THRESHOLD ? items.map((_, index) => index) : [0];
 
   const buttonClasses = joinTailwindClasses("inline cursor-help!", className);
-  const buttonChildren = tooltip ? <LucideInfo size={16} className="text-text-brand" /> : children;
+  const buttonChildren = tooltip ? <LucideInfo size={16} className="inline text-text-brand" /> : children;
+
+  const onClick: MouseEventHandler<HTMLButtonElement | HTMLSpanElement> = (event) => {
+    event.stopPropagation();
+    setIsOpen(true);
+  };
 
   return (
     <>
-      <button type="button" onClick={() => setIsOpen(true)} className={buttonClasses}>
-        {buttonChildren}
-      </button>
+      {nestedButton ? (
+        <span role="button" onClick={onClick} className={buttonClasses}>
+          {buttonChildren}
+        </span>
+      ) : (
+        <button type="button" onClick={onClick} className={buttonClasses}>
+          {buttonChildren}
+        </button>
+      )}
       <Drawer
         open={isOpen}
         onOpenChange={setIsOpen}

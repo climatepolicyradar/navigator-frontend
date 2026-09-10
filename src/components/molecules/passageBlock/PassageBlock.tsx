@@ -170,7 +170,7 @@ export const PassageBlock = ({
             <p>{highlightedContent}</p>
             {activeTopics.length > 0 && (
               <p className="text-text-secondary mt-2">
-                Contains: {topicsList} <ProductSupport content="textHighlighting" tooltip className="align-text-bottom" />
+                Contains: {topicsList} <ProductSupport content="textHighlighting" tooltip nestedButton className="align-text-bottom" />
               </p>
             )}
           </button>
@@ -179,7 +179,7 @@ export const PassageBlock = ({
             <p>{highlightedContent}</p>
             {activeTopics.length > 0 && (
               <p className="text-text-secondary mt-2">
-                Contains: {topicsList} <ProductSupport content="textHighlighting" tooltip className="align-text-bottom" />
+                Contains: {topicsList} <ProductSupport content="textHighlighting" tooltip nestedButton className="align-text-bottom" />
               </p>
             )}
           </div>
