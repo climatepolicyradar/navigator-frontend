@@ -2,6 +2,7 @@ import { render, screen } from "@testing-library/react";
 import * as nextRouterMock from "next-router-mock";
 import { vi } from "vitest";
 
+import { DEFAULT_FEATURES } from "@/constants/features";
 import { TFamilyAttribution, TFamilyDocumentPublic, TFamilyPublic } from "@/types";
 
 import { getDocumentLink, getEventTableRows } from "./eventTable";
@@ -43,7 +44,7 @@ describe("getEventTableRows", () => {
       slug: "",
     };
 
-    const eventRows = getEventTableRows({ families: [familyWithoutDocuments], isLitigation: false });
+    const eventRows = getEventTableRows({ families: [familyWithoutDocuments], features: DEFAULT_FEATURES, isLitigation: false });
 
     expect(eventRows).toEqual([]);
   });
@@ -89,7 +90,7 @@ describe("getEventTableRows", () => {
       slug: "",
     };
 
-    const eventRows = getEventTableRows({ families: [familyWithoutEvents], isLitigation: true });
+    const eventRows = getEventTableRows({ families: [familyWithoutEvents], features: DEFAULT_FEATURES, isLitigation: true });
 
     expect(eventRows).toHaveLength(1);
     expect(eventRows[0].id).toBe("Document 1:Event 1");
@@ -150,7 +151,7 @@ describe("getEventTableRows", () => {
       slug: "",
     };
 
-    const eventRows = getEventTableRows({ families: [familyWithoutEvents], isLitigation: true });
+    const eventRows = getEventTableRows({ families: [familyWithoutEvents], features: DEFAULT_FEATURES, isLitigation: true });
 
     expect(eventRows).toHaveLength(2);
     expect(eventRows[0].id).toBe(":Event 2");
@@ -212,7 +213,7 @@ describe("getEventTableRows", () => {
       slug: "",
     };
 
-    const eventRows = getEventTableRows({ families: [familyWithoutEvents], isLitigation: true });
+    const eventRows = getEventTableRows({ families: [familyWithoutEvents], features: DEFAULT_FEATURES, isLitigation: true });
 
     expect(eventRows).toHaveLength(1);
     expect(eventRows[0].id).toBe("Document 1:Event 1");

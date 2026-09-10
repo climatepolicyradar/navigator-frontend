@@ -44,8 +44,13 @@ export const DocumentsBlock = ({ family, familyTopics, features, languages, matc
   const isLitigation = family.attribution.category === "Litigation";
 
   const tableColumns = useMemo(
-    () => getEventTableColumns({ hasTopics: familyTopicsHasTopics(familyTopics), isLitigation, showMatches }),
-    [familyTopics, isLitigation, showMatches]
+    () =>
+      getEventTableColumns({
+        hasTopics: familyTopicsHasTopics(familyTopics),
+        isLitigation,
+        showMatches: showMatches && !features["new-search"],
+      }),
+    [familyTopics, features, isLitigation, showMatches]
   );
   const tableRows = useMemo(
     () =>
