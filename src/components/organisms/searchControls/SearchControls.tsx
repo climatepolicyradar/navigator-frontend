@@ -124,7 +124,6 @@ export const SearchControls = ({
   return (
     <FiltersContext value={{ appliedDateRange, checkedLabelPaths, clearFilters, labelValues, setDateRange: onSetDateRange, toggleFilter }}>
       <div className="col-start-1 -col-end-1 cols-5:col-start-2 cols-5:-col-end-2 flex flex-col gap-y-4">
-        <ProductSupport content="mostRecent">wow</ProductSupport>
         <form onSubmit={onQuerySubmit}>
           <Input
             containerClasses="px-4 py-3 bg-bg-flat border border-border-normal rounded-lg placeholder-text-tertiary"
@@ -175,6 +174,9 @@ export const SearchControls = ({
         </div>
         <AppliedFilters showClearAll includeDateRange />
         {extraContent}
+        <div>
+          <ProductSupport content="mostRecent" tooltip />
+        </div>
       </div>
     </FiltersContext>
   );

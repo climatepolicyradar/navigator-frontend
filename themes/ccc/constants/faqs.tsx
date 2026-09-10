@@ -6,7 +6,7 @@ import { TFAQ } from "@/types";
 
 export const HOMEPAGE_FAQS: TFAQ[] = [
   {
-    title: `The Climate Litigation Database looks different ${EN_DASH} what's changed?`,
+    title: `The Climate Litigation Database looks different ${EN_DASH} what’s changed?`,
     content: (
       <>
         <p>
@@ -80,7 +80,7 @@ export const HOMEPAGE_FAQS: TFAQ[] = [
     ),
   },
   {
-    title: 'What are the "Jurisdictions" and "Geography" filters? How are they different from each other?',
+    title: "What are the ‘Jurisdictions’ and ‘Geography’ filters? How are they different from each other?",
     content: (
       <>
         <p>
@@ -129,7 +129,7 @@ export const APP_FAQS: TFAQ[] = [
     ),
   },
   {
-    title: `The Climate Litigation Database looks different ${EN_DASH} what's changed?`,
+    title: `The Climate Litigation Database looks different ${EN_DASH} what’s changed?`,
     content: (
       <>
         <p>

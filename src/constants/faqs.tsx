@@ -2,7 +2,7 @@ import { PageLink } from "@/components/atoms/pageLink/PageLink";
 import { EN_DASH } from "@/constants/chars";
 import { TFAQ, TFAQKey } from "@/types";
 
-const FAQS_DICTIONARY: Record<TFAQKey, TFAQ> = {
+export const FAQS_DICTIONARY: Record<TFAQKey, TFAQ> = {
   howTextSearch: {
     title: "How does the full text search feature work?",
     content: (
@@ -14,7 +14,7 @@ const FAQS_DICTIONARY: Record<TFAQKey, TFAQ> = {
         <p>Our text search will look for the keywords in your query in any order, and in any form (e.g. singular, plural).</p>
         <p>
           Our 100+ Topic classifiers have been curated by domain experts, and automatically highlight keywords related to your topic. For example,
-          'forestry sector' returns results for 'tree nurseries', 'woodland management', and 'wood industry'.
+          ‘forestry sector’ returns results for ‘tree nurseries’, ‘woodland management’, and ‘wood industry’.
         </p>
       </>
     ),
@@ -39,7 +39,7 @@ const FAQS_DICTIONARY: Record<TFAQKey, TFAQ> = {
     content: (
       <p>
         Use the filters under the search bar to refine your search. You can quickly filter by Topic, geography, and date, or access the full range of
-        filters specific to the document type you're looking for within the 'Category' filter panel. Our Topic filter also orders results by relevance
+        filters specific to the document type you’re looking for within the ‘Category’ filter panel. Our Topic filter also orders results by relevance
         and highlights relevant parts of the text in the documents.
       </p>
     ),
@@ -49,8 +49,8 @@ const FAQS_DICTIONARY: Record<TFAQKey, TFAQ> = {
     content: (
       <>
         <p>
-          You can download a csv file for 'this search' or the 'whole database' from the top right of the search results page. A csv file for 'this
-          search' will contain all documents related to the top ~500 entries returned by your search. All of our exports update daily, so you'll
+          You can download a csv file for ‘this search’ or the ‘whole database’ from the top right of the search results page. A csv file for ‘this
+          search’ will contain all documents related to the top ~500 entries returned by your search. All of our exports update daily, so you’ll
           always get the latest available information in your download.
         </p>
         <p>
@@ -73,13 +73,13 @@ const FAQS_DICTIONARY: Record<TFAQKey, TFAQ> = {
     ),
   },
   whyNoMatches: {
-    title: "Why can't I see matches in some documents?",
+    title: "Why can’t I see matches in some documents?",
     content: (
       <>
         <p>
-          A very small number of our documents aren't yet machine-readable, which means our tool can't extract their text and make it searchable. When
-          this happens, it will look for matches to your search term in the document's title and summary instead. If your search term only appears in
-          the body text, you won't get a match.
+          A very small number of our documents aren’t yet machine-readable, which means our tool can’t extract their text and make it searchable. When
+          this happens, it will look for matches to your search term in the document’s title and summary instead. If your search term only appears in
+          the body text, you won’t get a match.
         </p>
         <p>We are working continuously on ways to improve text quality and search, across all our documents.</p>
       </>
@@ -89,8 +89,8 @@ const FAQS_DICTIONARY: Record<TFAQKey, TFAQ> = {
     title: "Why am I being redirected to an external site for some documents?",
     content: (
       <p>
-        If a document is not yet machine-readable, and therefore not searchable, matches will relate to a document's title and summary. To access the
-        full text you'll be taken to the document's source.
+        If a document is not yet machine-readable, and therefore not searchable, matches will relate to a document’s title and summary. To access the
+        full text you’ll be taken to the document’s source.
       </p>
     ),
   },
@@ -105,10 +105,10 @@ const FAQS_DICTIONARY: Record<TFAQKey, TFAQ> = {
     ),
   },
   whichDateMostRecent: {
-    title: "Which date does sorting by 'most recent' sort by?",
+    title: "Which date does sorting by ‘most recent’ sort by?",
     content: (
       <p>
-        'Most recent' sorts by when an item first came into being {EN_DASH} the date a law was passed, a report published, a project approved, or a
+        ‘Most recent’ sorts by when an item first came into being {EN_DASH} the date a law was passed, a report published, a project approved, or a
         case filed.
       </p>
     ),
@@ -118,7 +118,7 @@ const FAQS_DICTIONARY: Record<TFAQKey, TFAQ> = {
     content: (
       <p>
         The best way to share documents is by using the URL of the page. You can also share documents by downloading and then attaching them to an
-        email. Click the 'download' button when viewing the document on our tool,click the three horizontal dots on the top right of a document view,
+        email. Click the ‘download’ button when viewing the document on our tool,click the three horizontal dots on the top right of a document view,
         and download from there.
       </p>
     ),
@@ -127,7 +127,7 @@ const FAQS_DICTIONARY: Record<TFAQKey, TFAQ> = {
     title: "How are the documents translated to English?",
     content: (
       <p>
-        Documents are translated to English using Google's Cloud Translation API. Auto-translation does not always capture full meaning and nuance
+        Documents are translated to English using Google’s Cloud Translation API. Auto-translation does not always capture full meaning and nuance
         from the original language, but we hope it is a useful first step to making documents available to more people.
       </p>
     ),
@@ -146,10 +146,10 @@ const FAQS_DICTIONARY: Record<TFAQKey, TFAQ> = {
       <ul>
         <li>
           Document access: The database is not exhaustive and we are continuously looking for and adding new documents, from our current data
-          partners, and new ones from trusted institutions. If you're interested in becoming a data partner, please get in touch with:
+          partners, and new ones from trusted institutions. If you’re interested in becoming a data partner, please get in touch with:
           programmes@climatepolicyradar.org
         </li>
-        <li>Text quality: A tiny proportion of documents aren't currently machine-readable: we can't yet extract the text from them.</li>
+        <li>Text quality: A tiny proportion of documents aren’t currently machine-readable: we can’t yet extract the text from them.</li>
         <li>
           Translations: Approximately 25% of our documents are translated using Google Translate. Auto-translation does not always capture full
           meaning and nuance from the original language.
@@ -166,7 +166,7 @@ const FAQS_DICTIONARY: Record<TFAQKey, TFAQ> = {
     content: (
       <>
         <p>
-          When you search using a Topic, rather than returning results based on a keyword match alone, you're searching with expert knowledge built
+          When you search using a Topic, rather than returning results based on a keyword match alone, you’re searching with expert knowledge built
           in: related terms, regional variations, and contextual nuance, drawn from in-depth research, questioning, and collaboration.
         </p>
         <p>
@@ -174,7 +174,7 @@ const FAQS_DICTIONARY: Record<TFAQKey, TFAQ> = {
           appear at the top of search results, and relevant passages will be highlighted in each one.
         </p>
         <p>
-          This makes a Topic search significantly more precise than a standard keyword search - though, as with any search tool, it won't catch every
+          This makes a Topic search significantly more precise than a standard keyword search - though, as with any search tool, it won’t catch every
           relevant passage with perfect accuracy.
         </p>
       </>
@@ -212,7 +212,7 @@ const FAQS_DICTIONARY: Record<TFAQKey, TFAQ> = {
           at the top. Passages at the bottom of the list will likely be of lower relevance, as they will only contain one of the Topics or keywords.
         </p>
         <p>
-          We're working on improving this feature to give users greater control over how Topics and keywords can be combined. For example, by allowing
+          We’re working on improving this feature to give users greater control over how Topics and keywords can be combined. For example, by allowing
           users to have greater control over the AND/OR logic between queries, and whether to more strictly look for co-occurrence of queries within
           the same or neighbouring text passage.
         </p>
@@ -319,7 +319,7 @@ const FAQS_DICTIONARY: Record<TFAQKey, TFAQ> = {
     title: "Can I download the Topic results?",
     content: (
       <p>
-        The full Topics dataset is not yet publicly available. If you're conducting high-impact research, you can{" "}
+        The full Topics dataset is not yet publicly available. If you’re conducting high-impact research, you can{" "}
         <PageLink external href="partners@climatepolicyradar.org">
           request early access
         </PageLink>

@@ -96,7 +96,7 @@ export const APP_FAQS: TFAQ[] = [
     title: "How up-to-date is the data?",
     content: (
       <>
-        <p>The platform's data is regularly updated based on the publication date of new or updated documents from individual MCFs.</p>
+        <p>The platform’s data is regularly updated based on the publication date of new or updated documents from individual MCFs.</p>
       </>
     ),
   },
@@ -105,7 +105,7 @@ export const APP_FAQS: TFAQ[] = [
     content: (
       <>
         <p>
-          The Climate Project Explorer platform contains all publicly available project documents (e.g., concept notes, full proposal and
+          The Climate Project Explorer platform contains all publicly available project documents (e.g. concept notes, full proposal and
           implementation reports) and policies of the four Multilateral Climate Funds. The platform is regularly updated based on the publication of
           new or updated documents from the individual MCFs.
         </p>

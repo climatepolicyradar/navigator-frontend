@@ -70,7 +70,7 @@ export const APP_FAQS: TFAQ[] = [
       <p>
         New data, and updates to existing data, are collected from official sources including government websites, parliamentary records, court
         documents, and UN portals. Our data partners update the database on a rolling basis.. We update the documents in our app and our CSV download
-        every day. If you're aware of documents that are missing, please let us know using our{" "}
+        every day. If you’re aware of documents that are missing, please let us know using our{" "}
         <PageLink external href="https://form.jotform.com/250974303048355">
           data contributors form
         </PageLink>
