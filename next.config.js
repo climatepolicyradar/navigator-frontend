@@ -6,6 +6,20 @@ const configureRedirects = (theme) => {
   return redirectRules;
 };
 
+const configureRewrites = (theme) => {
+  // Uncomment the following line when we're ready to deploy
+  // const rewriteRules = JSON.parse(fs.readFileSync(`./themes/${theme}/rewrites.json`, "utf-8"));
+  const rewriteRules = [];
+
+  /**
+   * beforeFiles, not the afterFiles a bare array would become: these rewrites deliberately
+   * shadow a real page (/search -> /_search), and Next checks the filesystem before it runs
+   * afterFiles, so an afterFiles rule would never fire.
+   * @see: https://nextjs.org/docs/pages/api-reference/config/next-config-js/rewrites
+   */
+  return { beforeFiles: rewriteRules, afterFiles: [], fallback: [] };
+};
+
 /**
  * @type {import('next').NextConfig}
  */
@@ -18,6 +32,10 @@ const nextConfig = {
   // Redirects
   redirects: async () => {
     return configureRedirects(process.env.THEME);
+  },
+  // Rewrites
+  rewrites: async () => {
+    return configureRewrites(process.env.THEME);
   },
   // TypeScript
   pageExtensions: ["tsx", "ts"],
