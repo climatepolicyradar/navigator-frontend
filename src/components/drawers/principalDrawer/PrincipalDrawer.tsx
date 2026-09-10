@@ -81,7 +81,7 @@ const DrawerContent = ({ familyData, languages }: TDrawerContentProps) => {
         </div>
       )}
       <div className="grid grid-cols-1">
-        <DocumentsBlock family={family} familyTopics={familyTopics} languages={languages} />
+        <DocumentsBlock family={family} familyTopics={familyTopics} getCategoryText={getCategoryText} languages={languages} />
       </div>
       {familyTopicsHasTopics(familyTopics) && (
         <TopicsBlock key="topics" family={family} familyTopics={familyTopics} getCategoryText={getCategoryText} />

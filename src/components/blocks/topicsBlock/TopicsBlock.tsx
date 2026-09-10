@@ -1,9 +1,9 @@
-import { LucideTextSearch } from "lucide-react";
+import { LucideInfo, LucideTextSearch } from "lucide-react";
 import { parseAsString, useQueryState } from "nuqs";
 import { useState } from "react";
 
-import { PageLink } from "@/components/atoms/pageLink/PageLink";
 import { TopicDrawer } from "@/components/drawers/topicDrawer/TopicDrawer";
+import { ProductSupport } from "@/components/molecules/productSupport/ProductSupport";
 import { Section } from "@/components/molecules/section/Section";
 import { InteractiveTable } from "@/components/organisms/interactiveTable/InteractiveTable";
 import { TCategoryDictionaryKey } from "@/constants/text";
@@ -35,15 +35,21 @@ export const TopicsBlock = ({ family, familyTopics, getCategoryText }: TProps) =
   if (topicTableRows.length === 0) return null;
 
   return (
-    <Section block="topics" Icon={LucideTextSearch} title={"Topics mentioned most in this " + getCategoryText("familySingular")} badge="Beta">
+    <Section block="topics" Icon={LucideTextSearch} title={"Topics mentioned most in this " + getCategoryText("familySingular")}>
       <div className="col-start-1 -col-end-1">
-        <p className="mb-3">
-          See how often topics get mentioned in this {getCategoryText("familySingular")} and view specific passages of text highlighted in each
-          document. Accuracy is not 100%.{" "}
-          <PageLink href="/faq" hash="topics-faqs" className="inline-block underline decoration-[#d1d5db] hover:decoration-[#6b7280]">
-            Learn more
-          </PageLink>
-        </p>
+        <div className="mb-6 flex gap-2">
+          <LucideInfo size={16} className="pt-1 h-full shrink-0 text-text-brand" />
+          <p>
+            See how often Topics get mentioned in this {getCategoryText("familySingular")} and view specific passages of text highlighted in each
+            document.{" "}
+            <ProductSupport
+              content="topics"
+              className="inline-block text-text-brand underline underline-offset-2 decoration-slate-300 hocus:decoration-text-brand"
+            >
+              Learn more
+            </ProductSupport>
+          </p>
+        </div>
         <InteractiveTable<TTopicTableColumnId> columns={topicTableColumns} rows={topicTableRows} />
       </div>
 

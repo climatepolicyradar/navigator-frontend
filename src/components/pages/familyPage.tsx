@@ -122,13 +122,14 @@ export const FamilyPage = ({ collections, debug, errors, family, familyTopics, f
             key="documents"
             family={family}
             familyTopics={familyTopics}
+            getCategoryText={getCategoryText}
             matchesFamily={matchesFamily}
             matchesStatus={matchesStatus}
             showMatches={hasSearch}
             languages={languages}
           />
         ),
-        [family, familyTopics, hasSearch, matchesFamily, matchesStatus, languages]
+        [family, familyTopics, getCategoryText, hasSearch, matchesFamily, matchesStatus, languages]
       ),
     },
     metadata: {

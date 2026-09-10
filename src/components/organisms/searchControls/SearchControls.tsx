@@ -4,7 +4,6 @@ import { Fragment, ReactNode, SubmitEventHandler, useMemo, useState } from "reac
 
 import { Input } from "@/components/atoms/input/Input";
 import { AppliedFilters } from "@/components/molecules/appliedFilters/AppliedFilters";
-import { ProductSupport } from "@/components/molecules/productSupport/ProductSupport";
 import { SearchFiltersDate } from "@/components/molecules/searchFiltersDate/SearchFiltersDate";
 import { SearchFiltersDrawer } from "@/components/molecules/searchFiltersDrawer/SearchFiltersDrawer";
 import { SearchFiltersPopover } from "@/components/molecules/searchFiltersPopover/SearchFiltersPopover";
@@ -174,9 +173,6 @@ export const SearchControls = ({
         </div>
         <AppliedFilters showClearAll includeDateRange />
         {extraContent}
-        <div>
-          <ProductSupport content="mostRecent" tooltip />
-        </div>
       </div>
     </FiltersContext>
   );

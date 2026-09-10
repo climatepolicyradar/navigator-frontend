@@ -1,6 +1,7 @@
 import { Check, Copy, ExternalLink, File, LocateFixed } from "lucide-react";
 import { useEffect, useState } from "react";
 
+import { ProductSupport } from "@/components/molecules/productSupport/ProductSupport";
 import { EN_DASH } from "@/constants/chars";
 import { IPassageLabel } from "@/types";
 import { joinNodes } from "@/utils/reactNode";
@@ -143,12 +144,20 @@ export const PassageBlock = ({ passage, onCopyClick, onDocumentLinkClick, onPass
             className="text-left w-full text-sm text-text-primary p-6 cols-3:px-8 cols-3:py-7"
           >
             <p>{highlightedContent}</p>
-            {activeTopics.length > 0 && <p className="text-text-secondary mt-2">Contains: {topicsList}</p>}
+            {activeTopics.length > 0 && (
+              <p className="text-text-secondary mt-2">
+                Contains: {topicsList} <ProductSupport content="textHighlighting" tooltip className="align-text-bottom" />
+              </p>
+            )}
           </button>
         ) : (
           <div className="p-6 cols-3:px-8 cols-3:py-7">
             <p>{highlightedContent}</p>
-            {activeTopics.length > 0 && <p className="text-text-secondary mt-2">Contains: {topicsList}</p>}
+            {activeTopics.length > 0 && (
+              <p className="text-text-secondary mt-2">
+                Contains: {topicsList} <ProductSupport content="textHighlighting" tooltip className="align-text-bottom" />
+              </p>
+            )}
           </div>
         )}
       </div>
