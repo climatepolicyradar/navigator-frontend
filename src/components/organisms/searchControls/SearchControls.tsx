@@ -4,6 +4,7 @@ import { Fragment, ReactNode, SubmitEventHandler, useMemo, useState } from "reac
 
 import { Input } from "@/components/atoms/input/Input";
 import { AppliedFilters } from "@/components/molecules/appliedFilters/AppliedFilters";
+import { ProductSupport } from "@/components/molecules/productSupport/ProductSupport";
 import { SearchFiltersDate } from "@/components/molecules/searchFiltersDate/SearchFiltersDate";
 import { SearchFiltersDrawer } from "@/components/molecules/searchFiltersDrawer/SearchFiltersDrawer";
 import { SearchFiltersPopover } from "@/components/molecules/searchFiltersPopover/SearchFiltersPopover";
@@ -123,6 +124,7 @@ export const SearchControls = ({
   return (
     <FiltersContext value={{ appliedDateRange, checkedLabelPaths, clearFilters, labelValues, setDateRange: onSetDateRange, toggleFilter }}>
       <div className="col-start-1 -col-end-1 cols-5:col-start-2 cols-5:-col-end-2 flex flex-col gap-y-4">
+        <ProductSupport content="mostRecent">wow</ProductSupport>
         <form onSubmit={onQuerySubmit}>
           <Input
             containerClasses="px-4 py-3 bg-bg-flat border border-border-normal rounded-lg placeholder-text-tertiary"
