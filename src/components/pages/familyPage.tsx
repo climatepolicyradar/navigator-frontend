@@ -185,6 +185,7 @@ export const FamilyPage = ({ collections, debug, errors, family, familyTopics, f
         <PageHeader title={family.title} metadata={pageHeaderMetadata} />
         {isNewSearch ? (
           <Tabs
+            analytics={{ context: "family-page" }}
             onValueChange={changeTab}
             value={activeTab}
             className=""
