@@ -32,7 +32,7 @@ export const TopicsBlock = ({ family, familyTopics, features, getCategoryText }:
     if (!open) setTopicDrawerId(null);
   };
 
-  const topicTableRows = getTopicTableRows(familyTopics, features, onTopicClick);
+  const topicTableRows = getTopicTableRows(familyTopics, onTopicClick);
   if (topicTableRows.length === 0) return null;
 
   return (
@@ -51,6 +51,7 @@ export const TopicsBlock = ({ family, familyTopics, features, getCategoryText }:
       <TopicDrawer
         family={family}
         familyTopics={familyTopics}
+        features={features}
         topicWikibaseId={lastTopicDrawerId}
         onOpenChange={onTopicDrawerOpenChange}
         open={!!topicDrawerId}
