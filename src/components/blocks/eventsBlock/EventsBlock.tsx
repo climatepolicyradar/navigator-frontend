@@ -2,21 +2,22 @@ import { useEffect, useState } from "react";
 
 import { Section } from "@/components/molecules/section/Section";
 import { InteractiveTable } from "@/components/organisms/interactiveTable/InteractiveTable";
-import { TFamilyPublic } from "@/types";
+import { TFamilyPublic, TFeatures } from "@/types";
 import { getEventTableColumns, getEventTableRows, TEventTableColumnId, TEventTableRow } from "@/utils/eventTable";
 
 const MAX_ENTRIES_SHOWN = 8;
 
 interface IProps {
   families: TFamilyPublic[];
+  features: TFeatures;
 }
 
-export const EventsBlock = ({ families }: IProps) => {
+export const EventsBlock = ({ families, features }: IProps) => {
   const [showAllEntries, setShowAllEntries] = useState(false);
   const [updatedRowsWithLocalisedDates, setUpdatedRowsWithLocalisedDates] = useState<TEventTableRow[]>(null);
 
-  const tableColumns = getEventTableColumns({ isLitigation: true, showFamilyColumns: true });
-  const tableRows = getEventTableRows({ families, isLitigation: true });
+  const tableColumns = getEventTableColumns({ isLitigation: true, showFamilyColumns: true, showMatches: features["new-search"] });
+  const tableRows = getEventTableRows({ families, features, isLitigation: true });
   const entriesToHide = tableRows.length > MAX_ENTRIES_SHOWN;
 
   const toggleShowAll = () => {
@@ -27,8 +28,8 @@ export const EventsBlock = ({ families }: IProps) => {
     const language = navigator?.language;
 
     // eslint-disable-next-line react-hooks/set-state-in-effect
-    setUpdatedRowsWithLocalisedDates(getEventTableRows({ families, language, isLitigation: true }));
-  }, [families]);
+    setUpdatedRowsWithLocalisedDates(getEventTableRows({ families, features, language, isLitigation: true }));
+  }, [families, features]);
 
   return (
     <Section block="events" title="Procedural history" wide>

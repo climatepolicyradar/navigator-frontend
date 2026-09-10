@@ -5,7 +5,7 @@ import { Section } from "@/components/molecules/section/Section";
 import { InteractiveTable } from "@/components/organisms/interactiveTable/InteractiveTable";
 import { SearchLevelContext } from "@/context/SearchLevelContext";
 import { useNestedSearchLevel, useSearchLevelValues } from "@/hooks/useSearchLevel";
-import { IFamilyDocumentTopics, TFamilyPublic, TLanguages, TLoadingStatus, TMatchedFamily } from "@/types";
+import { IFamilyDocumentTopics, TFamilyPublic, TFeatures, TLanguages, TLoadingStatus, TMatchedFamily } from "@/types";
 import { getEventTableColumns, getEventTableRows, TEventTableColumnId, TEventTableRow } from "@/utils/eventTable";
 import { seedPassageLevel } from "@/utils/search/searchLevels";
 import { familyTopicsHasTopics } from "@/utils/topics/processFamilyTopics";
@@ -13,13 +13,14 @@ import { familyTopicsHasTopics } from "@/utils/topics/processFamilyTopics";
 interface IProps {
   family: TFamilyPublic;
   familyTopics?: IFamilyDocumentTopics | null;
+  features: TFeatures;
   languages: TLanguages;
   matchesFamily?: TMatchedFamily; // The relevant search result family
   matchesStatus?: TLoadingStatus; // The status of the search
   showMatches?: boolean; // Whether to show matches from the search result
 }
 
-export const DocumentsBlock = ({ family, familyTopics, languages, matchesFamily, matchesStatus, showMatches = false }: IProps) => {
+export const DocumentsBlock = ({ family, familyTopics, features, languages, matchesFamily, matchesStatus, showMatches = false }: IProps) => {
   const [updatedRowsWithLocalisedDates, setUpdatedRowsWithLocalisedDates] = useState<TEventTableRow[]>(null);
   // Ensure we have the latest search controls when opening the drawer
   const enclosingLevel = useContext(SearchLevelContext);
@@ -43,8 +44,13 @@ export const DocumentsBlock = ({ family, familyTopics, languages, matchesFamily,
   const isLitigation = family.attribution.category === "Litigation";
 
   const tableColumns = useMemo(
-    () => getEventTableColumns({ hasTopics: familyTopicsHasTopics(familyTopics), isLitigation, showMatches }),
-    [familyTopics, isLitigation, showMatches]
+    () =>
+      getEventTableColumns({
+        hasTopics: familyTopicsHasTopics(familyTopics),
+        isLitigation,
+        showMatches: showMatches && !features["new-search"],
+      }),
+    [familyTopics, features, isLitigation, showMatches]
   );
   const tableRows = useMemo(
     () =>
@@ -53,12 +59,13 @@ export const DocumentsBlock = ({ family, familyTopics, languages, matchesFamily,
         documentRowClick: onRowClick,
         families: [family],
         familyTopics,
+        features,
         isLitigation,
         languages,
         matchesFamily,
         matchesStatus,
       }),
-    [family, familyTopics, isLitigation, languages, matchesFamily, matchesStatus, onRowClick]
+    [family, familyTopics, features, isLitigation, languages, matchesFamily, matchesStatus, onRowClick]
   );
 
   // If the case is new, there can be one placeholder document with no events. Handle this interim state
@@ -74,6 +81,7 @@ export const DocumentsBlock = ({ family, familyTopics, languages, matchesFamily,
         documentRowClick: onRowClick,
         families: [family],
         familyTopics,
+        features,
         isLitigation,
         language,
         languages,
@@ -81,7 +89,7 @@ export const DocumentsBlock = ({ family, familyTopics, languages, matchesFamily,
         matchesStatus,
       })
     );
-  }, [family, familyTopics, isLitigation, languages, matchesFamily, matchesStatus, onRowClick]);
+  }, [family, familyTopics, features, isLitigation, languages, matchesFamily, matchesStatus, onRowClick]);
 
   return (
     <Section block="documents" title="Documents" wide>

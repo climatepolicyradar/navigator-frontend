@@ -19,6 +19,7 @@ import {
   TFamilyDocumentPublic,
   TFamilyEventPublic,
   TFamilyPublic,
+  TFeatures,
   TLanguages,
   TLoadingStatus,
   TMatchedFamily,
@@ -228,6 +229,7 @@ const getDocumentCell = (
 export const getEventTableRows = ({
   families,
   familyTopics,
+  features,
   documentEventsOnly = false,
   documentRowClick,
   matchesFamily,
@@ -238,6 +240,7 @@ export const getEventTableRows = ({
 }: {
   families: TFamilyPublic[];
   familyTopics?: IFamilyDocumentTopics | null;
+  features: TFeatures;
   documentEventsOnly?: boolean;
   documentRowClick?: (rowId: string) => void;
   matchesFamily?: TMatchedFamily;
@@ -277,6 +280,10 @@ export const getEventTableRows = ({
         // TODO investigate references to topics not in API response
         if (!topic) return null;
 
+        if (features["new-search"]) {
+          return <span key={topicId}>{firstCase(topic?.preferred_label || fallbackLabel)}</span>;
+        }
+
         return (
           <PageLink
             key={topicId}
@@ -293,13 +300,19 @@ export const getEventTableRows = ({
         <div className="flex flex-col gap-1 items-start">
           {topicLinks}
           {someTopicsHidden && (
-            <button
-              type="button"
-              role="link"
-              className="p-2 hover:bg-[#f9fafb] active:bg-[#f3f4f6] border border-[#d1d5db] rounded-md text-sm text-[#374151] leading-4 font-medium"
-            >
-              + {sortedTopics.length - MAX_TOPICS_PER_DOCUMENT} more
-            </button>
+            <>
+              {features["new-search"] ? (
+                <span>+ {sortedTopics.length - MAX_TOPICS_PER_DOCUMENT} more</span>
+              ) : (
+                <button
+                  type="button"
+                  role="link"
+                  className="p-2 hover:bg-[#f9fafb] active:bg-[#f3f4f6] border border-[#d1d5db] rounded-md text-sm text-[#374151] leading-4 font-medium"
+                >
+                  + {sortedTopics.length - MAX_TOPICS_PER_DOCUMENT} more
+                </button>
+              )}
+            </>
           )}
         </div>
       );
