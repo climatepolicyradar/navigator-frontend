@@ -1,7 +1,8 @@
 import { useInfiniteQuery } from "@tanstack/react-query";
 import { useRouter } from "next/router";
 import { parseAsArrayOf, parseAsJson, parseAsString, useQueryState } from "nuqs";
-import { memo, useCallback, useContext, useEffect, useMemo, useState } from "react";
+import { usePostHog } from "posthog-js/react";
+import { memo, useCallback, useContext, useEffect, useMemo, useRef, useState } from "react";
 
 import { fetchSearchPassages } from "@/api/passages";
 import EmbeddedPDF from "@/components/EmbeddedPDF";
@@ -17,6 +18,7 @@ import { ID_SEPARATOR } from "@/constants/chars";
 import { PASSAGE_FILTER_GROUPS } from "@/constants/filters";
 import { RESULTS_PER_PAGE } from "@/constants/paging";
 import { PASSAGE_SORT_OPTIONS } from "@/constants/sort";
+import { posthogEventName } from "@/context/PostHogProvider";
 import { SearchLevelContext } from "@/context/SearchLevelContext";
 import { loadFilteredLabels } from "@/hooks/useLabelSearch";
 import { FilterGroupSchema } from "@/schemas";
@@ -96,6 +98,8 @@ DocumentPreview.displayName = "DocumentPreview";
 
 export const PassageSearch = ({ concepts, documents, documentsLabel, enablePreview = false, subject }: TProps) => {
   const router = useRouter();
+  const posthog = usePostHog();
+  const searchCount = useRef(0);
   const searchLevel = useContext(SearchLevelContext);
   const paramKeys = useMemo(() => levelParamKeys(searchLevel), [searchLevel]);
   const [queryParam, setQueryParam] = useQueryState(paramKeys.query, parseAsString.withDefault(""));
@@ -149,8 +153,8 @@ export const PassageSearch = ({ concepts, documents, documentsLabel, enablePrevi
 
   const { data, isError, isFetching, isPending, fetchNextPage, hasNextPage, isFetchingNextPage } = useInfiniteQuery({
     queryKey: ["passages", selectedDocumentIds, queryParam, conceptFilterParam, sort],
-    queryFn: ({ pageParam, signal }) =>
-      fetchSearchPassages({
+    queryFn: async ({ pageParam, signal }) => {
+      const response = await fetchSearchPassages({
         query: queryParam,
         documents: selectedDocumentIds,
         filters: conceptFilterParam,
@@ -158,7 +162,23 @@ export const PassageSearch = ({ concepts, documents, documentsLabel, enablePrevi
         sort,
         pageToken: pageParam,
         signal,
-      }),
+      });
+
+      // Reported from the fetcher to run once per search, and only for the first page so that
+      // loading more does not report it again. `search_index` 1 is the search the view opened with
+      if (pageParam === 1) {
+        searchCount.current += 1;
+        posthog?.capture(posthogEventName("search", "results", "fetch"), {
+          search_level: searchLevel,
+          search_query: queryParam || undefined,
+          search_index: searchCount.current,
+          results_total: response.total_size ?? 0,
+          documents_total: selectedDocumentIds.length,
+        });
+      }
+
+      return response;
+    },
     initialPageParam: 1,
     // The API leaves `next_page` and `total_pages` unpopulated, so there is no cursor to
     // follow. Paging is driven by the running result count against the reported total.
