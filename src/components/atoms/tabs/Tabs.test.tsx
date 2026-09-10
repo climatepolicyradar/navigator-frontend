@@ -69,4 +69,12 @@ describe("Tabs", () => {
     render(<Tabs tabs={baseTabs} value="about" onValueChange={() => {}} />);
     expect(screen.queryByRole("tabpanel")).not.toBeInTheDocument();
   });
+
+  it("names each tab and its tab set for analytics", () => {
+    render(<Tabs tabs={baseTabs} value="about" onValueChange={() => {}} analytics={{ context: "principal-drawer" }} />);
+
+    expect(screen.getByRole("tab", { name: "Search in documents" })).toHaveAttribute("data-ph-capture-attribute-tab", "search");
+    expect(screen.getByRole("tab", { name: "Search in documents" })).toHaveAttribute("data-ph-capture-attribute-tab-context", "principal-drawer");
+    expect(screen.getByRole("tab", { name: "About" })).toHaveAttribute("data-ph-capture-attribute-tab", "about");
+  });
 });
