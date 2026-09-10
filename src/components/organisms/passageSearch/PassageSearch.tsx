@@ -99,7 +99,7 @@ DocumentPreview.displayName = "DocumentPreview";
 export const PassageSearch = ({ concepts, documents, documentsLabel, enablePreview = false, subject }: TProps) => {
   const router = useRouter();
   const posthog = usePostHog();
-  const searchCount = useRef(0);
+  const searchIndex = useRef(0);
   const searchLevel = useContext(SearchLevelContext);
   const paramKeys = useMemo(() => levelParamKeys(searchLevel), [searchLevel]);
   const [queryParam, setQueryParam] = useQueryState(paramKeys.query, parseAsString.withDefault(""));
@@ -166,11 +166,11 @@ export const PassageSearch = ({ concepts, documents, documentsLabel, enablePrevi
 
       // Reported from the fetcher so each page is reported once, rather than on every render.
       // `search_index` 1 is the search the view opened with; `page` above 1 is loading more of it
-      if (pageParam === 1) searchCount.current += 1;
+      if (pageParam === 1) searchIndex.current += 1;
       posthog?.capture(posthogEventName("search", "results", "fetch"), {
         search_level: searchLevel,
         search_query: queryParam || undefined,
-        search_index: searchCount.current,
+        search_index: searchIndex.current,
         page: pageParam,
         results_total: response.total_size ?? 0,
         documents_total: selectedDocumentIds.length,
