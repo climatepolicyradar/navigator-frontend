@@ -28,7 +28,7 @@ interface IProps {
 export const SearchFilterLevel = ({ ancestorPath, emptyStateRender, indented, labels, level, renderParents, topLevelDefaultOpen }: IProps) => {
   const { inUse: isLookupAtHigherLevel } = useContext(FiltersLookupContext);
 
-  const levelIsGroups = labels.every((label) => label.type === "group");
+  const levelIsGroups = labels.some((label) => label.type === "group");
   const sortedLabels = useMemo(() => (levelIsGroups ? labels : sortBy(labels, "value")), [labels, levelIsGroups]);
 
   const indentedClasses = indented && "ml-8 mt-2 not-last:mb-2";
