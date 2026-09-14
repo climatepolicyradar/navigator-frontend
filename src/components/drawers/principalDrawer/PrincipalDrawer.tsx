@@ -143,6 +143,7 @@ export function PrincipalDrawer({ document, importId, open, onOpenChange, tab, o
       {!isLoading && familyData && (
         <SearchLevelContext value="principal">
           <Tabs<TPrincipalDrawerTab>
+            analytics={{ context: "principal-drawer" }}
             onValueChange={onTabChange}
             value={tab}
             className="-mx-8"
