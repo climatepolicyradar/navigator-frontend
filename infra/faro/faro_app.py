@@ -7,10 +7,11 @@ mcf-frontend, ccc-frontend) for a while -- all three non-CPR themes'
 telemetry has been landing inside cpr-frontend's data, tagged but not
 actually separated.
 
-Created once here (this project's production stack), not per env: what's
-live in Grafana today is one app per theme shared across staging/production,
-distinguished by the `environment` tag Faro sends at runtime
-(FrontendObservability.tsx), not by separate apps.
+One app per theme, not per env: what's live in Grafana today is one app per
+theme shared across staging/production, distinguished by the `environment`
+tag Faro sends at runtime (FrontendObservability.tsx), not by separate apps.
+This project has a single stack (no staging/production split) since there's
+nothing env-specific about a Faro app itself.
 """
 
 from dataclasses import dataclass, field
