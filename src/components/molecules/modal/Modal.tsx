@@ -5,7 +5,7 @@ import { Card } from "@/components/atoms/card/Card";
 import { Heading } from "@/components/typography/Heading";
 import { joinTailwindClasses } from "@/utils/tailwind";
 
-interface ModalProps {
+export interface IModalProps {
   cardClasses?: string;
   children: ReactNode;
   contentClasses?: string;
@@ -25,7 +25,7 @@ export const Modal = ({
   onClose,
   showCloseButton = true,
   title,
-}: ModalProps) => {
+}: IModalProps) => {
   // Disable scroll on the page body when the modal is open
   useEffect(() => {
     if (isOpen) {
@@ -52,7 +52,7 @@ export const Modal = ({
     cardClasses
   );
 
-  const allContentClasses = joinTailwindClasses(headerImage ? "px-8 py-6" : "", contentClasses);
+  const allContentClasses = joinTailwindClasses("max-h-full overflow-y-auto", headerImage ? "px-8 py-6" : "", contentClasses);
 
   return (
     <div

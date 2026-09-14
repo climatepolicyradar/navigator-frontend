@@ -7,7 +7,7 @@ import { MouseEventHandler, ReactNode } from "react";
 import { CleanRouterQuery } from "@/utils/cleanRouterQuery";
 import { joinTailwindClasses } from "@/utils/tailwind";
 
-type TQueryOverrides = Record<string, string | string[] | null | undefined>;
+export type TQueryOverrides = Record<string, string | string[] | null | undefined>;
 
 // A null/undefined override removes the param rather than emitting an empty one
 const mergeQuery = (inherited: ParsedUrlQuery, overrides: TQueryOverrides): ParsedUrlQuery =>

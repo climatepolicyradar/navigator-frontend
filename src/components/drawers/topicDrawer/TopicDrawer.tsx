@@ -4,7 +4,7 @@ import { Drawer } from "@/components/atoms/drawer/Drawer";
 import { PageLink } from "@/components/atoms/pageLink/PageLink";
 import { InteractiveTable } from "@/components/organisms/interactiveTable/InteractiveTable";
 import { ARROW_UP_RIGHT } from "@/constants/chars";
-import { IFamilyDocumentTopics, TFamilyPublic } from "@/types";
+import { IFamilyDocumentTopics, TFamilyPublic, TFeatures } from "@/types";
 import { getConceptStoreLink } from "@/utils/getConceptStoreLink";
 import {
   getTopicDrawerDocumentTableRows,
@@ -16,12 +16,13 @@ import { firstCase } from "@/utils/text/firstCase";
 interface IProps {
   family: TFamilyPublic;
   familyTopics: IFamilyDocumentTopics;
+  features: TFeatures;
   onOpenChange: (open: boolean) => void; // Triggered each time the drawer is opened or closed
   open: boolean; // Whether the drawer is currently open. Necessitates useState
   topicWikibaseId: string | null; // The currently displayed topic
 }
 
-export const TopicDrawer = ({ family, familyTopics, onOpenChange, open, topicWikibaseId }: IProps) => {
+export const TopicDrawer = ({ family, familyTopics, features, onOpenChange, open, topicWikibaseId }: IProps) => {
   const topic = useMemo(
     () =>
       [...Object.values(familyTopics.conceptsGrouped).flat(), ...familyTopics.rootConcepts].find((topic) => topic.wikibase_id === topicWikibaseId),
@@ -38,7 +39,7 @@ export const TopicDrawer = ({ family, familyTopics, onOpenChange, open, topicWik
   }
 
   const topicName = firstCase(topic.preferred_label);
-  const documentRows = getTopicDrawerDocumentTableRows(family, familyTopics, topic);
+  const documentRows = getTopicDrawerDocumentTableRows(family, familyTopics, features, topic);
 
   return (
     <Drawer open={open} onOpenChange={onOpenChange} title={topicName} trackScroll>
