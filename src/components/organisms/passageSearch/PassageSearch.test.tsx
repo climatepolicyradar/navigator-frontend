@@ -20,6 +20,9 @@ vi.mock("@/components/EmbeddedPDF", () => ({
 const mockFetchSearchPassages = vi.hoisted(() => vi.fn());
 vi.mock("@/api/passages", () => ({ fetchSearchPassages: mockFetchSearchPassages }));
 
+const mockCapture = vi.hoisted(() => vi.fn());
+vi.mock("posthog-js/react", () => ({ usePostHog: () => ({ capture: mockCapture }) }));
+
 // The label lookup only populates the Topic filter's options, which belong to SearchControls.
 // Stubbed so the suite makes no network calls of its own.
 vi.mock("@/hooks/useLabelSearch", () => ({ loadFilteredLabels: () => Promise.resolve([]) }));
@@ -196,6 +199,7 @@ describe("PassageSearch", () => {
     url.reset();
     mockRouter.setCurrentUrl("/documents/main-document");
     mockFetchSearchPassages.mockReset();
+    mockCapture.mockReset();
     mockFetchSearchPassages.mockResolvedValue({ total_size: 1, results: [buildPassage()] });
   });
 
@@ -795,6 +799,53 @@ describe("PassageSearch", () => {
       await waitFor(() => expect(screen.queryByRole("button", { name: /load more/i })).not.toBeInTheDocument());
       // The results already on screen survive the empty page.
       expect(screen.getByText("Passage a")).toBeInTheDocument();
+    });
+  });
+
+  describe("reporting the search", () => {
+    it("reports the number of matching passages, so searches that match nothing are countable", async () => {
+      mockFetchSearchPassages.mockResolvedValue({ total_size: 0, results: [] });
+      renderPrincipal();
+
+      await searchFor("flooding");
+
+      await waitFor(() =>
+        expect(mockCapture).toHaveBeenCalledWith("search:results_fetch", {
+          search_level: "base",
+          search_query: "flooding",
+          search_index: 1,
+          page: 1,
+          results_total: 0,
+          documents_total: 3,
+        })
+      );
+    });
+
+    it("numbers the searches, so the one the view opened with is distinguishable from the user's own", async () => {
+      mockFetchSearchPassages.mockResolvedValue({ total_size: 0, results: [] });
+      renderPrincipal();
+
+      await searchFor("flooding");
+      await waitFor(() => expect(mockCapture).toHaveBeenCalledTimes(1));
+      expect(mockCapture.mock.calls[0][1]).toMatchObject({ search_index: 1 });
+
+      await searchFor("bananas");
+
+      await waitFor(() => expect(mockCapture).toHaveBeenCalledTimes(2));
+      expect(mockCapture.mock.calls[1][1]).toMatchObject({ search_index: 2, search_query: "bananas" });
+    });
+
+    it("reports loading more as another page of the same search", async () => {
+      mockFetchSearchPassages.mockResolvedValue({ total_size: 2, results: [buildPassage()] });
+      renderPrincipal();
+
+      await searchFor("flooding");
+      await waitFor(() => expect(mockCapture).toHaveBeenCalledTimes(1));
+
+      await userEvent.click(screen.getByRole("button", { name: /Load more/ }));
+
+      await waitFor(() => expect(mockCapture).toHaveBeenCalledTimes(2));
+      expect(mockCapture.mock.calls[1][1]).toMatchObject({ search_index: 1, page: 2 });
     });
   });
 });
