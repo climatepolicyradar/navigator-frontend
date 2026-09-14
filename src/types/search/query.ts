@@ -21,6 +21,11 @@ export type TSearchQueryRule =
       field: "document_id";
       op: "contains";
       value: string;
+    }
+  | {
+      field: "id";
+      op: "contains";
+      value: string;
     };
 
 export type TSearchQueryGroup = {

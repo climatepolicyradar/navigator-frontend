@@ -8,7 +8,7 @@ vi.mock("@/api/search", async (importOriginal) => {
   const mod = await importOriginal<typeof import("@/api/search")>();
   return {
     ...mod,
-    fetchSearchDocuments: vi.fn().mockResolvedValue({
+    fetchSearchPrincipalDocuments: vi.fn().mockResolvedValue({
       results: [],
       total_size: 0,
       page: 1,
@@ -30,7 +30,7 @@ const emptyResponse: SearchDocumentsResponse = {
   previous_page: null,
 };
 
-import { fetchSearchDocuments, SearchDocument, SearchDocumentsResponse } from "@/api/search";
+import { fetchSearchPrincipalDocuments, SearchDocument, SearchDocumentsResponse } from "@/api/search";
 import { createGroup } from "@/components/_experiment/advancedFilters/AdvancedFilters";
 import { upsertPublishedDateRangeRules } from "@/utils/_experiment/dateRangeFilters";
 
@@ -66,11 +66,11 @@ describe("SearchContainer", () => {
 
     renderWith(<SearchContainer filters={filtersWithDate} />);
 
-    await waitFor(() => expect(fetchSearchDocuments).toHaveBeenCalled());
+    await waitFor(() => expect(fetchSearchPrincipalDocuments).toHaveBeenCalled());
   });
 
   it("shows a generic message in the page for other search failures", async () => {
-    vi.mocked(fetchSearchDocuments).mockRejectedValueOnce(searchError(404));
+    vi.mocked(fetchSearchPrincipalDocuments).mockRejectedValueOnce(searchError(404));
 
     renderWith(<SearchContainer query="climate" />);
 
@@ -78,7 +78,7 @@ describe("SearchContainer", () => {
   });
 
   it("shows the loader on a first search, in place of any results", async () => {
-    vi.mocked(fetchSearchDocuments).mockReturnValueOnce(new Promise(() => {}));
+    vi.mocked(fetchSearchPrincipalDocuments).mockReturnValueOnce(new Promise(() => {}));
     const onSearchingChange = vi.fn();
 
     renderWith(<SearchContainer query="climate" onSearchingChange={onSearchingChange} />);
@@ -89,7 +89,7 @@ describe("SearchContainer", () => {
   });
 
   it("replaces the previous results with the loader while the next page loads", async () => {
-    vi.mocked(fetchSearchDocuments).mockResolvedValueOnce({ ...emptyResponse, total_size: 42 });
+    vi.mocked(fetchSearchPrincipalDocuments).mockResolvedValueOnce({ ...emptyResponse, total_size: 42 });
     const onTotalResultsChange = vi.fn();
     const onSearchingChange = vi.fn();
 
@@ -99,7 +99,7 @@ describe("SearchContainer", () => {
     expect(onSearchingChange).toHaveBeenLastCalledWith(false);
 
     // A second page that never settles, so the component stays mid-fetch.
-    vi.mocked(fetchSearchDocuments).mockReturnValueOnce(new Promise(() => {}));
+    vi.mocked(fetchSearchPrincipalDocuments).mockReturnValueOnce(new Promise(() => {}));
     rerenderWith(<SearchContainer {...props} page_token="2" />);
 
     expect(await screen.findByTestId("search-loading")).toBeInTheDocument();
@@ -123,7 +123,7 @@ describe("SearchContainer", () => {
   });
 
   it("ranks results by their position in the whole result set, not the page", async () => {
-    vi.mocked(fetchSearchDocuments).mockResolvedValueOnce({
+    vi.mocked(fetchSearchPrincipalDocuments).mockResolvedValueOnce({
       ...emptyResponse,
       results: [principalResult("first"), principalResult("second")],
       total_size: 43,
