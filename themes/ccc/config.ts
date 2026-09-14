@@ -45,6 +45,7 @@ const config: TThemeConfig = {
     familyConceptsSearch: true,
     knowledgeGraph: true,
     litigation: true,
+    "new-search": false,
     searchFamilySummary: true,
   },
 };
