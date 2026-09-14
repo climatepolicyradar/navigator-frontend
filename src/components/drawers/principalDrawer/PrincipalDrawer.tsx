@@ -1,8 +1,8 @@
 import { useQuery } from "@tanstack/react-query";
 import { LucideExternalLink, Search } from "lucide-react";
-import { Fragment, ReactNode, useMemo } from "react";
+import { Fragment, ReactNode } from "react";
 
-import { SearchDocument, fetchSearchDocuments } from "@/api/search";
+import { SearchDocument } from "@/api/search";
 import { Drawer } from "@/components/atoms/drawer/Drawer";
 import { PageLink } from "@/components/atoms/pageLink/PageLink";
 import { Tabs } from "@/components/atoms/tabs/Tabs";
@@ -12,12 +12,12 @@ import { NoteBlock } from "@/components/blocks/noteBlock/NoteBlock";
 import { TextBlock } from "@/components/blocks/textBlock/TextBlock";
 import { TopicsBlock } from "@/components/blocks/topicsBlock/TopicsBlock";
 import { PassageSearch } from "@/components/organisms/passageSearch/PassageSearch";
-import { ID_SEPARATOR } from "@/constants/chars";
 import { SearchLevelContext } from "@/context/SearchLevelContext";
 import useConfig from "@/hooks/useConfig";
+import { useDocumentTopics } from "@/hooks/useDocumentTopics";
 import { useSearchLevelValues } from "@/hooks/useSearchLevel";
 import { useText } from "@/hooks/useText";
-import { TFamilyPresentationalData, TTopic, TFeatures } from "@/types";
+import { TFamilyPresentationalData, TFeatures } from "@/types";
 import { getFamilyHeader } from "@/utils/family-header/getFamilyHeader";
 import { getFamilyMetadata } from "@/utils/family-metadata/getFamilyMetadata";
 import { flattenLevelToBaseQuery } from "@/utils/search/searchLevels";
@@ -108,45 +108,7 @@ export function PrincipalDrawer({ document, importId, open, onOpenChange, tab, o
   // We use the `familyData` here as `document` is not always available, specifically when the page is refreshed.
   // We should try decouple from this endpoint, but given this method is highly coupled to it currently, this felt
   // like it would be decoupled when we do it throughout this component.
-  const relatedDocumentIds = useMemo(() => familyData?.family.documents.map((doc) => doc.import_id) ?? [], [familyData]);
-  const { data: relateddocumentsResponse } = useQuery({
-    queryKey: ["principal-drawer-documents", relatedDocumentIds],
-    queryFn: ({ signal }) =>
-      fetchSearchDocuments({
-        filters: { op: "and", filters: [{ op: "or", filters: relatedDocumentIds.map((id) => ({ field: "id", op: "contains", value: id })) }] },
-        page_size: String(relatedDocumentIds.length),
-        signal,
-      }),
-    enabled: relatedDocumentIds.length > 0,
-  });
-
-  // `search-api` concepts are in the format `concept::Q123`. The search UI keys them on the bare `id`.
-  const conceptTopics = useMemo(() => {
-    const topics = new Map<string, TTopic>();
-
-    (relateddocumentsResponse?.results ?? [])
-      .flatMap((doc) => doc.labels.filter((label) => label.value.type === "concept"))
-      .forEach((label) => {
-        const wikibaseId = label.value.id.split(ID_SEPARATOR)[1];
-
-        // A document's labels only have the rudimentary data.
-        // The downstream Component only needs the basic values so this is OK.
-        topics.set(wikibaseId, {
-          wikibase_id: wikibaseId,
-          preferred_label: label.value.value,
-          count: 0,
-          alternative_labels: [],
-          description: "",
-          has_subconcept: [],
-          negative_labels: [],
-          recursive_subconcept_of: [],
-          related_concepts: [],
-          subconcept_of: [],
-        });
-      });
-
-    return [...topics.values()];
-  }, [relateddocumentsResponse]);
+  const conceptTopics = useDocumentTopics(familyData?.family.documents.map((doc) => doc.import_id) ?? []);
 
   const getCategoryText = getCategoryTextLookup(familyData?.family.attribution.category);
 

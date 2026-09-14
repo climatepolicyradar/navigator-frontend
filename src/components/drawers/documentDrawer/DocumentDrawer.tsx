@@ -9,6 +9,7 @@ import { PassageSearch } from "@/components/organisms/passageSearch/PassageSearc
 import { FeaturesContext } from "@/context/FeaturesContext";
 import { SearchLevelContext } from "@/context/SearchLevelContext";
 import { getLanguage } from "@/helpers/getLanguage";
+import { useDocumentTopics } from "@/hooks/useDocumentTopics";
 import { useSearchLevelValues } from "@/hooks/useSearchLevel";
 import { IFamilyDocumentTopics, IMetadata, TFamilyDocumentPublic, TFamilyEventPublic, TFamilyPublic, TLanguages } from "@/types";
 import { getEventTableRowsData } from "@/utils/eventTable";
@@ -17,7 +18,6 @@ import { DOCUMENT_DRAWER_TOPICS_TABLE_COLUMNS, getDocumentDrawerTopicTableRows }
 import { TTopicTableColumnId, TTopicTableRow } from "@/utils/tables/topic/topicTable";
 import { firstCase } from "@/utils/text/firstCase";
 import { formatDateShort } from "@/utils/timedate";
-import { getTopFamilyDocumentTopics } from "@/utils/topics/getTopFamilyDocumentTopics";
 
 interface IProps {
   documentImportId: string | null;
@@ -33,6 +33,9 @@ export const DocumentDrawer = ({ documentImportId, family, familyTopics, languag
   // The drawer's own search, flattened onto the base params of the document page it links to
   const [documentSearch] = useSearchLevelValues("document");
   const outboundQuery = flattenLevelToBaseQuery(documentSearch);
+  // The topics offered as passage search filters come from the document's concepts in `search-api`.
+  // Fetched up here as the drawer returns early below when the document is missing.
+  const conceptTopics = useDocumentTopics(documentImportId ? [documentImportId] : [], { enabled: features["new-search"] });
 
   const isLitigation = family.attribution.category === "Litigation";
 
@@ -133,7 +136,7 @@ export const DocumentDrawer = ({ documentImportId, family, familyTopics, languag
     >
       {features["new-search"] ? (
         <SearchLevelContext value="document">
-          <PassageSearch documents={[document]} concepts={getTopFamilyDocumentTopics(familyTopics, documentImportId)} subject="this document" />
+          <PassageSearch documents={[document]} concepts={conceptTopics} subject="this document" />
         </SearchLevelContext>
       ) : (
         <>

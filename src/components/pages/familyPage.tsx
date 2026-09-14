@@ -22,6 +22,7 @@ import { MAX_PASSAGES } from "@/constants/paging";
 import { QUERY_PARAMS } from "@/constants/queryParams";
 import { FeaturesContext } from "@/context/FeaturesContext";
 import useConfig from "@/hooks/useConfig";
+import { useDocumentTopics } from "@/hooks/useDocumentTopics";
 import { useFamilyPageHeaderData } from "@/hooks/useFamilyPageHeaderData";
 import useSearch from "@/hooks/useSearch";
 import { useText } from "@/hooks/useText";
@@ -43,7 +44,6 @@ import { getFamilyMetaDescription } from "@/utils/getFamilyMetaDescription";
 import { getLitigationCaseJSONLD } from "@/utils/json-ld/getLitigationCaseJSONLD";
 import { pluralise } from "@/utils/pluralise";
 import { firstCase } from "@/utils/text/firstCase";
-import { getTopFamilyTopics } from "@/utils/topics/getTopFamilyTopics";
 import { familyTopicsHasTopics } from "@/utils/topics/processFamilyTopics";
 
 export interface IProps {
@@ -93,6 +93,12 @@ export const FamilyPage = ({ collections, debug, errors, family, familyTopics, f
       }
     });
   }
+
+  // The topics offered as passage search filters come from the documents' concepts in `search-api`.
+  const conceptTopics = useDocumentTopics(
+    family.documents.map((document) => document.import_id),
+    { enabled: isNewSearch }
+  );
 
   const { pageHeaderMetadata, breadcrumbGeography, breadcrumbParentGeography } = useFamilyPageHeaderData(family);
 
@@ -209,7 +215,7 @@ export const FamilyPage = ({ collections, debug, errors, family, familyTopics, f
                     <main className="pb-8 col-start-1 -col-end-1 cols-4:col-start-3 cols-4:col-end-10">
                       <PassageSearch
                         documents={family.documents}
-                        concepts={getTopFamilyTopics(familyTopics)}
+                        concepts={conceptTopics}
                         documentsLabel={`Documents in this ${firstCase(getCategoryText("familySingular"))}`}
                         subject="these documents"
                         onSearch={setNumberOfResults}
