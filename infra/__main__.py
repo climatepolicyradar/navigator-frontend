@@ -23,6 +23,7 @@ from resources.ecs_express_service import (
     ExpressGatewayConfig,
     ExpressGatewayServiceComponent,
 )
+from resources.faro_app import FaroApp, FaroAppConfig
 from resources.github_actions_role import GitHubActionsRole
 from resources.next_static_bucket import NextStaticBucket, NextStaticBucketConfig
 from resources.util import (
@@ -41,6 +42,7 @@ validate_stack_and_branch()
 aws_account = aws.get_caller_identity()
 config = pulumi.Config()
 theme = config.require("theme")
+stack = pulumi.get_stack()
 
 # The role the deploy workflows assume (deploy-staging.yml,
 # deploy-production.yml, deploy-all-production.yml). Referenced by name where we
@@ -48,6 +50,41 @@ theme = config.require("theme")
 # current stack -- see the guard on GitHubActionsRole.
 DEPLOY_ROLE_NAME = "navigator-new-frontend-github-actions"
 
+########################################################################
+# Create (or reference) the theme's Faro app
+########################################################################
+
+# One Frontend Observability app per theme, shared by that theme's
+# staging/production/review stacks (all report the same app.name today --
+# see FrontendObservability.tsx). Owned by the production stack so it's
+# created exactly once; other stacks read its collector_endpoint here.
+FARO_PRODUCTION_STACK = f"{theme}-production"
+
+if stack == FARO_PRODUCTION_STACK:
+    faro_app = FaroApp(
+        f"{theme}-frontend",
+        config=FaroAppConfig(
+            allowed_origins=[
+                f"https://{theme}.staging.climatepolicyradar.org",
+                f"https://{theme}.production.climatepolicyradar.org",
+                # Review stacks run on App Runner's own domain, which isn't
+                # predictable per-PR -- allow the whole subdomain instead.
+                "https://*.awsapprunner.com",
+            ]
+            + {
+                "cpr": ["https://app.climatepolicyradar.org"],
+                "cclw": ["https://climate-laws.org"],
+                "mcf": ["https://climateprojectexplorer.org"],
+            }.get(theme, []),
+        ),
+    )
+    next_public_faro_url = faro_app.app.collector_endpoint
+    pulumi.export("faro_collector_endpoint", next_public_faro_url)
+else:
+    faro_production_stack = pulumi.StackReference(
+        f"climatepolicyradar/frontend/{FARO_PRODUCTION_STACK}"
+    )
+    next_public_faro_url = faro_production_stack.get_output("faro_collector_endpoint")
 
 FRONTEND_ENV = {
     "BACKEND_API_TOKEN": config.require("backend_api_token"),
@@ -60,7 +97,7 @@ FRONTEND_ENV = {
     "TARGETS_URL": config.require("targets_url"),
     "CDN_URL": config.require("cdn_url"),
     "CONCEPTS_API_URL": config.require("concepts_api_url"),
-    "NEXT_PUBLIC_FARO_URL": config.require("next_public_faro_url"),
+    "NEXT_PUBLIC_FARO_URL": next_public_faro_url,
     "NEXT_PUBLIC_FARO_APP_NAME": config.require("next_public_faro_app_name"),
     "NEXT_PUBLIC_FARO_APP_NAMESPACE": config.require("next_public_faro_app_namespace"),
     "OTEL_EXPORTER_OTLP_ENDPOINT": config.require("otel_exporter_otlp_endpoint"),
