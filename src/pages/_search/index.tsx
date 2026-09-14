@@ -155,8 +155,9 @@ const ShadowSearch = ({ theme, themeConfig, features }: TProps) => {
                 >
                   Find out more.
                 </button>{" "}
+                {/* TODO per custom app */}
                 <PageLink
-                  href="TODO"
+                  href="https://form.jotform.com/262366350830354"
                   external
                   className="inline text-text-brand underline underline-offset-2 decoration-slate-300 hocus:decoration-text-brand"
                 >

@@ -152,7 +152,7 @@ export const FAQS_DICTIONARY: Record<TFAQKey, TFAQ> = {
       <ul>
         <li>
           Document access: The database is not exhaustive and we are continuously looking for and adding new documents, from our current data
-          partners, and new ones from trusted institutions. If you’re interested in becoming a data partner, please get in touch with:
+          partners, and new ones from trusted institutions. If you’re interested in becoming a data partner, please get in touch with:{" "}
           <PageLink external href="mailto:programmes@climatepolicyradar.org">
             programmes@climatepolicyradar.org
           </PageLink>
