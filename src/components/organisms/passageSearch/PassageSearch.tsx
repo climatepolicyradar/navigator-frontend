@@ -9,6 +9,7 @@ import Loader from "@/components/Loader";
 import { Button } from "@/components/atoms/button/Button";
 import { FiveColumns } from "@/components/atoms/columns/FiveColumns";
 import { EmptyDocument } from "@/components/documents/EmptyDocument";
+import { TPrincipalDrawerTab } from "@/components/drawers/principalDrawer/PrincipalDrawer";
 import { DocumentsFilter, TFilterableDocument } from "@/components/molecules/documentsFilter/DocumentsFilter";
 import { PassageBlock, TPassage as TPassageBlock } from "@/components/molecules/passageBlock/PassageBlock";
 import { SearchControls } from "@/components/organisms/searchControls/SearchControls";
@@ -25,6 +26,7 @@ import { queryGroupToFilterPaths } from "@/utils/search/queryGroupToFilterPaths"
 import { conceptFiltersOnly, flattenLevelToBaseQuery, levelParamKeys } from "@/utils/search/searchLevels";
 
 type TProps = {
+  changeTab?: (tab: TPrincipalDrawerTab) => void;
   concepts: TTopic[];
   documents: TFamilyDocumentPublic[];
   documentsLabel?: string;
@@ -95,7 +97,7 @@ const DocumentPreview = memo(({ document, pageNumber, passages }: TDocumentPrevi
 ));
 DocumentPreview.displayName = "DocumentPreview";
 
-export const PassageSearch = ({ concepts, documents, documentsLabel, enablePreview = false, onSearch, subject }: TProps) => {
+export const PassageSearch = ({ changeTab, concepts, documents, documentsLabel, enablePreview = false, onSearch, subject }: TProps) => {
   const router = useRouter();
   const searchLevel = useContext(SearchLevelContext);
   const paramKeys = useMemo(() => levelParamKeys(searchLevel), [searchLevel]);
@@ -341,6 +343,7 @@ export const PassageSearch = ({ concepts, documents, documentsLabel, enablePrevi
       )}
       {!isLoading && !isError && passages.length === 0 && (
         <ZeroStatePassages
+          changeTab={changeTab}
           className={enablePreview ? "px-0 py-10 border-0!" : ""}
           hasQuery={hasSearch}
           onClearSearch={handleClear}
