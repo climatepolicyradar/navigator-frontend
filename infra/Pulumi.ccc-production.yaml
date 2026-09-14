@@ -32,7 +32,5 @@ config:
   frontend:apprunner_frontend_vcpu_count: 4 vCPU
   frontend:apprunner_frontend_memory_gb: 8 GB
   frontend:next_static_enabled: "true"
-  grafana:cloudAccessPolicyToken:
-    secure: AAABAP0bQxU0ADZWAtaOm+lB3MTCqP/hLOC6dEMJJjJZkSoWX4hV5h7/njtqJR7FMzwBfGlzkGy7gcsKLD1fJwb95h2AdMPm/689gS+87arshbxfbqysEyvlqGRT9FcBN/bWGWcS/bUEzqKxJTCObrFgBo++ZVLOsu9GT+pfLJ4F/8aXGF4yvUZsevj0BLuM6m4gN5ZW85y/aaw4eOiWJyUCq0HALf67uk9Ve3kgebC7Fe9dWqh1rncD5rLgzl75uM+kQIb2hAyhjncCC5E0+KkIVt3+xH5fsa3eXnBi1iJLUiryur6BXX0BVLN0Qf2TuQGckA==
 environment:
   - frontend/ccc-production

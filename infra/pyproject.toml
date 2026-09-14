@@ -7,5 +7,4 @@ dependencies = [
     "pulumi-aws",
     "pulumi-command",
     "pulumi-docker-build",
-    "pulumiverse-grafana",
 ]

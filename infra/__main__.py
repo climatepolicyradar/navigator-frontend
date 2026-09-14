@@ -23,7 +23,6 @@ from resources.ecs_express_service import (
     ExpressGatewayConfig,
     ExpressGatewayServiceComponent,
 )
-from resources.faro_app import FaroApp, FaroAppConfig
 from resources.github_actions_role import GitHubActionsRole
 from resources.next_static_bucket import NextStaticBucket, NextStaticBucketConfig
 from resources.util import (
@@ -42,7 +41,6 @@ validate_stack_and_branch()
 aws_account = aws.get_caller_identity()
 config = pulumi.Config()
 theme = config.require("theme")
-stack = pulumi.get_stack()
 
 # The role the deploy workflows assume (deploy-staging.yml,
 # deploy-production.yml, deploy-all-production.yml). Referenced by name where we
@@ -51,52 +49,20 @@ stack = pulumi.get_stack()
 DEPLOY_ROLE_NAME = "navigator-new-frontend-github-actions"
 
 ########################################################################
-# Create (or reference) the theme's Faro app
+# Read this theme's Faro collector URL
 ########################################################################
 
-# One Frontend Observability app per theme, shared by that theme's
-# staging/production/review stacks (all report the same app.name today --
-# see FrontendObservability.tsx). Owned by the production stack so it's
-# created exactly once; other stacks read its collector_endpoint here.
-FARO_PRODUCTION_STACK = f"{theme}-production"
-
-# Each theme's custom production domain(s), apex and wildcard.
-THEME_CUSTOM_ORIGINS = {
-    "cpr": ["https://climatepolicyradar.org", "https://*.climatepolicyradar.org"],
-    "cclw": ["https://climate-laws.org", "https://*.climate-laws.org"],
-    "mcf": [
-        "https://climateprojectexplorer.org",
-        "https://*.climateprojectexplorer.org",
-    ],
-    "ccc": [
-        "https://climatecasechart.com",
-        "https://*.climatecasechart.com",
-        "https://www.climatecasechart.com",
-    ],
-}
-
-if stack == FARO_PRODUCTION_STACK:
-    faro_app = FaroApp(
-        f"{theme}-frontend",
-        config=FaroAppConfig(
-            allowed_origins=[
-                f"https://{theme}.staging.climatepolicyradar.org",
-                f"https://{theme}.production.climatepolicyradar.org",
-                # Review stacks run on ECS, not a predictable per-PR domain.
-                "https://*.ecs.eu-west-1.on.aws",
-                "http://localhost",
-                "http://localhost:3000",
-            ]
-            + THEME_CUSTOM_ORIGINS.get(theme, []),
-        ),
-    )
-    next_public_faro_url = faro_app.app.collector_endpoint
-    pulumi.export("faro_collector_endpoint", next_public_faro_url)
-else:
-    faro_production_stack = pulumi.StackReference(
-        f"climatepolicyradar/frontend/{FARO_PRODUCTION_STACK}"
-    )
-    next_public_faro_url = faro_production_stack.get_output("faro_collector_endpoint")
+# The Faro app itself is provisioned by the frontend-observability project
+# (infra/observability/faro_app.py), not here -- kept separate so Grafana
+# provisioning doesn't share a discipline with this project's AWS resources.
+# One app per theme regardless of env, created only from that project's
+# production stack; staging/review here read the same output.
+frontend_observability_stack = pulumi.StackReference(
+    "climatepolicyradar/frontend-observability/production"
+)
+next_public_faro_url = frontend_observability_stack.require_output(
+    f"{theme}_faro_collector_endpoint"
+)
 
 FRONTEND_ENV = {
     "BACKEND_API_TOKEN": config.require("backend_api_token"),
