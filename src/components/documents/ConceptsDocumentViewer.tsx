@@ -139,6 +139,7 @@ export const ConceptsDocumentViewer = ({
     //     \__\/ \::\/ \_____\/   \__\/    \_\/   \________\/ \_\/  \__\/
     // HOTFIX - slug mismatch can happen between RDS and Vespa when document titles are updated
     // TODO: delete / figure this out later but for now a temporary solution is to check against the source url as that is relatively unchanging
+    // Update: added a second check for instances when the document_source_url is null, so as long as the CDN object matches we can reliably say the PDF document is the same
     if (!matches.length) {
       matches = searchResultFamilies.flatMap((family) =>
         family.family_documents
