@@ -4,6 +4,7 @@ import mockRouter from "next-router-mock";
 import * as nextRouterMock from "next-router-mock";
 import { withNuqsTestingAdapter } from "nuqs/adapters/testing";
 
+import { DEFAULT_FEATURES } from "@/constants/features";
 import { IFamilyDocumentTopics, TFamilyPublic, TTopic } from "@/types";
 
 import { TopicsBlock } from "./TopicsBlock";
@@ -52,7 +53,7 @@ const familyTopics: IFamilyDocumentTopics = {
 
 const renderBlock = (searchParams: Record<string, string> = {}) => {
   const onUrlUpdate = vi.fn();
-  render(<TopicsBlock family={{} as TFamilyPublic} familyTopics={familyTopics} getCategoryText={() => "law"} />, {
+  render(<TopicsBlock family={{} as TFamilyPublic} familyTopics={familyTopics} features={DEFAULT_FEATURES} getCategoryText={() => "law"} />, {
     wrapper: withNuqsTestingAdapter({ searchParams, onUrlUpdate, hasMemory: true }),
   });
   return onUrlUpdate;

@@ -1,13 +1,13 @@
 import { useRouter } from "next/router";
-import { useState, useEffect, JSX } from "react";
+import { useState, useEffect, ReactNode } from "react";
 
 interface IProps {
   id?: string;
   title: string;
-  children: JSX.Element;
+  children: ReactNode;
   startOpen?: boolean;
   className?: string;
-  headContent?: JSX.Element;
+  headContent?: ReactNode;
 }
 
 export const AccordionItem = ({ id, title, children, startOpen = false, className, headContent }: IProps) => {

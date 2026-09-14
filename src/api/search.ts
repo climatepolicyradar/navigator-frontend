@@ -95,7 +95,7 @@ function searchDocumentsUrl(): string {
   return `${origin}/search/documents`;
 }
 
-// Add default filters exclusive of searfh parameters to ensure they are always applied
+// Add default filters exclusive of search parameters to ensure they are always applied
 function configureDocumentsFilters(filters: TSearchQueryGroup | undefined): TSearchQueryGroup {
   // TODO: update this when we apply a more custom-app focused approach to categories
   const litigationFilter: TSearchQueryGroup = {

@@ -1,10 +1,13 @@
 import { render } from "@testing-library/react";
 import "@testing-library/jest-dom";
+import * as nextRouterMock from "next-router-mock";
 import { vi } from "vitest";
 
 import App from "@/pages/_app";
 
 import { useEnvConfig, withEnvConfig } from "./EnvConfig";
+
+vi.mock("next/router", () => nextRouterMock);
 
 const mockRouter = {} as any;
 test("should not error when component does not use useEnvConfig nor uses withEnvConfig", async () => {

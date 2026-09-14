@@ -7,11 +7,13 @@ export type TTutorialContext = {
   setDisplayTutorial: (name: TTutorialName | null) => void;
   completedTutorials: TTutorialName[]; // Tutorials the user has dismissed
   addCompletedTutorial: (name: TTutorialName) => void;
+  removeCompletedTutorial: (name: TTutorialName) => void;
 };
 
 export const TutorialContext = createContext<TTutorialContext>({
   displayTutorial: null,
-  setDisplayTutorial: (_name) => {},
+  setDisplayTutorial: () => {},
   completedTutorials: [],
-  addCompletedTutorial: (_name) => {},
+  addCompletedTutorial: () => {},
+  removeCompletedTutorial: () => {},
 });
