@@ -132,7 +132,7 @@ export const ConceptsDocumentViewer = ({
         ?.total_passage_hits || 0;
     //  ___   ___   ______   _________  ______   ________  __     __
     // /__/\ /__/\ /_____/\ /________/\/_____/\ /_______/\/__/\ /__/\
-    // \::\ \\  \ \\:::_ \ \\__.::.__\/\::::_\/_\__.::._\/\ \::\\:.\ \
+    // \::\ \\  \ \\:::_ \ \\__.::.__\/\::::_\/ \__.::._\/\ \::\\:.\ \
     //  \::\/_\ .\ \\:\ \ \ \  \::\ \   \:\/___/\  \::\ \  \_\::_\:_\/
     //   \:: ___::\ \\:\ \ \ \  \::\ \   \:::._\/  _\::\ \__ _\/__\_\_/\
     //    \: \ \\::\ \\:\_\ \ \  \::\ \   \:\ \   /__\::\__/\\ \ \ \::\ \
@@ -142,20 +142,23 @@ export const ConceptsDocumentViewer = ({
     if (!matches.length) {
       matches = searchResultFamilies.flatMap((family) =>
         family.family_documents
-          .filter((cacheDoc) => cacheDoc.document_source_url === document.source_url)
+          .filter((cacheDoc) => cacheDoc.document_source_url === document.source_url || cacheDoc.document_url === document.cdn_object)
           .flatMap((cacheDoc) => cacheDoc.document_passage_matches)
       );
 
       totalMatches =
-        searchResultFamilies.find((family) => family.family_documents.some((cacheDoc) => cacheDoc.document_source_url === document.source_url))
-          ?.total_passage_hits || 0;
+        searchResultFamilies.find((family) =>
+          family.family_documents.some(
+            (cacheDoc) => cacheDoc.document_source_url === document.source_url || cacheDoc.document_url === document.cdn_object
+          )
+        )?.total_passage_hits || 0;
     }
 
     setState({
       passageMatches: matches,
       totalNoOfMatches: totalMatches,
     });
-  }, [searchResultFamilies, document.slug, document.source_url]);
+  }, [searchResultFamilies, document.slug, document.source_url, document.cdn_object]);
 
   const handlePassageClick = (pageNumber: number) => {
     if (!canPreview) return;
