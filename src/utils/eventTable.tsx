@@ -1,11 +1,9 @@
 import orderBy from "lodash/orderBy";
-import { Loader, LucideInfo } from "lucide-react";
+import { Loader } from "lucide-react";
 import { ReactNode } from "react";
 
-import { Badge } from "@/components/atoms/badge/Badge";
 import { LabelButton } from "@/components/atoms/labelButton/LabelButton";
 import { PageLink } from "@/components/atoms/pageLink/PageLink";
-import { Popover } from "@/components/atoms/popover/Popover";
 import { ViewMore } from "@/components/molecules/viewMore/ViewMore";
 import { ARROW_UP_RIGHT } from "@/constants/chars";
 import { DEFAULT_DOCUMENT_TITLE } from "@/constants/document";
@@ -37,28 +35,6 @@ import { formatDateShort } from "./timedate";
 export type TEventTableColumnId = "caseNumber" | "caseTitle" | "court" | "date" | "searchResults" | "document" | "topics" | "type";
 type TEventTableColumn = TTableColumn<TEventTableColumnId>;
 
-const topicsColumnName = (
-  <>
-    Topics&ensp;
-    <Badge>Beta</Badge>{" "}
-    <Popover
-      openOnHover
-      trigger={
-        <button type="button">
-          <LucideInfo size={16} className="inline-block align-text-bottom text-[#6b7280] hover:text-[#374151] cursor-help" />
-        </button>
-      }
-      description="This table shows the most frequently mentioned topics in this document. Click to view the document and see the specific passages mentioning each topic highlighted. Accuracy is not 100%."
-      link={{
-        href: "/faq",
-        hash: "topics-faqs",
-        text: "Learn more",
-        external: true,
-      }}
-    />
-  </>
-);
-
 export const getEventTableColumns = ({
   hasTopics = false,
   isLitigation,
@@ -74,7 +50,7 @@ export const getEventTableColumns = ({
     { id: "date", name: "Filing Date", sortable: true, fraction: 2 },
     { id: "document", fraction: 6 },
     { id: "type", sortable: true, sortOptions: [{ label: "Group by type", order: "asc" }], fraction: 2 },
-    { id: "topics", name: topicsColumnName, fraction: 4 },
+    { id: "topics", name: "Topics", fraction: 4 },
     { id: "caseNumber", name: "Case Number", fraction: 2 },
     { id: "court" },
     { id: "caseTitle", name: "Case", fraction: 2 },

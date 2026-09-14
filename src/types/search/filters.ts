@@ -16,6 +16,7 @@ type TFiltersGroupDrawerConfig = {
   topLevelDefaultOpen?: boolean;
   displayWhenEmpty?: boolean;
   emptyStateRender?: () => ReactNode;
+  header?: never;
 };
 
 type TFiltersGroupPopoverConfig = {
@@ -28,6 +29,7 @@ type TFiltersGroupPopoverConfig = {
   prepareRootLabels?: (rootLabels: TNestedSearchLabel[]) => TNestedSearchLabel[];
   topLevelDefaultOpen?: boolean;
   emptyStateRender?: () => ReactNode;
+  header?: ReactNode;
 };
 
 export type TFiltersGroupConfig = TFiltersGroupDrawerConfig | TFiltersGroupPopoverConfig;
