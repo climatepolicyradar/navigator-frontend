@@ -10,8 +10,13 @@ export const getCanonicalUrl = (router: NextRouter, theme: TTheme, attributionUr
   /** We're only interested in the pathname so use an explicit placeholder url */
   const url = new URL(router.asPath, "https://placeholder");
 
+  /**
+   * Both search pages keep their query string, as the query is what makes a results page distinct.
+   * `/_search` is matched on the route rather than the URL because themes that have flipped serve
+   * it at `/search` via a rewrite (themes/THEME/rewrites.json).
+   */
   let pathname: string;
-  if (router.pathname === "/search") {
+  if (router.pathname === "/search" || router.pathname === "/_search") {
     pathname = router.asPath;
   } else {
     pathname = url.pathname;

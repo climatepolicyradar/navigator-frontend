@@ -4,7 +4,7 @@ import { PageLink } from "@/components/atoms/pageLink/PageLink";
 import { Section } from "@/components/molecules/section/Section";
 import { InteractiveTable } from "@/components/organisms/interactiveTable/InteractiveTable";
 import { ARROW_UP_RIGHT } from "@/constants/chars";
-import { TFamilyPublic } from "@/types";
+import { TFamilyPublic, TFeatures } from "@/types";
 import { getCaseNumbers, getCourts, getEventTableColumns, getEventTableRows, TEventTableColumnId, TEventTableRow } from "@/utils/eventTable";
 import { pluralise } from "@/utils/pluralise";
 
@@ -12,16 +12,17 @@ const MAX_ENTRIES_SHOWN = 4;
 
 interface IProps {
   family: TFamilyPublic;
+  features: TFeatures;
 }
 
-export const FamilyBlock = ({ family }: IProps) => {
+export const FamilyBlock = ({ family, features }: IProps) => {
   const [showAllEntries, setShowAllEntries] = useState(false);
   const [updatedRowsWithLocalisedDates, setUpdatedRowsWithLocalisedDates] = useState<TEventTableRow[]>(null);
 
   const isLitigation = family.attribution.category === "Litigation";
 
-  const tableColumns = useMemo(() => getEventTableColumns({ isLitigation }), [isLitigation]);
-  const tableRows = useMemo(() => getEventTableRows({ families: [family], isLitigation }), [family, isLitigation]);
+  const tableColumns = useMemo(() => getEventTableColumns({ isLitigation, showMatches: features["new-search"] }), [isLitigation, features]);
+  const tableRows = useMemo(() => getEventTableRows({ families: [family], features, isLitigation }), [family, features, isLitigation]);
   const entriesToHide = tableRows.length > MAX_ENTRIES_SHOWN;
 
   const toggleShowAll = () => {
@@ -35,8 +36,8 @@ export const FamilyBlock = ({ family }: IProps) => {
     const language = navigator?.language;
 
     // eslint-disable-next-line react-hooks/set-state-in-effect
-    setUpdatedRowsWithLocalisedDates(getEventTableRows({ families: [family], language, isLitigation }));
-  }, [family, isLitigation]);
+    setUpdatedRowsWithLocalisedDates(getEventTableRows({ families: [family], features, language, isLitigation }));
+  }, [family, features, isLitigation]);
 
   return (
     <Section id={`section-${family.slug}`} wide>

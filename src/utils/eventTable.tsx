@@ -1,11 +1,9 @@
 import orderBy from "lodash/orderBy";
-import { Loader, LucideInfo } from "lucide-react";
+import { Loader } from "lucide-react";
 import { ReactNode } from "react";
 
-import { Badge } from "@/components/atoms/badge/Badge";
 import { LabelButton } from "@/components/atoms/labelButton/LabelButton";
 import { PageLink } from "@/components/atoms/pageLink/PageLink";
-import { Popover } from "@/components/atoms/popover/Popover";
 import { ViewMore } from "@/components/molecules/viewMore/ViewMore";
 import { ARROW_UP_RIGHT } from "@/constants/chars";
 import { DEFAULT_DOCUMENT_TITLE } from "@/constants/document";
@@ -19,6 +17,7 @@ import {
   TFamilyDocumentPublic,
   TFamilyEventPublic,
   TFamilyPublic,
+  TFeatures,
   TLanguages,
   TLoadingStatus,
   TMatchedFamily,
@@ -37,28 +36,6 @@ import { formatDateShort } from "./timedate";
 export type TEventTableColumnId = "caseNumber" | "caseTitle" | "court" | "date" | "searchResults" | "document" | "topics" | "type";
 type TEventTableColumn = TTableColumn<TEventTableColumnId>;
 
-const topicsColumnName = (
-  <>
-    Topics&ensp;
-    <Badge>Beta</Badge>{" "}
-    <Popover
-      openOnHover
-      trigger={
-        <button type="button">
-          <LucideInfo size={16} className="inline-block align-text-bottom text-[#6b7280] hover:text-[#374151] cursor-help" />
-        </button>
-      }
-      description="This table shows the most frequently mentioned topics in this document. Click to view the document and see the specific passages mentioning each topic highlighted. Accuracy is not 100%."
-      link={{
-        href: "/faq",
-        hash: "topics-faqs",
-        text: "Learn more",
-        external: true,
-      }}
-    />
-  </>
-);
-
 export const getEventTableColumns = ({
   hasTopics = false,
   isLitigation,
@@ -74,7 +51,7 @@ export const getEventTableColumns = ({
     { id: "date", name: "Filing Date", sortable: true, fraction: 2 },
     { id: "document", fraction: 6 },
     { id: "type", sortable: true, sortOptions: [{ label: "Group by type", order: "asc" }], fraction: 2 },
-    { id: "topics", name: topicsColumnName, fraction: 4 },
+    { id: "topics", name: "Topics", fraction: 4 },
     { id: "caseNumber", name: "Case Number", fraction: 2 },
     { id: "court" },
     { id: "caseTitle", name: "Case", fraction: 2 },
@@ -228,6 +205,7 @@ const getDocumentCell = (
 export const getEventTableRows = ({
   families,
   familyTopics,
+  features,
   documentEventsOnly = false,
   documentRowClick,
   matchesFamily,
@@ -238,6 +216,7 @@ export const getEventTableRows = ({
 }: {
   families: TFamilyPublic[];
   familyTopics?: IFamilyDocumentTopics | null;
+  features: TFeatures;
   documentEventsOnly?: boolean;
   documentRowClick?: (rowId: string) => void;
   matchesFamily?: TMatchedFamily;
@@ -277,6 +256,10 @@ export const getEventTableRows = ({
         // TODO investigate references to topics not in API response
         if (!topic) return null;
 
+        if (features["new-search"]) {
+          return <span key={topicId}>{firstCase(topic?.preferred_label || fallbackLabel)}</span>;
+        }
+
         return (
           <PageLink
             key={topicId}
@@ -293,13 +276,19 @@ export const getEventTableRows = ({
         <div className="flex flex-col gap-1 items-start">
           {topicLinks}
           {someTopicsHidden && (
-            <button
-              type="button"
-              role="link"
-              className="p-2 hover:bg-[#f9fafb] active:bg-[#f3f4f6] border border-[#d1d5db] rounded-md text-sm text-[#374151] leading-4 font-medium"
-            >
-              + {sortedTopics.length - MAX_TOPICS_PER_DOCUMENT} more
-            </button>
+            <>
+              {features["new-search"] ? (
+                <span>+ {sortedTopics.length - MAX_TOPICS_PER_DOCUMENT} more</span>
+              ) : (
+                <button
+                  type="button"
+                  role="link"
+                  className="p-2 hover:bg-[#f9fafb] active:bg-[#f3f4f6] border border-[#d1d5db] rounded-md text-sm text-[#374151] leading-4 font-medium"
+                >
+                  + {sortedTopics.length - MAX_TOPICS_PER_DOCUMENT} more
+                </button>
+              )}
+            </>
           )}
         </div>
       );

@@ -1,15 +1,7 @@
-import { JSX } from "react";
-
-import { LinkWithQuery } from "@/components/LinkWithQuery";
 import { PageLink } from "@/components/atoms/pageLink/PageLink";
+import { TFAQ } from "@/types";
 
-type TFAQ = {
-  id?: string;
-  title: string;
-  content: JSX.Element;
-};
-
-export const FAQS: TFAQ[] = [
+export const APP_FAQS: TFAQ[] = [
   {
     title: "How to use this tool?",
     content: (
@@ -47,7 +39,7 @@ export const FAQS: TFAQ[] = [
     ),
   },
   {
-    title: "What is 'Climate Change Laws of the World'?",
+    title: "What is ‘Climate Change Laws of the World’?",
     content: (
       <>
         <p>
@@ -82,7 +74,7 @@ export const FAQS: TFAQ[] = [
     content: (
       <p>
         These resources have the same data, features and functionality. The Grantham Research Institute and Climate Policy Radar are delivering these
-        resources in partnership, using Climate Policy Radar's technology to help you get more out of Climate Change Laws of the World's data.
+        resources in partnership, using Climate Policy Radar’s technology to help you get more out of Climate Change Laws of the World’s data.
       </p>
     ),
   },
@@ -243,7 +235,7 @@ export const FAQS: TFAQ[] = [
     title: "How do I find documents not submitted by countries?",
     content: (
       <p>
-        Some documents are submitted to the UNFCCC by non-state actors (also called non-Party stakeholders (labelled in the app as 'non-party'). These
+        Some documents are submitted to the UNFCCC by non-state actors (also called non-Party stakeholders (labelled in the app as ‘non-party’). These
         documents currently have no country assigned, and will be excluded from results when geography and region filters are applied. We will explore
         including location filters for non-state actors in the future.
       </p>
@@ -277,7 +269,7 @@ export const FAQS: TFAQ[] = [
     content: (
       <p>
         Climate Change framework laws are a subset of all laws and policies in the database. We have added a new{" "}
-        <LinkWithQuery href="/framework-laws">framework laws page</LinkWithQuery> where these are listed.
+        <PageLink href="/framework-laws">framework laws page</PageLink> where these are listed.
       </p>
     ),
   },
@@ -342,7 +334,7 @@ export const FAQS: TFAQ[] = [
     content: (
       <p>
         We’re working on making all documents in our database fully searchable - meaning our tool will scan all of the documents’ text to find
-        references to your search query. For those published in different languages and HTML sources, this will take longer, which is why some don't
+        references to your search query. For those published in different languages and HTML sources, this will take longer, which is why some don’t
         yet allow full text search. For these documents, search is available on the title and summary. This will be resolved very soon.
       </p>
     ),
@@ -351,7 +343,7 @@ export const FAQS: TFAQ[] = [
     title: "Why am I being redirected to an external site for some documents?",
     content: (
       <p>
-        A small minority of our documents aren't yet machine-readable, meaning our tool can’t extract their text and make it searchable. In these
+        A small minority of our documents aren’t yet machine-readable, meaning our tool can’t extract their text and make it searchable. In these
         instances our tool will look for matches to your search term in the documents’ title and summary. To access the full text you’ll be taken to
         the document’s source. We’re working to resolve this soon.
       </p>
@@ -474,7 +466,7 @@ export const FAQS: TFAQ[] = [
         <PageLink external href="https://www.naturalearthdata.com/">
           Natural Earth
         </PageLink>
-        . Climate Policy Radar's usage of this World map does not represent an opinion on any disputed boundaries.
+        . Climate Policy Radar’s usage of this World map does not represent an opinion on any disputed boundaries.
       </p>
     ),
   },
@@ -489,8 +481,8 @@ export const FAQS: TFAQ[] = [
         </PageLink>{" "}
         project. Prior to their ingest into the database, documents were reviewed by researchers at Climate Policy Radar to ensure that no duplicate
         entries were added and that entries fell within the scope of the Climate Change Laws of the World
-        <LinkWithQuery href="/methodology">methodology</LinkWithQuery>. This data has been ingested with permission from NewClimate Institute, in
-        order to advance efforts by Climate Policy Radar and LSE to provide users with the most comprehensive dataset possible.
+        <PageLink href="/methodology">methodology</PageLink>. This data has been ingested with permission from NewClimate Institute, in order to
+        advance efforts by Climate Policy Radar and LSE to provide users with the most comprehensive dataset possible.
       </p>
     ),
   },

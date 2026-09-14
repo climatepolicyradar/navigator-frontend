@@ -64,6 +64,7 @@ export const FamilyPage = ({ collections, debug, errors, family, familyTopics, f
   const configQuery = useConfig();
   const { data: { languages = {} } = {} } = configQuery;
   const [activeTab, setActiveTab] = useState<string>("about");
+  const [noOfResults, setNumberOfResults] = useState<number>(0);
   const { getCategoryTextLookup } = useText();
   const getCategoryText = getCategoryTextLookup(family.attribution.category);
 
@@ -122,13 +123,15 @@ export const FamilyPage = ({ collections, debug, errors, family, familyTopics, f
             key="documents"
             family={family}
             familyTopics={familyTopics}
+            features={features}
+            getCategoryText={getCategoryText}
             matchesFamily={matchesFamily}
             matchesStatus={matchesStatus}
             showMatches={hasSearch}
             languages={languages}
           />
         ),
-        [family, familyTopics, hasSearch, matchesFamily, matchesStatus, languages]
+        [family, familyTopics, features, getCategoryText, hasSearch, matchesFamily, matchesStatus, languages]
       ),
     },
     metadata: {
@@ -157,8 +160,8 @@ export const FamilyPage = ({ collections, debug, errors, family, familyTopics, f
     topics: {
       render: useCallback(() => {
         if (!familyTopicsHasTopics(familyTopics)) return null;
-        return <TopicsBlock key="topics" family={family} familyTopics={familyTopics} getCategoryText={getCategoryText} />;
-      }, [family, familyTopics, getCategoryText]),
+        return <TopicsBlock key="topics" family={family} familyTopics={familyTopics} features={features} getCategoryText={getCategoryText} />;
+      }, [family, familyTopics, features, getCategoryText]),
     },
   };
 
@@ -185,6 +188,7 @@ export const FamilyPage = ({ collections, debug, errors, family, familyTopics, f
         <PageHeader title={family.title} metadata={pageHeaderMetadata} />
         {isNewSearch ? (
           <Tabs
+            analytics={{ context: "family-page" }}
             onValueChange={changeTab}
             value={activeTab}
             className=""
@@ -193,6 +197,7 @@ export const FamilyPage = ({ collections, debug, errors, family, familyTopics, f
               { id: "about", label: "About", panel: <BlocksLayout blockDefinitions={blockDefinitions} blocksToRender={blocksToRender} /> },
               {
                 id: "search",
+                count: noOfResults > 0 ? noOfResults : undefined,
                 label: (
                   <>
                     <Search size={20} />
@@ -207,6 +212,7 @@ export const FamilyPage = ({ collections, debug, errors, family, familyTopics, f
                         concepts={getTopFamilyTopics(familyTopics)}
                         documentsLabel={`Documents in this ${firstCase(getCategoryText("familySingular"))}`}
                         subject="these documents"
+                        onSearch={setNumberOfResults}
                       />
                     </main>
                   </FiveColumns>

@@ -31,6 +31,7 @@ type TProps = {
   documents: TFamilyDocumentPublic[];
   documentsLabel?: string;
   enablePreview?: boolean;
+  onSearch?: (numberOfResults: number) => void;
   subject?: string;
 };
 
@@ -96,7 +97,7 @@ const DocumentPreview = memo(({ document, pageNumber, passages }: TDocumentPrevi
 ));
 DocumentPreview.displayName = "DocumentPreview";
 
-export const PassageSearch = ({ concepts, documents, documentsLabel, enablePreview = false, subject }: TProps) => {
+export const PassageSearch = ({ concepts, documents, documentsLabel, enablePreview = false, onSearch, subject }: TProps) => {
   const router = useRouter();
   const posthog = usePostHog();
   const searchIndex = useRef(0);
@@ -213,6 +214,11 @@ export const PassageSearch = ({ concepts, documents, documentsLabel, enablePrevi
     () => searchPassages.map((passage) => toPassageBlock(passage, documentsById.get(passage.document_id)?.title ?? documents[0]?.title ?? "")),
     [searchPassages, documentsById, documents]
   );
+
+  // Notify the parent of the number of results
+  useEffect(() => {
+    if (onSearch) onSearch(totalMatches);
+  }, [totalMatches, onSearch]);
 
   // Avoid cases where the result state flashes before the request has resolved
   const isLoading = hasSearch && !isFetchingNextPage && passages.length === 0 && (isPending || isFetching);

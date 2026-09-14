@@ -30,12 +30,20 @@ export const getFamilyHeader = ({ family, getCategoryText }: TProps): IMetadata[
   const isGeographiesParentAndChild =
     visibleGeographiesData.length === 2 && !visibleGeographiesData[0].code.includes("-") && visibleGeographiesData[1].code.includes("-");
 
-  const geographiesNode: ReactNode[] = joinNodes(
-    visibleGeographiesData.map(({ code, name, slug }) => {
-      return <GeographyLink key={code} code={code} name={name} slug={isSystemGeo(name) ? null : slug} />;
-    }),
-    isGeographiesParentAndChild ? <span className="text-gray-400"> / </span> : <>&ensp;</>
-  );
+  let geographiesNode: ReactNode[] = [
+    <span key="0" className="text-text-tertiary">
+      No geography
+    </span>,
+  ];
+
+  if (visibleGeographiesData.length > 0) {
+    geographiesNode = joinNodes(
+      visibleGeographiesData.map(({ code, name, slug }) => {
+        return <GeographyLink key={code} code={code} name={name} slug={isSystemGeo(name) ? null : slug} />;
+      }),
+      isGeographiesParentAndChild ? <span className="text-text-tertiary"> / </span> : <>&ensp;</>
+    );
+  }
 
   if (hiddenGeographiesCount > 0) {
     geographiesNode.push(
