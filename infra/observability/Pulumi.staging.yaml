@@ -1,0 +1,21 @@
+config:
+  # Grafana Synthetics tokens never expire and cannot be scoped, so rotation is
+  # the main control available -- and rotating leaves the previous ciphertext in
+  # git history, which this repo publishes.
+  # Staging deliberately keeps a single probe. That makes its uptime and
+  # reachability identical, per Grafana's docs, but staging alerts on nothing
+  # (alert_sensitivity is "none" here), so the second metric would not be read.
+  # @see: https://grafana.com/docs/grafana-cloud/observe-and-act/testing/synthetic-monitoring/analyze-results/uptime-and-reachability/
+  #
+  # See Pulumi.production.yaml for how to find the exact probe names.
+  frontend-observability:grafana_probe_names:
+    - London
+  # Staging records metrics and dashboards like production, it just never
+  # alerts -- nobody should be paged for a staging blip.
+  frontend-observability:alert_sensitivity: none
+  # Five minutes rather than production's one: staging does not alert, so the
+  # extra resolution would only cost executions.
+  frontend-observability:frequency_ms: "300000"
+  frontend-observability:grafana_sm_access_token:
+    secure: AAABAOyXPj12s1STXGyUU2S20clJ6qdUQx9XystLGbWjk3v0GfyfCD6p0Hx19S6yvV3K1O2dPDAvg+6t3eILJ31CYqeHdP3wd+i7E+fYqpFlQkVqGR8PvBKkRXv1BzGXNfaMvIi3XE8F0f0/2YCClclHUl8hUou9lXcuH9yjsrQUKSKBHdGvQM6RtUeXyqDW7ZyorG1EKmFrKmuEjZjQfw==
+  frontend-observability:grafana_sm_url: https://synthetic-monitoring-api-gb-south.grafana.net

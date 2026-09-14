@@ -281,6 +281,9 @@ if not is_review_template:
     # Export outputs
     pulumi.export("ecs_service_url", ecs_frontend_service.url)
 
+    # Consumed by the frontend-observability stack.
+    pulumi.export("app_url", config.require("app_url"))
+
 ########################################################################
 # Create old GitHub Actions role
 ########################################################################
