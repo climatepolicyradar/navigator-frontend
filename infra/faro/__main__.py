@@ -9,7 +9,9 @@ from faro_app import FaroApp, FaroAppConfig
 
 @dataclass(frozen=True)
 class Theme:
-    """This theme's custom production domain(s) (apex and wildcard), for the
+    """Add custom per app origins.
+
+    This theme's custom production domain(s) (apex and wildcard), for the
     Faro app's allowed_origins. Themes with no custom domain get none."""
 
     custom_origins: tuple[str, ...] = ()
