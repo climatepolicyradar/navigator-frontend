@@ -33,6 +33,6 @@ config:
   frontend:apprunner_frontend_memory_gb: 8 GB
   frontend:next_static_enabled: "true"
   grafana:cloudAccessPolicyToken:
-    secure: AAABANv8/4cF9CUEA/o2hQmSmnkWzMc4Sx6zBWPDcTUJho+eInR4OIN4XScEhvwlCCofI+/p5hN4LTDnsUnX1rcbbZQeiY11SxIATE/+hXtfv5HAmbRLSvFMoCGluC17qy2ttD4UoyGC2mXM/5m6LJEHyy2SiPeOMHnANykBKy2iwvMcLwl6lDiNNcSuXOvP5SIgWM7FqZ8bI1J2JooR6XrmUx4OtjefMDY+oVh99SkP1QIDNXIQk7J6Ehn/o2NepbMLWCsvwFiIzHR23fnG6XUvWRQ=
+    secure: AAABAKnONxAyheDAXJFKqKsIs6kWulD0CqHkl4LBBL1Sz2A37bBpBAfvfuw2SnrXwYrhDe9YEtFxmGw+H6VF5q+gDa425EzrZB2cukDgJfa+9XbrfS1aCcEX3ngoQiP031aFYx/hQN0rhEQxns91sFXpVMectHBzbEE4SgnHPdrAVbr7nzbX7KI4iTccdOAdh0rOS2jfyWKup3OpTVN0ldsHB0qWkP25joGp6aIRmtiTlmOeGoFxkGHmahpqvnqZheI4knBuSBxPc6/GFEo/TmkqEt7Bk/yHf8DDlebl0EdgrRNGf3aOHzkXP6GBrlmvUkM7HQ==
 environment:
   - frontend/cpr-production

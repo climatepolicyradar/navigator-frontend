@@ -32,6 +32,6 @@ config:
   frontend:apprunner_frontend_memory_gb: 8 GB
   frontend:next_static_enabled: "true"
   grafana:cloudAccessPolicyToken:
-    secure: AAABABXMw+2Oev0eDTqHFIrWlo+NGHhAJpn+hxDHSBkmn3hHXxmgXioSN6SKRr0Rk7MOnJrE2sO+hq7DY5XSlK+/5NGsuVVkdO8JpGI6/J158yo00t7UhVPLBUYFtCFlmqo3EKDLHM+T83JipLvYfKaaPoh4di7GxevlCLC6LMmJaoMf4bvKECgrFIXwHN8ySCbEMbqUDcCfXUo7eDvBntBmwT/pspz3ABka1i9mg0QW0d0mR7OyVvjzrygQ4emouYrLLThFvMVhCqiWai7yf+uKwpA=
+    secure: AAABAICdKlNqZqvdbdQQvaYoyQcwQwdlKsWlqY0gDmYDetXdsPi98AMm7NaU44k+O1XH0lLkdaiA00jlI9IUJ5Gp2ipTvSKVjJTBLufEblHrcYLp+MXlCL+iHSyFZGwHvBcw/ggHN/eOnlTVqr0+ciVC6YGzda+9xQG0pWXRnbEEyAeLczAlO1SFeX5UXnd4o700tV5lfoHdgj1wV7cNgYtHmViRJRV91rNgSo4JJDAYKv/hOC/WaBvuHifOks/ALBDy7MOQ2usP4lUQG8BmOxU/jmOWrVbrRduaC6edQ4MEdxJlVieBlHbeXlxZgldWHEY+cQ==
 environment:
   - frontend/cclw-production
