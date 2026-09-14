@@ -1,5 +1,3 @@
-# frontend-faro:grafana_cloud_access_policy_token needs setting before this
-# stack can apply. From a Grafana Cloud access policy scoped to
-# stacks:read + frontend-observability. Set with:
-#   pulumi config set --secret grafana_cloud_access_policy_token <token> \
-#     --stack climatepolicyradar/frontend-faro/production --cwd infra/faro
+config:
+  frontend-faro:grafana_cloud_access_policy_token:
+    secure: AAABAHvuXa4838HK6T517JWG7Ch9pYNBFzRJxh+if7WoDqF/Yz9MMV8RuGAq6hYgWI6NF0UyKZ48Dw2BDPIYyunKGPU/hSGZb/ePzXmJdpMhFICu/QFT+8buTXxrYI+iptBjZPbGSOu4zoANwqT7UYvAcfnurktY1iQdtz4nvcR+GBk+9clrpwPBJD96aExu0y4YUUT2wm7LN+8FeO0RqmbDH+TM5/zGA0r8CSTvn8+CA+NEE+cqX8J2LVLUGtE68qhzluifwqIGxG54fs0Pag/v6v+WZmYyfnV1ZV7poNP4/0fLqgclFoVoy2VFQ3DbKUoz6g==
