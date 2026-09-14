@@ -60,6 +60,21 @@ DEPLOY_ROLE_NAME = "navigator-new-frontend-github-actions"
 # created exactly once; other stacks read its collector_endpoint here.
 FARO_PRODUCTION_STACK = f"{theme}-production"
 
+# Each theme's custom production domain(s), apex and wildcard.
+THEME_CUSTOM_ORIGINS = {
+    "cpr": ["https://climatepolicyradar.org", "https://*.climatepolicyradar.org"],
+    "cclw": ["https://climate-laws.org", "https://*.climate-laws.org"],
+    "mcf": [
+        "https://climateprojectexplorer.org",
+        "https://*.climateprojectexplorer.org",
+    ],
+    "ccc": [
+        "https://climatecasechart.com",
+        "https://*.climatecasechart.com",
+        "https://www.climatecasechart.com",
+    ],
+}
+
 if stack == FARO_PRODUCTION_STACK:
     faro_app = FaroApp(
         f"{theme}-frontend",
@@ -67,15 +82,12 @@ if stack == FARO_PRODUCTION_STACK:
             allowed_origins=[
                 f"https://{theme}.staging.climatepolicyradar.org",
                 f"https://{theme}.production.climatepolicyradar.org",
-                # Review stacks run on App Runner's own domain, which isn't
-                # predictable per-PR -- allow the whole subdomain instead.
-                "https://*.awsapprunner.com",
+                # Review stacks run on ECS, not a predictable per-PR domain.
+                "https://*.ecs.eu-west-1.on.aws",
+                "http://localhost",
+                "http://localhost:3000",
             ]
-            + {
-                "cpr": ["https://app.climatepolicyradar.org"],
-                "cclw": ["https://climate-laws.org"],
-                "mcf": ["https://climateprojectexplorer.org"],
-            }.get(theme, []),
+            + THEME_CUSTOM_ORIGINS.get(theme, []),
         ),
     )
     next_public_faro_url = faro_app.app.collector_endpoint
