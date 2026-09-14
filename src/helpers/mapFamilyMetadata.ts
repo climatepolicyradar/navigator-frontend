@@ -21,7 +21,7 @@ export const mapFamilyMetadata = (metadata: IMetadata) => {
       if (key === "geographies") {
         result.push({
           label: mapping.label,
-          value: values as string | string[],
+          value: values.length > 0 ? (values as string | string[]) : "No geography",
         });
       } else if (key.includes("project_value")) {
         if (values[0] !== "0") {

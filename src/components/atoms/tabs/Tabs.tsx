@@ -10,7 +10,12 @@ export type TTabsTab<TabId extends string> = {
   panel?: ReactNode;
 };
 
+type TTabsAnalytics = {
+  context?: string;
+};
+
 interface IProps<TabId extends string> {
+  analytics?: TTabsAnalytics;
   className?: string;
   onValueChange: (value: TabId) => void;
   panelClassName?: string;
@@ -19,7 +24,7 @@ interface IProps<TabId extends string> {
   value: TabId;
 }
 
-export const Tabs = <TabId extends string>({ className, onValueChange, panelClassName, tabs, tabsContainer, value }: IProps<TabId>) => {
+export const Tabs = <TabId extends string>({ analytics, className, onValueChange, panelClassName, tabs, tabsContainer, value }: IProps<TabId>) => {
   const allHeaderClasses = joinTailwindClasses("border-b border-border-light", className);
 
   const tabsList = (
@@ -28,6 +33,8 @@ export const Tabs = <TabId extends string>({ className, onValueChange, panelClas
         <BaseTabs.Tab
           key={id}
           value={id}
+          data-ph-capture-attribute-tab={id}
+          data-ph-capture-attribute-tab-context={analytics?.context}
           className="flex items-center justify-center gap-2 rounded-t-lg border border-transparent px-6 py-4 text-lg text-text-tertiary hocus:text-text-primary data-active:border-border-light data-active:border-b-bg-primary data-active:bg-bg-primary data-active:font-heavy data-active:text-text-primary"
         >
           {label}
