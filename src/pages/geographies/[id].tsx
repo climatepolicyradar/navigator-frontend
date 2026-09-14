@@ -1,11 +1,12 @@
 import { GetServerSideProps, InferGetServerSidePropsType } from "next";
 
 import { ApiClient } from "@/api/http-common";
+import { TLabelsResponse } from "@/components/_experiment/intellisearch";
 import { GeographyPage } from "@/components/pages/geographyPage";
 import { SYSTEM_GEO_NAMES } from "@/constants/systemGeos";
 import { withEnvConfig } from "@/context/EnvConfig";
 import { getCountryCode, getCountryName } from "@/helpers/getCountryFields";
-import { TApiItemResponse, GeographyV2, TSearch, TGeography } from "@/types";
+import { TApiItemResponse, GeographyV2, TSearch, TGeography, TSearchLabel } from "@/types";
 import buildSearchQuery from "@/utils/buildSearchQuery";
 import { extractNestedData } from "@/utils/extractNestedData";
 import { getFeatureFlags } from "@/utils/featureFlags";
@@ -105,11 +106,38 @@ export const getServerSideProps = (async (context) => {
     return { notFound: true };
   }
 
+  let geographyLabel: TSearchLabel = null;
+  if (features["new-search"]) {
+    const apiUrl = process.env.NEXT_PUBLIC_API_URL || "https://api.climatepolicyradar.org";
+    const client = new ApiClient(apiUrl);
+    const filters = {
+      op: "and",
+      filters: [
+        {
+          field: "type",
+          op: "contains",
+          value: "country",
+        },
+      ],
+    };
+    const response = await client.get<TLabelsResponse>(`/search/labels?page_size=10000&filters=${encodeURIComponent(JSON.stringify(filters))}`, null);
+
+    // Ensure there is a label for this geography that includes a parent region as we need it to build a search query
+    const expectedId = `country::${geographyV2.id}`;
+    geographyLabel =
+      response.data.results.find(
+        (label) => label.id === expectedId && label.labels.some((subLabel) => subLabel.type === "subconcept_of" && subLabel.value.type === "region")
+      ) ?? null;
+
+    if (!geographyLabel) return { notFound: true };
+  }
+
   return {
     props: withEnvConfig({
       features,
       geographyV2,
       parentGeographyV2,
+      geographyLabel,
       theme,
       themeConfig,
       vespaSearchResults: vespaSearchResults,
