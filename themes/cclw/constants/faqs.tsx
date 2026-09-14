@@ -1,4 +1,3 @@
-import { LinkWithQuery } from "@/components/LinkWithQuery";
 import { PageLink } from "@/components/atoms/pageLink/PageLink";
 import { TFAQ } from "@/types";
 
@@ -270,7 +269,7 @@ export const APP_FAQS: TFAQ[] = [
     content: (
       <p>
         Climate Change framework laws are a subset of all laws and policies in the database. We have added a new{" "}
-        <LinkWithQuery href="/framework-laws">framework laws page</LinkWithQuery> where these are listed.
+        <PageLink href="/framework-laws">framework laws page</PageLink> where these are listed.
       </p>
     ),
   },
@@ -482,8 +481,8 @@ export const APP_FAQS: TFAQ[] = [
         </PageLink>{" "}
         project. Prior to their ingest into the database, documents were reviewed by researchers at Climate Policy Radar to ensure that no duplicate
         entries were added and that entries fell within the scope of the Climate Change Laws of the World
-        <LinkWithQuery href="/methodology">methodology</LinkWithQuery>. This data has been ingested with permission from NewClimate Institute, in
-        order to advance efforts by Climate Policy Radar and LSE to provide users with the most comprehensive dataset possible.
+        <PageLink href="/methodology">methodology</PageLink>. This data has been ingested with permission from NewClimate Institute, in order to
+        advance efforts by Climate Policy Radar and LSE to provide users with the most comprehensive dataset possible.
       </p>
     ),
   },

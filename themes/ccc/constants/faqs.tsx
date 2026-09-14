@@ -1,6 +1,6 @@
 import Link from "next/link";
 
-import { ExternalLink } from "@/components/ExternalLink";
+import { PageLink } from "@/components/atoms/pageLink/PageLink";
 import { EN_DASH } from "@/constants/chars";
 import { TFAQ } from "@/types";
 
@@ -10,9 +10,12 @@ export const HOMEPAGE_FAQS: TFAQ[] = [
     content: (
       <>
         <p>
-          We have partnered with <ExternalLink url="https://climatepolicyradar.org">Climate Policy Radar</ExternalLink> (CPR) to merge the U.S. and
-          Global Climate Litigation Databases into a single platform, redesigned to enable more comprehensive searches and improved access to climate
-          litigation data. The new site allows you to:
+          We have partnered with{" "}
+          <PageLink external href="https://climatepolicyradar.org">
+            Climate Policy Radar
+          </PageLink>{" "}
+          (CPR) to merge the U.S. and Global Climate Litigation Databases into a single platform, redesigned to enable more comprehensive searches and
+          improved access to climate litigation data. The new site allows you to:
         </p>
         <ul>
           <li>
@@ -34,10 +37,18 @@ export const HOMEPAGE_FAQS: TFAQ[] = [
         </ul>
         <p>
           More features are coming soon. Stay updated by{" "}
-          <ExternalLink url="https://mailchi.mp/law/sabin-center-litigation-newsletter">subscribing</ExternalLink> to our newsletter, and please send
-          feedback to <ExternalLink url="mailto:manager@climatecasechart.com">manager@climatecasechart.com</ExternalLink> or by filling in this
-          <ExternalLink url="https://form.jotform.com/252292443502350">template</ExternalLink>. We also will post updates about new features in this
-          FAQ.
+          <PageLink external href="https://mailchi.mp/law/sabin-center-litigation-newsletter">
+            subscribing
+          </PageLink>{" "}
+          to our newsletter, and please send feedback to{" "}
+          <PageLink external href="mailto:manager@climatecasechart.com">
+            manager@climatecasechart.com
+          </PageLink>{" "}
+          or by filling in this
+          <PageLink external href="https://form.jotform.com/252292443502350">
+            template
+          </PageLink>
+          . We also will post updates about new features in this FAQ.
         </p>
       </>
     ),
@@ -65,8 +76,10 @@ export const HOMEPAGE_FAQS: TFAQ[] = [
           4.0 International License (CC BY-NC 4.0). This means you are free to share and adapt the data for non-commercial purposes, provided you give
           appropriate credit. Please read the Terms of Use for more information on how to cite and credit the resources. If you wish to use, copy,
           redistribute, publish, or exploit information from the database for commercial purposes, please contact us by emailing{" "}
-          <ExternalLink url="mailto:manager@climatecasechart.com">manager@climatecasechart.com</ExternalLink> to discuss the best way to address your
-          specific needs.
+          <PageLink external href="mailto:manager@climatecasechart.com">
+            manager@climatecasechart.com
+          </PageLink>{" "}
+          to discuss the best way to address your specific needs.
         </p>
         <p>
           The database is intended to be a useful resource for research and does not constitute legal advice. No warranty of accuracy or completeness
@@ -74,7 +87,10 @@ export const HOMEPAGE_FAQS: TFAQ[] = [
         </p>
         <p>
           If you wish to download data from the whole database as a .csv file, please fill out{" "}
-          <ExternalLink url="https://form.jotform.com/252292116187356">our form</ExternalLink>.
+          <PageLink external href="https://form.jotform.com/252292116187356">
+            our form
+          </PageLink>
+          .
         </p>
       </>
     ),
@@ -133,9 +149,12 @@ export const APP_FAQS: TFAQ[] = [
     content: (
       <>
         <p>
-          We have partnered with <ExternalLink url="https://www.climatepolicyradar.org">Climate Policy Radar</ExternalLink> (CPR) to merge the U.S.
-          and Global Climate Litigation Databases into a single platform, redesigned to enable more comprehensive searches and improved access to
-          climate litigation data. The new site allows you to:
+          We have partnered with{" "}
+          <PageLink external href="https://www.climatepolicyradar.org">
+            Climate Policy Radar
+          </PageLink>{" "}
+          (CPR) to merge the U.S. and Global Climate Litigation Databases into a single platform, redesigned to enable more comprehensive searches and
+          improved access to climate litigation data. The new site allows you to:
         </p>
         <ul>
           <li>
@@ -157,10 +176,18 @@ export const APP_FAQS: TFAQ[] = [
         </ul>
         <p>
           More features are coming soon. Stay updated by{" "}
-          <ExternalLink url="https://mailchi.mp/law/sabin-center-litigation-newsletter">subscribing</ExternalLink> to our newsletter, and please send
-          feedback to <ExternalLink url="mailto:manager@climatecasechart.com">manager@climatecasechart.com</ExternalLink> or by filling in this
-          <ExternalLink url="https://form.jotform.com/252292443502350">template</ExternalLink>. We also will post updates about new features in this
-          FAQ.
+          <PageLink external href="https://mailchi.mp/law/sabin-center-litigation-newsletter">
+            subscribing
+          </PageLink>{" "}
+          to our newsletter, and please send feedback to{" "}
+          <PageLink external href="mailto:manager@climatecasechart.com">
+            manager@climatecasechart.com
+          </PageLink>{" "}
+          or by filling in this
+          <PageLink external href="https://form.jotform.com/252292443502350">
+            template
+          </PageLink>
+          . We also will post updates about new features in this FAQ.
         </p>
       </>
     ),
@@ -186,9 +213,15 @@ export const APP_FAQS: TFAQ[] = [
         <p>
           The database is refreshed 4 times a week, on Mondays, Tuesdays, Wednesdays and Thursdays. Information is updated on a rolling basis, but
           completeness cannot be guaranteed. Twice a month, the Sabin Center publishes Climate Litigation Updates summarizing recent additions. You
-          can <ExternalLink url="https://mailchi.mp/law/sabin-center-litigation-newsletter">subscribe here</ExternalLink> to receive the twice-monthly
-          Climate Litigation Newsletter. If you have updates to a case, please send them to{" "}
-          <ExternalLink url="mailto:manager@climatecasechart.com">manager@climatecasechart.com</ExternalLink>.
+          can{" "}
+          <PageLink external href="https://mailchi.mp/law/sabin-center-litigation-newsletter">
+            subscribe here
+          </PageLink>{" "}
+          to receive the twice-monthly Climate Litigation Newsletter. If you have updates to a case, please send them to{" "}
+          <PageLink external href="mailto:manager@climatecasechart.com">
+            manager@climatecasechart.com
+          </PageLink>
+          .
         </p>
       </>
     ),
@@ -201,8 +234,15 @@ export const APP_FAQS: TFAQ[] = [
           Yes {EN_DASH} and we encourage you to do so. The Climate Litigation Database is licensed under the Creative Commons Attribution Licence
           (CC-BY). You are free to share and adapt the data, provided you give appropriate credit and follow the license terms. Please read the Terms
           of Use for more information on how to cite and credit the resources. For commercial use of a substantial amount of information, please
-          contact <ExternalLink url="mailto:partners@climatepolicyradar.org">partners@climatepolicyradar.org</ExternalLink> and{" "}
-          <ExternalLink url="mailto:manager@climatecasechart.com">manager@climatecasechart.com</ExternalLink>.
+          contact{" "}
+          <PageLink external href="mailto:partners@climatepolicyradar.org">
+            partners@climatepolicyradar.org
+          </PageLink>{" "}
+          and{" "}
+          <PageLink external href="mailto:manager@climatecasechart.com">
+            manager@climatecasechart.com
+          </PageLink>
+          .
         </p>
         <p>
           The database is intended as a research resource and does not constitute legal advice. No warranty of accuracy or completeness is made.
@@ -210,7 +250,10 @@ export const APP_FAQS: TFAQ[] = [
         </p>
         <p>
           To download data from the whole database as a .csv file, please fill out{" "}
-          <ExternalLink url="https://form.jotform.com/252292116187356">our form</ExternalLink>.
+          <PageLink external href="https://form.jotform.com/252292116187356">
+            our form
+          </PageLink>
+          .
         </p>
       </>
     ),
@@ -222,9 +265,12 @@ export const APP_FAQS: TFAQ[] = [
         Users seeking an accurate count of U.S. and non-U.S. cases across the Climate Litigation Database should use the full database download. The
         downloadable dataset includes information on related proceedings, collections, and jurisdictional distinctions that may affect case counts.
         For more detail on how cases are structured and counted in the dataset, please refer to the{" "}
-        <ExternalLink url="https://climatepolicyradar.notion.site/Readme-for-Climate-Case-Chart-document-data-download-35f9109609a48003affdf86d97eb2ccd">
+        <PageLink
+          external
+          href="https://climatepolicyradar.notion.site/Readme-for-Climate-Case-Chart-document-data-download-35f9109609a48003affdf86d97eb2ccd"
+        >
           Readme for Climate Case Chart document data download.
-        </ExternalLink>
+        </PageLink>
       </p>
     ),
   },
@@ -273,11 +319,17 @@ export const APP_FAQS: TFAQ[] = [
       <>
         <p>
           <strong>Bluebook:</strong> Sabin Ctr. for Climate Change Law, Climate Litigation Database,{" "}
-          <ExternalLink url="https://climatecasechart.com">https://climatecasechart.com</ExternalLink> (last visited [DATE]).
+          <PageLink external href="https://climatecasechart.com">
+            https://climatecasechart.com
+          </PageLink>{" "}
+          (last visited [DATE]).
         </p>
         <p>
           <strong>OSCOLA:</strong> Sabin Center for Climate Change Law, Climate Litigation Database (rev September 2025){" "}
-          <ExternalLink url="https://climatecasechart.com">https://climatecasechart.com</ExternalLink> accessed 29 August 2025.
+          <PageLink external href="https://climatecasechart.com">
+            https://climatecasechart.com
+          </PageLink>{" "}
+          accessed 29 August 2025.
         </p>
         <p>
           <strong>Short reference:</strong> (Sabin Center, Climate Litigation Database 2025).
@@ -291,8 +343,10 @@ export const APP_FAQS: TFAQ[] = [
       <>
         <p>
           The Sabin Center publishes reports, blog posts, and academic articles analyzing developments in climate litigation. Visit the{" "}
-          <ExternalLink url="https://climate.law.columbia.edu/research-library">Sabin Center’s searchable library</ExternalLink> for links to recent
-          publications.
+          <PageLink external href="https://climate.law.columbia.edu/research-library">
+            Sabin Center’s searchable library
+          </PageLink>{" "}
+          for links to recent publications.
         </p>
       </>
     ),

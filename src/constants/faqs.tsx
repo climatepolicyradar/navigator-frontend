@@ -68,7 +68,9 @@ export const FAQS_DICTIONARY: Record<TFAQKey, TFAQ> = {
     content: (
       <p>
         Yes, you can use our API and MCP capabilities to bring the data into your own research, workflows, or products. Get in touch for early access:
-        partners@climatepolicyradar.org
+        <PageLink external href="mailto:partners@climatepolicyradar.org">
+          partners@climatepolicyradar.org
+        </PageLink>
       </p>
     ),
   },
@@ -136,7 +138,11 @@ export const FAQS_DICTIONARY: Record<TFAQKey, TFAQ> = {
     title: "How do I report bugs?",
     content: (
       <p>
-        Get in touch with the Climate Policy Radar team via email at support@climatepolicyradar.org. We appreciate you taking the time to do this!
+        Get in touch with the Climate Policy Radar team via email at{" "}
+        <PageLink external href="mailto:support@climatepolicyradar.org">
+          support@climatepolicyradar.org
+        </PageLink>
+        . We appreciate you taking the time to do this!
       </p>
     ),
   },
@@ -147,7 +153,9 @@ export const FAQS_DICTIONARY: Record<TFAQKey, TFAQ> = {
         <li>
           Document access: The database is not exhaustive and we are continuously looking for and adding new documents, from our current data
           partners, and new ones from trusted institutions. If you’re interested in becoming a data partner, please get in touch with:
-          programmes@climatepolicyradar.org
+          <PageLink external href="mailto:programmes@climatepolicyradar.org">
+            programmes@climatepolicyradar.org
+          </PageLink>
         </li>
         <li>Text quality: A tiny proportion of documents aren’t currently machine-readable: we can’t yet extract the text from them.</li>
         <li>
@@ -320,7 +328,7 @@ export const FAQS_DICTIONARY: Record<TFAQKey, TFAQ> = {
     content: (
       <p>
         The full Topics dataset is not yet publicly available. If you’re conducting high-impact research, you can{" "}
-        <PageLink external href="partners@climatepolicyradar.org">
+        <PageLink external href="mailto:partners@climatepolicyradar.org">
           request early access
         </PageLink>
         .

@@ -1,4 +1,4 @@
-import { ExternalLink } from "@/components/ExternalLink";
+import { PageLink } from "@/components/atoms/pageLink/PageLink";
 import { TFAQ } from "@/types";
 
 export const APP_FAQS: TFAQ[] = [
@@ -61,32 +61,46 @@ export const APP_FAQS: TFAQ[] = [
       <>
         <p>
           Yes - and we encourage you to do so! The content of our database is available under the Creative Commons Attribution Licence{" "}
-          <ExternalLink url="https://creativecommons.org/licenses/by/4.0/">(CC-BY)</ExternalLink>. Before doing so, you should read our Terms of Use
-          for more information and to find out how to cite and credit the resources. If you wish to download the data as a .csv file, please{" "}
-          <ExternalLink url="https://form.jotform.com/242902819253357">fill out our form</ExternalLink>.
+          <PageLink external href="https://creativecommons.org/licenses/by/4.0/">
+            (CC-BY)
+          </PageLink>
+          . Before doing so, you should read our Terms of Use for more information and to find out how to cite and credit the resources. If you wish
+          to download the data as a .csv file, please{" "}
+          <PageLink external href="https://form.jotform.com/242902819253357">
+            fill out our form
+          </PageLink>
+          .
         </p>
         <p>When using or sharing the data, please ensure that the original authors (i.e., MCF(s)) are properly credited as sources of information.</p>
         <p>For more information on the terms and conditions of the individual MCFs, please visit these sites:</p>
         <ul>
           <li>
             Adaptation Fund:{" "}
-            <ExternalLink url="https://www.adaptation-fund.org/documents-publications/legal-documents/">
+            <PageLink external href="https://www.adaptation-fund.org/documents-publications/legal-documents/">
               https://www.adaptation-fund.org/documents-publications/legal-documents/
-            </ExternalLink>
+            </PageLink>
             and{" "}
-            <ExternalLink url="https://www.worldbank.org/en/about/legal/terms-and-conditions">
+            <PageLink external href="https://www.worldbank.org/en/about/legal/terms-and-conditions">
               https://www.worldbank.org/en/about/legal/terms-and-conditions
-            </ExternalLink>
+            </PageLink>
           </li>
           <li>
-            Climate Investment Funds: <ExternalLink url="https://www.cif.org/disclaimer">https://www.cif.org/disclaimer</ExternalLink>
+            Climate Investment Funds:{" "}
+            <PageLink external href="https://www.cif.org/disclaimer">
+              https://www.cif.org/disclaimer
+            </PageLink>
           </li>
           <li>
-            Global Environment Facility: <ExternalLink url="https://www.thegef.org/legal">https://www.thegef.org/legal</ExternalLink>
+            Global Environment Facility:{" "}
+            <PageLink external href="https://www.thegef.org/legal">
+              https://www.thegef.org/legal
+            </PageLink>
           </li>
           <li>
             Green Climate Fund:{" "}
-            <ExternalLink url="https://www.greenclimate.fund/terms-and-conditions">https://www.greenclimate.fund/terms-and-conditions </ExternalLink>
+            <PageLink external href="https://www.greenclimate.fund/terms-and-conditions">
+              https://www.greenclimate.fund/terms-and-conditions{" "}
+            </PageLink>
           </li>
         </ul>
       </>
