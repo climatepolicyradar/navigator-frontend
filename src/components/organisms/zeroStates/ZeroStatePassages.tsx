@@ -34,7 +34,7 @@ export const ZeroStatePassages = ({ changeTab, className, hasQuery, subject = "t
                 <LucideFileText size={16} className="inline mr-1" />
                 about tab
               </button>{" "}
-              tab to find out more about {subject}, try a new search or apply a topic filter.
+              to find out more about {subject}, try a new search or apply a topic filter.
             </>
           ) : (
             <>
