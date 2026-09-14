@@ -183,9 +183,11 @@ export function fetchSearchPrincipalDocuments(params: SearchDocumentsParams = {}
   };
   return fetchSearchDocuments({
     ...params,
-    filters: {
-      op: "and",
-      filters: params.filters ? [principalDocumentsFilter, params.filters] : [principalDocumentsFilter],
-    },
+    filters: params.filters
+      ? {
+          op: "and",
+          filters: [principalDocumentsFilter, params.filters],
+        }
+      : principalDocumentsFilter,
   });
 }
