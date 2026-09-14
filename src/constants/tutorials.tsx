@@ -67,7 +67,7 @@ export const TUTORIALS: TTutorials = {
             {features.litigation && <p>Litigation-specific topics are coming soon.</p>}
             <div className="flex gap-2">
               <TutorialButton
-                pageLink={{ href: "/faq", hash: "topics-faqs" }}
+                pageLink={{ external: true, href: "/faq", hash: "topics-faqs" }}
                 action="dismiss"
                 actions={actions}
                 name={name}
