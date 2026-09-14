@@ -67,7 +67,7 @@ export const TUTORIALS: TTutorials = {
             {features.litigation && <p>Litigation-specific topics are coming soon.</p>}
             <div className="flex gap-2">
               <TutorialButton
-                pageLink={{ external: true, href: "/faq", hash: "topics-faqs" }}
+                pageLink={{ href: "/faq", hash: "topics-faqs" }}
                 action="dismiss"
                 actions={actions}
                 name={name}
@@ -156,7 +156,7 @@ export const TUTORIALS: TTutorials = {
             </div>
             <div className="flex flex-col sm:flex-row gap-3 items-center justify-center">
               <TutorialButton
-                pageLink={{ href: "/faq" }}
+                pageLink={{ external: true, href: "/faq" }}
                 action="dismiss"
                 actions={actions}
                 name={name}
