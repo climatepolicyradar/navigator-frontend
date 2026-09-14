@@ -23,7 +23,16 @@ interface IProps {
   showMatches?: boolean; // Whether to show matches from the search result
 }
 
-export const DocumentsBlock = ({ family, familyTopics, features, getCategoryText, languages, matchesFamily, matchesStatus, showMatches = false }: IProps) => {
+export const DocumentsBlock = ({
+  family,
+  familyTopics,
+  features,
+  getCategoryText,
+  languages,
+  matchesFamily,
+  matchesStatus,
+  showMatches = false,
+}: IProps) => {
   const [updatedRowsWithLocalisedDates, setUpdatedRowsWithLocalisedDates] = useState<TEventTableRow[]>(null);
   // Ensure we have the latest search controls when opening the drawer
   const enclosingLevel = useContext(SearchLevelContext);
