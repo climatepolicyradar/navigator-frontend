@@ -107,7 +107,8 @@ export const getServerSideProps = (async (context) => {
   }
 
   let geographyLabel: TSearchLabel = null;
-  if (features["new-search"]) {
+  // TODO support subdivisions and therefore CCC
+  if (features["new-search"] && theme !== "ccc") {
     const apiUrl = process.env.NEXT_PUBLIC_API_URL || "https://api.climatepolicyradar.org";
     const client = new ApiClient(apiUrl);
     const filters = {
