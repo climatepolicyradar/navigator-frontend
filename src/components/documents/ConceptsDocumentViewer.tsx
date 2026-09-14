@@ -132,30 +132,34 @@ export const ConceptsDocumentViewer = ({
         ?.total_passage_hits || 0;
     //  ___   ___   ______   _________  ______   ________  __     __
     // /__/\ /__/\ /_____/\ /________/\/_____/\ /_______/\/__/\ /__/\
-    // \::\ \\  \ \\:::_ \ \\__.::.__\/\::::_\/_\__.::._\/\ \::\\:.\ \
+    // \::\ \\  \ \\:::_ \ \\__.::.__\/\::::_\/ \__.::._\/\ \::\\:.\ \
     //  \::\/_\ .\ \\:\ \ \ \  \::\ \   \:\/___/\  \::\ \  \_\::_\:_\/
     //   \:: ___::\ \\:\ \ \ \  \::\ \   \:::._\/  _\::\ \__ _\/__\_\_/\
     //    \: \ \\::\ \\:\_\ \ \  \::\ \   \:\ \   /__\::\__/\\ \ \ \::\ \
     //     \__\/ \::\/ \_____\/   \__\/    \_\/   \________\/ \_\/  \__\/
     // HOTFIX - slug mismatch can happen between RDS and Vespa when document titles are updated
     // TODO: delete / figure this out later but for now a temporary solution is to check against the source url as that is relatively unchanging
+    // Update: added a second check for instances when the document_source_url is null, so as long as the CDN object matches we can reliably say the PDF document is the same
     if (!matches.length) {
       matches = searchResultFamilies.flatMap((family) =>
         family.family_documents
-          .filter((cacheDoc) => cacheDoc.document_source_url === document.source_url)
+          .filter((cacheDoc) => cacheDoc.document_source_url === document.source_url || cacheDoc.document_url === document.cdn_object)
           .flatMap((cacheDoc) => cacheDoc.document_passage_matches)
       );
 
       totalMatches =
-        searchResultFamilies.find((family) => family.family_documents.some((cacheDoc) => cacheDoc.document_source_url === document.source_url))
-          ?.total_passage_hits || 0;
+        searchResultFamilies.find((family) =>
+          family.family_documents.some(
+            (cacheDoc) => cacheDoc.document_source_url === document.source_url || cacheDoc.document_url === document.cdn_object
+          )
+        )?.total_passage_hits || 0;
     }
 
     setState({
       passageMatches: matches,
       totalNoOfMatches: totalMatches,
     });
-  }, [searchResultFamilies, document.slug, document.source_url]);
+  }, [searchResultFamilies, document.slug, document.source_url, document.cdn_object]);
 
   const handlePassageClick = (pageNumber: number) => {
     if (!canPreview) return;
