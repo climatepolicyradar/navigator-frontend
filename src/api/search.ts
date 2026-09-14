@@ -108,17 +108,6 @@ function configureDocumentsFilters(filters: TSearchQueryGroup | undefined): TSea
       },
     ],
   };
-  // Keep for now to ensure we only return principals
-  const principalDocumentsFilter: TSearchQueryGroup = {
-    op: "and",
-    filters: [
-      {
-        field: "labels.value.id",
-        op: "contains",
-        value: "status::Principal",
-      },
-    ],
-  };
   const publishedStatusFilter: TSearchQueryGroup = {
     op: "and",
     filters: [
@@ -149,7 +138,7 @@ function configureDocumentsFilters(filters: TSearchQueryGroup | undefined): TSea
 
   // Always constrain document searches to published documents. Add default date
   // bounds only when the user has not provided any published_date rule.
-  const filtersWithConditionals: TSearchQueryGroup[] = [litigationFilter, principalDocumentsFilter, publishedStatusFilter];
+  const filtersWithConditionals: TSearchQueryGroup[] = [litigationFilter, publishedStatusFilter];
   if (!hasPublishedDateRule(filters)) {
     filtersWithConditionals.push(publishedDateBoundsFilter);
   }
@@ -179,4 +168,24 @@ export async function fetchSearchDocuments(params: SearchDocumentsParams = {}): 
   const res = await fetch(url, { signal: params.signal });
   if (!res.ok) throw Object.assign(new Error(`Search API error: ${res.status}`), { status: res.status });
   return res.json() as Promise<SearchDocumentsResponse>;
+}
+
+export function fetchSearchPrincipalDocuments(params: SearchDocumentsParams = {}): Promise<SearchDocumentsResponse> {
+  const principalDocumentsFilter: TSearchQueryGroup = {
+    op: "and",
+    filters: [
+      {
+        field: "labels.value.id",
+        op: "contains",
+        value: "status::Principal",
+      },
+    ],
+  };
+  return fetchSearchDocuments({
+    ...params,
+    filters: {
+      op: "and",
+      filters: params.filters ? [principalDocumentsFilter, params.filters] : [principalDocumentsFilter],
+    },
+  });
 }
