@@ -18,7 +18,7 @@ import { TPublicEnvConfig } from "@/context/EnvConfig";
 import { FeaturesContext } from "@/context/FeaturesContext";
 import { GeographiesContext } from "@/context/GeographiesContext";
 import { useText } from "@/hooks/useText";
-import { TSearch, TGeographyPageBlock, IMetadata, GeographyV2, TTheme, TThemeConfig, TFeatures, TApiSearch } from "@/types";
+import { TSearch, TGeographyPageBlock, IMetadata, GeographyV2, TTheme, TThemeConfig, TFeatures, TApiSearch, TSearchLabel } from "@/types";
 import buildSearchQuery from "@/utils/buildSearchQuery";
 import { getGeographyMetaData } from "@/utils/getGeographyMetadata";
 
@@ -26,13 +26,23 @@ export interface IProps {
   features: TFeatures;
   geographyV2: GeographyV2;
   parentGeographyV2?: GeographyV2;
+  geographyLabel: TSearchLabel | null;
   theme: string;
   themeConfig: TThemeConfig;
   vespaSearchResults?: TSearch;
   envConfig: TPublicEnvConfig;
 }
 
-export const GeographyPage = ({ geographyV2, parentGeographyV2, theme, themeConfig, features, vespaSearchResults, envConfig }: IProps) => {
+export const GeographyPage = ({
+  geographyV2,
+  parentGeographyV2,
+  geographyLabel,
+  theme,
+  themeConfig,
+  features,
+  vespaSearchResults,
+  envConfig,
+}: IProps) => {
   const { getAppText } = useText();
 
   const isCountry = geographyV2.type === "country";
@@ -149,9 +159,10 @@ export const GeographyPage = ({ geographyV2, parentGeographyV2, theme, themeConf
             })}
             onAccordionClick={(id) => fetchFamiliesByCategory(id)}
             geography={geographyV2}
+            geographyLabel={geographyLabel}
           />
         );
-      }, [envConfig, geographyV2, getAppText, searchResultsByCategory, themeConfig]),
+      }, [envConfig, geographyLabel, geographyV2, getAppText, searchResultsByCategory, themeConfig]),
       sideBarItem: { display: "Recent " + getAppText("familyPlural") },
     },
     statistics: {

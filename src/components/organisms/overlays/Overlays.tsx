@@ -1,3 +1,4 @@
+import { useRouter } from "next/router";
 import { useContext, useEffect } from "react";
 
 import { CookieConsent } from "@/components/cookies/CookieConsent";
@@ -6,6 +7,7 @@ import { TutorialModal } from "@/components/molecules/tutorials/TutorialModal";
 import { TUTORIALS } from "@/constants/tutorials";
 import { ThemeContext } from "@/context/ThemeContext";
 import { TutorialContext } from "@/context/TutorialContext";
+import { TTutorialModal } from "@/types";
 import { getAllCookies } from "@/utils/cookies";
 import { getFeatureFlags } from "@/utils/featureFlags";
 import { getFeatures } from "@/utils/features";
@@ -16,6 +18,7 @@ interface IProps {
 }
 
 export const Overlays = ({ onConsentChange }: IProps) => {
+  const router = useRouter();
   const { themeConfig, loaded } = useContext(ThemeContext);
   const { completedTutorials, displayTutorial, setDisplayTutorial } = useContext(TutorialContext);
 
@@ -35,9 +38,10 @@ export const Overlays = ({ onConsentChange }: IProps) => {
   const currentBanner = incompleteTutorials.find(({ tutorial }) => tutorial.banner);
 
   // If any incomplete tutorial has a modal, show the next one in order, but prioritise an initially open modal.
+  const canDisplayModal = (modal: TTutorialModal) => !modal.pages || modal.pages.includes(router.pathname);
   const currentModal =
-    incompleteTutorials.find(({ tutorial }) => tutorial.modal && tutorial.modal.defaultOpen) ||
-    incompleteTutorials.find(({ tutorial }) => tutorial.modal);
+    incompleteTutorials.find(({ tutorial }) => tutorial.modal && tutorial.modal.defaultOpen && canDisplayModal(tutorial.modal)) ||
+    incompleteTutorials.find(({ tutorial }) => tutorial.modal && canDisplayModal(tutorial.modal));
   const displayCurrentModal = Boolean(displayTutorial === currentModal?.name);
 
   // If the current modal is defaultOpen, open it initially

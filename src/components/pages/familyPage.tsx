@@ -124,13 +124,14 @@ export const FamilyPage = ({ collections, debug, errors, family, familyTopics, f
             family={family}
             familyTopics={familyTopics}
             features={features}
+            getCategoryText={getCategoryText}
             matchesFamily={matchesFamily}
             matchesStatus={matchesStatus}
             showMatches={hasSearch}
             languages={languages}
           />
         ),
-        [family, familyTopics, features, hasSearch, matchesFamily, matchesStatus, languages]
+        [family, familyTopics, features, getCategoryText, hasSearch, matchesFamily, matchesStatus, languages]
       ),
     },
     metadata: {
@@ -187,6 +188,7 @@ export const FamilyPage = ({ collections, debug, errors, family, familyTopics, f
         <PageHeader title={family.title} metadata={pageHeaderMetadata} />
         {isNewSearch ? (
           <Tabs
+            analytics={{ context: "family-page" }}
             onValueChange={changeTab}
             value={activeTab}
             className=""

@@ -83,7 +83,7 @@ const DrawerContent = ({ familyData, features, languages }: TDrawerContentProps)
         </div>
       )}
       <div className="grid grid-cols-1">
-        <DocumentsBlock family={family} familyTopics={familyTopics} features={features} languages={languages} />
+        <DocumentsBlock family={family} familyTopics={familyTopics} features={features} getCategoryText={getCategoryText} languages={languages} />
       </div>
       {familyTopicsHasTopics(familyTopics) && (
         <TopicsBlock key="topics" family={family} familyTopics={familyTopics} getCategoryText={getCategoryText} features={features} />
@@ -145,6 +145,7 @@ export function PrincipalDrawer({ document, importId, open, onOpenChange, tab, o
       {!isLoading && familyData && (
         <SearchLevelContext value="principal">
           <Tabs<TPrincipalDrawerTab>
+            analytics={{ context: "principal-drawer" }}
             onValueChange={onTabChange}
             value={tab}
             className="-mx-8"

@@ -6,6 +6,7 @@ import {
   levelParamKeys,
   searchLevelFromParams,
   searchLevelUrlKeys,
+  searchPropertiesFromParams,
   seedPassageLevel,
 } from "./searchLevels";
 
@@ -106,5 +107,87 @@ describe("searchLevelFromParams", () => {
     expect(level("/document/a-climate-law", "")).toBeUndefined();
     // A topic drawer opened on a family page is not a search level
     expect(level("/document/a-climate-law", "topic=Q786")).toBeUndefined();
+  });
+});
+
+describe("searchPropertiesFromParams", () => {
+  const properties = (pathname: string, search: string) => searchPropertiesFromParams(pathname, new URLSearchParams(search));
+  const filtersParam = (filters: TSearchQueryGroup) => `filters=${encodeURIComponent(JSON.stringify(filters))}`;
+
+  it("has nothing to say away from the results page", () => {
+    expect(properties("/document/a-climate-law", "q=flooding")).toEqual({});
+  });
+
+  it("reports the query and the filters as values rather than encoded JSON", () => {
+    expect(properties("/_search", `q=flooding&${filtersParam(mixedFilters)}`)).toEqual({
+      search_query: "flooding",
+      filters_applied: ["concept::Q786", "country::LVA"],
+      filters_count: 2,
+      filter_types: ["concept", "country"],
+    });
+  });
+
+  it("counts the labels a selection sits under, which the filter controls write unchecked", () => {
+    const topicWithinCategory: TSearchQueryGroup = {
+      op: "and",
+      filters: [
+        { field: "labels.value.id", op: "contains", value: "category::Law" },
+        { op: "or", filters: [{ field: "labels.value.id", op: "contains", value: "topic::adaptation", checked: true }] },
+      ],
+    };
+
+    expect(properties("/_search", filtersParam(topicWithinCategory))).toEqual({
+      filters_applied: ["topic::adaptation", "category::Law"],
+      filters_count: 2,
+      filter_types: ["topic", "category"],
+    });
+  });
+
+  it("counts an unfiltered search as zero, so filtered and unfiltered searches are comparable", () => {
+    expect(properties("/_search", "q=flooding")).toEqual({ search_query: "flooding", filters_count: 0 });
+  });
+
+  it("omits the sort and the page while they are the defaults, so a value means the user chose it", () => {
+    expect(properties("/_search", "q=flooding&page_token=1")).toEqual({ search_query: "flooding", filters_count: 0 });
+    expect(properties("/_search", "q=flooding&sort=recent&page_token=3")).toEqual({
+      search_query: "flooding",
+      sort: "recent",
+      page: 3,
+      filters_count: 0,
+    });
+  });
+
+  it("describes the drawer the user is in rather than the results behind it", () => {
+    expect(
+      properties("/_search", `q=flooding&${filtersParam(mixedFilters)}&principal=CCLW.family.1.0&principal_q=defences&principal_sort=recent`)
+    ).toEqual({
+      search_query: "defences",
+      sort: "recent",
+      filters_count: 0,
+    });
+  });
+
+  it("reads a date filter as a year range", () => {
+    const dateFilters: TSearchQueryGroup = {
+      op: "and",
+      filters: [
+        { field: "attributes.published_date", key: "published_date", op: "gte", value: "2015-06-01T00:00:00.000Z" },
+        { field: "attributes.published_date", key: "published_date", op: "lte", value: "2024-06-01T00:00:00.000Z" },
+      ],
+    };
+
+    expect(properties("/_search", filtersParam(dateFilters))).toEqual({ date_range: [2015, 2024], filters_count: 0 });
+  });
+
+  it("treats an empty filter group as no filters, which is the state the results page starts in", () => {
+    expect(properties("/_search", `q=flooding&${filtersParam({ op: "and", filters: [] })}`)).toEqual({ search_query: "flooding", filters_count: 0 });
+  });
+
+  it("treats a filters value it cannot read as no filters, so a hand edited URL does not break the page view", () => {
+    expect(properties("/_search", "q=flooding&filters=not-json")).toEqual({ search_query: "flooding", filters_count: 0 });
+    expect(properties("/_search", `q=flooding&filters=${encodeURIComponent('{"op":"maybe"}')}`)).toEqual({
+      search_query: "flooding",
+      filters_count: 0,
+    });
   });
 });

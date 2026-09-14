@@ -1,11 +1,14 @@
 import { parseAsArrayOf, parseAsJson, parseAsString } from "nuqs";
 import type { UrlKeys } from "nuqs";
+import * as v from "valibot";
 
 import { QUERY_PARAMS } from "@/constants/queryParams";
+import { TDateRange } from "@/context/FiltersContext";
 import { FilterGroupSchema } from "@/schemas";
 import { TNestedSearchLevel, TSearchLevel, TSearchLevelValues, TSearchParamKeys, TSearchQueryGroup, TSearchQueryRule, isRule } from "@/types";
 
 import { filterQueryGroupRules, isLabelRuleOfTypes } from "./filterQueryGroupRules";
+import { queryGroupToFilterPaths } from "./queryGroupToFilterPaths";
 
 /**
  * Nested drawers within search need to be scoped to their own search
@@ -74,6 +77,56 @@ export const searchLevelFromParams = (pathname: string, searchParams: URLSearchP
   if (searchParams.get(levelIdParamKey("document"))) return "document";
   if (searchParams.get(levelIdParamKey("principal"))) return "principal";
   return "base";
+};
+
+type TFilterPaths = ReturnType<typeof queryGroupToFilterPaths>;
+const NO_FILTERS: TFilterPaths = { filterPathLabels: [], dateRange: null };
+
+const readFilters = (raw: string | null): TFilterPaths => {
+  try {
+    const parsed = raw ? v.safeParse(FilterGroupSchema, JSON.parse(raw)) : null;
+    if (!parsed?.success || !parsed.output.filters.length) return NO_FILTERS;
+    return queryGroupToFilterPaths(parsed.output);
+  } catch {
+    return NO_FILTERS;
+  }
+};
+
+type TSearchProperties = {
+  search_query?: string;
+  sort?: string;
+  page?: number;
+  filters_applied?: string[];
+  filters_count?: number;
+  filter_types?: string[];
+  date_range?: TDateRange;
+};
+
+/**
+ * The search a page view is looking at, as properties, so analysis does not have to decode the
+ * filters JSON out of the URL. Read from the level the user is focused on, and absent while a
+ * control is at its default, so a value present is a value chosen.
+ */
+export const searchPropertiesFromParams = (pathname: string, searchParams: URLSearchParams): TSearchProperties => {
+  const level = searchLevelFromParams(pathname, searchParams);
+  if (!level) return {};
+
+  const keys = levelParamKeys(level);
+  const query = searchParams.get(keys.query);
+  const sort = searchParams.get(keys.sort);
+  const page = Number(searchParams.get(keys.pageToken));
+  const { filterPathLabels, dateRange } = readFilters(searchParams.get(keys.filters));
+  const labels = [...new Map(filterPathLabels.flat().map((label) => [label.id, label])).values()];
+
+  return {
+    search_query: query || undefined,
+    sort: sort || undefined,
+    page: Number.isInteger(page) && page > 1 ? page : undefined,
+    filters_applied: labels.length ? labels.map((label) => label.id) : undefined,
+    filters_count: labels.length,
+    filter_types: labels.length ? [...new Set(labels.map((label) => label.type))] : undefined,
+    date_range: dateRange ?? undefined,
+  };
 };
 
 export const conceptFiltersOnly = (filters: TSearchQueryGroup | null): TSearchQueryGroup | null => {

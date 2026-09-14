@@ -434,11 +434,12 @@ const config: TThemeConfig = {
     family: ["documents", "summary", "metadata", "topics", "collections", "note"],
     geography: ["recents", "intro", "statistics", "legislativeProcess"],
   },
-  tutorials: ["knowledgeGraph"],
+  tutorials: ["knowledgeGraph", "newSearch"],
   features: {
     familyConceptsSearch: false,
     knowledgeGraph: true,
     litigation: false,
+    "new-search": false,
     searchFamilySummary: false,
   },
 };

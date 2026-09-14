@@ -2,7 +2,7 @@ import { useState } from "react";
 
 import { Section } from "@/components/molecules/section/Section";
 import { useText } from "@/hooks/useText";
-import { GeographyV2, TCategorySummary } from "@/types";
+import { GeographyV2, TCategorySummary, TSearchLabel } from "@/types";
 
 import { RecentFamiliesCategory } from "./RecentFamiliesCategory";
 
@@ -10,9 +10,10 @@ interface IProps {
   categorySummaries: TCategorySummary[];
   onAccordionClick?: (id: string) => void;
   geography: GeographyV2;
+  geographyLabel: TSearchLabel | null;
 }
 
-export const RecentFamiliesBlock = ({ categorySummaries, onAccordionClick, geography }: IProps) => {
+export const RecentFamiliesBlock = ({ categorySummaries, onAccordionClick, geography, geographyLabel }: IProps) => {
   const { getAppText } = useText();
   const [expandedCategory, setExpandedCategory] = useState(categorySummaries[0].title);
 
@@ -38,6 +39,7 @@ export const RecentFamiliesBlock = ({ categorySummaries, onAccordionClick, geogr
             isExpanded={expandedCategory === category.title}
             onAccordionClick={() => onAccordionInteract(category.title, category.id)}
             geography={geography}
+            geographyLabel={geographyLabel}
           />
         ))}
       </div>

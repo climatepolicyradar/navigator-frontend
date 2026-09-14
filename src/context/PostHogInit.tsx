@@ -1,12 +1,13 @@
 "use client";
 
 import { usePathname, useSearchParams } from "next/navigation";
+import { useRouter } from "next/router";
 import posthog from "posthog-js";
 import { PostHogProvider as PHProvider, usePostHog } from "posthog-js/react";
 import { Suspense, useEffect } from "react";
 
 import { getCookie } from "@/utils/cookies";
-import { levelIdParamKey, searchLevelFromParams, TOPIC_PARAM_KEY } from "@/utils/search/searchLevels";
+import { levelIdParamKey, searchLevelFromParams, searchPropertiesFromParams, TOPIC_PARAM_KEY } from "@/utils/search/searchLevels";
 
 // A stable default: a fresh object each render would re-run the pageview effect and duplicate views
 const NO_PAGE_VIEW_PROPS: Record<string, unknown> = {};
@@ -20,6 +21,15 @@ function PostHogPageView({ consent, pageViewProps }: TPostHogPageViewProps): nul
   const pathname = usePathname();
   const searchParams = useSearchParams();
   const posthog = usePostHog();
+  /**
+   * The page route, as opposed to `pathname` above. usePathname reads router.asPath, so on themes
+   * where /search is rewritten to /_search (themes/THEME/rewrites.json) it reports the URL the user
+   * sees. Search levels belong to the page, so they have to be read off the route.
+   *
+   * pathname above is "/search" but the route below is "/_search" for CPR
+   * searchpath in searchLevelFromParams needs the "/_search" route
+   */
+  const { pathname: route } = useRouter();
 
   useEffect(() => {
     if (pathname && posthog) {
@@ -58,14 +68,15 @@ function PostHogPageView({ consent, pageViewProps }: TPostHogPageViewProps): nul
         geographyType,
         pageType,
         pageTypeSlug,
-        search_level: searchLevelFromParams(pathname, searchParams),
+        search_level: searchLevelFromParams(route, searchParams),
+        ...searchPropertiesFromParams(pathname, searchParams),
         result_id: principalId ?? undefined,
         document_id: documentId ?? undefined,
         topic_id: topicId ?? undefined,
         ...pageViewProps,
       });
     }
-  }, [pathname, searchParams, posthog, consent, pageViewProps]);
+  }, [pathname, route, searchParams, posthog, consent, pageViewProps]);
 
   return null;
 }
