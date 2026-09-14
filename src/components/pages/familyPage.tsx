@@ -1,4 +1,4 @@
-import { FileText, Search } from "lucide-react";
+import { LucideFileText, LucideSearch } from "lucide-react";
 import Head from "next/head";
 import { useRouter } from "next/router";
 import { useCallback, useState } from "react";
@@ -198,7 +198,7 @@ export const FamilyPage = ({ collections, debug, errors, family, familyTopics, f
                 id: "about",
                 label: (
                   <>
-                    <FileText size={20} className="text-elem-icon!" /> About
+                    <LucideFileText size={20} className="text-elem-icon!" /> About
                   </>
                 ),
                 panel: <BlocksLayout blockDefinitions={blockDefinitions} blocksToRender={blocksToRender} />,
@@ -208,7 +208,7 @@ export const FamilyPage = ({ collections, debug, errors, family, familyTopics, f
                 count: noOfResults > 0 ? noOfResults : undefined,
                 label: (
                   <>
-                    <Search size={20} className="text-elem-icon!" />
+                    <LucideSearch size={20} className="text-elem-icon!" />
                     Search in documents
                   </>
                 ),
