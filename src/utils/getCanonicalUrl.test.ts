@@ -19,6 +19,10 @@ describe("getCanonicalUrl", () => {
       expected: "https://app.climatepolicyradar.org/privacy-policy",
     },
 
+    /** the v2 search page keeps its search params, whether visited directly or served at /search by a rewrite */
+    { route: "/_search?q=flood+risk", theme: "cpr", expected: "https://app.climatepolicyradar.org/_search?q=flood+risk" },
+    { route: "/_search", as: "/search?q=flood+risk", theme: "cpr", expected: "https://app.climatepolicyradar.org/search?q=flood+risk" },
+
     /** Themes */
     { route: "/", theme: "cpr", expected: "https://app.climatepolicyradar.org" },
     { route: "/", theme: "cclw", expected: "https://climate-laws.org" },
@@ -80,13 +84,14 @@ describe("getCanonicalUrl", () => {
     { route: "/geographies/us-tn", theme: "cpr", expected: "https://app.climatepolicyradar.org/geographies/us-tn" },
   ] satisfies {
     route: string;
+    as?: string;
     theme: TTheme;
     attributionUrl?: string;
     expected: string;
   }[];
 
-  test.each(testCases)("$route => $expected", ({ route, theme, attributionUrl, expected }) => {
-    router.push(route);
+  test.each(testCases)("$route => $expected", ({ route, as, theme, attributionUrl, expected }) => {
+    router.push(route, as);
     const canonicalUrl = getCanonicalUrl(router, theme, attributionUrl);
     expect(canonicalUrl).toBe(expected);
   });

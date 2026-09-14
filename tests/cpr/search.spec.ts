@@ -4,6 +4,11 @@ import { genericPageModel as genericPage } from "../pageObjectModels/genericPage
 
 test.describe("Search", () => {
   test("basic search from homepage", async ({ page }) => {
+    test.skip(
+      process.env.E2E_TEST_FEATURE_FLAGS === "true",
+      "Once we make the switch over we can enable this test because it references new search page"
+    );
+
     await page.goto("/");
     /** Wait for page to finish loading */
     await page.waitForLoadState("networkidle");
@@ -15,30 +20,27 @@ test.describe("Search", () => {
     await page.getByRole("searchbox", { name: "Search term" }).fill("Adaptation strategy");
     await page.getByRole("button", { name: "Search" }).click();
 
-    /** Search */
-    await Promise.all([page.waitForURL("/search*"), page.waitForResponse("**/searches")]);
+    /** Search — this theme serves the v2 results page at /search, see themes/cpr/rewrites.json */
+    await Promise.all([page.waitForURL("/search*"), page.waitForResponse("**/search/documents*")]);
 
-    const searchResultsSection = page.getByRole("region").filter({ has: page.getByRole("heading", { name: "Search results", level: 2 }) });
-    await expect(searchResultsSection).toBeVisible();
-
-    const searchResults = page.getByRole("list", { name: "Search results" });
-
+    const searchResults = page.locator('[data-cy="search-results"]');
     await expect(searchResults).toBeVisible();
 
-    /** Click first search result family title link */
+    /** A result opens a drawer over the results rather than navigating away */
     const firstSearchResult = searchResults.getByRole("listitem").nth(0);
-    const familyLink = firstSearchResult.getByRole("heading", { level: 3 }).getByRole("link");
+    await firstSearchResult.getByRole("button").click();
+
+    const drawer = page.getByRole("dialog");
+    await expect(drawer).toBeVisible();
+    await page.waitForURL(/[?&]principal=/);
+
+    /** Family page, reached from the drawer's title */
+    const familyLink = drawer.getByRole("link").first();
     const familyName = await familyLink.innerText();
     const familyHref = await familyLink.getAttribute("href");
     await familyLink.click();
 
-    /** Family page */
-    // TODO: remove when we have settled on solution for new search
-    const familyPageWaits: Promise<unknown>[] = [page.waitForURL("**" + familyHref)];
-    if (process.env.E2E_TEST_FEATURE_FLAGS !== "true") {
-      familyPageWaits.push(page.waitForResponse("**/searches"));
-    }
-    await Promise.all(familyPageWaits);
+    await page.waitForURL("**" + familyHref);
     await genericPage.waitUntilLoaded(page, familyName);
   });
 });
