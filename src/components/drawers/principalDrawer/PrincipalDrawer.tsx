@@ -1,6 +1,6 @@
 import { useQuery } from "@tanstack/react-query";
 import { LucideFileText, LucideExternalLink, LucideSearch } from "lucide-react";
-import { Fragment, ReactNode } from "react";
+import { Fragment, ReactNode, useState } from "react";
 
 import { SearchDocument } from "@/api/search";
 import { Drawer } from "@/components/atoms/drawer/Drawer";
@@ -96,6 +96,7 @@ const DrawerContent = ({ familyData, features, languages }: TDrawerContentProps)
 export function PrincipalDrawer({ document, importId, open, onOpenChange, tab, onTabChange, features }: TDocumentDrawerProps) {
   const { data: { languages = {} } = {} } = useConfig();
   const { getCategoryTextLookup } = useText();
+  const [noOfResults, setNumberOfResults] = useState<number>(0);
   // The drawer's own search, flattened onto the base params of whatever page a link leads to
   const [principalSearch] = useSearchLevelValues("principal");
 
@@ -172,6 +173,7 @@ export function PrincipalDrawer({ document, importId, open, onOpenChange, tab, o
               },
               {
                 id: "search",
+                count: noOfResults > 0 ? noOfResults : undefined,
                 label: (
                   <>
                     <LucideSearch size={20} className="text-elem-icon!" />
@@ -185,6 +187,7 @@ export function PrincipalDrawer({ document, importId, open, onOpenChange, tab, o
                     documentsLabel={`Documents in this ${firstCase(getCategoryText("familySingular"))}`}
                     subject="these documents"
                     changeTab={onTabChange}
+                    onSearch={setNumberOfResults}
                   />
                 ),
               },
