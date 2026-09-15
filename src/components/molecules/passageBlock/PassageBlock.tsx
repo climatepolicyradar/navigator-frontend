@@ -133,7 +133,7 @@ export const PassageBlock = ({
     resolveHighlightRanges(passage.content, getHighlightRanges({ content: passage.content, query, activeTopics, topicColours }))
   );
   // A passage can contain multiple spans of the same highlighted topic
-  const topics = [...new Map(activeTopics.map(({ value }) => [value.value, value.id]))];
+  const topics = [...new Map(passage.labels?.map(({ value }) => [value.value, value.id]) ?? [])];
   const topicsList = joinNodes(
     topics.map(([value, id]) => (
       <span key={id} className={topicColours.get(id)}>
