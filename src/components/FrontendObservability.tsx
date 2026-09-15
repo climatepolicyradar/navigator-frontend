@@ -10,7 +10,10 @@ export const FrontendObservability = (): null => {
   try {
     if (typeof window !== "undefined") {
       initializeFaro({
-        url: "https://faro-collector-prod-gb-south-0.grafana.net/collect/74f6d4bd78b7bb2cc270036193aaa3a6",
+        // Falls back to the shared cpr-frontend collector for any build that
+        // doesn't pass this (e.g. a theme with no Faro app provisioned yet).
+        // @see: infra/resources/faro_app.py
+        url: process.env.NEXT_PUBLIC_FARO_URL ?? "https://faro-collector-prod-gb-south-0.grafana.net/collect/74f6d4bd78b7bb2cc270036193aaa3a6",
         app: {
           name: `${process.env.THEME}-frontend`,
           namespace: "frontend",

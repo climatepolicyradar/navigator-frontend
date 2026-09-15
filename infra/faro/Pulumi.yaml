@@ -1,0 +1,7 @@
+name: frontend-faro
+description: Grafana Cloud Frontend Observability (Faro) apps, one per theme
+runtime:
+  name: python
+  options:
+    toolchain: uv
+    virtualenv: .venv
