@@ -3,10 +3,10 @@ import { useContext } from "react";
 import { PageLink } from "@/components/atoms/pageLink/PageLink";
 import { ThemeContext } from "@/context/ThemeContext";
 import { SUGGESTED_SEARCHES } from "@/cpr/constants/suggestedSearches";
+import { getSuggestionParams } from "@/utils/getSuggestionParams";
 
 const LandingPageLinks = () => {
   const { themeConfig } = useContext(ThemeContext);
-  const useNewSearch = themeConfig.features["new-search"];
 
   return (
     <section className="mt-18 text-white">
@@ -16,7 +16,7 @@ const LandingPageLinks = () => {
           <li className="my-2" key={index}>
             <PageLink
               href="/search"
-              query={useNewSearch ? suggestion.newParams : suggestion.params}
+              query={getSuggestionParams(suggestion, themeConfig)}
               className="text-white hover:text-blue-200 hover:underline"
               data-cy={`quick-search-${index}`}
             >

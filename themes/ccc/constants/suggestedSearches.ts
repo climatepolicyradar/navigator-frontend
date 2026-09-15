@@ -1,9 +1,9 @@
 import { QUERY_PARAMS } from "@/constants/queryParams";
-import { TSuggestedSearch } from "@/types";
+import { TSearchSuggestion } from "@/types";
 
 const thisYear = new Date().getUTCFullYear();
 
-export const SUGGESTED_SEARCHES: TSuggestedSearch[] = [
+export const SUGGESTED_SEARCHES: TSearchSuggestion[] = [
   {
     label: "Brazil + Federal Constitution of 1988",
     params: {
