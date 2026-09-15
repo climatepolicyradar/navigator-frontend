@@ -20,7 +20,6 @@ config:
   frontend:validation_account_id:
     secure: AAABAPD1SMTQPKIwvq1MwDIKBH5AQgQQw8otZ7bmqWBZJYUEWnT9SbITgTg=
   frontend:concepts_api_url: https://api.climatepolicyradar.org
-  frontend:next_public_faro_url: https://faro-collector-prod-gb-south-0.grafana.net/collect/74f6d4bd78b7bb2cc270036193aaa3a6
   frontend:next_public_faro_app_name: mcf-frontend
   frontend:next_public_faro_app_namespace: frontend
   frontend:otel_exporter_otlp_endpoint: https://otel.staging.climatepolicyradar.org/

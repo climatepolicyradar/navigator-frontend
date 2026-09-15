@@ -157,7 +157,7 @@ export default function usePDFPreview(physicalDocument: TFamilyDocumentPublic, a
       viewerApi,
       annotationManagerApi,
     };
-    reportMissingAdobeMethods(apis);
+    reportMissingAdobeMethods(apis, physicalDocument.import_id);
 
     return apis;
   };
@@ -219,7 +219,9 @@ export default function usePDFPreview(physicalDocument: TFamilyDocumentPublic, a
       .then(() => applyAnnotationsForPage(pageNumber))
       // Swallowed so one failure does not stall every later update, but reported
       .catch((error: unknown) => {
-        faro.api?.pushError(error instanceof Error ? error : new Error(String(error)));
+        faro.api?.pushError(error instanceof Error ? error : new Error(String(error)), {
+          context: { documentId: physicalDocument.import_id },
+        });
       });
     return annotationQueue;
   };

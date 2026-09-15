@@ -4,16 +4,18 @@ import { getWebInstrumentations, initializeFaro, isInternalFaroOnGlobalObject } 
 import { TracingInstrumentation } from "@grafana/faro-web-tracing";
 
 export const FrontendObservability = (): null => {
-  // skip if already initialized (faro.api is a truthy no-op stub before init, so it can't be used as the check)
+  // skip if already initialised (faro.api is a truthy no-op stub before init, so it can't be used as the check)
   if (isInternalFaroOnGlobalObject()) return null;
+
+  if (!process.env.NEXT_PUBLIC_FARO_URL) {
+    console.error("Skipping Faro initialisation");
+    return null;
+  }
 
   try {
     if (typeof window !== "undefined") {
       initializeFaro({
-        // Falls back to the shared cpr-frontend collector for any build that
-        // doesn't pass this (e.g. a theme with no Faro app provisioned yet).
-        // @see: infra/resources/faro_app.py
-        url: process.env.NEXT_PUBLIC_FARO_URL ?? "https://faro-collector-prod-gb-south-0.grafana.net/collect/74f6d4bd78b7bb2cc270036193aaa3a6",
+        url: process.env.NEXT_PUBLIC_FARO_URL,
         app: {
           name: `${process.env.THEME}-frontend`,
           namespace: "frontend",
