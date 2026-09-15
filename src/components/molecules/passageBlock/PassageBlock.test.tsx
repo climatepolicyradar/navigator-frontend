@@ -259,10 +259,9 @@ describe("PassageBlock", () => {
     it("highlights an active topic in the topics list in its own colour", () => {
       render(<PassageBlock passage={topicPassage} activeTopicsIds={["concept-Ecology"]} />);
 
-      expect(screen.getByText(/^Contains:/)).toHaveTextContent("Contains: Ecology");
+      expect(screen.getByText(/^Contains:/)).toHaveTextContent("Contains: Ecology, Geohazards");
+      // Only the active topic is highlighted
       expect(screen.getByText("Ecology")).toHaveClass(TOPIC_COLOURS[0]);
-      // The inactive topic is excluded from the list entirely
-      expect(screen.queryByText("Geohazards")).not.toBeInTheDocument();
     });
 
     it("matches each topic in the list to the colour used for it in the passage", () => {
