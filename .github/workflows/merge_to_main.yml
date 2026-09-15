@@ -64,92 +64,14 @@ jobs:
           token: ${{ secrets.TRUNK_TOKEN }}
           org-slug: ${{ secrets.TRUNK_ORG_SLUG }}
 
-  # Release builds for each theme
-  release:
-    runs-on: ubuntu-latest
-    needs: [code-quality]
-    strategy:
-      fail-fast: false
-      matrix:
-        theme: [cpr, cclw, mcf, ccc]
-    steps:
-      - uses: actions/checkout@v7
-      - uses: actions/setup-node@v7
-        with:
-          node-version-file: .nvmrc
-
-      # build
-      - run: |
-          export THEME=${{ matrix.theme }}
-          make build
-
-      # release
-      # most of this is taken from
-      # https://docs.github.com/en/actions/use-cases-and-examples/deploying/deploying-to-amazon-elastic-container-service#creating-the-workflow
-      - name: Configure AWS credentials (staging)
-        uses: aws-actions/configure-aws-credentials@v6.2.4
-        with:
-          role-to-assume: arn:aws:iam::${{ secrets.AWS_ACCOUNT_ID_STAGING }}:role/navigator-frontend-github-actions
-          role-session-name: GitHub_to_AWS_via_FederatedOIDC
-          aws-region: eu-west-1
-      - name: Login to Amazon ECR (staging)
-        id: login-ecr-staging
-        uses: aws-actions/amazon-ecr-login@03f1aad4c6c7ffd436567f42f9384779290529bd
-
-      # The Faro app (and its collector URL) is provisioned once per theme by
-      # the *-production stack (infra/resources/faro_app.py), shared by
-      # staging/production/review -- so every build reads it from there,
-      # regardless of which environment it's building for.
-      - uses: pulumi/actions@v7
-        env:
-          PULUMI_ACCESS_TOKEN: ${{ secrets.PULUMI_ACCESS_TOKEN }}
-
-      - name: Read Faro collector endpoint
-        id: faro
-        env:
-          PULUMI_ACCESS_TOKEN: ${{ secrets.PULUMI_ACCESS_TOKEN }}
-        run: |
-          echo "collector_endpoint=$(pulumi stack output faro_collector_endpoint --stack climatepolicyradar/frontend/${{ matrix.theme }}-production --non-interactive)" >> "$GITHUB_OUTPUT"
-
-      - name: Build, tag, and push image to Amazon ECR (staging)
-        id: build-image-staging
-        env:
-          ECR_REGISTRY: ${{ secrets.DOCKER_REGISTRY_STAGING }}
-          IMAGE_TAG: ${{ github.sha }}
-          AWS_REGION: eu-west-1
-          ECR_REPOSITORY: navigator-frontend-${{ matrix.theme }}
-          THEME: ${{ matrix.theme }}
-        run: |
-          docker build --build-arg THEME=${THEME} --build-arg NEXT_PUBLIC_FARO_ENVIRONMENT=staging \
-            --build-arg NEXT_PUBLIC_FARO_URL=${{ steps.faro.outputs.collector_endpoint }} \
-            -t $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG .
-          docker push $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
-          echo "image=$ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG" >> $GITHUB_OUTPUT
-
-      - name: Configure aws credentials (production)
-        uses: aws-actions/configure-aws-credentials@v6.2.4
-        with:
-          role-to-assume: arn:aws:iam::${{ secrets.AWS_ACCOUNT_ID_PROD }}:role/navigator-frontend-github-actions
-          role-session-name: GitHub_to_AWS_via_FederatedOIDC
-          aws-region: eu-west-1
-      - name: Login to Amazon ECR (production)
-        id: login-ecr-prod
-        uses: aws-actions/amazon-ecr-login@03f1aad4c6c7ffd436567f42f9384779290529bd
-
-      - name: Build, tag, and push image to Amazon ECR (production)
-        id: build-image-prod
-        env:
-          ECR_REGISTRY: ${{ secrets.DOCKER_REGISTRY_PROD }}
-          IMAGE_TAG: ${{ github.sha }}
-          AWS_REGION: eu-west-1
-          ECR_REPOSITORY: navigator-frontend-${{ matrix.theme }}
-          THEME: ${{ matrix.theme }}
-        run: |
-          docker build --build-arg THEME=${THEME} --build-arg NEXT_PUBLIC_FARO_ENVIRONMENT=production \
-            --build-arg NEXT_PUBLIC_FARO_URL=${{ steps.faro.outputs.collector_endpoint }} \
-            -t $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG .
-          docker push $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
-          echo "image=$ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG" >> $GITHUB_OUTPUT
+  # Deploy to staging (per-theme build, push, and ECS deploy)
+  deploy-staging:
+    needs: [code-quality, test]
+    uses: ./.github/workflows/deploy-staging.yml
+    secrets: inherit
+    permissions:
+      id-token: write
+      contents: read
 
   # Deploy Storybook
   storybook:
