@@ -57,7 +57,6 @@ jobs:
         with:
           arguments: --ci
 
-  # Unit tests
   test:
     timeout-minutes: 15
     runs-on: ubuntu-latest
@@ -98,7 +97,10 @@ jobs:
 
   # Deploy to staging (per-theme build, push, and ECS deploy)
   deploy-staging:
-    needs: [code-quality, test]
+    # Needs pulumi-up-faro: it reads frontend-faro/production's stack output,
+    # so a push that changes the frontend stack needs to land first or it
+    # reads stale/missing output.
+    needs: [code-quality, test, pulumi-up-faro]
     uses: ./.github/workflows/deploy-staging.yml
     secrets: inherit
     permissions:
