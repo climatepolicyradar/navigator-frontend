@@ -18,6 +18,8 @@ test.describe("Search", () => {
     /** Search — this theme serves the v2 results page at /search, see themes/cpr/rewrites.json */
     await Promise.all([page.waitForURL("/search*"), page.waitForResponse("**/search/documents*")]);
 
+    await genericPage.dismissPopups(page);
+
     const searchResults = page.locator('[data-cy="search-results"]');
     await expect(searchResults).toBeVisible();
 
