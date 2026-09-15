@@ -23,9 +23,11 @@ const findMissingAdobeMethods = ({ adobeViewer, viewerApi, annotationManagerApi 
     .filter(([, method]) => typeof method !== "function")
     .map(([name]) => name);
 
-export const reportMissingAdobeMethods = (apis: TAdobeApis): void => {
+export const reportMissingAdobeMethods = (apis: TAdobeApis, documentId: string): void => {
   const missing = findMissingAdobeMethods(apis);
   if (missing.length === 0) return;
 
-  faro.api?.pushError(new Error(`Adobe PDF Embed API is missing expected methods: ${missing.join(", ")}`));
+  faro.api?.pushError(new Error(`Adobe PDF Embed API is missing expected methods: ${missing.join(", ")}`), {
+    context: { documentId },
+  });
 };
