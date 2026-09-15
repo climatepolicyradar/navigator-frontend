@@ -1,13 +1,8 @@
 name: Deploy to staging
 on:
-  # a. Auto deploy once the merge-to-main action is completed successfully
-  workflow_run:
-    workflows: [Merge to main]
-    types:
-      - completed
-    branches:
-      - main
-  # b. Allow deployment from the actions tab - this allows feature branch deployment
+  # a. Called directly from Merge to main once its checks pass
+  workflow_call: {}
+  # b. Allow deployment from the actions tab
   workflow_dispatch: {}
 
 permissions:
@@ -19,15 +14,11 @@ jobs:
   # stacks this push actually touched.
   changes:
     runs-on: ubuntu-latest
-    if: |
-      github.event.workflow_run.conclusion == 'success' ||
-      github.event_name == 'workflow_dispatch'
     outputs:
       projects: ${{ steps.parse.outputs.projects }}
     steps:
       - uses: actions/checkout@v7
         with:
-          ref: ${{ github.event.workflow_run.head_sha || github.sha }}
           fetch-depth: 2
       - id: base-sha
         run: echo "sha=$(git rev-parse HEAD~1)" >> "$GITHUB_OUTPUT"
@@ -76,8 +67,6 @@ jobs:
     environment: staging
     steps:
       - uses: actions/checkout@v7
-        with:
-          ref: ${{ github.event.workflow_run.head_sha || github.sha }}
       - uses: astral-sh/setup-uv@v7
       - name: configure aws credentials
         uses: aws-actions/configure-aws-credentials@v6.2.4
@@ -107,8 +96,6 @@ jobs:
     environment: staging
     steps:
       - uses: actions/checkout@v7
-        with:
-          ref: ${{ github.event.workflow_run.head_sha || github.sha }}
       - uses: astral-sh/setup-uv@v7
       - name: Install dependencies
         working-directory: infra/observability
