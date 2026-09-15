@@ -156,7 +156,7 @@ export const TUTORIALS: TTutorials = {
             </div>
             <div className="flex flex-col sm:flex-row gap-3 items-center justify-center">
               <TutorialButton
-                pageLink={{ href: "/faq" }}
+                pageLink={{ external: true, href: "/faq" }}
                 action="dismiss"
                 actions={actions}
                 name={name}

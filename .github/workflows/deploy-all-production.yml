@@ -32,6 +32,20 @@ jobs:
         id: login-ecr-production
         uses: aws-actions/amazon-ecr-login@03f1aad4c6c7ffd436567f42f9384779290529bd
 
+      # The Faro app (and its collector URL) is provisioned once per theme by
+      # this stack (infra/resources/faro_app.py) -- must already exist (via a
+      # prior `pulumi up`) before the first build reads it here.
+      - uses: pulumi/actions@v7
+        env:
+          PULUMI_ACCESS_TOKEN: ${{ secrets.PULUMI_ACCESS_TOKEN }}
+
+      - name: Read Faro collector endpoint
+        id: faro
+        env:
+          PULUMI_ACCESS_TOKEN: ${{ secrets.PULUMI_ACCESS_TOKEN }}
+        run: |
+          echo "collector_endpoint=$(pulumi stack output faro_collector_endpoint --stack climatepolicyradar/frontend/${{ matrix.theme }}-production --non-interactive)" >> "$GITHUB_OUTPUT"
+
       - name: Build, tag, and push to ECR with 'latest' tag
         id: build-image
         env:
@@ -42,7 +56,9 @@ jobs:
           THEME: ${{ matrix.theme }}
         # @related: GITHUB_SHA_ENV_VAR
         run: |
-          docker build --build-arg THEME=${THEME} --build-arg NEXT_STATIC_ENABLED=true --build-arg NEXT_PUBLIC_FARO_ENVIRONMENT=production --build-arg GITHUB_SHA=$(git rev-parse HEAD) -t $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG .
+          docker build --build-arg THEME=${THEME} --build-arg NEXT_STATIC_ENABLED=true --build-arg NEXT_PUBLIC_FARO_ENVIRONMENT=production --build-arg GITHUB_SHA=$(git rev-parse HEAD) \
+            --build-arg NEXT_PUBLIC_FARO_URL=${{ steps.faro.outputs.collector_endpoint }} \
+            -t $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG .
           docker push $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
           echo "image=$ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG" >> $GITHUB_OUTPUT
 

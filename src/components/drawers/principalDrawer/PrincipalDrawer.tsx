@@ -1,5 +1,5 @@
 import { useQuery } from "@tanstack/react-query";
-import { LucideExternalLink, Search } from "lucide-react";
+import { LucideFileText, LucideExternalLink, LucideSearch } from "lucide-react";
 import { Fragment, ReactNode } from "react";
 
 import { SearchDocument } from "@/api/search";
@@ -14,14 +14,14 @@ import { TopicsBlock } from "@/components/blocks/topicsBlock/TopicsBlock";
 import { PassageSearch } from "@/components/organisms/passageSearch/PassageSearch";
 import { SearchLevelContext } from "@/context/SearchLevelContext";
 import useConfig from "@/hooks/useConfig";
+import { useDocumentTopics } from "@/hooks/useDocumentTopics";
 import { useSearchLevelValues } from "@/hooks/useSearchLevel";
 import { useText } from "@/hooks/useText";
-import { TFamilyPresentationalData } from "@/types";
+import { TFamilyPresentationalData, TFeatures } from "@/types";
 import { getFamilyHeader } from "@/utils/family-header/getFamilyHeader";
 import { getFamilyMetadata } from "@/utils/family-metadata/getFamilyMetadata";
 import { flattenLevelToBaseQuery } from "@/utils/search/searchLevels";
 import { firstCase } from "@/utils/text/firstCase";
-import { getTopFamilyTopics } from "@/utils/topics/getTopFamilyTopics";
 import { familyTopicsHasTopics } from "@/utils/topics/processFamilyTopics";
 
 function linkHref(doc: SearchDocument): string | undefined {
@@ -38,18 +38,20 @@ export type TPrincipalDrawerTab = "about" | "search";
 type TDocumentDrawerProps = {
   document: SearchDocument | null; // The clicked search result, absent when the drawer is opened from a link
   importId: string | null;
-  open: boolean;
+  features: TFeatures;
   onOpenChange: (open: boolean) => void;
-  tab: TPrincipalDrawerTab;
   onTabChange: (tab: TPrincipalDrawerTab) => void;
+  open: boolean;
+  tab: TPrincipalDrawerTab;
 };
 
 type TDrawerContentProps = {
   familyData: TFamilyPresentationalData;
+  features: TFeatures;
   languages: Record<string, string>;
 };
 
-const DrawerContent = ({ familyData, languages }: TDrawerContentProps) => {
+const DrawerContent = ({ familyData, features, languages }: TDrawerContentProps) => {
   const { family, familyTopics } = familyData;
   const { getCategoryTextLookup } = useText();
   const getCategoryText = getCategoryTextLookup(family.attribution.category);
@@ -81,17 +83,17 @@ const DrawerContent = ({ familyData, languages }: TDrawerContentProps) => {
         </div>
       )}
       <div className="grid grid-cols-1">
-        <DocumentsBlock family={family} familyTopics={familyTopics} getCategoryText={getCategoryText} languages={languages} />
+        <DocumentsBlock family={family} familyTopics={familyTopics} features={features} getCategoryText={getCategoryText} languages={languages} />
       </div>
       {familyTopicsHasTopics(familyTopics) && (
-        <TopicsBlock key="topics" family={family} familyTopics={familyTopics} getCategoryText={getCategoryText} />
+        <TopicsBlock key="topics" family={family} familyTopics={familyTopics} getCategoryText={getCategoryText} features={features} />
       )}
       <NoteBlock key="note" attribution={family.attribution} />
     </div>
   );
 };
 
-export function PrincipalDrawer({ document, importId, open, onOpenChange, tab, onTabChange }: TDocumentDrawerProps) {
+export function PrincipalDrawer({ document, importId, open, onOpenChange, tab, onTabChange, features }: TDocumentDrawerProps) {
   const { data: { languages = {} } = {} } = useConfig();
   const { getCategoryTextLookup } = useText();
   // The drawer's own search, flattened onto the base params of whatever page a link leads to
@@ -102,6 +104,11 @@ export function PrincipalDrawer({ document, importId, open, onOpenChange, tab, o
     queryFn: () => fetch(`/api/document/${importId}`).then((res) => (res.ok ? res.json() : null)),
     enabled: !!importId,
   });
+
+  // We use the `familyData` here as `document` is not always available, specifically when the page is refreshed.
+  // We should try decouple from this endpoint, but given this method is highly coupled to it currently, this felt
+  // like it would be decoupled when we do it throughout this component.
+  const conceptTopics = useDocumentTopics(familyData?.family.documents.map((doc) => doc.import_id) ?? []);
 
   const getCategoryText = getCategoryTextLookup(familyData?.family.attribution.category);
 
@@ -149,21 +156,30 @@ export function PrincipalDrawer({ document, importId, open, onOpenChange, tab, o
             className="-mx-8"
             panelClassName="pt-8"
             tabs={[
-              { id: "about", label: "About", panel: <DrawerContent familyData={familyData} languages={languages} /> },
+              {
+                id: "about",
+                label: (
+                  <>
+                    <LucideFileText size={20} className="text-elem-icon!" /> About
+                  </>
+                ),
+                panel: <DrawerContent familyData={familyData} features={features} languages={languages} />,
+              },
               {
                 id: "search",
                 label: (
                   <>
-                    <Search size={20} />
+                    <LucideSearch size={20} className="text-elem-icon!" />
                     Search in documents
                   </>
                 ),
                 panel: (
                   <PassageSearch
                     documents={familyData.family.documents}
-                    concepts={getTopFamilyTopics(familyData.familyTopics)}
+                    concepts={conceptTopics}
                     documentsLabel={`Documents in this ${firstCase(getCategoryText("familySingular"))}`}
                     subject="these documents"
+                    changeTab={onTabChange}
                   />
                 ),
               },

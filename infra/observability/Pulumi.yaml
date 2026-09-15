@@ -1,0 +1,7 @@
+name: frontend-observability
+description: Grafana observability for the frontend - synthetic monitoring checks against every theme's CDN and origin
+runtime:
+  name: python
+  options:
+    toolchain: uv
+    virtualenv: .venv

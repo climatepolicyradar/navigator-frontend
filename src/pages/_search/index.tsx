@@ -9,6 +9,7 @@ import { FiveColumns } from "@/components/atoms/columns/FiveColumns";
 import { PageLink } from "@/components/atoms/pageLink/PageLink";
 import { PrincipalDrawer, TPrincipalDrawerTab } from "@/components/drawers/principalDrawer/PrincipalDrawer";
 import Layout from "@/components/layouts/Main";
+import { DownloadSearch } from "@/components/molecules/downloadSearch/DownloadSearch";
 import { Pagination } from "@/components/molecules/pagination/Pagination";
 import { SearchControls } from "@/components/organisms/searchControls/SearchControls";
 import { ZeroStateSERPNoResults } from "@/components/organisms/zeroStates/ZeroStateSERPNoResults";
@@ -143,27 +144,32 @@ const ShadowSearch = ({ theme, themeConfig, features }: TProps) => {
     <FeaturesContext.Provider value={features}>
       <Layout theme={theme as TTheme} themeConfig={themeConfig} metadataKey="search">
         <FiveColumns className="mt-4 gap-y-4 pb-12">
-          <div className={joinTailwindClasses("flex flex-wrap items-end justify-between gap-y-2", columnLayoutCss)}>
-            <h1 className="text-5xl text-text-primary font-heavy leading-12.5 tracking-tight">Search</h1>
-            <div className="w-full md:w-auto">
-              <span>Welcome to our new search experience.</span>{" "}
-              <span className="inline-block">
-                <button
-                  type="button"
-                  onClick={() => removeCompletedTutorial("newSearch")}
-                  className="inline text-text-brand underline underline-offset-2 decoration-slate-300 hocus:decoration-text-brand"
-                >
-                  Find out more.
-                </button>{" "}
-                <PageLink
-                  href="TODO"
-                  external
-                  className="inline text-text-brand underline underline-offset-2 decoration-slate-300 hocus:decoration-text-brand"
-                >
-                  Leave feedback
-                </PageLink>
-              </span>
-            </div>
+          <div
+            className={joinTailwindClasses(
+              "flex flex-wrap items-end justify-end gap-2 text-sm text-text-primary font-normal leading-5",
+              columnLayoutCss
+            )}
+          >
+            <h1 className="flex-1 text-5xl text-text-primary font-heavy leading-12.5 tracking-tight">Search</h1>
+            <span>Welcome to our new search experience.</span>{" "}
+            <span className="inline-block">
+              <button
+                type="button"
+                onClick={() => removeCompletedTutorial("newSearch")}
+                className="inline text-text-brand underline underline-offset-2 decoration-slate-300 hocus:decoration-text-brand"
+              >
+                Find out more.
+              </button>{" "}
+              {/* TODO per custom app */}
+              <PageLink
+                href="https://form.jotform.com/262366350830354"
+                external
+                className="inline text-text-brand underline underline-offset-2 decoration-slate-300 hocus:decoration-text-brand"
+              >
+                Leave feedback
+              </PageLink>
+            </span>
+            <DownloadSearch />
           </div>
           {/* CONTROLS - FILTERS, SORT, etc */}
           {/* TODO add most recent date from search results */}
@@ -236,12 +242,13 @@ const ShadowSearch = ({ theme, themeConfig, features }: TProps) => {
         <PrincipalDrawer
           document={selectedDocument?.id === principalImportId ? selectedDocument : null}
           importId={principalImportId}
-          open={!!principalLevel.id}
+          features={features}
           onOpenChange={(open) => {
             if (!open) closePrincipalDrawer();
           }}
-          tab={drawerTab}
           onTabChange={setDrawerTab}
+          open={!!principalLevel.id}
+          tab={drawerTab}
         />
       </Layout>
     </FeaturesContext.Provider>

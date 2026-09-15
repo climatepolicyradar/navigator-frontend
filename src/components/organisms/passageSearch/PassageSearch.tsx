@@ -1,7 +1,8 @@
 import { useInfiniteQuery } from "@tanstack/react-query";
 import { useRouter } from "next/router";
 import { parseAsArrayOf, parseAsJson, parseAsString, useQueryState } from "nuqs";
-import { memo, useCallback, useContext, useEffect, useMemo, useState } from "react";
+import { usePostHog } from "posthog-js/react";
+import { memo, useCallback, useContext, useEffect, useMemo, useRef, useState } from "react";
 
 import { fetchSearchPassages } from "@/api/passages";
 import EmbeddedPDF from "@/components/EmbeddedPDF";
@@ -9,6 +10,7 @@ import Loader from "@/components/Loader";
 import { Button } from "@/components/atoms/button/Button";
 import { FiveColumns } from "@/components/atoms/columns/FiveColumns";
 import { EmptyDocument } from "@/components/documents/EmptyDocument";
+import { TPrincipalDrawerTab } from "@/components/drawers/principalDrawer/PrincipalDrawer";
 import { DocumentsFilter, TFilterableDocument } from "@/components/molecules/documentsFilter/DocumentsFilter";
 import { PassageBlock, TPassage as TPassageBlock } from "@/components/molecules/passageBlock/PassageBlock";
 import { SearchControls } from "@/components/organisms/searchControls/SearchControls";
@@ -17,6 +19,7 @@ import { ID_SEPARATOR } from "@/constants/chars";
 import { PASSAGE_FILTER_GROUPS } from "@/constants/filters";
 import { RESULTS_PER_PAGE } from "@/constants/paging";
 import { PASSAGE_SORT_OPTIONS } from "@/constants/sort";
+import { posthogEventName } from "@/context/PostHogProvider";
 import { SearchLevelContext } from "@/context/SearchLevelContext";
 import { loadFilteredLabels } from "@/hooks/useLabelSearch";
 import { FilterGroupSchema } from "@/schemas";
@@ -25,10 +28,12 @@ import { queryGroupToFilterPaths } from "@/utils/search/queryGroupToFilterPaths"
 import { conceptFiltersOnly, flattenLevelToBaseQuery, levelParamKeys } from "@/utils/search/searchLevels";
 
 type TProps = {
+  changeTab?: (tab: TPrincipalDrawerTab) => void;
   concepts: TTopic[];
   documents: TFamilyDocumentPublic[];
   documentsLabel?: string;
   enablePreview?: boolean;
+  onSearch?: (numberOfResults: number) => void;
   subject?: string;
 };
 
@@ -94,8 +99,10 @@ const DocumentPreview = memo(({ document, pageNumber, passages }: TDocumentPrevi
 ));
 DocumentPreview.displayName = "DocumentPreview";
 
-export const PassageSearch = ({ concepts, documents, documentsLabel, enablePreview = false, subject }: TProps) => {
+export const PassageSearch = ({ changeTab, concepts, documents, documentsLabel, enablePreview = false, onSearch, subject }: TProps) => {
   const router = useRouter();
+  const posthog = usePostHog();
+  const searchIndex = useRef(0);
   const searchLevel = useContext(SearchLevelContext);
   const paramKeys = useMemo(() => levelParamKeys(searchLevel), [searchLevel]);
   const [queryParam, setQueryParam] = useQueryState(paramKeys.query, parseAsString.withDefault(""));
@@ -149,8 +156,8 @@ export const PassageSearch = ({ concepts, documents, documentsLabel, enablePrevi
 
   const { data, isError, isFetching, isPending, fetchNextPage, hasNextPage, isFetchingNextPage } = useInfiniteQuery({
     queryKey: ["passages", selectedDocumentIds, queryParam, conceptFilterParam, sort],
-    queryFn: ({ pageParam, signal }) =>
-      fetchSearchPassages({
+    queryFn: async ({ pageParam, signal }) => {
+      const response = await fetchSearchPassages({
         query: queryParam,
         documents: selectedDocumentIds,
         filters: conceptFilterParam,
@@ -158,7 +165,22 @@ export const PassageSearch = ({ concepts, documents, documentsLabel, enablePrevi
         sort,
         pageToken: pageParam,
         signal,
-      }),
+      });
+
+      // Reported from the fetcher so each page is reported once, rather than on every render.
+      // `search_index` 1 is the search the view opened with; `page` above 1 is loading more of it
+      if (pageParam === 1) searchIndex.current += 1;
+      posthog?.capture(posthogEventName("search", "results", "fetch"), {
+        search_level: searchLevel,
+        search_query: queryParam || undefined,
+        search_index: searchIndex.current,
+        page: pageParam,
+        results_total: response.total_size ?? 0,
+        documents_total: selectedDocumentIds.length,
+      });
+
+      return response;
+    },
     initialPageParam: 1,
     // The API leaves `next_page` and `total_pages` unpopulated, so there is no cursor to
     // follow. Paging is driven by the running result count against the reported total.
@@ -194,6 +216,11 @@ export const PassageSearch = ({ concepts, documents, documentsLabel, enablePrevi
     () => searchPassages.map((passage) => toPassageBlock(passage, documentsById.get(passage.document_id)?.title ?? documents[0]?.title ?? "")),
     [searchPassages, documentsById, documents]
   );
+
+  // Notify the parent of the number of results
+  useEffect(() => {
+    if (onSearch) onSearch(totalMatches);
+  }, [totalMatches, onSearch]);
 
   // Avoid cases where the result state flashes before the request has resolved
   const isLoading = hasSearch && !isFetchingNextPage && passages.length === 0 && (isPending || isFetching);
@@ -335,6 +362,7 @@ export const PassageSearch = ({ concepts, documents, documentsLabel, enablePrevi
       )}
       {!isLoading && !isError && passages.length === 0 && (
         <ZeroStatePassages
+          changeTab={changeTab}
           className={enablePreview ? "px-0 py-10 border-0!" : ""}
           hasQuery={hasSearch}
           onClearSearch={handleClear}

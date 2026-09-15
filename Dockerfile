@@ -21,6 +21,11 @@ ENV NEXT_STATIC_ENABLED=${NEXT_STATIC_ENABLED}
 ARG NEXT_PUBLIC_FARO_ENVIRONMENT
 ENV NEXT_PUBLIC_FARO_ENVIRONMENT=${NEXT_PUBLIC_FARO_ENVIRONMENT}
 
+# This theme's Faro app collector URL (infra/resources/faro_app.py), read from
+# the Pulumi stack output by the deploy workflows before this build runs.
+ARG NEXT_PUBLIC_FARO_URL
+ENV NEXT_PUBLIC_FARO_URL=${NEXT_PUBLIC_FARO_URL}
+
 # Generate tsconfig.json from template with the selected THEME
 RUN sed "s/__THEME__/${THEME}/g" tsconfig.base.json > tsconfig.json
 

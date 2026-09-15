@@ -55,6 +55,9 @@ jobs:
             staging-shared-resources:
               - 'infra/platform/**'
 
+            staging-observability:
+              - 'infra/observability/**'
+
       - id: parse
         run: |
           CHANGES='${{ steps.filter.outputs.changes }}'
@@ -91,6 +94,31 @@ jobs:
         env:
           PULUMI_ACCESS_TOKEN: ${{ secrets.PULUMI_ACCESS_TOKEN }}
 
+  # Runs independently of the per-theme deploys below, and deliberately after
+  # nothing: synthetic checks must never sit in the critical path of shipping
+  # the site. Needs no AWS credentials -- it only talks to Grafana and reads the
+  # frontend stacks' outputs from the Pulumi backend.
+  pulumi-up-observability:
+    needs: changes
+    if: contains(fromJSON(needs.changes.outputs.projects), 'staging-observability')
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    environment: staging
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          ref: ${{ github.event.workflow_run.head_sha || github.sha }}
+      - uses: astral-sh/setup-uv@v7
+      - name: Install dependencies
+        working-directory: infra/observability
+        run: uv sync
+      - name: Pulumi up
+        working-directory: infra/observability
+        run: pulumi up --yes --skip-preview --stack climatepolicyradar/frontend-observability/staging
+        env:
+          PULUMI_ACCESS_TOKEN: ${{ secrets.PULUMI_ACCESS_TOKEN }}
+
   deploy-staging:
     needs: changes
     name: Deploy ${{ github.sha }} to staging ${{ matrix.theme }}
@@ -113,6 +141,21 @@ jobs:
         id: login-ecr-staging
         uses: aws-actions/amazon-ecr-login@03f1aad4c6c7ffd436567f42f9384779290529bd
 
+      # The Faro app (and its collector URL) is provisioned once per theme by
+      # the *-production stack (infra/resources/faro_app.py), shared by
+      # staging/production/review -- so every build reads it from there,
+      # regardless of which environment it's building for.
+      - uses: pulumi/actions@v7
+        env:
+          PULUMI_ACCESS_TOKEN: ${{ secrets.PULUMI_ACCESS_TOKEN }}
+
+      - name: Read Faro collector endpoint
+        id: faro
+        env:
+          PULUMI_ACCESS_TOKEN: ${{ secrets.PULUMI_ACCESS_TOKEN }}
+        run: |
+          echo "collector_endpoint=$(pulumi stack output faro_collector_endpoint --stack climatepolicyradar/frontend/${{ matrix.theme }}-production --non-interactive)" >> "$GITHUB_OUTPUT"
+
       - name: Build, tag, and push to ECR with 'latest' tag
         id: build-image
         env:
@@ -123,7 +166,9 @@ jobs:
           THEME: ${{ matrix.theme }}
         # @related: GITHUB_SHA_ENV_VAR
         run: |
-          docker build --build-arg THEME=${THEME} --build-arg NEXT_PUBLIC_FARO_ENVIRONMENT=staging --build-arg GITHUB_SHA=$(git rev-parse HEAD) -t $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG .
+          docker build --build-arg THEME=${THEME} --build-arg NEXT_PUBLIC_FARO_ENVIRONMENT=staging --build-arg GITHUB_SHA=$(git rev-parse HEAD) \
+            --build-arg NEXT_PUBLIC_FARO_URL=${{ steps.faro.outputs.collector_endpoint }} \
+            -t $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG .
           docker push $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
           echo "image=$ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG" >> $GITHUB_OUTPUT
 

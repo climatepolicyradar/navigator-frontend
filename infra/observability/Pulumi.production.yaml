@@ -1,0 +1,46 @@
+config:
+  # Grafana's alerting guidance is to run checks from "multiple locations,
+  # preferably three or more", and its reachability metric exists to surface
+  # regional problems -- which it can only do if the probes are in different
+  # regions. Hence one per continent rather than three European ones: an EMEA
+  # cluster would move together for most regional events and tell us nothing.
+  # @see: https://grafana.com/docs/grafana-cloud/testing/synthetic-monitoring/configure-alerts/synthetic-monitoring-alerting/
+  #
+  # These are based on where our largest traffic sources are assessed in PostHog.
+  #
+  # Names must match Grafana's own spelling. An unknown one fails the preview
+  # listing every available probe, so the first run tells you the exact strings.
+  # The allowlist endpoint is the machine-readable list of locations (and the
+  # probe egress CIDRs, if a firewall ever needs them).
+  # @see: https://grafana.com/docs/grafana-cloud/testing/synthetic-monitoring/create-checks/public-probes/
+  # @see: https://allowlists.grafana.com/synthetics
+  #
+  # Tokyo is the nearest available stand-in for mainland China, our next largest
+  # source after EMEA/AMER. Grafana has no mainland probe, and HongKong -- which
+  # the public allowlist advertises -- is not among the 22 probes our tenant can
+  # actually use. Note any of these sits OUTSIDE the Great Firewall, so none can
+  # detect the most likely China-specific failure; that needs a private probe
+  # hosted inside mainland China.
+  # @see: https://grafana.com/docs/grafana-cloud/testing/synthetic-monitoring/set-up/set-up-private-probes/
+  #
+  # Names are PascalCase and must match exactly. The authoritative list is the
+  # API, not the allowlist endpoint -- they disagree:
+  #   curl -H "Authorization: Bearer $TOKEN" \
+  #     https://synthetic-monitoring-api-gb-south.grafana.net/api/v1/probe/list
+  frontend-observability:grafana_probe_names:
+    - London
+    - NorthVirginia
+    - Tokyo
+  # Alert when 10% of a check's probes fail for 5 minutes. These are
+  # proportions, so with three probes any single failure trips this -- drop to
+  # "low" (25%) and run five probes if flapping ever becomes a problem.
+  # @see: https://grafana.com/docs/grafana-cloud/testing/synthetic-monitoring/configure-alerts/synthetic-monitoring-alerting/
+  frontend-observability:alert_sensitivity: medium
+  # How often each check runs, in milliseconds. This also sets the resolution
+  # of the uptime graphs: a Grafana "time point" is one frequency interval, so
+  # 60s here means uptime is measured in 1-minute blocks.
+  # @see: https://grafana.com/docs/grafana-cloud/observe-and-act/testing/synthetic-monitoring/analyze-results/uptime-and-reachability/
+  frontend-observability:frequency_ms: "60000"
+  frontend-observability:grafana_sm_access_token:
+    secure: AAABAERVKm6OocA1GPualbs2NGnOyHhZS288YQ22yfFdDhetpQhqZVJqEthYezFghjL3oHaNZsRyR4FhT7zIbxUqy3zmF00EGqs5KhMPFwmJ/XmnJ/hpd+iuUKzoB8vyTlebS813JHMDdD1dYCD0pBdy3z3Kwx0vON6UWPqn25aCt9XToaY3XAvoz2p/6f4AjfkZsW3xxs7JCaP5LomUzw==
+  frontend-observability:grafana_sm_url: https://synthetic-monitoring-api-gb-south.grafana.net

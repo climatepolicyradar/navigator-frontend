@@ -52,13 +52,13 @@ const CollectionPage = ({ collection, debug, errors, theme, themeConfig, feature
               <ContentsSideBar items={sideBarItems} stickyClasses="cols-3:!top-26 cols-3:max-h-[calc(100vh-72px)]" />
               <main className="pb-8 grid grid-cols-subgrid gap-y-8 col-start-1 -col-end-1 cols-4:col-start-3">
                 {sortedFamilies.map((family) => (
-                  <FamilyBlock key={family.slug} family={family} />
+                  <FamilyBlock key={family.slug} family={family} features={features} />
                 ))}
               </main>
             </>
           )}
 
-          {currentTab === "procedural history" && <EventsBlock families={sortedFamilies} />}
+          {currentTab === "procedural history" && <EventsBlock families={sortedFamilies} features={features} />}
 
           {currentTab === "about" && (
             <>
