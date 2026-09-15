@@ -21,7 +21,7 @@ run_dev: build_dev generate_tsconfig
 # END DEV MODE
 
 build:
-	docker build --build-arg THEME=${THEME} -t ${TAG}-${THEME} .
+	docker build --build-arg THEME=${THEME} --build-arg GITHUB_SHA=$$(git rev-parse HEAD) -t ${TAG}-${THEME} .
 
 # Helper function to run the production version of the app in a container
 # Reads env vars from the env.example file. HOSTNAME/PORT override so the server

@@ -3,6 +3,8 @@ WORKDIR /app
 
 COPY . .
 RUN npm ci
+# scripts/upload-source-maps.sh below needs bash; Alpine's default /bin/sh (busybox ash) doesn't support it.
+RUN apk add --no-cache bash
 
 ARG THEME
 ENV THEME=${THEME}
