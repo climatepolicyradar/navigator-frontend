@@ -141,10 +141,6 @@ jobs:
         id: login-ecr-staging
         uses: aws-actions/amazon-ecr-login@03f1aad4c6c7ffd436567f42f9384779290529bd
 
-      # The Faro app (and its collector URL) is provisioned once per theme by
-      # the *-production stack (infra/resources/faro_app.py), shared by
-      # staging/production/review -- so every build reads it from there,
-      # regardless of which environment it's building for.
       - uses: pulumi/actions@v7
         env:
           PULUMI_ACCESS_TOKEN: ${{ secrets.PULUMI_ACCESS_TOKEN }}
@@ -154,7 +150,7 @@ jobs:
         env:
           PULUMI_ACCESS_TOKEN: ${{ secrets.PULUMI_ACCESS_TOKEN }}
         run: |
-          echo "collector_endpoint=$(pulumi stack output faro_collector_endpoint --stack climatepolicyradar/frontend/${{ matrix.theme }}-production --non-interactive)" >> "$GITHUB_OUTPUT"
+          echo "collector_endpoint=$(pulumi stack output ${{ matrix.theme }}_faro_collector_endpoint --stack climatepolicyradar/frontend-faro/production --non-interactive)" >> "$GITHUB_OUTPUT"
 
       - name: Build, tag, and push to ECR with 'latest' tag
         id: build-image

@@ -95,6 +95,22 @@ jobs:
       - name: Login to Amazon ECR (staging)
         id: login-ecr-staging
         uses: aws-actions/amazon-ecr-login@03f1aad4c6c7ffd436567f42f9384779290529bd
+
+      # The Faro app (and its collector URL) is provisioned once per theme by
+      # the *-production stack (infra/resources/faro_app.py), shared by
+      # staging/production/review -- so every build reads it from there,
+      # regardless of which environment it's building for.
+      - uses: pulumi/actions@v7
+        env:
+          PULUMI_ACCESS_TOKEN: ${{ secrets.PULUMI_ACCESS_TOKEN }}
+
+      - name: Read Faro collector endpoint
+        id: faro
+        env:
+          PULUMI_ACCESS_TOKEN: ${{ secrets.PULUMI_ACCESS_TOKEN }}
+        run: |
+          echo "collector_endpoint=$(pulumi stack output faro_collector_endpoint --stack climatepolicyradar/frontend/${{ matrix.theme }}-production --non-interactive)" >> "$GITHUB_OUTPUT"
+
       - name: Build, tag, and push image to Amazon ECR (staging)
         id: build-image-staging
         env:
@@ -104,7 +120,9 @@ jobs:
           ECR_REPOSITORY: navigator-frontend-${{ matrix.theme }}
           THEME: ${{ matrix.theme }}
         run: |
-          docker build --build-arg THEME=${THEME} --build-arg NEXT_PUBLIC_FARO_ENVIRONMENT=staging -t $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG .
+          docker build --build-arg THEME=${THEME} --build-arg NEXT_PUBLIC_FARO_ENVIRONMENT=staging \
+            --build-arg NEXT_PUBLIC_FARO_URL=${{ steps.faro.outputs.collector_endpoint }} \
+            -t $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG .
           docker push $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
           echo "image=$ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG" >> $GITHUB_OUTPUT
 
@@ -127,7 +145,9 @@ jobs:
           ECR_REPOSITORY: navigator-frontend-${{ matrix.theme }}
           THEME: ${{ matrix.theme }}
         run: |
-          docker build --build-arg THEME=${THEME} --build-arg NEXT_PUBLIC_FARO_ENVIRONMENT=production -t $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG .
+          docker build --build-arg THEME=${THEME} --build-arg NEXT_PUBLIC_FARO_ENVIRONMENT=production \
+            --build-arg NEXT_PUBLIC_FARO_URL=${{ steps.faro.outputs.collector_endpoint }} \
+            -t $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG .
           docker push $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
           echo "image=$ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG" >> $GITHUB_OUTPUT
 
