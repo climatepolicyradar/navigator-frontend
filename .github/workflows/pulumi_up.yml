@@ -1,0 +1,80 @@
+name: Pulumi Up
+
+on:
+  workflow_dispatch:
+    inputs:
+      # trunk-ignore(checkov/CKV_GHA_7)
+      environment:
+        description: Pulumi stack environment to deploy
+        type: choice
+        options:
+          - production
+          - staging
+        default: staging
+        required: true
+      working-directory:
+        description: Directory containing the Pulumi project to deploy
+        type: string
+        default: ./infra/observability
+        required: true
+      stack:
+        description: Full Pulumi stack to deploy (org/project/stack)
+        type: string
+        required: true
+      aws-role:
+        description: IAM role name to assume for this project's deploy. Leave
+          empty for a project with no AWS resources - the AWS credentials
+          step is then skipped entirely.
+        type: string
+        default: ""
+        required: false
+  workflow_call:
+    inputs:
+      environment:
+        description: Pulumi stack environment to deploy
+        type: string
+        required: true
+      working-directory:
+        description: Directory containing the Pulumi project to deploy
+        type: string
+        required: true
+      stack:
+        description: Full Pulumi stack to deploy (org/project/stack)
+        type: string
+        required: true
+      aws-role:
+        description: IAM role name to assume for this project's deploy. Leave
+          empty for a project with no AWS resources - the AWS credentials
+          step is then skipped entirely.
+        type: string
+        default: ""
+        required: false
+
+permissions:
+  contents: read
+  # needed for reading the OIDC token and assuming the role
+  id-token: write
+
+jobs:
+  pulumi_up:
+    name: Pulumi up (${{ inputs.stack }})
+    runs-on: ubuntu-latest
+    environment: ${{ inputs.environment }}
+    steps:
+      - uses: actions/checkout@v7
+      - if: inputs.aws-role != ''
+        uses: aws-actions/configure-aws-credentials@v6.2.4
+        with:
+          role-to-assume: arn:aws:iam::${{ secrets.AWS_ACCOUNT_ID }}:role/${{ inputs.aws-role }}
+          role-session-name: GitHub_Pulumi_up_${{ inputs.environment }}
+          aws-region: eu-west-1
+      - uses: astral-sh/setup-uv@v7
+      - uses: pulumi/actions@v7
+        env:
+          PULUMI_ACCESS_TOKEN: ${{ secrets.PULUMI_ACCESS_TOKEN }}
+      - working-directory: ${{ inputs.working-directory }}
+        run: uv sync
+      - working-directory: ${{ inputs.working-directory }}
+        run: pulumi up --stack ${{ inputs.stack }} --yes --skip-preview
+        env:
+          PULUMI_ACCESS_TOKEN: ${{ secrets.PULUMI_ACCESS_TOKEN }}
