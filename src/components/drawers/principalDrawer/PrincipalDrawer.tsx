@@ -1,5 +1,5 @@
 import { useQuery } from "@tanstack/react-query";
-import { LucideExternalLink, Search } from "lucide-react";
+import { LucideFileText, LucideExternalLink, LucideSearch } from "lucide-react";
 import { Fragment, ReactNode } from "react";
 
 import { SearchDocument } from "@/api/search";
@@ -14,6 +14,7 @@ import { TopicsBlock } from "@/components/blocks/topicsBlock/TopicsBlock";
 import { PassageSearch } from "@/components/organisms/passageSearch/PassageSearch";
 import { SearchLevelContext } from "@/context/SearchLevelContext";
 import useConfig from "@/hooks/useConfig";
+import { useDocumentTopics } from "@/hooks/useDocumentTopics";
 import { useSearchLevelValues } from "@/hooks/useSearchLevel";
 import { useText } from "@/hooks/useText";
 import { TFamilyPresentationalData, TFeatures } from "@/types";
@@ -21,7 +22,6 @@ import { getFamilyHeader } from "@/utils/family-header/getFamilyHeader";
 import { getFamilyMetadata } from "@/utils/family-metadata/getFamilyMetadata";
 import { flattenLevelToBaseQuery } from "@/utils/search/searchLevels";
 import { firstCase } from "@/utils/text/firstCase";
-import { getTopFamilyTopics } from "@/utils/topics/getTopFamilyTopics";
 import { familyTopicsHasTopics } from "@/utils/topics/processFamilyTopics";
 
 function linkHref(doc: SearchDocument): string | undefined {
@@ -105,6 +105,11 @@ export function PrincipalDrawer({ document, importId, open, onOpenChange, tab, o
     enabled: !!importId,
   });
 
+  // We use the `familyData` here as `document` is not always available, specifically when the page is refreshed.
+  // We should try decouple from this endpoint, but given this method is highly coupled to it currently, this felt
+  // like it would be decoupled when we do it throughout this component.
+  const conceptTopics = useDocumentTopics(familyData?.family.documents.map((doc) => doc.import_id) ?? []);
+
   const getCategoryText = getCategoryTextLookup(familyData?.family.attribution.category);
 
   const outboundQuery = flattenLevelToBaseQuery(principalSearch);
@@ -151,21 +156,30 @@ export function PrincipalDrawer({ document, importId, open, onOpenChange, tab, o
             className="-mx-8"
             panelClassName="pt-8"
             tabs={[
-              { id: "about", label: "About", panel: <DrawerContent familyData={familyData} features={features} languages={languages} /> },
+              {
+                id: "about",
+                label: (
+                  <>
+                    <LucideFileText size={20} className="text-elem-icon!" /> About
+                  </>
+                ),
+                panel: <DrawerContent familyData={familyData} features={features} languages={languages} />,
+              },
               {
                 id: "search",
                 label: (
                   <>
-                    <Search size={20} />
+                    <LucideSearch size={20} className="text-elem-icon!" />
                     Search in documents
                   </>
                 ),
                 panel: (
                   <PassageSearch
                     documents={familyData.family.documents}
-                    concepts={getTopFamilyTopics(familyData.familyTopics)}
+                    concepts={conceptTopics}
                     documentsLabel={`Documents in this ${firstCase(getCategoryText("familySingular"))}`}
                     subject="these documents"
+                    changeTab={onTabChange}
                   />
                 ),
               },
