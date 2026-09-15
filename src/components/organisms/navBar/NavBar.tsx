@@ -1,8 +1,7 @@
-import { Fragment, ReactNode, useContext, useEffect, useState } from "react";
+import { ReactNode, useEffect, useState } from "react";
 
 import { FiveColumns } from "@/components/atoms/columns/FiveColumns";
 import { NavSearch } from "@/components/molecules/navSearch/NavSearch";
-import { FeaturesContext } from "@/context/FeaturesContext";
 import { joinTailwindClasses } from "@/utils/tailwind";
 
 interface IProps {
@@ -16,9 +15,6 @@ interface IProps {
 }
 
 export const NavBar = ({ headerClasses = "", logo, menu, menuButtons, showLogo = true, showSearch = true, topContent }: IProps) => {
-  const features = useContext(FeaturesContext);
-  const newSearch = features["new-search"];
-
   const [isScrolled, setIsScrolled] = useState(false);
 
   useEffect(() => {
@@ -42,8 +38,10 @@ export const NavBar = ({ headerClasses = "", logo, menu, menuButtons, showLogo =
         className={allColumnClasses}
         columnOverrides={["grid-cols-[1fr_auto]", "cols-2:grid-cols-[1fr_auto]", "cols-3:grid-cols-[1fr_auto]"]}
       >
-        {showLogo && <div className="flex items-center col-start-1 -col-end-1 cols-3:col-end-3">{logo}</div>}
-        {showSearch && !newSearch && (
+        {showLogo && (
+          <div className={`flex items-center col-start-1 -col-end-1 cols-4:col-end-3 ${!showSearch ? "col-end-1 cols-2:col-end-2" : ""}`}>{logo}</div>
+        )}
+        {showSearch && (
           <div className="flex items-center cols-4:col-start-3 cols-4:-col-end-2 cols-5:-col-end-3">
             <NavSearch />
           </div>
