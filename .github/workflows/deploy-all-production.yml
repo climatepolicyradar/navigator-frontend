@@ -55,6 +55,9 @@ jobs:
         run: |
           docker build --build-arg THEME=${THEME} --build-arg NEXT_STATIC_ENABLED=true --build-arg NEXT_PUBLIC_FARO_ENVIRONMENT=production --build-arg GITHUB_SHA=$(git rev-parse HEAD) \
             --build-arg NEXT_PUBLIC_FARO_URL=${{ steps.faro.outputs.collector_endpoint }} \
+            --build-arg FARO_SOURCEMAP_API_KEY=${{ secrets.FARO_SOURCEMAP_API_KEY }} \
+            --build-arg FARO_SOURCEMAP_APP_ID=${{ secrets.FARO_SOURCEMAP_APP_ID }} \
+            --build-arg FARO_SOURCEMAP_STACK_ID=${{ secrets.FARO_SOURCEMAP_STACK_ID }} \
             -t $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG .
           docker push $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
           echo "image=$ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG" >> $GITHUB_OUTPUT
