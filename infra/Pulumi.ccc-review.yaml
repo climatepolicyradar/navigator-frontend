@@ -14,7 +14,6 @@ config:
     secure: AAABAJnsBnddY7lJBGCX+zZw0GPVTv69M4Xnc6zI46WF72l86i2J0yY3OeZpsMZ71f80ltheIcGY0e1k/MBegRWNJrovZbKclQOuzMtoya2GbZ2pIP0alnjtIoR/9B0Q6TP/
   frontend:next_public_faro_app_name: ccc-review-frontend
   frontend:next_public_faro_app_namespace: frontend
-  frontend:next_public_faro_url: https://faro-collector-prod-gb-south-0.grafana.net/collect/74f6d4bd78b7bb2cc270036193aaa3a6
   frontend:otel_exporter_otlp_endpoint: https://otel.prod.climatepolicyradar.org/
   frontend:otel_exporter_otlp_protocol: http/protobuf
   frontend:otel_resource_attributes: service.namespace=frontend
