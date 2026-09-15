@@ -1,37 +1,27 @@
-import { useRouter } from "next/router";
+import { useContext } from "react";
 
+import { PageLink } from "@/components/atoms/pageLink/PageLink";
+import { ThemeContext } from "@/context/ThemeContext";
 import { SUGGESTED_SEARCHES } from "@/cpr/constants/suggestedSearches";
 
 const LandingPageLinks = () => {
-  const router = useRouter();
-
-  const handleQuickSearch = (params: Record<string, string>) => {
-    // Push directly to search page with all parameters
-    router.push({
-      pathname: "/search",
-      query: {
-        ...params,
-      },
-    });
-  };
+  const { themeConfig } = useContext(ThemeContext);
+  const useNewSearch = themeConfig.features["new-search"];
 
   return (
     <section className="mt-18 text-white">
       <div className="font-medium text-2xl">Try these searches</div>
       <ul className="text-lg mt-4">
-        {SUGGESTED_SEARCHES.map((suggestedSearch, searchIndex) => (
-          <li className="my-2" key={searchIndex}>
-            <a
+        {SUGGESTED_SEARCHES.map((suggestion, index) => (
+          <li className="my-2" key={index}>
+            <PageLink
+              href="/search"
+              query={useNewSearch ? suggestion.newParams : suggestion.params}
               className="text-white hover:text-blue-200 hover:underline"
-              href="#"
-              onClick={(e) => {
-                e.preventDefault();
-                handleQuickSearch(suggestedSearch.params);
-              }}
-              data-cy={`quick-search-${searchIndex}`}
+              data-cy={`quick-search-${index}`}
             >
-              {suggestedSearch.label}
-            </a>
+              {suggestion.label}
+            </PageLink>
           </li>
         ))}
       </ul>
