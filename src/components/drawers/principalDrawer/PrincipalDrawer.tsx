@@ -59,7 +59,7 @@ const DrawerContent = ({ familyData, features, languages }: TDrawerContentProps)
   const metadata = getFamilyMetadata(family, familyTopics);
 
   return (
-    <div className="flex flex-col gap-8">
+    <div className="flex flex-col gap-6 md:gap-8">
       <div>
         {pageHeaderMetadata.length > 0 && (
           <div className="grid grid-cols-[min-content_auto] gap-x-8 gap-y-2 text-sm">
@@ -123,8 +123,13 @@ export function PrincipalDrawer({ document, importId, open, onOpenChange, tab, o
       onOpenChange={onOpenChange}
       title={
         titleContent && titleHref ? (
-          <span className="block pt-5">
-            <PageLink keepQuery query={outboundQuery} href={titleHref} className="text-3xl text-inky-blue underline-offset-5 hover:underline">
+          <span className="block pt-0 md:pt-5">
+            <PageLink
+              keepQuery
+              query={outboundQuery}
+              href={titleHref}
+              className="text-xl md:text-2xl lg:text-3xl text-inky-blue underline-offset-5 hover:underline"
+            >
               {titleContent}
             </PageLink>
           </span>
@@ -154,7 +159,7 @@ export function PrincipalDrawer({ document, importId, open, onOpenChange, tab, o
             onValueChange={onTabChange}
             value={tab}
             className="-mx-8"
-            panelClassName="pt-8"
+            panelClassName="pt-4 md:pt-8"
             tabs={[
               {
                 id: "about",

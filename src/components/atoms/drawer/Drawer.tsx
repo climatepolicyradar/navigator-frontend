@@ -73,13 +73,13 @@ export const Drawer = ({ children, childrenClassName, title, titleExtras, direct
           <BaseDrawer.Backdrop className="fixed inset-0 bg-inky-black duration-200 [--backdrop-opacity:0.2] min-h-dvh opacity-[calc(var(--backdrop-opacity)*(1-var(--drawer-swipe-progress)))] transition-opacity ease-[cubic-bezier(0.32,0.72,0,1)] data-swiping:duration-0 data-ending-style:opacity-0 data-starting-style:opacity-0" />
           <BaseDrawer.Viewport className={styles.DrawerViewport} data-direction={direction}>
             <BaseDrawer.Popup className={joinTailwindClasses(styles.DrawerContent, wide && styles.DrawerContentWide)} data-direction={direction}>
-              <div className="flex items-start justify-between pt-7 px-8 pb-0">
+              <div className="flex items-start justify-between pt-6 px-4 pb-0 md:pt-7 md:px-8">
                 {!!title && (
                   <BaseDrawer.Title className="text-xl text-text-primary font-semibold flex-1" data-base-ui-swipe-ignore>
                     {title}
                   </BaseDrawer.Title>
                 )}
-                <div data-base-ui-swipe-ignore className="flex items-center gap-4 shrink-0">
+                <div data-base-ui-swipe-ignore className="flex items-center shrink-0 gap-2 md:gap-4">
                   {titleExtras}
                   <BaseDrawer.Close className="text-neutral-500 hover:text-neutral-800 justify-end">
                     <LucideX width={20} height={20} />
@@ -89,7 +89,7 @@ export const Drawer = ({ children, childrenClassName, title, titleExtras, direct
               <div
                 data-drawer-scroll={isTracking && openNestedCount === 0 ? "" : undefined}
                 data-base-ui-swipe-ignore
-                className={joinTailwindClasses("overflow-y-auto px-8 pb-8", childrenClassName)}
+                className={joinTailwindClasses("overflow-y-auto px-4 pb-8 md:px-8", childrenClassName)}
               >
                 <ScrollRootContext.Provider value={isTracking ? scrollRootContext : trackedAncestor}>{children}</ScrollRootContext.Provider>
               </div>

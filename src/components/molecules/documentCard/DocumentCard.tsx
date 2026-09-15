@@ -78,7 +78,7 @@ export function DocumentCard({ document, onClick, analytics }: TProps) {
       data-ph-capture-attribute-position-page={positionInPage}
       data-ph-capture-attribute-position-total={positionInResults}
       data-ph-capture-attribute-results-total={resultsTotal}
-      className="w-full p-8 flex flex-col gap-6 bg-bg-primary border border-border-normal rounded-xl shadow-[0_1px_2px_0_rgba(0,0,0,0.05)] text-left"
+      className="w-full p-4 py-6 md:p-8 flex flex-col gap-6 bg-bg-primary border border-border-normal rounded-xl shadow-[0_1px_2px_0_rgba(0,0,0,0.05)] text-left"
     >
       <h2 className="text-xl text-text-brand font-heavy leading-5" dangerouslySetInnerHTML={{ __html: document.title }} />
       {document.description && (

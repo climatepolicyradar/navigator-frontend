@@ -42,7 +42,9 @@ export const NavBar = ({ headerClasses = "", logo, menu, menuButtons, showLogo =
         className={allColumnClasses}
         columnOverrides={["grid-cols-[1fr_auto]", "cols-2:grid-cols-[1fr_auto]", "cols-3:grid-cols-[1fr_auto]"]}
       >
-        {showLogo && <div className="flex items-center col-start-1 -col-end-1 cols-3:col-end-3">{logo}</div>}
+        {showLogo && (
+          <div className={`flex items-center col-start-1 -col-end-1 cols-3:col-end-3 ${!showSearch ? "cols-2:col-end-2" : ""}`}>{logo}</div>
+        )}
         {showSearch && !newSearch && (
           <div className="flex items-center cols-4:col-start-3 cols-4:-col-end-2 cols-5:-col-end-3">
             <NavSearch />
