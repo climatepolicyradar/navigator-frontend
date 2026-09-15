@@ -8,7 +8,39 @@ on:
 # trunk-ignore(checkov/CKV2_GHA_1)
 permissions: write-all
 jobs:
-  # Trunk check
+  # Faro apps aren't per-environment (see infra/faro/__main__.py's allowed_origins),
+  # so there's a single production stack shared by staging, production, and review
+  # deploys alike, rather than a staging/production pair like the other infra
+  # projects.
+  # Needs no AWS credentials -- it only talks to Grafana.
+  pulumi-up-faro:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          fetch-depth: 2
+      - id: changes
+        uses: dorny/paths-filter@v4
+        with:
+          base: HEAD~1
+          filters: |
+            faro:
+              - 'infra/faro/**'
+      - uses: astral-sh/setup-uv@v7
+        if: steps.changes.outputs.faro == 'true'
+      - name: Install dependencies
+        if: steps.changes.outputs.faro == 'true'
+        working-directory: infra/faro
+        run: uv sync
+      - name: Pulumi up
+        if: steps.changes.outputs.faro == 'true'
+        working-directory: infra/faro
+        run: pulumi up --yes --skip-preview --stack climatepolicyradar/frontend-faro/production
+        env:
+          PULUMI_ACCESS_TOKEN: ${{ secrets.PULUMI_ACCESS_TOKEN }}
+
   code-quality:
     runs-on: ubuntu-latest
     steps:
