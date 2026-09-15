@@ -19,7 +19,8 @@ export const FrontendObservability = (): null => {
         app: {
           name: `${process.env.THEME}-frontend`,
           namespace: "frontend",
-          version: "1",
+          // Matches the bundleId passed to scripts/upload-source-maps.sh in the Dockerfile.
+          version: process.env.NEXT_PUBLIC_GITHUB_SHA ?? "local",
           environment: process.env.NEXT_PUBLIC_FARO_ENVIRONMENT ?? "local",
         },
         sessionTracking: {

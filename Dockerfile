@@ -11,6 +11,9 @@ ENV NODE_ENV=production
 # @related: GITHUB_SHA_ENV_VAR
 ARG GITHUB_SHA
 ENV GITHUB_SHA=${GITHUB_SHA}
+# Client-side alias of GITHUB_SHA; also used as the Faro source map bundleId so
+# uploaded maps match the app.version reported at runtime.
+ENV NEXT_PUBLIC_GITHUB_SHA=${GITHUB_SHA}
 
 # Must be set at build time: standalone output serialises next.config.js into
 # the build, so the assetPrefix ternary never sees runtime env.
@@ -26,10 +29,22 @@ ENV NEXT_PUBLIC_FARO_ENVIRONMENT=${NEXT_PUBLIC_FARO_ENVIRONMENT}
 ARG NEXT_PUBLIC_FARO_URL
 ENV NEXT_PUBLIC_FARO_URL=${NEXT_PUBLIC_FARO_URL}
 
+# Faro source map upload credentials, consumed by scripts/upload-source-maps.sh
+# below; not required for local/dev builds (upload is skipped if unset).
+ARG FARO_SOURCEMAP_API_KEY
+ENV FARO_SOURCEMAP_API_KEY=${FARO_SOURCEMAP_API_KEY}
+ARG FARO_SOURCEMAP_APP_ID
+ENV FARO_SOURCEMAP_APP_ID=${FARO_SOURCEMAP_APP_ID}
+ARG FARO_SOURCEMAP_STACK_ID
+ENV FARO_SOURCEMAP_STACK_ID=${FARO_SOURCEMAP_STACK_ID}
+
 # Generate tsconfig.json from template with the selected THEME
 RUN sed "s/__THEME__/${THEME}/g" tsconfig.base.json > tsconfig.json
 
 RUN npm run build
+# Must run before the .next/static copy below: uploads then deletes the maps
+# productionBrowserSourceMaps emitted, so the image never serves them publicly.
+RUN ./scripts/upload-source-maps.sh .next/static "${THEME}-frontend" "${GITHUB_SHA}"
 RUN cp -r public .next/standalone/public
 RUN cp -r .next/static .next/standalone/.next/static
 
