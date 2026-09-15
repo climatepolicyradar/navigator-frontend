@@ -48,6 +48,14 @@ theme = config.require("theme")
 # current stack -- see the guard on GitHubActionsRole.
 DEPLOY_ROLE_NAME = "navigator-new-frontend-github-actions"
 
+########################################################################
+# Read this theme's Faro collector URL
+########################################################################
+
+frontend_faro_stack = pulumi.StackReference("climatepolicyradar/frontend-faro/production")
+next_public_faro_url = frontend_faro_stack.require_output(
+    f"{theme}_faro_collector_endpoint"
+)
 
 FRONTEND_ENV = {
     "BACKEND_API_TOKEN": config.require("backend_api_token"),
@@ -60,7 +68,7 @@ FRONTEND_ENV = {
     "TARGETS_URL": config.require("targets_url"),
     "CDN_URL": config.require("cdn_url"),
     "CONCEPTS_API_URL": config.require("concepts_api_url"),
-    "NEXT_PUBLIC_FARO_URL": config.require("next_public_faro_url"),
+    "NEXT_PUBLIC_FARO_URL": next_public_faro_url,
     "NEXT_PUBLIC_FARO_APP_NAME": config.require("next_public_faro_app_name"),
     "NEXT_PUBLIC_FARO_APP_NAMESPACE": config.require("next_public_faro_app_namespace"),
     "OTEL_EXPORTER_OTLP_ENDPOINT": config.require("otel_exporter_otlp_endpoint"),

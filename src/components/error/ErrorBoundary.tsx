@@ -1,3 +1,4 @@
+import { faro } from "@grafana/faro-web-sdk";
 import React from "react";
 
 import PageLevel from "./PageLevel";
@@ -29,6 +30,11 @@ class ErrorBoundary extends React.Component<IProps, TState> {
   componentDidCatch(error: Error, errorInfo: React.ErrorInfo) {
     // eslint-disable-next-line no-console
     console.error(error);
+    faro.api?.pushError(error, {
+      type: "reactErrorBoundary",
+      fatal: this.props.level === "top",
+      context: { componentStackTrace: errorInfo.componentStack ?? "" },
+    });
   }
 
   handleClick = () => {
