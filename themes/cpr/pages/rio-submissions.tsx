@@ -1,56 +1,127 @@
-import { UrlObject } from "url";
-
 import Image from "next/image";
 import Link from "next/link";
-import { ReactNode } from "react";
+import { useContext } from "react";
 
 import { ExternalLink } from "@/components/ExternalLink";
 import { FiveColumns } from "@/components/atoms/columns/FiveColumns";
+import { PageLink } from "@/components/atoms/pageLink/PageLink";
 import Footer from "@/components/footer/Footer";
 import Layout from "@/components/layouts/LandingPage";
 import { QUERY_PARAMS } from "@/constants/queryParams";
+import { ThemeContext } from "@/context/ThemeContext";
 import { Header } from "@/cpr/components/Header";
 import { NavBarGradient } from "@/cpr/components/NavBarGradient";
+import { TLandingPageSearchConfig } from "@/types";
+import { getSuggestionParams } from "@/utils/getSuggestionParams";
 
-const QUERY_EXAMPLES: { label: ReactNode; href: UrlObject }[] = [
-  {
-    label: <span>Targets in latest NBSAPs</span>,
-    href: {
-      pathname: "/search",
-      query: {
+const SEARCH_CONFIG: TLandingPageSearchConfig = {
+  button: {
+    label: "Get started",
+    params: {
+      [QUERY_PARAMS.category]: "UN-submissions",
+      [QUERY_PARAMS.author_type]: "Party",
+    },
+    newParams: {
+      [QUERY_PARAMS.filters]: JSON.stringify({
+        op: "or",
+        filters: [{ field: "labels.value.id", op: "contains", value: "category::UN submission", checked: true }],
+      }),
+    },
+  },
+  suggestions: [
+    {
+      label: "Targets in latest NBSAPs",
+      params: {
         [QUERY_PARAMS.category]: "UN-submissions",
         [QUERY_PARAMS.author_type]: "Party",
         [QUERY_PARAMS["_document.type"]]: "National Biodiversity Strategy and Action Plan (NBSAP)",
         [QUERY_PARAMS.concept_name]: "target",
       },
+      newParams: {
+        [QUERY_PARAMS.filters]: JSON.stringify({
+          op: "and",
+          filters: [
+            {
+              op: "and",
+              filters: [
+                { field: "labels.value.id", op: "contains", value: "category::UN submission" },
+                {
+                  op: "and",
+                  filters: [
+                    { field: "labels.value.id", op: "contains", value: "un_convention::CBD" },
+                    {
+                      op: "or",
+                      filters: [
+                        {
+                          field: "labels.value.id",
+                          op: "contains",
+                          value: "entity_type::National Biodiversity Strategy and Action Plan (NBSAP)",
+                          checked: true,
+                        },
+                      ],
+                    },
+                  ],
+                },
+              ],
+            },
+            { field: "labels.value.id", op: "contains", value: "concept::Q1651", checked: true },
+          ],
+        }),
+      },
     },
-  },
-  {
-    label: <span>Mongolia's submissions to the Rio Conventions</span>,
-    href: {
-      pathname: "/search",
-      query: {
+    {
+      label: "Mongolia's submissions to the Rio Conventions",
+      params: {
         [QUERY_PARAMS.category]: "UN-submissions",
         [QUERY_PARAMS.author_type]: "Party",
         [QUERY_PARAMS.country]: "mongolia",
       },
+      newParams: {
+        [QUERY_PARAMS.filters]: JSON.stringify({
+          op: "and",
+          filters: [
+            { field: "labels.value.id", op: "contains", value: "category::UN submission", checked: true },
+            {
+              op: "and",
+              filters: [
+                { field: "labels.value.id", op: "contains", value: "region::EAS" },
+                { op: "or", filters: [{ field: "labels.value.id", op: "contains", value: "country::MNG", checked: true }] },
+              ],
+            },
+          ],
+        }),
+      },
     },
-  },
-  {
-    label: <span>Subsidies in Land Degradation Neutrality Targets</span>,
-    href: {
-      pathname: "/search",
-      query: {
+    {
+      label: "Subsidies in Land Degradation Neutrality Targets",
+      params: {
         [QUERY_PARAMS.category]: "UN-submissions",
         [QUERY_PARAMS.author_type]: "Party",
         [QUERY_PARAMS.convention]: "unccd",
         [QUERY_PARAMS.concept_name]: "subsidy",
       },
+      newParams: {
+        [QUERY_PARAMS.filters]: JSON.stringify({
+          op: "and",
+          filters: [
+            {
+              op: "and",
+              filters: [
+                { field: "labels.value.id", op: "contains", value: "category::UN submission" },
+                { op: "or", filters: [{ field: "labels.value.id", op: "contains", value: "un_convention::UNCCD", checked: true }] },
+              ],
+            },
+            { field: "labels.value.id", op: "contains", value: "concept::Q1274", checked: true },
+          ],
+        }),
+      },
     },
-  },
-];
+  ],
+};
 
 const RioSubmissions = () => {
+  const { themeConfig } = useContext(ThemeContext);
+
   return (
     <Layout title="Rio Submissions" description="Rio Policy Radar - a shared tool for climate, nature and land" theme="cpr">
       <Header landingPage />
@@ -65,12 +136,13 @@ const RioSubmissions = () => {
             Explore our curated collection that brings together and opens up dense, disparate documents on climate, nature and land.
           </p>
           <div className="flex gap-2">
-            <Link
-              href={{ pathname: "/search", query: { [QUERY_PARAMS.category]: "UN-submissions", [QUERY_PARAMS.author_type]: "Party" } }}
+            <PageLink
+              href="/search"
+              query={getSuggestionParams(SEARCH_CONFIG.button, themeConfig)}
               className="px-4 py-3 bg-inky-blue rounded-md text-white font-medium leading-tight hover:bg-inky-blue/90"
             >
               Get started
-            </Link>
+            </PageLink>
             <a
               href="#examples"
               className="px-4 py-3 bg-white hover:bg-[#f3f4f6] border border-[#d1d5db] rounded-md text-[#374151] font-medium leading-tight"
@@ -121,14 +193,15 @@ const RioSubmissions = () => {
           </ul>
           <p className="mt-10 mb-4 font-medium">Try these examples:</p>
           <div className="flex flex-col cols-2:flex-row gap-2 cols-2:gap-8 mb-20 text-text-brand text-center font-medium leading-tight">
-            {QUERY_EXAMPLES.map(({ label, href }, index) => (
-              <Link
+            {SEARCH_CONFIG.suggestions.map((suggestion, index) => (
+              <PageLink
                 key={index}
-                href={href}
+                href="/search"
+                query={getSuggestionParams(suggestion, themeConfig)}
                 className="flex-1 flex items-center justify-center px-4 py-6 border border-[#d1d5db] rounded-md hover:bg-[#f3f4f6]"
               >
-                {label}
-              </Link>
+                {suggestion.label}
+              </PageLink>
             ))}
           </div>
           <h2 className="mb-2 text-xl text-[#030712] font-heavy leading-7">About</h2>

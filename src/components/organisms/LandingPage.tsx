@@ -1,60 +1,25 @@
-import { ParsedUrlQuery } from "querystring";
-
 import { LucideSearch } from "lucide-react";
 import Image from "next/image";
-import { ComponentProps, ReactNode } from "react";
+import { useContext } from "react";
 
 import { Button } from "@/components/atoms/button/Button";
 import { FiveColumns } from "@/components/atoms/columns/FiveColumns";
 import { PageLink } from "@/components/atoms/pageLink/PageLink";
 import Footer from "@/components/footer/Footer";
 import Layout from "@/components/layouts/LandingPage";
+import { ThemeContext } from "@/context/ThemeContext";
 import { Header } from "@/cpr/components/Header";
+import { TLandingPageConfig } from "@/types";
+import { getSuggestionParams } from "@/utils/getSuggestionParams";
 import { joinTailwindClasses } from "@/utils/tailwind";
-
-type TImageProps = ComponentProps<typeof Image> & {
-  // Prevents no width/height runtime error
-  width: number;
-  height: number;
-};
-
-type TSearchSuggestion = {
-  label: string;
-  query: ParsedUrlQuery;
-};
-
-export type TLandingPageConfig = {
-  background: {
-    classes?: string;
-    image?: TImageProps;
-  };
-  hero: {
-    description: string;
-    taxonomy: string;
-    title: string;
-  };
-  organisation: {
-    logoImage: TImageProps;
-    links: {
-      label: string;
-      externalHref: string;
-    }[];
-  };
-  search: {
-    button: TSearchSuggestion;
-    suggestions: TSearchSuggestion[];
-  };
-  textContent: {
-    title: string;
-    content: ReactNode;
-  }[];
-};
 
 type TProps = {
   config: TLandingPageConfig;
 };
 
 export const LandingPage = ({ config }: TProps) => {
+  const { themeConfig } = useContext(ThemeContext);
+
   // Note: designed for use on CPR app only
   return (
     <Layout title={config.hero.title} description={config.hero.description} theme="cpr">
@@ -75,7 +40,7 @@ export const LandingPage = ({ config }: TProps) => {
           </div>
           <main className="col-start-1 -col-end-1 cols-3:col-end-5 cols-4:col-end-7 cols-5:col-start-2 grid grid-cols-subgrid gap-y-8 cols-4:gap-y-10 cols-5:gap-y-12">
             <div className="col-start-1 -col-end-1 cols-2:-col-end-2 cols-3:-col-end-1 cols-4:-col-end-2">
-              <PageLink href="/search" query={config.search.button.query}>
+              <PageLink href="/search" query={getSuggestionParams(config.search.button, themeConfig)}>
                 <Button className="w-full mb-6 p-4! bg-[#005296]!">
                   <LucideSearch size={16} />
                   <span className="ml-1 text-base text-white font-medium leading-5">{config.search.button.label}</span>
@@ -83,11 +48,15 @@ export const LandingPage = ({ config }: TProps) => {
               </PageLink>
               <h3 className="mb-1.5 text-sm text-text-primary font-medium leading-6">Suggestions:</h3>
               <ul className="text-base font-normal leading-6">
-                {config.search.suggestions.map(({ label, query }, suggestionIndex) => (
+                {config.search.suggestions.map((suggestion, suggestionIndex) => (
                   <li key={suggestionIndex}>
-                    <PageLink href="/search" query={query} className="inline-flex flex-row items-center justify-start p-1.5 pl-0">
+                    <PageLink
+                      href="/search"
+                      query={getSuggestionParams(suggestion, themeConfig)}
+                      className="inline-flex flex-row items-center justify-start p-1.5 pl-0"
+                    >
                       <LucideSearch size={16} />
-                      <span className="ml-1">{label}</span>
+                      <span className="ml-1">{suggestion.label}</span>
                     </PageLink>
                   </li>
                 ))}

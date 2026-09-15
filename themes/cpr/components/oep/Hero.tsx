@@ -1,41 +1,98 @@
 import { Search } from "lucide-react";
 import Image from "next/image";
 import { useRouter } from "next/router";
-import { useState } from "react";
+import { useContext, useState } from "react";
 
 import { ExternalLink } from "@/components/ExternalLink";
+import { PageLink } from "@/components/atoms/pageLink/PageLink";
 import { SingleCol } from "@/components/panels/SingleCol";
 import { SiteWidth } from "@/components/panels/SiteWidth";
 import { QUERY_PARAMS } from "@/constants/queryParams";
+import { ThemeContext } from "@/context/ThemeContext";
+import { TLandingPageSearchConfig } from "@/types";
+import { getSuggestionParams } from "@/utils/getSuggestionParams";
 
-interface SearchSuggestion {
-  label: string;
-  params?: Record<string, string>;
-}
+const OFFSHORE_WIND_REPORT_FILTERS = JSON.stringify({
+  op: "and",
+  filters: [
+    { field: "labels.value.id", op: "contains", value: "category::Report" },
+    {
+      op: "and",
+      filters: [
+        { field: "labels.value.id", op: "contains", value: "report_type::Industry report" },
+        { op: "or", filters: [{ field: "labels.value.id", op: "contains", value: "entity_type::Offshore wind report", checked: true }] },
+      ],
+    },
+  ],
+});
 
-const SEARCH_SUGGESTIONS: SearchSuggestion[] = [
-  {
-    label: "Offshore wind development",
+const SEARCH_CONFIG: TLandingPageSearchConfig = {
+  button: {
+    label: "",
     params: {
-      [QUERY_PARAMS.query_string]: "Offshore wind development",
+      [QUERY_PARAMS.category]: "offshore-wind-reports",
+    },
+    newParams: {
+      [QUERY_PARAMS.filters]: OFFSHORE_WIND_REPORT_FILTERS,
     },
   },
-  {
-    label: "Floating offshore wind",
-    params: {
-      [QUERY_PARAMS.query_string]: "Floating offshore wind",
+  suggestions: [
+    {
+      label: "Offshore wind development",
+      params: {
+        [QUERY_PARAMS.category]: "offshore-wind-reports",
+        [QUERY_PARAMS.query_string]: "Offshore wind development",
+      },
+      newParams: {
+        [QUERY_PARAMS.filters]: OFFSHORE_WIND_REPORT_FILTERS,
+        [QUERY_PARAMS.query_string]: "Offshore wind development",
+      },
     },
-  },
-  {
-    label: "Zoning and spatial planning",
-    params: {
-      [QUERY_PARAMS.concept_name]: "zoning and spatial planning",
+    {
+      label: "Floating offshore wind",
+      params: {
+        [QUERY_PARAMS.category]: "offshore-wind-reports",
+        [QUERY_PARAMS.query_string]: "Floating offshore wind",
+      },
+      newParams: {
+        [QUERY_PARAMS.filters]: OFFSHORE_WIND_REPORT_FILTERS,
+        [QUERY_PARAMS.query_string]: "Floating offshore wind",
+      },
     },
-  },
-];
+    {
+      label: "Zoning and spatial planning",
+      params: {
+        [QUERY_PARAMS.category]: "offshore-wind-reports",
+        [QUERY_PARAMS.concept_name]: "zoning and spatial planning",
+      },
+      newParams: {
+        [QUERY_PARAMS.filters]: JSON.stringify({
+          op: "and",
+          filters: [
+            {
+              op: "and",
+              filters: [
+                { field: "labels.value.id", op: "contains", value: "category::Report" },
+                {
+                  op: "and",
+                  filters: [
+                    { field: "labels.value.id", op: "contains", value: "report_type::Industry report" },
+                    { op: "or", filters: [{ field: "labels.value.id", op: "contains", value: "entity_type::Offshore wind report", checked: true }] },
+                  ],
+                },
+              ],
+            },
+            { field: "labels.value.id", op: "contains", value: "concept::Q1282", checked: true },
+          ],
+        }),
+      },
+    },
+  ],
+};
 
 export const Hero = () => {
   const router = useRouter();
+  const { themeConfig } = useContext(ThemeContext);
   const [term, setTerm] = useState("");
 
   const handleKeydown = (e: React.KeyboardEvent<HTMLInputElement>) => {
@@ -49,18 +106,7 @@ export const Hero = () => {
       pathname: "/search",
       query: {
         [QUERY_PARAMS.query_string]: query ?? term,
-        [QUERY_PARAMS.category]: "offshore-wind-reports",
-      },
-    });
-  };
-
-  const handleQuickSearch = (params: Record<string, string>) => {
-    // Push directly to search page with all parameters
-    router.push({
-      pathname: "/search",
-      query: {
-        ...params,
-        [QUERY_PARAMS.category]: "offshore-wind-reports",
+        ...getSuggestionParams(SEARCH_CONFIG.button, themeConfig),
       },
     });
   };
@@ -105,18 +151,15 @@ export const Hero = () => {
               <div className="flex gap-4 relative z-2 text-sm">
                 <p className="font-medium text-textDark">Suggestions:</p>
                 <ul className="flex flex-col md:flex-row gap-2 md:gap-4">
-                  {SEARCH_SUGGESTIONS.map((suggestion, index) => (
+                  {SEARCH_CONFIG.suggestions.map((suggestion, index) => (
                     <li key={index}>
-                      <a
-                        href=""
-                        onClick={(e) => {
-                          e.preventDefault();
-                          handleQuickSearch(suggestion.params);
-                        }}
+                      <PageLink
+                        href="/search"
+                        query={getSuggestionParams(suggestion, themeConfig)}
                         className="text-textDark opacity-60 hover:opacity-100"
                       >
                         {suggestion.label}
-                      </a>
+                      </PageLink>
                     </li>
                   ))}
                 </ul>
