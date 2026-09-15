@@ -4,11 +4,11 @@ import { getWebInstrumentations, initializeFaro, isInternalFaroOnGlobalObject } 
 import { TracingInstrumentation } from "@grafana/faro-web-tracing";
 
 export const FrontendObservability = (): null => {
-  // skip if already initialized (faro.api is a truthy no-op stub before init, so it can't be used as the check)
+  // skip if already initialised (faro.api is a truthy no-op stub before init, so it can't be used as the check)
   if (isInternalFaroOnGlobalObject()) return null;
 
   if (!process.env.NEXT_PUBLIC_FARO_URL) {
-    console.error("Skipping Faro initialization");
+    console.error("Skipping Faro initialisation");
     return null;
   }
 
