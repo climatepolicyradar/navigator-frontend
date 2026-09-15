@@ -8,6 +8,7 @@ import { useEffect, useState } from "react";
 
 const PostHogInit = dynamic(() => import("@/context/PostHogInit"), { ssr: false });
 
+import { FaroRouteTracker } from "@/components/FaroRouteTracker";
 import { FrontendObservability } from "@/components/FrontendObservability";
 import ErrorBoundary from "@/components/error/ErrorBoundary";
 import { Overlays } from "@/components/organisms/overlays/Overlays";
@@ -118,6 +119,7 @@ function MyApp({ Component, pageProps, theme, adobeApiKey }: IProps) {
                     </Head>
                     <div id={theme} className="root">
                       <FrontendObservability />
+                      <FaroRouteTracker />
                       <Component {...pageProps} />
                     </div>
                     <Overlays onConsentChange={onConsentChange} />
