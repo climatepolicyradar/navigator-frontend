@@ -8,7 +8,7 @@ export const FrontendObservability = (): null => {
   if (isInternalFaroOnGlobalObject()) return null;
 
   if (!process.env.NEXT_PUBLIC_FARO_URL) {
-    console.error("NEXT_PUBLIC_FARO_URL is not set, skipping Faro initialization");
+    console.error("Skipping Faro initialization");
     return null;
   }
 
