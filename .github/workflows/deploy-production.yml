@@ -55,6 +55,23 @@ jobs:
         run: |
           echo "collector_endpoint=$(pulumi stack output ${{ inputs.theme }}_faro_collector_endpoint --stack climatepolicyradar/frontend-faro/production --non-interactive)" >> "$GITHUB_OUTPUT"
 
+      # Each theme has its own Faro app in Grafana Cloud, so its source-map-upload
+      # app ID differs per theme (see infra/faro/__main__.py); GitHub Actions can't
+      # index secrets.* dynamically by inputs.theme, so all four are passed in here
+      # and selected via jq below.
+      - name: Select Faro source map app ID
+        id: faro-sourcemap
+        env:
+          APP_IDS: >-
+            {
+              "cpr": "${{ secrets.FARO_SOURCEMAP_APP_ID_CPR }}",
+              "cclw": "${{ secrets.FARO_SOURCEMAP_APP_ID_CCLW }}",
+              "mcf": "${{ secrets.FARO_SOURCEMAP_APP_ID_MCF }}",
+              "ccc": "${{ secrets.FARO_SOURCEMAP_APP_ID_CCC }}"
+            }
+        run: |
+          echo "app_id=$(echo "$APP_IDS" | jq -r '.["${{ inputs.theme }}"]')" >> "$GITHUB_OUTPUT"
+
       - name: Build, tag, and push to ECR with 'latest' tag
         id: build-image
         env:
@@ -68,7 +85,7 @@ jobs:
           docker build --build-arg THEME=${THEME} --build-arg NEXT_STATIC_ENABLED=true --build-arg NEXT_PUBLIC_FARO_ENVIRONMENT=production --build-arg GITHUB_SHA=$(git rev-parse HEAD) \
             --build-arg NEXT_PUBLIC_FARO_URL=${{ steps.faro.outputs.collector_endpoint }} \
             --build-arg FARO_SOURCEMAP_API_KEY=${{ secrets.FARO_SOURCEMAP_API_KEY }} \
-            --build-arg FARO_SOURCEMAP_APP_ID=${{ secrets.FARO_SOURCEMAP_APP_ID }} \
+            --build-arg FARO_SOURCEMAP_APP_ID=${{ steps.faro-sourcemap.outputs.app_id }} \
             --build-arg FARO_SOURCEMAP_STACK_ID=${{ secrets.FARO_SOURCEMAP_STACK_ID }} \
             -t $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG .
           docker push $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
