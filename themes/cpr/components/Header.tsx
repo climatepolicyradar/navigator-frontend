@@ -43,7 +43,7 @@ const OTHER_APPS = [
 ];
 
 const OtherAppsBar = () => (
-  <div className="bg-inky-blue">
+  <div className="bg-inky-blue hidden md:block">
     <FiveColumns>
       <div className="col-start-1 -col-end-1">
         <ul className="flex items-center justify-end gap-6 py-2 text-sm">
@@ -98,9 +98,9 @@ export const Header = ({ landingPage = false }: IProps) => {
       headerClasses={navBarClasses}
       logo={CPRLogo}
       menu={<MainMenu icon={menuIcon} links={MENU_LINKS} />}
-      menuButtons={isHomepage ? undefined : newSearch ? <MenuButtons /> : undefined}
+      menuButtons={isHomepage ? undefined : newSearch ? undefined : showSearch ? undefined : <MenuButtons />}
       showLogo={!isHomepage}
-      showSearch={showSearch}
+      showSearch={showSearch && !newSearch}
       topContent={newSearch ? <OtherAppsBar /> : undefined}
     />
   );

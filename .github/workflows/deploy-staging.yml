@@ -1,13 +1,8 @@
 name: Deploy to staging
 on:
-  # a. Auto deploy once the merge-to-main action is completed successfully
-  workflow_run:
-    workflows: [Merge to main]
-    types:
-      - completed
-    branches:
-      - main
-  # b. Allow deployment from the actions tab - this allows feature branch deployment
+  # a. Called directly from Merge to main once its checks pass
+  workflow_call: {}
+  # b. Allow deployment from the actions tab
   workflow_dispatch: {}
 
 permissions:
@@ -19,15 +14,11 @@ jobs:
   # stacks this push actually touched.
   changes:
     runs-on: ubuntu-latest
-    if: |
-      github.event.workflow_run.conclusion == 'success' ||
-      github.event_name == 'workflow_dispatch'
     outputs:
       projects: ${{ steps.parse.outputs.projects }}
     steps:
       - uses: actions/checkout@v7
         with:
-          ref: ${{ github.event.workflow_run.head_sha || github.sha }}
           fetch-depth: 2
       - id: base-sha
         run: echo "sha=$(git rev-parse HEAD~1)" >> "$GITHUB_OUTPUT"
@@ -76,8 +67,6 @@ jobs:
     environment: staging
     steps:
       - uses: actions/checkout@v7
-        with:
-          ref: ${{ github.event.workflow_run.head_sha || github.sha }}
       - uses: astral-sh/setup-uv@v7
       - name: configure aws credentials
         uses: aws-actions/configure-aws-credentials@v6.2.4
@@ -107,8 +96,6 @@ jobs:
     environment: staging
     steps:
       - uses: actions/checkout@v7
-        with:
-          ref: ${{ github.event.workflow_run.head_sha || github.sha }}
       - uses: astral-sh/setup-uv@v7
       - name: Install dependencies
         working-directory: infra/observability
@@ -152,6 +139,23 @@ jobs:
         run: |
           echo "collector_endpoint=$(pulumi stack output ${{ matrix.theme }}_faro_collector_endpoint --stack climatepolicyradar/frontend-faro/production --non-interactive)" >> "$GITHUB_OUTPUT"
 
+      # Each theme has its own Faro app in Grafana Cloud, so its source-map-upload
+      # app ID differs per theme (see infra/faro/__main__.py); GitHub Actions can't
+      # index secrets.* dynamically by matrix.theme, so all four are passed in here
+      # and selected via jq below.
+      - name: Select Faro source map app ID
+        id: faro-sourcemap
+        env:
+          APP_IDS: >-
+            {
+              "cpr": "${{ secrets.FARO_SOURCEMAP_APP_ID_CPR }}",
+              "cclw": "${{ secrets.FARO_SOURCEMAP_APP_ID_CCLW }}",
+              "mcf": "${{ secrets.FARO_SOURCEMAP_APP_ID_MCF }}",
+              "ccc": "${{ secrets.FARO_SOURCEMAP_APP_ID_CCC }}"
+            }
+        run: |
+          echo "app_id=$(echo "$APP_IDS" | jq -r '.["${{ matrix.theme }}"]')" >> "$GITHUB_OUTPUT"
+
       - name: Build, tag, and push to ECR with 'latest' tag
         id: build-image
         env:
@@ -164,6 +168,9 @@ jobs:
         run: |
           docker build --build-arg THEME=${THEME} --build-arg NEXT_PUBLIC_FARO_ENVIRONMENT=staging --build-arg GITHUB_SHA=$(git rev-parse HEAD) \
             --build-arg NEXT_PUBLIC_FARO_URL=${{ steps.faro.outputs.collector_endpoint }} \
+            --build-arg FARO_SOURCEMAP_API_KEY=${{ secrets.FARO_SOURCEMAP_API_KEY }} \
+            --build-arg FARO_SOURCEMAP_APP_ID=${{ steps.faro-sourcemap.outputs.app_id }} \
+            --build-arg FARO_SOURCEMAP_STACK_ID=${{ secrets.FARO_SOURCEMAP_STACK_ID }} \
             -t $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG .
           docker push $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
           echo "image=$ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG" >> $GITHUB_OUTPUT

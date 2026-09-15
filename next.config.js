@@ -112,6 +112,13 @@ const nextConfig = {
    * @see: https://nextjs.org/docs/app/api-reference/config/next-config-js/assetPrefix
    */
   assetPrefix: process.env.NEXT_STATIC_ENABLED === "true" ? `https://${process.env.THEME}.production.climatepolicyradar.org` : undefined,
+  /**
+   * Required so Faro can de-minify error stack traces (see scripts/upload-source-maps.sh,
+   * run in the Dockerfile after build). Next.js would otherwise also *serve* these
+   * publicly; faro-cli deletes each map as it's uploaded, so none reach the final image.
+   * @see: https://nextjs.org/docs/pages/api-reference/config/next-config-js/productionBrowserSourceMaps
+   */
+  productionBrowserSourceMaps: true,
 };
 
 const withBundleAnalyzer = require("@next/bundle-analyzer")({
