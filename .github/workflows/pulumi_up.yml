@@ -10,7 +10,6 @@ on:
         options:
           - production
           - staging
-        default: staging
         required: true
       working-directory:
         description: Directory containing the Pulumi project to deploy
