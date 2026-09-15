@@ -4,7 +4,8 @@ WORKDIR /app
 COPY . .
 RUN npm ci
 # scripts/upload-source-maps.sh below needs bash; Alpine's default /bin/sh (busybox ash) doesn't support it.
-RUN apk add --no-cache bash
+# curl is required by @grafana/faro-cli, which shells out to it to upload source maps.
+RUN apk add --no-cache bash curl
 
 ARG THEME
 ENV THEME=${THEME}
