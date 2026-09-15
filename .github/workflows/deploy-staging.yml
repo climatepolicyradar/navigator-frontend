@@ -55,6 +55,9 @@ jobs:
             staging-shared-resources:
               - 'infra/platform/**'
 
+            staging-observability:
+              - 'infra/observability/**'
+
       - id: parse
         run: |
           CHANGES='${{ steps.filter.outputs.changes }}'
@@ -88,6 +91,31 @@ jobs:
       - name: Pulumi up
         working-directory: infra/platform
         run: pulumi up --yes --skip-preview --stack climatepolicyradar/frontend-platform/staging
+        env:
+          PULUMI_ACCESS_TOKEN: ${{ secrets.PULUMI_ACCESS_TOKEN }}
+
+  # Runs independently of the per-theme deploys below, and deliberately after
+  # nothing: synthetic checks must never sit in the critical path of shipping
+  # the site. Needs no AWS credentials -- it only talks to Grafana and reads the
+  # frontend stacks' outputs from the Pulumi backend.
+  pulumi-up-observability:
+    needs: changes
+    if: contains(fromJSON(needs.changes.outputs.projects), 'staging-observability')
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    environment: staging
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          ref: ${{ github.event.workflow_run.head_sha || github.sha }}
+      - uses: astral-sh/setup-uv@v7
+      - name: Install dependencies
+        working-directory: infra/observability
+        run: uv sync
+      - name: Pulumi up
+        working-directory: infra/observability
+        run: pulumi up --yes --skip-preview --stack climatepolicyradar/frontend-observability/staging
         env:
           PULUMI_ACCESS_TOKEN: ${{ secrets.PULUMI_ACCESS_TOKEN }}
 
