@@ -1,5 +1,5 @@
 import { useQuery } from "@tanstack/react-query";
-import { LucideExternalLink, Search } from "lucide-react";
+import { LucideFileText, LucideExternalLink, LucideSearch } from "lucide-react";
 import { Fragment, ReactNode } from "react";
 
 import { SearchDocument } from "@/api/search";
@@ -156,12 +156,20 @@ export function PrincipalDrawer({ document, importId, open, onOpenChange, tab, o
             className="-mx-8"
             panelClassName="pt-8"
             tabs={[
-              { id: "about", label: "About", panel: <DrawerContent familyData={familyData} features={features} languages={languages} /> },
+              {
+                id: "about",
+                label: (
+                  <>
+                    <LucideFileText size={20} className="text-elem-icon!" /> About
+                  </>
+                ),
+                panel: <DrawerContent familyData={familyData} features={features} languages={languages} />,
+              },
               {
                 id: "search",
                 label: (
                   <>
-                    <Search size={20} />
+                    <LucideSearch size={20} className="text-elem-icon!" />
                     Search in documents
                   </>
                 ),
@@ -171,6 +179,7 @@ export function PrincipalDrawer({ document, importId, open, onOpenChange, tab, o
                     concepts={conceptTopics}
                     documentsLabel={`Documents in this ${firstCase(getCategoryText("familySingular"))}`}
                     subject="these documents"
+                    changeTab={onTabChange}
                   />
                 ),
               },

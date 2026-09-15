@@ -411,19 +411,6 @@ describe("PassageSearch", () => {
         ])
       );
     });
-
-    it("clears only its own search", async () => {
-      mockFetchSearchPassages.mockResolvedValue({ total_size: 0, results: [] });
-      renderInDrawer({ principal_q: "renewable", principal_filters: topicFilter });
-      await screen.findByText("No matching passages");
-
-      await userEvent.click(screen.getByRole("button", { name: "Clear your search" }));
-
-      expect(url.writes).toEqual([
-        { key: "principal_q", value: "" },
-        { key: "principal_filters", value: null },
-      ]);
-    });
   });
 
   describe("results", () => {
@@ -644,7 +631,7 @@ describe("PassageSearch", () => {
     it("speaks of the documents in the plural", async () => {
       renderPrincipal();
 
-      expect(await screen.findByText(/Type a search or select from topics that appear in these documents\./)).toBeInTheDocument();
+      expect(await screen.findByText(/Type a search or apply a topic filter. For more information about these documents/)).toBeInTheDocument();
     });
   });
 

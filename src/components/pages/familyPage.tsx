@@ -1,4 +1,4 @@
-import { Search } from "lucide-react";
+import { LucideFileText, LucideSearch } from "lucide-react";
 import Head from "next/head";
 import { useRouter } from "next/router";
 import { useCallback, useState } from "react";
@@ -200,13 +200,21 @@ export const FamilyPage = ({ collections, debug, errors, family, familyTopics, f
             className=""
             panelClassName="pt-8"
             tabs={[
-              { id: "about", label: "About", panel: <BlocksLayout blockDefinitions={blockDefinitions} blocksToRender={blocksToRender} /> },
+              {
+                id: "about",
+                label: (
+                  <>
+                    <LucideFileText size={20} className="text-elem-icon!" /> About
+                  </>
+                ),
+                panel: <BlocksLayout blockDefinitions={blockDefinitions} blocksToRender={blocksToRender} />,
+              },
               {
                 id: "search",
                 count: noOfResults > 0 ? noOfResults : undefined,
                 label: (
                   <>
-                    <Search size={20} />
+                    <LucideSearch size={20} className="text-elem-icon!" />
                     Search in documents
                   </>
                 ),
@@ -214,6 +222,7 @@ export const FamilyPage = ({ collections, debug, errors, family, familyTopics, f
                   <FiveColumns>
                     <main className="pb-8 col-start-1 -col-end-1 cols-4:col-start-3 cols-4:col-end-10">
                       <PassageSearch
+                        changeTab={changeTab}
                         documents={family.documents}
                         concepts={conceptTopics}
                         documentsLabel={`Documents in this ${firstCase(getCategoryText("familySingular"))}`}
