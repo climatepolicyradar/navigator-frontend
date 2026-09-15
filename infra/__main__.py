@@ -52,13 +52,6 @@ DEPLOY_ROLE_NAME = "navigator-new-frontend-github-actions"
 # Read this theme's Faro collector URL
 ########################################################################
 
-# The Faro app itself is provisioned by the frontend-faro project
-# (infra/faro/faro_app.py), a separate Pulumi project so it has no
-# dependency on this project's own outputs (avoids a circular
-# StackReference -- infra/observability's synthetics depend on this
-# project's app_url export, so Faro provisioning can't live there either).
-# One app per theme regardless of env; staging/review here read the same
-# output as production.
 frontend_faro_stack = pulumi.StackReference("climatepolicyradar/frontend-faro/production")
 next_public_faro_url = frontend_faro_stack.require_output(
     f"{theme}_faro_collector_endpoint"
