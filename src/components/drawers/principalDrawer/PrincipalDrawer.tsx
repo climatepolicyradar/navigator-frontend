@@ -1,6 +1,6 @@
 import { useQuery } from "@tanstack/react-query";
 import { LucideFileText, LucideExternalLink, LucideSearch } from "lucide-react";
-import { Fragment, ReactNode } from "react";
+import { Fragment, ReactNode, useState } from "react";
 
 import { SearchDocument } from "@/api/search";
 import { Drawer } from "@/components/atoms/drawer/Drawer";
@@ -59,7 +59,7 @@ const DrawerContent = ({ familyData, features, languages }: TDrawerContentProps)
   const metadata = getFamilyMetadata(family, familyTopics);
 
   return (
-    <div className="flex flex-col gap-8">
+    <div className="flex flex-col gap-6 md:gap-8">
       <div>
         {pageHeaderMetadata.length > 0 && (
           <div className="grid grid-cols-[min-content_auto] gap-x-8 gap-y-2 text-sm">
@@ -96,6 +96,7 @@ const DrawerContent = ({ familyData, features, languages }: TDrawerContentProps)
 export function PrincipalDrawer({ document, importId, open, onOpenChange, tab, onTabChange, features }: TDocumentDrawerProps) {
   const { data: { languages = {} } = {} } = useConfig();
   const { getCategoryTextLookup } = useText();
+  const [noOfResults, setNumberOfResults] = useState<number>(0);
   // The drawer's own search, flattened onto the base params of whatever page a link leads to
   const [principalSearch] = useSearchLevelValues("principal");
 
@@ -123,8 +124,13 @@ export function PrincipalDrawer({ document, importId, open, onOpenChange, tab, o
       onOpenChange={onOpenChange}
       title={
         titleContent && titleHref ? (
-          <span className="block pt-5">
-            <PageLink keepQuery query={outboundQuery} href={titleHref} className="text-3xl text-inky-blue underline-offset-5 hover:underline">
+          <span className="block pt-0 md:pt-5">
+            <PageLink
+              keepQuery
+              query={outboundQuery}
+              href={titleHref}
+              className="text-xl md:text-2xl lg:text-3xl text-inky-blue underline-offset-5 hover:underline"
+            >
               {titleContent}
             </PageLink>
           </span>
@@ -154,7 +160,7 @@ export function PrincipalDrawer({ document, importId, open, onOpenChange, tab, o
             onValueChange={onTabChange}
             value={tab}
             className="-mx-8"
-            panelClassName="pt-8"
+            panelClassName="pt-4 md:pt-8"
             tabs={[
               {
                 id: "about",
@@ -167,6 +173,7 @@ export function PrincipalDrawer({ document, importId, open, onOpenChange, tab, o
               },
               {
                 id: "search",
+                count: noOfResults > 0 ? noOfResults : undefined,
                 label: (
                   <>
                     <LucideSearch size={20} className="text-elem-icon!" />
@@ -180,6 +187,7 @@ export function PrincipalDrawer({ document, importId, open, onOpenChange, tab, o
                     documentsLabel={`Documents in this ${firstCase(getCategoryText("familySingular"))}`}
                     subject="these documents"
                     changeTab={onTabChange}
+                    onSearch={setNumberOfResults}
                   />
                 ),
               },

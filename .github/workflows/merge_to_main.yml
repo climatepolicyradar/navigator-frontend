@@ -8,7 +8,27 @@ on:
 # trunk-ignore(checkov/CKV2_GHA_1)
 permissions: write-all
 jobs:
-  # Trunk check
+  # Faro apps aren't per-environment (see infra/faro/__main__.py's allowed_origins),
+  # so there's a single production stack shared by staging, production, and review
+  # deploys alike, rather than a staging/production pair like the other infra
+  # projects.
+  # Needs no AWS credentials -- it only talks to Grafana.
+  pulumi-up-faro:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    steps:
+      - uses: actions/checkout@v7
+      - uses: astral-sh/setup-uv@v7
+      - name: Install dependencies
+        working-directory: infra/faro
+        run: uv sync
+      - name: Pulumi up
+        working-directory: infra/faro
+        run: pulumi up --yes --skip-preview --stack climatepolicyradar/frontend-faro/production
+        env:
+          PULUMI_ACCESS_TOKEN: ${{ secrets.PULUMI_ACCESS_TOKEN }}
+
   code-quality:
     runs-on: ubuntu-latest
     steps:
@@ -25,7 +45,6 @@ jobs:
         with:
           arguments: --ci
 
-  # Unit tests
   test:
     timeout-minutes: 15
     runs-on: ubuntu-latest
@@ -64,72 +83,17 @@ jobs:
           token: ${{ secrets.TRUNK_TOKEN }}
           org-slug: ${{ secrets.TRUNK_ORG_SLUG }}
 
-  # Release builds for each theme
-  release:
-    runs-on: ubuntu-latest
-    needs: [code-quality]
-    strategy:
-      fail-fast: false
-      matrix:
-        theme: [cpr, cclw, mcf, ccc]
-    steps:
-      - uses: actions/checkout@v7
-      - uses: actions/setup-node@v7
-        with:
-          node-version-file: .nvmrc
-
-      # build
-      - run: |
-          export THEME=${{ matrix.theme }}
-          make build
-
-      # release
-      # most of this is taken from
-      # https://docs.github.com/en/actions/use-cases-and-examples/deploying/deploying-to-amazon-elastic-container-service#creating-the-workflow
-      - name: Configure AWS credentials (staging)
-        uses: aws-actions/configure-aws-credentials@v6.2.4
-        with:
-          role-to-assume: arn:aws:iam::${{ secrets.AWS_ACCOUNT_ID_STAGING }}:role/navigator-frontend-github-actions
-          role-session-name: GitHub_to_AWS_via_FederatedOIDC
-          aws-region: eu-west-1
-      - name: Login to Amazon ECR (staging)
-        id: login-ecr-staging
-        uses: aws-actions/amazon-ecr-login@03f1aad4c6c7ffd436567f42f9384779290529bd
-      - name: Build, tag, and push image to Amazon ECR (staging)
-        id: build-image-staging
-        env:
-          ECR_REGISTRY: ${{ secrets.DOCKER_REGISTRY_STAGING }}
-          IMAGE_TAG: ${{ github.sha }}
-          AWS_REGION: eu-west-1
-          ECR_REPOSITORY: navigator-frontend-${{ matrix.theme }}
-          THEME: ${{ matrix.theme }}
-        run: |
-          docker build --build-arg THEME=${THEME} --build-arg NEXT_PUBLIC_FARO_ENVIRONMENT=staging -t $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG .
-          docker push $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
-          echo "image=$ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG" >> $GITHUB_OUTPUT
-
-      - name: Configure aws credentials (production)
-        uses: aws-actions/configure-aws-credentials@v6.2.4
-        with:
-          role-to-assume: arn:aws:iam::${{ secrets.AWS_ACCOUNT_ID_PROD }}:role/navigator-frontend-github-actions
-          role-session-name: GitHub_to_AWS_via_FederatedOIDC
-          aws-region: eu-west-1
-      - name: Login to Amazon ECR (production)
-        id: login-ecr-prod
-        uses: aws-actions/amazon-ecr-login@03f1aad4c6c7ffd436567f42f9384779290529bd
-
-      - name: Build, tag, and push image to Amazon ECR (production)
-        id: build-image-prod
-        env:
-          ECR_REGISTRY: ${{ secrets.DOCKER_REGISTRY_PROD }}
-          IMAGE_TAG: ${{ github.sha }}
-          AWS_REGION: eu-west-1
-          ECR_REPOSITORY: navigator-frontend-${{ matrix.theme }}
-          THEME: ${{ matrix.theme }}
-        run: |
-          docker build --build-arg THEME=${THEME} --build-arg NEXT_PUBLIC_FARO_ENVIRONMENT=production -t $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG .
-          docker push $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
-          echo "image=$ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG" >> $GITHUB_OUTPUT
+  # Deploy to staging (per-theme build, push, and ECS deploy)
+  deploy-staging:
+    # Needs pulumi-up-faro: it reads frontend-faro/production's stack output,
+    # so a push that changes the frontend stack needs to land first or it
+    # reads stale/missing output.
+    needs: [code-quality, test, pulumi-up-faro]
+    uses: ./.github/workflows/deploy-staging.yml
+    secrets: inherit
+    permissions:
+      id-token: write
+      contents: read
 
   # Deploy Storybook
   storybook:
