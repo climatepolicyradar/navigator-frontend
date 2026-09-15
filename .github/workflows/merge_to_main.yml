@@ -113,10 +113,14 @@ jobs:
     secrets: inherit
     needs: [changes]
     if: needs.changes.outputs.run-observability-pulumi-up == 'true'
+    strategy:
+      fail-fast: false
+      matrix:
+        environment: [staging, production]
     with:
-      environment: production
+      environment: ${{ matrix.environment }}
       working-directory: ./infra/observability
-      stack: climatepolicyradar/frontend-observability/production
+      stack: climatepolicyradar/frontend-observability/${{ matrix.environment }}
       # Grafana only - no AWS resources in this project, so no role to assume.
       aws-role: ""
 

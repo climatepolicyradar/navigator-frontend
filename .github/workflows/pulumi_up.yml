@@ -15,7 +15,6 @@ on:
       working-directory:
         description: Directory containing the Pulumi project to deploy
         type: string
-        default: ./infra/observability
         required: true
       stack:
         description: Full Pulumi stack to deploy (org/project/stack)
