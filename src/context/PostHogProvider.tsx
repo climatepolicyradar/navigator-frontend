@@ -9,8 +9,8 @@ export function PostHogProvider({ children }: TPostHogProviderProps) {
 
 /** @see: https://posthog.com/docs/product-analytics/best-practices#2-implement-a-naming-convention */
 type Category = "search";
-type Object = "results";
-type Action = "fetch";
+type Object = "results" | "download";
+type Action = "fetch" | "click";
 
 export function posthogEventName(category: Category, object: Object, action: Action) {
   return `${category}:${object}_${action}`;
