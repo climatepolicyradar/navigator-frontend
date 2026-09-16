@@ -123,5 +123,6 @@ describe("DocumentCard", () => {
     expect(button).toHaveAttribute("data-ph-capture-attribute-position-page", "2");
     expect(button).toHaveAttribute("data-ph-capture-attribute-position-total", "12");
     expect(button).toHaveAttribute("data-ph-capture-attribute-results-total", "43");
+    expect(button).toHaveAttribute("data-ph-capture-attribute-result-id", baseDocument.id);
   });
 });
