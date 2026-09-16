@@ -27,6 +27,11 @@ function Error({ statusCode }: { statusCode: number }) {
 
 Error.getInitialProps = ({ res, err }: NextPageContext) => {
   const statusCode = res ? res.statusCode : err ? err.statusCode : 404;
+
+  if (err) {
+    console.error("Rendered error page", { digest: (err as { digest?: string }).digest, statusCode });
+  }
+
   return { statusCode };
 };
 
