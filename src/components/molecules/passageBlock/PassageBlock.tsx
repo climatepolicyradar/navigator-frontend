@@ -3,10 +3,9 @@ import { useEffect, useState } from "react";
 
 import { ProductSupport } from "@/components/molecules/productSupport/ProductSupport";
 import { EN_DASH } from "@/constants/chars";
-import { IPassageLabel } from "@/types";
+import { IPassageBolding, IPassageLabel } from "@/types";
 import { joinNodes } from "@/utils/reactNode";
 import { THighlightRange, addHighlights } from "@/utils/text/addHighlights";
-import { findSubStringMatches } from "@/utils/text/findSubStringMatches";
 import { resolveHighlightRanges } from "@/utils/text/resolveHighlightRanges";
 
 const COPY_FEEDBACK_TIMEOUT = 1000;
@@ -24,24 +23,25 @@ type TPassagePage = {
   page_number: number;
 };
 
+// Resolved display fields, denormalised onto the passage by the caller
 export type TPassage = {
-  id: string;
-  document_id: string;
-  idx: number;
+  boldings: IPassageBolding[];
   content: string;
-  labels?: IPassageLabel[];
-  language?: string;
   content_type?: string;
-  type_confidence?: number;
-  pages?: TPassagePage[];
-  heading_id?: string;
-  tokens?: string[];
-  serialised_text?: string;
-  topics?: unknown[];
-  // Resolved display fields, denormalised onto the passage by the caller
+  document_id: string;
   documentTitle: string;
   documentUrl?: string;
+  heading_id?: string;
   headingText?: string;
+  id: string;
+  idx: number;
+  labels?: IPassageLabel[];
+  language?: string;
+  pages?: TPassagePage[];
+  serialised_text?: string;
+  tokens?: string[];
+  topics?: unknown[];
+  type_confidence?: number;
 };
 
 type TPassageAnalytics = {
@@ -57,7 +57,6 @@ type TProps = {
   onCopyClick?: () => void;
   onDocumentLinkClick?: () => void;
   onPassageClick?: (passage: TPassage) => void;
-  query?: string;
   activeTopicsIds?: string[];
   // Hide the document title and its link when the passage is already shown in the
   // context of that document, e.g. on the document page.
@@ -83,18 +82,20 @@ const formatPageRange = (pageNumbers: number[]): string => {
 
 // Define the highlight ranges - highlights are applied later, we just nede their positions and colour
 const getHighlightRanges = ({
-  content,
-  query,
   activeTopics,
+  boldings,
   topicColours,
 }: {
-  content: string;
-  query?: string;
   activeTopics: IPassageLabel[];
+  boldings: IPassageBolding[];
   topicColours: Map<string, string>;
 }): THighlightRange[] => [
-  // The query outranks every topic. Trimmed so a query typed with surrounding spaces still matches
-  ...findSubStringMatches(content, query?.trim() ?? "").map((match) => ({ ...match, className: QUERY_HIGHLIGHT_COLOUR })),
+  // The query string matches (a.k.a boldings) are always in yellow and treated as query matches
+  ...boldings.map(({ start_index, end_index }) => ({
+    start: start_index,
+    end: end_index,
+    className: QUERY_HIGHLIGHT_COLOUR,
+  })),
   ...activeTopics.map(({ start_index, end_index, value }) => ({
     start: start_index,
     end: end_index,
@@ -108,7 +109,6 @@ export const PassageBlock = ({
   onCopyClick,
   onDocumentLinkClick,
   onPassageClick,
-  query,
   activeTopicsIds,
   showDocument = true,
 }: TProps) => {
@@ -130,7 +130,7 @@ export const PassageBlock = ({
   const topicColours = getTopicColours(activeTopics);
   const highlightedContent = addHighlights(
     passage.content,
-    resolveHighlightRanges(passage.content, getHighlightRanges({ content: passage.content, query, activeTopics, topicColours }))
+    resolveHighlightRanges(passage.content, getHighlightRanges({ boldings: passage.boldings, activeTopics, topicColours }))
   );
   // A passage can contain multiple spans of the same highlighted topic
   const topics = [...new Map(activeTopics.map(({ value }) => [value.value, value.id]))];
