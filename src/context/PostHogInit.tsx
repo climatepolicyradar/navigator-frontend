@@ -57,8 +57,8 @@ function PostHogPageView({ consent, pageViewProps }: TPostHogPageViewProps): nul
         geographyType = subdivisionMatcher.test(pathParts[2]) ? "subdivision" : "country";
       }
 
-      const principalId = searchParams.get(levelIdParamKey("principal"));
-      const documentId = searchParams.get(levelIdParamKey("document"));
+      const principalSlug = searchParams.get(levelIdParamKey("principal"));
+      const documentSlug = searchParams.get(levelIdParamKey("document"));
       const topicId = searchParams.get(TOPIC_PARAM_KEY);
 
       posthog.capture("$pageview", {
@@ -70,8 +70,8 @@ function PostHogPageView({ consent, pageViewProps }: TPostHogPageViewProps): nul
         pageTypeSlug,
         search_level: searchLevelFromParams(route, searchParams),
         ...searchPropertiesFromParams(pathname, searchParams),
-        result_id: principalId ?? undefined,
-        document_id: documentId ?? undefined,
+        result_slug: principalSlug ?? undefined,
+        document_slug: documentSlug ?? undefined,
         topic_id: topicId ?? undefined,
         ...pageViewProps,
       });
