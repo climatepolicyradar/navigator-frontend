@@ -27,3 +27,15 @@ export function register() {
     spanProcessors: ["auto", new SpanNameProcessor()],
   });
 }
+
+export function onRequestError(
+  error: { digest: string } & Error,
+  request: { path: string; method: string; headers: Record<string, string | string[]> }
+) {
+  console.error("Server request error", {
+    digest: error.digest,
+    message: error.message,
+    path: request.path,
+    method: request.method,
+  });
+}
