@@ -36,6 +36,7 @@ export const fetchSearchPassages = async ({
 }: ISearchPassagesParams): Promise<ISearchPassagesResponse> => {
   const url = new URL(searchPassagesUrl());
 
+  url.searchParams.set("bolding", "true");
   url.searchParams.set("query", query);
   url.searchParams.set("filters", JSON.stringify(configurePassagesFilters(documents, filters)));
   if (pageSize !== undefined) url.searchParams.set("page_size", String(pageSize));

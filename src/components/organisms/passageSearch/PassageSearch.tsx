@@ -41,21 +41,21 @@ type TProps = {
 // document title is not on the passage, so it is resolved from the scope and denormalised
 // on here - results can span several documents and need naming.
 const toPassageBlock = (passage: ISearchPassage, documentTitle: string): TPassageBlock => ({
-  id: passage.id,
-  document_id: passage.document_id,
-  idx: passage.idx,
+  boldings: passage.boldings,
   content: passage.text,
-  pages: passage.pages?.map((pageNumber) => ({ page_number: pageNumber })),
-  headingText: passage.heading_text ?? undefined,
+  document_id: passage.document_id,
   documentTitle,
+  headingText: passage.heading_text ?? undefined,
+  id: passage.id,
+  idx: passage.idx,
   labels: passage.labels ?? undefined,
+  pages: passage.pages?.map((pageNumber) => ({ page_number: pageNumber })),
 });
 
 type TPassageResultsProps = {
   onDocumentLinkClick?: (passage: TPassageBlock) => void;
   onPassageClick: (passage: TPassageBlock) => void;
   passages: TPassageBlock[];
-  query?: string;
   activeTopicsIds?: string[];
   showDocument: boolean;
   sort?: string;
@@ -63,25 +63,22 @@ type TPassageResultsProps = {
 };
 
 // Memoised so that typing in the search input does not re-render every result card.
-const PassageResults = memo(
-  ({ onDocumentLinkClick, onPassageClick, passages, query, activeTopicsIds, showDocument, sort, total }: TPassageResultsProps) => (
-    <ul className="flex flex-col gap-4" id="passage-matches" aria-label="Passage matches">
-      {passages.map((passage, passageIndex) => (
-        <li key={passage.id}>
-          <PassageBlock
-            passage={passage}
-            analytics={{ position: passageIndex + 1, sort, total }}
-            query={query}
-            activeTopicsIds={activeTopicsIds}
-            showDocument={showDocument}
-            onDocumentLinkClick={onDocumentLinkClick && (() => onDocumentLinkClick(passage))}
-            onPassageClick={onPassageClick}
-          />
-        </li>
-      ))}
-    </ul>
-  )
-);
+const PassageResults = memo(({ onDocumentLinkClick, onPassageClick, passages, activeTopicsIds, showDocument, sort, total }: TPassageResultsProps) => (
+  <ul className="flex flex-col gap-4" id="passage-matches" aria-label="Passage matches">
+    {passages.map((passage, passageIndex) => (
+      <li key={passage.id}>
+        <PassageBlock
+          passage={passage}
+          analytics={{ position: passageIndex + 1, sort, total }}
+          activeTopicsIds={activeTopicsIds}
+          showDocument={showDocument}
+          onDocumentLinkClick={onDocumentLinkClick && (() => onDocumentLinkClick(passage))}
+          onPassageClick={onPassageClick}
+        />
+      </li>
+    ))}
+  </ul>
+));
 PassageResults.displayName = "PassageResults";
 
 type TDocumentPreviewProps = {
@@ -345,7 +342,6 @@ export const PassageSearch = ({ changeTab, concepts, documents, documentsLabel, 
             total={totalMatches}
             onDocumentLinkClick={enablePreview ? undefined : handleDocumentLinkClick}
             onPassageClick={handlePassageClick}
-            query={queryParam}
             activeTopicsIds={activeTopicsIds}
           />
           {hasNextPage && (
