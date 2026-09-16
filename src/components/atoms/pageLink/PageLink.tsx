@@ -42,7 +42,7 @@ export const PageLink = ({
   hash,
   href,
   keepQuery = false,
-  onClick,
+  onClick: onLinkClick,
   query = {},
   underline = false,
   ...props
@@ -55,7 +55,7 @@ export const PageLink = ({
   const stopPropagation: MouseEventHandler<HTMLAnchorElement> = (event) => {
     event.stopPropagation();
     event.nativeEvent.stopImmediatePropagation();
-    onClick?.(event);
+    onLinkClick?.(event);
   };
 
   const externalProps = external ? { target: "_blank", rel: "noopener noreferrer" } : undefined;
