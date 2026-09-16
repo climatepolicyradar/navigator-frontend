@@ -35,7 +35,6 @@ const basePassage: TPassage = {
   idx: 12,
   content: "Certain ecological and other requirements for geohazards.",
   pages: [{ page_number: 16 }],
-  heading_id: "heading-1",
   documentTitle: "Renewable Energy Sources Act",
   headingText: "Section 4: National Target 16",
 };

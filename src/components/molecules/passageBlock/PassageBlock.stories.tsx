@@ -37,7 +37,6 @@ const basePassage: TPassage = {
   content:
     "Certain ecological and other requirements for geohazards and for the areas used by cultivation or toxic waste, in particular for the destruction of grassland with high biological diversity within the meaning of Directive (EU) 2018/2001 and areas with high carbon stocks.",
   pages: [{ page_number: 16 }],
-  heading_id: "heading-1",
   documentTitle: "Law for the expansion of renewable energies (Renewable Energy Sources Act - EEG 2023; consolidated version)",
   headingText: "Section 4: National Target 16. Mainstreaming Biodiversity into National Development",
 };

@@ -27,21 +27,14 @@ type TPassagePage = {
 export type TPassage = {
   boldings: IPassageBolding[];
   content: string;
-  content_type?: string;
   document_id: string;
   documentTitle: string;
-  documentUrl?: string;
-  heading_id?: string;
   headingText?: string;
   id: string;
   idx: number;
   labels?: IPassageLabel[];
-  language?: string;
   pages?: TPassagePage[];
-  serialised_text?: string;
-  tokens?: string[];
   topics?: unknown[];
-  type_confidence?: number;
 };
 
 type TPassageAnalytics = {
