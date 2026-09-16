@@ -72,7 +72,7 @@ const ShadowSearch = ({ theme, themeConfig, features }: TProps) => {
   // The clicked result names the drawer without waiting on a fetch. It is kept while the drawer
   // animates closed, and is absent when the level arrives from a shared link.
   const [selectedDocument, setSelectedDocument] = useState<SearchDocument | null>(null);
-  const principalImportId = principalLevel.id ?? selectedDocument?.id ?? null;
+  const principalSlug = principalLevel.id ?? (selectedDocument?.attributes.deprecated_slug as string) ?? null;
   const principalHasSearch = !!principalLevel.search.query || !!conceptFiltersOnly(principalLevel.search.filters);
   const documentHasSearch = !!documentLevel.search.query || !!conceptFiltersOnly(documentLevel.search.filters);
 
@@ -210,7 +210,7 @@ const ShadowSearch = ({ theme, themeConfig, features }: TProps) => {
                 }
                 // otherwise open document in drawer, carrying over what a passage search can use
                 setSelectedDocument(document);
-                principalLevel.open(document.id, seedPassageLevel({ query, filters }));
+                principalLevel.open(document.attributes.deprecated_slug as string, seedPassageLevel({ query, filters }));
               }}
             />
           </div>
@@ -240,8 +240,8 @@ const ShadowSearch = ({ theme, themeConfig, features }: TProps) => {
         />
         {/* DRAWER */}
         <PrincipalDrawer
-          document={selectedDocument?.id === principalImportId ? selectedDocument : null}
-          importId={principalImportId}
+          document={selectedDocument?.attributes.deprecated_slug === principalSlug ? selectedDocument : null}
+          slug={principalSlug}
           features={features}
           onOpenChange={(open) => {
             if (!open) closePrincipalDrawer();

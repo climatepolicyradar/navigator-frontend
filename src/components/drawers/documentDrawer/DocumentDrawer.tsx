@@ -20,7 +20,7 @@ import { firstCase } from "@/utils/text/firstCase";
 import { formatDateShort } from "@/utils/timedate";
 
 interface IProps {
-  documentImportId: string | null;
+  documentSlug: string | null;
   family: TFamilyPublic;
   familyTopics?: IFamilyDocumentTopics | null;
   languages: TLanguages;
@@ -28,13 +28,15 @@ interface IProps {
   open: boolean;
 }
 
-export const DocumentDrawer = ({ documentImportId, family, familyTopics, languages, onOpenChange, open }: IProps) => {
+export const DocumentDrawer = ({ documentSlug, family, familyTopics, languages, onOpenChange, open }: IProps) => {
   const features = useContext(FeaturesContext);
   // The drawer's own search, flattened onto the base params of the document page it links to
   const [documentSearch] = useSearchLevelValues("document");
   const outboundQuery = flattenLevelToBaseQuery(documentSearch);
   // The topics offered as passage search filters come from the document's concepts in `search-api`.
   // Fetched up here as the drawer returns early below when the document is missing.
+  // The drawer is addressed by slug, but the topics data is keyed by import id
+  const documentImportId = family.documents.find((doc) => doc.slug === documentSlug)?.import_id ?? null;
   const conceptTopics = useDocumentTopics(documentImportId ? [documentImportId] : [], { enabled: features["new-search"] });
 
   const isLitigation = family.attribution.category === "Litigation";
@@ -44,13 +46,13 @@ export const DocumentDrawer = ({ documentImportId, family, familyTopics, languag
   let event: TFamilyEventPublic | null = null;
 
   if (isLitigation) {
-    const eventAndDocument = getEventTableRowsData(family).find((row) => row.document?.import_id === documentImportId);
+    const eventAndDocument = getEventTableRowsData(family).find((row) => row.document?.slug === documentSlug);
     if (eventAndDocument) {
       document = eventAndDocument.document;
       event = eventAndDocument.event;
     }
   } else {
-    document = family.documents.find((doc) => doc.import_id === documentImportId);
+    document = family.documents.find((doc) => doc.slug === documentSlug);
   }
 
   /* Return an empty drawer if there is no matching document */

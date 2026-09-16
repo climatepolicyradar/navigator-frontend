@@ -42,11 +42,16 @@ export const DocumentsBlock = ({
 
   const onRowClick = useCallback(
     (rowId: string) => {
+      // the table is keyed by import id but the drawer is addressed by slugs
+      // so the url matches the document pages
       const importId = rowId.split(":")[0];
-      setLastDocumentDrawerId(importId);
-      openDocumentLevel(importId, seedPassageLevel(enclosingSearch));
+      const slug = family.documents.find((document) => document.import_id === importId)?.slug;
+      if (!slug) return;
+
+      setLastDocumentDrawerId(slug);
+      openDocumentLevel(slug, seedPassageLevel(enclosingSearch));
     },
-    [enclosingSearch, openDocumentLevel]
+    [enclosingSearch, family.documents, openDocumentLevel]
   );
 
   const onDocumentDrawerOpenChange = (open: boolean) => {
@@ -124,7 +129,7 @@ export const DocumentsBlock = ({
       </div>
 
       <DocumentDrawer
-        documentImportId={documentLevelId ?? lastDocumentDrawerId}
+        documentSlug={documentLevelId ?? lastDocumentDrawerId}
         family={family}
         familyTopics={familyTopics}
         languages={languages}
