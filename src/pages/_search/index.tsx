@@ -14,7 +14,7 @@ import { Pagination } from "@/components/molecules/pagination/Pagination";
 import { SearchControls } from "@/components/organisms/searchControls/SearchControls";
 import { ZeroStateSERPNoResults } from "@/components/organisms/zeroStates/ZeroStateSERPNoResults";
 import { ZeroStateSERPNoSearch } from "@/components/organisms/zeroStates/ZeroStateSERPNoSearch";
-import { SEARCH_FILTER_GROUPS } from "@/constants/filters";
+import { SEARCH_FILTER_GROUPS, THEMES_SEARCH_FILTER_GROUPS } from "@/constants/filters";
 import { SEARCH_SORT_OPTIONS } from "@/constants/sort";
 import { withEnvConfig } from "@/context/EnvConfig";
 import { FeaturesContext } from "@/context/FeaturesContext";
@@ -140,6 +140,8 @@ const ShadowSearch = ({ theme, themeConfig, features }: TProps) => {
     setSortParam(null);
   };
 
+  // @related: THEME_FILTERS
+  const filterGroups = features.themes ? THEMES_SEARCH_FILTER_GROUPS : SEARCH_FILTER_GROUPS;
   return (
     <FeaturesContext.Provider value={features}>
       <Layout theme={theme as TTheme} themeConfig={themeConfig} metadataKey="search">
@@ -181,7 +183,7 @@ const ShadowSearch = ({ theme, themeConfig, features }: TProps) => {
                 {hasSearch && totalNoOfResults === 0 && !isSearching && <ZeroStateSERPNoResults onClearSearch={onClearSearch} />}
               </>
             }
-            filterGroups={SEARCH_FILTER_GROUPS}
+            filterGroups={filterGroups}
             filterParamKey="filters"
             labels={availableFilters}
             queryParamKey="q"
