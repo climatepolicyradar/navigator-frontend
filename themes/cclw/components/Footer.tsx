@@ -80,9 +80,6 @@ const Footer = () => {
                     Newsletter
                   </ExternalLink>
                 </li>
-                <li className="mb-1">
-                  <ExternalLink url="https://www.climatepolicyradar.org/contact">Contact</ExternalLink>
-                </li>
               </ul>
               <div className="footer__section">
                 <div>Follow Climate Policy Radar</div>
