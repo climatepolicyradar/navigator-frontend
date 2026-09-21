@@ -5,31 +5,28 @@ import { TNestedSearchLabel } from "./labels";
 
 export type TCheckboxState = boolean | "indeterminate";
 
-type TFiltersGroupDrawerConfig = {
+type TFiltersGroupGenericConfig = {
   title: string;
-  subtitle?: string;
-  Icon: LucideIcon;
   afterPartition?: boolean;
-  container: "drawer";
   rootLabelTypes: string[];
   prepareRootLabels?: (rootLabels: TNestedSearchLabel[]) => TNestedSearchLabel[];
   topLevelDefaultOpen?: boolean;
-  displayWhenEmpty?: boolean;
   emptyStateRender?: () => ReactNode;
+};
+
+type TFiltersGroupDrawerConfig = TFiltersGroupGenericConfig & {
+  container: "drawer";
+  Icon: LucideIcon;
+  subtitle?: string;
+  displayWhenEmpty?: boolean;
   header?: never;
 };
 
-type TFiltersGroupPopoverConfig = {
-  title: string;
-  subtitle?: never;
-  Icon?: never;
-  afterPartition?: boolean;
+type TFiltersGroupPopoverConfig = TFiltersGroupGenericConfig & {
   container: "popover" | "datepicker";
-  rootLabelTypes: string[];
-  prepareRootLabels?: (rootLabels: TNestedSearchLabel[]) => TNestedSearchLabel[];
-  topLevelDefaultOpen?: boolean;
-  emptyStateRender?: () => ReactNode;
-  header?: ReactNode;
+  header?: () => ReactNode;
+  Icon?: never;
+  subtitle?: never;
 };
 
 export type TFiltersGroupConfig = TFiltersGroupDrawerConfig | TFiltersGroupPopoverConfig;

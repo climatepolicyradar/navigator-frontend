@@ -4,6 +4,7 @@ import { useContext, useMemo } from "react";
 import { ARROW_RIGHT } from "@/constants/chars";
 import { COUNTRY_FLAGS } from "@/constants/flags";
 import { FiltersContext } from "@/context/FiltersContext";
+import { ThemeContext } from "@/context/ThemeContext";
 import { TFilterPathLabel } from "@/types";
 import { getLabelPathSignature, sortFilterPathLabels } from "@/utils/filters/filterPaths";
 import { joinTailwindClasses } from "@/utils/tailwind";
@@ -40,6 +41,7 @@ interface IProps {
 }
 
 export const AppliedFilters = ({ ancestorPath = [], className, includeDateRange, showClearAll }: IProps) => {
+  const { themeConfig } = useContext(ThemeContext);
   const { appliedDateRange, checkedLabelPaths, clearFilters, labelValues, setDateRange, toggleFilter } = useContext(FiltersContext);
 
   const labels = useMemo(() => {
@@ -48,8 +50,8 @@ export const AppliedFilters = ({ ancestorPath = [], className, includeDateRange,
       (labelPath) => labelPath.length > ancestorPath.length && getLabelPathSignature(labelPath).startsWith(ancestorSignature)
     );
 
-    return sortFilterPathLabels(descendantLabelPaths);
-  }, [checkedLabelPaths, ancestorPath]);
+    return sortFilterPathLabels(descendantLabelPaths, themeConfig.searchFilters);
+  }, [ancestorPath, checkedLabelPaths, themeConfig.searchFilters]);
 
   const showDateRange = includeDateRange && appliedDateRange !== null;
 

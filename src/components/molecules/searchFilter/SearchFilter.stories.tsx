@@ -1,8 +1,9 @@
 import { Meta, StoryObj } from "@storybook/nextjs-vite";
 import uniqBy from "lodash/uniqBy";
-import { useState } from "react";
+import { useContext, useState } from "react";
 
 import { FiltersContext, TToggleFilterCallback } from "@/context/FiltersContext";
+import { ThemeContext } from "@/context/ThemeContext";
 import { TFilterPathLabel, TNestedSearchLabel } from "@/types";
 import { getLabelPathSignature, sortFilterPathLabels } from "@/utils/filters/filterPaths";
 
@@ -16,13 +17,15 @@ const meta = {
   },
   argTypes: {},
   render: (props) => {
+    const { themeConfig } = useContext(ThemeContext);
     const [checkedLabelPaths, setCheckedLabelPaths] = useState<TFilterPathLabel[][]>([]);
 
     const toggleFilter: TToggleFilterCallback = (labelPath, checked) => {
       const updatedCheckedLabelPaths = sortFilterPathLabels(
         checked === true // indeterminate is treated as unchecked
           ? uniqBy([...checkedLabelPaths, labelPath], getLabelPathSignature)
-          : checkedLabelPaths.filter((labels) => getLabelPathSignature(labels) !== getLabelPathSignature(labelPath))
+          : checkedLabelPaths.filter((labels) => getLabelPathSignature(labels) !== getLabelPathSignature(labelPath)),
+        themeConfig.searchFilters
       );
 
       setCheckedLabelPaths(updatedCheckedLabelPaths);

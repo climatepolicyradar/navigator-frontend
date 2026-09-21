@@ -14,7 +14,6 @@ import { Pagination } from "@/components/molecules/pagination/Pagination";
 import { SearchControls } from "@/components/organisms/searchControls/SearchControls";
 import { ZeroStateSERPNoResults } from "@/components/organisms/zeroStates/ZeroStateSERPNoResults";
 import { ZeroStateSERPNoSearch } from "@/components/organisms/zeroStates/ZeroStateSERPNoSearch";
-import { SEARCH_FILTER_GROUPS } from "@/constants/filters";
 import { SEARCH_SORT_OPTIONS } from "@/constants/sort";
 import { withEnvConfig } from "@/context/EnvConfig";
 import { FeaturesContext } from "@/context/FeaturesContext";
@@ -181,7 +180,7 @@ const ShadowSearch = ({ theme, themeConfig, features }: TProps) => {
                 {hasSearch && totalNoOfResults === 0 && !isSearching && <ZeroStateSERPNoResults onClearSearch={onClearSearch} />}
               </>
             }
-            filterGroups={SEARCH_FILTER_GROUPS}
+            filterGroups={themeConfig.searchFilters}
             filterParamKey="filters"
             labels={availableFilters}
             queryParamKey="q"

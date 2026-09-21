@@ -1,7 +1,6 @@
 import sortBy from "lodash/sortBy";
 
-import { SEARCH_FILTER_GROUPS } from "@/constants/filters";
-import { TFilterPathLabel, TNestedSearchLabel } from "@/types";
+import { TFilterPathLabel, TFiltersGroupConfig, TNestedSearchLabel } from "@/types";
 
 export const getFilterPathLabel = (nestedSearchLabel: TNestedSearchLabel): TFilterPathLabel => ({
   id: nestedSearchLabel.id,
@@ -22,13 +21,13 @@ export const getLabelPathSignature = (labelPath: TFilterPathLabel[]) =>
     .reverse()
     .join("/");
 
-export const sortFilterPathLabels = (labelPaths: TFilterPathLabel[][]) =>
+export const sortFilterPathLabels = (labelPaths: TFilterPathLabel[][], searchFilters: TFiltersGroupConfig[]) =>
   sortBy(
     labelPaths,
     // Sort by group
     (labelPath) => {
       const rootLabel = labelPath[labelPath.length - 1];
-      const groupIndex = SEARCH_FILTER_GROUPS.findIndex((group) => group.rootLabelTypes.includes(rootLabel.type));
+      const groupIndex = searchFilters.findIndex((group) => group.rootLabelTypes.includes(rootLabel.type));
       return groupIndex !== -1 ? groupIndex : 99; // Ungrouped root labels go last
     },
     // Sort by alphabetical path
