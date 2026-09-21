@@ -29,12 +29,8 @@ export const DownloadSearchModal = ({ isOpen, onClose, onDownload, status, total
         <ExternalLink url="mailto:partners@climatepolicyradar.org" className="text-[#0038a9] underline">
           partners@climatepolicyradar.org
         </ExternalLink>{" "}
-        with any questions.
+        with any questions. This search allows you to download a maximum of {DOWNLOAD_CAP} results.
       </p>
-      <div className="p-3 bg-bg-flat rounded-lg text-sm text-text-secondary">
-        Downloads are limited to the first {DOWNLOAD_CAP} results of your search. Due to data discrepancies the number of entries returned may be 1 or
-        2 below the total indicated on the search results page.
-      </div>
       {status === "error" && <p className="text-red-600">There was an error downloading the CSV. Please try again.</p>}
       <div className="flex gap-2">
         <Button onClick={onDownload} disabled={isLoading} content={isLoading ? "both" : "text"}>
