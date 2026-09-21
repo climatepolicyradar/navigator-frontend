@@ -24,9 +24,12 @@ export const DownloadSearchModal = ({ isOpen, onClose, onDownload, status, total
   return (
     <Modal isOpen={isOpen} onClose={onClose} title="Download results as CSV">
       <p>
-        Please read our <LinkWithQuery href="/terms-of-use">terms of use</LinkWithQuery>, including any specific terms relevant to commercial use.
-        Please contact{" "}
-        <ExternalLink url="mailto:partners@climatepolicyradar.org" className="text-[#0038a9] underline">
+        Please read our{" "}
+        <LinkWithQuery href="/terms-of-use" className="text-text-brand underline">
+          terms of use
+        </LinkWithQuery>
+        , including any specific terms relevant to commercial use. Please contact{" "}
+        <ExternalLink url="mailto:partners@climatepolicyradar.org" className="text-text-brand underline">
           partners@climatepolicyradar.org
         </ExternalLink>{" "}
         with any questions. This search allows you to download a maximum of {DOWNLOAD_CAP} results.
