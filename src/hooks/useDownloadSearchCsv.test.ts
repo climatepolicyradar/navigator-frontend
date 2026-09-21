@@ -6,7 +6,13 @@ describe("buildDownloadSearchCsvUrl", () => {
   const originalEnv = process.env.NEXT_PUBLIC_API_URL;
 
   afterEach(() => {
-    process.env.NEXT_PUBLIC_API_URL = originalEnv;
+    // Assigning `undefined` to a process.env key coerces it to the string "undefined",
+    // so an originally-unset var must be deleted, not reassigned.
+    if (originalEnv === undefined) {
+      delete process.env.NEXT_PUBLIC_API_URL;
+    } else {
+      process.env.NEXT_PUBLIC_API_URL = originalEnv;
+    }
   });
 
   it("builds the download endpoint with query, order_by, and max_results", () => {
