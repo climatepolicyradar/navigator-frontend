@@ -1,8 +1,9 @@
 import { LucideInfo } from "lucide-react";
+import { ReactNode } from "react";
 
 import { ProductSupport } from "@/components/molecules/productSupport/ProductSupport";
 
-export const FilterHeaderTopics = () => (
+export const FilterHeaderTopics: ReactNode = (
   <div className="pb-2 flex gap-1">
     <LucideInfo size={16} className="pt-0.5 h-full shrink-0 text-text-brand" />
     <p className="text-xs text-text-primary font-normal leading-4">

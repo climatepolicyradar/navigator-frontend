@@ -100,7 +100,6 @@ const config: TThemeConfig = {
       quickSearch: "true",
     },
   ],
-  searchFilters: [],
   labelVariations: {
     date: {
       label: "Approval FY",

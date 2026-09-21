@@ -3,15 +3,19 @@ import { ReactNode } from "react";
 
 import { TNestedSearchLabel } from "./labels";
 
+/* Filters */
+
 export type TCheckboxState = boolean | "indeterminate";
 
+/* Filter groups */
+
 type TFiltersGroupGenericConfig = {
-  title: string;
   afterPartition?: boolean;
-  rootLabelTypes: string[];
+  emptyStateRender?: ReactNode;
   prepareRootLabels?: (rootLabels: TNestedSearchLabel[]) => TNestedSearchLabel[];
+  rootLabelTypes: string[];
+  title: string;
   topLevelDefaultOpen?: boolean;
-  emptyStateRender?: () => ReactNode;
 };
 
 type TFiltersGroupDrawerConfig = TFiltersGroupGenericConfig & {
@@ -24,7 +28,7 @@ type TFiltersGroupDrawerConfig = TFiltersGroupGenericConfig & {
 
 type TFiltersGroupPopoverConfig = TFiltersGroupGenericConfig & {
   container: "popover" | "datepicker";
-  header?: () => ReactNode;
+  header?: ReactNode;
   Icon?: never;
   subtitle?: never;
 };

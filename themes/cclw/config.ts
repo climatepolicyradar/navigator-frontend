@@ -150,7 +150,6 @@ const config: TThemeConfig = {
       ],
     },
   ],
-  searchFilters: [],
   labelVariations: {},
   links: {
     downloadDatabase: "https://form.jotform.com/233131638610347",

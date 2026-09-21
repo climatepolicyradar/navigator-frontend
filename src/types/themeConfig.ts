@@ -1,7 +1,6 @@
 import { TQueryParams } from "@/constants/queryParams";
 
 import { TConfigFeatures } from "./features";
-import { TFiltersGroupConfig } from "./search/filters";
 import { TTutorialName } from "./tutorial";
 
 type TPartialRecord<Key extends string, Value> = Partial<Record<Key, Value>>;
@@ -90,7 +89,6 @@ export type TThemeConfig = {
   defaultCorpora?: string[];
   deprecatedCategories?: TThemeConfigCategory;
   deprecatedFilters: TThemeConfigFilter[];
-  searchFilters: TFiltersGroupConfig[];
   labelVariations: TPartialRecord<TLabelVariationKey, TLabelVariation>;
   links: TPartialRecord<TThemeLinkKey, string>;
   pageMetadata: Record<TThemePageMetadataKey, TThemePageMetadata>;

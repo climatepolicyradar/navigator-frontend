@@ -1,6 +1,6 @@
 import { GetServerSideProps, InferGetServerSidePropsType } from "next";
 import { useQueryState, parseAsString, parseAsJson } from "nuqs";
-import { useCallback, useContext, useEffect, useState, type SetStateAction } from "react";
+import { useCallback, useContext, useEffect, useMemo, useState, type SetStateAction } from "react";
 
 import { normaliseSearchDocumentsSortKey, SearchDocument } from "@/api/search";
 import { createGroup, isFilterGroupEmpty, AdvancedFilters } from "@/components/_experiment/advancedFilters/AdvancedFilters";
@@ -24,6 +24,7 @@ import { FilterGroupSchema } from "@/schemas";
 import { TSearchLabel, TSearchQueryGroup, TTheme } from "@/types";
 import { getFeatureFlags } from "@/utils/featureFlags";
 import { getFeatures } from "@/utils/features";
+import { getFilterGroups } from "@/utils/filters/getFilterGroups";
 import { pluralise } from "@/utils/pluralise";
 import { readConfigFile } from "@/utils/readConfigFile";
 import { conceptFiltersOnly, seedPassageLevel } from "@/utils/search/searchLevels";
@@ -47,6 +48,8 @@ const ShadowSearch = ({ theme, themeConfig, features }: TProps) => {
   const sortKey = normaliseSearchDocumentsSortKey(sortParam);
   const [totalNoOfResults, setTotalNoOfResults] = useState<number | null>(null);
   const [isSearching, setIsSearching] = useState(false);
+
+  const searchFilterGroups = useMemo(() => getFilterGroups(theme, features), [features, theme]);
 
   /**
    * Drops aggregations only when the filter tree becomes empty so greyed options
@@ -180,7 +183,7 @@ const ShadowSearch = ({ theme, themeConfig, features }: TProps) => {
                 {hasSearch && totalNoOfResults === 0 && !isSearching && <ZeroStateSERPNoResults onClearSearch={onClearSearch} />}
               </>
             }
-            filterGroups={themeConfig.searchFilters}
+            filterGroups={searchFilterGroups}
             filterParamKey="filters"
             labels={availableFilters}
             queryParamKey="q"
@@ -259,7 +262,7 @@ export default ShadowSearch;
 export const getServerSideProps = (async (context) => {
   context.res.setHeader("Cache-Control", "public, max-age=3600, immutable");
 
-  const theme = process.env.THEME;
+  const theme = process.env.THEME as TTheme;
   const themeConfig = await readConfigFile(theme);
   const featureFlags = getFeatureFlags(context.req.cookies);
   const features = getFeatures(themeConfig, featureFlags);

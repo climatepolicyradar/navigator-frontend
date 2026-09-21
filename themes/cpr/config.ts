@@ -1,9 +1,4 @@
-import { LucideEarth, LucideListFilter } from "lucide-react";
-
-import { FilterHeaderTopics } from "@/components/fragments/filters/FilterHeaderTopics";
 import { TThemeConfig } from "@/types";
-import { prepareGeographyFilters } from "@/utils/filters/prepareGeographyFilter";
-import { prepareTopicFilters } from "@/utils/filters/prepareTopicFilters";
 
 const config: TThemeConfig = {
   deprecatedCategories: {
@@ -402,38 +397,6 @@ const config: TThemeConfig = {
           group: "UNFCCC",
         },
       ],
-    },
-  ],
-  searchFilters: [
-    {
-      container: "drawer",
-      Icon: LucideListFilter,
-      rootLabelTypes: ["category"],
-      subtitle: "Choose themes and specific filters to refine your search",
-      title: "Filters",
-    },
-    {
-      container: "drawer",
-      Icon: LucideEarth,
-      prepareRootLabels: prepareGeographyFilters,
-      rootLabelTypes: ["region"],
-      subtitle: "Publish location of main document",
-      title: "Geography",
-      topLevelDefaultOpen: true,
-    },
-    {
-      afterPartition: true,
-      container: "popover",
-      header: FilterHeaderTopics,
-      prepareRootLabels: prepareTopicFilters,
-      rootLabelTypes: ["concept"],
-      title: "Topic",
-      topLevelDefaultOpen: true,
-    },
-    {
-      container: "datepicker",
-      rootLabelTypes: [],
-      title: "Date",
     },
   ],
   labelVariations: {
