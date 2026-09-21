@@ -108,6 +108,7 @@ const config: TThemeConfig = {
   },
   links: {
     downloadDatabase: "https://form.jotform.com/242902819253357",
+    leaveFeedback: "https://form.jotform.com/243033093255349",
   },
   pageMetadata: {
     default: {

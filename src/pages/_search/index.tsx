@@ -160,14 +160,15 @@ const ShadowSearch = ({ theme, themeConfig, features }: TProps) => {
               >
                 Find out more.
               </button>{" "}
-              {/* TODO per custom app */}
-              <PageLink
-                href="https://form.jotform.com/262366350830354"
-                external
-                className="inline text-text-brand underline underline-offset-2 decoration-slate-300 hocus:decoration-text-brand"
-              >
-                Leave feedback
-              </PageLink>
+              {themeConfig.links.leaveFeedback && (
+                <PageLink
+                  href={themeConfig.links.leaveFeedback}
+                  external
+                  className="inline text-text-brand underline underline-offset-2 decoration-slate-300 hocus:decoration-text-brand"
+                >
+                  Leave feedback
+                </PageLink>
+              )}
             </span>
             <DownloadSearch />
           </div>
