@@ -11,7 +11,7 @@ const config: TThemeConfig = {
     "MCF.corpus.GEF.Guidance",
     "MCF.corpus.GCF.Guidance",
   ],
-  filters: [
+  deprecatedFilters: [
     {
       label: "Climate funds",
       taxonomyKey: "fund",

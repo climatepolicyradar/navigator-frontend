@@ -2,7 +2,7 @@ import { TThemeConfig } from "@/types";
 
 const config: TThemeConfig = {
   defaultCorpora: ["Academic.corpus.Litigation.n0000"],
-  filters: [],
+  deprecatedFilters: [],
   labelVariations: {
     date: {
       label: "Filing year",
