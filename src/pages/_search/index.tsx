@@ -160,7 +160,7 @@ const ShadowSearch = ({ theme, themeConfig, features }: TProps) => {
               >
                 Find out more.
               </button>{" "}
-              {themeConfig.links.leaveFeedback && (
+              {themeConfig?.links?.leaveFeedback && (
                 <PageLink
                   href={themeConfig.links.leaveFeedback}
                   external

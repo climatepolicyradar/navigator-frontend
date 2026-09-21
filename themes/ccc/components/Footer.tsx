@@ -1,12 +1,15 @@
 import Image from "next/image";
 import Link from "next/link";
+import { useContext } from "react";
 
 import { ExternalLink } from "@/components/ExternalLink";
 import { LinkWithQuery } from "@/components/LinkWithQuery";
 import { FiveColumns } from "@/components/atoms/columns/FiveColumns";
 import { Divider } from "@/components/dividers/Divider";
+import { ThemeContext } from "@/context/ThemeContext";
 
 export const Footer = () => {
+  const { themeConfig } = useContext(ThemeContext);
   const link = "text-sm color-text-primary hover:underline";
   const strong = "font-semibold";
 
@@ -98,13 +101,15 @@ export const Footer = () => {
           </li>
         </ul>
         <div className="color-text-secondary text-sm flex flex-col gap-2 col-span-full cols-4:col-start-2 cols-4:-col-end-2 cols-5:col-start-4">
-          <p>
-            Help us improve this tool by{" "}
-            <ExternalLink url="https://form.jotform.com/252292443502350" className={link + " underline hover:text-text-brand"}>
-              providing feedback
-            </ExternalLink>{" "}
-            on your experience.
-          </p>
+          {themeConfig?.links?.leaveFeedback && (
+            <p>
+              Help us improve this tool by{" "}
+              <ExternalLink url={themeConfig?.links?.leaveFeedback} className={link + " underline hover:text-text-brand"}>
+                providing feedback
+              </ExternalLink>{" "}
+              on your experience.
+            </p>
+          )}
           <p>
             The materials on this website are intended to provide a general summary of the law and do not constitute legal advice. You should consult
             with counsel to determine applicable legal requirements in a specific fact situation.
