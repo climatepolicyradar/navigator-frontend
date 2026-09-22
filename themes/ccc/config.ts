@@ -48,6 +48,7 @@ const config: TThemeConfig = {
     litigation: true,
     "new-search": false,
     searchFamilySummary: true,
+    subdivisions: true,
   },
 };
 
