@@ -41,7 +41,7 @@ export type TLandingPageConfig = {
     }[];
   };
   search: TLandingPageSearchConfig;
-  partners: {
+  partners?: {
     title: string;
     logos: {
       src: string;
