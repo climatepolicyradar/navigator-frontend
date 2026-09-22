@@ -40,7 +40,7 @@ export const getFilterGroups = ({ features, getAppText, theme }: IProps): TFilte
 
     // Theme
     filterGroups.push({
-      title: "Themes",
+      title: "Theme",
       subtitle: "Narrow results to documents focused on specific topics",
       Icon: BookIcon,
       container: "drawer",
