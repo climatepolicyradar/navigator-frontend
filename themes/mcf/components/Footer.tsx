@@ -1,11 +1,16 @@
+import { useContext } from "react";
+
 import { ExternalLink } from "@/components/ExternalLink";
 import { LinkWithQuery } from "@/components/LinkWithQuery";
 import { SiteWidth } from "@/components/panels/SiteWidth";
 import { Heading } from "@/components/typography/Heading";
+import { ThemeContext } from "@/context/ThemeContext";
 
 import SocialMediaContent from "./FooterComponents/SocialMediaContent";
 
 const Footer = () => {
+  const { themeConfig } = useContext(ThemeContext);
+
   return (
     <footer className="flex flex-col bg-grey-400">
       <div className="py-12">
@@ -38,18 +43,20 @@ const Footer = () => {
                 </ExternalLink>
                 .
               </p>
-              <div className="footer__section">
-                <Heading level={2} extraClasses="custom-header">
-                  Feedback
-                </Heading>
-                <p>
-                  Help us improve this tool by{" "}
-                  <ExternalLink url="https://form.jotform.com/243033093255349" className="text-blue-600 hover:text-blue-800">
-                    providing feedback
-                  </ExternalLink>{" "}
-                  on your experience.
-                </p>
-              </div>
+              {themeConfig?.links?.leaveFeedback && (
+                <div className="footer__section">
+                  <Heading level={2} extraClasses="custom-header">
+                    Feedback
+                  </Heading>
+                  <p>
+                    Help us improve this tool by{" "}
+                    <ExternalLink url={themeConfig?.links?.leaveFeedback} className="text-blue-600 hover:text-blue-800">
+                      providing feedback
+                    </ExternalLink>{" "}
+                    on your experience.
+                  </p>
+                </div>
+              )}
             </div>
           </div>
         </SiteWidth>

@@ -37,7 +37,7 @@ export type TPrincipalDrawerTab = "about" | "search";
 
 type TDocumentDrawerProps = {
   document: SearchDocument | null; // The clicked search result, absent when the drawer is opened from a link
-  importId: string | null;
+  slug: string | null;
   features: TFeatures;
   onOpenChange: (open: boolean) => void;
   onTabChange: (tab: TPrincipalDrawerTab) => void;
@@ -93,7 +93,7 @@ const DrawerContent = ({ familyData, features, languages }: TDrawerContentProps)
   );
 };
 
-export function PrincipalDrawer({ document, importId, open, onOpenChange, tab, onTabChange, features }: TDocumentDrawerProps) {
+export function PrincipalDrawer({ document, slug, open, onOpenChange, tab, onTabChange, features }: TDocumentDrawerProps) {
   const { data: { languages = {} } = {} } = useConfig();
   const { getCategoryTextLookup } = useText();
   const [noOfResults, setNumberOfResults] = useState<number>(0);
@@ -101,9 +101,9 @@ export function PrincipalDrawer({ document, importId, open, onOpenChange, tab, o
   const [principalSearch] = useSearchLevelValues("principal");
 
   const { data: familyData, isLoading } = useQuery<TFamilyPresentationalData | null>({
-    queryKey: ["family", importId],
-    queryFn: () => fetch(`/api/document/${importId}`).then((res) => (res.ok ? res.json() : null)),
-    enabled: !!importId,
+    queryKey: ["family", slug],
+    queryFn: () => fetch(`/api/document/${slug}`).then((res) => (res.ok ? res.json() : null)),
+    enabled: !!slug,
   });
 
   // We use the `familyData` here as `document` is not always available, specifically when the page is refreshed.

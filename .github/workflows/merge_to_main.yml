@@ -8,7 +8,39 @@ on:
 # trunk-ignore(checkov/CKV2_GHA_1)
 permissions: write-all
 jobs:
-  # Trunk check
+  changes:
+    runs-on: ubuntu-latest
+    outputs:
+      run-observability-pulumi-up: ${{ steps.filter.outputs.run-observability-pulumi-up }}
+    steps:
+      - uses: actions/checkout@v7
+      - uses: dorny/paths-filter@v4
+        id: filter
+        with:
+          filters: |
+            run-observability-pulumi-up:
+              - 'infra/observability/**'
+  # Faro apps aren't per-environment (see infra/faro/__main__.py's allowed_origins),
+  # so there's a single production stack shared by staging, production, and review
+  # deploys alike, rather than a staging/production pair like the other infra
+  # projects.
+  # Needs no AWS credentials -- it only talks to Grafana.
+  pulumi-up-faro:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    steps:
+      - uses: actions/checkout@v7
+      - uses: astral-sh/setup-uv@v7
+      - name: Install dependencies
+        working-directory: infra/faro
+        run: uv sync
+      - name: Pulumi up
+        working-directory: infra/faro
+        run: pulumi up --yes --skip-preview --stack climatepolicyradar/frontend-faro/production
+        env:
+          PULUMI_ACCESS_TOKEN: ${{ secrets.PULUMI_ACCESS_TOKEN }}
+
   code-quality:
     runs-on: ubuntu-latest
     steps:
@@ -25,7 +57,6 @@ jobs:
         with:
           arguments: --ci
 
-  # Unit tests
   test:
     timeout-minutes: 15
     runs-on: ubuntu-latest
@@ -66,12 +97,31 @@ jobs:
 
   # Deploy to staging (per-theme build, push, and ECS deploy)
   deploy-staging:
-    needs: [code-quality, test]
+    # Needs pulumi-up-faro: it reads frontend-faro/production's stack output,
+    # so a push that changes the frontend stack needs to land first or it
+    # reads stale/missing output.
+    needs: [code-quality, test, pulumi-up-faro]
     uses: ./.github/workflows/deploy-staging.yml
     secrets: inherit
     permissions:
       id-token: write
       contents: read
+
+  observability-pulumi-up:
+    uses: ./.github/workflows/pulumi_up.yml
+    secrets: inherit
+    needs: [changes]
+    if: needs.changes.outputs.run-observability-pulumi-up == 'true'
+    strategy:
+      fail-fast: false
+      matrix:
+        environment: [staging, production]
+    with:
+      environment: ${{ matrix.environment }}
+      working-directory: ./infra/observability
+      stack: climatepolicyradar/frontend-observability/${{ matrix.environment }}
+      # Grafana only - no AWS resources in this project, so no role to assume.
+      aws-role: ""
 
   # Deploy Storybook
   storybook:

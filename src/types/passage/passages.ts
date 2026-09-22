@@ -22,7 +22,14 @@ export interface IPassageLabel {
   };
 }
 
+export interface IPassageBolding {
+  start_index: number;
+  end_index: number;
+  labelled_text: string;
+}
+
 export interface ISearchPassage {
+  boldings: IPassageBolding[];
   id: string;
   text_block_id: string;
   idx: number;

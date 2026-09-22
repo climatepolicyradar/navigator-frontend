@@ -1,6 +1,6 @@
 import { Meta, StoryObj } from "@storybook/nextjs-vite";
 
-import { IPassageLabel } from "@/types";
+import { IPassageBolding, IPassageLabel } from "@/types";
 
 import { PassageBlock, TPassage } from "./PassageBlock";
 
@@ -23,14 +23,20 @@ const makeLabel = (value: string): IPassageLabel => ({
   value: { id: `concept-${value}`, type: "concept", value },
 });
 
+const makeBolding = (startIndex: number, endIndex: number, labelledText: string): IPassageBolding => ({
+  start_index: startIndex,
+  end_index: endIndex,
+  labelled_text: labelledText,
+});
+
 const basePassage: TPassage = {
+  boldings: [],
   id: "passage-1",
   document_id: "doc-1",
   idx: 12,
   content:
     "Certain ecological and other requirements for geohazards and for the areas used by cultivation or toxic waste, in particular for the destruction of grassland with high biological diversity within the meaning of Directive (EU) 2018/2001 and areas with high carbon stocks.",
   pages: [{ page_number: 16 }],
-  heading_id: "heading-1",
   documentTitle: "Law for the expansion of renewable energies (Renewable Energy Sources Act - EEG 2023; consolidated version)",
   headingText: "Section 4: National Target 16. Mainstreaming Biodiversity into National Development",
 };
@@ -51,6 +57,7 @@ export const Clickable: TStory = {
 export const MinimalData: TStory = {
   args: {
     passage: {
+      boldings: [],
       id: "passage-2",
       document_id: "doc-2",
       idx: 0,
@@ -84,6 +91,16 @@ export const NoPage: TStory = {
       ...basePassage,
       pages: undefined,
     },
+  },
+};
+
+export const WithPassageHighlight: TStory = {
+  args: {
+    passage: {
+      ...basePassage,
+      boldings: [makeBolding(8, 18, "ecological"), makeBolding(46, 56, "geohazards")],
+    },
+    activeTopicsIds: [],
   },
 };
 
@@ -131,10 +148,9 @@ const highlightedLabels = [
 // Enough topics to wrap the colour cycle, with "Land use" showing that a topic keeps one
 // colour across both of its spans. The query claims the first "high" outright, so the
 // "Biodiversity" span starts after it; the second "high" is a query match on its own.
-export const WithHighlights: TStory = {
+export const WithManyDifferentHighlights: TStory = {
   args: {
-    passage: { ...basePassage, labels: highlightedLabels },
-    query: "high",
+    passage: { ...basePassage, labels: highlightedLabels, boldings: [makeBolding(0, 7, "Certain")] },
     activeTopicsIds: highlightedLabels.filter(({ value }) => value.value !== "Renewable energy").map(({ value }) => value.id),
   },
 };

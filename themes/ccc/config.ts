@@ -10,8 +10,9 @@ const config: TThemeConfig = {
     },
   },
   links: {
-    downloadDatabase: "https://form.jotform.com/252292116187356",
     cookiePolicy: "/cookie-policy",
+    downloadDatabase: "https://form.jotform.com/252292116187356",
+    leaveFeedback: "https://form.jotform.com/252292443502350",
     privacyPolicy: "/privacy-policy",
     targetDomain: "https://app.climatepolicyradar.org",
   },

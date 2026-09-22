@@ -91,6 +91,7 @@ vi.mock("nuqs", async (importOriginal) => {
 });
 
 const buildPassage = (overrides: Partial<ISearchPassage> = {}): ISearchPassage => ({
+  boldings: [],
   id: "passage-1",
   text_block_id: "block-1",
   idx: 12,

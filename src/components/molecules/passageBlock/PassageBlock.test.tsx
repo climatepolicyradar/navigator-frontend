@@ -14,6 +14,12 @@ const makeLabel = (value: string): IPassageLabel => ({
   value: { id: `concept-${value}`, type: "concept", value },
 });
 
+const makeBolding = (startIndex: number, endIndex: number, labelledText: string) => ({
+  start_index: startIndex,
+  end_index: endIndex,
+  labelled_text: labelledText,
+});
+
 // `makeLabel` leaves the span indices at zero, which suits the topic list but not the
 // highlighting, so those cases build their labels against real positions in the content
 const makeSpanLabel = (value: string, startIndex: number, endIndex: number): IPassageLabel => ({
@@ -23,12 +29,12 @@ const makeSpanLabel = (value: string, startIndex: number, endIndex: number): IPa
 });
 
 const basePassage: TPassage = {
+  boldings: [],
   id: "passage-1",
   document_id: "doc-1",
   idx: 12,
   content: "Certain ecological and other requirements for geohazards.",
   pages: [{ page_number: 16 }],
-  heading_id: "heading-1",
   documentTitle: "Renewable Energy Sources Act",
   headingText: "Section 4: National Target 16",
 };
@@ -135,14 +141,15 @@ describe("PassageBlock", () => {
 
   describe("highlighting", () => {
     // "Certain ecological and other requirements for geohazards."
-    //          ^8    ^18                                ^46   ^56
+    //          ^8       ^18                          ^46      ^56
     const topicPassage: TPassage = {
       ...basePassage,
       labels: [makeSpanLabel("Ecology", 8, 18), makeSpanLabel("Geohazards", 46, 56)],
     };
     const activeTopicsIds = ["concept-Ecology", "concept-Geohazards"];
 
-    const repeatedPassage: TPassage = { ...basePassage, content: "Climate adaptation and climate mitigation" };
+    const boldings = [makeBolding(0, 7, "Climate")];
+    const boldingPassage: TPassage = { ...basePassage, content: "Climate adaptation and climate mitigation", boldings };
 
     it("leaves the content as a single text node when there is no query and no active topics", () => {
       render(<PassageBlock passage={basePassage} />);
@@ -204,36 +211,23 @@ describe("PassageBlock", () => {
     });
 
     it("highlights every occurrence of the query", () => {
-      render(<PassageBlock passage={repeatedPassage} query="climate" />);
+      const passage: TPassage = { ...boldingPassage, boldings: [makeBolding(0, 7, "climate"), makeBolding(23, 30, "climate")] };
+      render(<PassageBlock passage={passage} />);
 
       const highlighted = screen.getAllByText(/^climate$/i);
       expect(highlighted).toHaveLength(2);
       highlighted.forEach((span) => expect(span).toHaveClass("bg-yellow-200"));
     });
 
-    it("matches a query the user typed with surrounding spaces", () => {
-      render(<PassageBlock passage={repeatedPassage} query="  climate  " />);
-      expect(screen.getAllByText(/^climate$/i)).toHaveLength(2);
-    });
-
-    it("does not highlight anything for an empty or whitespace-only query", () => {
-      const { unmount } = render(<PassageBlock passage={repeatedPassage} query="" />);
-      expect(screen.getByText(repeatedPassage.content).querySelector("span")).toBeNull();
-      unmount();
-
-      render(<PassageBlock passage={repeatedPassage} query="   " />);
-      expect(screen.getByText(repeatedPassage.content).querySelector("span")).toBeNull();
-    });
-
     it("gives the query the text it shares with a topic, and starts the topic after it", () => {
       // "Climate" is both the query match and the start of the topic span 0-18
-      const passage: TPassage = { ...repeatedPassage, labels: [makeSpanLabel("Climate action", 0, 18)] };
-      render(<PassageBlock passage={passage} query="climate" activeTopicsIds={["concept-Climate action"]} />);
+      const passage: TPassage = { ...boldingPassage, labels: [makeSpanLabel("Climate adaptation", 0, 18)] };
+      render(<PassageBlock passage={passage} activeTopicsIds={["concept-Climate adaptation"]} />);
 
       expect(screen.getByText("Climate")).toHaveClass(QUERY_COLOUR);
       expect(screen.getByText("adaptation")).toHaveClass(TOPIC_COLOURS[0]);
       // Nothing carries both, and the text is unchanged
-      expect(screen.getByText("Climate").parentElement).toHaveTextContent(repeatedPassage.content);
+      expect(screen.getByText("Climate").parentElement).toHaveTextContent(boldingPassage.content);
     });
 
     it("gives an earlier topic the text it shares with a later one", () => {
