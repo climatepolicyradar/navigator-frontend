@@ -51,6 +51,7 @@ storybook-static
 
 # vitest
 vitest.xml
+.vitest
 .env.backup
 
 # typescript
