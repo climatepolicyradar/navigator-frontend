@@ -7,7 +7,7 @@ import { extractGeographySlugs } from "@/utils/geography";
 import { toSitemapXml } from "@/utils/sitemap";
 
 const buildSitemap = async (): Promise<MetadataRoute.Sitemap> => {
-  const allCorpusIds = CCCthemeConfig.categories?.options.flatMap((option) => option.value) || [];
+  const allCorpusIds = CCCthemeConfig.deprecatedCategories?.options.flatMap((option) => option.value) || [];
   const allCorpusIdsSearchParams = allCorpusIds.map((corpusId) => ["corpus.import_id", corpusId]);
   const urlSearchParams = new URLSearchParams(allCorpusIdsSearchParams);
 

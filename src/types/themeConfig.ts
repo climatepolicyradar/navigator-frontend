@@ -87,8 +87,8 @@ type TThemePageMetadata = {
 
 export type TThemeConfig = {
   defaultCorpora?: string[];
-  categories?: TThemeConfigCategory;
-  filters: TThemeConfigFilter[];
+  deprecatedCategories?: TThemeConfigCategory;
+  deprecatedFilters: TThemeConfigFilter[];
   labelVariations: TPartialRecord<TLabelVariationKey, TLabelVariation>;
   links: TPartialRecord<TThemeLinkKey, string>;
   pageMetadata: Record<TThemePageMetadataKey, TThemePageMetadata>;

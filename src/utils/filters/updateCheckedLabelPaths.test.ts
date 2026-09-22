@@ -1,4 +1,4 @@
-import { TFilterPathLabel } from "@/types";
+import { TFilterPathLabel, TFiltersGroupConfig } from "@/types";
 
 import { sortFilterPathLabels } from "./filterPaths";
 import { updateCheckedLabelPaths } from "./updateCheckedLabelPaths";
@@ -9,36 +9,40 @@ const createPathLabel = (value: string): TFilterPathLabel => ({
   value,
 });
 
+const searchFilters: TFiltersGroupConfig[] = [];
+
 describe("updateCheckedLabelPaths", () => {
   it("adds a filter when checked and none are currently checked", () => {
     const checkedLabelPaths: TFilterPathLabel[][] = [];
     const labelPath: TFilterPathLabel[] = [createPathLabel("self")];
-    expect(updateCheckedLabelPaths(checkedLabelPaths, labelPath, true)).toEqual([[createPathLabel("self")]]);
+    expect(updateCheckedLabelPaths(checkedLabelPaths, labelPath, true, searchFilters)).toEqual([[createPathLabel("self")]]);
   });
 
   it("removes the exact filter when unchecked", () => {
     const checkedLabelPaths: TFilterPathLabel[][] = [[createPathLabel("self")]];
     const labelPath: TFilterPathLabel[] = [createPathLabel("self")];
-    expect(updateCheckedLabelPaths(checkedLabelPaths, labelPath, false)).toEqual([]);
+    expect(updateCheckedLabelPaths(checkedLabelPaths, labelPath, false, searchFilters)).toEqual([]);
   });
 
   it("leaves an already-checked sibling untouched when checking a filter", () => {
     const checkedLabelPaths: TFilterPathLabel[][] = [[createPathLabel("peer")]];
     const labelPath: TFilterPathLabel[] = [createPathLabel("self")];
-    const expected = sortFilterPathLabels([[createPathLabel("peer")], [createPathLabel("self")]]);
-    expect(updateCheckedLabelPaths(checkedLabelPaths, labelPath, true)).toEqual(expected);
+    const expected = sortFilterPathLabels([[createPathLabel("peer")], [createPathLabel("self")]], searchFilters);
+    expect(updateCheckedLabelPaths(checkedLabelPaths, labelPath, true, searchFilters)).toEqual(expected);
   });
 
   it("removes an already-checked parent when checking its child", () => {
     const checkedLabelPaths: TFilterPathLabel[][] = [[createPathLabel("parent")]];
     const labelPath: TFilterPathLabel[] = [createPathLabel("child"), createPathLabel("parent")];
-    expect(updateCheckedLabelPaths(checkedLabelPaths, labelPath, true)).toEqual([[createPathLabel("child"), createPathLabel("parent")]]);
+    expect(updateCheckedLabelPaths(checkedLabelPaths, labelPath, true, searchFilters)).toEqual([
+      [createPathLabel("child"), createPathLabel("parent")],
+    ]);
   });
 
   it("removes an already-checked grandparent when checking its grandchild", () => {
     const checkedLabelPaths: TFilterPathLabel[][] = [[createPathLabel("parent")]];
     const labelPath: TFilterPathLabel[] = [createPathLabel("grandchild"), createPathLabel("child"), createPathLabel("parent")];
-    expect(updateCheckedLabelPaths(checkedLabelPaths, labelPath, true)).toEqual([
+    expect(updateCheckedLabelPaths(checkedLabelPaths, labelPath, true, searchFilters)).toEqual([
       [createPathLabel("grandchild"), createPathLabel("child"), createPathLabel("parent")],
     ]);
   });
@@ -46,7 +50,7 @@ describe("updateCheckedLabelPaths", () => {
   it("removes an already-checked child when checking its parent", () => {
     const checkedLabelPaths: TFilterPathLabel[][] = [[createPathLabel("child"), createPathLabel("parent")]];
     const labelPath: TFilterPathLabel[] = [createPathLabel("parent")];
-    expect(updateCheckedLabelPaths(checkedLabelPaths, labelPath, true)).toEqual([[createPathLabel("parent")]]);
+    expect(updateCheckedLabelPaths(checkedLabelPaths, labelPath, true, searchFilters)).toEqual([[createPathLabel("parent")]]);
   });
 
   it("removes already-checked children when checking their parent", () => {
@@ -55,12 +59,12 @@ describe("updateCheckedLabelPaths", () => {
       [createPathLabel("child 2"), createPathLabel("parent")],
     ];
     const labelPath: TFilterPathLabel[] = [createPathLabel("parent")];
-    expect(updateCheckedLabelPaths(checkedLabelPaths, labelPath, true)).toEqual([[createPathLabel("parent")]]);
+    expect(updateCheckedLabelPaths(checkedLabelPaths, labelPath, true, searchFilters)).toEqual([[createPathLabel("parent")]]);
   });
 
   it("removes an already-checked grandchild when checking its grandparent", () => {
     const checkedLabelPaths: TFilterPathLabel[][] = [[createPathLabel("grandchild"), createPathLabel("child"), createPathLabel("parent")]];
     const labelPath: TFilterPathLabel[] = [createPathLabel("parent")];
-    expect(updateCheckedLabelPaths(checkedLabelPaths, labelPath, true)).toEqual([[createPathLabel("parent")]]);
+    expect(updateCheckedLabelPaths(checkedLabelPaths, labelPath, true, searchFilters)).toEqual([[createPathLabel("parent")]]);
   });
 });

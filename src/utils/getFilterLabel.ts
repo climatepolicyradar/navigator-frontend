@@ -15,7 +15,7 @@ export const getFilterLabel = (fallbackLabel: string, key: TLabelVariationKey, q
 
   // Otherwise - we check if the category values are in our label variation defined categories
   if (!Array.isArray(queryCategories)) {
-    const categoryValues = themeConfig.categories.options.find((category) => category.slug === queryCategories);
+    const categoryValues = themeConfig.deprecatedCategories.options.find((category) => category.slug === queryCategories);
     if (categoryValues && labelVariation && containsAny(labelVariation.category, categoryValues.value)) {
       return labelVariation.label;
     }
