@@ -1,0 +1,54 @@
+# trunk-ignore-all(checkov/CKV2_GHA_1)
+name: Use search-api review stack
+
+on:
+  issue_comment:
+    types: [created]
+
+jobs:
+  use-search-api:
+    if: github.event.issue.pull_request != null && startsWith(github.event.comment.body, '/use-search-api')
+    runs-on: ubuntu-latest
+    permissions:
+      pull-requests: write
+    env:
+      PULUMI_ACCESS_TOKEN: ${{ secrets.PULUMI_ACCESS_TOKEN }}
+      ORG: climatepolicyradar
+      PROJECT: frontend
+      SEARCH_PROJECT: search
+      GH_TOKEN: ${{ github.token }}
+    steps:
+      - name: Parse command
+        id: parse
+        env:
+          COMMENT_BODY: ${{ github.event.comment.body }}
+        run: |
+          # Expect exactly "/use-search-api <arg>" where <arg> is "prod" or a
+          # positive integer PR number. Reject anything else with a clear
+          # comment rather than silently doing nothing.
+          arg=$(echo "$COMMENT_BODY" | awk '{print $2}')
+
+          if [ -z "$arg" ]; then
+            echo "error=Usage: \`/use-search-api <search-api-pr-number>\` or \`/use-search-api prod\`." >> "$GITHUB_OUTPUT"
+            echo "mode=error" >> "$GITHUB_OUTPUT"
+          elif [ "$arg" = "prod" ]; then
+            echo "mode=prod" >> "$GITHUB_OUTPUT"
+          elif echo "$arg" | grep -qE '^[0-9]+$'; then
+            echo "mode=pr" >> "$GITHUB_OUTPUT"
+            echo "search_pr_number=$arg" >> "$GITHUB_OUTPUT"
+          else
+            echo "error=Could not parse \`$arg\` as a PR number or \`prod\`. Usage: \`/use-search-api <search-api-pr-number>\` or \`/use-search-api prod\`." >> "$GITHUB_OUTPUT"
+            echo "mode=error" >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: Post parse error
+        if: steps.parse.outputs.mode == 'error'
+        run: |
+          gh api \
+            --method POST \
+            "repos/${{ github.repository }}/issues/${{ github.event.issue.number }}/comments" \
+            -f body="${{ steps.parse.outputs.error }}"
+
+      - name: Fail on parse error
+        if: steps.parse.outputs.mode == 'error'
+        run: exit 1
