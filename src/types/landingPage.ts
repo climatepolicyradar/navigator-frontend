@@ -41,6 +41,15 @@ export type TLandingPageConfig = {
     }[];
   };
   search: TLandingPageSearchConfig;
+  partners: {
+    title: string;
+    logos: {
+      src: string;
+      alt: string;
+      width: number;
+      height: number;
+    }[];
+  };
   textContent: {
     title: string;
     content: ReactNode;
