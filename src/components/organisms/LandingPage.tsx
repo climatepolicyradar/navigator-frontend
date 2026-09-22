@@ -1,6 +1,6 @@
-import { LucideSearch } from "lucide-react";
+import { LucidePause, LucidePlay, LucideSearch } from "lucide-react";
 import Image from "next/image";
-import { useContext } from "react";
+import { useContext, useEffect, useRef, useState } from "react";
 
 import { Button } from "@/components/atoms/button/Button";
 import { FiveColumns } from "@/components/atoms/columns/FiveColumns";
@@ -17,6 +17,86 @@ import { joinTailwindClasses } from "@/utils/tailwind";
 
 type TProps = {
   config: TLandingPageConfig;
+};
+
+type TPartnerLogosProps = {
+  partners: NonNullable<TLandingPageConfig["partners"]>;
+};
+
+// The width the logos need on a single line, measured per item so it holds whether they are currently wrapped or not
+const getSingleLineWidth = (list: HTMLUListElement) => {
+  const items = Array.from(list.children);
+  const gap = parseFloat(window.getComputedStyle(list).columnGap) || 0;
+
+  return items.reduce((total, item) => total + item.getBoundingClientRect().width, 0) + gap * Math.max(items.length - 1, 0);
+};
+
+const PartnerLogos = ({ partners }: TPartnerLogosProps) => {
+  const containerRef = useRef<HTMLDivElement>(null);
+  const listRef = useRef<HTMLUListElement>(null);
+  const [shouldScroll, setShouldScroll] = useState(false);
+  const [isPaused, setIsPaused] = useState(false);
+
+  useEffect(() => {
+    const container = containerRef.current;
+    const list = listRef.current;
+    if (!container || !list) return;
+
+    // Only scroll when the logos would not fit on one line, and only for those who have not asked for less motion
+    const motionQuery = window.matchMedia("(prefers-reduced-motion: reduce)");
+    const update = () => setShouldScroll(!motionQuery.matches && getSingleLineWidth(list) > container.clientWidth);
+    const observer = new ResizeObserver(update);
+
+    observer.observe(container);
+    observer.observe(list);
+    motionQuery.addEventListener("change", update);
+
+    return () => {
+      observer.disconnect();
+      motionQuery.removeEventListener("change", update);
+    };
+  }, []);
+
+  const logoItems = partners.logos.map((logo, logoIndex) => (
+    <li key={logoIndex}>
+      <Image {...logo} alt={logo.alt} className="h-12 w-auto" />
+    </li>
+  ));
+
+  return (
+    <div className="col-start-1 -col-end-1 grid grid-cols-subgrid mb-8 cols-4:mb-10 cols-5:mb-12">
+      <div className="col-start-1 -col-end-1 cols-5:col-start-2 cols-5:-col-end-2 flex flex-row items-center gap-3 mb-6">
+        <h2 className="text-lg text-text-primary font-heavy">{partners.title}</h2>
+        {shouldScroll && (
+          <button
+            type="button"
+            onClick={() => setIsPaused((paused) => !paused)}
+            className="p-1.5 text-text-secondary hocus:text-text-primary border border-border-light rounded-full"
+          >
+            {isPaused ? <LucidePlay size={16} /> : <LucidePause size={16} />}
+            <span className="sr-only">{isPaused ? "Play" : "Pause"} scrolling logos</span>
+          </button>
+        )}
+      </div>
+      <div ref={containerRef} className="col-start-1 -col-end-1 overflow-hidden">
+        <div
+          className={joinTailwindClasses(
+            shouldScroll && "flex w-max animate-marquee hover:[animation-play-state:paused] focus-within:[animation-play-state:paused]",
+            isPaused && "[animation-play-state:paused]"
+          )}
+        >
+          <ul ref={listRef} className={joinTailwindClasses("flex items-center gap-10", shouldScroll ? "shrink-0 pr-10" : "flex-wrap justify-center")}>
+            {logoItems}
+          </ul>
+          {shouldScroll && (
+            <ul aria-hidden className="flex shrink-0 items-center gap-10 pr-10">
+              {logoItems}
+            </ul>
+          )}
+        </div>
+      </div>
+    </div>
+  );
 };
 
 export const LandingPage = ({ config }: TProps) => {
@@ -72,6 +152,7 @@ export const LandingPage = ({ config }: TProps) => {
               ))}
             </ul>
           </div>
+          {config.partners && <PartnerLogos partners={config.partners} />}
           <div className="col-start-1 -col-end-1 cols-3:col-end-5 cols-4:col-end-7 cols-5:col-start-2 grid grid-cols-subgrid gap-y-8 cols-4:gap-y-10 cols-5:gap-y-12">
             {config.textContent.map(({ title, content }, contentIndex) => (
               <div key={contentIndex} className="col-start-1 -col-end-1 text-base text-text-primary font-normal leading-6">
