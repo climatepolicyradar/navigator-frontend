@@ -178,7 +178,12 @@ if is_review_stack and shared_resources_env == "production":
             location="../Dockerfile",
         ),
         platforms=[docker_build.Platform.LINUX_AMD64],
-        build_args={"THEME": theme},
+        # GITHUB_SHA is required by scripts/upload-source-maps.sh (see
+        # Dockerfile); review builds don't pass Faro credentials, so the
+        # script skips the actual upload, but it still requires this
+        # positional arg to be non-empty. The stack name is a stand-in
+        # unique identifier here since no real commit SHA is available.
+        build_args={"THEME": theme, "GITHUB_SHA": stack},
         push=True,
         registries=[
             docker_build.RegistryArgs(

@@ -174,7 +174,7 @@ const ShadowSearch = ({ theme, themeConfig, features }: TProps) => {
                 </PageLink>
               )}
             </span>
-            <DownloadSearch />
+            <DownloadSearch hasSearch={hasSearch} query={query} filters={filters} sort={sortKey} totalResults={totalNoOfResults} />
           </div>
           {/* CONTROLS - FILTERS, SORT, etc */}
           {/* TODO add most recent date from search results */}
