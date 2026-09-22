@@ -1,9 +1,14 @@
 import { LucideScanSearch } from "lucide-react";
+import { useContext } from "react";
 
 import { PageLink } from "@/components/atoms/pageLink/PageLink";
+import { ThemeContext } from "@/context/ThemeContext";
 import { SUGGESTED_SEARCHES } from "@/cpr/constants/suggestedSearches";
 
 export const ZeroStateSERPNoSearch = () => {
+  const { themeConfig } = useContext(ThemeContext);
+  const href = themeConfig.features["new-search"] ? "/search" : "_search";
+
   return (
     <div className="px-5 py-8 flex flex-col items-center gap-4 border border-border-normal rounded-lg">
       <div className="p-3 bg-[#1A4F8C0D] rounded-full">
@@ -17,7 +22,7 @@ export const ZeroStateSERPNoSearch = () => {
         {SUGGESTED_SEARCHES.map((suggestion) => (
           <li key={suggestion.label}>
             <PageLink
-              href="/_search"
+              href={href}
               query={suggestion.newParams}
               className="block px-3 py-1.5 border border-border-normal rounded-full text-base text-text-brand font-medium leading-5"
             >

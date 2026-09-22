@@ -1,7 +1,7 @@
 import { QUERY_PARAMS } from "@/constants/queryParams";
-import { TSuggestedSearch } from "@/types";
+import { TSearchSuggestion } from "@/types";
 
-export const SUGGESTED_SEARCHES: TSuggestedSearch[] = [
+export const SUGGESTED_SEARCHES: TSearchSuggestion[] = [
   {
     label: "Latest NDCs",
     params: {
