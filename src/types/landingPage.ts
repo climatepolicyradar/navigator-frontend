@@ -3,6 +3,8 @@ import { ComponentProps, ReactNode } from "react";
 
 import { TQueryParams } from "@/constants/queryParams";
 
+import { TFeature } from "./features";
+
 type TImageProps = ComponentProps<typeof Image> & {
   // Prevents no width/height runtime error
   width: number;
@@ -21,16 +23,16 @@ export type TLandingPageSearchConfig = {
 };
 
 export type TLandingPageConfig = {
-  background: {
+  background?: {
     classes?: string;
-    image?: TImageProps;
+    image: TImageProps;
   };
   hero: {
     description: string;
     taxonomy: string;
     title: string;
   };
-  organisation: {
+  organisation?: {
     logoImage: TImageProps;
     links: {
       label: string;
@@ -42,4 +44,5 @@ export type TLandingPageConfig = {
     title: string;
     content: ReactNode;
   }[];
+  requiredFeature?: TFeature;
 };
