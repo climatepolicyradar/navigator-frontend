@@ -9,6 +9,6 @@ export const prepareCCCFilters: TFiltersGroupPrep = (rootLabels) => {
 
   const litigationLabelsByType = groupBy(litigationCategory.children, "type");
 
-  // TODO PLACEHOLDER - add type order, naming, subtitles once data is available
+  // TODO PLACEHOLDER - add type order, naming, subtitles once data is available [FUS-519]
   return Object.entries(litigationLabelsByType).map(([type, labels]) => createGroupLabel(type, labels));
 };

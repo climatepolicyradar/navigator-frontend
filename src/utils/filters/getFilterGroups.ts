@@ -25,7 +25,7 @@ interface IProps {
   theme: TTheme;
 }
 
-// TODO use `features` for themes (nature project)
+// TODO use `features` for themes (nature project) [FUS-438]
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 export const getFilterGroups = ({ features, getAppText, theme }: IProps): TFiltersGroupConfig[] => {
   const filterGroups: TFiltersGroupConfig[] = [];
