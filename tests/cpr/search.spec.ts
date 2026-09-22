@@ -4,6 +4,11 @@ import { genericPageModel as genericPage } from "../pageObjectModels/genericPage
 
 test.describe("Search", () => {
   test("basic search from homepage", async ({ page }) => {
+    test.skip(
+      process.env.E2E_TEST_FEATURE_FLAGS === "true",
+      "Once we make the switch over we can enable this test because it references new search page"
+    );
+
     await page.goto("/");
     /** Wait for page to finish loading */
     await page.waitForLoadState("networkidle");
