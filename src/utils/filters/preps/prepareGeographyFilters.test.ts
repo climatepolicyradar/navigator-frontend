@@ -1,6 +1,6 @@
 import { TNestedSearchLabel } from "@/types";
 
-import { prepareGeographyFilters } from "./prepareGeographyFilter";
+import { prepareGeographyFilters } from "./prepareGeographyFilters";
 
 const country = (value: string): TNestedSearchLabel => ({
   id: `country::${value}`,

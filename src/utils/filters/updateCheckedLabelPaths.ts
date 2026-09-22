@@ -1,12 +1,13 @@
 import uniqBy from "lodash/uniqBy";
 
-import { TCheckboxState, TFilterPathLabel } from "@/types";
+import { TCheckboxState, TFilterPathLabel, TFiltersGroupConfig } from "@/types";
 import { getLabelPathSignature, sortFilterPathLabels } from "@/utils/filters/filterPaths";
 
 export const updateCheckedLabelPaths = (
   checkedLabelPaths: TFilterPathLabel[][],
   labelPath: TFilterPathLabel[],
-  checked: TCheckboxState
+  checked: TCheckboxState,
+  searchFilters: TFiltersGroupConfig[]
 ): TFilterPathLabel[][] => {
   let updatedCheckedLabelPaths = [...checkedLabelPaths];
 
@@ -28,5 +29,5 @@ export const updateCheckedLabelPaths = (
   }
 
   // Ensure no duplicates and order matches the filter presentation (currently alphabetical)
-  return sortFilterPathLabels(uniqBy(updatedCheckedLabelPaths, getLabelPathSignature));
+  return sortFilterPathLabels(uniqBy(updatedCheckedLabelPaths, getLabelPathSignature), searchFilters);
 };

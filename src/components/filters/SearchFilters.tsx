@@ -96,10 +96,10 @@ const SearchFilters = ({
       </div>
 
       <AppliedFilters filterChange={handleFilterChange} concepts={conceptsData} familyConcepts={familyConceptsData} />
-      {themeConfigStatus === "success" && themeConfig.categories && (
-        <Accordion title={themeConfig.categories.label} data-cy="categories" key={themeConfig.categories.label} startOpen>
+      {themeConfigStatus === "success" && themeConfig.deprecatedCategories && (
+        <Accordion title={themeConfig.deprecatedCategories.label} data-cy="categories" key={themeConfig.deprecatedCategories.label} startOpen>
           <InputListContainer>
-            {themeConfig.categories?.options?.map((option) => {
+            {themeConfig.deprecatedCategories?.options?.map((option) => {
               return (
                 <InputRadio
                   key={option.slug}
@@ -108,7 +108,7 @@ const SearchFilters = ({
                   onChange={() => {
                     handleDocumentCategoryClick(option.slug);
                   }}
-                  name={`${themeConfig.categories.label}-${option.slug}`}
+                  name={`${themeConfig.deprecatedCategories.label}-${option.slug}`}
                 />
               );
             })}
@@ -192,7 +192,7 @@ const SearchFilters = ({
       )}
 
       {themeConfigStatus === "success" &&
-        themeConfig.filters.map((filter) => {
+        themeConfig.deprecatedFilters.map((filter) => {
           // If the filter is not in the selected category, don't display it
           if (!canDisplayFilter(filter, query, themeConfig)) return null;
 

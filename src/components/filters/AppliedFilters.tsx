@@ -49,7 +49,7 @@ const handleConceptName = (label: string, concepts: TTopic[]) => {
 const MAX_FILTER_CHARACTERS = 32;
 
 const getFilterDisplayValue = (key: TQueryParams, value: string, themeConfig: TThemeConfig) => {
-  const filterDisplayLabel = themeConfig?.filters.find((f) => f.taxonomyKey === key)?.options.find((f) => f.slug === value);
+  const filterDisplayLabel = themeConfig?.deprecatedFilters.find((f) => f.taxonomyKey === key)?.options.find((f) => f.slug === value);
   return filterDisplayLabel ? filterDisplayLabel.label : value;
 };
 
@@ -75,7 +75,7 @@ const handleFilterDisplay = (
 
   switch (key) {
     case "category":
-      const configCategory = themeConfig?.categories?.options.find((c) => c.slug === value);
+      const configCategory = themeConfig?.deprecatedCategories?.options.find((c) => c.slug === value);
       filterLabel = configCategory ? configCategory.label : value;
       break;
     case "country":

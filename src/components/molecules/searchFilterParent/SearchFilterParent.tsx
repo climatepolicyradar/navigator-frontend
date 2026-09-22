@@ -8,8 +8,8 @@ import { TCheckboxState, TFilterPathLabel, TNestedSearchLabel } from "@/types";
 import { filterHasSelectedChildren } from "@/utils/filters/filterHasSelectedChildren";
 import { getFilterPathLabels } from "@/utils/filters/filterPaths";
 import { getFilterStatus } from "@/utils/filters/getFilterStatus";
+import { getLabelDisplay } from "@/utils/filters/getLabelDisplay";
 import { joinTailwindClasses } from "@/utils/tailwind";
-import { firstCase } from "@/utils/text/firstCase";
 
 interface IProps {
   ancestorPath: TFilterPathLabel[];
@@ -46,13 +46,18 @@ export const SearchFilterParent = ({ ancestorPath, defaultOpen = false, label, l
     ? { onClick: (event: MouseEvent) => event.stopPropagation(), noClickLabel: true }
     : { onClick: undefined, noClickLabel: false };
 
+  const { name, subtitle } = getLabelDisplay(label, ancestorPath);
+
   return (
     <>
       <div className={joinTailwindClasses("relative h-px bg-border-light", !isGroupLabel && "ml-9")} />
       <li className="group">
-        <button type="button" className="w-full flex flex-row items-center" onClick={onToggleAccordion}>
+        <button type="button" className="w-full flex flex-row items-start" onClick={onToggleAccordion}>
           {isGroupLabel ? (
-            <span className="flex-1 text-base text-text-primary text-start font-medium leading-5">{firstCase(label.value)}</span>
+            <div className="flex-1 flex flex-col gap-1 items-start">
+              <span className="text-base text-text-primary text-start font-medium leading-5">{name}</span>
+              {subtitle && <span className="text-sm text-text-secondary font-normal leading-5">{subtitle}</span>}
+            </div>
           ) : (
             <Checkbox
               checked={checked === true}
@@ -62,13 +67,14 @@ export const SearchFilterParent = ({ ancestorPath, defaultOpen = false, label, l
               noClickLabel={labelClickBehaviour.noClickLabel}
               className="flex-1 gap-4! items-start!"
             >
-              <span className="text-base text-text-primary font-medium leading-5">{firstCase(label.value)}</span>
+              <span className="text-base text-text-primary font-medium leading-5">{name}</span>
+              {subtitle && <span className="text-sm text-text-secondary font-normal leading-5">{subtitle}</span>}
             </Checkbox>
           )}
           {hasChildren && (
             <ChevronDown
               size={16}
-              className={joinTailwindClasses("shrink-0 -p-1 text-elem-icon transition duration-300", isExpanded && "rotate-180")}
+              className={joinTailwindClasses("shrink-0 -p-1 mt-0.5 text-elem-icon transition duration-300", isExpanded && "rotate-180")}
             />
           )}
         </button>

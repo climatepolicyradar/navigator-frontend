@@ -1,7 +1,7 @@
 import { TThemeConfig } from "@/types";
 
 const config: TThemeConfig = {
-  categories: {
+  deprecatedCategories: {
     label: "Document Type",
     options: [
       {
@@ -100,7 +100,7 @@ const config: TThemeConfig = {
       },
     ],
   },
-  filters: [
+  deprecatedFilters: [
     {
       label: "UN Convention",
       taxonomyKey: "convention",

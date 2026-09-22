@@ -15,5 +15,6 @@ export const getLabelDisplay = (label: TNestedSearchLabel, ancestorPath: TFilter
   return {
     type: startCase(displayReplacement?.type || label.type),
     name: firstCase(displayReplacement?.name || label.value),
+    subtitle: displayReplacement?.subtitle || null,
   };
 };

@@ -7,7 +7,7 @@ import { canDisplayFilter } from "./canDisplayFilter";
 
 const testThemeConfig: TThemeConfig = {
   ...DEFAULT_THEME_CONFIG,
-  categories: {
+  deprecatedCategories: {
     label: "TEST CATEGORIES",
     options: [
       {
@@ -28,7 +28,7 @@ const testThemeConfig: TThemeConfig = {
       },
     ],
   },
-  filters: [
+  deprecatedFilters: [
     {
       label: "TEST FILTER",
       taxonomyKey: "fund_doc_type",

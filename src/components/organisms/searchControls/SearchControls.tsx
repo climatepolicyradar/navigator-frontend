@@ -89,12 +89,12 @@ export const SearchControls = ({
     const fromFilterParam = queryGroupToFilterPaths(filterParam);
     return {
       appliedDateRange: fromFilterParam.dateRange,
-      checkedLabelPaths: sortFilterPathLabels(fromFilterParam.filterPathLabels),
+      checkedLabelPaths: sortFilterPathLabels(fromFilterParam.filterPathLabels, filterGroups),
     };
-  }, [filterParam]);
+  }, [filterGroups, filterParam]);
 
   const toggleFilter: TToggleFilterCallback = (labelPath, checked) => {
-    const updatedCheckedLabelPaths = updateCheckedLabelPaths(checkedLabelPaths, labelPath, checked);
+    const updatedCheckedLabelPaths = updateCheckedLabelPaths(checkedLabelPaths, labelPath, checked, filterGroups);
     setFilterParam(filterPathsToQueryGroup(updatedCheckedLabelPaths, appliedDateRange, conceptsLogic));
     setCurrentPage("1");
   };
@@ -171,7 +171,7 @@ export const SearchControls = ({
             <Sort sortOptions={sortOptions} value={sortParam} onChange={onSort} />
           </div>
         </div>
-        <AppliedFilters showClearAll includeDateRange />
+        <AppliedFilters filterGroups={filterGroups} showClearAll includeDateRange />
         {extraContent}
       </div>
     </FiltersContext>
