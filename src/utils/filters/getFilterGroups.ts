@@ -1,4 +1,4 @@
-import { LucideEarth, LucideListFilter } from "lucide-react";
+import { BookIcon, ListFilter, LucideEarth, LucideListFilter } from "lucide-react";
 
 import { FilterHeaderTopics } from "@/components/fragments/filters/FilterHeaderTopics";
 import { TAppDictionaryKey } from "@/constants/text";
@@ -30,6 +30,24 @@ interface IProps {
 export const getFilterGroups = ({ features, getAppText, theme }: IProps): TFiltersGroupConfig[] => {
   const filterGroups: TFiltersGroupConfig[] = [];
 
+  filterGroups.push({
+    title: "Category",
+    subtitle: "Choose themes and specific filters to refine your search",
+    Icon: ListFilter,
+    container: "drawer",
+    rootLabelTypes: ["category"],
+    requiredFeature: "themes",
+  });
+
+  filterGroups.push({
+    title: "Themes",
+    subtitle: "Narrow results to documents focused on specific topics",
+    Icon: BookIcon,
+    container: "drawer",
+    rootLabelTypes: ["domain"],
+    requiredFeature: "themes",
+  });
+
   // Filters
   filterGroups.push({
     container: "drawer",
@@ -38,6 +56,7 @@ export const getFilterGroups = ({ features, getAppText, theme }: IProps): TFilte
     rootLabelTypes: ["category"],
     subtitle: "Choose themes and specific filters to refine your search",
     title: getAppText("filterGroupFilters"),
+    missingFeature: "themes",
   });
 
   // Geography
