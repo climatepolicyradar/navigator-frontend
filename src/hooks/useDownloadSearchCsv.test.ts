@@ -71,7 +71,12 @@ describe("buildDownloadSearchCsvUrl", () => {
     const filters = JSON.parse(url.searchParams.get("filters") ?? "{}");
     expect(filters).toEqual({
       op: "and",
-      filters: [{ field: "labels.value.id", op: "contains", value: "status::Principal" }],
+      filters: [
+        {
+          op: "and",
+          filters: [{ field: "labels.value.id", op: "contains", value: "status::Principal" }],
+        },
+      ],
     });
   });
 

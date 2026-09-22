@@ -24,14 +24,13 @@ export function buildDownloadSearchCsvUrl(params: { query?: string; filters?: TS
 
   if (params.query) url.searchParams.set("query", params.query);
 
-  const sanitisedFilters = params.filters ? sanitiseSearchQueryGroup(params.filters) : undefined;
-
   const filtersToApply: TSearchQueryGroup[] = [PRINCIPAL_DOCUMENTS_FILTER];
+  const sanitisedFilters = params.filters ? sanitiseSearchQueryGroup(params.filters) : null;
   if (sanitisedFilters && !isFilterGroupEmpty(sanitisedFilters)) {
     filtersToApply.push(sanitisedFilters);
   }
 
-  const combinedFilters: TSearchQueryGroup = filtersToApply.length > 1 ? { op: "and", filters: filtersToApply } : filtersToApply[0];
+  const combinedFilters: TSearchQueryGroup = { op: "and", filters: filtersToApply };
   url.searchParams.set("filters", JSON.stringify(combinedFilters));
 
   url.searchParams.set("order_by", SEARCH_DOCUMENT_SORT_PARAMS[params.sort]);
