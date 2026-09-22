@@ -22,6 +22,10 @@ export const APP_DICTIONARY = {
     ccc: "Filing year",
     mcf: "Approval FY",
   },
+  filterGroupFilters: {
+    default: "Filters",
+    cclw: "Categories",
+  },
   searchOnboarding: {
     default: "You are currently viewing all of the documents in our database. Narrow your search by document type, geography, date, and more.",
     ccc: "You are currently viewing all of the cases in the Climate Litigation Database. Narrow your search by case categories, geography, and more.",

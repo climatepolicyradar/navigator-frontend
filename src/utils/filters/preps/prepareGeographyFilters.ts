@@ -1,17 +1,11 @@
-import { TNestedSearchLabel } from "@/types";
+import { ID_SEPARATOR } from "@/constants/chars";
+import { TFiltersGroupPrep, TNestedSearchLabel } from "@/types";
+import { createGroupLabel } from "@/utils/filters/createGroupLabel";
 import { getFilterPathLabel } from "@/utils/filters/filterPaths";
-
-const createGroupLabel = (value: string, children: TNestedSearchLabel[]): TNestedSearchLabel => ({
-  id: `group::${value}`,
-  type: "group",
-  value,
-  alternative_labels: [],
-  children,
-});
 
 // Split regions and geographies from each other under separate top-level groups, keeping each
 // country's region as a virtual parentPath so filtering still respects the relationship
-export const prepareGeographyFilters = (rootLabels: TNestedSearchLabel[]): TNestedSearchLabel[] => {
+export const prepareGeographyFilters: TFiltersGroupPrep = (rootLabels) => {
   const validRootLabels = rootLabels.filter((rootLabel) => rootLabel.type === "region");
 
   const geographyLabels = validRootLabels.flatMap((regionLabel) =>
@@ -25,7 +19,7 @@ export const prepareGeographyFilters = (rootLabels: TNestedSearchLabel[]): TNest
     createGroupLabel("region", regionLabels),
     createGroupLabel("geography", geographyLabels),
     {
-      id: "country::XAB",
+      id: ["country", "XAB"].join(ID_SEPARATOR),
       type: "country",
       value: "International",
       alternative_labels: [],

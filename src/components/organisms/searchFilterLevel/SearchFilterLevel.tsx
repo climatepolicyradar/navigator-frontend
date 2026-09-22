@@ -1,5 +1,5 @@
 import sortBy from "lodash/sortBy";
-import { ReactNode, useContext, useMemo } from "react";
+import { ReactNode, useContext } from "react";
 
 import { SearchFilterGroups } from "@/components/molecules/searchFilterGroups/SearchFilterGroups";
 import { SearchFilterLookup } from "@/components/molecules/searchFilterLookup/SearchFilterLookup";
@@ -28,9 +28,6 @@ interface IProps {
 export const SearchFilterLevel = ({ ancestorPath, emptyStateRender, indented, labels, level, renderParents, topLevelDefaultOpen }: IProps) => {
   const { inUse: isLookupAtHigherLevel } = useContext(FiltersLookupContext);
 
-  const levelIsGroups = labels.some((label) => label.type === "group");
-  const sortedLabels = useMemo(() => (levelIsGroups ? labels : sortBy(labels, "value")), [labels, levelIsGroups]);
-
   const indentedClasses = indented && "ml-8 mt-2 not-last:mb-2";
   const labelTypes = new Set(labels.map((label) => label.type));
 
@@ -43,12 +40,14 @@ export const SearchFilterLevel = ({ ancestorPath, emptyStateRender, indented, la
   if (level === 1 && renderParents) {
     return (
       <ul className={joinTailwindClasses("flex flex-col gap-4 list-none", indentedClasses)}>
-        {sortedLabels.map((label) => (
+        {labels.map((label) => (
           <SearchFilterParent key={label.id} ancestorPath={ancestorPath} defaultOpen={topLevelDefaultOpen} label={label} level={level} />
         ))}
       </ul>
     );
   }
+
+  const sortedLabels = sortBy(labels, "value");
 
   // Grouped by type
   if (labelTypes.size > 1) {

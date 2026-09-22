@@ -1,6 +1,6 @@
 import { ZeroStateSearchNoTopics } from "@/components/organisms/zeroStates/ZeroStateSearchNoTopics";
 import { TFiltersGroupConfig } from "@/types";
-import { prepareTopicFilters } from "@/utils/filters/prepareTopicFilters";
+import { prepareTopicFilters } from "@/utils/filters/preps/prepareTopicFilters";
 
 export const PASSAGE_FILTER_GROUPS: TFiltersGroupConfig[] = [
   {

@@ -9,10 +9,12 @@ export type TCheckboxState = boolean | "indeterminate";
 
 /* Filter groups */
 
+export type TFiltersGroupPrep = (rootLabels: TNestedSearchLabel[]) => TNestedSearchLabel[];
+
 type TFiltersGroupGenericConfig = {
   afterPartition?: boolean;
   emptyStateRender?: ReactNode;
-  prepareRootLabels?: (rootLabels: TNestedSearchLabel[]) => TNestedSearchLabel[];
+  prepareRootLabels?: TFiltersGroupPrep;
   rootLabelTypes: string[];
   title: string;
   topLevelDefaultOpen?: boolean;

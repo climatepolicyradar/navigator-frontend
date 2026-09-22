@@ -2,9 +2,22 @@ import { LucideEarth, LucideListFilter } from "lucide-react";
 
 import { FilterHeaderTopics } from "@/components/fragments/filters/FilterHeaderTopics";
 import { TAppDictionaryKey } from "@/constants/text";
-import { TFeatures, TFiltersGroupConfig, TTheme } from "@/types";
-import { prepareGeographyFilters } from "@/utils/filters/prepareGeographyFilter";
-import { prepareTopicFilters } from "@/utils/filters/prepareTopicFilters";
+import { TFeatures, TFiltersGroupConfig, TFiltersGroupPrep, TTheme } from "@/types";
+import {
+  prepareCCCFilters,
+  prepareCCLWFilters,
+  prepareCPRFilters,
+  prepareGeographyFilters,
+  prepareMCFFilters,
+  prepareTopicFilters,
+} from "@/utils/filters/preps";
+
+const FILTER_PREP_DICTIONARY: Record<TTheme, TFiltersGroupPrep | null> = {
+  ccc: prepareCCCFilters,
+  cclw: prepareCCLWFilters,
+  cpr: prepareCPRFilters,
+  mcf: prepareMCFFilters,
+};
 
 interface IProps {
   features: TFeatures;
@@ -12,6 +25,8 @@ interface IProps {
   theme: TTheme;
 }
 
+// TODO use `features` for themes (nature project)
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 export const getFilterGroups = ({ features, getAppText, theme }: IProps): TFiltersGroupConfig[] => {
   const filterGroups: TFiltersGroupConfig[] = [];
 
@@ -19,9 +34,10 @@ export const getFilterGroups = ({ features, getAppText, theme }: IProps): TFilte
   filterGroups.push({
     container: "drawer",
     Icon: LucideListFilter,
+    prepareRootLabels: FILTER_PREP_DICTIONARY[theme] || undefined,
     rootLabelTypes: ["category"],
     subtitle: "Choose themes and specific filters to refine your search",
-    title: "Filters",
+    title: getAppText("filterGroupFilters"),
   });
 
   // Geography
