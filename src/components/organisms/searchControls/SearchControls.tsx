@@ -171,7 +171,7 @@ export const SearchControls = ({
             <Sort sortOptions={sortOptions} value={sortParam} onChange={onSort} />
           </div>
         </div>
-        <AppliedFilters showClearAll includeDateRange />
+        <AppliedFilters filterGroups={filterGroups} showClearAll includeDateRange />
         {extraContent}
       </div>
     </FiltersContext>

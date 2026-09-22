@@ -4,8 +4,7 @@ import { useContext, useMemo } from "react";
 import { ARROW_RIGHT } from "@/constants/chars";
 import { COUNTRY_FLAGS } from "@/constants/flags";
 import { FiltersContext } from "@/context/FiltersContext";
-import { ThemeContext } from "@/context/ThemeContext";
-import { TFilterPathLabel } from "@/types";
+import { TFilterPathLabel, TFiltersGroupConfig } from "@/types";
 import { getLabelPathSignature, sortFilterPathLabels } from "@/utils/filters/filterPaths";
 import { joinTailwindClasses } from "@/utils/tailwind";
 
@@ -36,12 +35,12 @@ const getAppliedFilterLabel = (labelValues: Record<string, string>, labelPath: T
 interface IProps {
   ancestorPath?: TFilterPathLabel[];
   className?: string;
+  filterGroups?: TFiltersGroupConfig[];
   includeDateRange?: boolean;
   showClearAll?: boolean;
 }
 
-export const AppliedFilters = ({ ancestorPath = [], className, includeDateRange, showClearAll }: IProps) => {
-  const { themeConfig } = useContext(ThemeContext);
+export const AppliedFilters = ({ ancestorPath = [], className, filterGroups = [], includeDateRange, showClearAll }: IProps) => {
   const { appliedDateRange, checkedLabelPaths, clearFilters, labelValues, setDateRange, toggleFilter } = useContext(FiltersContext);
 
   const labels = useMemo(() => {
@@ -50,8 +49,8 @@ export const AppliedFilters = ({ ancestorPath = [], className, includeDateRange,
       (labelPath) => labelPath.length > ancestorPath.length && getLabelPathSignature(labelPath).startsWith(ancestorSignature)
     );
 
-    return sortFilterPathLabels(descendantLabelPaths, themeConfig.searchFilters);
-  }, [ancestorPath, checkedLabelPaths, themeConfig.searchFilters]);
+    return sortFilterPathLabels(descendantLabelPaths, filterGroups);
+  }, [ancestorPath, checkedLabelPaths, filterGroups]);
 
   const showDateRange = includeDateRange && appliedDateRange !== null;
 

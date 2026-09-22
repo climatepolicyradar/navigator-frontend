@@ -13,6 +13,10 @@ export const APP_DICTIONARY = {
     default: "Home",
     ccc: "Climate Litigation Database",
   },
+  familySingular: {
+    default: "document",
+    ccc: "case",
+  },
   familyPlural: {
     default: "documents",
     ccc: "cases",
