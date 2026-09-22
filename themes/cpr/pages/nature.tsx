@@ -2,7 +2,7 @@ import { LandingPage } from "@/components/organisms/LandingPage";
 import { QUERY_PARAMS } from "@/constants/queryParams";
 import { TLandingPageConfig } from "@/types";
 
-export default function ICCNLandingPage() {
+export default function NatureLandingPage() {
   const landingPageConfig: TLandingPageConfig = {
     hero: {
       taxonomy: "Data library",
