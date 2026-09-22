@@ -2,7 +2,6 @@ import type { LucideIcon } from "lucide-react";
 import { ReactNode } from "react";
 
 import { TNestedSearchLabel } from "./labels";
-import { TFeature } from "../features";
 
 /* Filters */
 
@@ -19,8 +18,6 @@ type TFiltersGroupGenericConfig = {
   rootLabelTypes: string[];
   title: string;
   topLevelDefaultOpen?: boolean;
-  requiredFeature?: TFeature;
-  missingFeature?: TFeature;
 };
 
 type TFiltersGroupDrawerConfig = TFiltersGroupGenericConfig & {

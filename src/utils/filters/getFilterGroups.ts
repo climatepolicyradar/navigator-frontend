@@ -25,39 +25,38 @@ interface IProps {
   theme: TTheme;
 }
 
-// TODO use `features` for themes (nature project) [FUS-438]
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
 export const getFilterGroups = ({ features, getAppText, theme }: IProps): TFiltersGroupConfig[] => {
   const filterGroups: TFiltersGroupConfig[] = [];
 
-  filterGroups.push({
-    title: "Category",
-    subtitle: "Choose themes and specific filters to refine your search",
-    Icon: ListFilter,
-    container: "drawer",
-    rootLabelTypes: ["category"],
-    requiredFeature: "themes",
-  });
+  if (features.themes) {
+    // Category
+    filterGroups.push({
+      title: "Category",
+      subtitle: "Choose themes and specific filters to refine your search",
+      Icon: ListFilter,
+      container: "drawer",
+      rootLabelTypes: ["category"],
+    });
 
-  filterGroups.push({
-    title: "Themes",
-    subtitle: "Narrow results to documents focused on specific topics",
-    Icon: BookIcon,
-    container: "drawer",
-    rootLabelTypes: ["domain"],
-    requiredFeature: "themes",
-  });
-
-  // Filters
-  filterGroups.push({
-    container: "drawer",
-    Icon: LucideListFilter,
-    prepareRootLabels: FILTER_PREP_DICTIONARY[theme] || undefined,
-    rootLabelTypes: ["category"],
-    subtitle: "Choose themes and specific filters to refine your search",
-    title: getAppText("filterGroupFilters"),
-    missingFeature: "themes",
-  });
+    // Theme
+    filterGroups.push({
+      title: "Themes",
+      subtitle: "Narrow results to documents focused on specific topics",
+      Icon: BookIcon,
+      container: "drawer",
+      rootLabelTypes: ["domain"],
+    });
+  } else {
+    // Filters
+    filterGroups.push({
+      container: "drawer",
+      Icon: LucideListFilter,
+      prepareRootLabels: FILTER_PREP_DICTIONARY[theme] || undefined,
+      rootLabelTypes: ["category"],
+      subtitle: "Choose themes and specific filters to refine your search",
+      title: getAppText("filterGroupFilters"),
+    });
+  }
 
   // Geography
   filterGroups.push({

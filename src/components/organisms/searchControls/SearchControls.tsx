@@ -1,6 +1,6 @@
 import { LucideSearch } from "lucide-react";
 import { parseAsJson, parseAsString, useQueryState } from "nuqs";
-import { Fragment, ReactNode, SubmitEventHandler, useContext, useMemo, useState } from "react";
+import { Fragment, ReactNode, SubmitEventHandler, useMemo, useState } from "react";
 
 import { Input } from "@/components/atoms/input/Input";
 import { AppliedFilters } from "@/components/molecules/appliedFilters/AppliedFilters";
@@ -8,7 +8,6 @@ import { SearchFiltersDate } from "@/components/molecules/searchFiltersDate/Sear
 import { SearchFiltersDrawer } from "@/components/molecules/searchFiltersDrawer/SearchFiltersDrawer";
 import { SearchFiltersPopover } from "@/components/molecules/searchFiltersPopover/SearchFiltersPopover";
 import { Sort } from "@/components/molecules/sort/Sort";
-import { FeaturesContext } from "@/context/FeaturesContext";
 import { FiltersContext, TDateRange, TToggleFilterCallback } from "@/context/FiltersContext";
 import { FilterGroupSchema } from "@/schemas";
 import { TFiltersGroupConfig, TSearchLabel, TSearchQueryGroup, TSortOptionConfig } from "@/types";
@@ -121,8 +120,6 @@ export const SearchControls = ({
     setCurrentPage("1");
   };
 
-  const features = useContext(FeaturesContext);
-
   return (
     <FiltersContext value={{ appliedDateRange, checkedLabelPaths, clearFilters, labelValues, setDateRange: onSetDateRange, toggleFilter }}>
       <div className="col-start-1 -col-end-1 cols-5:col-start-2 cols-5:-col-end-2 flex flex-col gap-y-4">
@@ -145,17 +142,6 @@ export const SearchControls = ({
           <div className="flex flex-wrap gap-1 items-center">
             {filtersSlot}
             {filterGroupsWithLabels.map((group) => {
-              /**
-               * We render conditionally on
-               * - requiring a feature to be on
-               * - explicitly needing a feature to be missing
-               * - if not specified, always render
-               */
-              const shouldRender =
-                (!group.requiredFeature || features[group.requiredFeature]) && (!group.missingFeature || !features[group.missingFeature]);
-
-              if (!shouldRender) return null;
-
               const SearchFilters = SEARCH_FILTERS_LOOKUP[group.container] ?? SearchFiltersPopover;
 
               return (
