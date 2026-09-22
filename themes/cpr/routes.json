@@ -23,5 +23,10 @@
     "title": "Climate Council Report Library",
     "path": "iccn",
     "contentPath": "iccn"
+  },
+  {
+    "title": "Climate Council Report LibraryNature Policy Library",
+    "path": "nature",
+    "contentPath": "nature"
   }
 ]

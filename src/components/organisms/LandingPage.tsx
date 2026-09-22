@@ -7,8 +7,10 @@ import { FiveColumns } from "@/components/atoms/columns/FiveColumns";
 import { PageLink } from "@/components/atoms/pageLink/PageLink";
 import Footer from "@/components/footer/Footer";
 import Layout from "@/components/layouts/LandingPage";
+import { FeaturesContext } from "@/context/FeaturesContext";
 import { ThemeContext } from "@/context/ThemeContext";
 import { Header } from "@/cpr/components/Header";
+import NotFound from "@/pages/404";
 import { TLandingPageConfig } from "@/types";
 import { getSuggestionParams } from "@/utils/getSuggestionParams";
 import { joinTailwindClasses } from "@/utils/tailwind";
@@ -19,9 +21,16 @@ type TProps = {
 
 export const LandingPage = ({ config }: TProps) => {
   const { themeConfig } = useContext(ThemeContext);
+  const features = useContext(FeaturesContext);
+
+  // Technically this page will still 200 on `!isAvailable`, but render the 404 page.
+  // This is because if we were to render 404 at the server level, we would need access
+  // to `request.cookies`, which we don't have as these are rendered at build time.
+  // This is to allow us to build the pages and release incrementally to production for feedback.
+  const isAvailable = config.requiredFeature === undefined || features[config.requiredFeature];
 
   // Note: designed for use on CPR app only
-  return (
+  return isAvailable ? (
     <Layout title={config.hero.title} description={config.hero.description} theme="cpr">
       <Header landingPage />
       <div className="py-4 cols-4:py-12 cols-5:py-24 border-t border-t-border-light">
@@ -35,9 +44,11 @@ export const LandingPage = ({ config }: TProps) => {
           </div>
         </FiveColumns>
         <FiveColumns className="pt-8 cols-4:pt-12 cols-5:pt-24">
-          <div className={config.background.classes}>
-            <Image {...config.background.image} alt={config.background.image.alt} />
-          </div>
+          {config.background && (
+            <div className={config.background.classes}>
+              <Image {...config.background.image} alt={config.background.image.alt} />
+            </div>
+          )}
           <main className="col-start-1 -col-end-1 cols-3:col-end-5 cols-4:col-end-7 cols-5:col-start-2 grid grid-cols-subgrid gap-y-8 cols-4:gap-y-10 cols-5:gap-y-12">
             <div className="col-start-1 -col-end-1 cols-2:-col-end-2 cols-3:-col-end-1 cols-4:-col-end-2">
               <PageLink href="/search" query={getSuggestionParams(config.search.button, themeConfig)}>
@@ -70,31 +81,35 @@ export const LandingPage = ({ config }: TProps) => {
             ))}
           </main>
           <aside className="col-span-2 cols-3:-col-end-1 cols-5:-col-end-2">
-            <div className="cols-5:min-w-50 px-5 py-4 mt-8 cols-3:mt-0 bg-white border border-border-light rounded-xl">
-              <Image {...config.organisation.logoImage} alt={config.organisation.logoImage.alt} className="w-full max-w-85 mb-1" />
-              <ul className="text-base font-normal leading-5">
-                {config.organisation.links.map(({ externalHref, label }, linkIndex) => {
-                  const [pathname, hash] = externalHref.split("#");
+            {config.organisation && (
+              <div className="cols-5:min-w-50 px-5 py-4 mt-8 cols-3:mt-0 bg-white border border-border-light rounded-xl">
+                <Image {...config.organisation.logoImage} alt={config.organisation.logoImage.alt} className="w-full max-w-85 mb-1" />
+                <ul className="text-base font-normal leading-5">
+                  {config.organisation.links.map(({ externalHref, label }, linkIndex) => {
+                    const [pathname, hash] = externalHref.split("#");
 
-                  return (
-                    <li key={linkIndex}>
-                      <PageLink
-                        external
-                        href={pathname}
-                        hash={hash}
-                        className={joinTailwindClasses("block py-3", linkIndex && "border-t border-t-border-light")}
-                      >
-                        {label}
-                      </PageLink>
-                    </li>
-                  );
-                })}
-              </ul>
-            </div>
+                    return (
+                      <li key={linkIndex}>
+                        <PageLink
+                          external
+                          href={pathname}
+                          hash={hash}
+                          className={joinTailwindClasses("block py-3", linkIndex && "border-t border-t-border-light")}
+                        >
+                          {label}
+                        </PageLink>
+                      </li>
+                    );
+                  })}
+                </ul>
+              </div>
+            )}
           </aside>
         </FiveColumns>
       </div>
       <Footer />
     </Layout>
+  ) : (
+    <NotFound />
   );
 };

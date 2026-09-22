@@ -7,6 +7,7 @@ import Layout from "../components/layouts/Main";
 export default function NotFound() {
   return (
     <Layout title={"Page not found"}>
+      <meta name="robots" content="noindex" />
       <section>
         <SiteWidth extraClasses="text-content my-12">
           <Heading level={1}>Sorry, we can't find that page</Heading>
