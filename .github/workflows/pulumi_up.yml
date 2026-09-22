@@ -61,7 +61,7 @@ jobs:
     steps:
       - uses: actions/checkout@v7
       - if: inputs.aws-role != ''
-        uses: aws-actions/configure-aws-credentials@v6.2.4
+        uses: aws-actions/configure-aws-credentials@v6.3.0
         with:
           role-to-assume: arn:aws:iam::${{ secrets.AWS_ACCOUNT_ID }}:role/${{ inputs.aws-role }}
           role-session-name: GitHub_Pulumi_up_${{ inputs.environment }}
