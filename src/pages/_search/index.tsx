@@ -1,6 +1,6 @@
 import { GetServerSideProps, InferGetServerSidePropsType } from "next";
 import { useQueryState, parseAsString, parseAsJson } from "nuqs";
-import { useCallback, useContext, useEffect, useMemo, useState, type SetStateAction } from "react";
+import { useCallback, useContext, useMemo, useState, type SetStateAction } from "react";
 
 import { normaliseSearchDocumentsSortKey, SearchDocument } from "@/api/search";
 import { createGroup, isFilterGroupEmpty, AdvancedFilters } from "@/components/_experiment/advancedFilters/AdvancedFilters";
@@ -18,11 +18,11 @@ import { SEARCH_SORT_OPTIONS } from "@/constants/sort";
 import { withEnvConfig } from "@/context/EnvConfig";
 import { FeaturesContext } from "@/context/FeaturesContext";
 import { TutorialContext } from "@/context/TutorialContext";
-import { loadFilteredLabels, loadLabelTaxonomy } from "@/hooks/useLabelSearch";
+import { useFilterLabels } from "@/hooks/useFilterLabels";
 import { useNestedSearchLevel } from "@/hooks/useSearchLevel";
 import { useText } from "@/hooks/useText";
 import { FilterGroupSchema } from "@/schemas";
-import { TSearchLabel, TSearchQueryGroup, TTheme } from "@/types";
+import { TSearchQueryGroup, TTheme } from "@/types";
 import { getFeatureFlags } from "@/utils/featureFlags";
 import { getFeatures } from "@/utils/features";
 import { getFilterGroups } from "@/utils/filters/getFilterGroups";
@@ -36,9 +36,9 @@ const columnLayoutCss = "col-start-1 -col-end-1 cols-5:col-start-2 cols-5:-col-e
 type TProps = InferGetServerSidePropsType<typeof getServerSideProps>;
 
 const ShadowSearch = ({ theme, themeConfig, features }: TProps) => {
-  const { getAppText } = useText();
   const { removeCompletedTutorial } = useContext(TutorialContext);
-  const [availableFilters, setAvailableFilters] = useState<TSearchLabel[]>([]);
+  const { getAppText } = useText();
+  const availableFilters = useFilterLabels();
 
   // search query that is typed into the search box
   const [query, setQuery] = useQueryState("q", parseAsString.withDefault(""));
@@ -98,37 +98,6 @@ const ShadowSearch = ({ theme, themeConfig, features }: TProps) => {
 
   // Control Advanced Filters view
   const [advancedFiltersOpen, setAdvancedFiltersOpen] = useState(false);
-
-  useEffect(() => {
-    const loadedFilteredLabels = loadFilteredLabels({
-      // These are the explicit labels to needed to power the search page
-      op: "or",
-      filters: [
-        {
-          field: "type",
-          op: "contains",
-          value: "concept",
-        },
-        {
-          field: "type",
-          op: "contains",
-          value: "region",
-        },
-        {
-          field: "type",
-          op: "contains",
-          value: "country",
-        },
-      ],
-    });
-
-    // We have to append this data until the categories taxonomy data source data is fixed
-    // @see: https://linear.app/climate-policy-radar/issue/APP-2266/fusion-enrichment-fleshing-out-the-publishedcanonicallabels
-    const loadedLabelTaxonomy = loadLabelTaxonomy();
-    const allFilterLabels = Promise.all([loadedFilteredLabels, loadedLabelTaxonomy]);
-
-    allFilterLabels.then(([filteredLabels, labelTaxonomy]) => setAvailableFilters([...filteredLabels, ...labelTaxonomy]));
-  }, []);
 
   const hasSearch = !!query || !isFilterGroupEmpty(filters);
 
