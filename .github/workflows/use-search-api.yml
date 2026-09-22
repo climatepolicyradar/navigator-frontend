@@ -11,6 +11,10 @@ jobs:
     runs-on: ubuntu-latest
     permissions:
       pull-requests: write
+    outputs:
+      mode: ${{ steps.parse.outputs.mode }}
+      target_url: ${{ steps.resolve.outputs.search_url }}
+      search_pr_number: ${{ steps.parse.outputs.search_pr_number }}
     env:
       PULUMI_ACCESS_TOKEN: ${{ secrets.PULUMI_ACCESS_TOKEN }}
       ORG: climatepolicyradar
@@ -94,3 +98,74 @@ jobs:
       - name: Fail on missing stack
         if: steps.parse.outputs.mode == 'pr' && steps.resolve.outputs.found == 'false'
         run: exit 1
+
+  apply-override:
+    needs: use-search-api
+    if: needs.use-search-api.outputs.mode == 'pr' || needs.use-search-api.outputs.mode == 'prod'
+    runs-on: ubuntu-latest
+    permissions:
+      pull-requests: write
+    env:
+      PULUMI_ACCESS_TOKEN: ${{ secrets.PULUMI_ACCESS_TOKEN }}
+      ORG: climatepolicyradar
+      PROJECT: frontend
+      GITHUB_INSTALLATION_ID: ${{ secrets.PULUMI_INTEGRATION_ID }}
+      GH_TOKEN: ${{ github.token }}
+    strategy:
+      matrix:
+        theme: [cpr, cclw, mcf, ccc]
+    steps:
+      - name: Determine target URL
+        id: target
+        env:
+          MODE: ${{ needs.use-search-api.outputs.mode }}
+          TARGET_URL: ${{ needs.use-search-api.outputs.target_url }}
+        run: |
+          if [ "$MODE" = "prod" ]; then
+            echo "url=https://api.climatepolicyradar.org" >> "$GITHUB_OUTPUT"
+          else
+            echo "url=${TARGET_URL}" >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: Compute stack name
+        id: stack
+        env:
+          PR_NUMBER: ${{ github.event.issue.number }}
+          THEME: ${{ matrix.theme }}
+        run: |
+          echo "stack_name=pr-${THEME}-navigator-frontend-${PR_NUMBER}" >> "$GITHUB_OUTPUT"
+
+      - name: Install pulumi CLI
+        uses: pulumi/actions@v7
+
+      - name: Set next_public_api_url config
+        env:
+          STACK_NAME: ${{ steps.stack.outputs.stack_name }}
+          TARGET_URL: ${{ steps.target.outputs.url }}
+        run: |
+          pulumi config set frontend:next_public_api_url "${TARGET_URL}" \
+            --stack "${ORG}/${PROJECT}/${STACK_NAME}"
+
+      - name: Trigger update deployment for ${{ matrix.theme }}
+        id: trigger_update
+        env:
+          STACK_NAME: ${{ steps.stack.outputs.stack_name }}
+        run: |
+          response=$(curl -fsSL -w "\n%{http_code}" -X POST \
+            -H "Authorization: token ${PULUMI_ACCESS_TOKEN}" \
+            -H "Content-Type: application/json" \
+            "https://api.pulumi.com/api/stacks/${ORG}/${PROJECT}/${STACK_NAME}/deployments" \
+            -d "{
+              \"operation\": \"update\",
+              \"inheritSettings\": true
+            }")
+
+          body=$(echo "$response" | head -n -1)
+          status=$(echo "$response" | tail -n1)
+          echo "Deployment triggered: HTTP $status"
+          echo "$body" | jq .
+
+          if [ "$status" -lt 200 ] || [ "$status" -ge 300 ]; then
+            echo "Failed to trigger deployment"
+            exit 1
+          fi
