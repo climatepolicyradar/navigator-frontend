@@ -16,7 +16,7 @@ const countLabelsAndDescendants = (labels: TNestedSearchLabel[]): number =>
 
 interface IProps {
   ancestorPath: TFilterPathLabel[];
-  emptyStateRender?: () => ReactNode;
+  emptyStateRender?: ReactNode;
   indented?: boolean;
   labels: TNestedSearchLabel[];
   level: number;
@@ -36,7 +36,7 @@ export const SearchFilterLevel = ({ ancestorPath, emptyStateRender, indented, la
 
   // This shouldn't be possible without an empty state being provided
   if (level === 1 && labels.length === 0) {
-    return emptyStateRender?.() || null;
+    return emptyStateRender || null;
   }
 
   // Parents

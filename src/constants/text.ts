@@ -13,13 +13,14 @@ export const APP_DICTIONARY = {
     default: "Home",
     ccc: "Climate Litigation Database",
   },
-  familySingular: {
-    default: "document",
-    ccc: "case",
-  },
   familyPlural: {
     default: "documents",
     ccc: "cases",
+  },
+  filterGroupDate: {
+    default: "Date",
+    ccc: "Filing year",
+    mcf: "Approval FY",
   },
   searchOnboarding: {
     default: "You are currently viewing all of the documents in our database. Narrow your search by document type, geography, date, and more.",

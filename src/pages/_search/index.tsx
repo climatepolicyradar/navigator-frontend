@@ -20,6 +20,7 @@ import { FeaturesContext } from "@/context/FeaturesContext";
 import { TutorialContext } from "@/context/TutorialContext";
 import { loadFilteredLabels, loadLabelTaxonomy } from "@/hooks/useLabelSearch";
 import { useNestedSearchLevel } from "@/hooks/useSearchLevel";
+import { useText } from "@/hooks/useText";
 import { FilterGroupSchema } from "@/schemas";
 import { TSearchLabel, TSearchQueryGroup, TTheme } from "@/types";
 import { getFeatureFlags } from "@/utils/featureFlags";
@@ -35,6 +36,7 @@ const columnLayoutCss = "col-start-1 -col-end-1 cols-5:col-start-2 cols-5:-col-e
 type TProps = InferGetServerSidePropsType<typeof getServerSideProps>;
 
 const ShadowSearch = ({ theme, themeConfig, features }: TProps) => {
+  const { getAppText } = useText();
   const { removeCompletedTutorial } = useContext(TutorialContext);
   const [availableFilters, setAvailableFilters] = useState<TSearchLabel[]>([]);
 
@@ -49,7 +51,7 @@ const ShadowSearch = ({ theme, themeConfig, features }: TProps) => {
   const [totalNoOfResults, setTotalNoOfResults] = useState<number | null>(null);
   const [isSearching, setIsSearching] = useState(false);
 
-  const searchFilterGroups = useMemo(() => getFilterGroups(theme, features), [features, theme]);
+  const searchFilterGroups = useMemo(() => getFilterGroups({ features, getAppText, theme }), [features, getAppText, theme]);
 
   /**
    * Drops aggregations only when the filter tree becomes empty so greyed options
