@@ -1,5 +1,6 @@
-import { LandingPage, TLandingPageConfig } from "@/components/organisms/LandingPage";
+import { LandingPage } from "@/components/organisms/LandingPage";
 import { QUERY_PARAMS } from "@/constants/queryParams";
+import { TLandingPageConfig } from "@/types";
 
 export default function ICCNLandingPage() {
   const landingPageConfig: TLandingPageConfig = {
@@ -42,30 +43,93 @@ export default function ICCNLandingPage() {
     search: {
       button: {
         label: "Search progress reports",
-        query: {
+        params: {
           [QUERY_PARAMS.category]: "climate-council-reports",
+        },
+        newParams: {
+          [QUERY_PARAMS.filters]: JSON.stringify({
+            op: "and",
+            filters: [
+              { field: "labels.value.id", op: "contains", value: "category::Report" },
+              { op: "or", filters: [{ field: "labels.value.id", op: "contains", value: "report_type::Climate council report", checked: true }] },
+            ],
+          }),
         },
       },
       suggestions: [
         {
           label: "Adaptation/resilience",
-          query: {
+          params: {
             [QUERY_PARAMS.category]: "climate-council-reports",
             [QUERY_PARAMS.concept_name]: "adaptation/resilience",
+          },
+          newParams: {
+            [QUERY_PARAMS.filters]: JSON.stringify({
+              op: "and",
+              filters: [
+                {
+                  op: "and",
+                  filters: [
+                    { field: "labels.value.id", op: "contains", value: "category::Report" },
+                    {
+                      op: "or",
+                      filters: [{ field: "labels.value.id", op: "contains", value: "report_type::Climate council report", checked: true }],
+                    },
+                  ],
+                },
+                { field: "labels.value.id", op: "contains", value: "concept::Q557", checked: true },
+              ],
+            }),
           },
         },
         {
           label: "Health adaptation",
-          query: {
+          params: {
             [QUERY_PARAMS.category]: "climate-council-reports",
             [QUERY_PARAMS.concept_name]: "health adaptation",
+          },
+          newParams: {
+            [QUERY_PARAMS.filters]: JSON.stringify({
+              op: "and",
+              filters: [
+                {
+                  op: "and",
+                  filters: [
+                    { field: "labels.value.id", op: "contains", value: "category::Report" },
+                    {
+                      op: "or",
+                      filters: [{ field: "labels.value.id", op: "contains", value: "report_type::Climate council report", checked: true }],
+                    },
+                  ],
+                },
+                { field: "labels.value.id", op: "contains", value: "concept::Q1833", checked: true },
+              ],
+            }),
           },
         },
         {
           label: "Emissions reduction target",
-          query: {
+          params: {
             [QUERY_PARAMS.category]: "climate-council-reports",
             [QUERY_PARAMS.concept_name]: "emissions reduction target",
+          },
+          newParams: {
+            [QUERY_PARAMS.filters]: JSON.stringify({
+              op: "and",
+              filters: [
+                {
+                  op: "and",
+                  filters: [
+                    { field: "labels.value.id", op: "contains", value: "category::Report" },
+                    {
+                      op: "or",
+                      filters: [{ field: "labels.value.id", op: "contains", value: "report_type::Climate council report", checked: true }],
+                    },
+                  ],
+                },
+                { field: "labels.value.id", op: "contains", value: "concept::Q1652", checked: true },
+              ],
+            }),
           },
         },
       ],

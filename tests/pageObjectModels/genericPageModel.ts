@@ -11,6 +11,8 @@ export const genericPageModel = {
       }
     };
 
+    // New search tutorial modal
+    await dismiss(page.getByTitle("Start searching"));
     // Tutorial modal
     await dismiss(page.getByTitle("Dismiss modal").nth(1));
     // Tutorial banner
