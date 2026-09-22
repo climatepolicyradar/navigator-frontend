@@ -1,4 +1,4 @@
-import { render, screen } from "@testing-library/react";
+import { render, screen, waitFor } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { vi } from "vitest";
 
@@ -10,11 +10,15 @@ const OPTIONS = [
   { label: "Option C", value: "c" },
 ];
 
+// Base UI has a slight delay when displaying the Popup
+const openPopup = async () => {
+  await userEvent.click(screen.getByRole("combobox"));
+  await waitFor(() => expect(screen.getByRole("listbox")).toBeVisible());
+};
+
 describe("Select", () => {
   afterEach(() => {
     vi.restoreAllMocks();
-    Object.defineProperty(window, "innerWidth", { value: 0, configurable: true });
-    Object.defineProperty(window, "innerHeight", { value: 0, configurable: true });
   });
 
   it("renders the trigger", () => {
@@ -30,14 +34,15 @@ describe("Select", () => {
 
   it("opens the popup and shows options when the trigger is clicked", async () => {
     render(<Select options={OPTIONS} />);
-    await userEvent.click(screen.getByRole("combobox"));
-    expect(screen.getByRole("listbox")).toBeInTheDocument();
+    await openPopup();
+
     expect(screen.getAllByRole("option")).toHaveLength(OPTIONS.length);
   });
 
   it("does not render options when the options list is empty", async () => {
     render(<Select options={[]} />);
-    await userEvent.click(screen.getByRole("combobox"));
+    await openPopup();
+
     expect(screen.queryAllByRole("option")).toHaveLength(0);
   });
 
