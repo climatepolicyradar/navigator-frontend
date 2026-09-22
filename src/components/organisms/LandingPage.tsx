@@ -44,9 +44,11 @@ export const LandingPage = ({ config }: TProps) => {
           </div>
         </FiveColumns>
         <FiveColumns className="pt-8 cols-4:pt-12 cols-5:pt-24">
-          <div className={config.background.classes}>
-            <Image {...config.background.image} alt={config.background.image.alt} />
-          </div>
+          {config.background && (
+            <div className={config.background.classes}>
+              <Image {...config.background.image} alt={config.background.image.alt} />
+            </div>
+          )}
           <main className="col-start-1 -col-end-1 cols-3:col-end-5 cols-4:col-end-7 cols-5:col-start-2 grid grid-cols-subgrid gap-y-8 cols-4:gap-y-10 cols-5:gap-y-12">
             <div className="col-start-1 -col-end-1 cols-2:-col-end-2 cols-3:-col-end-1 cols-4:-col-end-2">
               <PageLink href="/search" query={getSuggestionParams(config.search.button, themeConfig)}>
@@ -80,7 +82,9 @@ export const LandingPage = ({ config }: TProps) => {
           </main>
           <aside className="col-span-2 cols-3:-col-end-1 cols-5:-col-end-2">
             <div className="cols-5:min-w-50 px-5 py-4 mt-8 cols-3:mt-0 bg-white border border-border-light rounded-xl">
-              <Image {...config.organisation.logoImage} alt={config.organisation.logoImage.alt} className="w-full max-w-85 mb-1" />
+              {config.organisation && (
+                <Image {...config.organisation.logoImage} alt={config.organisation.logoImage.alt} className="w-full max-w-85 mb-1" />
+              )}
               <ul className="text-base font-normal leading-5">
                 {config.organisation.links.map(({ externalHref, label }, linkIndex) => {
                   const [pathname, hash] = externalHref.split("#");
