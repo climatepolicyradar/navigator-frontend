@@ -52,3 +52,45 @@ jobs:
       - name: Fail on parse error
         if: steps.parse.outputs.mode == 'error'
         run: exit 1
+
+      - name: Install pulumi CLI
+        if: steps.parse.outputs.mode != 'error'
+        uses: pulumi/actions@v7
+
+      - name: Resolve search-api review URL
+        id: resolve
+        if: steps.parse.outputs.mode == 'pr'
+        env:
+          SEARCH_PR_NUMBER: ${{ steps.parse.outputs.search_pr_number }}
+        run: |
+          search_stack_name="pr-search-api-${SEARCH_PR_NUMBER}"
+
+          if ! pulumi stack output review_service_url \
+              --stack "${ORG}/${SEARCH_PROJECT}/${search_stack_name}" > /tmp/search_url 2> /tmp/search_err; then
+            echo "found=false" >> "$GITHUB_OUTPUT"
+            cat /tmp/search_err
+            exit 0
+          fi
+
+          search_url=$(cat /tmp/search_url)
+          if [ -z "$search_url" ]; then
+            echo "found=false" >> "$GITHUB_OUTPUT"
+            exit 0
+          fi
+
+          echo "found=true" >> "$GITHUB_OUTPUT"
+          echo "search_url=$search_url" >> "$GITHUB_OUTPUT"
+
+      - name: Post missing-stack error
+        if: steps.parse.outputs.mode == 'pr' && steps.resolve.outputs.found == 'false'
+        env:
+          SEARCH_PR_NUMBER: ${{ steps.parse.outputs.search_pr_number }}
+        run: |
+          gh api \
+            --method POST \
+            "repos/${{ github.repository }}/issues/${{ github.event.issue.number }}/comments" \
+            -f body="Couldn't find a running review stack for climatepolicyradar/search#${SEARCH_PR_NUMBER}. Apply the \`deploy:dev\` label on that PR first, wait for it to deploy, then retry \`/use-search-api ${SEARCH_PR_NUMBER}\`."
+
+      - name: Fail on missing stack
+        if: steps.parse.outputs.mode == 'pr' && steps.resolve.outputs.found == 'false'
+        run: exit 1
