@@ -1,11 +1,13 @@
-import { useContext, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 
-import { FeaturesContext } from "@/context/FeaturesContext";
 import { loadFilteredLabels, loadLabelTaxonomy } from "@/hooks/useLabelSearch";
-import { TSearchLabel, TSearchQueryGroup } from "@/types";
+import { TFeatures, TSearchLabel, TSearchQueryGroup } from "@/types";
 
-export const useFilterLabels = (): TSearchLabel[] => {
-  const features = useContext(FeaturesContext);
+interface IProps {
+  features: TFeatures;
+}
+
+export const useFilterLabels = ({ features }: IProps): TSearchLabel[] => {
   const [availableFilters, setAvailableFilters] = useState<TSearchLabel[]>([]);
 
   useEffect(() => {
