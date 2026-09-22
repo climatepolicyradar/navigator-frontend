@@ -129,8 +129,8 @@ export const GeographyPage = ({
           }));
         };
 
-        const documentCategories = themeConfig.categories
-          ? themeConfig.categories.options.map((category) => {
+        const documentCategories = themeConfig.deprecatedCategories
+          ? themeConfig.deprecatedCategories.options.map((category) => {
               return {
                 // We need to maintain the slug to to know what to send to Vespa for querying.
                 slug: category.slug,
@@ -139,7 +139,7 @@ export const GeographyPage = ({
             })
           : [
               {
-                // We generate an `All` for when themeConfig.categories are not available e.g. MCFs
+                // We generate an `All` for when themeConfig.deprecatedCategories are not available e.g. MCFs
                 slug: "All",
                 title: "All",
               },

@@ -5,7 +5,7 @@ import { DEFAULT_CONFIG_FEATURES } from "./features";
 const DEFAULT_PAGE_METADATA = { title: "", description: "" };
 
 export const DEFAULT_THEME_CONFIG: TThemeConfig = {
-  filters: [],
+  deprecatedFilters: [],
   labelVariations: {},
   links: {},
   pageMetadata: {

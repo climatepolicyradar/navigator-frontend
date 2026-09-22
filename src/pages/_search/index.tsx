@@ -1,6 +1,6 @@
 import { GetServerSideProps, InferGetServerSidePropsType } from "next";
 import { useQueryState, parseAsString, parseAsJson } from "nuqs";
-import { useCallback, useContext, useEffect, useState, type SetStateAction } from "react";
+import { useCallback, useContext, useEffect, useMemo, useState, type SetStateAction } from "react";
 
 import { normaliseSearchDocumentsSortKey, SearchDocument } from "@/api/search";
 import { createGroup, isFilterGroupEmpty, AdvancedFilters } from "@/components/_experiment/advancedFilters/AdvancedFilters";
@@ -14,17 +14,18 @@ import { Pagination } from "@/components/molecules/pagination/Pagination";
 import { SearchControls } from "@/components/organisms/searchControls/SearchControls";
 import { ZeroStateSERPNoResults } from "@/components/organisms/zeroStates/ZeroStateSERPNoResults";
 import { ZeroStateSERPNoSearch } from "@/components/organisms/zeroStates/ZeroStateSERPNoSearch";
-import { SEARCH_FILTER_GROUPS } from "@/constants/filters";
 import { SEARCH_SORT_OPTIONS } from "@/constants/sort";
 import { withEnvConfig } from "@/context/EnvConfig";
 import { FeaturesContext } from "@/context/FeaturesContext";
 import { TutorialContext } from "@/context/TutorialContext";
 import { loadFilteredLabels, loadLabelTaxonomy } from "@/hooks/useLabelSearch";
 import { useNestedSearchLevel } from "@/hooks/useSearchLevel";
+import { useText } from "@/hooks/useText";
 import { FilterGroupSchema } from "@/schemas";
 import { TSearchLabel, TSearchQueryGroup, TTheme } from "@/types";
 import { getFeatureFlags } from "@/utils/featureFlags";
 import { getFeatures } from "@/utils/features";
+import { getFilterGroups } from "@/utils/filters/getFilterGroups";
 import { pluralise } from "@/utils/pluralise";
 import { readConfigFile } from "@/utils/readConfigFile";
 import { conceptFiltersOnly, seedPassageLevel } from "@/utils/search/searchLevels";
@@ -35,6 +36,7 @@ const columnLayoutCss = "col-start-1 -col-end-1 cols-5:col-start-2 cols-5:-col-e
 type TProps = InferGetServerSidePropsType<typeof getServerSideProps>;
 
 const ShadowSearch = ({ theme, themeConfig, features }: TProps) => {
+  const { getAppText } = useText();
   const { removeCompletedTutorial } = useContext(TutorialContext);
   const [availableFilters, setAvailableFilters] = useState<TSearchLabel[]>([]);
 
@@ -48,6 +50,8 @@ const ShadowSearch = ({ theme, themeConfig, features }: TProps) => {
   const sortKey = normaliseSearchDocumentsSortKey(sortParam);
   const [totalNoOfResults, setTotalNoOfResults] = useState<number | null>(null);
   const [isSearching, setIsSearching] = useState(false);
+
+  const searchFilterGroups = useMemo(() => getFilterGroups({ features, getAppText, theme }), [features, getAppText, theme]);
 
   /**
    * Drops aggregations only when the filter tree becomes empty so greyed options
@@ -182,7 +186,7 @@ const ShadowSearch = ({ theme, themeConfig, features }: TProps) => {
                 {hasSearch && totalNoOfResults === 0 && !isSearching && <ZeroStateSERPNoResults onClearSearch={onClearSearch} />}
               </>
             }
-            filterGroups={SEARCH_FILTER_GROUPS}
+            filterGroups={searchFilterGroups}
             filterParamKey="filters"
             labels={availableFilters}
             queryParamKey="q"
@@ -261,7 +265,7 @@ export default ShadowSearch;
 export const getServerSideProps = (async (context) => {
   context.res.setHeader("Cache-Control", "public, max-age=3600, immutable");
 
-  const theme = process.env.THEME;
+  const theme = process.env.THEME as TTheme;
   const themeConfig = await readConfigFile(theme);
   const featureFlags = getFeatureFlags(context.req.cookies);
   const features = getFeatures(themeConfig, featureFlags);

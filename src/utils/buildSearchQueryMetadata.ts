@@ -12,7 +12,7 @@ export const buildSearchQueryMetadata = (
   // Find the relevant filter option for the given taxonomy key
   // If corpus IDs are passed in we need an additional check for the relevant corpus ID
   // If no corpus IDs are passed, or the filter does not have a category defined we can use the filter
-  const filterOption = themeConfig.filters.find(
+  const filterOption = themeConfig.deprecatedFilters.find(
     (f) => f.taxonomyKey === taxonomyKey && (corpusIds?.some((c) => f.category.includes(c)) || !f.category || !corpusIds)
   );
   if (filterOption) {

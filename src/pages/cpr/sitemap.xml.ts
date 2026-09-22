@@ -7,7 +7,7 @@ import { extractGeographySlugs } from "@/utils/geography";
 import { toSitemapXml } from "@/utils/sitemap";
 
 const buildSitemap = async (): Promise<MetadataRoute.Sitemap> => {
-  const allCorpusIds = CPRthemeConfig.categories?.options.flatMap((option) => option.value) || [];
+  const allCorpusIds = CPRthemeConfig.deprecatedCategories?.options.flatMap((option) => option.value) || [];
   const allCorpusIdsSearchParams = allCorpusIds.map((corpusId) => ["corpus.import_id", corpusId]);
   const urlSearchParams = new URLSearchParams(allCorpusIdsSearchParams);
 

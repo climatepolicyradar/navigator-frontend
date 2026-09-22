@@ -109,8 +109,8 @@ export default function buildSearchQuery(
   const qCategory = (routerQuery[QUERY_PARAMS.category] as string) ?? "All";
   let category: string[];
   let corpusIds: string[] = [];
-  if (themeConfig?.categories) {
-    const configCategory = themeConfig.categories.options.find((c) => c.slug.toLowerCase() === qCategory.toLowerCase());
+  if (themeConfig?.deprecatedCategories) {
+    const configCategory = themeConfig.deprecatedCategories.options.find((c) => c.slug.toLowerCase() === qCategory.toLowerCase());
     category = configCategory?.category;
     if (configCategory?.value) corpusIds = configCategory.value;
   }
@@ -182,7 +182,7 @@ export default function buildSearchQuery(
 
   // ---- Laws and Policies specific ----
   if (routerQuery[QUERY_PARAMS.framework_laws]) {
-    const configFrameworkLaws = themeConfig.filters.find((f) => f.taxonomyKey === "framework_laws");
+    const configFrameworkLaws = themeConfig.deprecatedFilters.find((f) => f.taxonomyKey === "framework_laws");
     query.metadata = query.metadata.filter((m) => m.name !== configFrameworkLaws.apiMetaDataKey);
     if (routerQuery[QUERY_PARAMS.framework_laws] === "true") {
       query.metadata.push({
@@ -207,7 +207,7 @@ export default function buildSearchQuery(
   if (routerQuery[QUERY_PARAMS.fund]) {
     const corpusIds: string[] = [];
     const funds = routerQuery[QUERY_PARAMS.fund];
-    const configFunds = themeConfig.filters.find((f) => f.taxonomyKey === "fund");
+    const configFunds = themeConfig.deprecatedFilters.find((f) => f.taxonomyKey === "fund");
     if (configFunds) {
       const fundOptions = configFunds.options;
       if (Array.isArray(funds)) {
@@ -226,7 +226,7 @@ export default function buildSearchQuery(
   if (routerQuery[QUERY_PARAMS.fund_doc_type]) {
     const corpusIds: string[] = [];
     const funds = routerQuery[QUERY_PARAMS.fund_doc_type];
-    const configFundsFromTypes = themeConfig.filters.find((f) => f.taxonomyKey === "fund_doc_type");
+    const configFundsFromTypes = themeConfig.deprecatedFilters.find((f) => f.taxonomyKey === "fund_doc_type");
     if (configFundsFromTypes) {
       const fundOptions = configFundsFromTypes.options;
       if (Array.isArray(funds)) {
@@ -271,7 +271,7 @@ export default function buildSearchQuery(
   if (routerQuery[QUERY_PARAMS.convention]) {
     const corpusIds: string[] = [];
     const conventions = routerQuery[QUERY_PARAMS.convention];
-    const configConventions = themeConfig.filters.find((f) => f.taxonomyKey === "convention");
+    const configConventions = themeConfig.deprecatedFilters.find((f) => f.taxonomyKey === "convention");
     if (configConventions) {
       const conventionOptions = configConventions.options;
       if (Array.isArray(conventions)) {

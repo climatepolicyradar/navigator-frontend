@@ -2,9 +2,11 @@ import { Meta, StoryObj } from "@storybook/nextjs-vite";
 import uniqBy from "lodash/uniqBy";
 import { useState } from "react";
 
+import { DEFAULT_FEATURES } from "@/constants/features";
 import { FiltersContext, TToggleFilterCallback } from "@/context/FiltersContext";
 import { TFilterPathLabel, TNestedSearchLabel } from "@/types";
 import { getLabelPathSignature, sortFilterPathLabels } from "@/utils/filters/filterPaths";
+import { getFilterGroups } from "@/utils/filters/getFilterGroups";
 
 import { SearchFilter } from "./SearchFilter";
 
@@ -22,7 +24,8 @@ const meta = {
       const updatedCheckedLabelPaths = sortFilterPathLabels(
         checked === true // indeterminate is treated as unchecked
           ? uniqBy([...checkedLabelPaths, labelPath], getLabelPathSignature)
-          : checkedLabelPaths.filter((labels) => getLabelPathSignature(labels) !== getLabelPathSignature(labelPath))
+          : checkedLabelPaths.filter((labels) => getLabelPathSignature(labels) !== getLabelPathSignature(labelPath)),
+        getFilterGroups({ features: DEFAULT_FEATURES, getAppText: () => "", theme: "cpr" })
       );
 
       setCheckedLabelPaths(updatedCheckedLabelPaths);

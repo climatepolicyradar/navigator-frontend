@@ -1,7 +1,7 @@
 import { TThemeConfig } from "@/types";
 
 const config: TThemeConfig = {
-  categories: {
+  deprecatedCategories: {
     label: "Category",
     options: [
       {
@@ -37,7 +37,7 @@ const config: TThemeConfig = {
       },
     ],
   },
-  filters: [
+  deprecatedFilters: [
     {
       label: "Type",
       taxonomyKey: "framework_laws",

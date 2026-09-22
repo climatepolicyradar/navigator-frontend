@@ -19,7 +19,7 @@ describe("FilterOptions", () => {
 
     const testThemeConfig: TThemeConfig = {
       ...DEFAULT_THEME_CONFIG,
-      filters: [testFilter],
+      deprecatedFilters: [testFilter],
       features: {
         ...DEFAULT_CONFIG_FEATURES,
         searchFamilySummary: true,
