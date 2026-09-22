@@ -33,6 +33,7 @@ export type TLandingPageConfig = {
     title: string;
   };
   organisation?: {
+    name: string;
     logoImage: TImageProps;
     links: {
       label: string;
