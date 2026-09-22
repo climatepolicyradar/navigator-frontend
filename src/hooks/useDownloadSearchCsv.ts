@@ -25,10 +25,13 @@ export function buildDownloadSearchCsvUrl(params: { query?: string; filters?: TS
   if (params.query) url.searchParams.set("query", params.query);
 
   const sanitisedFilters = params.filters ? sanitiseSearchQueryGroup(params.filters) : undefined;
-  const nonEmptyFilters = sanitisedFilters && !isFilterGroupEmpty(sanitisedFilters) ? sanitisedFilters : undefined;
-  const combinedFilters: TSearchQueryGroup = nonEmptyFilters
-    ? { op: "and", filters: [PRINCIPAL_DOCUMENTS_FILTER, nonEmptyFilters] }
-    : PRINCIPAL_DOCUMENTS_FILTER;
+
+  const filtersToApply: TSearchQueryGroup[] = [PRINCIPAL_DOCUMENTS_FILTER];
+  if (sanitisedFilters && !isFilterGroupEmpty(sanitisedFilters)) {
+    filtersToApply.push(sanitisedFilters);
+  }
+
+  const combinedFilters: TSearchQueryGroup = filtersToApply.length > 1 ? { op: "and", filters: filtersToApply } : filtersToApply[0];
   url.searchParams.set("filters", JSON.stringify(combinedFilters));
 
   url.searchParams.set("order_by", SEARCH_DOCUMENT_SORT_PARAMS[params.sort]);
