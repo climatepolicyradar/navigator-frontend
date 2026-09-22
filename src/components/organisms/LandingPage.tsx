@@ -7,8 +7,10 @@ import { FiveColumns } from "@/components/atoms/columns/FiveColumns";
 import { PageLink } from "@/components/atoms/pageLink/PageLink";
 import Footer from "@/components/footer/Footer";
 import Layout from "@/components/layouts/LandingPage";
+import { FeaturesContext } from "@/context/FeaturesContext";
 import { ThemeContext } from "@/context/ThemeContext";
 import { Header } from "@/cpr/components/Header";
+import NotFound from "@/pages/404";
 import { TLandingPageConfig } from "@/types";
 import { getSuggestionParams } from "@/utils/getSuggestionParams";
 import { joinTailwindClasses } from "@/utils/tailwind";
@@ -20,8 +22,15 @@ type TProps = {
 export const LandingPage = ({ config }: TProps) => {
   const { themeConfig } = useContext(ThemeContext);
 
+  // Technically this page will still 200 on `!isAvailable`, but render the 404 page.
+  // This is because if we were to render 404 at the server level, we would need access
+  // to `request.cookies`, which we don't have as these are rendered at build time.
+  // This is to allow us to build the pages and release incrementally to production for feedback.
+  const features = useContext(FeaturesContext);
+  const isAvailable = config.requiredFeature === undefined || features[config.requiredFeature];
+
   // Note: designed for use on CPR app only
-  return (
+  return isAvailable ? (
     <Layout title={config.hero.title} description={config.hero.description} theme="cpr">
       <Header landingPage />
       <div className="py-4 cols-4:py-12 cols-5:py-24 border-t border-t-border-light">
@@ -96,5 +105,7 @@ export const LandingPage = ({ config }: TProps) => {
       </div>
       <Footer />
     </Layout>
+  ) : (
+    <NotFound />
   );
 };
