@@ -107,6 +107,20 @@ export const LandingPage = ({ config }: TProps) => {
             </aside>
           )}
         </FiveColumns>
+        {config.partners && (
+          <FiveColumns className="pt-8 cols-4:pt-12 cols-5:pt-24">
+            <div className="col-start-1 -col-end-1 cols-5:col-start-2 cols-5:-col-end-2">
+              <h2 className="mb-6 text-lg text-text-primary text-center font-heavy">{config.partners.title}</h2>
+              <ul className="flex flex-row flex-wrap items-center justify-center gap-10">
+                {config.partners.logos.map((logo, logoIndex) => (
+                  <li key={logoIndex}>
+                    <Image {...logo} alt={logo.alt} className="h-12 w-auto" />
+                  </li>
+                ))}
+              </ul>
+            </div>
+          </FiveColumns>
+        )}
       </main>
       <Footer />
     </Layout>

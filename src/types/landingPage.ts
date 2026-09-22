@@ -40,6 +40,10 @@ export type TLandingPageConfig = {
       externalHref: string;
     }[];
   };
+  partners?: {
+    title: string;
+    logos: TImageProps[];
+  };
   search: TLandingPageSearchConfig;
   textContent: {
     title: string;
