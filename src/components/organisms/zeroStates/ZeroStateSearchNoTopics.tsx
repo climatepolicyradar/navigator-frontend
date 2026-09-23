@@ -1,6 +1,7 @@
 import { LucideScanSearch } from "lucide-react";
+import { ReactNode } from "react";
 
-export const EmptyTopicsFilter = () => (
+export const ZeroStateSearchNoTopics: ReactNode = (
   <div className="p-4 flex flex-col items-center">
     <div className="p-3 bg-[#1A4F8C0D] rounded-full">
       <LucideScanSearch size={24} className="text-text-brand" />

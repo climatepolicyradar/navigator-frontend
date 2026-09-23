@@ -6,7 +6,7 @@ import { buildSearchQueryMetadata } from "./buildSearchQueryMetadata";
 
 const testThemeConfig: TThemeConfig = {
   ...DEFAULT_THEME_CONFIG,
-  filters: [
+  deprecatedFilters: [
     {
       label: "Status",
       taxonomyKey: "status",

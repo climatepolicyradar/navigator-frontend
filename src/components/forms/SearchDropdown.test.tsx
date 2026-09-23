@@ -68,8 +68,6 @@ describe("SearchDropdown", () => {
   let mockQuery: any;
 
   beforeEach(() => {
-    vi.clearAllMocks();
-
     // Create fresh mocks for each test
     mockPush = vi.fn();
     mockQuery = {};

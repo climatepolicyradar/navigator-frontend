@@ -78,7 +78,7 @@ describe("useSubdivisions", () => {
   it("only returns a list subdivision data for corpora in the All category if no default corpora in the relevant theme config", async () => {
     setUpThemeConfig({
       ...DEFAULT_THEME_CONFIG,
-      categories: {
+      deprecatedCategories: {
         label: "Category",
         options: [
           {

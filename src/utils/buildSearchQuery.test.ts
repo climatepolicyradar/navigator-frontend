@@ -11,7 +11,7 @@ describe("buildSearchQuery: ", () => {
     const themeConfig: TThemeConfig = {
       ...DEFAULT_THEME_CONFIG,
       defaultCorpora: undefined,
-      categories: {
+      deprecatedCategories: {
         label: "Category",
         options: [
           {
@@ -44,7 +44,7 @@ describe("buildSearchQuery: ", () => {
     const themeConfig: TThemeConfig = {
       ...DEFAULT_THEME_CONFIG,
       defaultCorpora: undefined,
-      categories: {
+      deprecatedCategories: {
         label: "Category",
         options: [],
       },

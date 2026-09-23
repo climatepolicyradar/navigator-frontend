@@ -40,7 +40,7 @@ describe("groupSearchLabels", () => {
   });
 
   it("keeps a group with no matching labels when emptyStateRender is set", () => {
-    const grouped = groupSearchLabels([label("region", "europe")], [popoverGroup({ emptyStateRender: () => "Keep me" })]);
+    const grouped = groupSearchLabels([label("region", "europe")], [popoverGroup({ emptyStateRender: "Keep me" })]);
 
     expect(grouped).toHaveLength(1);
     expect(grouped[0].nestedLabels).toEqual([]);
@@ -49,7 +49,7 @@ describe("groupSearchLabels", () => {
   it("still runs prepareRootLabels for a group with emptyStateRender", () => {
     const placeholder = label("concept", "placeholder");
     const prepareRootLabels = vi.fn(() => [placeholder]);
-    const grouped = groupSearchLabels([], [popoverGroup({ emptyStateRender: () => "Keep me", prepareRootLabels })]);
+    const grouped = groupSearchLabels([], [popoverGroup({ emptyStateRender: "Keep me", prepareRootLabels })]);
 
     expect(prepareRootLabels).toHaveBeenCalledWith([]);
     expect(grouped[0].nestedLabels).toEqual([placeholder]);

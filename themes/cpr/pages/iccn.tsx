@@ -19,6 +19,7 @@ export default function ICCNLandingPage() {
       description: "Progress reports from climate councils around the world",
     },
     organisation: {
+      name: "The ICCN",
       logoImage: {
         src: "/images/iccn/iccn-logo.jpg",
         alt: "ICCN logo",
