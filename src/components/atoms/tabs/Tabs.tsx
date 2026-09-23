@@ -39,7 +39,7 @@ export const Tabs = <TabId extends string>({ analytics, className, onValueChange
         >
           {label}
           {typeof count === "number" && (
-            <span className="flex size-6 shrink-0 items-center justify-center rounded-full bg-inky-blue text-xs text-text-inverse font-heavy">
+            <span className="flex h-6 min-w-6 px-1 shrink-0 items-center justify-center rounded-full bg-inky-blue text-xs text-text-inverse font-heavy">
               {count}
             </span>
           )}
