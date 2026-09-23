@@ -135,10 +135,14 @@ jobs:
         run: |
           echo "stack_name=pr-${THEME}-navigator-frontend-${PR_NUMBER}" >> "$GITHUB_OUTPUT"
 
+      - name: Checkout
+        uses: actions/checkout@v4
+
       - name: Install pulumi CLI
         uses: pulumi/actions@v7
 
       - name: Set next_public_api_url config
+        working-directory: infra
         env:
           STACK_NAME: ${{ steps.stack.outputs.stack_name }}
           TARGET_URL: ${{ steps.target.outputs.url }}
