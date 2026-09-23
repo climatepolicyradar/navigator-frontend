@@ -50,7 +50,35 @@ jobs:
       # For repo checkout
       contents: read
 
+  test-changes:
+    runs-on: ubuntu-latest
+    permissions:
+      pull-requests: read
+    outputs:
+      run-tests: ${{ steps.filter.outputs.run-tests }}
+    steps:
+      - uses: dorny/paths-filter@v4
+        id: filter
+        with:
+          filters: |
+            run-tests:
+              - 'src/**'
+              - 'themes/**'
+              - 'tests/**'
+              - 'public/**'
+              - 'package.json'
+              - 'package-lock.json'
+              - 'next.config.js'
+              - 'next.config.test.ts'
+              - 'playwright.config.ts'
+              - 'tsconfig.base.json'
+              - '.env.example'
+              - '.nvmrc'
+              - '.github/workflows/pull_request.yml'
+
   test:
+    needs: test-changes
+    if: needs.test-changes.outputs.run-tests == 'true'
     timeout-minutes: 15
     runs-on: ubuntu-latest
     steps:
@@ -89,6 +117,8 @@ jobs:
           org-slug: ${{ secrets.TRUNK_ORG_SLUG }}
 
   test-e2e:
+    needs: test-changes
+    if: needs.test-changes.outputs.run-tests == 'true'
     timeout-minutes: 15
     runs-on: ubuntu-latest
     env:
@@ -188,7 +218,12 @@ jobs:
 
   dependabot:
     name: Dependabot Auto-pilot
-    needs: [code-quality, test, test-e2e]
+    needs: [code-quality, test-changes, test, test-e2e]
+    if: |
+      always() &&
+      needs.code-quality.result == 'success' &&
+      (needs.test.result == 'success' || needs.test.result == 'skipped') &&
+      (needs.test-e2e.result == 'success' || needs.test-e2e.result == 'skipped')
     permissions:
       pull-requests: write
       contents: write
