@@ -1,11 +1,11 @@
 import { Meta, StoryObj } from "@storybook/nextjs-vite";
 
 import { ID_SEPARATOR } from "@/constants/chars";
-import { TNestedSearchLabel } from "@/types";
+import { TLabel } from "@/types";
 
 import { Geographies } from "./Geographies";
 
-const geographyLabel = (type: string, id: string, value: string, children: TNestedSearchLabel[] = []): TNestedSearchLabel => ({
+const geographyLabel = (type: string, id: string, value: string, children: TLabel[] = []): TLabel => ({
   id: [type, id].join(ID_SEPARATOR),
   type,
   value,

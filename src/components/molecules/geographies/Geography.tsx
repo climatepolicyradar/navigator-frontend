@@ -6,17 +6,18 @@ import { ID_SEPARATOR } from "@/constants/chars";
 import { COUNTRY_FLAGS } from "@/constants/flags";
 import { GEOGRAPHY_SLUG_CONVERSIONS } from "@/constants/geography";
 import { FeaturesContext } from "@/context/FeaturesContext";
-import { TNestedSearchLabel } from "@/types";
+import { TLabel } from "@/types";
 import { joinNodes } from "@/utils/reactNode";
 import { joinTailwindClasses } from "@/utils/tailwind";
 
 interface IProps {
-  geographyLabel: TNestedSearchLabel;
+  geographyLabel: TLabel;
   linkClasses?: string;
+  noLink?: boolean;
   showFlag?: boolean;
 }
 
-export const Geography = ({ geographyLabel, linkClasses, showFlag = false }: IProps) => {
+export const Geography = ({ geographyLabel, linkClasses, noLink = false, showFlag = false }: IProps) => {
   const features = useContext(FeaturesContext);
 
   if (!["country", "subdivision"].includes(geographyLabel.type)) return null;
@@ -34,7 +35,7 @@ export const Geography = ({ geographyLabel, linkClasses, showFlag = false }: IPr
 
   const isSubdivision = geographyLabel.type === "subdivision";
   const isInternational = geoCode === "XAB";
-  const hasLink = !isInternational && !(isSubdivision && !features.subdivisions);
+  const hasLink = !noLink && !isInternational && !(isSubdivision && !features.subdivisions);
 
   if (!hasLink) {
     return <span>{joinNodes([flag, name], <>&nbsp;</>)}</span>;

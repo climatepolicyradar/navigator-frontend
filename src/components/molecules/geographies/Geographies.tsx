@@ -3,7 +3,7 @@ import { ReactNode } from "react";
 
 import { Geography } from "@/components/molecules/geographies/Geography";
 import { ARROW_RIGHT } from "@/constants/chars";
-import { TNestedSearchLabel, TSingularAndPlural } from "@/types";
+import { TLabel, TSingularAndPlural } from "@/types";
 import { flattenNestedLabels } from "@/utils/labels/flattenNestedLabels";
 import { pluralise } from "@/utils/pluralise";
 import { joinNodes } from "@/utils/reactNode";
@@ -14,12 +14,13 @@ const LABEL_ORDER_BY_TYPE = ["country", "subdivision"];
 
 interface IProps {
   className?: string;
-  geographyLabels: TNestedSearchLabel[];
-  hierarchySeparator: string;
+  geographyLabels: TLabel[];
+  hierarchySeparator?: string;
   limit?: number;
   limitSuffix?: TSingularAndPlural;
   limitOnClick?: () => void;
   linkClasses?: string;
+  noLinks?: boolean;
   separatorClasses?: string;
   showFlags?: boolean;
 }
@@ -32,6 +33,7 @@ export const Geographies = ({
   limitSuffix,
   limitOnClick,
   linkClasses,
+  noLinks = false,
   separatorClasses,
   showFlags = true,
 }: IProps) => {
@@ -40,7 +42,7 @@ export const Geographies = ({
     [(label) => LABEL_ORDER_BY_TYPE.indexOf(label.type), "value"]
   );
   let geographies: ReactNode[] = sortedLabels.map((label) => (
-    <Geography key={label.id} geographyLabel={label} linkClasses={linkClasses} showFlag={showFlags} />
+    <Geography key={label.id} geographyLabel={label} linkClasses={linkClasses} noLink={noLinks} showFlag={showFlags} />
   ));
 
   // Hierarchical separator only if a country + subdivision pair

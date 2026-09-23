@@ -4,13 +4,13 @@ import * as nextRouterMock from "next-router-mock";
 import { ID_SEPARATOR } from "@/constants/chars";
 import { DEFAULT_FEATURES } from "@/constants/features";
 import { FeaturesContext } from "@/context/FeaturesContext";
-import { TNestedSearchLabel } from "@/types";
+import { TLabel } from "@/types";
 
 import { Geographies } from "./Geographies";
 
 vi.mock("next/router", () => nextRouterMock);
 
-const geographyLabel = (type: string, id: string, value: string, children: TNestedSearchLabel[] = []): TNestedSearchLabel => ({
+const geographyLabel = (type: string, id: string, value: string, children: TLabel[] = []): TLabel => ({
   id: [type, id].join(ID_SEPARATOR),
   type,
   value,
