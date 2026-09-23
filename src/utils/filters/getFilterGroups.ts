@@ -34,7 +34,7 @@ export const getFilterGroups = ({ features, getAppText, theme }: IProps): TFilte
     prepareRootLabels: FILTER_PREP_DICTIONARY[theme] || undefined,
     rootLabelTypes: ["category"],
     subtitle: "Choose themes and specific filters to refine your search",
-    title: features.themes ? getAppText("filterGroupFilters") : "Category",
+    title: features.themes ? "Category" : getAppText("filterGroupFilters"),
   });
 
   if (features.themes) {
