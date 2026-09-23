@@ -27,18 +27,17 @@ interface IProps {
 
 export const getFilterGroups = ({ features, getAppText, theme }: IProps): TFiltersGroupConfig[] => {
   const filterGroups: TFiltersGroupConfig[] = [];
+  // Filters
+  filterGroups.push({
+    container: "drawer",
+    Icon: LucideListFilter,
+    prepareRootLabels: FILTER_PREP_DICTIONARY[theme] || undefined,
+    rootLabelTypes: ["category"],
+    subtitle: "Choose themes and specific filters to refine your search",
+    title: features.themes ? getAppText("filterGroupFilters") : "Category",
+  });
 
   if (features.themes) {
-    // Category
-    filterGroups.push({
-      container: "drawer",
-      Icon: LucideListFilter,
-      prepareRootLabels: FILTER_PREP_DICTIONARY[theme] || undefined,
-      rootLabelTypes: ["category"],
-      subtitle: "Choose themes and specific filters to refine your search",
-      title: "Category",
-    });
-
     // Theme
     filterGroups.push({
       title: "Theme",
@@ -46,16 +45,6 @@ export const getFilterGroups = ({ features, getAppText, theme }: IProps): TFilte
       Icon: LucideBook,
       container: "drawer",
       rootLabelTypes: ["domain"],
-    });
-  } else {
-    // Filters
-    filterGroups.push({
-      container: "drawer",
-      Icon: LucideListFilter,
-      prepareRootLabels: FILTER_PREP_DICTIONARY[theme] || undefined,
-      rootLabelTypes: ["category"],
-      subtitle: "Choose themes and specific filters to refine your search",
-      title: getAppText("filterGroupFilters"),
     });
   }
 
