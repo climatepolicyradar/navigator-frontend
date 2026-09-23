@@ -27,21 +27,21 @@ jobs:
         env:
           COMMENT_BODY: ${{ github.event.comment.body }}
         run: |
-          # Expect exactly "/use-search-api <arg>" where <arg> is "prod" or a
-          # positive integer PR number. Reject anything else with a clear
-          # comment rather than silently doing nothing.
+          # Expect exactly "/use-search-api <arg>" where <arg> is "production"
+          # or a positive integer PR number. Reject anything else with a
+          # clear comment rather than silently doing nothing.
           arg=$(echo "$COMMENT_BODY" | awk '{print $2}')
 
           if [ -z "$arg" ]; then
-            echo "error=Usage: \`/use-search-api <search-api-pr-number>\` or \`/use-search-api prod\`." >> "$GITHUB_OUTPUT"
+            echo "error=Usage: \`/use-search-api <search-api-pr-number>\` or \`/use-search-api production\`." >> "$GITHUB_OUTPUT"
             echo "mode=error" >> "$GITHUB_OUTPUT"
-          elif [ "$arg" = "prod" ]; then
+          elif [ "$arg" = "production" ]; then
             echo "mode=prod" >> "$GITHUB_OUTPUT"
           elif echo "$arg" | grep -qE '^[0-9]+$'; then
             echo "mode=pr" >> "$GITHUB_OUTPUT"
             echo "search_pr_number=$arg" >> "$GITHUB_OUTPUT"
           else
-            echo "error=Could not parse \`$arg\` as a PR number or \`prod\`. Usage: \`/use-search-api <search-api-pr-number>\` or \`/use-search-api prod\`." >> "$GITHUB_OUTPUT"
+            echo "error=Could not parse \`$arg\` as a PR number or \`production\`. Usage: \`/use-search-api <search-api-pr-number>\` or \`/use-search-api production\`." >> "$GITHUB_OUTPUT"
             echo "mode=error" >> "$GITHUB_OUTPUT"
           fi
 
@@ -188,7 +188,7 @@ jobs:
           marker="<!-- use-search-api-override -->"
 
           if [ "$MODE" = "prod" ]; then
-            body="${marker}"$'\n'"Reverted to prod search-api for all themes. Rebuilds triggered — check the [deploy review stack workflow](https://github.com/${{ github.repository }}/actions/workflows/deploy-review-stack.yml) run history for progress."
+            body="${marker}"$'\n'"Reverted to production search-api for all themes. Rebuilds triggered — check the [deploy review stack workflow](https://github.com/${{ github.repository }}/actions/workflows/deploy-review-stack.yml) run history for progress."
           else
             body="${marker}"$'\n'"Pointed at climatepolicyradar/search#${SEARCH_PR_NUMBER}'s review stack for all themes. Rebuilds triggered — check the [deploy review stack workflow](https://github.com/${{ github.repository }}/actions/workflows/deploy-review-stack.yml) run history for progress."
           fi
