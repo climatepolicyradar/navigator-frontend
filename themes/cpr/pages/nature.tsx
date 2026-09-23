@@ -9,6 +9,17 @@ export default function NatureLandingPage() {
       title: "Nature Policy Library",
       description: "National laws and policies shaping how countries tackle biodiversity loss",
     },
+    partners: {
+      title: "Our data sources",
+      logos: [
+        { src: "/images/nature/CBD_logo_green.png", alt: "Convention on Biological Diversity", width: 387, height: 151 },
+        { src: "/images/nature/unccd.jpg", alt: "United Nations Convention to Combat Desertification", width: 1200, height: 630 },
+        { src: "/images/nature/GRI.png", alt: "Grantham Research Institute on Climate Change and the Environment", width: 800, height: 203 },
+        { src: "/images/nature/Nature4Climate_LockUp_Color.svg", alt: "Nature4Climate", width: 835, height: 500 },
+        { src: "/images/nature/logo-preventionweb.svg", alt: "PreventionWeb", width: 277, height: 38 },
+        { src: "/images/nature/CPDB_logo.png", alt: "Climate Policy Database", width: 522, height: 433 },
+      ],
+    },
     search: {
       button: {
         label: "Search Nature laws and policies",

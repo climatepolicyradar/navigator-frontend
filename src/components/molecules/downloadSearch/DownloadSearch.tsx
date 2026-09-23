@@ -56,15 +56,17 @@ export const DownloadSearch = ({ hasSearch, query, filters, sort, totalResults }
         <BasePopover.Portal>
           <BasePopover.Positioner positionMethod="fixed" side="bottom" sideOffset={4} align="end">
             <BasePopover.Popup className="p-2 bg-bg-primary border border-border-normal rounded-lg text-sm text-text-primary font-medium leading-5">
-              <PageLink
-                external
-                href={themeConfig.links.downloadDatabase}
-                onClick={trackAllDataDownload}
-                className="px-2 py-1 flex gap-2 items-center hover:bg-bg-flat"
-              >
-                <LucideFileText size={16} className="text-elem-icon" />
-                <span>All data</span>
-              </PageLink>
+              {themeConfig.links.downloadDatabase && (
+                <PageLink
+                  external
+                  href={themeConfig.links.downloadDatabase}
+                  onClick={trackAllDataDownload}
+                  className="px-2 py-1 flex gap-2 items-center hover:bg-bg-flat"
+                >
+                  <LucideFileText size={16} className="text-elem-icon" />
+                  <span>All data</span>
+                </PageLink>
+              )}
               <BasePopover.Close
                 type="button"
                 disabled={!hasSearch}
