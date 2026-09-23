@@ -174,27 +174,94 @@ jobs:
             exit 1
           fi
 
-  report:
-    needs: [use-search-api, apply-override]
-    if: always() && needs.apply-override.result == 'success'
-    runs-on: ubuntu-latest
-    permissions:
-      pull-requests: write
-    env:
-      GH_TOKEN: ${{ github.token }}
-    steps:
-      - name: Post confirmation comment
+          deployment_id=$(echo "$body" | jq -r '.id')
+          console_url=$(echo "$body" | jq -r '.consoleUrl')
+          echo "deployment_id=$deployment_id" >> "$GITHUB_OUTPUT"
+          echo "console_url=$console_url" >> "$GITHUB_OUTPUT"
+
+      - name: Wait for ${{ matrix.theme }} deployment to finish
+        id: wait_deployment
+        env:
+          STACK_NAME: ${{ steps.stack.outputs.stack_name }}
+          DEPLOYMENT_ID: ${{ steps.trigger_update.outputs.deployment_id }}
+        run: |
+          # Poll every 15s for up to 10 minutes (40 attempts), matching
+          # deploy-review-stack.yml's wait step.
+          terminal_status=""
+          for _ in $(seq 1 40); do
+            sleep 15
+            response=$(curl -fsSL \
+              -H "Authorization: token ${PULUMI_ACCESS_TOKEN}" \
+              "https://api.pulumi.com/api/stacks/${ORG}/${PROJECT}/${STACK_NAME}/deployments/${DEPLOYMENT_ID}") || {
+              echo "Poll request failed, will retry"
+              continue
+            }
+            current_status=$(echo "$response" | jq -r '.status') || {
+              echo "Could not parse deployment status, will retry"
+              continue
+            }
+            echo "Deployment ${DEPLOYMENT_ID} status: ${current_status}"
+            if [ "$current_status" = "succeeded" ] || [ "$current_status" = "failed" ]; then
+              terminal_status="$current_status"
+              break
+            fi
+          done
+
+          if [ -z "$terminal_status" ]; then
+            echo "Timed out waiting for deployment ${DEPLOYMENT_ID} to finish"
+            exit 1
+          fi
+
+          if [ "$terminal_status" != "succeeded" ]; then
+            echo "Deployment ${DEPLOYMENT_ID} finished with status: $terminal_status"
+            exit 1
+          fi
+
+      - name: Post ${{ matrix.theme }} confirmation comment
+        if: steps.wait_deployment.outcome == 'success'
         env:
           MODE: ${{ needs.use-search-api.outputs.mode }}
           SEARCH_PR_NUMBER: ${{ needs.use-search-api.outputs.search_pr_number }}
           PR_NUMBER: ${{ github.event.issue.number }}
+          THEME: ${{ matrix.theme }}
+          CONSOLE_URL: ${{ steps.trigger_update.outputs.console_url }}
         run: |
-          marker="<!-- use-search-api-override -->"
+          marker="<!-- use-search-api-override:${THEME} -->"
 
           if [ "$MODE" = "prod" ]; then
-            body="${marker}"$'\n'"Reverted to production search-api for all themes. Rebuilds triggered — check the [deploy review stack workflow](https://github.com/${{ github.repository }}/actions/workflows/deploy-review-stack.yml) run history for progress."
+            body="${marker}"$'\n'"**${THEME}**: reverted to production search-api. [Deployment logs](${CONSOLE_URL})"
           else
-            body="${marker}"$'\n'"Pointed at climatepolicyradar/search#${SEARCH_PR_NUMBER}'s review stack for all themes. Rebuilds triggered — check the [deploy review stack workflow](https://github.com/${{ github.repository }}/actions/workflows/deploy-review-stack.yml) run history for progress."
+            body="${marker}"$'\n'"**${THEME}**: pointed at climatepolicyradar/search#${SEARCH_PR_NUMBER}'s review stack. [Deployment logs](${CONSOLE_URL})"
+          fi
+
+          existing_comment_id=$(gh api \
+            "repos/${{ github.repository }}/issues/${PR_NUMBER}/comments" \
+            --paginate | jq -s "[.[][] | select(.body | startswith(\"${marker}\"))][0].id")
+
+          if [ -n "$existing_comment_id" ] && [ "$existing_comment_id" != "null" ]; then
+            gh api \
+              --method PATCH \
+              "repos/${{ github.repository }}/issues/comments/${existing_comment_id}" \
+              -f body="$body"
+          else
+            gh api \
+              --method POST \
+              "repos/${{ github.repository }}/issues/${PR_NUMBER}/comments" \
+              -f body="$body"
+          fi
+
+      - name: Post ${{ matrix.theme }} failure comment
+        if: failure()
+        env:
+          PR_NUMBER: ${{ github.event.issue.number }}
+          THEME: ${{ matrix.theme }}
+          CONSOLE_URL: ${{ steps.trigger_update.outputs.console_url }}
+        run: |
+          marker="<!-- use-search-api-override:${THEME} -->"
+          if [ -n "$CONSOLE_URL" ]; then
+            body="${marker}"$'\n'"**${THEME}**: the rebuild failed. [Deployment logs](${CONSOLE_URL})"
+          else
+            body="${marker}"$'\n'"**${THEME}**: failed before a deployment could be triggered — check the [Use search-api review stack](https://github.com/${{ github.repository }}/actions/workflows/use-search-api.yml) run for this PR."
           fi
 
           existing_comment_id=$(gh api \

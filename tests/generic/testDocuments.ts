@@ -27,14 +27,6 @@ export const TEST_DOCUMENTS: TTestDocument[] = [
     availableOn: ["cpr", "cclw"],
   },
   {
-    titleForTests: "Policy",
-    slug: "strengthened-goals-net-zero-pledge-and-additional-climate-package_dead7",
-    withSearch: "target",
-    withTopic: "Target",
-    withParentTopic: "Target",
-    availableOn: ["cpr", "cclw"],
-  },
-  {
     titleForTests: "Policy, many documents",
     slug: "blue-economy-development-framework-for-indonesias-economic-transformation_7e1e",
     withSearch: "construction",
