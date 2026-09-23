@@ -37,4 +37,14 @@ export const LABEL_DISPLAY_REPLACEMENTS: TLabelDisplayReplacement[] = [
     name: "Type",
     subtitle: "Project or guidance",
   },
+  {
+    parentId: ["category", "Multilateral Climate Fund project"].join(SEP),
+    idMatch: `agent${SEP}`,
+    type: "Fund",
+  },
+  {
+    parentId: ["category", "Multilateral Climate Fund project"].join(SEP),
+    idMatch: `entity_type${SEP}`,
+    type: "Document type",
+  },
 ];
