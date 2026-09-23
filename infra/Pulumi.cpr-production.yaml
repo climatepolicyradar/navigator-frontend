@@ -22,6 +22,7 @@ config:
   frontend:validation_account_id:
     secure: AAABAKctmQ28pLTMUXWpOn7O6diir8MHUrdkArq6l3+QXpNP671XHBBTnVs=
   frontend:concepts_api_url: https://api.climatepolicyradar.org
+  frontend:next_public_api_url: https://api.climatepolicyradar.org
   frontend:next_public_faro_app_name: cpr-frontend
   frontend:next_public_faro_app_namespace: frontend
   frontend:otel_exporter_otlp_endpoint: https://otel.prod.climatepolicyradar.org/
