@@ -8,12 +8,15 @@ import { GEOGRAPHY_SLUG_CONVERSIONS } from "@/constants/geography";
 import { FeaturesContext } from "@/context/FeaturesContext";
 import { TNestedSearchLabel } from "@/types";
 import { joinNodes } from "@/utils/reactNode";
+import { joinTailwindClasses } from "@/utils/tailwind";
 
 interface IProps {
   geographyLabel: TNestedSearchLabel;
+  linkClasses?: string;
+  showFlag?: boolean;
 }
 
-export const Geography = ({ geographyLabel }: IProps) => {
+export const Geography = ({ geographyLabel, linkClasses, showFlag = false }: IProps) => {
   const features = useContext(FeaturesContext);
 
   if (!["country", "subdivision"].includes(geographyLabel.type)) return null;
@@ -27,7 +30,7 @@ export const Geography = ({ geographyLabel }: IProps) => {
 
   /* Flag */
   const [, geoCode] = geographyLabel.id.split(ID_SEPARATOR);
-  const flag = COUNTRY_FLAGS[geoCode] ?? null;
+  const flag = (showFlag && COUNTRY_FLAGS[geoCode]) || null;
 
   const isSubdivision = geographyLabel.type === "subdivision";
   const isInternational = geoCode === "XAB";
@@ -37,14 +40,15 @@ export const Geography = ({ geographyLabel }: IProps) => {
     return <span>{joinNodes([flag, name], <>&nbsp;</>)}</span>;
   }
 
+  const allLinkClasses = joinTailwindClasses(
+    "text-text-brand underline underline-offset-2 decoration-slate-300 hocus:decoration-text-brand",
+    linkClasses
+  );
+
   return joinNodes(
     [
       flag,
-      <PageLink
-        key="link"
-        href={`/geographies/${slug}`}
-        className="text-text-brand underline underline-offset-2 decoration-slate-300 hocus:decoration-text-brand"
-      >
+      <PageLink key="link" href={`/geographies/${slug}`} className={allLinkClasses}>
         {name}
       </PageLink>,
     ],

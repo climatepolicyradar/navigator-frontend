@@ -5,7 +5,7 @@ import { ID_SEPARATOR } from "@/constants/chars";
 import { Geography } from "./Geography";
 
 const meta = {
-  title: "Molecules/Geography",
+  title: "Molecules/Geographies/Geography",
   component: Geography,
   parameters: {
     layout: "centered",
