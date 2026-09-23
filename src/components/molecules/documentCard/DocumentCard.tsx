@@ -1,36 +1,21 @@
-import sortBy from "lodash/sortBy";
 import { MouseEventHandler, ReactNode } from "react";
 
 import { SearchDocument } from "@/api/search";
-import { ID_SEPARATOR } from "@/constants/chars";
-import { COUNTRY_FLAGS } from "@/constants/flags";
+import { Geographies } from "@/components/molecules/geographies/Geographies";
 import { IMetadata } from "@/types";
 import { formatDate } from "@/utils/timedate";
 
 const getDocumentGeography = (document: SearchDocument): ReactNode => {
-  const allGeographies = document.labels.filter((label) => label.type === "geography");
-  const mostSpecificGeoType = ["subdivision", "country", "region"].find((type) => allGeographies.some((geo) => geo.value.type === type));
-  const mostSpecificGeographies = sortBy(
-    allGeographies.filter((geo) => geo.value.type === mostSpecificGeoType),
-    "value.value"
-  );
-  const geography = mostSpecificGeographies[0];
-  const otherGeographies = geography ? mostSpecificGeographies.length - 1 : 0;
-  let geographyEmoji = "";
-  if (geography) {
-    const geoId = geography.value.id.split(ID_SEPARATOR)[1] ?? "";
-    if (geoId in COUNTRY_FLAGS) geographyEmoji = COUNTRY_FLAGS[geoId];
+  const allGeographies = document.labels.filter((relation) => relation.type === "geography").map((relation) => relation.value);
+
+  if (allGeographies.length === 0) {
+    return <span className="text-text-tertiary">No Geography</span>;
+  }
+  if (allGeographies.every((geo) => geo.type === "region")) {
+    return allGeographies[0].value; // Region only edge case
   }
 
-  return geography ? (
-    <>
-      {geographyEmoji && <>{geographyEmoji} </>}
-      {geography.value.value}
-      {otherGeographies > 0 && <> +{otherGeographies}</>}
-    </>
-  ) : (
-    <span className="text-text-tertiary">No Geography</span>
-  );
+  return <Geographies geographyLabels={allGeographies} limit={1} />;
 };
 
 const getDocumentPublishedYear = (doc: SearchDocument): ReactNode => {

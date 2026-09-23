@@ -1,12 +1,11 @@
 import { LucideX } from "lucide-react";
 import { ReactNode, useContext, useMemo } from "react";
 
+import { Geographies } from "@/components/molecules/geographies/Geographies";
 import { FiltersContext } from "@/context/FiltersContext";
 import { TFilterPathLabel, TFiltersGroupConfig } from "@/types";
 import { getLabelPathSignature, sortFilterPathLabels } from "@/utils/filters/filterPaths";
 import { joinTailwindClasses } from "@/utils/tailwind";
-
-import { Geographies } from "../geographies/Geographies";
 
 const getDateRangeLabel = (dateRange: [number, number]): string => `${dateRange[0]}-${dateRange[1]}`;
 
