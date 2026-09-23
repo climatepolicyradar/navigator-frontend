@@ -31,11 +31,12 @@ export const getFilterGroups = ({ features, getAppText, theme }: IProps): TFilte
   if (features.themes) {
     // Category
     filterGroups.push({
-      title: "Category",
-      subtitle: "Choose themes and specific filters to refine your search",
-      Icon: LucideListFilter,
       container: "drawer",
+      Icon: LucideListFilter,
+      prepareRootLabels: FILTER_PREP_DICTIONARY[theme] || undefined,
       rootLabelTypes: ["category"],
+      subtitle: "Choose themes and specific filters to refine your search",
+      title: "Category",
     });
 
     // Theme
