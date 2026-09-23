@@ -1,32 +1,23 @@
 import { LucideX } from "lucide-react";
-import { useContext, useMemo } from "react";
+import { ReactNode, useContext, useMemo } from "react";
 
-import { ARROW_RIGHT } from "@/constants/chars";
-import { COUNTRY_FLAGS } from "@/constants/flags";
 import { FiltersContext } from "@/context/FiltersContext";
 import { TFilterPathLabel, TFiltersGroupConfig } from "@/types";
 import { getLabelPathSignature, sortFilterPathLabels } from "@/utils/filters/filterPaths";
 import { joinTailwindClasses } from "@/utils/tailwind";
 
+import { Geographies } from "../geographies/Geographies";
+
 const getDateRangeLabel = (dateRange: [number, number]): string => `${dateRange[0]}-${dateRange[1]}`;
 
-const getAppliedFilterLabel = (labelValues: Record<string, string>, labelPath: TFilterPathLabel[]): string => {
+const getAppliedFilterLabel = (labelValues: Record<string, string>, labelPath: TFilterPathLabel[]): ReactNode => {
   const getLabelValue = (label: TFilterPathLabel) => labelValues[label.id] || label.value;
   const isGeography = labelPath.some((label) => ["country", "geography"].includes(label.type));
 
-  // Geographies are arrow separated paths with country emojis
   if (isGeography) {
-    // Only show the region if it itself is checked
-    const displayPath = labelPath.length > 1 ? labelPath.filter((label) => label.type !== "region") : labelPath;
-
-    return [...displayPath]
-      .reverse()
-      .map((label) => {
-        const emoji = COUNTRY_FLAGS[label.value] ?? "";
-        const emojiString = emoji ? `${emoji} ` : "";
-        return `${emojiString}${getLabelValue(label)}`;
-      })
-      .join(` ${ARROW_RIGHT} `);
+    const geographyLabels = labelPath.map((label) => ({ ...label, value: getLabelValue(label) }));
+    // Geographies hides the region is present - it can only render outside of this IF when by itself
+    return <Geographies geographyLabels={geographyLabels} noLinks />;
   }
 
   return getLabelValue(labelPath[0]);
