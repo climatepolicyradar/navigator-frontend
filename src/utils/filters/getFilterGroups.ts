@@ -1,4 +1,4 @@
-import { BookIcon, ListFilter, LucideEarth, LucideListFilter } from "lucide-react";
+import { LucideBook, LucideEarth, LucideListFilter } from "lucide-react";
 
 import { FilterHeaderTopics } from "@/components/fragments/filters/FilterHeaderTopics";
 import { TAppDictionaryKey } from "@/constants/text";
@@ -33,7 +33,7 @@ export const getFilterGroups = ({ features, getAppText, theme }: IProps): TFilte
     filterGroups.push({
       title: "Category",
       subtitle: "Choose themes and specific filters to refine your search",
-      Icon: ListFilter,
+      Icon: LucideListFilter,
       container: "drawer",
       rootLabelTypes: ["category"],
     });
@@ -42,7 +42,7 @@ export const getFilterGroups = ({ features, getAppText, theme }: IProps): TFilte
     filterGroups.push({
       title: "Theme",
       subtitle: "Narrow results to documents focused on specific topics",
-      Icon: BookIcon,
+      Icon: LucideBook,
       container: "drawer",
       rootLabelTypes: ["domain"],
     });
