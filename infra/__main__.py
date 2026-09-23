@@ -41,6 +41,7 @@ validate_stack_and_branch()
 aws_account = aws.get_caller_identity()
 config = pulumi.Config()
 theme = config.require("theme")
+next_public_api_url = config.require("next_public_api_url")
 
 # The role the deploy workflows assume (deploy-staging.yml,
 # deploy-production.yml, deploy-all-production.yml). Referenced by name where we
@@ -183,7 +184,11 @@ if is_review_stack and shared_resources_env == "production":
         # script skips the actual upload, but it still requires this
         # positional arg to be non-empty. The stack name is a stand-in
         # unique identifier here since no real commit SHA is available.
-        build_args={"THEME": theme, "GITHUB_SHA": stack},
+        build_args={
+            "THEME": theme,
+            "GITHUB_SHA": stack,
+            "NEXT_PUBLIC_API_URL": next_public_api_url,
+        },
         push=True,
         registries=[
             docker_build.RegistryArgs(
