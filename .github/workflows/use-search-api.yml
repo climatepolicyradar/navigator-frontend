@@ -188,7 +188,7 @@ jobs:
           marker="<!-- use-search-api-override -->"
 
           if [ "$MODE" = "prod" ]; then
-            body="${marker}"$'\n'"Reverted to production search-api for all themes. Rebuilds triggered — check the [deploy review stack workflow](https://github.com/${{ github.repository }}/actions/workflows/deploy-review-stack.yml) run history for progress."
+            body="${marker}"$'\n'"Reverted to prod search-api for all themes. Rebuilds triggered — check the [deploy review stack workflow](https://github.com/${{ github.repository }}/actions/workflows/deploy-review-stack.yml) run history for progress."
           else
             body="${marker}"$'\n'"Pointed at climatepolicyradar/search#${SEARCH_PR_NUMBER}'s review stack for all themes. Rebuilds triggered — check the [deploy review stack workflow](https://github.com/${{ github.repository }}/actions/workflows/deploy-review-stack.yml) run history for progress."
           fi
