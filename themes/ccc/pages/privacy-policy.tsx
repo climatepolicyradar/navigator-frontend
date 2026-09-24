@@ -22,11 +22,11 @@ const PrivacyPolicy = () => {
                   What does this Privacy Policy cover?
                 </Heading>
                 <p>
-                  The Climate Litigation Database is controlled, run and managed by Climate Policy Radar CIC, registered at Sustainable Ventures,
-                  County Hall, 5th Floor, Westminster Bridge Road, London SE1 7PB, a Community Interest Company Limited by Guarantee registered in
-                  England and Wales (Company number 13377442) hereafter referred to as “Climate Policy Radar UK”, “CPR UK”, “we”, “us” or “our”. We
-                  understand that your privacy is important to you and that you care about how your Personal Data is used. We respect your privacy and
-                  are committed to protecting your Personal Data.
+                  The Climate Litigation Database is controlled, run and managed by Climate Policy Radar CIC, registered at Techspace, 140 Goswell
+                  Road, London EC1V 7DY, a Community Interest Company Limited by Guarantee registered in England and Wales (Company number 13377442)
+                  hereafter referred to as “Climate Policy Radar UK”, “CPR UK”, “we”, “us” or “our”. We understand that your privacy is important to
+                  you and that you care about how your Personal Data is used. We respect your privacy and are committed to protecting your Personal
+                  Data.
                 </p>
                 <p>
                   This Privacy Policy applies to our collection, use and sharing of your Personal Data when making available our{" "}
@@ -448,13 +448,11 @@ const PrivacyPolicy = () => {
                   <br />
                   Climate Policy Radar
                   <br />
-                  Sustainable Ventures
+                  Techspace
                   <br />
-                  County Hall
+                  140 Goswell Road
                   <br />
-                  5th Floor Westminster Bridge Road
-                  <br />
-                  London, SE1 7PB
+                  London EC1V 7DY
                   <br />
                   <strong>Email:</strong> <ExternalLink url="mailto:info@climatepolicyradar.org">info@climatepolicyradar.org</ExternalLink>
                 </p>
