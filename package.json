@@ -44,7 +44,7 @@
     "react": "^19.3.0",
     "react-dom": "^19.3.0",
     "react-error-boundary": "^6.1.5",
-    "react-simple-maps": "^3.0.0",
+    "react-simple-maps": "^5.0.5",
     "react-tooltip": "^6.0.8",
     "sass": "^1.104.1",
     "schema-dts": "^2.0.0",
