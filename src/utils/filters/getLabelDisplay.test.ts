@@ -61,6 +61,15 @@ describe("getLabelDisplay", () => {
     expect(getLabelDisplay(label)).toEqual({ type: "Agent", name: "Climate funds", subtitle: "Funding source of publisher" });
   });
 
+  it("renames the agent and entity type groups under the MCF category", () => {
+    const ancestorPath = [createPathLabel("category::Multilateral Climate Fund project")];
+    const agentLabel = createLabel({ id: "agent::Adaptation Fund", type: "agent", value: "Adaptation Fund" });
+    const entityTypeLabel = createLabel({ id: "entity_type::Project", type: "entity_type", value: "Project" });
+
+    expect(getLabelDisplay(agentLabel, ancestorPath).type).toBe("Fund");
+    expect(getLabelDisplay(entityTypeLabel, ancestorPath).type).toBe("Document type");
+  });
+
   it("returns a null subtitle when the matched replacement has none", () => {
     const label = createLabel({ id: "category::Law::act", type: "category", value: "act" });
 
