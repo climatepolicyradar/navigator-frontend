@@ -102,10 +102,16 @@ jobs:
           # This runs on every deployment for this stack (including the one
           # /use-search-api itself triggers, via inheritSettings), so a plain
           # `config cp` would silently revert that override back to
-          # ${THEME}-review's default on the very next push. Save the PR
-          # stack's current value (if any) before the copy and restore it
-          # after, so the override survives normal synchronize rebuilds and
-          # only changes when /use-search-api is run again.
+          # ${THEME}-review's default on the very next push.
+          #
+          # Observed in practice: `pulumi config env add` alone (before
+          # `config cp` even runs) was enough to make a just-set
+          # next_public_api_url unreadable via `config get` -- not just
+          # `config cp`. So the value is captured to a file in the FIRST
+          # preRunCommand, before `config env add` runs at all, and restored
+          # from that file (not a live re-read) after `config cp` in the
+          # last preRunCommand. This is the only ordering that survived
+          # testing; capturing it after `config env add` did not.
           curl -fsSL -X POST \
             -H "Authorization: token ${PULUMI_ACCESS_TOKEN}" \
             -H "Content-Type: application/json" \
