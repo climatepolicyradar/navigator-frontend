@@ -33,7 +33,9 @@ export const getFilterGroups = ({ features, getAppText, theme }: IProps): TFilte
     Icon: LucideListFilter,
     prepareRootLabels: FILTER_PREP_DICTIONARY[theme] || undefined,
     rootLabelTypes: ["category"],
-    subtitle: "Choose themes and specific filters to refine your search",
+    subtitle: features.themes
+      ? "Search by document type. Expand for more specific filters."
+      : "Choose themes and specific filters to refine your search",
     title: features.themes ? "Category" : getAppText("filterGroupFilters"),
   });
 
