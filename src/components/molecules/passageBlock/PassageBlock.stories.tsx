@@ -23,6 +23,16 @@ const makeLabel = (value: string): IPassageLabel => ({
   value: { id: `concept-${value}`, type: "concept", value },
 });
 
+// Colours are assigned by the caller in the app, so the stories assign their own the same way
+const STORY_TOPIC_COLOURS = [
+  "bg-cyan-200 text-text-primary",
+  "bg-purple-200 text-text-primary",
+  "bg-pink-200 text-text-primary",
+  "bg-lime-200 text-text-primary",
+  "bg-orange-200 text-text-primary",
+];
+const makeTopicColours = (topicIds: string[]) => new Map(topicIds.map((id, index) => [id, STORY_TOPIC_COLOURS[index % STORY_TOPIC_COLOURS.length]]));
+
 const makeBolding = (startIndex: number, endIndex: number, labelledText: string): IPassageBolding => ({
   start_index: startIndex,
   end_index: endIndex,
@@ -100,7 +110,7 @@ export const WithPassageHighlight: TStory = {
       ...basePassage,
       boldings: [makeBolding(8, 18, "ecological"), makeBolding(46, 56, "geohazards")],
     },
-    activeTopicsIds: [],
+    topicColours: new Map(),
   },
 };
 
@@ -110,7 +120,7 @@ export const WithTopic: TStory = {
       ...basePassage,
       labels: [makeLabel("Biodiversity")],
     },
-    activeTopicsIds: ["concept-Biodiversity"],
+    topicColours: makeTopicColours(["concept-Biodiversity"]),
   },
 };
 
@@ -120,7 +130,7 @@ export const WithMultipleTopics: TStory = {
       ...basePassage,
       labels: [makeLabel("Biodiversity"), makeLabel("Renewable energy"), makeLabel("Land use")],
     },
-    activeTopicsIds: ["concept-Biodiversity", "concept-Renewable energy", "concept-Land use"],
+    topicColours: makeTopicColours(["concept-Biodiversity", "concept-Renewable energy", "concept-Land use"]),
   },
 };
 
@@ -151,7 +161,9 @@ const highlightedLabels = [
 export const WithManyDifferentHighlights: TStory = {
   args: {
     passage: { ...basePassage, labels: highlightedLabels, boldings: [makeBolding(0, 7, "Certain")] },
-    activeTopicsIds: highlightedLabels.filter(({ value }) => value.value !== "Renewable energy").map(({ value }) => value.id),
+    topicColours: makeTopicColours([
+      ...new Set(highlightedLabels.filter(({ value }) => value.value !== "Renewable energy").map(({ value }) => value.id)),
+    ]),
   },
 };
 
@@ -161,7 +173,7 @@ export const ClickableWithTopics: TStory = {
       ...basePassage,
       labels: [makeLabel("Biodiversity"), makeLabel("Renewable energy")],
     },
-    activeTopicsIds: ["concept-Biodiversity", "concept-Renewable energy"],
+    topicColours: makeTopicColours(["concept-Biodiversity", "concept-Renewable energy"]),
     onPassageClick: () => {},
   },
 };
