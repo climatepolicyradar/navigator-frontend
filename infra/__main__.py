@@ -41,6 +41,7 @@ aws_account = aws.get_caller_identity()
 config = pulumi.Config()
 theme = config.require("theme")
 next_public_api_url = config.require("next_public_api_url")
+pulumi.info(f"next_public_api_url: {next_public_api_url}")
 
 # The role the deploy workflows assume (deploy-staging.yml,
 # deploy-production.yml, deploy-all-production.yml). Referenced by name where we
