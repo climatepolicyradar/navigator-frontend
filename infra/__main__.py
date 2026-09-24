@@ -1,6 +1,7 @@
 """An AWS Python Pulumi program."""
 
 import json
+import os
 import re
 from enum import Enum
 from pathlib import Path
@@ -40,8 +41,6 @@ validate_stack_and_branch()
 aws_account = aws.get_caller_identity()
 config = pulumi.Config()
 theme = config.require("theme")
-next_public_api_url = config.require("next_public_api_url")
-pulumi.info(f"next_public_api_url: {next_public_api_url}")
 
 # The role the deploy workflows assume (deploy-staging.yml,
 # deploy-production.yml, deploy-all-production.yml). Referenced by name where we
@@ -92,8 +91,22 @@ if is_review_stack:
     match = re.search(r"(\d+)$", stack)
     pr_number = match.group(1) if match else stack[-8:]  # fallback to last 8 chars
     review_name = f"review-{theme}-frontend-{pr_number}"
+
+    # Review stacks can be pointed at a search-api review build via
+    # NEXT_PUBLIC_API_URL, passed as a deployment environment variable (see
+    # use-search-api.yml and deploy-review-stack.yml) rather than through
+    # Pulumi per-stack config: `pulumi config set/get/cp` against an
+    # ephemeral PR stack from a preRunCommand proved unreliable in practice
+    # -- a value set moments earlier via the service was not visible to a
+    # freshly-cloned deployment executor's `config get` on the same stack.
+    next_public_api_url = os.environ.get("NEXT_PUBLIC_API_URL") or config.require(
+        "next_public_api_url"
+    )
 else:
     review_name = None
+    next_public_api_url = config.require("next_public_api_url")
+
+pulumi.info(f"next_public_api_url: {next_public_api_url}")
 
 # ---------------------------------------------------------------------------
 # Auto-tag all AWS resources on review stacks for cost tracking & cleanup.

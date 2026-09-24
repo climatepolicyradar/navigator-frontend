@@ -105,6 +105,7 @@ jobs:
     runs-on: ubuntu-latest
     permissions:
       pull-requests: write
+      actions: write
     # Shares its group with deploy-review-stack.yml's review-stack job (same
     # key format) so only one Pulumi deployment is ever in flight per
     # PR+theme stack -- a newer one (from either workflow) cancels a stale
@@ -135,13 +136,15 @@ jobs:
             echo "url=${TARGET_URL}" >> "$GITHUB_OUTPUT"
           fi
 
-      - name: Compute stack name
+      - name: Compute stack name and override variable name
         id: stack
         env:
           PR_NUMBER: ${{ github.event.issue.number }}
           THEME: ${{ matrix.theme }}
         run: |
           echo "stack_name=pr-${THEME}-navigator-frontend-${PR_NUMBER}" >> "$GITHUB_OUTPUT"
+          theme_upper=$(echo "${THEME}" | tr '[:lower:]' '[:upper:]')
+          echo "override_var=SEARCH_API_OVERRIDE_${PR_NUMBER}_${theme_upper}" >> "$GITHUB_OUTPUT"
 
       - name: Checkout
         uses: actions/checkout@v4
@@ -149,35 +152,53 @@ jobs:
       - name: Install pulumi CLI
         uses: pulumi/actions@v7
 
-      - name: Set next_public_api_url config
-        working-directory: infra
+      # NEXT_PUBLIC_API_URL is passed straight through as a deployment
+      # environment variable (see the trigger step below) rather than via
+      # `pulumi config set`: config set/get/cp against an ephemeral PR stack
+      # from a preRunCommand proved unreliable -- a value set here via the
+      # Pulumi service was not visible to a freshly-cloned deployment
+      # executor's `config get` on the same stack moments later. A GitHub
+      # Actions repo variable is the durable record instead, so a later
+      # plain push (deploy-review-stack.yml) can still find and re-apply
+      # this override without touching Pulumi config at all.
+      - name: Record next_public_api_url override
+        if: needs.use-search-api.outputs.mode == 'pr'
         env:
-          STACK_NAME: ${{ steps.stack.outputs.stack_name }}
+          OVERRIDE_VAR: ${{ steps.stack.outputs.override_var }}
           TARGET_URL: ${{ steps.target.outputs.url }}
         run: |
-          pulumi config set frontend:next_public_api_url "${TARGET_URL}" \
-            --stack "${ORG}/${PROJECT}/${STACK_NAME}"
+          gh variable set "${OVERRIDE_VAR}" --body "${TARGET_URL}" --repo "${{ github.repository }}"
 
-      - name: Confirm next_public_api_url config
-        working-directory: infra
+      - name: Clear next_public_api_url override
+        if: needs.use-search-api.outputs.mode == 'prod'
         env:
-          STACK_NAME: ${{ steps.stack.outputs.stack_name }}
+          OVERRIDE_VAR: ${{ steps.stack.outputs.override_var }}
         run: |
-          pulumi config get frontend:next_public_api_url \
-            --stack "${ORG}/${PROJECT}/${STACK_NAME}"
+          gh variable delete "${OVERRIDE_VAR}" --repo "${{ github.repository }}" || true
 
       - name: Trigger update deployment for ${{ matrix.theme }}
         id: trigger_update
         env:
           STACK_NAME: ${{ steps.stack.outputs.stack_name }}
+          TARGET_URL: ${{ steps.target.outputs.url }}
+          MODE: ${{ needs.use-search-api.outputs.mode }}
         run: |
+          if [ "$MODE" = "prod" ]; then
+            env_vars="{}"
+          else
+            env_vars=$(jq -n --arg url "${TARGET_URL}" '{"NEXT_PUBLIC_API_URL": $url}')
+          fi
+
           response=$(curl -fsSL -w "\n%{http_code}" -X POST \
             -H "Authorization: token ${PULUMI_ACCESS_TOKEN}" \
             -H "Content-Type: application/json" \
             "https://api.pulumi.com/api/stacks/${ORG}/${PROJECT}/${STACK_NAME}/deployments" \
             -d "{
               \"operation\": \"update\",
-              \"inheritSettings\": true
+              \"inheritSettings\": true,
+              \"operationContext\": {
+                \"environmentVariables\": ${env_vars}
+              }
             }")
 
           body=$(echo "$response" | head -n -1)
