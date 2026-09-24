@@ -1,16 +1,13 @@
-import { Fragment, ReactNode } from "react";
+import { ReactNode } from "react";
 
 import { ConceptHierarchy } from "@/components/molecules/conceptHierarchy/ConceptHierarchy";
-import { GeographyLink } from "@/components/molecules/geographyLink/GeographyLink";
-import { ARROW_RIGHT, EN_DASH } from "@/constants/chars";
+import { Geographies } from "@/components/molecules/geographies/Geographies";
+import { EN_DASH, ID_SEPARATOR } from "@/constants/chars";
 import { FILING_DATE_EVENT_TYPES } from "@/constants/events";
 import { IFamilyDocumentTopics, IMetadata, TFamilyPublic } from "@/types";
 import { buildConceptHierarchy } from "@/utils/buildConceptHierarchy";
 import { getTopicsMetadataItem } from "@/utils/family-metadata/getTopicsMetadataItem";
-import { isSystemGeo } from "@/utils/isSystemGeo";
 import { familyTopicsHasTopics } from "@/utils/topics/processFamilyTopics";
-
-const hierarchyArrow = ` ${ARROW_RIGHT} `;
 
 export function getLitigationMetadata(family: TFamilyPublic, familyTopics: IFamilyDocumentTopics | null): IMetadata[] {
   const metadata = [];
@@ -18,7 +15,7 @@ export function getLitigationMetadata(family: TFamilyPublic, familyTopics: IFami
   // Structure concepts into a hierarchy we can use
   const hierarchy = buildConceptHierarchy(family.concepts);
 
-  const isUSA = family.geographies.some((geo) => geo.code === "USA");
+  const isUSA = family.geographies.some((geo) => geo.id.split(ID_SEPARATOR)[1].toLowerCase() === "usa");
 
   /* Filing year */
   let filingTimestamp = family.events.find((event) => FILING_DATE_EVENT_TYPES.includes(event.event_type))?.date;
@@ -39,12 +36,7 @@ export function getLitigationMetadata(family: TFamilyPublic, familyTopics: IFami
   if (family.geographies.length > 0) {
     metadata.push({
       label: "Geography",
-      value: family.geographies.map((geo, index) => (
-        <Fragment key={geo.slug}>
-          {!isSystemGeo(geo.name) ? <GeographyLink {...geo} /> : <span>{geo.name}</span>}
-          {index + 1 < family.geographies.length && hierarchyArrow}
-        </Fragment>
-      )),
+      value: <Geographies geographyLabels={family.geographies} />,
     });
   }
 

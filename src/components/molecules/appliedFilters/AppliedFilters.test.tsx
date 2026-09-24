@@ -7,10 +7,10 @@ import { TFilterPathLabel } from "@/types";
 
 import { AppliedFilters } from "./AppliedFilters";
 
-const topLevelPath: TFilterPathLabel[] = [{ id: "france", type: "country", value: "France" }];
+const topLevelPath: TFilterPathLabel[] = [{ id: "country::FRA", type: "country", value: "France" }];
 const nestedPath: TFilterPathLabel[] = [
-  { id: "paris", type: "city", value: "Paris" },
-  { id: "france", type: "country", value: "France" },
+  { id: "subdivision::AU-NSW", type: "subdivision", value: "New South Wales" },
+  { id: "country::AUS", type: "country", value: "Australia" },
 ];
 const countryWithRegionContextPath: TFilterPathLabel[] = [
   { id: "country::gb", type: "country", value: "United Kingdom" },
@@ -42,12 +42,12 @@ const renderWithFiltersContext = (
 describe("AppliedFilters", () => {
   it("renders a top-level label", () => {
     renderWithFiltersContext([topLevelPath]);
-    expect(screen.getByText("France")).toBeInTheDocument();
+    expect(screen.getByText("🇫🇷 France")).toBeInTheDocument();
   });
 
   it("renders a nested label", () => {
     renderWithFiltersContext([nestedPath]);
-    expect(screen.getByText("France → Paris")).toBeInTheDocument();
+    expect(screen.getByRole("list", { name: "Applied filters" })).toHaveTextContent("🇦🇺 Australia → New South Wales");
   });
 
   it("hides the region from a checked country's label when the region is just query context", () => {
@@ -58,7 +58,7 @@ describe("AppliedFilters", () => {
 
   it("hides the region from a checked subdivision's label when the region is just query context", () => {
     renderWithFiltersContext([subdivisionWithRegionContextPath]);
-    expect(screen.getByText("United Kingdom → Wales")).toBeInTheDocument();
+    expect(screen.getByRole("list", { name: "Applied filters" })).toHaveTextContent("United Kingdom → Wales");
     expect(screen.queryByText(/Europe/)).not.toBeInTheDocument();
   });
 

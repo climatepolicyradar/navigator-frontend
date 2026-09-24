@@ -142,6 +142,7 @@ const config: TThemeConfig = {
     litigation: false,
     "new-search": false,
     searchFamilySummary: true,
+    subdivisions: false,
   },
 };
 

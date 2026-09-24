@@ -1,6 +1,7 @@
 import { Legislation, WithContext } from "schema-dts";
 
 import { TFamilyDocumentPublic, TFamilyPublic } from "@/types";
+import { getGeographySlug } from "@/utils/geography";
 import { getAppUrlForJSONLD } from "@/utils/json-ld/helpers";
 
 /**
@@ -56,11 +57,11 @@ export const getLitigationDocumentJSONLD = (document: TFamilyDocumentPublic, fam
   // Geography related JSON-LD
   if (family.geographies.length > 0) {
     const spatialCoverage: any[] = []; // TODO: improve typing using schema-dts
-    family.geographies.forEach(({ name, slug }) => {
+    family.geographies.forEach((geo) => {
       spatialCoverage.push({
         "@type": "Place",
-        name: name,
-        url: `${appUrl}/geographies/${slug}`,
+        name: geo.value,
+        url: `${appUrl}/geographies/${getGeographySlug(geo)}`,
       });
       // TODO add subdivisions once document page references them
     });

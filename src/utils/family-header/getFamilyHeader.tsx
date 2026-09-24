@@ -1,17 +1,11 @@
-import { Fragment, ReactNode } from "react";
-
 import { PageLink } from "@/components/atoms/pageLink/PageLink";
-import { GeographyLink } from "@/components/molecules/geographyLink/GeographyLink";
+import { Geographies } from "@/components/molecules/geographies/Geographies";
 import { TCategoryDictionaryKey } from "@/constants/text";
 import { getSumUSD } from "@/helpers/getSumUSD";
 import { IMetadata, TFamilyPublic } from "@/types";
 import { scrollToBlock } from "@/utils/blocks/scrollToBlock";
-import { isSystemGeo } from "@/utils/isSystemGeo";
-import { pluralise } from "@/utils/pluralise";
 import { joinNodes } from "@/utils/reactNode";
 import { convertDate } from "@/utils/timedate";
-
-const MAX_SHOWN_GEOGRAPHIES = 3;
 
 type TProps = {
   family: TFamilyPublic;
@@ -22,43 +16,10 @@ export const getFamilyHeader = ({ family, getCategoryText }: TProps): IMetadata[
   const [year] = convertDate(family.published_date);
   const isLitigation = family.attribution.category === "Litigation";
   const isMCF = family.attribution.category === "Multilateral Climate Fund project";
-  const { geographies } = family;
 
-  const visibleGeographiesData = geographies.slice(0, MAX_SHOWN_GEOGRAPHIES);
-  const hiddenGeographiesCount = Math.max(0, geographies.length - MAX_SHOWN_GEOGRAPHIES);
-
-  const isGeographiesParentAndChild =
-    visibleGeographiesData.length === 2 && !visibleGeographiesData[0].code.includes("-") && visibleGeographiesData[1].code.includes("-");
-
-  let geographiesNode: ReactNode[] = [
-    <span key="0" className="text-text-tertiary">
-      No geography
-    </span>,
-  ];
-
-  if (visibleGeographiesData.length > 0) {
-    geographiesNode = joinNodes(
-      visibleGeographiesData.map(({ code, name, slug }) => {
-        return <GeographyLink key={code} code={code} name={name} slug={isSystemGeo(name) ? null : slug} />;
-      }),
-      isGeographiesParentAndChild ? <span className="text-text-tertiary"> / </span> : <>&ensp;</>
-    );
-  }
-
-  if (hiddenGeographiesCount > 0) {
-    geographiesNode.push(
-      <Fragment key="others">
-        &ensp;
-        <button
-          role="button"
-          className="underline underline-offset-4 decoration-[#d1d5db] hover:decoration-[#6b7280]"
-          onClick={scrollToBlock("metadata")}
-        >
-          +{hiddenGeographiesCount} {pluralise(hiddenGeographiesCount, ["other", "others"])}
-        </button>
-      </Fragment>
-    );
-  }
+  const geographiesNode = (
+    <Geographies geographyLabels={family.geographies} limit={3} limitOnClick={scrollToBlock("metadata")} limitSuffix={["other", "others"]} />
+  );
 
   const pageHeaderMetadata: IMetadata[] = [
     {

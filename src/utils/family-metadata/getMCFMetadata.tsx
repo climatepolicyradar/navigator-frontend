@@ -1,13 +1,10 @@
-import { Fragment } from "react";
-
 import { ExternalLink } from "@/components/ExternalLink";
-import { GeographyLink } from "@/components/molecules/geographyLink/GeographyLink";
+import { Geographies } from "@/components/molecules/geographies/Geographies";
 import { EN_DASH } from "@/constants/chars";
 import { getApprovedYearFromEvents } from "@/helpers/getApprovedYearFromEvents";
 import { getSumUSD } from "@/helpers/getSumUSD";
 import { IFamilyDocumentTopics, IMetadata, TFamilyPublic } from "@/types";
 import { getTopicsMetadataItem } from "@/utils/family-metadata/getTopicsMetadataItem";
-import { isSystemGeo } from "@/utils/isSystemGeo";
 import { familyTopicsHasTopics } from "@/utils/topics/processFamilyTopics";
 
 export function getMCFMetadata(family: TFamilyPublic, familyTopics: IFamilyDocumentTopics | null): IMetadata[] {
@@ -26,14 +23,7 @@ export function getMCFMetadata(family: TFamilyPublic, familyTopics: IFamilyDocum
   if (family.geographies.length > 0) {
     metadata.push({
       label: "Geography",
-      value: family.geographies.map((geo, index) => {
-        return (
-          <Fragment key={geo.slug}>
-            {index > 0 && ", "}
-            {!isSystemGeo(geo.name) ? <GeographyLink {...geo} /> : <span>{geo.name}</span>}
-          </Fragment>
-        );
-      }),
+      value: <Geographies geographyLabels={family.geographies} />,
     });
   }
 
