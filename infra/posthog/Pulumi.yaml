@@ -1,0 +1,7 @@
+name: frontend-posthog
+description: CloudFront reverse proxy for PostHog - serves analytics from our own domain so content blockers don't drop the traffic
+runtime:
+  name: python
+  options:
+    toolchain: uv
+    virtualenv: .venv
