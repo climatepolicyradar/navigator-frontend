@@ -11,6 +11,15 @@ jobs:
     permissions:
       pull-requests: write
     runs-on: ubuntu-latest
+    # Both this workflow and use-search-api.yml can trigger a Pulumi
+    # deployment against the same pr-<theme>-navigator-frontend-<PR> stack.
+    # Sharing this group (same key in both files) means a newer deployment
+    # for the same PR+theme cancels a stale one still in flight, instead of
+    # the two queueing behind each other on the Pulumi side where a wait
+    # step elsewhere can time out waiting for its turn.
+    concurrency:
+      group: review-stack-${{ matrix.theme }}-${{ github.event.pull_request.number }}
+      cancel-in-progress: true
     env:
       PULUMI_ACCESS_TOKEN: ${{ secrets.PULUMI_ACCESS_TOKEN }}
       ORG: climatepolicyradar

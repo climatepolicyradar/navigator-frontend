@@ -105,6 +105,14 @@ jobs:
     runs-on: ubuntu-latest
     permissions:
       pull-requests: write
+    # Shares its group with deploy-review-stack.yml's review-stack job (same
+    # key format) so only one Pulumi deployment is ever in flight per
+    # PR+theme stack -- a newer one (from either workflow) cancels a stale
+    # one, instead of the two queueing behind each other and the wait step
+    # below timing out waiting for its turn.
+    concurrency:
+      group: review-stack-${{ matrix.theme }}-${{ github.event.issue.number }}
+      cancel-in-progress: true
     env:
       PULUMI_ACCESS_TOKEN: ${{ secrets.PULUMI_ACCESS_TOKEN }}
       ORG: climatepolicyradar
