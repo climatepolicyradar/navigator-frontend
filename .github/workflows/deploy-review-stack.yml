@@ -124,7 +124,7 @@ jobs:
               \"operationContext\": {
                 \"preRunCommands\": [
                   \"pulumi config env add ${PROJECT}/${THEME}-review --yes --stack ${ORG}/${PROJECT}/${STACK_NAME} || true\",
-                  \"PRESERVED_API_URL=\$(pulumi config get frontend:next_public_api_url --stack ${ORG}/${PROJECT}/${STACK_NAME} 2>/dev/null || echo ''); pulumi config cp -d ${ORG}/${PROJECT}/${STACK_NAME} -s ${ORG}/${PROJECT}/${THEME}-review; if [ -n \\\"\$PRESERVED_API_URL\\\" ]; then pulumi config set frontend:next_public_api_url \\\"\$PRESERVED_API_URL\\\" --stack ${ORG}/${PROJECT}/${STACK_NAME}; fi\"
+                  \"PRESERVED_API_URL=\$(pulumi config get frontend:next_public_api_url --stack ${ORG}/${PROJECT}/${STACK_NAME} 2>/dev/null || echo ''); echo \\\"DEBUG: PRESERVED_API_URL=[\$PRESERVED_API_URL]\\\"; pulumi config cp -d ${ORG}/${PROJECT}/${STACK_NAME} -s ${ORG}/${PROJECT}/${THEME}-review; if [ -n \\\"\$PRESERVED_API_URL\\\" ]; then pulumi config set frontend:next_public_api_url \\\"\$PRESERVED_API_URL\\\" --stack ${ORG}/${PROJECT}/${STACK_NAME}; echo \\\"DEBUG: restored next_public_api_url\\\"; else echo \\\"DEBUG: nothing to restore\\\"; fi; echo \\\"DEBUG: final value = [\$(pulumi config get frontend:next_public_api_url --stack ${ORG}/${PROJECT}/${STACK_NAME} 2>/dev/null)]\\\"\"
                 ],
                 \"options\": {
                   \"skipIntermediateDeployments\": true
