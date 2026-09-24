@@ -200,8 +200,12 @@ if is_review_stack and shared_resources_env == "production":
         build_on_preview=False,
     )
 
-    # Use the tag-based identifier for App Runner (it doesn't support @digest refs).
+    # Use the digest-based identifier: the tag string is static per PR stack,
+    # so ECS would see no diff on rebuilds (e.g. after changing
+    # next_public_api_url) and never redeploy. The digest changes whenever
+    # the built image content changes, forcing a new task definition.
     repository_url = review_ecr_url
+    image_identifier = pulumi.Output.concat(review_ecr_url, "@", frontend_image.digest)
     pulumi.info(f"Repository URL: {review_ecr_url}")
 
     # Export the repository URL for use in CI/CD pipelines
