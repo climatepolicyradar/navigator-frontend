@@ -123,8 +123,9 @@ jobs:
               },
               \"operationContext\": {
                 \"preRunCommands\": [
-                  \"pulumi config env add ${PROJECT}/${THEME}-review --yes --stack ${ORG}/${PROJECT}/${STACK_NAME} || true\",
-                  \"PRESERVED_API_URL=\$(pulumi config get frontend:next_public_api_url --stack ${ORG}/${PROJECT}/${STACK_NAME} 2>/dev/null || echo ''); echo \\\"DEBUG: PRESERVED_API_URL=[\$PRESERVED_API_URL]\\\"; pulumi config cp -d ${ORG}/${PROJECT}/${STACK_NAME} -s ${ORG}/${PROJECT}/${THEME}-review; if [ -n \\\"\$PRESERVED_API_URL\\\" ]; then pulumi config set frontend:next_public_api_url \\\"\$PRESERVED_API_URL\\\" --stack ${ORG}/${PROJECT}/${STACK_NAME}; echo \\\"DEBUG: restored next_public_api_url\\\"; else echo \\\"DEBUG: nothing to restore\\\"; fi; echo \\\"DEBUG: final value = [\$(pulumi config get frontend:next_public_api_url --stack ${ORG}/${PROJECT}/${STACK_NAME} 2>/dev/null)]\\\"\"
+                  \"pulumi config get frontend:next_public_api_url --stack ${ORG}/${PROJECT}/${STACK_NAME} > /tmp/preserved_api_url.txt 2>/dev/null || true; echo \\\"DEBUG: captured before config env add: [\$(cat /tmp/preserved_api_url.txt)]\\\"\",
+                  \"pulumi config env add ${PROJECT}/${THEME}-review --yes --stack ${ORG}/${PROJECT}/${STACK_NAME} || true; echo \\\"DEBUG: value after config env add: [\$(pulumi config get frontend:next_public_api_url --stack ${ORG}/${PROJECT}/${STACK_NAME} 2>/dev/null)]\\\"\",
+                  \"PRESERVED_API_URL=\$(cat /tmp/preserved_api_url.txt); pulumi config cp -d ${ORG}/${PROJECT}/${STACK_NAME} -s ${ORG}/${PROJECT}/${THEME}-review; echo \\\"DEBUG: value after config cp: [\$(pulumi config get frontend:next_public_api_url --stack ${ORG}/${PROJECT}/${STACK_NAME} 2>/dev/null)]\\\"; if [ -n \\\"\$PRESERVED_API_URL\\\" ]; then pulumi config set frontend:next_public_api_url \\\"\$PRESERVED_API_URL\\\" --stack ${ORG}/${PROJECT}/${STACK_NAME}; fi; echo \\\"DEBUG: final value: [\$(pulumi config get frontend:next_public_api_url --stack ${ORG}/${PROJECT}/${STACK_NAME} 2>/dev/null)]\\\"\"
                 ],
                 \"options\": {
                   \"skipIntermediateDeployments\": true
