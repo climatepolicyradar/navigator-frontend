@@ -543,6 +543,22 @@ ul li.selected {
   @apply bg-[#071e4a];
 }
 
+/* Used for a marquee of images. The strip holds two identical copies side by side.
+ *  -50% lands on the start of the second
+ */
+@theme {
+  --animate-marquee: marquee 40s linear infinite;
+
+  @keyframes marquee {
+    from {
+      transform: translateX(0);
+    }
+    to {
+      transform: translateX(-50%);
+    }
+  }
+}
+
 .arrow {
   border-style: solid;
   border-width: 0 3px 3px 0;

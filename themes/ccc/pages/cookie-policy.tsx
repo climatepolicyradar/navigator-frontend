@@ -14,14 +14,14 @@ const CookiePolicy = () => {
           <SingleCol>
             <div className="text-content mb-12">
               <Heading level={1} extraClasses="my-5">
-                Climate Policy Radar CIC - Climate Case Chart Cookie Policy
+                Climate Policy Radar CIC - Climate Litigation Database Cookie Policy
               </Heading>
               <section>
                 <Heading level={2}>What does this Cookie Policy cover?</Heading>
                 <p>
-                  The Climate Case Chart litigation databases are controlled, run and managed by Climate Policy Radar CIC, registered at Sustainable
-                  County Hall, 3rd Floor, Westminster Bridge Road, London SE1 7PB, a Community Interest Company Limited by Guarantee registered in
-                  England and Wales (Company number 13377442) hereafter referred to as “Climate Policy Radar UK”, “CPR UK”, “we”, “us” or “our”.
+                  The Climate Litigation Database is controlled, run and managed by Climate Policy Radar CIC, registered at Sustainable County Hall,
+                  3rd Floor, Westminster Bridge Road, London SE1 7PB, a Community Interest Company Limited by Guarantee registered in England and
+                  Wales (Company number 13377442) hereafter referred to as “Climate Policy Radar UK”, “CPR UK”, “we”, “us” or “our”.
                 </p>
                 <p>
                   This Cookie Policy explains how we use cookies and other similar technologies on our climatecasechart.com website (the “Site”), as

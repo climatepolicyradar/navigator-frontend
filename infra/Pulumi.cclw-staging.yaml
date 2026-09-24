@@ -20,6 +20,7 @@ config:
   frontend:validation_account_id:
     secure: AAABAATc2POR1JGQgNMxlmfgpqCThBrWG1GU7XxYJdVoo2JOd+sMjG6IiCQ=
   frontend:concepts_api_url: https://api.climatepolicyradar.org
+  frontend:next_public_api_url: https://api.climatepolicyradar.org
   frontend:next_public_faro_app_name: cclw-frontend
   frontend:next_public_faro_app_namespace: frontend
   frontend:otel_exporter_otlp_endpoint: https://otel.staging.climatepolicyradar.org/

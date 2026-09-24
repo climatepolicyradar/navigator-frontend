@@ -1,0 +1,289 @@
+# trunk-ignore-all(checkov/CKV2_GHA_1)
+name: Use search-api review stack
+
+on:
+  issue_comment:
+    types: [created]
+
+jobs:
+  use-search-api:
+    if: github.event.issue.pull_request != null && startsWith(github.event.comment.body, '/use-search-api')
+    runs-on: ubuntu-latest
+    permissions:
+      pull-requests: write
+    outputs:
+      mode: ${{ steps.parse.outputs.mode }}
+      target_url: ${{ steps.resolve.outputs.search_url }}
+      search_pr_number: ${{ steps.parse.outputs.search_pr_number }}
+    env:
+      PULUMI_ACCESS_TOKEN: ${{ secrets.PULUMI_ACCESS_TOKEN }}
+      ORG: climatepolicyradar
+      PROJECT: frontend
+      SEARCH_PROJECT: search
+      GH_TOKEN: ${{ github.token }}
+    steps:
+      - name: Parse command
+        id: parse
+        env:
+          COMMENT_BODY: ${{ github.event.comment.body }}
+        run: |
+          # Expect exactly "/use-search-api <arg>" where <arg> is "production"
+          # or a positive integer PR number. Reject anything else with a
+          # clear comment rather than silently doing nothing.
+          arg=$(echo "$COMMENT_BODY" | awk '{print $2}')
+
+          if [ -z "$arg" ]; then
+            echo "error=Usage: \`/use-search-api <search-api-pr-number>\` or \`/use-search-api production\`." >> "$GITHUB_OUTPUT"
+            echo "mode=error" >> "$GITHUB_OUTPUT"
+          elif [ "$arg" = "production" ]; then
+            echo "mode=prod" >> "$GITHUB_OUTPUT"
+          elif echo "$arg" | grep -qE '^[0-9]+$'; then
+            echo "mode=pr" >> "$GITHUB_OUTPUT"
+            echo "search_pr_number=$arg" >> "$GITHUB_OUTPUT"
+          else
+            echo "error=Could not parse \`$arg\` as a PR number or \`production\`. Usage: \`/use-search-api <search-api-pr-number>\` or \`/use-search-api production\`." >> "$GITHUB_OUTPUT"
+            echo "mode=error" >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: Post parse error
+        if: steps.parse.outputs.mode == 'error'
+        run: |
+          gh api \
+            --method POST \
+            "repos/${{ github.repository }}/issues/${{ github.event.issue.number }}/comments" \
+            -f body="${{ steps.parse.outputs.error }}"
+
+      - name: Fail on parse error
+        if: steps.parse.outputs.mode == 'error'
+        run: exit 1
+
+      - name: Install pulumi CLI
+        if: steps.parse.outputs.mode != 'error'
+        uses: pulumi/actions@v7
+
+      - name: Resolve search-api review URL
+        id: resolve
+        if: steps.parse.outputs.mode == 'pr'
+        env:
+          SEARCH_PR_NUMBER: ${{ steps.parse.outputs.search_pr_number }}
+        run: |
+          search_stack_name="pr-search-api-${SEARCH_PR_NUMBER}"
+
+          if ! pulumi stack output review_service_url \
+              --stack "${ORG}/${SEARCH_PROJECT}/${search_stack_name}" > /tmp/search_url 2> /tmp/search_err; then
+            echo "found=false" >> "$GITHUB_OUTPUT"
+            cat /tmp/search_err
+            exit 0
+          fi
+
+          search_url=$(cat /tmp/search_url)
+          if [ -z "$search_url" ]; then
+            echo "found=false" >> "$GITHUB_OUTPUT"
+            exit 0
+          fi
+
+          echo "found=true" >> "$GITHUB_OUTPUT"
+          echo "search_url=$search_url" >> "$GITHUB_OUTPUT"
+
+      - name: Post missing-stack error
+        if: steps.parse.outputs.mode == 'pr' && steps.resolve.outputs.found == 'false'
+        env:
+          SEARCH_PR_NUMBER: ${{ steps.parse.outputs.search_pr_number }}
+        run: |
+          gh api \
+            --method POST \
+            "repos/${{ github.repository }}/issues/${{ github.event.issue.number }}/comments" \
+            -f body="Couldn't find a running review stack for climatepolicyradar/search#${SEARCH_PR_NUMBER}. Apply the \`deploy:dev\` label on that PR first, wait for it to deploy, then retry \`/use-search-api ${SEARCH_PR_NUMBER}\`."
+
+      - name: Fail on missing stack
+        if: steps.parse.outputs.mode == 'pr' && steps.resolve.outputs.found == 'false'
+        run: exit 1
+
+  apply-override:
+    needs: use-search-api
+    if: needs.use-search-api.outputs.mode == 'pr' || needs.use-search-api.outputs.mode == 'prod'
+    runs-on: ubuntu-latest
+    permissions:
+      pull-requests: write
+    # Shares its group with deploy-review-stack.yml's review-stack job (same
+    # key format) so only one Pulumi deployment is ever in flight per
+    # PR+theme stack -- a newer one (from either workflow) cancels a stale
+    # one, instead of the two queueing behind each other and the wait step
+    # below timing out waiting for its turn.
+    concurrency:
+      group: review-stack-${{ matrix.theme }}-${{ github.event.issue.number }}
+      cancel-in-progress: true
+    env:
+      PULUMI_ACCESS_TOKEN: ${{ secrets.PULUMI_ACCESS_TOKEN }}
+      ORG: climatepolicyradar
+      PROJECT: frontend
+      GITHUB_INSTALLATION_ID: ${{ secrets.PULUMI_INTEGRATION_ID }}
+      GH_TOKEN: ${{ github.token }}
+    strategy:
+      matrix:
+        theme: [cpr, cclw, mcf, ccc]
+    steps:
+      - name: Determine target URL
+        id: target
+        env:
+          MODE: ${{ needs.use-search-api.outputs.mode }}
+          TARGET_URL: ${{ needs.use-search-api.outputs.target_url }}
+        run: |
+          if [ "$MODE" = "prod" ]; then
+            echo "url=https://api.climatepolicyradar.org" >> "$GITHUB_OUTPUT"
+          else
+            echo "url=${TARGET_URL}" >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: Compute stack name
+        id: stack
+        env:
+          PR_NUMBER: ${{ github.event.issue.number }}
+          THEME: ${{ matrix.theme }}
+        run: |
+          echo "stack_name=pr-${THEME}-navigator-frontend-${PR_NUMBER}" >> "$GITHUB_OUTPUT"
+
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Install pulumi CLI
+        uses: pulumi/actions@v7
+
+      - name: Set next_public_api_url config
+        working-directory: infra
+        env:
+          STACK_NAME: ${{ steps.stack.outputs.stack_name }}
+          TARGET_URL: ${{ steps.target.outputs.url }}
+        run: |
+          pulumi config set frontend:next_public_api_url "${TARGET_URL}" \
+            --stack "${ORG}/${PROJECT}/${STACK_NAME}"
+
+      - name: Trigger update deployment for ${{ matrix.theme }}
+        id: trigger_update
+        env:
+          STACK_NAME: ${{ steps.stack.outputs.stack_name }}
+        run: |
+          response=$(curl -fsSL -w "\n%{http_code}" -X POST \
+            -H "Authorization: token ${PULUMI_ACCESS_TOKEN}" \
+            -H "Content-Type: application/json" \
+            "https://api.pulumi.com/api/stacks/${ORG}/${PROJECT}/${STACK_NAME}/deployments" \
+            -d "{
+              \"operation\": \"update\",
+              \"inheritSettings\": true
+            }")
+
+          body=$(echo "$response" | head -n -1)
+          status=$(echo "$response" | tail -n1)
+          echo "Deployment triggered: HTTP $status"
+          echo "$body" | jq .
+
+          if [ "$status" -lt 200 ] || [ "$status" -ge 300 ]; then
+            echo "Failed to trigger deployment"
+            exit 1
+          fi
+
+          deployment_id=$(echo "$body" | jq -r '.id')
+          console_url=$(echo "$body" | jq -r '.consoleUrl')
+          echo "deployment_id=$deployment_id" >> "$GITHUB_OUTPUT"
+          echo "console_url=$console_url" >> "$GITHUB_OUTPUT"
+
+      - name: Wait for ${{ matrix.theme }} deployment to finish
+        id: wait_deployment
+        env:
+          STACK_NAME: ${{ steps.stack.outputs.stack_name }}
+          DEPLOYMENT_ID: ${{ steps.trigger_update.outputs.deployment_id }}
+        run: |
+          # Poll every 15s for up to 10 minutes (40 attempts), matching
+          # deploy-review-stack.yml's wait step.
+          terminal_status=""
+          for _ in $(seq 1 40); do
+            sleep 15
+            response=$(curl -fsSL \
+              -H "Authorization: token ${PULUMI_ACCESS_TOKEN}" \
+              "https://api.pulumi.com/api/stacks/${ORG}/${PROJECT}/${STACK_NAME}/deployments/${DEPLOYMENT_ID}") || {
+              echo "Poll request failed, will retry"
+              continue
+            }
+            current_status=$(echo "$response" | jq -r '.status') || {
+              echo "Could not parse deployment status, will retry"
+              continue
+            }
+            echo "Deployment ${DEPLOYMENT_ID} status: ${current_status}"
+            if [ "$current_status" = "succeeded" ] || [ "$current_status" = "failed" ]; then
+              terminal_status="$current_status"
+              break
+            fi
+          done
+
+          if [ -z "$terminal_status" ]; then
+            echo "Timed out waiting for deployment ${DEPLOYMENT_ID} to finish"
+            exit 1
+          fi
+
+          if [ "$terminal_status" != "succeeded" ]; then
+            echo "Deployment ${DEPLOYMENT_ID} finished with status: $terminal_status"
+            exit 1
+          fi
+
+      - name: Post ${{ matrix.theme }} confirmation comment
+        if: steps.wait_deployment.outcome == 'success'
+        env:
+          MODE: ${{ needs.use-search-api.outputs.mode }}
+          SEARCH_PR_NUMBER: ${{ needs.use-search-api.outputs.search_pr_number }}
+          PR_NUMBER: ${{ github.event.issue.number }}
+          THEME: ${{ matrix.theme }}
+          CONSOLE_URL: ${{ steps.trigger_update.outputs.console_url }}
+        run: |
+          marker="<!-- use-search-api-override:${THEME} -->"
+
+          if [ "$MODE" = "prod" ]; then
+            body="${marker}"$'\n'"**${THEME}**: reverted to production search-api. [Deployment logs](${CONSOLE_URL})"
+          else
+            body="${marker}"$'\n'"**${THEME}**: pointed at climatepolicyradar/search#${SEARCH_PR_NUMBER}'s review stack. [Deployment logs](${CONSOLE_URL})"
+          fi
+
+          existing_comment_id=$(gh api \
+            "repos/${{ github.repository }}/issues/${PR_NUMBER}/comments" \
+            --paginate | jq -s "[.[][] | select(.body | startswith(\"${marker}\"))][0].id")
+
+          if [ -n "$existing_comment_id" ] && [ "$existing_comment_id" != "null" ]; then
+            gh api \
+              --method PATCH \
+              "repos/${{ github.repository }}/issues/comments/${existing_comment_id}" \
+              -f body="$body"
+          else
+            gh api \
+              --method POST \
+              "repos/${{ github.repository }}/issues/${PR_NUMBER}/comments" \
+              -f body="$body"
+          fi
+
+      - name: Post ${{ matrix.theme }} failure comment
+        if: failure()
+        env:
+          PR_NUMBER: ${{ github.event.issue.number }}
+          THEME: ${{ matrix.theme }}
+          CONSOLE_URL: ${{ steps.trigger_update.outputs.console_url }}
+        run: |
+          marker="<!-- use-search-api-override:${THEME} -->"
+          if [ -n "$CONSOLE_URL" ]; then
+            body="${marker}"$'\n'"**${THEME}**: the rebuild failed. [Deployment logs](${CONSOLE_URL})"
+          else
+            body="${marker}"$'\n'"**${THEME}**: failed before a deployment could be triggered — check the [Use search-api review stack](https://github.com/${{ github.repository }}/actions/workflows/use-search-api.yml) run for this PR."
+          fi
+
+          existing_comment_id=$(gh api \
+            "repos/${{ github.repository }}/issues/${PR_NUMBER}/comments" \
+            --paginate | jq -s "[.[][] | select(.body | startswith(\"${marker}\"))][0].id")
+
+          if [ -n "$existing_comment_id" ] && [ "$existing_comment_id" != "null" ]; then
+            gh api \
+              --method PATCH \
+              "repos/${{ github.repository }}/issues/comments/${existing_comment_id}" \
+              -f body="$body"
+          else
+            gh api \
+              --method POST \
+              "repos/${{ github.repository }}/issues/${PR_NUMBER}/comments" \
+              -f body="$body"
+          fi

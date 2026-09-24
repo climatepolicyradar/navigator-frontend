@@ -19,6 +19,7 @@ config:
     secure: AAABAFSU2Mfkr5Cy8v1EQc4Svx0NuRlLYAUHrheDeD4wNGyADSN170L1iV0ff1Q5Qrwu+0cbmAdMHjQ4aoL+42FW1cYgprsGtphKm3Y9z2hhdjJxK5sK2PXmd13hhasHRw==
   frontend:targets_url: https://cpr-staging-targets-json-store.s3.eu-west-1.amazonaws.com
   frontend:cdn_url: https://cdn.dev.climatepolicyradar.org
+  frontend:next_public_api_url: https://api.climatepolicyradar.org
   frontend:theme: cpr
   frontend:validation_account_id:
     secure: AAABAAFG2k/W8GNUQlSarlVkgf3y3r5j5LY+3k9fSODx9Y/yUUOJOv9fs/4=

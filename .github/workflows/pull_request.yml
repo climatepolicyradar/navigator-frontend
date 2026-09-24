@@ -50,7 +50,35 @@ jobs:
       # For repo checkout
       contents: read
 
+  test-changes:
+    runs-on: ubuntu-latest
+    permissions:
+      pull-requests: read
+    outputs:
+      run-tests: ${{ steps.filter.outputs.run-tests }}
+    steps:
+      - uses: dorny/paths-filter@v4
+        id: filter
+        with:
+          filters: |
+            run-tests:
+              - 'src/**'
+              - 'themes/**'
+              - 'tests/**'
+              - 'public/**'
+              - 'package.json'
+              - 'package-lock.json'
+              - 'next.config.js'
+              - 'next.config.test.ts'
+              - 'playwright.config.ts'
+              - 'tsconfig.base.json'
+              - '.env.example'
+              - '.nvmrc'
+              - '.github/workflows/pull_request.yml'
+
   test:
+    needs: test-changes
+    if: needs.test-changes.outputs.run-tests == 'true'
     timeout-minutes: 15
     runs-on: ubuntu-latest
     steps:
@@ -67,28 +95,33 @@ jobs:
         env:
           THEME: cpr
       - name: Run vitest - core functionality
-        run: npm run test
-        # This is needed to pass the results on to the trunk-io/analytics-uploader
-        continue-on-error: true
+        # Failure doesn't stop the job here so results still reach the trunk-io/analytics-uploader step below;
+        # the "Fail job if tests failed" step at the end enforces the real pass/fail outcome.
+        run: npm run test || echo "TESTS_FAILED=true" >> "$GITHUB_ENV"
         env:
           THEME: cpr
 
       - name: Run vitest - new features
-        run: npm run test
-        # This is needed to pass the results on to the trunk-io/analytics-uploader
-        continue-on-error: true
+        run: npm run test || echo "TESTS_FAILED=true" >> "$GITHUB_ENV"
         env:
           THEME: cpr
           E2E_TEST_FEATURE_FLAGS: true
 
       - name: Upload vitest results to Trunk.io
+        if: always()
         uses: trunk-io/analytics-uploader@v2
         with:
           junit-paths: "**/vitest.xml"
           token: ${{ secrets.TRUNK_TOKEN }}
           org-slug: ${{ secrets.TRUNK_ORG_SLUG }}
 
+      - name: Fail job if tests failed
+        if: env.TESTS_FAILED == 'true'
+        run: exit 1
+
   test-e2e:
+    needs: test-changes
+    if: needs.test-changes.outputs.run-tests == 'true'
     timeout-minutes: 15
     runs-on: ubuntu-latest
     env:
@@ -162,21 +195,22 @@ jobs:
         timeout-minutes: 3
 
       - name: Run Tests - core functionality
-        continue-on-error: true
+        # Failure doesn't stop the job here so results still reach the trunk-io/analytics-uploader step below;
+        # the "Fail job if tests failed" step at the end enforces the real pass/fail outcome.
         env:
           THEME: ${{ matrix.theme }}
           PLAYWRIGHT_BROWSERS_PATH: ${{ env.PLAYWRIGHT_BROWSERS_PATH }}
-        run: npx playwright test tests/${{ matrix.theme }}/ --shard=${{ matrix.shardIndex }}/${{ matrix.shardTotal }}
+        run: npx playwright test tests/${{ matrix.theme }}/ --shard=${{ matrix.shardIndex }}/${{ matrix.shardTotal }} || echo "TESTS_FAILED=true" >> "$GITHUB_ENV"
 
       - name: Run Tests - new features
-        continue-on-error: true
         env:
           THEME: ${{ matrix.theme }}
           PLAYWRIGHT_BROWSERS_PATH: ${{ env.PLAYWRIGHT_BROWSERS_PATH }}
           E2E_TEST_FEATURE_FLAGS: true
-        run: npx playwright test tests/${{ matrix.theme }}/ --shard=${{ matrix.shardIndex }}/${{ matrix.shardTotal }}
+        run: npx playwright test tests/${{ matrix.theme }}/ --shard=${{ matrix.shardIndex }}/${{ matrix.shardTotal }} || echo "TESTS_FAILED=true" >> "$GITHUB_ENV"
 
       - name: Upload Test Results to Trunk.io
+        if: always()
         uses: trunk-io/analytics-uploader@v2
         env:
           THEME: ${{ matrix.theme }}
@@ -186,9 +220,35 @@ jobs:
           token: ${{ secrets.TRUNK_TOKEN }}
           org-slug: ${{ secrets.TRUNK_ORG_SLUG }}
 
+      - name: Fail job if tests failed
+        if: env.TESTS_FAILED == 'true'
+        run: exit 1
+
+  tests:
+    name: Tests
+    needs: [test, test-e2e]
+    if: always()
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check test results
+        run: |
+          if [[ "${{ needs.test.result }}" != "success" && "${{ needs.test.result }}" != "skipped" ]]; then
+            echo "test job did not succeed: ${{ needs.test.result }}"
+            exit 1
+          fi
+          if [[ "${{ needs.test-e2e.result }}" != "success" && "${{ needs.test-e2e.result }}" != "skipped" ]]; then
+            echo "test-e2e job did not succeed: ${{ needs.test-e2e.result }}"
+            exit 1
+          fi
+
   dependabot:
     name: Dependabot Auto-pilot
-    needs: [code-quality, test, test-e2e]
+    needs: [code-quality, test-changes, test, test-e2e]
+    if: |
+      always() &&
+      needs.code-quality.result == 'success' &&
+      (needs.test.result == 'success' || needs.test.result == 'skipped') &&
+      (needs.test-e2e.result == 'success' || needs.test-e2e.result == 'skipped')
     permissions:
       pull-requests: write
       contents: write

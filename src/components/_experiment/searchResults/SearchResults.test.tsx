@@ -59,8 +59,6 @@ const principalResult = (id: string): SearchDocument => ({
 });
 
 describe("SearchContainer", () => {
-  afterEach(() => vi.clearAllMocks());
-
   it("triggers a search when only a date filter is applied with no text query or other filters", async () => {
     const filtersWithDate = upsertPublishedDateRangeRules(createGroup(), "2020:2025");
 

@@ -29,5 +29,6 @@ config:
   frontend:apprunner_frontend_vcpu_count: 1 vCPU
   frontend:apprunner_frontend_memory_gb: 2 GB
   frontend:next_static_enabled: "false"
+  frontend:next_public_api_url: https://api.climatepolicyradar.org
 environment:
   - frontend/mcf-review
