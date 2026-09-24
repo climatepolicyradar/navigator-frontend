@@ -10,6 +10,7 @@ jobs:
   review-stack:
     permissions:
       pull-requests: write
+      actions: read
     runs-on: ubuntu-latest
     # Both this workflow and use-search-api.yml can trigger a Pulumi
     # deployment against the same pr-<theme>-navigator-frontend-<PR> stack.
@@ -95,23 +96,6 @@ jobs:
           # to use. The gitHub block provides repo access via the Pulumi
           # GitHub App. Config is copied from ${THEME}-review at deploy time
           # via a preRunCommand.
-          #
-          # next_public_api_url is deliberately excluded from that sync: it's
-          # the key /use-search-api overrides (use-search-api.yml) to point a
-          # review stack at a search-api review build instead of production.
-          # This runs on every deployment for this stack (including the one
-          # /use-search-api itself triggers, via inheritSettings), so a plain
-          # `config cp` would silently revert that override back to
-          # ${THEME}-review's default on the very next push.
-          #
-          # Observed in practice: `pulumi config env add` alone (before
-          # `config cp` even runs) was enough to make a just-set
-          # next_public_api_url unreadable via `config get` -- not just
-          # `config cp`. So the value is captured to a file in the FIRST
-          # preRunCommand, before `config env add` runs at all, and restored
-          # from that file (not a live re-read) after `config cp` in the
-          # last preRunCommand. This is the only ordering that survived
-          # testing; capturing it after `config env add` did not.
           curl -fsSL -X POST \
             -H "Authorization: token ${PULUMI_ACCESS_TOKEN}" \
             -H "Content-Type: application/json" \
@@ -129,9 +113,8 @@ jobs:
               },
               \"operationContext\": {
                 \"preRunCommands\": [
-                  \"pulumi config get frontend:next_public_api_url --stack ${ORG}/${PROJECT}/${STACK_NAME} > /tmp/preserved_api_url.txt 2>/dev/null || true; echo \\\"DEBUG: captured before config env add: [\$(cat /tmp/preserved_api_url.txt)]\\\"\",
-                  \"pulumi config env add ${PROJECT}/${THEME}-review --yes --stack ${ORG}/${PROJECT}/${STACK_NAME} || true; echo \\\"DEBUG: value after config env add: [\$(pulumi config get frontend:next_public_api_url --stack ${ORG}/${PROJECT}/${STACK_NAME} 2>/dev/null)]\\\"\",
-                  \"PRESERVED_API_URL=\$(cat /tmp/preserved_api_url.txt); pulumi config cp -d ${ORG}/${PROJECT}/${STACK_NAME} -s ${ORG}/${PROJECT}/${THEME}-review; echo \\\"DEBUG: value after config cp: [\$(pulumi config get frontend:next_public_api_url --stack ${ORG}/${PROJECT}/${STACK_NAME} 2>/dev/null)]\\\"; if [ -n \\\"\$PRESERVED_API_URL\\\" ]; then pulumi config set frontend:next_public_api_url \\\"\$PRESERVED_API_URL\\\" --stack ${ORG}/${PROJECT}/${STACK_NAME}; fi; echo \\\"DEBUG: final value: [\$(pulumi config get frontend:next_public_api_url --stack ${ORG}/${PROJECT}/${STACK_NAME} 2>/dev/null)]\\\"\"
+                  \"pulumi config env add ${PROJECT}/${THEME}-review --yes --stack ${ORG}/${PROJECT}/${STACK_NAME} || true\",
+                  \"pulumi config cp -d ${ORG}/${PROJECT}/${STACK_NAME} -s ${ORG}/${PROJECT}/${THEME}-review; echo \\\"DEBUG: config after cp:\\\"; pulumi config --stack ${ORG}/${PROJECT}/${STACK_NAME}\"
                 ],
                 \"options\": {
                   \"skipIntermediateDeployments\": true
@@ -141,6 +124,27 @@ jobs:
 
           echo "Deployment settings configured for ${STACK_NAME}"
 
+      - name: Look up next_public_api_url override
+        id: override
+        if: steps.decide.outputs.action == 'update'
+        env:
+          PR_NUMBER: ${{ github.event.pull_request.number }}
+          THEME: ${{ matrix.theme }}
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          # /use-search-api (use-search-api.yml) records an override here as
+          # a GitHub Actions repo variable, keyed by PR+theme, rather than in
+          # Pulumi per-stack config: `pulumi config set/get/cp` against an
+          # ephemeral PR stack from a preRunCommand proved unreliable in
+          # practice -- a value set via the service was not visible to a
+          # freshly-cloned deployment executor's `config get` on the same
+          # stack moments later. Picking it up here on every push is what
+          # makes the override survive a normal synchronize rebuild.
+          theme_upper=$(echo "${THEME}" | tr '[:lower:]' '[:upper:]')
+          override_var="SEARCH_API_OVERRIDE_${PR_NUMBER}_${theme_upper}"
+          url=$(gh variable get "${override_var}" --repo "${{ github.repository }}" 2>/dev/null || echo "")
+          echo "url=${url}" >> "$GITHUB_OUTPUT"
+
       - name: Trigger update deployment for ${{matrix.theme}}
         id: trigger_update
         if: steps.decide.outputs.action == 'update'
@@ -148,7 +152,15 @@ jobs:
           STACK_NAME: ${{ steps.decide.outputs.stack_name }}
           PR_NUMBER: ${{ github.event.pull_request.number }}
           BRANCH: ${{ github.head_ref }}
+          OVERRIDE_URL: ${{ steps.override.outputs.url }}
         run: |
+          if [ -n "${OVERRIDE_URL}" ]; then
+            env_vars=$(jq -n --arg pr "${PR_NUMBER}" --arg url "${OVERRIDE_URL}" \
+              '{"PR_NUMBER": $pr, "NEXT_PUBLIC_API_URL": $url}')
+          else
+            env_vars=$(jq -n --arg pr "${PR_NUMBER}" '{"PR_NUMBER": $pr}')
+          fi
+
           response=$(curl -fsSL -w "\n%{http_code}" -X POST \
             -H "Authorization: token ${PULUMI_ACCESS_TOKEN}" \
             -H "Content-Type: application/json" \
@@ -162,9 +174,7 @@ jobs:
                 }
               },
               \"operationContext\": {
-                \"environmentVariables\": {
-                  \"PR_NUMBER\": \"${PR_NUMBER}\"
-                }
+                \"environmentVariables\": ${env_vars}
               }
             }")
 
