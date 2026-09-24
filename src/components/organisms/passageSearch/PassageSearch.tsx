@@ -27,6 +27,14 @@ import { ISearchPassage, TFamilyDocumentPublic, TSearchLabel, TSearchQueryGroup,
 import { queryGroupToFilterPaths } from "@/utils/search/queryGroupToFilterPaths";
 import { conceptFiltersOnly, flattenLevelToBaseQuery, levelParamKeys } from "@/utils/search/searchLevels";
 
+export const TOPIC_HIGHLIGHT_COLOURS = [
+  "bg-cyan-200 text-text-primary",
+  "bg-purple-200 text-text-primary",
+  "bg-pink-200 text-text-primary",
+  "bg-lime-200 text-text-primary",
+  "bg-orange-200 text-text-primary",
+];
+
 type TProps = {
   changeTab?: (tab: TPrincipalDrawerTab) => void;
   concepts: TTopic[];
@@ -52,25 +60,29 @@ const toPassageBlock = (passage: ISearchPassage, documentTitle: string): TPassag
   pages: passage.pages?.map((pageNumber) => ({ page_number: pageNumber })),
 });
 
+// Colours are assigned from the selected topics rather than per passage, so a topic keeps one colour across every result
+const getTopicColours = (topicIds: string[]) =>
+  new Map(topicIds.map((id, index) => [id, TOPIC_HIGHLIGHT_COLOURS[index % TOPIC_HIGHLIGHT_COLOURS.length]]));
+
 type TPassageResultsProps = {
   onDocumentLinkClick?: (passage: TPassageBlock) => void;
   onPassageClick: (passage: TPassageBlock) => void;
   passages: TPassageBlock[];
-  activeTopicsIds?: string[];
+  topicColours?: Map<string, string>;
   showDocument: boolean;
   sort?: string;
   total?: number;
 };
 
 // Memoised so that typing in the search input does not re-render every result card.
-const PassageResults = memo(({ onDocumentLinkClick, onPassageClick, passages, activeTopicsIds, showDocument, sort, total }: TPassageResultsProps) => (
+const PassageResults = memo(({ onDocumentLinkClick, onPassageClick, passages, topicColours, showDocument, sort, total }: TPassageResultsProps) => (
   <ul className="flex flex-col gap-4" id="passage-matches" aria-label="Passage matches">
     {passages.map((passage, passageIndex) => (
       <li key={passage.id}>
         <PassageBlock
           passage={passage}
           analytics={{ position: passageIndex + 1, sort, total }}
-          activeTopicsIds={activeTopicsIds}
+          topicColours={topicColours}
           showDocument={showDocument}
           onDocumentLinkClick={onDocumentLinkClick && (() => onDocumentLinkClick(passage))}
           onPassageClick={onPassageClick}
@@ -230,9 +242,9 @@ export const PassageSearch = ({ changeTab, concepts, documents, documentsLabel, 
     setPageNumber(firstResultPage + 1);
   }
 
-  // Get the selected topic IDs from the filters
-  const activeTopicsIds = useMemo(
-    () => (filterParam ? [...new Set(queryGroupToFilterPaths(filterParam).filterPathLabels.map(([label]) => label.id))] : []),
+  // Get the selected topic IDs from the filters, each with its highlight colour
+  const topicColours = useMemo(
+    () => getTopicColours(filterParam ? [...new Set(queryGroupToFilterPaths(filterParam).filterPathLabels.map(([label]) => label.id))] : []),
     [filterParam]
   );
 
@@ -342,7 +354,7 @@ export const PassageSearch = ({ changeTab, concepts, documents, documentsLabel, 
             total={totalMatches}
             onDocumentLinkClick={enablePreview ? undefined : handleDocumentLinkClick}
             onPassageClick={handlePassageClick}
-            activeTopicsIds={activeTopicsIds}
+            topicColours={topicColours}
           />
           {hasNextPage && (
             <div className="flex flex-col items-center gap-2 pt-4">

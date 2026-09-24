@@ -3,7 +3,11 @@ import { render, screen, fireEvent } from "@testing-library/react";
 import { EN_DASH } from "@/constants/chars";
 import { IPassageLabel } from "@/types";
 
-import { PassageBlock, QUERY_HIGHLIGHT_COLOUR as QUERY_COLOUR, TOPIC_HIGHLIGHT_COLOURS as TOPIC_COLOURS, TPassage } from "./PassageBlock";
+import { PassageBlock, QUERY_HIGHLIGHT_COLOUR as QUERY_COLOUR, TPassage } from "./PassageBlock";
+
+// Colours are assigned by the caller, so any class names will do
+const TOPIC_A = "topic-a";
+const TOPIC_B = "topic-b";
 
 const makeLabel = (value: string): IPassageLabel => ({
   classifier_id: `classifier-${value}`,
@@ -90,7 +94,17 @@ describe("PassageBlock", () => {
 
   it("renders the label values as topics when labels are present", () => {
     const passage: TPassage = { ...basePassage, labels: [makeLabel("Biodiversity"), makeLabel("Renewable energy")] };
-    render(<PassageBlock passage={passage} activeTopicsIds={["concept-Biodiversity", "concept-Renewable energy"]} />);
+    render(
+      <PassageBlock
+        passage={passage}
+        topicColours={
+          new Map([
+            ["concept-Biodiversity", TOPIC_A],
+            ["concept-Renewable energy", TOPIC_B],
+          ])
+        }
+      />
+    );
     expect(screen.getByText(/^Contains:/)).toHaveTextContent("Contains: Biodiversity, Renewable energy");
   });
 
@@ -107,7 +121,7 @@ describe("PassageBlock", () => {
 
   it("renders topics inside the clickable passage button", () => {
     const passage: TPassage = { ...basePassage, labels: [makeLabel("Biodiversity")] };
-    render(<PassageBlock passage={passage} activeTopicsIds={["concept-Biodiversity"]} onPassageClick={() => {}} />);
+    render(<PassageBlock passage={passage} topicColours={new Map([["concept-Biodiversity", TOPIC_A]])} onPassageClick={() => {}} />);
     expect(screen.getByRole("button", { name: /Contains: Biodiversity/ })).toBeInTheDocument();
   });
 
@@ -146,7 +160,10 @@ describe("PassageBlock", () => {
       ...basePassage,
       labels: [makeSpanLabel("Ecology", 8, 18), makeSpanLabel("Geohazards", 46, 56)],
     };
-    const activeTopicsIds = ["concept-Ecology", "concept-Geohazards"];
+    const topicColours = new Map([
+      ["concept-Ecology", TOPIC_A],
+      ["concept-Geohazards", TOPIC_B],
+    ]);
 
     const boldings = [makeBolding(0, 7, "Climate")];
     const boldingPassage: TPassage = { ...basePassage, content: "Climate adaptation and climate mitigation", boldings };
@@ -157,44 +174,18 @@ describe("PassageBlock", () => {
     });
 
     it("highlights every active topic, not only the last one", () => {
-      render(<PassageBlock passage={topicPassage} activeTopicsIds={activeTopicsIds} />);
+      render(<PassageBlock passage={topicPassage} topicColours={topicColours} />);
 
-      expect(screen.getByText("ecological")).toHaveClass(TOPIC_COLOURS[0]);
-      expect(screen.getByText("geohazards")).toHaveClass(TOPIC_COLOURS[1]);
+      expect(screen.getByText("ecological")).toHaveClass(TOPIC_A);
+      expect(screen.getByText("geohazards")).toHaveClass(TOPIC_B);
     });
 
     it("does not highlight a topic that is not active", () => {
-      render(<PassageBlock passage={topicPassage} activeTopicsIds={["concept-Geohazards"]} />);
+      render(<PassageBlock passage={topicPassage} topicColours={new Map([["concept-Geohazards", TOPIC_B]])} />);
 
       expect(screen.queryByText("ecological")).not.toBeInTheDocument();
-      // The only active topic takes the first colour, whatever its position among the labels
-      expect(screen.getByText("geohazards")).toHaveClass(TOPIC_COLOURS[0]);
-    });
-
-    it("gives each active topic the next colour, and cycles once they run out", () => {
-      // "Certain ecological and other requirements for geohazards."
-      const spans: [number, number][] = [
-        [0, 7],
-        [8, 18],
-        [19, 22],
-        [23, 28],
-        [29, 41],
-        [42, 45],
-      ];
-      // One topic per colour, plus one more to wrap the cycle back to the start. Topics are
-      // named so they cannot be confused with the words they mark in the content.
-      const names = spans.map((_span, index) => `Topic ${index}`);
-      const passage: TPassage = { ...basePassage, labels: names.map((name, index) => makeSpanLabel(name, ...spans[index])) };
-
-      render(<PassageBlock passage={passage} activeTopicsIds={names.map((name) => `concept-${name}`)} />);
-
-      expect(names).toHaveLength(TOPIC_COLOURS.length + 1);
-      names.forEach((name, index) => {
-        const colour = TOPIC_COLOURS[index % TOPIC_COLOURS.length];
-        // The passage text and the topics list agree on the colour for a given topic
-        expect(screen.getByText(basePassage.content.slice(...spans[index]))).toHaveClass(colour);
-        expect(screen.getByText(name)).toHaveClass(colour);
-      });
+      // The topic takes the colour it was given, not one derived from its position among the labels
+      expect(screen.getByText("geohazards")).toHaveClass(TOPIC_B);
     });
 
     it("keeps a topic's colour consistent across all of its spans", () => {
@@ -203,11 +194,11 @@ describe("PassageBlock", () => {
         labels: [makeSpanLabel("Ecology", 8, 18), makeSpanLabel("Geohazards", 46, 56), makeSpanLabel("Ecology", 0, 7)],
       };
 
-      render(<PassageBlock passage={passage} activeTopicsIds={activeTopicsIds} />);
+      render(<PassageBlock passage={passage} topicColours={topicColours} />);
 
-      expect(screen.getByText("ecological")).toHaveClass(TOPIC_COLOURS[0]);
-      expect(screen.getByText("Certain")).toHaveClass(TOPIC_COLOURS[0]);
-      expect(screen.getByText("geohazards")).toHaveClass(TOPIC_COLOURS[1]);
+      expect(screen.getByText("ecological")).toHaveClass(TOPIC_A);
+      expect(screen.getByText("Certain")).toHaveClass(TOPIC_A);
+      expect(screen.getByText("geohazards")).toHaveClass(TOPIC_B);
     });
 
     it("highlights every occurrence of the query", () => {
@@ -222,10 +213,10 @@ describe("PassageBlock", () => {
     it("gives the query the text it shares with a topic, and starts the topic after it", () => {
       // "Climate" is both the query match and the start of the topic span 0-18
       const passage: TPassage = { ...boldingPassage, labels: [makeSpanLabel("Climate adaptation", 0, 18)] };
-      render(<PassageBlock passage={passage} activeTopicsIds={["concept-Climate adaptation"]} />);
+      render(<PassageBlock passage={passage} topicColours={new Map([["concept-Climate adaptation", TOPIC_A]])} />);
 
       expect(screen.getByText("Climate")).toHaveClass(QUERY_COLOUR);
-      expect(screen.getByText("adaptation")).toHaveClass(TOPIC_COLOURS[0]);
+      expect(screen.getByText("adaptation")).toHaveClass(TOPIC_A);
       // Nothing carries both, and the text is unchanged
       expect(screen.getByText("Climate").parentElement).toHaveTextContent(boldingPassage.content);
     });
@@ -237,35 +228,35 @@ describe("PassageBlock", () => {
         labels: [makeSpanLabel("Ecology", 8, 18), makeSpanLabel("Geohazards", 0, 22)],
       };
 
-      render(<PassageBlock passage={passage} activeTopicsIds={activeTopicsIds} />);
+      render(<PassageBlock passage={passage} topicColours={topicColours} />);
 
-      expect(screen.getByText("ecological")).toHaveClass(TOPIC_COLOURS[0]);
-      expect(screen.getByText("Certain")).toHaveClass(TOPIC_COLOURS[1]);
-      expect(screen.getByText("and")).toHaveClass(TOPIC_COLOURS[1]);
+      expect(screen.getByText("ecological")).toHaveClass(TOPIC_A);
+      expect(screen.getByText("Certain")).toHaveClass(TOPIC_B);
+      expect(screen.getByText("and")).toHaveClass(TOPIC_B);
     });
 
     it("highlights the content when the passage is not clickable", () => {
-      render(<PassageBlock passage={topicPassage} activeTopicsIds={activeTopicsIds} />);
+      render(<PassageBlock passage={topicPassage} topicColours={topicColours} />);
       expect(screen.queryByRole("button", { name: /ecological/ })).not.toBeInTheDocument();
-      expect(screen.getByText("ecological")).toHaveClass(TOPIC_COLOURS[0]);
+      expect(screen.getByText("ecological")).toHaveClass(TOPIC_A);
     });
 
     it("highlights an active topic in the topics list in its own colour", () => {
-      render(<PassageBlock passage={topicPassage} activeTopicsIds={["concept-Ecology"]} />);
+      render(<PassageBlock passage={topicPassage} topicColours={new Map([["concept-Ecology", TOPIC_A]])} />);
 
       expect(screen.getByText(/^Contains:/)).toHaveTextContent("Contains: Ecology");
-      expect(screen.getByText("Ecology")).toHaveClass(TOPIC_COLOURS[0]);
+      expect(screen.getByText("Ecology")).toHaveClass(TOPIC_A);
       // The inactive topic is excluded from the list entirely
       expect(screen.queryByText("Geohazards")).not.toBeInTheDocument();
     });
 
     it("matches each topic in the list to the colour used for it in the passage", () => {
-      render(<PassageBlock passage={topicPassage} activeTopicsIds={activeTopicsIds} />);
+      render(<PassageBlock passage={topicPassage} topicColours={topicColours} />);
 
-      expect(screen.getByText("Ecology")).toHaveClass(TOPIC_COLOURS[0]);
-      expect(screen.getByText("ecological")).toHaveClass(TOPIC_COLOURS[0]);
-      expect(screen.getByText("Geohazards")).toHaveClass(TOPIC_COLOURS[1]);
-      expect(screen.getByText("geohazards")).toHaveClass(TOPIC_COLOURS[1]);
+      expect(screen.getByText("Ecology")).toHaveClass(TOPIC_A);
+      expect(screen.getByText("ecological")).toHaveClass(TOPIC_A);
+      expect(screen.getByText("Geohazards")).toHaveClass(TOPIC_B);
+      expect(screen.getByText("geohazards")).toHaveClass(TOPIC_B);
     });
 
     it("does not render the topics list when no topic is active", () => {
@@ -275,9 +266,9 @@ describe("PassageBlock", () => {
     });
 
     it("highlights the content when the passage is clickable", () => {
-      render(<PassageBlock passage={topicPassage} activeTopicsIds={activeTopicsIds} onPassageClick={() => {}} />);
+      render(<PassageBlock passage={topicPassage} topicColours={topicColours} onPassageClick={() => {}} />);
       expect(screen.getByRole("button", { name: new RegExp(basePassage.content) })).toBeInTheDocument();
-      expect(screen.getByText("ecological")).toHaveClass(TOPIC_COLOURS[0]);
+      expect(screen.getByText("ecological")).toHaveClass(TOPIC_A);
     });
   });
 

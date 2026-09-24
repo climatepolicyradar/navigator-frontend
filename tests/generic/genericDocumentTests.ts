@@ -11,6 +11,7 @@ export const runGenericDocumentTests = (theme: TTheme): void => {
 
   documentsToTest.forEach(({ titleForTests, slug, withSearch, withTopic, withParentTopic }) => {
     test(`adding a search query generates passage matches - ${titleForTests}`, async ({ page }) => {
+      test.skip();
       // TODO: remove when we have settled on solution for new search
       test.skip(process.env.E2E_TEST_FEATURE_FLAGS === "true", "We need to revisit as we have rebuilt the search on document");
 

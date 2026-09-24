@@ -4,11 +4,10 @@ import userEvent from "@testing-library/user-event";
 import mockRouter from "next-router-mock";
 import * as nextRouterMock from "next-router-mock";
 
-import { TOPIC_HIGHLIGHT_COLOURS as TOPIC_COLOURS } from "@/components/molecules/passageBlock/PassageBlock";
 import { SearchLevelContext } from "@/context/SearchLevelContext";
 import { IPassageLabel, ISearchPassage, TFamilyDocumentPublic, TSearchQueryGroup, TTopic } from "@/types";
 
-import { PassageSearch } from "./PassageSearch";
+import { PassageSearch, TOPIC_HIGHLIGHT_COLOURS as TOPIC_COLOURS } from "./PassageSearch";
 
 vi.mock("next/router", () => nextRouterMock);
 
@@ -295,6 +294,25 @@ describe("PassageSearch", () => {
         expect(await screen.findByText("ecological")).toHaveClass(TOPIC_COLOURS[0]);
         // The other label is on the passage but its topic was not ticked
         expect(screen.queryByText("cultivation")).not.toBeInTheDocument();
+      });
+
+      it("gives a topic the same colour in every passage, whichever other topics a passage has", async () => {
+        // Only the first passage carries Q1, so a per-passage colouring would give Q2 a different colour in each
+        const onlyQ2Passage = buildPassage({ id: "passage-2", labels: [makeLabel("concept::Q2", 64, 75)] });
+        mockFetchSearchPassages.mockResolvedValue({ total_size: 2, results: [labelledPassage, onlyQ2Passage] });
+        renderPrincipal();
+
+        await filterBy({
+          op: "or",
+          filters: [
+            { field: "labels.value.id", op: "contains", value: "concept::Q1", checked: true },
+            { field: "labels.value.id", op: "contains", value: "concept::Q2", checked: true },
+          ],
+        });
+
+        const highlighted = await screen.findAllByText("cultivation");
+        expect(highlighted).toHaveLength(2);
+        highlighted.forEach((span) => expect(span).toHaveClass(TOPIC_COLOURS[1]));
       });
 
       it("highlights nothing when there are no filters", async () => {
