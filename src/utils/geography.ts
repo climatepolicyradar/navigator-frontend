@@ -6,6 +6,7 @@ import { TDataNode, TGeography, TLabel } from "@/types";
 
 export const getGeographySlug = (geographyLabel: TLabel): string | null => {
   const geoCode = geographyLabel.id.split(ID_SEPARATOR)[1];
+  if (!geoCode) return null;
   const slug = kebabCase(geographyLabel.value);
 
   if (EXCLUDED_ISO_CODES.includes(geoCode.toUpperCase())) return null;

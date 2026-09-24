@@ -7,7 +7,7 @@ import { formatDate } from "@/utils/timedate";
 
 const getDocumentGeography = (document: SearchDocument): ReactNode => {
   const allGeographies = document.labels.filter((relation) => relation.type === "geography").map((relation) => relation.value);
-  return <Geographies geographyLabels={allGeographies} limit={1} />;
+  return <Geographies geographyLabels={allGeographies} limit={2} noLinks />;
 };
 
 const getDocumentPublishedYear = (doc: SearchDocument): ReactNode => {
