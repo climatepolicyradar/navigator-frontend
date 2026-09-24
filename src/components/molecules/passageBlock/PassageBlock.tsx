@@ -11,13 +11,6 @@ import { resolveHighlightRanges } from "@/utils/text/resolveHighlightRanges";
 const COPY_FEEDBACK_TIMEOUT = 1000;
 
 export const QUERY_HIGHLIGHT_COLOUR = "bg-yellow-200 text-text-primary";
-export const TOPIC_HIGHLIGHT_COLOURS = [
-  "bg-cyan-200 text-text-primary",
-  "bg-purple-200 text-text-primary",
-  "bg-pink-200 text-text-primary",
-  "bg-lime-200 text-text-primary",
-  "bg-orange-200 text-text-primary",
-];
 
 type TPassagePage = {
   page_number: number;
@@ -50,20 +43,12 @@ type TProps = {
   onCopyClick?: () => void;
   onDocumentLinkClick?: () => void;
   onPassageClick?: (passage: TPassage) => void;
-  activeTopicsIds?: string[];
+  // The active topics' IDs, mapped to their highlight colour. Assigned by the caller so a
+  // topic has the same colour in every passage of a list.
+  topicColours?: Map<string, string>;
   // Hide the document title and its link when the passage is already shown in the
   // context of that document, e.g. on the document page.
   showDocument?: boolean;
-};
-
-// Define the colour for the topic highlight
-const getTopicColours = (activeTopics: IPassageLabel[]) => {
-  const colours = new Map<string, string>();
-  activeTopics.forEach(({ value }) => {
-    if (!colours.has(value.id)) colours.set(value.id, TOPIC_HIGHLIGHT_COLOURS[colours.size % TOPIC_HIGHLIGHT_COLOURS.length]);
-  });
-
-  return colours;
 };
 
 const formatPageRange = (pageNumbers: number[]): string => {
@@ -102,7 +87,7 @@ export const PassageBlock = ({
   onCopyClick,
   onDocumentLinkClick,
   onPassageClick,
-  activeTopicsIds,
+  topicColours = new Map(),
   showDocument = true,
 }: TProps) => {
   const { context, position, sort, total } = analytics || {};
@@ -119,8 +104,7 @@ export const PassageBlock = ({
   const pageNumbers = passage.pages?.map(({ page_number }) => page_number + 1) ?? [];
   const hasPages = pageNumbers.length > 0;
   const hasContext = hasPages || !!passage.headingText;
-  const activeTopics = passage.labels?.filter((label) => activeTopicsIds?.includes(label.value.id)) ?? [];
-  const topicColours = getTopicColours(activeTopics);
+  const activeTopics = passage.labels?.filter((label) => topicColours.has(label.value.id)) ?? [];
   const highlightedContent = addHighlights(
     passage.content,
     resolveHighlightRanges(passage.content, getHighlightRanges({ boldings: passage.boldings, activeTopics, topicColours }))
