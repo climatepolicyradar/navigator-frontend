@@ -269,7 +269,7 @@ export const APP_FAQS: TFAQ[] = [
           external
           href="https://climatepolicyradar.notion.site/Readme-for-Climate-Case-Chart-document-data-download-35f9109609a48003affdf86d97eb2ccd"
         >
-          Readme for Climate Case Chart document data download.
+          Readme for Climate Litigation Database document data download.
         </PageLink>
       </p>
     ),
