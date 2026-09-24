@@ -1,7 +1,7 @@
 import sortBy from "lodash/sortBy";
 import { ReactNode } from "react";
 
-import { Geography } from "@/components/molecules/geographies/Geography";
+import { Geography, labelIsRegion } from "@/components/molecules/geographies/Geography";
 import { ARROW_RIGHT } from "@/constants/chars";
 import { TLabel, TSingularAndPlural } from "@/types";
 import { flattenNestedLabels } from "@/utils/labels/flattenNestedLabels";
@@ -9,8 +9,7 @@ import { pluralise } from "@/utils/pluralise";
 import { joinNodes } from "@/utils/reactNode";
 import { joinTailwindClasses } from "@/utils/tailwind";
 
-// The only geographies to display and their order in the list
-const LABEL_ORDER_BY_TYPE = ["country", "subdivision"];
+export const GEOGRAPHY_LABEL_TYPES = ["region", "country", "subdivision"]; // Ordered least to most specific
 
 interface IProps {
   className?: string;
@@ -37,16 +36,18 @@ export const Geographies = ({
   separatorClasses,
   showFlags = true,
 }: IProps) => {
-  const sortedLabels = sortBy(
-    flattenNestedLabels(geographyLabels).filter((label) => LABEL_ORDER_BY_TYPE.includes(label.type)),
-    [(label) => LABEL_ORDER_BY_TYPE.indexOf(label.type), "value"]
-  );
-  let geographies: ReactNode[] = sortedLabels.map((label) => (
+  if (geographyLabels.length === 0) return <span className="text-text-tertiary">No geography</span>;
+
+  const sortedLabels = sortBy(flattenNestedLabels(geographyLabels), [(label) => GEOGRAPHY_LABEL_TYPES.indexOf(label.type), "value"]);
+  // Only show regions if there are only regions to show
+  const displayLabels = sortedLabels.every(labelIsRegion) ? sortedLabels : sortedLabels.filter((label) => !labelIsRegion(label));
+
+  let geographies: ReactNode[] = displayLabels.map((label) => (
     <Geography key={label.id} geographyLabel={label} linkClasses={linkClasses} noLink={noLinks} showFlag={showFlags} />
   ));
 
   // Hierarchical separator only if a country + subdivision pair
-  const isCountryAndSubdivision = sortedLabels.length === 2 && sortedLabels[0].type === "country" && sortedLabels[1].type === "subdivision";
+  const isCountryAndSubdivision = displayLabels.length === 2 && displayLabels[0].type === "country" && displayLabels[1].type === "subdivision";
   const separator = isCountryAndSubdivision ? hierarchySeparator : ", ";
 
   // Handle overflowing geographies if a display limit is set

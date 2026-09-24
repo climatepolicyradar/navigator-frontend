@@ -109,9 +109,32 @@ describe("Geographies", () => {
     expect(limitOnClick).toHaveBeenCalledTimes(1);
   });
 
-  it("renders nothing for a region, which is not a handled geography type", () => {
-    const { container } = renderGeographies({ geographyLabels: [geographyLabel("region", "EUR", "Europe")], hierarchySeparator: " > " });
+  it("renders a single region as plain text with no link", () => {
+    renderGeographies({ geographyLabels: [geographyLabel("region", "EUR", "Europe")], hierarchySeparator: " > " });
 
-    expect(container.querySelector("span")).toBeEmptyDOMElement();
+    expect(screen.getByText("Europe")).toBeInTheDocument();
+    expect(screen.queryByRole("link")).not.toBeInTheDocument();
+  });
+
+  it("renders multiple regions as plain text with no links", () => {
+    renderGeographies({
+      geographyLabels: [geographyLabel("region", "EUR", "Europe"), geographyLabel("region", "SAS", "South Asia")],
+      hierarchySeparator: " > ",
+    });
+
+    expect(screen.getByText("Europe")).toBeInTheDocument();
+    expect(screen.getByText("South Asia")).toBeInTheDocument();
+    expect(screen.getAllByText(",")).toHaveLength(1);
+    expect(screen.queryByRole("link")).not.toBeInTheDocument();
+  });
+
+  it("does not render a region when a country is also present", () => {
+    renderGeographies({
+      geographyLabels: [geographyLabel("region", "EUR", "Europe"), geographyLabel("country", "FRA", "France")],
+      hierarchySeparator: " > ",
+    });
+
+    expect(screen.getByRole("link", { name: "France" })).toBeInTheDocument();
+    expect(screen.queryByText("Europe")).not.toBeInTheDocument();
   });
 });

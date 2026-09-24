@@ -1,7 +1,7 @@
 import { LucideX } from "lucide-react";
 import { ReactNode, useContext, useMemo } from "react";
 
-import { Geographies } from "@/components/molecules/geographies/Geographies";
+import { Geographies, GEOGRAPHY_LABEL_TYPES } from "@/components/molecules/geographies/Geographies";
 import { FiltersContext } from "@/context/FiltersContext";
 import { TFilterPathLabel, TFiltersGroupConfig } from "@/types";
 import { getLabelPathSignature, sortFilterPathLabels } from "@/utils/filters/filterPaths";
@@ -11,11 +11,10 @@ const getDateRangeLabel = (dateRange: [number, number]): string => `${dateRange[
 
 const getAppliedFilterLabel = (labelValues: Record<string, string>, labelPath: TFilterPathLabel[]): ReactNode => {
   const getLabelValue = (label: TFilterPathLabel) => labelValues[label.id] || label.value;
-  const isGeography = labelPath.some((label) => ["country", "geography"].includes(label.type));
+  const isGeography = labelPath.some((label) => GEOGRAPHY_LABEL_TYPES.includes(label.type));
 
   if (isGeography) {
     const geographyLabels = labelPath.map((label) => ({ ...label, value: getLabelValue(label) }));
-    // Geographies hides the region is present - it can only render outside of this IF when by itself
     return <Geographies geographyLabels={geographyLabels} noLinks />;
   }
 

@@ -1,15 +1,23 @@
 import kebabCase from "lodash/kebabCase";
 
+import { ID_SEPARATOR } from "@/constants/chars";
 import { EXCLUDED_ISO_CODES, GEOGRAPHY_SLUG_CONVERSIONS, INCLUDED_GEO_TYPES } from "@/constants/geography";
-import { TDataNode, TGeography } from "@/types";
+import { TDataNode, TGeography, TLabel } from "@/types";
 
-export const codeIsCountry = (geoCode: string) => !geoCode.includes("-");
+export const getGeographySlug = (geographyLabel: TLabel): string | null => {
+  const geoCode = geographyLabel.id.split(ID_SEPARATOR)[1];
+  const slug = kebabCase(geographyLabel.value);
 
-export const getGeographySlug = (geoCode: string, geoName: string) => {
-  if (!codeIsCountry(geoCode)) return geoCode.toLowerCase();
+  if (EXCLUDED_ISO_CODES.includes(geoCode.toLowerCase())) return null;
 
-  const slug = kebabCase(geoName);
-  return GEOGRAPHY_SLUG_CONVERSIONS[slug] ?? slug;
+  switch (geographyLabel.type) {
+    case "subdivision":
+      return geoCode.toLowerCase();
+    case "country":
+      return GEOGRAPHY_SLUG_CONVERSIONS[slug] ?? slug;
+    default:
+      return null;
+  }
 };
 
 // Recursively transform node structure into flat list of geo slugs

@@ -7,14 +7,6 @@ import { formatDate } from "@/utils/timedate";
 
 const getDocumentGeography = (document: SearchDocument): ReactNode => {
   const allGeographies = document.labels.filter((relation) => relation.type === "geography").map((relation) => relation.value);
-
-  if (allGeographies.length === 0) {
-    return <span className="text-text-tertiary">No Geography</span>;
-  }
-  if (allGeographies.every((geo) => geo.type === "region")) {
-    return allGeographies[0].value; // Region only edge case
-  }
-
   return <Geographies geographyLabels={allGeographies} limit={1} />;
 };
 

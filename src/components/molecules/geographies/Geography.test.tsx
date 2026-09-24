@@ -40,10 +40,11 @@ describe("Geography", () => {
     expect(screen.queryByRole("link")).not.toBeInTheDocument();
   });
 
-  it("renders nothing for a geography type it doesn't handle", () => {
-    const { container } = renderGeography(geographyLabel("region", ["region", "EUR"].join(ID_SEPARATOR), "Europe"));
+  it("renders a region as plain text with no link", () => {
+    renderGeography(geographyLabel("region", ["region", "EUR"].join(ID_SEPARATOR), "Europe"));
 
-    expect(container).toBeEmptyDOMElement();
+    expect(screen.getByText("Europe")).toBeInTheDocument();
+    expect(screen.queryByRole("link")).not.toBeInTheDocument();
   });
 
   describe("subdivisions", () => {

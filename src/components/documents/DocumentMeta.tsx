@@ -1,4 +1,4 @@
-import { CountryLinks } from "@/components/CountryLinks";
+import { Geographies } from "@/components/molecules/geographies/Geographies";
 import { getLanguage } from "@/helpers/getLanguage";
 import useConfig from "@/hooks/useConfig";
 import { TFamilyDocumentPublic, TFamilyPublic } from "@/types";
@@ -16,14 +16,14 @@ export const DocumentMeta = ({
   document_type: string;
 }) => {
   const configQuery = useConfig();
-  const { data: { countries = [], languages = {} } = {} } = configQuery;
+  const { data: { languages = {} } = {} } = configQuery;
   const [year] = convertDate(family.published_date);
 
   return (
     <div className="py-4 my-4 md:my-2 md:flex justify-between items-center">
       <div className="flex flex-col text-sm gap-2">
         <div className="flex items-center gap-2 middot-between flex-wrap">
-          <CountryLinks geographies={family.geographies} countries={countries} />
+          <Geographies geographyLabels={family.geographies} />
           {family.attribution.category === "Report" && year && <span>{year}</span>}
           {!isMain && document.document_role && <span className="capitalize">{document.document_role.toLowerCase()}</span>}
           {family.attribution.category === "Report" && family.metadata.author && family.metadata.author.length > 0 && (

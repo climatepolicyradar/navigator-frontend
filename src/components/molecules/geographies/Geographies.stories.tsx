@@ -12,6 +12,14 @@ const geographyLabel = (type: string, id: string, value: string, children: TLabe
   children,
 });
 
+const manyCountries = [
+  geographyLabel("country", "CAN", "Canada"),
+  geographyLabel("country", "USA", "United States"),
+  geographyLabel("country", "GBR", "United Kingdom"),
+  geographyLabel("country", "FRA", "France"),
+  geographyLabel("country", "DEU", "Germany"),
+];
+
 const meta = {
   title: "Molecules/Geographies/Geographies",
   component: Geographies,
@@ -31,6 +39,30 @@ export default meta;
 export const Country: TStory = {
   args: {
     geographyLabels: [geographyLabel("country", "CAN", "Canada")],
+  },
+};
+
+export const Countries: TStory = {
+  args: {
+    geographyLabels: manyCountries.slice(0, 2),
+  },
+};
+
+export const LimitedNoAction: TStory = {
+  name: "Limited (no action)",
+  args: {
+    geographyLabels: manyCountries,
+    limit: 3,
+  },
+};
+
+export const LimitedAction: TStory = {
+  name: "Limited (with action)",
+  args: {
+    geographyLabels: manyCountries,
+    limit: 3,
+    limitOnClick: () => alert("Show all geographies"),
+    limitSuffix: ["other", "others"],
   },
 };
 
@@ -60,41 +92,27 @@ export const CountryAndSubdivisions: TStory = {
   },
 };
 
-const manyCountries = [
-  geographyLabel("country", "CAN", "Canada"),
-  geographyLabel("country", "USA", "United States"),
-  geographyLabel("country", "GBR", "United Kingdom"),
-  geographyLabel("country", "FRA", "France"),
-  geographyLabel("country", "DEU", "Germany"),
-];
-
-export const Countries: TStory = {
+export const International: TStory = {
   args: {
-    geographyLabels: manyCountries.slice(0, 2),
-    showFlags: false,
-  },
-};
-
-export const LimitedNoAction: TStory = {
-  name: "Limited (no action)",
-  args: {
-    geographyLabels: manyCountries,
-    limit: 3,
-  },
-};
-
-export const LimitedAction: TStory = {
-  name: "Limited (with action)",
-  args: {
-    geographyLabels: manyCountries,
-    limit: 3,
-    limitOnClick: () => alert("Show all geographies"),
-    limitSuffix: ["other", "others"],
+    geographyLabels: [geographyLabel("country", "XAB", "International")],
   },
 };
 
 export const Region: TStory = {
   args: {
     geographyLabels: [geographyLabel("region", "EUR", "Europe")],
+  },
+};
+
+export const Regions: TStory = {
+  args: {
+    geographyLabels: [geographyLabel("region", "EUR", "Europe"), geographyLabel("region", "SAS", "South Asia")],
+  },
+};
+
+export const NoGeography: TStory = {
+  name: "No geography",
+  args: {
+    geographyLabels: [],
   },
 };

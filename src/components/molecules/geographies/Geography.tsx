@@ -10,6 +10,8 @@ import { TLabel } from "@/types";
 import { joinNodes } from "@/utils/reactNode";
 import { joinTailwindClasses } from "@/utils/tailwind";
 
+export const labelIsRegion = (label: TLabel) => label.type === "region";
+
 interface IProps {
   geographyLabel: TLabel;
   linkClasses?: string;
@@ -17,25 +19,24 @@ interface IProps {
   showFlag?: boolean;
 }
 
-export const Geography = ({ geographyLabel, linkClasses, noLink = false, showFlag = false }: IProps) => {
+export const Geography = ({ geographyLabel, linkClasses, noLink = false, showFlag = true }: IProps) => {
   const features = useContext(FeaturesContext);
 
-  if (!["country", "subdivision"].includes(geographyLabel.type)) return null;
+  const isSubdivision = geographyLabel.type === "subdivision";
+  const [, geoCode] = geographyLabel.id.split(ID_SEPARATOR);
 
   /* Slug */
-  let slug = kebabCase(geographyLabel.value);
+  let slug = isSubdivision ? geoCode.toLowerCase() : kebabCase(geographyLabel.value);
   if (slug in GEOGRAPHY_SLUG_CONVERSIONS) slug = GEOGRAPHY_SLUG_CONVERSIONS[slug];
 
   /* Name */
   const name = geographyLabel.value;
 
   /* Flag */
-  const [, geoCode] = geographyLabel.id.split(ID_SEPARATOR);
   const flag = (showFlag && COUNTRY_FLAGS[geoCode]) || null;
 
-  const isSubdivision = geographyLabel.type === "subdivision";
   const isInternational = geoCode === "XAB";
-  const hasLink = !noLink && !isInternational && !(isSubdivision && !features.subdivisions);
+  const hasLink = !noLink && !labelIsRegion(geographyLabel) && !isInternational && !(isSubdivision && !features.subdivisions);
 
   if (!hasLink) {
     return <span>{joinNodes([flag, name], <>&nbsp;</>)}</span>;
