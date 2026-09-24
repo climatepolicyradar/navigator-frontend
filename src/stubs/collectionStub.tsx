@@ -93,16 +93,8 @@ export const COLLECTION_STUB: TCollectionPublicWithFamilies = {
       summary:
         "Action by young plaintiffs asserting that the federal government violated their constitutional rights by causing dangerous carbon dioxide concentrations. [Due to a technical issue, some documents are currently not available.]",
       geographies: [
-        {
-          code: "USA",
-          name: "United States",
-          slug: "united-states-of-america",
-        },
-        {
-          code: "USA-OR",
-          name: "Oregon",
-          slug: "us-or",
-        },
+        { id: "country::USA", type: "country", value: "United States" },
+        { id: "subdivision::US-OR", type: "subdivision", value: "Oregon" },
       ],
       published_date: "2015-01-01T00:00:00Z",
       last_updated_date: "2025-03-24T00:00:00Z",
@@ -520,16 +512,8 @@ export const COLLECTION_STUB: TCollectionPublicWithFamilies = {
       summary:
         "Action by young plaintiffs asserting that the federal government violated their constitutional rights by causing dangerous carbon dioxide concentrations. [Due to a technical issue, some documents are currently not available.]",
       geographies: [
-        {
-          code: "USA",
-          name: "United States",
-          slug: "united-states-of-america",
-        },
-        {
-          code: "USA-OR",
-          name: "Oregon",
-          slug: "us-or",
-        },
+        { id: "country::USA", type: "country", value: "United States" },
+        { id: "subdivision::US-OR", type: "subdivision", value: "Oregon" },
       ],
       published_date: "2015-01-01T00:00:00Z",
       last_updated_date: "2024-04-19T00:00:00Z",
@@ -2794,16 +2778,8 @@ export const COLLECTION_STUB: TCollectionPublicWithFamilies = {
       summary:
         "Action by young plaintiffs asserting that the federal government violated their constitutional rights by causing dangerous carbon dioxide concentrations. [Due to a technical issue, some documents are currently not available.]",
       geographies: [
-        {
-          code: "USA",
-          name: "United States",
-          slug: "united-states-of-america",
-        },
-        {
-          code: "USA-OR",
-          name: "Oregon",
-          slug: "us-or",
-        },
+        { id: "country::USA", type: "country", value: "United States" },
+        { id: "subdivision::US-OR", type: "subdivision", value: "Oregon" },
       ],
       published_date: "2015-01-01T00:00:00Z",
       last_updated_date: "2021-04-06T00:00:00Z",
@@ -9690,16 +9666,8 @@ export const COLLECTION_STUB: TCollectionPublicWithFamilies = {
       summary:
         "Action by young plaintiffs asserting that the federal government violated their constitutional rights by causing dangerous carbon dioxide concentrations. [Due to a technical issue, some documents are currently not available.]",
       geographies: [
-        {
-          code: "USA",
-          name: "United States",
-          slug: "united-states-of-america",
-        },
-        {
-          code: "USA-OR",
-          name: "Oregon",
-          slug: "us-or",
-        },
+        { id: "country::USA", type: "country", value: "United States" },
+        { id: "subdivision::US-OR", type: "subdivision", value: "Oregon" },
       ],
       published_date: "2015-01-01T00:00:00Z",
       last_updated_date: "2024-11-12T00:00:00Z",
@@ -9936,16 +9904,8 @@ export const COLLECTION_STUB: TCollectionPublicWithFamilies = {
       summary:
         "Action by young plaintiffs asserting that the federal government violated their constitutional rights by causing dangerous carbon dioxide concentrations. [Due to a technical issue, some documents are currently not available.]",
       geographies: [
-        {
-          code: "USA",
-          name: "United States",
-          slug: "united-states-of-america",
-        },
-        {
-          code: "USA-OR",
-          name: "Oregon",
-          slug: "us-or",
-        },
+        { id: "country::USA", type: "country", value: "United States" },
+        { id: "subdivision::US-OR", type: "subdivision", value: "Oregon" },
       ],
       published_date: "2015-01-01T00:00:00Z",
       last_updated_date: "2024-07-12T00:00:00Z",
@@ -11028,16 +10988,8 @@ export const COLLECTION_STUB: TCollectionPublicWithFamilies = {
       summary:
         "Action by young plaintiffs asserting that the federal government violated their constitutional rights by causing dangerous carbon dioxide concentrations. [Due to a technical issue, some documents are currently not available.]",
       geographies: [
-        {
-          code: "USA",
-          name: "United States",
-          slug: "united-states-of-america",
-        },
-        {
-          code: "USA-OR",
-          name: "Oregon",
-          slug: "us-or",
-        },
+        { id: "country::USA", type: "country", value: "United States" },
+        { id: "subdivision::US-OR", type: "subdivision", value: "Oregon" },
       ],
       published_date: "2015-01-01T00:00:00Z",
       last_updated_date: "2021-03-05T00:00:00Z",
@@ -14981,16 +14933,8 @@ export const COLLECTION_STUB: TCollectionPublicWithFamilies = {
       summary:
         "Action by young plaintiffs asserting that the federal government violated their constitutional rights by causing dangerous carbon dioxide concentrations. [Due to a technical issue, some documents are currently not available.]",
       geographies: [
-        {
-          code: "USA",
-          name: "United States",
-          slug: "united-states-of-america",
-        },
-        {
-          code: "USA-OR",
-          name: "Oregon",
-          slug: "us-or",
-        },
+        { id: "country::USA", type: "country", value: "United States" },
+        { id: "subdivision::US-OR", type: "subdivision", value: "Oregon" },
       ],
       published_date: "2015-01-01T00:00:00Z",
       last_updated_date: "2018-12-26T00:00:00Z",
@@ -15403,16 +15347,8 @@ export const COLLECTION_STUB: TCollectionPublicWithFamilies = {
       summary:
         "Action by young plaintiffs asserting that the federal government violated their constitutional rights by causing dangerous carbon dioxide concentrations. [Due to a technical issue, some documents are currently not available.]",
       geographies: [
-        {
-          code: "USA",
-          name: "United States",
-          slug: "united-states-of-america",
-        },
-        {
-          code: "USA-OR",
-          name: "Oregon",
-          slug: "us-or",
-        },
+        { id: "country::USA", type: "country", value: "United States" },
+        { id: "subdivision::US-OR", type: "subdivision", value: "Oregon" },
       ],
       published_date: "2015-01-01T00:00:00Z",
       last_updated_date: "2018-12-26T00:00:00Z",
@@ -15923,16 +15859,8 @@ export const COLLECTION_STUB: TCollectionPublicWithFamilies = {
       summary:
         "Action by young plaintiffs asserting that the federal government violated their constitutional rights by causing dangerous carbon dioxide concentrations. [Due to a technical issue, some documents are currently not available.]",
       geographies: [
-        {
-          code: "USA",
-          name: "United States",
-          slug: "united-states-of-america",
-        },
-        {
-          code: "USA-OR",
-          name: "Oregon",
-          slug: "us-or",
-        },
+        { id: "country::USA", type: "country", value: "United States" },
+        { id: "subdivision::US-OR", type: "subdivision", value: "Oregon" },
       ],
       published_date: "2015-01-01T00:00:00Z",
       last_updated_date: "2018-11-23T00:00:00Z",
@@ -16214,16 +16142,8 @@ export const COLLECTION_STUB: TCollectionPublicWithFamilies = {
       summary:
         "Action by young plaintiffs asserting that the federal government violated their constitutional rights by causing dangerous carbon dioxide concentrations. [Due to a technical issue, some documents are currently not available.]",
       geographies: [
-        {
-          code: "USA",
-          name: "United States",
-          slug: "united-states-of-america",
-        },
-        {
-          code: "USA-OR",
-          name: "Oregon",
-          slug: "us-or",
-        },
+        { id: "country::USA", type: "country", value: "United States" },
+        { id: "subdivision::US-OR", type: "subdivision", value: "Oregon" },
       ],
       published_date: "2015-01-01T00:00:00Z",
       last_updated_date: "2018-11-02T00:00:00Z",
@@ -16603,16 +16523,8 @@ export const COLLECTION_STUB: TCollectionPublicWithFamilies = {
       summary:
         "Action by young plaintiffs asserting that the federal government violated their constitutional rights by causing dangerous carbon dioxide concentrations. [Due to a technical issue, some documents are currently not available.]",
       geographies: [
-        {
-          code: "USA",
-          name: "United States",
-          slug: "united-states-of-america",
-        },
-        {
-          code: "USA-OR",
-          name: "Oregon",
-          slug: "us-or",
-        },
+        { id: "country::USA", type: "country", value: "United States" },
+        { id: "subdivision::US-OR", type: "subdivision", value: "Oregon" },
       ],
       published_date: "2015-01-01T00:00:00Z",
       last_updated_date: "2018-11-02T00:00:00Z",
@@ -16939,16 +16851,8 @@ export const COLLECTION_STUB: TCollectionPublicWithFamilies = {
       summary:
         "Action by young plaintiffs asserting that the federal government violated their constitutional rights by causing dangerous carbon dioxide concentrations. [Due to a technical issue, some documents are currently not available.]",
       geographies: [
-        {
-          code: "USA",
-          name: "United States",
-          slug: "united-states-of-america",
-        },
-        {
-          code: "USA-OR",
-          name: "Oregon",
-          slug: "us-or",
-        },
+        { id: "country::USA", type: "country", value: "United States" },
+        { id: "subdivision::US-OR", type: "subdivision", value: "Oregon" },
       ],
       published_date: "2015-01-01T00:00:00Z",
       last_updated_date: "2018-07-30T00:00:00Z",
@@ -17283,16 +17187,8 @@ export const COLLECTION_STUB: TCollectionPublicWithFamilies = {
       summary:
         "Action by young plaintiffs asserting that the federal government violated their constitutional rights by causing dangerous carbon dioxide concentrations. [Due to a technical issue, some documents are currently not available.]",
       geographies: [
-        {
-          code: "USA",
-          name: "United States",
-          slug: "united-states-of-america",
-        },
-        {
-          code: "USA-OR",
-          name: "Oregon",
-          slug: "us-or",
-        },
+        { id: "country::USA", type: "country", value: "United States" },
+        { id: "subdivision::US-OR", type: "subdivision", value: "Oregon" },
       ],
       published_date: "2015-01-01T00:00:00Z",
       last_updated_date: "2018-07-20T00:00:00Z",
@@ -17715,16 +17611,8 @@ export const COLLECTION_STUB: TCollectionPublicWithFamilies = {
       summary:
         "Action by young plaintiffs asserting that the federal government violated their constitutional rights by causing dangerous carbon dioxide concentrations. [Due to a technical issue, some documents are currently not available.]",
       geographies: [
-        {
-          code: "USA",
-          name: "United States",
-          slug: "united-states-of-america",
-        },
-        {
-          code: "USA-OR",
-          name: "Oregon",
-          slug: "us-or",
-        },
+        { id: "country::USA", type: "country", value: "United States" },
+        { id: "subdivision::US-OR", type: "subdivision", value: "Oregon" },
       ],
       published_date: "2015-01-01T00:00:00Z",
       last_updated_date: "2018-06-27T00:00:00Z",
@@ -17995,16 +17883,8 @@ export const COLLECTION_STUB: TCollectionPublicWithFamilies = {
       summary:
         "Action by young plaintiffs asserting that the federal government violated their constitutional rights by causing dangerous carbon dioxide concentrations. [Due to a technical issue, some documents are currently not available.]",
       geographies: [
-        {
-          code: "USA",
-          name: "United States",
-          slug: "united-states-of-america",
-        },
-        {
-          code: "USA-OR",
-          name: "Oregon",
-          slug: "us-or",
-        },
+        { id: "country::USA", type: "country", value: "United States" },
+        { id: "subdivision::US-OR", type: "subdivision", value: "Oregon" },
       ],
       published_date: "2017-01-01T00:00:00Z",
       last_updated_date: "2018-03-07T00:00:00Z",

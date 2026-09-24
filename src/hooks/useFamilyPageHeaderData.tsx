@@ -43,7 +43,7 @@ export const useFamilyPageHeaderData = (family: TFamilyPublic): FamilyPageHeader
           breadcrumbParentGeography = { label: country.value, href: `/geographies/${getGeographySlug(country)}` };
         } else {
           // Countries only
-          if (!isSystemGeo(country.id.split(ID_SEPARATOR)[0]))
+          if (!isSystemGeo(country.id.split(ID_SEPARATOR)[1]))
             breadcrumbGeography = { label: country.value, href: `/geographies/${getGeographySlug(country)}` };
         }
       }

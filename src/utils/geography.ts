@@ -8,7 +8,7 @@ export const getGeographySlug = (geographyLabel: TLabel): string | null => {
   const geoCode = geographyLabel.id.split(ID_SEPARATOR)[1];
   const slug = kebabCase(geographyLabel.value);
 
-  if (EXCLUDED_ISO_CODES.includes(geoCode.toLowerCase())) return null;
+  if (EXCLUDED_ISO_CODES.includes(geoCode.toUpperCase())) return null;
 
   switch (geographyLabel.type) {
     case "subdivision":
