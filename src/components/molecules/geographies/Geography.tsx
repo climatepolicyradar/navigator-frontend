@@ -1,12 +1,11 @@
-import { kebabCase } from "lodash";
 import { useContext } from "react";
 
 import { PageLink } from "@/components/atoms/pageLink/PageLink";
 import { ID_SEPARATOR } from "@/constants/chars";
 import { COUNTRY_FLAGS } from "@/constants/flags";
-import { GEOGRAPHY_SLUG_CONVERSIONS } from "@/constants/geography";
 import { FeaturesContext } from "@/context/FeaturesContext";
 import { TLabel } from "@/types";
+import { getGeographySlug } from "@/utils/geography";
 import { joinNodes } from "@/utils/reactNode";
 import { joinTailwindClasses } from "@/utils/tailwind";
 
@@ -22,21 +21,18 @@ interface IProps {
 export const Geography = ({ geographyLabel, linkClasses, noLink = false, showFlag = true }: IProps) => {
   const features = useContext(FeaturesContext);
 
-  const isSubdivision = geographyLabel.type === "subdivision";
-  const [, geoCode] = geographyLabel.id.split(ID_SEPARATOR);
-
   /* Slug */
-  let slug = isSubdivision ? geoCode.toLowerCase() : kebabCase(geographyLabel.value);
-  if (slug in GEOGRAPHY_SLUG_CONVERSIONS) slug = GEOGRAPHY_SLUG_CONVERSIONS[slug];
+  const slug = getGeographySlug(geographyLabel);
 
   /* Name */
   const name = geographyLabel.value;
 
   /* Flag */
+  const isSubdivision = geographyLabel.type === "subdivision";
+  const [, geoCode] = geographyLabel.id.split(ID_SEPARATOR);
   const flag = (showFlag && COUNTRY_FLAGS[geoCode]) || null;
 
-  const isInternational = geoCode === "XAB";
-  const hasLink = !noLink && !labelIsRegion(geographyLabel) && !isInternational && !(isSubdivision && !features.subdivisions);
+  const hasLink = !noLink && !!slug && !(isSubdivision && !features.subdivisions);
 
   if (!hasLink) {
     return <span>{joinNodes([flag, name], <>&nbsp;</>)}</span>;
