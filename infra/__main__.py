@@ -9,7 +9,6 @@ from typing import cast
 import pulumi
 import pulumi_aws as aws
 import pulumi_docker_build as docker_build
-from resources.app_runner_service import AppRunnerConfig
 from resources.cache_policy import CachePolicyConfig, CloudFrontCachePolicy
 from resources.cloudfront_distribution import (
     CloudFrontDistribution,
@@ -203,7 +202,6 @@ if is_review_stack and shared_resources_env == "production":
 
     # Use the tag-based identifier for App Runner (it doesn't support @digest refs).
     repository_url = review_ecr_url
-    image_identifier = pulumi.Output.concat(review_ecr_url, ":", stack)
     pulumi.info(f"Repository URL: {review_ecr_url}")
 
     # Export the repository URL for use in CI/CD pipelines
@@ -223,42 +221,8 @@ eu_west_1c_public_subnet_id = aws_env_stack.get_output("eu_west_1c_public_subnet
 if ecr_repo:
     pulumi.export("ecr_repository_name", ecr_repo.repository.name)
 
-shared_access_role_arn = None
 if not is_review_template:
-    # For review stacks, use the shared ECR access role created in frontend-platform
-    # to avoid the 64-character IAM role name limit on ephemeral PR stacks.
-    if is_review_stack and shared_resources_env == "production":
-        shared_access_role_arn = shared_resources_stack.get_output(
-            "apprunner_ecr_access_role_arn"
-        )
-
-    # Configure AppRunner settings (using current account)
     is_cpr_stack = stack in ["cpr-production", "cpr-staging"]
-    default_max_concurrency = 50
-    default_max_instances = 10
-    default_min_instances = 1
-    apprunner_config = AppRunnerConfig(
-        max_concurrency=int(
-            config.require("apprunner_frontend_max_concurrency")
-            if is_cpr_stack
-            else default_max_concurrency
-        ),
-        max_instances=int(
-            config.require("apprunner_frontend_max_instance_count")
-            if is_cpr_stack
-            else default_max_instances
-        ),
-        min_instances=int(
-            config.require("apprunner_frontend_min_instance_count")
-            if is_cpr_stack
-            else default_min_instances
-        ),
-        cpu=config.require("apprunner_frontend_vcpu_count"),
-        memory=config.require("apprunner_frontend_memory_gb"),
-        auto_deploy=True,
-    )
-
-    # Create the frontend AppRunner service in current account
     name_prefix = review_name if review_name else tag_name()
 
     ecs_frontend_service = ExpressGatewayServiceComponent(
