@@ -30,7 +30,7 @@ interface IProps {
 const OTHER_APPS = [
   {
     url: "https://www.climatecasechart.com/",
-    label: "Climate Case Chart",
+    label: "Climate Litigation Database",
   },
   {
     url: "https://www.climate-laws.org/",
