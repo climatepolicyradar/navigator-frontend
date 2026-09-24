@@ -158,6 +158,14 @@ jobs:
           pulumi config set frontend:next_public_api_url "${TARGET_URL}" \
             --stack "${ORG}/${PROJECT}/${STACK_NAME}"
 
+      - name: Confirm next_public_api_url config
+        working-directory: infra
+        env:
+          STACK_NAME: ${{ steps.stack.outputs.stack_name }}
+        run: |
+          pulumi config get frontend:next_public_api_url \
+            --stack "${ORG}/${PROJECT}/${STACK_NAME}"
+
       - name: Trigger update deployment for ${{ matrix.theme }}
         id: trigger_update
         env:
