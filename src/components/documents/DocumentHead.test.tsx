@@ -3,6 +3,7 @@ import { screen } from "@testing-library/react";
 import { renderWithAppContext } from "@/mocks/renderWithAppContext";
 import { FAMILY_NEW_STUB } from "@/stubs/familyNewStub";
 import { TFamilyPublic } from "@/types";
+import { getGeographySlug } from "@/utils/geography";
 
 import { DocumentHead } from "./DocumentHead";
 
@@ -31,15 +32,16 @@ describe("DocumentHead", () => {
     const geography = FAMILY_NEW_STUB.geographies[0];
     const { container } = renderDocumentHead({ ...FAMILY_NEW_STUB, geographies: [geography] });
 
-    const link = container.querySelector(`a[href="/geographies/${geography.slug}"]`);
+    const link = container.querySelector(`a[href="/geographies/${getGeographySlug(geography)}"]`);
     expect(link).not.toBeNull();
-    expect(link.textContent).toContain(geography.name);
+    expect(link.textContent).toContain(geography.value);
   });
 
-  it("renders without a geography breadcrumb when the family has multiple geographies", () => {
+  it("renders only the country breadcrumb when the family has a country and a subdivision", () => {
     const { container } = renderDocumentHead(FAMILY_NEW_STUB);
 
     expect(FAMILY_NEW_STUB.geographies.length).toBeGreaterThan(1);
-    expect(container.querySelector('a[href^="/geographies"]')).toBeNull();
+    expect(container.querySelector('a[href="/geographies/united-states-of-america"]')).not.toBeNull();
+    expect(container.querySelector('a[href="/geographies/us-or"]')).toBeNull();
   });
 });

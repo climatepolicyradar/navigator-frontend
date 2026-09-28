@@ -1,8 +1,7 @@
-import { CountryLinksAsList } from "@/components/CountryLinks";
-import { ExternalLink } from "@/components/ExternalLink";
+import { PageLink } from "@/components/atoms/pageLink/PageLink";
+import { Geographies } from "@/components/molecules/geographies/Geographies";
 import { mapFamilyMetadata } from "@/helpers/mapFamilyMetadata";
-import useConfig from "@/hooks/useConfig";
-import { TFamilyMetadata, TMCFFamilyMetadata } from "@/types";
+import { TFamilyMetadata, TFamilyPublic, TMCFFamilyMetadata } from "@/types";
 
 interface MetadataItemProps {
   label: string;
@@ -12,34 +11,14 @@ interface MetadataItemProps {
 type TFamilyMetadataUnion = TFamilyMetadata | TMCFFamilyMetadata;
 
 interface McfFamilyMetaProps {
+  family: TFamilyPublic;
   metadata: TFamilyMetadataUnion;
-}
-
-interface ListOfCountriesProps {
-  countryCodes: string[];
-  label: string;
 }
 
 interface MultipleValuesContentProps {
   label: string;
   values: string[];
 }
-
-const ListOfCountries = ({ countryCodes, label }: ListOfCountriesProps) => {
-  const configQuery = useConfig();
-  const { data: { countries = [] } = {} } = configQuery;
-
-  return (
-    <>
-      <div className="flex row items-center">
-        <span className="text-sm font-bold pl-1">
-          <strong>{label}</strong>
-        </span>
-      </div>
-      <CountryLinksAsList geographies={countryCodes} countries={countries} showFlag={false} />
-    </>
-  );
-};
 
 const MultipleValuesContentComponent = ({ label, values }: MultipleValuesContentProps) => {
   return (
@@ -63,23 +42,22 @@ const MultipleValuesContentComponent = ({ label, values }: MultipleValuesContent
 
 const MetadataItem = ({ label, values }: MetadataItemProps) => {
   const isUrl = label === "Source";
-  const isCountry = label === "Geography";
 
   const getValueContent = () => {
     if (isUrl && typeof values === "string") {
       return (
-        <ExternalLink url={values} className="text-blue-600 underline truncate text-sm pl-1 hover:text-blue-800">
+        <PageLink
+          external
+          href={values}
+          className="pl-1 text-sm text-text-brand underline underline-offset-2 decoration-slate-300 hocus:decoration-text-brand"
+        >
           Visit project page
-        </ExternalLink>
+        </PageLink>
       );
     } else {
       return <span className="pl-1 text-sm">{values}</span>;
     }
   };
-
-  if (isCountry && Array.isArray(values)) {
-    return <ListOfCountries countryCodes={values} label={label} />;
-  }
 
   if (Array.isArray(values)) {
     return <MultipleValuesContentComponent values={values} label={label} />;
@@ -97,14 +75,21 @@ const MetadataItem = ({ label, values }: MetadataItemProps) => {
   );
 };
 
-export const McfFamilyMeta = ({ metadata }: McfFamilyMetaProps) => {
+export const McfFamilyMeta = ({ family, metadata }: McfFamilyMetaProps) => {
   const mappedMetadata = mapFamilyMetadata(metadata);
 
   return (
     <div className="w-full bg-white py-4 flex flex-col gap-2">
       {mappedMetadata.map((item, index) => (
         <div className="flex flex-wrap gap-1" key={item.label}>
-          <MetadataItem key={index} label={item.label} values={item.value} />
+          {item.label === "Geography" ? (
+            <div className="flex items-center row pl-1 text-sm">
+              <strong>Geographies</strong>
+              <Geographies geographyLabels={family.geographies} className="pl-1" />
+            </div>
+          ) : (
+            <MetadataItem key={index} label={item.label} values={item.value} />
+          )}
         </div>
       ))}
     </div>

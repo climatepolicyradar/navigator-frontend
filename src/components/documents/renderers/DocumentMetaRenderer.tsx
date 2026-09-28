@@ -25,5 +25,5 @@ export const DocumentMetaRenderer = ({ family, isMain, document }: { family: TFa
     return <DocumentMeta family={family} isMain={isMain} document={document} document_type={document_type} />;
   }
 
-  return <McfFamilyMeta metadata={mcfFamilyMetadata} />;
+  return <McfFamilyMeta family={family} metadata={mcfFamilyMetadata} />;
 };

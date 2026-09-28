@@ -1,11 +1,11 @@
 import { useContext } from "react";
 
 import { getTaxonomyFromV1 } from "@/bff/methods/getTaxonomy";
-import { CountryLinkWithSubdivisions } from "@/components/CountryLinkWithSubdivisions";
-import { CountryLinks } from "@/components/CountryLinks";
+import { Geographies } from "@/components/molecules/geographies/Geographies";
+import { ID_SEPARATOR } from "@/constants/chars";
 import { WikiBaseConceptsContext } from "@/context/WikiBaseConceptsContext";
 import useConfig from "@/hooks/useConfig";
-import { TCategory, TCorpusTypeSubCategory, TFamilyConcept, TFamilyMetadata } from "@/types";
+import { TCategory, TCorpusTypeSubCategory, TFamilyConcept, TFamilyMetadata, TGeography, TLabel } from "@/types";
 import { getMostSpecificCourtsFromWikiConcepts } from "@/utils/getMostSpecificCourts";
 import { convertDate } from "@/utils/timedate";
 
@@ -39,24 +39,36 @@ function useFamilyJurisdictionConcepts(metadata: TFamilyMetadata) {
   return familyJurisdictionConcepts;
 }
 
+const upgradeGeographies = (geographies: string[], countries: TGeography[], subdivisions: TGeography[]) =>
+  geographies.reduce<TLabel[]>((labels, geoString) => {
+    const isCountry = geoString.length === 3;
+    const geography = (isCountry ? countries : subdivisions).find((geo) => geo.value === geoString);
+    if (!geography) return labels;
+
+    const type = isCountry ? "country" : "subdivision";
+
+    return [
+      ...labels,
+      {
+        id: [type, geography.value].join(ID_SEPARATOR),
+        type,
+        value: geography.display_value,
+      },
+    ];
+  }, []);
+
 export const FamilyMeta = ({ category, corpus_id, date, geographies, topics, author, corpus_type_name, document_type, source, metadata }: IProps) => {
   const configQuery = useConfig();
   const { data: { countries = [], subdivisions = [] } = {} } = configQuery;
 
   const [year] = convertDate(date);
 
-  const includeSubdivisions = geographies?.some((geography) =>
-    subdivisions.some((subdivision) => subdivision.value.toLowerCase() === geography.toLowerCase())
-  );
-
   const familyJurisdictionConcepts = useFamilyJurisdictionConcepts(metadata);
   const mostSpecificCourtName = getMostSpecificCourtsFromWikiConcepts(familyJurisdictionConcepts);
 
-  const CountryLinkComponent = includeSubdivisions ? CountryLinkWithSubdivisions : CountryLinks;
-
   return (
     <>
-      <CountryLinkComponent geographies={geographies} countries={countries} subdivisions={subdivisions} />
+      <Geographies geographyLabels={upgradeGeographies(geographies, countries, subdivisions)} limit={2} />
       {!isNaN(year) && <span>{`${category === "MCF" ? "Approval FY: " + year : year}`}</span>}
       {mostSpecificCourtName && <span className="capitalize">{mostSpecificCourtName}</span>}
       {topics && topics.length > 0 && <span className="capitalize">{topics.join(", ")}</span>}

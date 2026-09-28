@@ -1,4 +1,5 @@
 import { TSingularAndPlural } from "./display";
+import { TLabel } from "./label";
 
 export type TTheme = "cpr" | "cclw" | "mcf" | "ccc";
 
@@ -360,12 +361,6 @@ export type TFamilyEventPublic = TEvent & {
   >;
 };
 
-export type TFamilyGeography = {
-  code: string;
-  name: string;
-  slug: string;
-};
-
 export type TFamilyDocumentPublic = {
   cdn_object: string;
   content_type: TDocumentContentType | null;
@@ -402,7 +397,7 @@ export type TFamilyPublic = {
   corpus?: TCorpusPublic;
   documents: TFamilyDocumentPublic[];
   events: TFamilyEventPublic[];
-  geographies: TFamilyGeography[];
+  geographies: TLabel[];
   import_id: string;
   last_updated_date: string | null;
   metadata: TFamilyMetadata;

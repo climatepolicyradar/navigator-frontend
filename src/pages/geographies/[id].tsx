@@ -6,7 +6,7 @@ import { GeographyPage } from "@/components/pages/geographyPage";
 import { SYSTEM_GEO_NAMES } from "@/constants/systemGeos";
 import { withEnvConfig } from "@/context/EnvConfig";
 import { getCountryCode, getCountryName } from "@/helpers/getCountryFields";
-import { TApiItemResponse, GeographyV2, TSearch, TGeography, TSearchLabel } from "@/types";
+import { TApiItemResponse, GeographyV2, TSearch, TGeography, TSearchLabel, GeographyTypeV2 } from "@/types";
 import buildSearchQuery from "@/utils/buildSearchQuery";
 import { extractNestedData } from "@/utils/extractNestedData";
 import { getFeatureFlags } from "@/utils/featureFlags";
@@ -70,15 +70,12 @@ export const getServerSideProps = (async (context) => {
     // Do nothing
   }
 
-  // If we don't have a geography - 404
-  if (!geographyV2) {
-    return { notFound: true };
-  }
+  if (!geographyV2) return { notFound: true };
 
-  // We don't currently support regions - 404
-  if (geographyV2.type === "region") {
-    return { notFound: true };
-  }
+  // Prevent rendering geography pages for types we don't support
+  const disallowedGeoTypes: GeographyTypeV2[] = ["region"];
+  if (!features.subdivisions) disallowedGeoTypes.push("subdivision");
+  if (disallowedGeoTypes.includes(geographyV2.type)) return { notFound: true };
 
   if (countryNameFromConfig) {
     geographyV2.name = countryNameFromConfig;

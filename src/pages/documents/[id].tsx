@@ -125,7 +125,7 @@ const DocumentPage = ({
           <section
             className="pb-8 flex-1 flex flex-col"
             data-analytics-date={family.published_date}
-            data-analytics-geography={family.geographies?.join(",")}
+            data-analytics-geography={family.geographies?.map((geo) => geo.value).join(",")}
             data-analytics-variant={document.variant}
             data-analytics-type={document.content_type}
           >

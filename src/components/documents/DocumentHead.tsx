@@ -9,6 +9,7 @@ import { BreadCrumbs } from "@/components/breadcrumbs/Breadcrumbs";
 import { DocumentMetaRenderer } from "@/components/documents/renderers/DocumentMetaRenderer";
 import { Heading } from "@/components/typography/Heading";
 import { MAX_FAMILY_SUMMARY_LENGTH_BRIEF } from "@/constants/document";
+import { useFamilyPageHeaderData } from "@/hooks/useFamilyPageHeaderData";
 import { TFamilyDocumentPublic, TFamilyPublic } from "@/types";
 import { truncateString } from "@/utils/truncateString";
 
@@ -27,11 +28,8 @@ export const DocumentHead = ({ document, family, handleViewOtherDocsClick, handl
   const [showFullSummary, setShowFullSummary] = useState(false);
   const [summary, setSummary] = useState("");
 
-  const geoName = family.geographies?.[0]?.name || "";
-  const geoSlug = family.geographies?.[0]?.slug || "";
+  const { breadcrumbGeography, breadcrumbParentGeography } = useFamilyPageHeaderData(family);
   const isMain = document.document_role.toLowerCase().includes("main");
-  // Families whose geography labels are all regions have no geographies; only show the breadcrumb for a single geography
-  const breadcrumbGeography = family.geographies?.length === 1 ? { label: geoName, href: `/geographies/${geoSlug}` } : null;
   const breadcrumbFamily = {
     label: family.title,
     href: `/document/${family.slug}`,
@@ -55,6 +53,7 @@ export const DocumentHead = ({ document, family, handleViewOtherDocsClick, handl
     <div className="bg-white border-solid border-lineBorder border-b border-[#d1d5db]">
       <BreadCrumbs
         geography={breadcrumbGeography}
+        parentGeography={breadcrumbParentGeography}
         family={breadcrumbFamily}
         label={breadcrumbLabel ? <span className="capitalize">{breadcrumbLabel}</span> : document.title}
       />
