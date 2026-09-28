@@ -110,28 +110,20 @@ export const LandingPage = ({ config }: TProps) => {
   const isAvailable = config.requiredFeature === undefined || features[config.requiredFeature];
 
   // We alternate a few parts of the layout dependent on whether a heroImage is present
-  // All conditional values are defined in this block to easily assess where we al
+  // All conditional values are defined in this block to easily assess where we alternate
   const heroImage = config.heroImage;
-  // The hero is a background image, so its text flips to the inverse palette.
-  // There is no inverse equivalent of `text-secondary`, so the muted tone comes from alpha on the inverse colour.
-  // The hero is evenly spaced top and bottom: 72px here plus the 48px header above the text, and 120px below the suggestions
   const heroImageClass = heroImage ? "bg-cover bg-center bg-no-repeat pt-18 pb-30" : "";
   const textClass = heroImage ? "text-text-inverse" : "text-text-primary";
   const descriptionTextClass = heroImage ? "text-text-inverse/80" : "text-text-secondary";
-  // Over a hero image the suggestions become pills on a row, otherwise they stay a plain stacked list
   const suggestionsListClass = heroImage ? "flex flex-row flex-wrap items-center gap-2" : "text-base font-normal leading-6";
-  // The pill's 24px line box plus 8px of padding top and bottom makes it 40px tall, so the type drives the height
   const suggestionLinkClass = heroImage
     ? "px-3 py-2 rounded-full text-base font-normal leading-6 bg-bg-inverse/50 hocus:bg-bg-inverse/64"
     : "justify-start p-1.5 pl-0";
-  // When we have a `heroImage` we make the seawrch bar as wide as the `textContent`
   const contentColumnsClass = "col-start-1 -col-end-1 cols-3:col-end-5 cols-4:col-end-7 cols-5:col-start-2";
   const searchColumnsClass = heroImage
     ? contentColumnsClass
     : "col-start-1 -col-end-1 cols-2:-col-end-2 cols-3:col-end-5 cols-4:col-end-6 cols-5:col-start-2";
-  // Without a hero image the search block carries its own spacing below, otherwise the section padding provides it
   const searchSpacingClass = heroImage ? "" : "mb-8 cols-4:mb-10 cols-5:mb-12";
-  // Over a hero image the search sits 32px below the description, double the 16px the title sits above it
   const searchSectionClass = heroImage ? "relative pt-8" : "pt-8 cols-4:pt-12 cols-5:pt-24";
 
   // Note: designed for use on CPR app only
@@ -146,7 +138,6 @@ export const LandingPage = ({ config }: TProps) => {
             !heroImage && "pt-4 cols-4:pt-12 cols-5:pt-24 border-t border-t-border-light"
           )}
         >
-          {/* The hero image, when set, sits behind the header, hero text and search. Everything in here inherits its text colour. */}
           <div className={joinTailwindClasses(textClass, heroImageClass)} style={heroImage && { backgroundImage: `url(${heroImage.src})` }}>
             <FiveColumns>
               <div className="col-start-1 -col-end-1 cols-2:-col-end-2 cols-3:col-end-5 cols-4:col-end-6 cols-5:col-start-2">
