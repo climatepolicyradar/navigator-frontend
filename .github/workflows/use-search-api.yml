@@ -147,7 +147,7 @@ jobs:
           echo "override_var=SEARCH_API_OVERRIDE_${PR_NUMBER}_${theme_upper}" >> "$GITHUB_OUTPUT"
 
       - name: Checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@v7
 
       - name: Install pulumi CLI
         uses: pulumi/actions@v7
