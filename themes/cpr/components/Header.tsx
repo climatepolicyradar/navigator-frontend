@@ -18,8 +18,6 @@ type TThemedProps = {
   theme?: TTheme;
 };
 
-// On a dark background the menu starts white, then flips dark once the trigger is hovered or its popup is open
-
 export const CPRLogo = ({ theme = "light" }: TThemedProps) => (
   <PageLink href="/" data-cy="cpr-logo">
     <Image
