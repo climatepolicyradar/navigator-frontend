@@ -67,7 +67,7 @@ describe("getLabelDisplay", () => {
     const entityTypeLabel = createLabel({ id: "entity_type::Project", type: "entity_type", value: "Project" });
 
     expect(getLabelDisplay(agentLabel, ancestorPath).type).toBe("Fund");
-    expect(getLabelDisplay(entityTypeLabel, ancestorPath).type).toBe("Document type");
+    expect(getLabelDisplay(entityTypeLabel, ancestorPath).type).toBe("Document Type");
   });
 
   it("returns a null subtitle when the matched replacement has none", () => {

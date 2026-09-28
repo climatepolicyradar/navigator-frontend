@@ -45,6 +45,6 @@ export const LABEL_DISPLAY_REPLACEMENTS: TLabelDisplayReplacement[] = [
   {
     parentId: ["category", "Multilateral Climate Fund project"].join(SEP),
     idMatch: `entity_type${SEP}`,
-    type: "Document type",
+    type: "Document Type",
   },
 ];
