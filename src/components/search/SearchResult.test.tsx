@@ -1,5 +1,6 @@
 import { screen } from "@testing-library/react";
 
+import { DEFAULT_FEATURES } from "@/constants/features";
 import { renderWithAppContext } from "@/mocks/renderWithAppContext";
 import { TMatchedFamily } from "@/types";
 
@@ -40,7 +41,7 @@ describe("SearchResult", () => {
     expect(screen.getByRole("link", { name: "Argentina" })).toBeInTheDocument();
   });
 
-  it("displays all subdivision links if family has subdivision geographies", async () => {
+  it("displays country and subdivision links up to the display limit", async () => {
     const searchResultProps: TSearchResultProps = {
       family: {
         corpus_import_id: "1",
@@ -62,18 +63,17 @@ describe("SearchResult", () => {
       onClick: () => {},
     };
 
-    renderWithAppContext(SearchResult, { pageProps: { ...searchResultProps, themeConfig: { features: {} } } });
+    renderWithAppContext(SearchResult, {
+      pageProps: { ...searchResultProps, themeConfig: { features: {} } },
+      features: { ...DEFAULT_FEATURES, subdivisions: true },
+    });
 
     const countryLink = await screen.findByRole("link", { name: "Australia" });
-    const subdivisionLink1 = screen.getByRole("link", { name: "New South Wales" });
-    const subdivisionLink2 = screen.getByRole("link", { name: "Queensland" });
-
-    expect(countryLink).toBeInTheDocument();
-    expect(subdivisionLink1).toBeInTheDocument();
-    expect(subdivisionLink2).toBeInTheDocument();
+    const subdivisionLink = screen.getByRole("link", { name: "New South Wales" });
 
     expect(countryLink).toHaveAttribute("href", "/geographies/australia");
-    expect(subdivisionLink1).toHaveAttribute("href", "/geographies/au-nsw");
-    expect(subdivisionLink2).toHaveAttribute("href", "/geographies/au-qld");
+    expect(subdivisionLink).toHaveAttribute("href", "/geographies/au-nsw");
+    expect(screen.queryByRole("link", { name: "Queensland" })).not.toBeInTheDocument();
+    expect(screen.getByText("+1", { exact: false })).toBeInTheDocument();
   });
 });

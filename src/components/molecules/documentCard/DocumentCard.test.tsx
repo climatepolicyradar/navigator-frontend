@@ -64,35 +64,35 @@ describe("DocumentCard", () => {
       ],
     };
     render(<DocumentCard document={doc} onClick={() => {}} />);
-    expect(screen.getByText((_, element) => element?.tagName === "SPAN" && element.textContent === "🇫🇷 France")).toBeInTheDocument();
+    expect(screen.getByRole("button")).toHaveTextContent("🇫🇷 France");
   });
 
-  it("shows a count of additional geographies of the same specificity", () => {
+  it("shows a count of geographies beyond the display limit", () => {
     const doc = {
       ...baseDocument,
       labels: [
         ...baseDocument.labels,
         { type: "geography", value: { id: "geo-1", type: "country", value: "France" }, count: null, timestamp: null },
         { type: "geography", value: { id: "geo-2", type: "country", value: "Germany" }, count: null, timestamp: null },
+        { type: "geography", value: { id: "geo-3", type: "country", value: "Spain" }, count: null, timestamp: null },
       ],
     };
     render(<DocumentCard document={doc} onClick={() => {}} />);
-    expect(screen.getByText((_, element) => element?.tagName === "SPAN" && element.textContent === "France +1")).toBeInTheDocument();
-    expect(screen.queryByText("Germany", { exact: false })).not.toBeInTheDocument();
+    expect(screen.getByRole("button")).toHaveTextContent("France, Germany +1");
+    expect(screen.queryByText("Spain", { exact: false })).not.toBeInTheDocument();
   });
 
-  it("prefers the most specific geography type when multiple types are present", () => {
+  it("shows a country and subdivision hierarchically", () => {
     const doc = {
       ...baseDocument,
       labels: [
         ...baseDocument.labels,
-        { type: "geography", value: { id: "geo-1", type: "country", value: "United States" }, count: null, timestamp: null },
-        { type: "geography", value: { id: "geo-2", type: "subdivision", value: "California" }, count: null, timestamp: null },
+        { type: "geography", value: { id: `country${"::"}USA`, type: "country", value: "United States" }, count: null, timestamp: null },
+        { type: "geography", value: { id: `subdivision${"::"}US-CA`, type: "subdivision", value: "California" }, count: null, timestamp: null },
       ],
     };
     render(<DocumentCard document={doc} onClick={() => {}} />);
-    expect(screen.getByText("California", { exact: false })).toBeInTheDocument();
-    expect(screen.queryByText("United States", { exact: false })).not.toBeInTheDocument();
+    expect(screen.getByRole("button")).toHaveTextContent("🇺🇸 United States → California");
   });
 
   it("falls back to region geographies when no country or subdivision label is present", () => {

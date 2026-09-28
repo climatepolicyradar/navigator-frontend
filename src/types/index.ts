@@ -6,6 +6,7 @@ export * from "./bff/family";
 export * from "./display";
 export * from "./faq";
 export * from "./features";
+export * from "./label";
 export * from "./landingPage";
 export * from "./passage/passages";
 export * from "./passage/search";

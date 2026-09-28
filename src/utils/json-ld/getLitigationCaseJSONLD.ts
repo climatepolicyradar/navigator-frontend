@@ -1,6 +1,7 @@
 import { Legislation, WithContext } from "schema-dts";
 
 import { TFamilyPublic } from "@/types";
+import { getGeographySlug } from "@/utils/geography";
 import { getAppUrlForJSONLD } from "@/utils/json-ld/helpers";
 
 /**
@@ -53,8 +54,8 @@ export const getLitigationCaseJSONLD = (familyCase: TFamilyPublic) => {
     familyCase.geographies.forEach((geo) => {
       spatialCoverage.push({
         "@type": "Place",
-        name: geo.name,
-        url: `${appUrl}/geographies/${geo.slug}`,
+        name: geo.value,
+        url: `${appUrl}/geographies/${getGeographySlug(geo)}`,
       });
     });
     if (spatialCoverage.length > 0) {

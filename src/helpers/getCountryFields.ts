@@ -14,10 +14,6 @@ const findCountryObject = (search: string, dataSet: TGeography[]) => {
   return null;
 };
 
-export const getCountrySlug = (search: string, dataSet: TGeography[]) => {
-  return findCountryObject(search, dataSet)?.slug;
-};
-
 export const getCountryName = (search: string, dataSet: TGeography[]) => {
   return findCountryObject(search, dataSet)?.display_value;
 };

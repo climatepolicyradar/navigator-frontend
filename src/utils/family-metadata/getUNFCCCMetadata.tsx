@@ -1,10 +1,7 @@
-import { Fragment } from "react";
-
-import { GeographyLink } from "@/components/molecules/geographyLink/GeographyLink";
+import { Geographies } from "@/components/molecules/geographies/Geographies";
 import { EN_DASH } from "@/constants/chars";
 import { IFamilyDocumentTopics, IMetadata, TFamilyPublic } from "@/types";
 import { getTopicsMetadataItem } from "@/utils/family-metadata/getTopicsMetadataItem";
-import { isSystemGeo } from "@/utils/isSystemGeo";
 import { convertDate } from "@/utils/timedate";
 import { familyTopicsHasTopics } from "@/utils/topics/processFamilyTopics";
 
@@ -24,14 +21,7 @@ export function getUNFCCCMetadata(family: TFamilyPublic, familyTopics: IFamilyDo
   if (family.geographies.length > 0) {
     metadata.push({
       label: "Geography",
-      value: family.geographies.map((geo, index) => {
-        return (
-          <Fragment key={geo.slug}>
-            {index > 0 && ", "}
-            {!isSystemGeo(geo.name) ? <GeographyLink {...geo} /> : <span>{geo.name}</span>}
-          </Fragment>
-        );
-      }),
+      value: <Geographies geographyLabels={family.geographies} />,
     });
   }
 
