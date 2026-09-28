@@ -32,6 +32,9 @@ export type TLandingPageConfig = {
     taxonomy: string;
     title: string;
   };
+  heroImage?: {
+    src: string;
+  };
   organisation?: {
     name: string;
     logoImage: TImageProps;
