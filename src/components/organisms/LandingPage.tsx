@@ -112,7 +112,11 @@ export const LandingPage = ({ config }: TProps) => {
   // We alternate a few parts of the layout dependent on whether a heroImage is present
   // All conditional values are defined in this block to easily assess where we alternate
   const heroImage = config.heroImage;
-  const heroImageClass = heroImage ? "bg-cover bg-center bg-no-repeat pt-18 pb-30" : "";
+  const heroImageClass = heroImage ? "bg-cover bg-center bg-no-repeat pt-30 pb-30" : "";
+  // No offset for the hero: the header is absolutely positioned over it (see
+  // themes/cpr/components/Header.tsx), so the hero's own top padding is the only
+  // thing setting the title's distance from the top of the page.
+  const mainSpacingClass = heroImage ? "" : "pt-4 cols-4:pt-12 cols-5:pt-24 border-t border-t-border-light";
   const textClass = heroImage ? "text-text-inverse" : "text-text-primary";
   const descriptionTextClass = heroImage ? "text-text-inverse/80" : "text-text-secondary";
   const suggestionsListClass = heroImage ? "flex flex-row flex-wrap items-center gap-2" : "text-base font-normal leading-6";
@@ -130,14 +134,8 @@ export const LandingPage = ({ config }: TProps) => {
   return isAvailable ? (
     <Layout title={config.hero.title} description={config.hero.description} theme="cpr">
       <div className={joinTailwindClasses(heroImage && "relative")}>
-        <Header landingPage />
-        <main
-          id="main"
-          className={joinTailwindClasses(
-            "pb-4 cols-4:pb-12 cols-5:pb-24",
-            !heroImage && "pt-4 cols-4:pt-12 cols-5:pt-24 border-t border-t-border-light"
-          )}
-        >
+        <Header landingPage landingPageWithHero={!!heroImage} />
+        <main id="main" className={joinTailwindClasses("pb-4 cols-4:pb-12 cols-5:pb-24", mainSpacingClass)}>
           <div className={joinTailwindClasses(textClass, heroImageClass)} style={heroImage && { backgroundImage: `url(${heroImage.src})` }}>
             <FiveColumns>
               <div className="col-start-1 -col-end-1 cols-2:-col-end-2 cols-3:col-end-5 cols-4:col-end-6 cols-5:col-start-2">
