@@ -110,18 +110,27 @@ export const LandingPage = ({ config }: TProps) => {
   const isAvailable = config.requiredFeature === undefined || features[config.requiredFeature];
 
   // We alternate a few parts of the layout dependent on whether a heroImage is present
+  // All conditional values are defined in this block to easily assess where we al
   const heroImage = config.heroImage;
   // The hero is a background image, so its text flips to the inverse palette.
   // There is no inverse equivalent of `text-secondary`, so the muted tone comes from alpha on the inverse colour.
-  const heroImageClass = heroImage ? "bg-cover bg-center bg-no-repeat pt-28 md:pt-36 cols-5:pt-44" : "";
+  // The hero is evenly spaced top and bottom: 72px here plus the 48px header above the text, and 120px below the suggestions
+  const heroImageClass = heroImage ? "bg-cover bg-center bg-no-repeat pt-18 pb-30" : "";
   const textClass = heroImage ? "text-text-inverse" : "text-text-primary";
   const descriptionTextClass = heroImage ? "text-text-inverse/80" : "text-text-secondary";
-  const suggestionPillClass = heroImage ? "bg-bg-inverse/50 hocus:bg-bg-inverse/64" : "bg-bg-flat hocus:bg-elem-focus";
+  // Over a hero image the suggestions become pills on a row, otherwise they stay a plain stacked list
+  const suggestionsListClass = heroImage ? "flex flex-row flex-wrap items-center gap-2" : "text-base font-normal leading-6";
+  // The pill's 24px line box plus 8px of padding top and bottom makes it 40px tall, so the type drives the height
+  const suggestionLinkClass = heroImage
+    ? "px-3 py-2 rounded-full text-base font-normal leading-6 bg-bg-inverse/50 hocus:bg-bg-inverse/64"
+    : "justify-start p-1.5 pl-0";
   // When we have a `heroImage` we make the seawrch bar as wide as the `textContent`
   const contentColumnsClass = "col-start-1 -col-end-1 cols-3:col-end-5 cols-4:col-end-7 cols-5:col-start-2";
   const searchColumnsClass = heroImage
     ? contentColumnsClass
     : "col-start-1 -col-end-1 cols-2:-col-end-2 cols-3:col-end-5 cols-4:col-end-6 cols-5:col-start-2";
+  // Without a hero image the search block carries its own spacing below, otherwise the section padding provides it
+  const searchSpacingClass = heroImage ? "" : "mb-8 cols-4:mb-10 cols-5:mb-12";
   // Over a hero image the search sits 32px below the description, double the 16px the title sits above it
   const searchSectionClass = heroImage ? "relative pt-8" : "pt-8 cols-4:pt-12 cols-5:pt-24";
 
@@ -149,7 +158,7 @@ export const LandingPage = ({ config }: TProps) => {
               </div>
             </FiveColumns>
             <FiveColumns className={searchSectionClass}>
-              <div className={joinTailwindClasses(searchColumnsClass, "mb-8 cols-4:mb-10 cols-5:mb-12")}>
+              <div className={joinTailwindClasses(searchColumnsClass, searchSpacingClass)}>
                 <PageLink href="/search" query={getSuggestionParams(config.search.button, themeConfig)}>
                   <Button className="w-full mb-6 p-4! bg-[#005296]!">
                     <LucideSearch size={16} />
@@ -157,17 +166,13 @@ export const LandingPage = ({ config }: TProps) => {
                   </Button>
                 </PageLink>
                 <h3 className="mb-1.5 text-sm font-medium leading-6">Suggestions:</h3>
-                <ul className="flex flex-row flex-wrap items-center gap-2">
+                <ul className={suggestionsListClass}>
                   {config.search.suggestions.map((suggestion, suggestionIndex) => (
                     <li key={suggestionIndex}>
                       <PageLink
                         href="/search"
                         query={getSuggestionParams(suggestion, themeConfig)}
-                        className={joinTailwindClasses(
-                          // The 24px line box plus 8px of padding top and bottom makes the pill 40px tall, so the type drives the height
-                          "inline-flex flex-row items-center gap-1 px-3 py-2 rounded-full text-base font-normal leading-6",
-                          suggestionPillClass
-                        )}
+                        className={joinTailwindClasses("inline-flex flex-row items-center gap-1", suggestionLinkClass)}
                       >
                         <LucideSearch size={16} />
                         <span>{suggestion.label}</span>
