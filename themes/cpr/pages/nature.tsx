@@ -9,6 +9,9 @@ export default function NatureLandingPage() {
       title: "Nature Policy Library",
       description: "National laws and policies shaping how countries tackle biodiversity loss",
     },
+    heroImage: {
+      src: "/images/nature/nature-bg.png",
+    },
     partners: {
       title: "Our data sources",
       logos: [
@@ -91,8 +94,7 @@ export default function NatureLandingPage() {
             <p>
               This is a first step, not a comprehensive picture. Coverage currently builds on the approach we have developed for climate policy,
               alongside new additions sourced specifically for this collection. We will continue to broaden both coverage and scope, and we welcome
-              collaboration, contributions, and feedback – get in touch:{" "}
-              <a href="mailto:nature@climatepolicyradar.org">nature@climatepolicyradar.org</a>
+              collaboration, contributions, and feedback – get in touch: <a href="mailto:info@climatepolicyradar.org">info@climatepolicyradar.org</a>
             </p>
           </>
         ),

@@ -64,7 +64,7 @@ const PartnerLogos = ({ partners }: TPartnerLogosProps) => {
   ));
 
   return (
-    <div className="col-start-1 -col-end-1 grid grid-cols-subgrid mb-8 cols-4:mb-10 cols-5:mb-12">
+    <div className="col-start-1 -col-end-1 grid grid-cols-subgrid mt-10 mb-8 cols-4:mb-10 cols-5:mb-12">
       <div className="col-start-1 -col-end-1 cols-5:col-start-2 cols-5:-col-end-2 flex flex-row items-center gap-3 mb-6">
         <h2 className="text-lg text-text-primary font-heavy">{partners.title}</h2>
         {shouldScroll && (
@@ -109,86 +109,115 @@ export const LandingPage = ({ config }: TProps) => {
   const features = useContext(FeaturesContext);
   const isAvailable = config.requiredFeature === undefined || features[config.requiredFeature];
 
+  // We alternate a few parts of the layout dependent on whether a heroImage is present
+  // All conditional values are defined in this block to easily assess where we alternate
+  const heroImage = config.heroImage;
+  const heroImageClass = heroImage ? "bg-cover bg-center bg-no-repeat pt-18 pb-30" : "";
+  const textClass = heroImage ? "text-text-inverse" : "text-text-primary";
+  const descriptionTextClass = heroImage ? "text-text-inverse/80" : "text-text-secondary";
+  const suggestionsListClass = heroImage ? "flex flex-row flex-wrap items-center gap-2" : "text-base font-normal leading-6";
+  const suggestionLinkClass = heroImage
+    ? "px-3 py-2 rounded-full text-base font-normal leading-6 bg-bg-inverse/50 hocus:bg-bg-inverse/64"
+    : "justify-start p-1.5 pl-0";
+  const contentColumnsClass = "col-start-1 -col-end-1 cols-3:col-end-5 cols-4:col-end-7 cols-5:col-start-2";
+  const searchColumnsClass = heroImage
+    ? contentColumnsClass
+    : "col-start-1 -col-end-1 cols-2:-col-end-2 cols-3:col-end-5 cols-4:col-end-6 cols-5:col-start-2";
+  const searchSpacingClass = heroImage ? "" : "mb-8 cols-4:mb-10 cols-5:mb-12";
+  const searchSectionClass = heroImage ? "relative pt-8" : "pt-8 cols-4:pt-12 cols-5:pt-24";
+
   // Note: designed for use on CPR app only
   return isAvailable ? (
     <Layout title={config.hero.title} description={config.hero.description} theme="cpr">
-      <Header landingPage />
-      <main id="main" className="py-4 cols-4:py-12 cols-5:py-24 border-t border-t-border-light">
-        <FiveColumns>
-          <div className="col-start-1 -col-end-1 cols-2:-col-end-2 cols-3:col-end-5 cols-4:col-end-6 cols-5:col-start-2">
-            <span className="text-base text-text-secondary leading-6 font-normal">{config.hero.taxonomy}</span>
-            <h1 className="mt-0.5 mb-4 text-5xl text-text-primary text-balance font-heavy leading-none tracking-[-0.4px]">{config.hero.title}</h1>
-          </div>
-          <div className="col-start-1 -col-end-1 cols-5:col-start-2 cols-5:-col-end-2">
-            <p className="text-xl text-text-primary text-balance leading-6">{config.hero.description}</p>
-          </div>
-        </FiveColumns>
-        <FiveColumns className="pt-8 cols-4:pt-12 cols-5:pt-24">
-          {config.background && (
-            <div className={config.background.classes}>
-              <Image {...config.background.image} alt={config.background.image.alt} />
-            </div>
+      <div className={joinTailwindClasses(heroImage && "relative")}>
+        <Header landingPage />
+        <main
+          id="main"
+          className={joinTailwindClasses(
+            "pb-4 cols-4:pb-12 cols-5:pb-24",
+            !heroImage && "pt-4 cols-4:pt-12 cols-5:pt-24 border-t border-t-border-light"
           )}
-          <div className="col-start-1 -col-end-1 cols-2:-col-end-2 cols-3:col-end-5 cols-4:col-end-6 cols-5:col-start-2 mb-8 cols-4:mb-10 cols-5:mb-12">
-            <PageLink href="/search" query={getSuggestionParams(config.search.button, themeConfig)}>
-              <Button className="w-full mb-6 p-4! bg-[#005296]!">
-                <LucideSearch size={16} />
-                <span className="ml-1 text-base text-white font-medium leading-5">{config.search.button.label}</span>
-              </Button>
-            </PageLink>
-            <h3 className="mb-1.5 text-sm text-text-primary font-medium leading-6">Suggestions:</h3>
-            <ul className="text-base font-normal leading-6">
-              {config.search.suggestions.map((suggestion, suggestionIndex) => (
-                <li key={suggestionIndex}>
-                  <PageLink
-                    href="/search"
-                    query={getSuggestionParams(suggestion, themeConfig)}
-                    className="inline-flex flex-row items-center justify-start p-1.5 pl-0"
-                  >
-                    <LucideSearch size={16} />
-                    <span className="ml-1">{suggestion.label}</span>
-                  </PageLink>
-                </li>
-              ))}
-            </ul>
-          </div>
-          {config.partners && <PartnerLogos partners={config.partners} />}
-          <div className="col-start-1 -col-end-1 cols-3:col-end-5 cols-4:col-end-7 cols-5:col-start-2 grid grid-cols-subgrid gap-y-8 cols-4:gap-y-10 cols-5:gap-y-12">
-            {config.textContent.map(({ title, content }, contentIndex) => (
-              <div key={contentIndex} className="col-start-1 -col-end-1 text-base text-text-primary font-normal leading-6">
-                <h2 className="mb-3 text-lg font-heavy">{title}</h2>
-                {content}
+        >
+          <div className={joinTailwindClasses(textClass, heroImageClass)} style={heroImage && { backgroundImage: `url(${heroImage.src})` }}>
+            <FiveColumns>
+              <div className="col-start-1 -col-end-1 cols-2:-col-end-2 cols-3:col-end-5 cols-4:col-end-6 cols-5:col-start-2">
+                <span className={joinTailwindClasses("text-base leading-6 font-normal", descriptionTextClass)}>{config.hero.taxonomy}</span>
+                <h1 className="mt-0.5 mb-4 text-5xl text-balance font-heavy leading-none tracking-[-0.4px]">{config.hero.title}</h1>
               </div>
-            ))}
-          </div>
-          {config.organisation && (
-            <aside aria-label={`About ${config.organisation.name}`} className="col-span-2 cols-3:-col-end-1 cols-5:-col-end-2">
-              <div className="cols-5:min-w-50 px-5 py-4 mt-8 cols-3:mt-0 bg-white border border-border-light rounded-xl">
-                <Image {...config.organisation.logoImage} alt={config.organisation.logoImage.alt} className="w-full max-w-85 mb-1" />
-
-                <ul className="text-base font-normal leading-5">
-                  {config.organisation.links.map(({ externalHref, label }, linkIndex) => {
-                    const [pathname, hash] = externalHref.split("#");
-
-                    return (
-                      <li key={linkIndex}>
-                        <PageLink
-                          external
-                          href={pathname}
-                          hash={hash}
-                          className={joinTailwindClasses("block py-3", linkIndex && "border-t border-t-border-light")}
-                        >
-                          {label}
-                        </PageLink>
-                      </li>
-                    );
-                  })}
+              <div className="col-start-1 -col-end-1 cols-5:col-start-2 cols-5:-col-end-2">
+                <p className="text-xl text-balance leading-6">{config.hero.description}</p>
+              </div>
+            </FiveColumns>
+            <FiveColumns className={searchSectionClass}>
+              <div className={joinTailwindClasses(searchColumnsClass, searchSpacingClass)}>
+                <PageLink href="/search" query={getSuggestionParams(config.search.button, themeConfig)}>
+                  <Button className="w-full mb-6 p-4! bg-[#005296]!">
+                    <LucideSearch size={16} />
+                    <span className="ml-1 text-base text-white font-medium leading-5">{config.search.button.label}</span>
+                  </Button>
+                </PageLink>
+                <h3 className="mb-1.5 text-sm font-medium leading-6">Suggestions:</h3>
+                <ul className={suggestionsListClass}>
+                  {config.search.suggestions.map((suggestion, suggestionIndex) => (
+                    <li key={suggestionIndex}>
+                      <PageLink
+                        href="/search"
+                        query={getSuggestionParams(suggestion, themeConfig)}
+                        className={joinTailwindClasses("inline-flex flex-row items-center gap-1", suggestionLinkClass)}
+                      >
+                        <LucideSearch size={16} />
+                        <span>{suggestion.label}</span>
+                      </PageLink>
+                    </li>
+                  ))}
                 </ul>
               </div>
-            </aside>
-          )}
-        </FiveColumns>
-      </main>
+            </FiveColumns>
+          </div>
+          <FiveColumns>
+            {config.background && (
+              <div className={config.background.classes}>
+                <Image {...config.background.image} alt={config.background.image.alt} />
+              </div>
+            )}
+            {config.partners && <PartnerLogos partners={config.partners} />}
+            <div className={joinTailwindClasses(contentColumnsClass, "grid grid-cols-subgrid gap-y-8 cols-4:gap-y-10 cols-5:gap-y-12")}>
+              {config.textContent.map(({ title, content }, contentIndex) => (
+                <div key={contentIndex} className="col-start-1 -col-end-1 text-base text-text-primary font-normal leading-6">
+                  <h2 className="mb-3 text-lg font-heavy">{title}</h2>
+                  {content}
+                </div>
+              ))}
+            </div>
+            {config.organisation && (
+              <aside aria-label={`About ${config.organisation.name}`} className="col-span-2 cols-3:-col-end-1 cols-5:-col-end-2">
+                <div className="cols-5:min-w-50 px-5 py-4 mt-8 cols-3:mt-0 bg-white border border-border-light rounded-xl">
+                  <Image {...config.organisation.logoImage} alt={config.organisation.logoImage.alt} className="w-full max-w-85 mb-1" />
+
+                  <ul className="text-base font-normal leading-5">
+                    {config.organisation.links.map(({ externalHref, label }, linkIndex) => {
+                      const [pathname, hash] = externalHref.split("#");
+
+                      return (
+                        <li key={linkIndex}>
+                          <PageLink
+                            external
+                            href={pathname}
+                            hash={hash}
+                            className={joinTailwindClasses("block py-3", linkIndex && "border-t border-t-border-light")}
+                          >
+                            {label}
+                          </PageLink>
+                        </li>
+                      );
+                    })}
+                  </ul>
+                </div>
+              </aside>
+            )}
+          </FiveColumns>
+        </main>
+      </div>
       <Footer />
     </Layout>
   ) : (
