@@ -100,6 +100,7 @@ const config: TThemeConfig = {
       quickSearch: "true",
     },
   ],
+  searchCategories: ["Multilateral Climate Fund project"],
   labelVariations: {
     date: {
       label: "Approval FY",

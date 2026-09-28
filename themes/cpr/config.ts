@@ -399,6 +399,7 @@ const config: TThemeConfig = {
       ],
     },
   ],
+  searchCategories: ["Corporate Disclosure", "Global Stocktake", "Law", "Multilateral Climate Fund project", "Policy", "Report", "UN submission"],
   labelVariations: {
     date: {
       label: "First published",

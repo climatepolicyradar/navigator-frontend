@@ -24,6 +24,15 @@ type TThemePageBlocks = {
 /* Everything else */
 
 export type TDocumentCategory = "All" | "UN Submissions" | "Laws" | "Policies" | "Litigation" | "Climate Finance Projects" | "Offshore Wind Reports";
+export type TLabelCategoryValue =
+  | "Corporate Disclosure"
+  | "Global Stocktake"
+  | "Law"
+  | "Litigation"
+  | "Multilateral Climate Fund project"
+  | "Policy"
+  | "Report"
+  | "UN submission";
 
 export type TLabelVariationKey = "country" | "date" | "region";
 type TLabelVariation = {
@@ -89,6 +98,7 @@ export type TThemeConfig = {
   defaultCorpora?: string[];
   deprecatedCategories?: TThemeConfigCategory;
   deprecatedFilters: TThemeConfigFilter[];
+  searchCategories: TLabelCategoryValue[];
   labelVariations: TPartialRecord<TLabelVariationKey, TLabelVariation>;
   links: TPartialRecord<TThemeLinkKey, string>;
   pageMetadata: Record<TThemePageMetadataKey, TThemePageMetadata>;

@@ -150,6 +150,7 @@ const config: TThemeConfig = {
       ],
     },
   ],
+  searchCategories: ["UN submission", "Law", "Policy"],
   labelVariations: {},
   links: {
     downloadDatabase: "https://form.jotform.com/233131638610347",
