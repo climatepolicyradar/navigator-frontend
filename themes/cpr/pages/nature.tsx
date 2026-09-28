@@ -30,7 +30,7 @@ export default function NatureLandingPage() {
         newParams: {
           [QUERY_PARAMS.filters]: JSON.stringify({
             op: "and",
-            filters: [{ field: "labels.value.id", op: "contains", value: "domain::Nature" }],
+            filters: [{ field: "labels.value.id", op: "contains", value: "domain::Nature", checked: true }],
           }),
         },
       },
@@ -41,6 +41,10 @@ export default function NatureLandingPage() {
             [QUERY_PARAMS.query_string]: "Deforestation targets",
           },
           newParams: {
+            [QUERY_PARAMS.filters]: JSON.stringify({
+              op: "and",
+              filters: [{ field: "labels.value.id", op: "contains", value: "domain::Nature", checked: true }],
+            }),
             [QUERY_PARAMS.query_string]: "Deforestation targets",
           },
         },
@@ -50,6 +54,10 @@ export default function NatureLandingPage() {
             [QUERY_PARAMS.query_string]: "Marine spatial planning",
           },
           newParams: {
+            [QUERY_PARAMS.filters]: JSON.stringify({
+              op: "and",
+              filters: [{ field: "labels.value.id", op: "contains", value: "domain::Nature", checked: true }],
+            }),
             [QUERY_PARAMS.query_string]: "Marine spatial planning",
           },
         },
@@ -59,6 +67,10 @@ export default function NatureLandingPage() {
             [QUERY_PARAMS.query_string]: "Freshwater adaptation in South Asia",
           },
           newParams: {
+            [QUERY_PARAMS.filters]: JSON.stringify({
+              op: "and",
+              filters: [{ field: "labels.value.id", op: "contains", value: "domain::Nature", checked: true }],
+            }),
             [QUERY_PARAMS.query_string]: "Freshwater adaptation in South Asia",
           },
         },
