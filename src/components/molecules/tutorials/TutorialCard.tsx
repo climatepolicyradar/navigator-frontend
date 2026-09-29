@@ -23,7 +23,7 @@ export const TutorialCard = ({ className, name, card: { buttonPrimary, buttonSec
   return (
     <Card className={className}>
       {(title || close) && (
-        <div className="flex justify-end text-text-inverse">
+        <div className="flex justify-end text-text-on-fill">
           {title && <span className="flex-1 text-sm leading-tight font-semibold">{title}</span>}
           {close && (
             <button type="button" onClick={buttonActions.dismiss}>
@@ -32,14 +32,14 @@ export const TutorialCard = ({ className, name, card: { buttonPrimary, buttonSec
           )}
         </div>
       )}
-      <p className="mt-1.5 mb-3 text-sm text-text-inverse/85">{text}</p>
+      <p className="mt-1.5 mb-3 text-sm text-text-on-fill/85">{text}</p>
       <div className="flex gap-2">
         <TutorialButton
           {...buttonPrimary}
           actions={buttonActions}
           name={name}
           use="card"
-          className="border-text-inverse/75 hover:border-text-inverse hover:bg-transparent! text-text-inverse"
+          className="border-text-on-fill/75 hover:border-text-on-fill hover:bg-transparent! text-text-on-fill"
         />
         {buttonSecondary && (
           <TutorialButton
@@ -47,7 +47,7 @@ export const TutorialCard = ({ className, name, card: { buttonPrimary, buttonSec
             actions={buttonActions}
             name={name}
             use="card"
-            className="text-text-inverse/75 hover:text-text-inverse hover:bg-transparent!"
+            className="text-text-on-fill/75 hover:text-text-on-fill hover:bg-transparent!"
           />
         )}
       </div>

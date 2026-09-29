@@ -47,7 +47,7 @@ export const Modal = ({
   };
 
   const allCardClasses = joinTailwindClasses(
-    "relative max-w-[460px] max-h-[calc(100vh-32px)] sm:max-h-[calc(100vh-64px)] m-4 !border-0 !rounded-2xl overflow-hidden",
+    "relative surface-overlay max-w-[460px] max-h-[calc(100vh-32px)] sm:max-h-[calc(100vh-64px)] m-4 !border-0 !rounded-2xl overflow-hidden",
     headerImage ? "!px-0 !py-0" : "px-8 py-6",
     cardClasses
   );
@@ -56,7 +56,7 @@ export const Modal = ({
 
   return (
     <div
-      className={`fixed inset-0 z-2000 flex flex-col justify-center items-center bg-bg-inverse/50 overflow-hidden transition duration-200 ${
+      className={`fixed inset-0 z-2000 flex flex-col justify-center items-center bg-bg-scrim/50 overflow-hidden transition duration-200 ${
         isOpen ? "opacity-100" : "opacity-0 pointer-events-none"
       }`}
       onClick={onModalClick}

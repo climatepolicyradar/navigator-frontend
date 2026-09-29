@@ -122,7 +122,7 @@ export const FamilyConceptPicker = ({
     <div className={`relative flex flex-col max-h-full pb-4 ${containerClasses}`} ref={ref}>
       {/* HEADER */}
       <span className="text-base font-semibold text-text-primary pb-4">
-        <TextSearch size={20} className="inline mr-2 text-[#0038a9] align-text-bottom" />
+        <TextSearch size={20} className="inline mr-2 text-text-accent align-text-bottom" />
         {title}
         {showBadge && <Badge className="ml-2">Beta</Badge>}
       </span>
@@ -189,7 +189,7 @@ export const FamilyConceptPicker = ({
             );
           })}
 
-          <div className="h-[34px] sticky block bottom-0 w-full bg-gradient-to-b from-transparent to-white">&nbsp;</div>
+          <div className="h-[34px] sticky block bottom-0 w-full bg-gradient-to-b from-transparent to-bg-primary">&nbsp;</div>
         </div>
       </div>
     </div>

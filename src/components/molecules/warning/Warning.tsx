@@ -22,11 +22,11 @@ export const Warning = ({ className, variant = "info", hideableId, children }: T
     switch (variant) {
       case "info":
         bgColor = "bg-[#005eeb]/16";
-        textColor = "text-black";
+        textColor = "text-text-notice";
         break;
       case "error":
         bgColor = "bg-red-600/16";
-        textColor = "text-black";
+        textColor = "text-text-notice";
         break;
     }
 
@@ -49,7 +49,7 @@ export const Warning = ({ className, variant = "info", hideableId, children }: T
   return (
     <div className={joinTailwindClasses(baseClasses, bgColor, textColor, spacing, className)}>
       {hideableId && (
-        <button onClick={onHideClick} className="text-[#0038a9] absolute top-4 right-4 hover:opacity-80 transition-opacity">
+        <button onClick={onHideClick} className="text-text-accent absolute top-4 right-4 hover:opacity-80 transition-opacity">
           <X size="16" />
         </button>
       )}{" "}

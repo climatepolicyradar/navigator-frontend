@@ -207,7 +207,7 @@ describe("PassageBlock", () => {
 
       const highlighted = screen.getAllByText(/^climate$/i);
       expect(highlighted).toHaveLength(2);
-      highlighted.forEach((span) => expect(span).toHaveClass("bg-yellow-200"));
+      highlighted.forEach((span) => expect(span).toHaveClass("bg-highlight-query"));
     });
 
     it("gives the query the text it shares with a topic, and starts the topic after it", () => {

@@ -79,7 +79,7 @@ export const McfFamilyMeta = ({ family, metadata }: McfFamilyMetaProps) => {
   const mappedMetadata = mapFamilyMetadata(metadata);
 
   return (
-    <div className="w-full bg-white py-4 flex flex-col gap-2">
+    <div className="w-full bg-bg-primary py-4 flex flex-col gap-2">
       {mappedMetadata.map((item, index) => (
         <div className="flex flex-wrap gap-1" key={item.label}>
           {item.label === "Geography" ? (

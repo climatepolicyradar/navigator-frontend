@@ -56,11 +56,11 @@ export const AppliedFilters = ({ ancestorPath = [], className, filterGroups = []
         const label = labelPath[0];
 
         return (
-          <li key={label.id} className="flex flex-nowrap gap-1 pl-3 pr-2 py-1 bg-[#1A4F8C1A] rounded-full">
+          <li key={label.id} className="flex flex-nowrap gap-1 pl-3 pr-2 py-1 bg-text-brand/10 rounded-full">
             <span className="block text-sm text-text-primary text-nowrap font-medium leading-5">{getAppliedFilterLabel(labelValues, labelPath)}</span>
             <button
               type="button"
-              className="p-1 -m-1 text-inky-blue"
+              className="p-1 -m-1 text-text-brand"
               aria-label={`Remove ${label.value}`}
               onClick={() => toggleFilter(labelPath, false)}
             >
@@ -70,9 +70,9 @@ export const AppliedFilters = ({ ancestorPath = [], className, filterGroups = []
         );
       })}
       {showDateRange && appliedDateRange && (
-        <li className="flex flex-nowrap gap-1 pl-3 pr-2 py-1 bg-[#1A4F8C1A] rounded-full">
+        <li className="flex flex-nowrap gap-1 pl-3 pr-2 py-1 bg-text-brand/10 rounded-full">
           <span className="block text-sm text-text-primary text-nowrap font-medium leading-5">{getDateRangeLabel(appliedDateRange)}</span>
-          <button type="button" className="p-1 -m-1 text-inky-blue" aria-label="Remove date range" onClick={() => setDateRange(null)}>
+          <button type="button" className="p-1 -m-1 text-text-brand" aria-label="Remove date range" onClick={() => setDateRange(null)}>
             <LucideX size={16} aria-hidden={true} />
           </button>
         </li>

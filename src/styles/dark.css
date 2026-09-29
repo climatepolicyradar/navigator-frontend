@@ -1,0 +1,154 @@
+/* Dark mode (CPR only, behind the `dark-mode` feature flag) - placeholder values, to be replaced by design */
+
+@custom-variant dark (&:where(.dark, .dark *));
+
+/* Elevation */
+:root {
+  --bg-raised: var(--color-white);
+  --bg-overlay: var(--color-white);
+  --bg-overlay-muted: var(--color-neutral-100);
+}
+
+/* Keeps the radar loader SVG's canvas transparent */
+.dark object {
+  color-scheme: light;
+}
+
+/* Surfaces - redefine bg-primary for their children, pair with bg-bg-primary */
+@utility surface-raised {
+  --color-bg-primary: var(--bg-raised);
+}
+
+@utility surface-overlay {
+  --color-bg-primary: var(--bg-overlay);
+}
+
+@utility surface-overlay-muted {
+  --color-bg-primary: var(--bg-overlay-muted);
+}
+
+.dark {
+  color-scheme: dark;
+
+  /* Color / UI / Text */
+  --color-text-primary: oklch(93% 0.008 255);
+  --color-text-secondary: oklch(79% 0.018 255);
+  --color-text-tertiary: oklch(66% 0.02 255);
+  --color-text-inverse: oklch(18.5% 0.02 255);
+  --color-text-brand: oklch(80% 0.09 255);
+  --color-text-disabled: oklch(48% 0.02 255);
+  --color-text-heading: var(--color-text-primary);
+  --color-text-emphasis: var(--color-text-primary);
+  --color-text-content: var(--color-text-secondary);
+  --color-text-body: var(--color-text-secondary);
+  --color-text-hint: var(--color-text-tertiary);
+  --color-text-notice: var(--color-text-primary);
+  --color-text-accent: var(--color-text-brand);
+  --color-text-link-title: var(--color-text-brand);
+
+  /* Color / UI / Background */
+  --color-bg-primary: oklch(18.5% 0.02 255);
+  --bg-raised: oklch(22.5% 0.022 255);
+  --bg-overlay: oklch(26.5% 0.024 255);
+  --bg-overlay-muted: var(--bg-overlay);
+  --color-bg-inverse: oklch(93% 0.008 255);
+  --color-bg-brand: #1a4f8c;
+  --color-bg-banner: oklch(30% 0.07 255);
+  --color-bg-flat: #ffffff0f;
+  --color-bg-subtle: #ffffff0f;
+  --color-bg-hover: #ffffff0a;
+  --color-bg-tint: #ffffff0f;
+
+  /* Color / UI / Border */
+  --color-border-normal: #ffffff29;
+  --color-border-light: #ffffff1f;
+  --color-border-input: #ffffff5c;
+  --color-border-divider: var(--color-border-normal);
+  --color-border-field: var(--color-border-normal);
+  --color-border-faint: var(--color-border-light);
+  --color-border-hover: var(--color-border-input);
+
+  /* Color / UI / Element */
+  --color-elem-icon: oklch(79% 0.018 255);
+  --color-elem-focus: #ffffff1f;
+
+  /* Tailwind greys remapped */
+  /* slate */
+  --color-slate-50: oklch(20.5% 0.02 255);
+  --color-slate-100: oklch(24% 0.02 255);
+  --color-slate-200: oklch(29% 0.02 255);
+  --color-slate-300: oklch(37% 0.02 255);
+  --color-slate-400: oklch(50% 0.02 255);
+  --color-slate-500: oklch(60% 0.02 255);
+  --color-slate-600: oklch(70% 0.02 255);
+  --color-slate-700: oklch(80% 0.018 255);
+  --color-slate-800: oklch(88% 0.014 255);
+  --color-slate-900: oklch(94% 0.01 255);
+  --color-slate-950: oklch(97% 0.006 255);
+  /* gray */
+  --color-gray-50: oklch(20.5% 0.02 255);
+  --color-gray-100: oklch(24% 0.02 255);
+  --color-gray-200: oklch(29% 0.02 255);
+  --color-gray-300: oklch(37% 0.02 255);
+  --color-gray-400: oklch(50% 0.02 255);
+  --color-gray-500: oklch(60% 0.02 255);
+  --color-gray-600: oklch(70% 0.02 255);
+  --color-gray-700: oklch(80% 0.018 255);
+  --color-gray-800: oklch(88% 0.014 255);
+  --color-gray-900: oklch(94% 0.01 255);
+  --color-gray-950: oklch(97% 0.006 255);
+  /* neutral */
+  --color-neutral-50: oklch(20.5% 0.02 255);
+  --color-neutral-100: oklch(24% 0.02 255);
+  --color-neutral-200: oklch(29% 0.02 255);
+  --color-neutral-300: oklch(37% 0.02 255);
+  --color-neutral-400: oklch(50% 0.02 255);
+  --color-neutral-500: oklch(60% 0.02 255);
+  --color-neutral-600: oklch(70% 0.02 255);
+  --color-neutral-700: oklch(80% 0.018 255);
+  --color-neutral-800: oklch(88% 0.014 255);
+  --color-neutral-900: oklch(94% 0.01 255);
+  --color-neutral-950: oklch(97% 0.006 255);
+  /* Tailwind colours flipped (50 <-> 950) */
+  /* blue */
+  --color-blue-50: oklch(28.2% 0.091 267.935);
+  --color-blue-100: oklch(37.9% 0.146 265.522);
+  --color-blue-200: oklch(42.4% 0.199 265.638);
+  --color-blue-300: oklch(48.8% 0.243 264.376);
+  --color-blue-400: oklch(54.6% 0.245 262.881);
+  --color-blue-600: oklch(70.7% 0.165 254.624);
+  --color-blue-700: oklch(80.9% 0.105 251.813);
+  --color-blue-800: oklch(88.2% 0.059 254.128);
+  --color-blue-900: oklch(93.2% 0.032 255.585);
+  --color-blue-950: oklch(97% 0.014 254.604);
+  /* red */
+  --color-red-50: oklch(25.8% 0.092 26.042);
+  --color-red-100: oklch(39.6% 0.141 25.723);
+  --color-red-200: oklch(44.4% 0.177 26.899);
+  --color-red-300: oklch(50.5% 0.213 27.518);
+  --color-red-400: oklch(57.7% 0.245 27.325);
+  --color-red-600: oklch(70.4% 0.191 22.216);
+  --color-red-700: oklch(80.8% 0.114 19.571);
+  --color-red-800: oklch(88.5% 0.062 18.334);
+  --color-red-900: oklch(93.6% 0.032 17.717);
+  --color-red-950: oklch(97.1% 0.013 17.38);
+  /* green */
+  --color-green-50: oklch(26.6% 0.065 152.934);
+  --color-green-100: oklch(39.3% 0.095 152.535);
+  --color-green-200: oklch(44.8% 0.119 151.328);
+  --color-green-300: oklch(52.7% 0.154 150.069);
+  --color-green-400: oklch(62.7% 0.194 149.214);
+  --color-green-600: oklch(79.2% 0.209 151.711);
+  --color-green-700: oklch(87.1% 0.15 154.449);
+  --color-green-800: oklch(92.5% 0.084 155.995);
+  --color-green-900: oklch(96.2% 0.044 156.743);
+  --color-green-950: oklch(98.2% 0.018 155.826);
+
+  /* Color / UI / Highlight */
+  --color-highlight-query: oklch(40% 0.055 85);
+  --color-highlight-topic-1: oklch(42% 0.07 210);
+  --color-highlight-topic-2: oklch(42% 0.1 306);
+  --color-highlight-topic-3: oklch(42% 0.1 350);
+  --color-highlight-topic-4: oklch(45% 0.1 128);
+  --color-highlight-topic-5: oklch(45% 0.09 60);
+}

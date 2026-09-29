@@ -111,7 +111,7 @@ export const DocumentDrawer = ({ documentSlug, family, familyTopics, languages, 
               keepQuery
               query={outboundQuery}
               href={"/documents/" + document.slug}
-              className="text-xl md:text-2xl lg:text-3xl text-inky-blue underline-offset-5 hover:underline"
+              className="text-xl md:text-2xl lg:text-3xl text-text-brand underline-offset-5 hover:underline"
             >
               {document.title}
             </PageLink>

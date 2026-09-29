@@ -20,10 +20,10 @@ const MainMenu = ({ icon, links }: IProps) => {
         <NavigationMenu.Item className="flex items-center">
           <NavigationMenu.Trigger className="group">{triggerContent}</NavigationMenu.Trigger>
           <NavigationMenu.Content>
-            <ul className="p-2 bg-white border border-gray-200 rounded-md shadow-lg text-sm text-[#374151] leading-4 font-medium">
+            <ul className="p-2 surface-overlay bg-bg-primary border border-gray-200 rounded-md shadow-lg text-sm text-text-content leading-4 font-medium">
               {links.map(({ text, href, external, cy }) => {
                 const cyValue = `navigation-${cy}`;
-                const linkClasses = "block p-2 pr-8 rounded-sm hover:bg-[#f3f4f6] hover:text-[#030712]";
+                const linkClasses = "block p-2 pr-8 rounded-sm hover:bg-bg-subtle hover:text-text-heading";
                 const linkElement = external ? (
                   <ExternalLink url={href} cy={cyValue} className={linkClasses}>
                     {text}

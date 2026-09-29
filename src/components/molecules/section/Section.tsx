@@ -37,10 +37,10 @@ export const Section = ({ badge, block, children, count, Icon, id, title, wide =
   return (
     <section className={sectionClasses} id={sectionId} role="region">
       {title && (
-        <h2 className="block col-start-1 -col-end-1 mb-5 text-2xl text-[#030712] font-heavy leading-tight">
+        <h2 className="block col-start-1 -col-end-1 mb-5 text-2xl text-text-heading font-heavy leading-tight">
           {Icon && (
             <span>
-              <Icon size={22} className="inline mb-1.5 text-[#0038a9]" />
+              <Icon size={22} className="inline mb-1.5 text-text-accent" />
               &nbsp;
             </span>
           )}

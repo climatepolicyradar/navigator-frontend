@@ -21,7 +21,7 @@ export default function ICCNLandingPage() {
     organisation: {
       name: "The ICCN",
       logoImage: {
-        src: "/images/iccn/iccn-logo.jpg",
+        src: "/images/iccn/iccn-logo.png",
         alt: "ICCN logo",
         width: 722,
         height: 226,

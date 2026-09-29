@@ -444,7 +444,7 @@ const Search = ({ familyConceptsData, features, theme, themeConfig, topicsData }
           <SlideOutContext.Provider value={{ currentSlideOut, setCurrentSlideOut }}>
             <WikiBaseConceptsContext.Provider value={familyConceptsData || []}>
               <section>
-                <div className="border-b border-[#d1d5db]">
+                <div className="border-b border-border-divider">
                   <div className="max-w-maxSiteWidth mx-auto md:flex justify-between items-center">
                     <BreadCrumbs label={"Search results"} />
                     <div className="px-2 cols-2:px-4 cols-3:px-6 cols-4:px-8">
@@ -493,13 +493,13 @@ const Search = ({ familyConceptsData, features, theme, themeConfig, topicsData }
                   <SideCol
                     extraClasses={`absolute z-99 top-0 w-screen duration-250 ease-[cubic-bezier(0.04, 0.62, 0.23, 0.98)] ${
                       showFilters ? "translate-y-[0%]" : "fixed translate-y-[100vh]"
-                    } cols-4:translate-y-[0%] cols-4:h-full cols-4:sticky cols-4:top-[72px] cols-4:z-50 bg-white md:bg-transparent`}
+                    } cols-4:translate-y-[0%] cols-4:h-full cols-4:sticky cols-4:top-[72px] cols-4:z-50 bg-bg-primary md:bg-transparent`}
                   >
                     {configQuery.isFetching ? (
                       <Loader size="20px" />
                     ) : (
                       <>
-                        <div className="sticky cols-4:top-[72px] h-screen cols-4:h-[calc(100vh-72px)] px-5 cols-4:border-r border-[#d1d5db] pt-5 pb-[180px] overflow-y-auto scrollbar-thumb-gray-200 scrollbar-thin scrollbar-track-white scrollbar-thumb-rounded-full hover:scrollbar-thumb-[#6b7280] cols-4:pb-4">
+                        <div className="sticky cols-4:top-[72px] h-screen cols-4:h-[calc(100vh-72px)] px-5 cols-4:border-r border-border-divider pt-5 pb-[180px] overflow-y-auto scrollbar-thumb-gray-200 scrollbar-thin scrollbar-track-transparent scrollbar-thumb-rounded-full hover:scrollbar-thumb-[#6b7280] cols-4:pb-4">
                           <SearchFilters
                             searchCriteria={searchQuery}
                             query={router.query}
@@ -627,7 +627,7 @@ const Search = ({ familyConceptsData, features, theme, themeConfig, topicsData }
                                 <div className="shrink-0 flex flex-col lg:flex-row gap-1 lg:gap-4">
                                   <div className="relative z-10 -top-0.5 flex justify-end">
                                     <button
-                                      className={`flex items-center gap-1 px-2 py-1 -mt-1 rounded-md text-sm text-text-primary font-normal ${showSearchOptions ? "bg-[#f5f5f5]" : ""}`}
+                                      className={`flex items-center gap-1 px-2 py-1 -mt-1 rounded-md text-sm text-text-primary font-normal ${showSearchOptions ? "bg-bg-flat" : ""}`}
                                       onClick={() => setShowSearchOptions(!showSearchOptions)}
                                       data-cy="search-options"
                                       ref={searchSettingsButtonRef}
@@ -661,7 +661,7 @@ const Search = ({ familyConceptsData, features, theme, themeConfig, topicsData }
                                   </div>
                                   <div className="relative z-8 -top-0.5 flex justify-end">
                                     <button
-                                      className={`flex items-center gap-1 px-2 py-1 -mt-1 rounded-md text-sm text-text-primary font-normal ${showSortOptions ? "bg-[#f5f5f5]" : ""}`}
+                                      className={`flex items-center gap-1 px-2 py-1 -mt-1 rounded-md text-sm text-text-primary font-normal ${showSortOptions ? "bg-bg-flat" : ""}`}
                                       onClick={() => setShowSortOptions(!showSortOptions)}
                                       data-cy="search-options"
                                       ref={sortSettingsButtonRef}
@@ -750,7 +750,7 @@ const Search = ({ familyConceptsData, features, theme, themeConfig, topicsData }
                               )}
                               {showSearchOnboarding(router.query) && (
                                 <Warning variant="info" hideableId="search-onboarding-info">
-                                  <p className="font-semibold text-[#0038a9]">Get better results</p>
+                                  <p className="font-semibold text-text-accent">Get better results</p>
                                   <p>
                                     {getAppText("searchOnboarding")}
                                     {features.knowledgeGraph && (

@@ -14,7 +14,7 @@ export const NavBarGradient = ({ className }: IProps) => {
 
   return (
     <div className={allClasses}>
-      <div className="h-30 bg-linear-to-b from-gray-50 to-white" />
+      <div className="h-30 bg-linear-to-b from-gray-50 to-bg-primary" />
     </div>
   );
 };

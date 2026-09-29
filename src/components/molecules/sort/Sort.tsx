@@ -20,7 +20,7 @@ export const Sort = ({ label = "Sort", onChange, sortOptions, value }: IProps) =
 
   return (
     <Select.Root value={value} onValueChange={(newValue) => onChange(newValue)}>
-      <Select.Trigger className="inline-flex h-9 max-w-full min-w-0 items-center justify-between gap-2 rounded-full border border-border-normal bg-white px-4 py-1.5 text-left text-sm font-medium text-text-primary select-none transition-colors focus-visible:outline-2 focus-visible:-outline-offset-1 focus-visible:outline-blue-800 data-popup-open:bg-bg-flat">
+      <Select.Trigger className="inline-flex h-9 max-w-full min-w-0 items-center justify-between gap-2 rounded-full border border-border-normal bg-bg-primary px-4 py-1.5 text-left text-sm font-medium text-text-primary select-none transition-colors focus-visible:outline-2 focus-visible:-outline-offset-1 focus-visible:outline-blue-800 data-popup-open:bg-bg-flat">
         <Select.Value className="truncate">{triggerLabel}</Select.Value>
         <Select.Icon className="flex shrink-0">
           <LucideChevronDown width={16} height={16} aria-hidden />
@@ -28,7 +28,7 @@ export const Sort = ({ label = "Sort", onChange, sortOptions, value }: IProps) =
       </Select.Trigger>
       <Select.Portal>
         <Select.Positioner className="outline-hidden z-50" sideOffset={6} align="start" alignItemWithTrigger={false}>
-          <Select.Popup className="max-h-(--available-height) min-w-(--anchor-width) origin-(--transform-origin) overflow-y-auto rounded-lg border border-border-normal bg-white py-1 shadow-lg outline-none transition-[transform,scale,opacity] data-ending-style:scale-95 data-ending-style:opacity-0">
+          <Select.Popup className="max-h-(--available-height) min-w-(--anchor-width) origin-(--transform-origin) overflow-y-auto rounded-lg border border-border-normal surface-overlay bg-bg-primary py-1 shadow-lg outline-none transition-[transform,scale,opacity] data-ending-style:scale-95 data-ending-style:opacity-0">
             {sortOptions.map(({ paramValue, label }) => (
               <Select.Item
                 key={paramValue}

@@ -106,13 +106,13 @@ export const BreadCrumbs = ({
     if (label) breadCrumbs.push(<BreadCrumb key="current" label={label} last cy="current" />);
   }
 
-  const containerClasses = joinTailwindClasses(dark && "bg-[#f3f4f6]");
+  const containerClasses = joinTailwindClasses(dark && "bg-bg-subtle");
 
   return (
     <div className={containerClasses}>
       <FiveColumns>
         <ul
-          className="col-start-1 -col-end-1 flex flex-wrap items-baseline gap-2 py-3 text-sm text-[#374151] leading-tight select-none"
+          className="col-start-1 -col-end-1 flex flex-wrap items-baseline gap-2 py-3 text-sm text-text-content leading-tight select-none"
           data-cy="breadcrumbs"
         >
           {breadCrumbs}

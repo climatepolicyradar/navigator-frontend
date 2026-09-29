@@ -84,7 +84,7 @@ const LandingSearchForm = ({ placeholder, input, handleSearchInput }: IProps) =>
               content="icon"
               color="mono"
               variant="ghost"
-              className="!text-text-inverse !outline-surface-light hover:!bg-transparent"
+              className="!text-text-on-fill !outline-surface-light hover:!bg-transparent"
               onClick={clearSearch}
               type="button"
             >

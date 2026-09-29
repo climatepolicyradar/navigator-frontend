@@ -16,11 +16,11 @@ interface IProps extends Omit<React.InputHTMLAttributes<HTMLInputElement>, "size
 
 export const Input = ({ clearable = false, containerClasses = "", icon, iconSide = "left", inputClasses = "", onClear, value, ...props }: IProps) => {
   const allContainerClasses = joinTailwindClasses(
-    "w-full px-2 flex flex-row justify-around items-center bg-bg-flat rounded-md outline-inky-blue -outline-offset-1 focus-within:outline",
+    "w-full px-2 flex flex-row justify-around items-center bg-bg-flat rounded-md outline-text-brand -outline-offset-1 focus-within:outline",
     containerClasses
   );
   const allInputClasses = joinTailwindClasses(
-    "flex-1 p-1 bg-transparent border-none text-xs text-text-primary font-medium leading-6 placeholder:text-text-tertiary caret-text-inky-blue focus:shadow-[none]",
+    "flex-1 p-1 bg-transparent border-none text-xs text-text-primary font-medium leading-6 placeholder:text-text-tertiary caret-text-brand focus:shadow-[none]",
     inputClasses
   );
   const iconClasses = "flex items-center shrink-0 text-text-tertiary";
