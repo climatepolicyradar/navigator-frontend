@@ -119,7 +119,7 @@ export const ConceptPicker = ({ containerClasses = "", startingSort = "Grouped",
       {/* HEADER */}
       {showKnowledgeGraphTutorial && <TutorialCard name="knowledgeGraph" card={TUTORIALS.knowledgeGraph.card} />}
       <span className="text-base font-semibold text-text-primary">
-        <TextSearch size={20} className="inline mr-2 text-[#0038a9] align-text-bottom" />
+        <TextSearch size={20} className="inline mr-2 text-text-accent align-text-bottom" />
         {title}
         {!showKnowledgeGraphTutorial && showBadge && <Badge className="ml-2">Beta</Badge>}
       </span>
@@ -179,7 +179,7 @@ export const ConceptPicker = ({ containerClasses = "", startingSort = "Grouped",
                   fixedHeight="100%"
                   startOpen={startOpen}
                   open={search === "" ? undefined : true}
-                  className="py-3 border-b border-[#ececec]"
+                  className="py-3 border-b border-border-faint"
                 >
                   <div className="flex flex-col gap-2 pb-2">
                     {filteredTopics
@@ -216,7 +216,7 @@ export const ConceptPicker = ({ containerClasses = "", startingSort = "Grouped",
                 />
               ))}
 
-          <div className="h-8.5 sticky block bottom-0 w-full bg-linear-to-b from-transparent to-white">&nbsp;</div>
+          <div className="h-8.5 sticky block bottom-0 w-full bg-linear-to-b from-transparent to-bg-primary">&nbsp;</div>
         </div>
       </div>
     </div>

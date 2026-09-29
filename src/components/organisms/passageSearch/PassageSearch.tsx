@@ -28,11 +28,11 @@ import { queryGroupToFilterPaths } from "@/utils/search/queryGroupToFilterPaths"
 import { conceptFiltersOnly, flattenLevelToBaseQuery, levelParamKeys } from "@/utils/search/searchLevels";
 
 export const TOPIC_HIGHLIGHT_COLOURS = [
-  "bg-cyan-200 text-text-primary",
-  "bg-purple-200 text-text-primary",
-  "bg-pink-200 text-text-primary",
-  "bg-lime-200 text-text-primary",
-  "bg-orange-200 text-text-primary",
+  "bg-highlight-topic-1 text-text-primary",
+  "bg-highlight-topic-2 text-text-primary",
+  "bg-highlight-topic-3 text-text-primary",
+  "bg-highlight-topic-4 text-text-primary",
+  "bg-highlight-topic-5 text-text-primary",
 ];
 
 type TProps = {

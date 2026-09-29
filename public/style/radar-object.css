@@ -1,14 +1,3 @@
-.ring {
-  stroke: #fff;
-  stroke-width: 2.8;
-  /* change for interesting effect */
-  fill: none;
-}
-
-.ring.filled {
-  fill: #fff;
-}
-
 .radar-line {
   stroke: #207ae4;
 }

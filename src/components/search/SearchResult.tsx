@@ -26,7 +26,7 @@ const SearchResult = ({ family, active, onClick, position, positionOffset }: IPr
   const matchesText = `View ${matchesNumber} text ${pluralise(total_passage_hits, ["passage", "passages"])} matching your search`;
 
   const titleClasses = joinTailwindClasses(
-    hasFamilyDocuments ? "text-text-primary" : "text-[#0041A3]",
+    hasFamilyDocuments ? "text-text-primary" : "text-text-link-title",
     active ? "!underline" : "!no-underline hover:!underline"
   );
 
@@ -43,7 +43,7 @@ const SearchResult = ({ family, active, onClick, position, positionOffset }: IPr
           <button
             type="button"
             onClick={onClick}
-            className="text-[#0038a9] flex items-center"
+            className="text-text-accent flex items-center"
             aria-label={matchesText}
             data-analytics="search-result-matches-button"
             data-slug={family_slug}

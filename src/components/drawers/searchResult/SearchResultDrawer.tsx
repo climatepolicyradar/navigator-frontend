@@ -80,7 +80,7 @@ export const SearchResultDrawer = ({ family, position, positionOffset }: IProps)
           </div>
           {family_documents.map((document, docIndex) => (
             <div key={document.document_slug}>
-              <LinkWithQuery href={`/documents/${document.document_slug}`} className="text-inky-blue underline-offset-4 text-lg hover:underline">
+              <LinkWithQuery href={`/documents/${document.document_slug}`} className="text-text-brand underline-offset-4 text-lg hover:underline">
                 <span className="mr-1 inline-block">
                   <File width={16} height={16} />
                 </span>

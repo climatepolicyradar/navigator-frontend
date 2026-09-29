@@ -25,11 +25,11 @@ const makeLabel = (value: string): IPassageLabel => ({
 
 // Colours are assigned by the caller in the app, so the stories assign their own the same way
 const STORY_TOPIC_COLOURS = [
-  "bg-cyan-200 text-text-primary",
-  "bg-purple-200 text-text-primary",
-  "bg-pink-200 text-text-primary",
-  "bg-lime-200 text-text-primary",
-  "bg-orange-200 text-text-primary",
+  "bg-highlight-topic-1 text-text-primary",
+  "bg-highlight-topic-2 text-text-primary",
+  "bg-highlight-topic-3 text-text-primary",
+  "bg-highlight-topic-4 text-text-primary",
+  "bg-highlight-topic-5 text-text-primary",
 ];
 const makeTopicColours = (topicIds: string[]) => new Map(topicIds.map((id, index) => [id, STORY_TOPIC_COLOURS[index % STORY_TOPIC_COLOURS.length]]));
 

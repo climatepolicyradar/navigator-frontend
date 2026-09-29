@@ -163,7 +163,7 @@ export const TUTORIALS: TTutorials = {
                 use="modal"
                 text="More information"
                 variant="outlined"
-                className="px-3! py-2! bg-paper! hover:bg-paper! border-border-normal! text-text-tertiary!"
+                className="px-3! py-2! bg-bg-tint! hover:bg-bg-tint! border-border-normal! text-text-tertiary!"
               />
               <TutorialButton
                 action="dismiss"

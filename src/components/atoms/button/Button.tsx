@@ -32,7 +32,7 @@ export const getButtonClasses = ({
   /* Colour */
 
   let bgColor = color === "brand" ? "bg-[#005eeb] hocus:bg-[#0049b8]" : "bg-bg-inverse";
-  let textColor = "text-text-inverse";
+  let textColor = color === "brand" ? "text-text-on-fill" : "text-text-inverse";
 
   if (variant)
     switch (variant) {
@@ -42,20 +42,20 @@ export const getButtonClasses = ({
         break;
       case "outlined":
       case "ghost":
-        bgColor = "bg-transparent hocus:bg-paper";
-        textColor = color === "brand" ? "text-inky-blue" : "text-text-primary";
+        bgColor = "bg-transparent hocus:bg-bg-tint";
+        textColor = color === "brand" ? "text-text-brand" : "text-text-primary";
         break;
     }
 
   if (disabled) {
-    bgColor = "bg-[#f5f5f5]";
+    bgColor = "bg-bg-flat";
     textColor = "text-text-tertiary";
   }
 
   /* Shape */
 
   const border = variant === "outlined" ? "border border-border-light" : "";
-  const outlineColor = color === "brand" ? "outline-inky-blue" : "outline-inky-black";
+  const outlineColor = color === "brand" ? "outline-text-brand" : "outline-text-primary";
   const roundness = rounded ? "rounded-full" : "rounded-md";
 
   /* Size */

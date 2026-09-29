@@ -34,11 +34,11 @@ export const ContentsSideBar = <BlockId extends string = TBlock>({ items, sticky
 
             const buttonClasses = joinTailwindClasses(
               "pr-4 pl-4 py-2 text-sm text-left group border-l-2",
-              isActive ? "border-l-[#0038a9] text-[#030712] font-heavy" : "border-l-transparent text-[#374151] hover:text-[#030712]"
+              isActive ? "border-l-text-accent text-text-heading font-heavy" : "border-l-transparent text-text-content hover:text-text-heading"
             );
             const contextClasses = joinTailwindClasses(
               "block pt-1 text-xs font-normal",
-              isActive ? "text-[#030712]" : "text-[#6b7280] group-hover:text-[#030712]"
+              isActive ? "text-text-heading" : "text-text-hint group-hover:text-text-heading"
             );
 
             return (

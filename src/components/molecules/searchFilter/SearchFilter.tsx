@@ -60,7 +60,7 @@ export const SearchFilter = ({ ancestorPath, label, level }: IProps) => {
     : { onClick: undefined, noClickLabel: false };
 
   const labelName = getLabelDisplay(label, ancestorPath).name;
-  const labelValue = isFiltered ? addSubStringHighlights(labelName, searchTerm, "bg-yellow-200") : labelName;
+  const labelValue = isFiltered ? addSubStringHighlights(labelName, searchTerm, "bg-highlight-query") : labelName;
 
   return (
     <li>

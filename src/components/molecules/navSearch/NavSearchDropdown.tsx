@@ -67,7 +67,7 @@ export const NavSearchDropdown = ({ contextualSearchName, isEverything, setIsEve
           ${
             isOpen
               ? "h-[32px] px-2 hocus:bg-bg-inverse rounded-xs text-text-primary hocus:text-text-inverse focus:outline-0"
-              : "h-[40px] px-3 bg-[#f5f5f5] rounded-md hover:text-text-primary"
+              : "h-[40px] px-3 bg-bg-flat rounded-md hover:text-text-primary"
           }
           ${optionIndex > 0 && !isOpen ? "!h-0 overflow-hidden" : ""}`}
           >

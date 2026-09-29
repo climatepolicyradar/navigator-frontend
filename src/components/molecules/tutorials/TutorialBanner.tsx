@@ -19,14 +19,14 @@ export const TutorialBanner = ({ name, banner: { buttonPrimary, buttonSecondary,
 
   return (
     <div className="flex gap-x-4 gap-y-3 justify-center items-center flex-wrap p-3 bg-[#005eeb] pointer-events-auto select-none">
-      <span className="text-sm leading-normal text-text-inverse">{text}</span>
+      <span className="text-sm leading-normal text-text-on-fill">{text}</span>
       <div className="flex gap-2">
         <TutorialButton
           {...buttonPrimary}
           actions={buttonActions}
           name={name}
           use="banner"
-          className="border-text-inverse/75 hover:border-text-inverse hover:bg-transparent! text-text-inverse"
+          className="border-text-on-fill/75 hover:border-text-on-fill hover:bg-transparent! text-text-on-fill"
         />
         {buttonSecondary && (
           <TutorialButton
@@ -34,7 +34,7 @@ export const TutorialBanner = ({ name, banner: { buttonPrimary, buttonSecondary,
             actions={buttonActions}
             name={name}
             use="banner"
-            className="text-text-inverse/75 hover:text-text-inverse hover:bg-transparent!"
+            className="text-text-on-fill/75 hover:text-text-on-fill hover:bg-transparent!"
           />
         )}
       </div>

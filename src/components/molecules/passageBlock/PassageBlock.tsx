@@ -10,7 +10,7 @@ import { resolveHighlightRanges } from "@/utils/text/resolveHighlightRanges";
 
 const COPY_FEEDBACK_TIMEOUT = 1000;
 
-export const QUERY_HIGHLIGHT_COLOUR = "bg-yellow-200 text-text-primary";
+export const QUERY_HIGHLIGHT_COLOUR = "bg-highlight-query text-text-primary";
 
 type TPassagePage = {
   page_number: number;
@@ -163,7 +163,7 @@ export const PassageBlock = ({
         )}
       </div>
       {hasFooter && (
-        <div className="bg-paper px-6 cols-3:px-8 py-3 flex gap-16 items-start">
+        <div className="bg-bg-tint px-6 cols-3:px-8 py-3 flex gap-16 items-start">
           <div className="flex-1 min-w-0 flex flex-col gap-2.5">
             {showDocument && (
               <div className="flex gap-2 items-center">
@@ -192,12 +192,12 @@ export const PassageBlock = ({
           </div>
           <div className="flex gap-3 items-center shrink-0">
             {showDocument && (
-              <button type="button" onClick={onDocumentLinkClick} aria-label="View document" className="text-elem-icon hocus:text-inky-blue">
+              <button type="button" onClick={onDocumentLinkClick} aria-label="View document" className="text-elem-icon hocus:text-text-brand">
                 <ExternalLink size={16} />
               </button>
             )}
-            <button type="button" onClick={handleCopyClick} aria-label="Copy passage text" className="text-elem-icon hocus:text-inky-blue">
-              {hasCopied ? <Check size={16} className="text-inky-blue" /> : <Copy size={16} />}
+            <button type="button" onClick={handleCopyClick} aria-label="Copy passage text" className="text-elem-icon hocus:text-text-brand">
+              {hasCopied ? <Check size={16} className="text-text-brand" /> : <Copy size={16} />}
             </button>
           </div>
         </div>

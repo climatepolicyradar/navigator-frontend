@@ -27,7 +27,7 @@ const renderCellDisplay = (cell: TTableCell, showValues: boolean) => {
 
   let content: ReactNode = `${cell}`;
   if (typeof cell === "object") content = showValues ? cell.value : cell.label;
-  return showValues ? <div className="inline-block bg-[#f5f5f5] text-sm text-text-tertiary font-mono">{`${content}`}</div> : content;
+  return showValues ? <div className="inline-block bg-bg-flat text-sm text-text-tertiary font-mono">{`${content}`}</div> : content;
 };
 
 interface IProps<ColumnKey extends string> {
@@ -143,18 +143,18 @@ export const InteractiveTable = <ColumnKey extends string>({
     );
   };
 
-  const allTableClasses = joinTailwindClasses("grid text-table text-[#374151] leading-5 cursor-default", tableClasses);
+  const allTableClasses = joinTailwindClasses("grid text-table text-text-content leading-5 cursor-default", tableClasses);
   const gridTemplateColumns = columns.map((column) => `${column.fraction || 1}fr`).join(" ");
-  const commonCellClasses = "px-3 py-2 not-first:border-l border-[#d1d5db]";
+  const commonCellClasses = "px-3 py-2 not-first:border-l border-border-divider";
 
   return (
-    <div className="bg-white border border-[#d1d5db] rounded-md overflow-x-auto">
+    <div className="bg-bg-primary border border-border-divider rounded-md overflow-x-auto">
       <div className={allTableClasses} style={{ gridTemplateColumns }} role="table">
         {/* Heading */}
         <div className="contents" role="row">
           {columns.map((column) => {
             const cellClasses = joinTailwindClasses(
-              "bg-[#f3f4f6] text-gray-900 font-medium group",
+              "bg-bg-subtle text-gray-900 font-medium group",
               column.sortable && "pr-2",
               commonCellClasses,
               column.classes
@@ -186,7 +186,7 @@ export const InteractiveTable = <ColumnKey extends string>({
             const cellClasses = joinTailwindClasses(
               "border-t",
               commonCellClasses,
-              isClickable && "group-hover:bg-[#f3f4f6] cursor-pointer",
+              isClickable && "group-hover:bg-bg-subtle cursor-pointer",
               column.classes,
               row.classes
             );

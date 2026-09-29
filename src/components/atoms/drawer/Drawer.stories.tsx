@@ -109,7 +109,7 @@ export const CustomTitle: TStory = {
   args: {
     title: (
       <span className="flex items-center gap-2">
-        <LucideInfo width={18} height={18} className="text-inky-blue shrink-0" />
+        <LucideInfo width={18} height={18} className="text-text-brand shrink-0" />
         Custom title with icon
       </span>
     ),

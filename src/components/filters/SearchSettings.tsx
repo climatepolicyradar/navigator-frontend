@@ -81,7 +81,7 @@ export const SearchSettings = ({
 
   return (
     <div
-      className={`absolute top-full mt-1 right-0 p-3 w-[180px] max-w-[350px] bg-white border border-border-light rounded-md shadow-md text-sm leading-normal select-none focus-visible:outline-0 ${extraClasses}`}
+      className={`absolute top-full mt-1 right-0 p-3 w-[180px] max-w-[350px] surface-overlay bg-bg-primary border border-border-light rounded-md shadow-md text-sm leading-normal select-none focus-visible:outline-0 ${extraClasses}`}
       ref={searchOptionsRef}
       data-cy="search-settings"
     >
@@ -109,7 +109,7 @@ export const SearchSettings = ({
                     <span>{SEARCH_SETTINGS.semantic}</span>
                     <span className="block text-text-secondary">
                       Temporarily unavailable.{" "}
-                      <PageLink external href="https://form.jotform.com/260824503109350" className="text-[#0038a9] underline">
+                      <PageLink external href="https://form.jotform.com/260824503109350" className="text-text-accent underline">
                         Get notified
                       </PageLink>{" "}
                       when this is available.

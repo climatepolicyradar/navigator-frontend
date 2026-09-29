@@ -118,7 +118,7 @@ export const SearchFiltersDate = ({ filterGroup }: IProps) => {
                       <label key={option.label} className="flex items-center gap-2 text-sm text-text-primary font-normal leading-5 cursor-pointer">
                         <Radio.Root
                           value={option.value}
-                          className="flex size-4 shrink-0 items-center justify-center border border-border-input rounded-full p-0 text-white data-checked:bg-inky-blue focus-visible:outline-2 outline-inky-blue outline-offset-2"
+                          className="flex size-4 shrink-0 items-center justify-center border border-border-input rounded-full p-0 text-white data-checked:bg-inky-blue focus-visible:outline-2 outline-text-brand outline-offset-2"
                         >
                           <Radio.Indicator className="flex items-center justify-center data-unchecked:hidden before:size-2 before:rounded-full before:bg-current" />
                         </Radio.Root>
@@ -146,7 +146,7 @@ export const SearchFiltersDate = ({ filterGroup }: IProps) => {
                         placeholder="eg: 1992"
                         value={earliestYear}
                         onChange={onEarliestYearChange}
-                        containerClasses="bg-white border border-border-normal rounded-sm"
+                        containerClasses="bg-bg-primary border border-border-normal rounded-sm"
                         inputClasses="w-full py-2.5 [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
                       />
                     </div>
@@ -157,7 +157,7 @@ export const SearchFiltersDate = ({ filterGroup }: IProps) => {
                         placeholder="eg: 2025"
                         value={latestYear}
                         onChange={onLatestYearChange}
-                        containerClasses="bg-white border border-border-normal rounded-sm"
+                        containerClasses="bg-bg-primary border border-border-normal rounded-sm"
                         inputClasses="w-full py-2.5 [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
                       />
                     </div>
@@ -166,7 +166,7 @@ export const SearchFiltersDate = ({ filterGroup }: IProps) => {
                     type="button"
                     onClick={onApplyCustom}
                     disabled={isCustomApplyDisabled}
-                    className="px-3 py-1 text-sm text-text-inverse font-medium leading-5 bg-bg-brand disabled:bg-text-disabled rounded-full"
+                    className="px-3 py-1 text-sm text-text-on-fill font-medium leading-5 bg-bg-brand disabled:bg-text-disabled rounded-full"
                   >
                     Apply
                   </button>

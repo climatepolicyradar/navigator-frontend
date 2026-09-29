@@ -65,8 +65,8 @@ const DrawerContent = ({ familyData, features, languages }: TDrawerContentProps)
           <div className="grid grid-cols-[min-content_auto] gap-x-8 gap-y-2 text-sm">
             {pageHeaderMetadata.map((property, index) => (
               <Fragment key={index}>
-                <div className="text-[#030712] font-medium whitespace-nowrap">{property.label}</div>
-                <div className="text-[#374151]">{property.value}</div>
+                <div className="text-text-heading font-medium whitespace-nowrap">{property.label}</div>
+                <div className="text-text-content">{property.value}</div>
               </Fragment>
             ))}
           </div>
@@ -129,7 +129,7 @@ export function PrincipalDrawer({ document, slug, open, onOpenChange, tab, onTab
               keepQuery
               query={outboundQuery}
               href={titleHref}
-              className="text-xl md:text-2xl lg:text-3xl text-inky-blue underline-offset-5 hover:underline"
+              className="text-xl md:text-2xl lg:text-3xl text-text-brand underline-offset-5 hover:underline"
             >
               {titleContent}
             </PageLink>
@@ -150,7 +150,7 @@ export function PrincipalDrawer({ document, slug, open, onOpenChange, tab, onTab
     >
       {isLoading && (
         <div className="flex justify-center py-12">
-          <span className="h-8 w-8 animate-spin rounded-full border-4 border-neutral-200 border-t-inky-blue" />
+          <span className="h-8 w-8 animate-spin rounded-full border-4 border-neutral-200 border-t-text-brand" />
         </div>
       )}
       {!isLoading && familyData && (

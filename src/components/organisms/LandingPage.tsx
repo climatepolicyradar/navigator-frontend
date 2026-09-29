@@ -113,11 +113,11 @@ export const LandingPage = ({ config }: TProps) => {
   // All conditional values are defined in this block to easily assess where we alternate
   const heroImage = config.heroImage;
   const heroImageClass = heroImage ? "bg-cover bg-center bg-no-repeat pt-18 pb-30" : "";
-  const textClass = heroImage ? "text-text-inverse" : "text-text-primary";
-  const descriptionTextClass = heroImage ? "text-text-inverse/80" : "text-text-secondary";
+  const textClass = heroImage ? "text-text-on-fill" : "text-text-primary";
+  const descriptionTextClass = heroImage ? "text-text-on-fill/80" : "text-text-secondary";
   const suggestionsListClass = heroImage ? "flex flex-row flex-wrap items-center gap-2" : "text-base font-normal leading-6";
   const suggestionLinkClass = heroImage
-    ? "px-3 py-2 rounded-full text-base font-normal leading-6 bg-bg-inverse/50 hocus:bg-bg-inverse/64"
+    ? "px-3 py-2 rounded-full text-base font-normal leading-6 bg-bg-scrim/50 hocus:bg-bg-scrim/64"
     : "justify-start p-1.5 pl-0";
   const contentColumnsClass = "col-start-1 -col-end-1 cols-3:col-end-5 cols-4:col-end-7 cols-5:col-start-2";
   const searchColumnsClass = heroImage

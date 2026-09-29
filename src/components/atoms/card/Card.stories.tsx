@@ -84,7 +84,7 @@ export const CookieConsent: TStory = {
         </div>
       </>
     ),
-    className: "bg-[#f5f5f5] select-none",
+    className: "surface-overlay-muted select-none",
     color: "mono",
     variant: "outlined",
   },

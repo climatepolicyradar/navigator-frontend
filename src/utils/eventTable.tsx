@@ -117,7 +117,7 @@ export const getEventTableRowsData = (family: TFamilyPublic): TEventRowData[] =>
 const getFamilyDocuments = (family: TFamilyPublic): TEventRowData[] =>
   family.documents.filter((document) => DISPLAY_ALLOWED_STATUSES.includes(document.document_status)).map((document) => ({ family, document }));
 
-const linkClasses = "block text-[#0038a9] underline underline-offset-4 decoration-[#d1d5db] hover:decoration-[#6b7280]";
+const linkClasses = "block text-text-accent underline underline-offset-4 decoration-border-divider hover:decoration-border-hover";
 
 export const getDocumentLink = (
   document: TFamilyDocumentPublic,
@@ -151,7 +151,7 @@ export const getDocumentLink = (
       {!isLitigation && (
         <span className="text-sm">
           (We do not have this document in our database.{" "}
-          <PageLink href="/contact" className="underline hover:text-[#0038a9]">
+          <PageLink href="/contact" className="underline hover:text-text-accent">
             Contact us
           </PageLink>{" "}
           if you can help us find it)
@@ -283,7 +283,7 @@ export const getEventTableRows = ({
                 <button
                   type="button"
                   role="link"
-                  className="p-2 hover:bg-[#f9fafb] active:bg-[#f3f4f6] border border-[#d1d5db] rounded-md text-sm text-[#374151] leading-4 font-medium"
+                  className="p-2 hover:bg-bg-hover active:bg-bg-subtle border border-border-divider rounded-md text-sm text-text-content leading-4 font-medium"
                 >
                   + {sortedTopics.length - MAX_TOPICS_PER_DOCUMENT} more
                 </button>

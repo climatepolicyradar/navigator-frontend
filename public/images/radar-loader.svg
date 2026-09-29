@@ -19,32 +19,33 @@
         <clipPath id="scan-fade-scissors">
             <polygon points="0 0, -17 0, -17 -17, 0 -17"/>
         </clipPath>
+
+        <!-- Cuts the rings out so the loader is transparent -->
+        <mask id="ring-gaps" maskUnits="userSpaceOnUse" x="-17" y="-17" width="34" height="34">
+            <circle r="16" fill="#fff"/>
+            <circle r="2" fill="#000" stroke="#000" stroke-width="2.8"/>
+            <circle r="7.1" fill="none" stroke="#000" stroke-width="2.8"/>
+            <circle r="12.2" fill="none" stroke="#000" stroke-width="2.8"/>
+        </mask>
     </defs>
 
     <g transform="translate(17, 17)">
-        <circle fill="url(#base-circle-grad)" r="16"/>
-        <circle class="ring filled" r="2"/>
-        <circle class="ring" r="7.1"/>
-        <circle class="ring" r="12.2"/>
-        <!-- <circle class="blip filled" r="1.5" cx="4.60" transform="rotate(50)"/>
-        <circle class="blip" r="1.5" cx="9.75" transform="rotate(78)"/>
-        <circle class="blip" r="1.5" cx="9.75" transform="rotate(154)"/>
-        <circle class="blip" r="1.5" cx="14.90" transform="rotate(332)"/>
-        <circle class="blip" r="1.5" cx="14.90" transform="rotate(188)"/>
-        <circle class="blip filled" r="1.5" cx="14.90" transform="rotate(21)"/> -->
+        <g mask="url(#ring-gaps)">
+            <circle fill="url(#base-circle-grad)" r="16"/>
+            <!-- <circle class="blip filled" r="1.5" cx="4.60" transform="rotate(50)"/>
+            <circle class="blip" r="1.5" cx="9.75" transform="rotate(78)"/>
+            <circle class="blip" r="1.5" cx="9.75" transform="rotate(154)"/>
+            <circle class="blip" r="1.5" cx="14.90" transform="rotate(332)"/>
+            <circle class="blip" r="1.5" cx="14.90" transform="rotate(188)"/>
+            <circle class="blip filled" r="1.5" cx="14.90" transform="rotate(21)"/> -->
 
-        <g class="cover">
-            <g clip-path="url(#scan-scissors)">
-                <circle class="scan" r="17"/>
-                <circle class="ring filled" r="2"/>
-                <circle class="ring" r="7.1"/>
-                <circle class="ring" r="12.2"/>
-            </g>
-            <g clip-path="url(#scan-fade-scissors)">
-                <circle class="scan-fade" r="17" fill="url(#conical-grad-image)"/>
-                <circle class="ring filled" r="2"/>
-                <circle class="ring" r="7.1"/>
-                <circle class="ring" r="12.2"/>
+            <g class="cover">
+                <g clip-path="url(#scan-scissors)">
+                    <circle class="scan" r="17"/>
+                </g>
+                <g clip-path="url(#scan-fade-scissors)">
+                    <circle class="scan-fade" r="17" fill="url(#conical-grad-image)"/>
+                </g>
             </g>
         </g>
 

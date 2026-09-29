@@ -23,21 +23,47 @@
   --color-text-inverse: var(--color-white);
   --color-text-brand: var(--color-inky-blue);
   --color-text-disabled: #a3a3a3;
+  --color-text-heading: #030712;
+  --color-text-emphasis: #202020;
+  --color-text-content: #374151;
+  --color-text-body: #505050;
+  --color-text-hint: #6b7280;
+  --color-text-notice: var(--color-black);
+  --color-text-accent: #0038a9;
+  --color-text-link-title: #0041a3;
+  --color-text-on-fill: var(--color-white);
 
   /* Color / UI / Background */
   --color-bg-primary: var(--color-white);
   --color-bg-inverse: var(--color-inky-black);
   --color-bg-brand: var(--color-inky-blue);
   --color-bg-flat: var(--color-neutral-100);
+  --color-bg-subtle: #f3f4f6;
+  --color-bg-hover: #f9fafb;
+  --color-bg-tint: var(--color-paper);
+  --color-bg-scrim: var(--color-inky-black);
+  --color-bg-banner: var(--color-inky-blue);
 
   /* Color / UI / Border */
   --color-border-normal: #101a2429;
   --color-border-light: #101a241f;
   --color-border-input: #101a2452;
+  --color-border-divider: #d1d5db;
+  --color-border-field: #dedede;
+  --color-border-faint: #ececec;
+  --color-border-hover: #6b7280;
 
   /* Color / UI / Element */
   --color-elem-icon: var(--color-neutral-500);
   --color-elem-focus: var(--color-neutral-200);
+
+  /* Color / UI / Highlight */
+  --color-highlight-query: oklch(94.5% 0.129 101.54);
+  --color-highlight-topic-1: oklch(91.7% 0.08 205.041);
+  --color-highlight-topic-2: oklch(90.2% 0.063 306.703);
+  --color-highlight-topic-3: oklch(89.9% 0.061 343.231);
+  --color-highlight-topic-4: oklch(93.8% 0.127 124.321);
+  --color-highlight-topic-5: oklch(90.1% 0.076 70.697);
 
   /* Font / Weight */
   --font-weight-normal: 400;

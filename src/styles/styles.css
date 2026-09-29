@@ -4,7 +4,7 @@
   [type="text"],
   [type="search"],
   [type="number"] {
-    @apply rounded border-[#dedede] text-sm;
+    @apply rounded border-border-field bg-bg-primary text-sm;
 
     &:hover {
       @apply border-[#005eeb];
@@ -23,7 +23,7 @@
   [type="text"],
   [type="search"],
   [type="number"] {
-    @apply text-text-primary p-2 bg-[#f5f5f5] border-border-light leading-[1.4] w-full;
+    @apply text-text-primary p-2 bg-bg-flat border-border-light leading-[1.4] w-full;
 
     &.extra-content-left {
       @apply pl-8;
@@ -121,7 +121,7 @@ html,
 }
 
 body {
-  @apply text-[#505050] font-inter;
+  @apply bg-bg-primary text-text-body font-inter;
 }
 
 input[type="text"],
@@ -141,7 +141,7 @@ a,
 
 a.alt,
 .anchor.alt {
-  @apply underline text-[#505050] hover:text-blue-800;
+  @apply underline text-text-body hover:text-blue-800;
 }
 
 a.button {
@@ -359,7 +359,7 @@ ul li.selected {
 .search-results b,
 .search-results strong,
 .search-results .bold {
-  @apply font-medium text-[#202020];
+  @apply font-medium text-text-emphasis;
 }
 .text-content i,
 .text-content em,
@@ -369,7 +369,7 @@ ul li.selected {
 }
 .text-content a.accordion-item,
 .search-results a.accordion-item {
-  @apply text-[#505050] text-lg cursor-pointer flex items-center no-underline hover:no-underline md:text-xl;
+  @apply text-text-body text-lg cursor-pointer flex items-center no-underline hover:no-underline md:text-xl;
 }
 .text-content a {
   @apply text-blue-600 underline hover:text-blue-800;
@@ -399,7 +399,7 @@ ul li.selected {
 }
 .text-content .m-table .row.heading,
 .search-results .m-table .row.heading {
-  @apply text-[#202020] font-medium;
+  @apply text-text-emphasis font-medium;
 }
 .text-content .m-table .row .term,
 .search-results .m-table .row .term {
@@ -445,7 +445,7 @@ ul li.selected {
 .search-results h4,
 .search-results h5,
 .search-results h6 {
-  @apply font-medium text-[#202020];
+  @apply font-medium text-text-emphasis;
 }
 .text-content h1,
 .search-results h1 {

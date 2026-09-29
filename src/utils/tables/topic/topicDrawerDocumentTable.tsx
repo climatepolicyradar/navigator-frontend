@@ -59,7 +59,11 @@ export const getTopicDrawerDocumentTableRows = (
           document: {
             label: (
               <div className="flex flex-col items-start gap-2">
-                <PageLink href={"/documents/" + document.slug} query={topicQuery} className="block text-inky-blue font-medium hover:underline shrink">
+                <PageLink
+                  href={"/documents/" + document.slug}
+                  query={topicQuery}
+                  className="block text-text-brand font-medium hover:underline shrink"
+                >
                   {document.title}
                 </PageLink>
                 {contextLines && (

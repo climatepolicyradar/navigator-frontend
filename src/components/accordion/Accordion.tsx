@@ -47,7 +47,7 @@ export const Accordion = ({
           <Heading>{title}</Heading>
           {headContent}
         </div>
-        <span className="text-[#202020] opacity-40 group-hover:opacity-100">{isOpen ? <ChevronUp /> : <ChevronDown />}</span>
+        <span className="text-text-emphasis opacity-40 group-hover:opacity-100">{isOpen ? <ChevronUp /> : <ChevronDown />}</span>
       </button>
       <AnimatePresence initial={false}>
         {isOpen && (
@@ -71,7 +71,9 @@ export const Accordion = ({
             >
               <>
                 {children}
-                {showFade === "true" && <span className="h-[34px] sticky block bottom-0 w-full bg-gradient-to-b from-transparent to-white"></span>}
+                {showFade === "true" && (
+                  <span className="h-[34px] sticky block bottom-0 w-full bg-gradient-to-b from-transparent to-bg-primary"></span>
+                )}
               </>
             </div>
           </motion.div>

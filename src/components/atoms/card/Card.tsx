@@ -17,7 +17,7 @@ const getCardClasses = ({ className = "", color = "brand", variant = "solid" }: 
   /* Colour */
 
   const border = isSolid ? "" : "border border-border-light";
-  const textColor = isSolid ? "text-text-inverse" : "text-text-primary";
+  const textColor = isSolid ? (color === "brand" ? "text-text-on-fill" : "text-text-inverse") : "text-text-primary";
   let bgColor = "bg-bg-primary";
 
   if (isSolid) {

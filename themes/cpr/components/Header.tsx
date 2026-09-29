@@ -3,6 +3,7 @@ import Image from "next/image";
 import { useRouter } from "next/router";
 import { useContext } from "react";
 
+import { ColourSchemeToggle } from "@/components/atoms/colourSchemeToggle/ColourSchemeToggle";
 import { FiveColumns } from "@/components/atoms/columns/FiveColumns";
 import { PageLink } from "@/components/atoms/pageLink/PageLink";
 import MainMenu from "@/components/molecules/mainMenu/MainMenu";
@@ -13,7 +14,15 @@ import { joinTailwindClasses } from "@/utils/tailwind";
 
 export const CPRLogo = (
   <PageLink href="/" data-cy="cpr-logo">
-    <Image src="/images/cpr-logo-horizontal-new.svg" width={228} height={35} alt="Climate Policy Radar logo" data-cy="cpr-logo" loading="eager" />
+    <Image
+      src="/images/cpr-logo-horizontal-new.svg"
+      width={228}
+      height={35}
+      alt="Climate Policy Radar logo"
+      data-cy="cpr-logo"
+      loading="eager"
+      className="dark:brightness-0 dark:invert"
+    />
   </PageLink>
 );
 
@@ -43,7 +52,7 @@ const OTHER_APPS = [
 ];
 
 const OtherAppsBar = () => (
-  <div className="bg-inky-blue hidden md:block">
+  <div className="bg-bg-banner hidden md:block">
     <FiveColumns>
       <div className="col-start-1 -col-end-1">
         <ul className="flex items-center justify-end gap-6 py-2 text-sm">
@@ -73,7 +82,7 @@ const MenuButtons = () => (
         key={label}
         href={url}
         external={external}
-        className="px-3 py-2 rounded-md text-sm font-medium text-text-primary bg-white hover:bg-bg-flat"
+        className="px-3 py-2 rounded-md text-sm font-medium text-text-primary bg-bg-primary hover:bg-bg-flat"
       >
         {label}
       </PageLink>
@@ -89,7 +98,7 @@ export const Header = ({ landingPage = false }: IProps) => {
   const isHomepage = router.pathname === "/";
   const showSearch = router.pathname !== "/" && !landingPage && router.pathname !== "/_search";
 
-  const navBarClasses = joinTailwindClasses(isHomepage ? "!absolute top-0" : "bg-white", landingPage && "!static");
+  const navBarClasses = joinTailwindClasses(isHomepage ? "!absolute top-0" : "bg-bg-primary", landingPage && "!static");
 
   const menuIcon = router.pathname !== "/" ? CPRMenuButton : undefined;
 
@@ -97,7 +106,12 @@ export const Header = ({ landingPage = false }: IProps) => {
     <NavBar
       headerClasses={navBarClasses}
       logo={CPRLogo}
-      menu={<MainMenu icon={menuIcon} links={MENU_LINKS} />}
+      menu={
+        <div className="flex items-center gap-1">
+          <ColourSchemeToggle />
+          <MainMenu icon={menuIcon} links={MENU_LINKS} />
+        </div>
+      }
       menuButtons={isHomepage ? undefined : newSearch ? undefined : showSearch ? undefined : <MenuButtons />}
       showLogo={!isHomepage}
       showSearch={showSearch && !newSearch}

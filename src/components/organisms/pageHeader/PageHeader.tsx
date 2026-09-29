@@ -37,7 +37,7 @@ export const PageHeader = <TabId extends string>({
   title,
 }: TProps<TabId>) => {
   const hasTabs = tabs.length > 0;
-  const containerClasses = joinTailwindClasses("pt-9", hasTabs ? "pb-6" : "pb-12", dark && "mb-8 bg-[#f3f4f6]");
+  const containerClasses = joinTailwindClasses("pt-9", hasTabs ? "pb-6" : "pb-12", dark && "mb-8 bg-bg-subtle");
 
   return (
     <div className={containerClasses}>
@@ -46,15 +46,15 @@ export const PageHeader = <TabId extends string>({
         <div className="col-start-1 cols-4:col-start-3 -col-end-1 cols-5:col-end-9 flex flex-col gap-6">
           {/* Title */}
 
-          <h1 className="text-3xl text-[#030712] leading-9 font-heavy">{title}</h1>
+          <h1 className="text-3xl text-text-heading leading-9 font-heavy">{title}</h1>
 
           {/* Metadata */}
           {metadata.length > 0 && (
             <div className="grid grid-cols-[min-content_auto] gap-x-8 gap-y-2 text-sm">
               {metadata.map((property, index) => (
                 <Fragment key={index}>
-                  <div className="text-[#030712] font-medium whitespace-nowrap">{property.label}</div>
-                  <div className="text-[#374151]">{property.value}</div>
+                  <div className="text-text-heading font-medium whitespace-nowrap">{property.label}</div>
+                  <div className="text-text-content">{property.value}</div>
                 </Fragment>
               ))}
             </div>
