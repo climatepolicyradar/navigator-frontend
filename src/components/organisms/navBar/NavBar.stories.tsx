@@ -23,8 +23,8 @@ export default meta;
 
 const CPRArgs = {
   headerClasses: "",
-  logo: CPRLogo,
-  menu: <MainMenu icon={CPRMenuButton} links={MENU_LINKS} />,
+  logo: <CPRLogo />,
+  menu: <MainMenu icon={<CPRMenuButton />} links={MENU_LINKS} />,
   showLogo: true,
   showSearch: true,
 };
