@@ -87,7 +87,7 @@ export const Header = ({ landingPage = false }: IProps) => {
   const newSearch = features["new-search"];
 
   const isHomepage = router.pathname === "/";
-  const showSearch = router.pathname !== "/" && !landingPage && router.pathname !== "/_search";
+  const showSearch = !features["new-search"] && !["/", "/_search"].includes(router.pathname) && !landingPage;
 
   const navBarClasses = joinTailwindClasses(isHomepage ? "!absolute top-0" : "bg-white", landingPage && "!static");
 

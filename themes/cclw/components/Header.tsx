@@ -1,10 +1,12 @@
 import Image from "next/image";
 import { useRouter } from "next/router";
+import { useContext } from "react";
 
 import { MENU_LINKS } from "@/cclw/constants/menuLinks";
 import { PageLink } from "@/components/atoms/pageLink/PageLink";
 import MainMenu from "@/components/molecules/mainMenu/MainMenu";
 import { NavBar } from "@/components/organisms/navBar/NavBar";
+import { FeaturesContext } from "@/context/FeaturesContext";
 
 const CCLWLogo = (
   <PageLink href="/" data-cy="cclw-logo">
@@ -19,9 +21,10 @@ const CCLWLogo = (
 
 const Header = () => {
   const router = useRouter();
+  const features = useContext(FeaturesContext);
 
   const showLogo = router.pathname !== "/";
-  const showSearch = router.pathname !== "/";
+  const showSearch = !features["new-search"] && !["/", "/_search"].includes(router.pathname);
 
   return <NavBar headerClasses="bg-cclw-dark" logo={CCLWLogo} menu={<MainMenu links={MENU_LINKS} />} showLogo={showLogo} showSearch={showSearch} />;
 };

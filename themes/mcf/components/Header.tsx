@@ -1,10 +1,12 @@
 import { LucideMenu } from "lucide-react";
 import Image from "next/image";
 import { useRouter } from "next/router";
+import { useContext } from "react";
 
 import { PageLink } from "@/components/atoms/pageLink/PageLink";
 import MainMenu from "@/components/molecules/mainMenu/MainMenu";
 import { NavBar } from "@/components/organisms/navBar/NavBar";
+import { FeaturesContext } from "@/context/FeaturesContext";
 import { MENU_LINKS } from "@/mcf/constants/menuLinks";
 
 const MCFLogo = (
@@ -15,8 +17,9 @@ const MCFLogo = (
 
 export const Header = () => {
   const router = useRouter();
+  const features = useContext(FeaturesContext);
 
-  const showSearch = router.pathname !== "/";
+  const showSearch = !features["new-search"] && !["/", "/_search"].includes(router.pathname);
   const showBorder = router.pathname !== "/";
 
   return (
