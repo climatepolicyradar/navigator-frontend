@@ -1,11 +1,8 @@
 import sortBy from "lodash/sortBy";
 
+import themeConfig from "@/cclw/config";
 import { TFiltersGroupPrep } from "@/types";
-
-const ORDERED_ALLOWED_CATEGORIES = ["UN submission", "Law", "Policy"];
+import { filterLabelCategories } from "@/utils/filters/preps/filterLabelCategories";
 
 export const prepareCCLWFilters: TFiltersGroupPrep = (rootLabels) =>
-  sortBy(
-    rootLabels.filter((label) => ORDERED_ALLOWED_CATEGORIES.includes(label.value)),
-    (label) => ORDERED_ALLOWED_CATEGORIES.findIndex((category) => category === label.value)
-  );
+  sortBy(filterLabelCategories(rootLabels, themeConfig), (label) => themeConfig.searchCategories.findIndex((category) => category === label.value));

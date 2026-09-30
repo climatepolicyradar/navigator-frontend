@@ -1,9 +1,7 @@
 import sortBy from "lodash/sortBy";
 
+import themeConfig from "@/cpr/config";
 import { TFiltersGroupPrep } from "@/types";
+import { filterLabelCategories } from "@/utils/filters/preps/filterLabelCategories";
 
-export const prepareCPRFilters: TFiltersGroupPrep = (rootLabels) =>
-  sortBy(
-    rootLabels.filter((label) => label.value !== "Litigation"),
-    "value"
-  );
+export const prepareCPRFilters: TFiltersGroupPrep = (rootLabels) => sortBy(filterLabelCategories(rootLabels, themeConfig), "value");
