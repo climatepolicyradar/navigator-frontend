@@ -20,11 +20,10 @@ export const Header = () => {
   const router = useRouter();
   const features = useContext(FeaturesContext);
 
-  const showLogo = router.pathname !== "/";
-  const showSearch = !features["new-search"] && (router.pathname === "/search" || router.pathname.startsWith("/geographies"));
-  const isNotHome = router.pathname !== "/";
+  const isHomePage = router.pathname === "/";
+  const showSearch = router.pathname !== "/_search" && !features["new-search"] && !isHomePage;
 
-  const headerClasses = joinTailwindClasses("bg-white", isNotHome && "!bg-[#677787]");
+  const headerClasses = joinTailwindClasses("bg-white", !isHomePage && "!bg-[#677787]");
   const menuIconClasses = router.pathname === "/" ? "text-gray-950" : "text-white";
 
   return (
@@ -32,7 +31,7 @@ export const Header = () => {
       headerClasses={headerClasses}
       logo={CCCLogo}
       menu={<MainMenu icon={<LucideMenu size={24} className={menuIconClasses} />} links={MENU_LINKS} />}
-      showLogo={showLogo}
+      showLogo={!isHomePage}
       showSearch={showSearch}
     />
   );

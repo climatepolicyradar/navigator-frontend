@@ -8,13 +8,12 @@ interface IProps {
   headerClasses?: string;
   logo: ReactNode;
   menu: ReactNode;
-  menuButtons?: ReactNode;
   showLogo?: boolean;
   showSearch?: boolean;
   topContent?: ReactNode;
 }
 
-export const NavBar = ({ headerClasses = "", logo, menu, menuButtons, showLogo = true, showSearch = true, topContent }: IProps) => {
+export const NavBar = ({ headerClasses = "", logo, menu, showLogo = true, showSearch = true, topContent }: IProps) => {
   const [isScrolled, setIsScrolled] = useState(false);
 
   useEffect(() => {
@@ -46,7 +45,7 @@ export const NavBar = ({ headerClasses = "", logo, menu, menuButtons, showLogo =
             <NavSearch />
           </div>
         )}
-        <div className="flex items-center justify-end -col-end-1">{menuButtons ? menuButtons : menu}</div>
+        <div className="flex items-center justify-end -col-end-1">{menu}</div>
       </FiveColumns>
     </header>
   );

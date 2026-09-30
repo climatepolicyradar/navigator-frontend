@@ -23,10 +23,12 @@ const Header = () => {
   const router = useRouter();
   const features = useContext(FeaturesContext);
 
-  const showLogo = router.pathname !== "/";
-  const showSearch = !features["new-search"] && (router.pathname === "/search" || router.pathname.startsWith("/geographies"));
+  const isHomePage = router.pathname === "/";
+  const showSearch = router.pathname !== "/_search" && !features["new-search"] && !isHomePage;
 
-  return <NavBar headerClasses="bg-cclw-dark" logo={CCLWLogo} menu={<MainMenu links={MENU_LINKS} />} showLogo={showLogo} showSearch={showSearch} />;
+  return (
+    <NavBar headerClasses="bg-cclw-dark" logo={CCLWLogo} menu={<MainMenu links={MENU_LINKS} />} showLogo={!isHomePage} showSearch={showSearch} />
+  );
 };
 
 export default Header;

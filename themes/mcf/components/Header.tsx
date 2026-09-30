@@ -19,12 +19,12 @@ export const Header = () => {
   const router = useRouter();
   const features = useContext(FeaturesContext);
 
-  const showSearch = !features["new-search"] && (router.pathname === "/search" || router.pathname.startsWith("/geographies"));
-  const showBorder = router.pathname !== "/";
+  const isHomePage = router.pathname === "/";
+  const showSearch = router.pathname !== "/_search" && !features["new-search"] && !isHomePage;
 
   return (
     <NavBar
-      headerClasses={`bg-white min-h-20 ${showBorder ? "border-b border-gray-300 border-solid" : ""}`}
+      headerClasses={`bg-white min-h-20 ${!isHomePage ? "border-b border-gray-300 border-solid" : ""}`}
       logo={MCFLogo}
       menu={<MainMenu icon={<LucideMenu size={24} className="text-gray-950" />} links={MENU_LINKS} />}
       showSearch={showSearch}
