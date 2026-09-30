@@ -8,6 +8,7 @@ import { PageLink } from "@/components/atoms/pageLink/PageLink";
 import MainMenu from "@/components/molecules/mainMenu/MainMenu";
 import { NavBar } from "@/components/organisms/navBar/NavBar";
 import { FeaturesContext } from "@/context/FeaturesContext";
+import { MenuButtons } from "@/cpr/components/MenuButtons";
 import { MENU_LINKS } from "@/cpr/constants/menuLinks";
 import { joinTailwindClasses } from "@/utils/tailwind";
 
@@ -60,36 +61,15 @@ const OtherAppsBar = () => (
   </div>
 );
 
-const MENU_BUTTONS = [
-  { url: "/search", label: "Search", external: false },
-  { url: "https://climatepolicyradar.org", label: "About", external: true },
-  { url: "/faq", label: "FAQs", external: false },
-];
-
-const MenuButtons = () => (
-  <div className="flex items-center gap-1">
-    {MENU_BUTTONS.map(({ url, label, external }) => (
-      <PageLink
-        key={label}
-        href={url}
-        external={external}
-        className="px-3 py-2 rounded-md text-sm font-medium text-text-primary bg-white hover:bg-bg-flat"
-      >
-        {label}
-      </PageLink>
-    ))}
-  </div>
-);
-
 export const Header = ({ landingPage = false }: IProps) => {
   const router = useRouter();
   const features = useContext(FeaturesContext);
   const newSearch = features["new-search"];
 
-  const isHomepage = router.pathname === "/";
-  const showSearch = router.pathname !== "/" && !landingPage && router.pathname !== "/_search";
+  const isHomePage = router.pathname === "/";
+  const showSearch = !landingPage && router.pathname !== "/_search" && !newSearch && !isHomePage;
 
-  const navBarClasses = joinTailwindClasses(isHomepage ? "!absolute top-0" : "bg-white", landingPage && "!static");
+  const navBarClasses = joinTailwindClasses(isHomePage ? "!absolute top-0" : "bg-white", landingPage && "!static");
 
   const menuIcon = router.pathname !== "/" ? CPRMenuButton : undefined;
 
@@ -97,10 +77,9 @@ export const Header = ({ landingPage = false }: IProps) => {
     <NavBar
       headerClasses={navBarClasses}
       logo={CPRLogo}
-      menu={<MainMenu icon={menuIcon} links={MENU_LINKS} />}
-      menuButtons={isHomepage ? undefined : newSearch ? undefined : showSearch ? undefined : <MenuButtons />}
-      showLogo={!isHomepage}
-      showSearch={showSearch && !newSearch}
+      menu={newSearch ? <MenuButtons /> : <MainMenu icon={menuIcon} links={MENU_LINKS} />}
+      showLogo={!isHomePage}
+      showSearch={showSearch}
       topContent={newSearch ? <OtherAppsBar /> : undefined}
     />
   );
