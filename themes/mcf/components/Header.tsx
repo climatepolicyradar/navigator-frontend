@@ -19,7 +19,7 @@ export const Header = () => {
   const router = useRouter();
   const features = useContext(FeaturesContext);
 
-  const showSearch = !features["new-search"] && !["/", "/_search"].includes(router.pathname);
+  const showSearch = !features["new-search"] && (router.pathname === "/search" || router.pathname.startsWith("/geographies"));
   const showBorder = router.pathname !== "/";
 
   return (

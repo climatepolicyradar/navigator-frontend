@@ -24,7 +24,7 @@ const Header = () => {
   const features = useContext(FeaturesContext);
 
   const showLogo = router.pathname !== "/";
-  const showSearch = !features["new-search"] && !["/", "/_search"].includes(router.pathname);
+  const showSearch = !features["new-search"] && (router.pathname === "/search" || router.pathname.startsWith("/geographies"));
 
   return <NavBar headerClasses="bg-cclw-dark" logo={CCLWLogo} menu={<MainMenu links={MENU_LINKS} />} showLogo={showLogo} showSearch={showSearch} />;
 };

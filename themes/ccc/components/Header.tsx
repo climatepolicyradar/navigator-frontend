@@ -21,7 +21,7 @@ export const Header = () => {
   const features = useContext(FeaturesContext);
 
   const showLogo = router.pathname !== "/";
-  const showSearch = !features["new-search"] && !["/", "/_search"].includes(router.pathname);
+  const showSearch = !features["new-search"] && (router.pathname === "/search" || router.pathname.startsWith("/geographies"));
   const isNotHome = router.pathname !== "/";
 
   const headerClasses = joinTailwindClasses("bg-white", isNotHome && "!bg-[#677787]");
