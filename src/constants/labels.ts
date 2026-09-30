@@ -47,4 +47,9 @@ export const LABEL_DISPLAY_REPLACEMENTS: TLabelDisplayReplacement[] = [
     idMatch: `entity_type${SEP}`,
     type: "Document Type",
   },
+  {
+    parentId: ["category", "Global Stocktake"].join(SEP),
+    idMatch: `author_type${SEP}`,
+    type: "Type",
+  },
 ];
