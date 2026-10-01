@@ -4,11 +4,10 @@ import Banner from "@/components/banner/FullHeight";
 import Footer from "@/components/footer/Footer";
 import Layout from "@/components/layouts/LandingPage";
 import { SiteWidth } from "@/components/panels/SiteWidth";
+import FeatureCards from "@/cpr/components/FeatureCards";
 import { Header } from "@/cpr/components/Header";
 import LandingPageLinks from "@/cpr/components/LandingPageLinks";
 import LandingSearchForm from "@/cpr/components/LandingSearchForm";
-import Partners from "@/cpr/components/Partners";
-import Summary from "@/cpr/components/Summary";
 import { TTheme, TThemeConfig } from "@/types";
 
 // TODO temporarily disabled: https://climate-policy-radar.slack.com/archives/C08Q8GD1CUT/p1745941756888349
@@ -51,8 +50,7 @@ const LandingPage = ({ handleSearchInput, handleSearchChange, searchInput, exact
         {/* <FullWidth extraClasses="hidden my-6 md:block">
           <WorldMap showLitigation />
         </FullWidth> */}
-        <Summary />
-        <Partners />
+        <FeatureCards />
         <Footer />
       </div>
     </Layout>
