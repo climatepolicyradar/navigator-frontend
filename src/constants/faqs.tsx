@@ -44,6 +44,20 @@ export const FAQS_DICTIONARY: Record<TFAQKey, TFAQ> = {
       </p>
     ),
   },
+  useOperators: {
+    title: "Can I use operators in the search bar?",
+    content: (
+      <>
+        <p>
+          You can use quotation marks to ensure that the whole of a phrase must be matched, exactly as typed. For example, typing{" "}
+          <i>UK climate act</i> will match any of the words within it, but typing <i>“UK climate act”</i> will match only the exact phrase. You can
+          also combine multiple phrases such as <i>“net zero” “by 2050”</i> or add quotations to only part of your search such as{" "}
+          <i>UK climate act “fossil fuels”.</i>
+        </p>
+        <p>We do not currently support other search operators such as -, and, or, not. Try using filters to refine your results instead.</p>
+      </>
+    ),
+  },
   howDownload: {
     title: "How do I download search results?",
     content: (
@@ -368,6 +382,7 @@ const PLATFORM_FAQS_KEYS: TFAQKey[] = [
   "howTextSearch",
   "whyTopicsNoHighlight",
   "howFilter",
+  "useOperators",
   "howDownload",
   "canAPI",
   "whyNoMatches",

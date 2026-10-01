@@ -17,6 +17,7 @@ export type TFAQKey =
   | "howWeTranslate"
   | "searchDocsForTopics"
   | "shouldConcernedImpact"
+  | "useOperators"
   | "whatImprovementsNext"
   | "whatLimitations"
   | "whatMultipleTopics"
