@@ -1,5 +1,7 @@
 import { ReactNode } from "react";
 
+import { TFeature } from "@/types";
+
 // Ensures that removing FAQ items that are in use causes build errors, especially when removing an FAQ also used in a tooltip
 export type TFAQKey =
   | "canAPI"
@@ -32,6 +34,7 @@ export type TFAQ = {
   title: string;
   content: ReactNode;
   headContent?: ReactNode;
+  featureKey?: TFeature;
 };
 
 export type TProductSupportKey = "mostRecent" | "searchInsideDoc" | "textHighlighting" | "topics";
