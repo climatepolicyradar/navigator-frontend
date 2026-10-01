@@ -254,6 +254,19 @@ jobs:
             exit 1
           fi
 
+      - name: Fetch ${{ matrix.theme }} review stack URL
+        id: fetch_url
+        if: steps.wait_deployment.outcome == 'success'
+        env:
+          STACK_NAME: ${{ steps.stack.outputs.stack_name }}
+        run: |
+          review_url=$(pulumi stack output ecs_service_url --stack "${ORG}/${PROJECT}/${STACK_NAME}")
+          if [ -z "$review_url" ]; then
+            echo "ecs_service_url stack output was empty"
+            exit 1
+          fi
+          echo "review_url=$review_url" >> "$GITHUB_OUTPUT"
+
       - name: Post ${{ matrix.theme }} confirmation comment
         if: steps.wait_deployment.outcome == 'success'
         env:
@@ -262,13 +275,14 @@ jobs:
           PR_NUMBER: ${{ github.event.issue.number }}
           THEME: ${{ matrix.theme }}
           CONSOLE_URL: ${{ steps.trigger_update.outputs.console_url }}
+          REVIEW_URL: ${{ steps.fetch_url.outputs.review_url }}
         run: |
           marker="<!-- use-search-api-override:${THEME} -->"
 
           if [ "$MODE" = "prod" ]; then
-            body="${marker}"$'\n'"**${THEME}**: reverted to production search-api. [Deployment logs](${CONSOLE_URL})"
+            body="${marker}"$'\n'"**${THEME}** review stack: ${REVIEW_URL}"$'\n\n'"Reverted to production search-api. [Deployment logs](${CONSOLE_URL})"
           else
-            body="${marker}"$'\n'"**${THEME}**: pointed at climatepolicyradar/search#${SEARCH_PR_NUMBER}'s review stack. [Deployment logs](${CONSOLE_URL})"
+            body="${marker}"$'\n'"**${THEME}** review stack: ${REVIEW_URL}"$'\n\n'"Pointed at climatepolicyradar/search#${SEARCH_PR_NUMBER}'s review stack. [Deployment logs](${CONSOLE_URL})"
           fi
 
           existing_comment_id=$(gh api \
