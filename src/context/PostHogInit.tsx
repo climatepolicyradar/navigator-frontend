@@ -69,7 +69,7 @@ function PostHogPageView({ consent, pageViewProps }: TPostHogPageViewProps): nul
         pageType,
         pageTypeSlug,
         search_level: searchLevelFromParams(route, searchParams),
-        ...searchPropertiesFromParams(pathname, searchParams),
+        ...searchPropertiesFromParams(route, searchParams),
         result_slug: principalSlug ?? undefined,
         document_slug: documentSlug ?? undefined,
         topic_id: topicId ?? undefined,
