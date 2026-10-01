@@ -1,7 +1,7 @@
 import { LucideCode2, LucideGlobe } from "lucide-react";
 import type { LucideIcon } from "lucide-react";
 
-import { ExternalLink } from "@/components/ExternalLink";
+import { PageLink } from "@/components/atoms/pageLink/PageLink";
 import { SiteWidth } from "@/components/panels/SiteWidth";
 
 type TFeatureCard = {
@@ -39,15 +39,19 @@ const FeatureCards = () => {
             className="flex flex-1 flex-col items-center gap-4 px-4 pt-5 pb-5 text-center bg-white border border-border-light rounded-lg"
           >
             <div className="flex items-center justify-center size-12 bg-inky-blue/5 rounded-full">
-              <Icon className="text-inky-blue" size={24} />
+              <Icon className="text-text-brand" size={24} />
             </div>
             <div className="flex flex-col gap-2">
               <p className="text-base font-medium text-text-primary">{title}</p>
               <p className="text-base text-text-secondary">{description}</p>
             </div>
-            <ExternalLink url={linkUrl} className="px-3 py-2 text-[15px] font-medium leading-5 text-white bg-inky-blue rounded-md hocus:bg-inky-navy">
+            <PageLink
+              external
+              href={linkUrl}
+              className="px-3 py-2 text-[15px] font-medium leading-5 text-white bg-inky-blue rounded-md hocus:bg-inky-navy"
+            >
               {linkLabel}
-            </ExternalLink>
+            </PageLink>
           </div>
         ))}
       </SiteWidth>
