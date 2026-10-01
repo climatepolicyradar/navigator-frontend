@@ -23,11 +23,8 @@ function PostHogPageView({ consent, pageViewProps }: TPostHogPageViewProps): nul
   const posthog = usePostHog();
   /**
    * The page route, as opposed to `pathname` above. usePathname reads router.asPath, so on themes
-   * where /search is rewritten to /_search (themes/THEME/rewrites.json) it reports the URL the user
-   * sees. Search levels belong to the page, so they have to be read off the route.
-   *
-   * pathname above is "/search" but the route below is "/_search" for CPR
-   * searchpath in searchLevelFromParams needs the "/_search" route
+   * it reports the URL the user sees. Search levels belong to the page, so they have to be read
+   * off the route. pathname above is "/search" and since launch the route below is "/search"
    */
   const { pathname: route } = useRouter();
 
@@ -54,7 +51,9 @@ function PostHogPageView({ consent, pageViewProps }: TPostHogPageViewProps): nul
 
       if (pathParts[1] === "geographies") {
         const subdivisionMatcher = /^[a-z]{2}-[a-z]{2,3}$/i;
-        geographyType = subdivisionMatcher.test(pathParts[2]) ? "subdivision" : "country";
+        geographyType = subdivisionMatcher.test(pathParts[2])
+          ? "subdivision"
+          : "country";
       }
 
       const principalSlug = searchParams.get(levelIdParamKey("principal"));
@@ -69,7 +68,7 @@ function PostHogPageView({ consent, pageViewProps }: TPostHogPageViewProps): nul
         pageType,
         pageTypeSlug,
         search_level: searchLevelFromParams(route, searchParams),
-        ...searchPropertiesFromParams(pathname, searchParams),
+        ...searchPropertiesFromParams(route, searchParams),
         result_slug: principalSlug ?? undefined,
         document_slug: documentSlug ?? undefined,
         topic_id: topicId ?? undefined,
