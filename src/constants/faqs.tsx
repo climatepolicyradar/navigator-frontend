@@ -46,6 +46,7 @@ export const FAQS_DICTIONARY: Record<TFAQKey, TFAQ> = {
   },
   useOperators: {
     title: "Can I use operators in the search bar?",
+    featureKey: "new-search",
     content: (
       <>
         <p>
