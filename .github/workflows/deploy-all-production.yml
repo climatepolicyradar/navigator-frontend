@@ -100,14 +100,22 @@ jobs:
           fi
 
       - name: Upload static assets to S3
+        id: upload-static
         env:
           BUCKET_NAME: ${{ matrix.theme }}-frontend-production-next-static
         run: |
           set -euo pipefail
-          # No --delete: these paths are per-build content hashes and must
-          # outlive the container that shipped them, for clients still holding
-          # the old HTML. The bucket lifecycle rule expires them instead.
-          aws s3 sync ./next-static "s3://${BUCKET_NAME}/_next/static/" \
+          # Recorded before the upload so the mark-stale step below can tell
+          # this build's objects from the ones it supersedes.
+          echo "uploaded_after=$(date -u +%Y-%m-%dT%H:%M:%SZ)" >> "$GITHUB_OUTPUT"
+          # cp --recursive rather than sync: sync skips a key whose size matches
+          # and whose mtime is no newer, and a chunk carried unchanged into this
+          # build would then keep both the age the lifecycle rule measures and
+          # any stale tag a previous deploy left on it -- deleting it while
+          # live. Rewriting every object resets the age and clears the tag.
+          # Still no --delete: superseded chunks must outlive the container that
+          # shipped them, for clients still holding the old HTML.
+          aws s3 cp ./next-static "s3://${BUCKET_NAME}/_next/static/" --recursive \
             --cache-control "public,max-age=31536000,immutable"
 
       # Runs after assets are uploaded, not on merge to main: pulumi up can
@@ -158,3 +166,14 @@ jobs:
         run: >
           .github/workflows/scripts/deploy_ecs_express.sh
           frontend-production ${{ matrix.theme }}-frontend-production ${{ steps.build-image.outputs.image }}
+
+      # Last, and deliberately after the rollout rather than after the upload:
+      # until ECS reports success the previous build is still serving traffic,
+      # so tagging its assets would queue the live site's chunks for deletion.
+      # Runs under the deploy role the ECS step above re-assumed.
+      - name: Mark superseded assets stale
+        env:
+          BUCKET_NAME: ${{ matrix.theme }}-frontend-production-next-static
+        run: >
+          .github/workflows/scripts/mark_stale_next_static.sh
+          "$BUCKET_NAME" "${{ steps.upload-static.outputs.uploaded_after }}"

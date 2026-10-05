@@ -5,9 +5,15 @@ than overwrite: a client still running an old build can keep fetching its own
 chunks after a newer task has replaced the container that served them.
 
 Keys mirror the request path (`_next/static/...`) because CloudFront asks the
-origin for the path verbatim. A lifecycle rule expires objects so the bucket
-doesn't grow forever -- note S3 expiry is by object age, not last access, so the
-window must comfortably exceed the longest expected gap between deploys.
+origin for the path verbatim.
+
+Reclaiming superseded builds is driven by CI, not by object age. S3 expiry is
+by age, not last access, so an age-only rule deletes the live build's assets
+during any quiet spell longer than the window -- and CloudFront has no failover
+origin for this path, so that is a site outage. Instead each deploy re-uploads
+every asset of the build going live and then tags whatever it did not re-upload
+`stale=true`, and the one lifecycle rule matches nothing else. Untagged means
+live, so no rule here assumes anything about how often we deploy.
 """
 
 from collections.abc import Sequence
@@ -23,10 +29,10 @@ from resources.util import tag_name
 class NextStaticBucketConfig:
     """Configuration for the /_next/static asset bucket."""
 
-    # Days to retain a build's assets. Must exceed the longest expected gap
-    # between deploys -- expiry is by object age, so a quiet month would
-    # otherwise delete the live build's assets.
-    expiration_days: int = 30
+    # We tag stale assets with [{Key=stale,Value=true}] in .github/workflows/scripts/mark_stale_next_static.sh
+    # and the lifecycle policy here removes them.
+    # @related: REMOVING_STALE_ASSETS
+    stale_expiration_days: int = 7
 
 
 class NextStaticBucket(pulumi.ComponentResource):
@@ -54,7 +60,6 @@ class NextStaticBucket(pulumi.ComponentResource):
         tags: dict[str, str] | None = None,
         opts: pulumi.ResourceOptions | None = None,
     ):
-
         super().__init__("cpr:s3:NextStaticBucket", name, None, opts)
 
         # Set default tags first, then extend/override with user tags if provided
@@ -81,15 +86,18 @@ class NextStaticBucket(pulumi.ComponentResource):
             bucket=self.bucket.id,
             rules=[
                 aws.s3.BucketLifecycleConfigurationRuleArgs(
-                    id="expire-old-builds",
+                    id="expire-stale-builds",
                     status="Enabled",
                     filter=aws.s3.BucketLifecycleConfigurationRuleFilterArgs(
-                        prefix="",
+                        and_=aws.s3.BucketLifecycleConfigurationRuleFilterAndArgs(
+                            prefix="_next/static/",
+                            tags={"stale": "true"},
+                        ),
                     ),
                     expiration=aws.s3.BucketLifecycleConfigurationRuleExpirationArgs(
-                        days=config.expiration_days,
+                        days=config.stale_expiration_days,
                     ),
-                )
+                ),
             ],
             opts=pulumi.ResourceOptions(parent=self),
         )
