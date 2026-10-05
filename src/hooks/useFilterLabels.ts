@@ -1,13 +1,14 @@
 import { useEffect, useState } from "react";
 
 import { loadFilteredLabels, loadLabelTaxonomy } from "@/hooks/useLabelSearch";
-import { TFeatures, TSearchLabel, TSearchQueryGroup } from "@/types";
+import { TFeatures, TSearchLabel, TSearchQueryGroup, TThemeConfig } from "@/types";
 
 interface IProps {
   features: TFeatures;
+  themeConfig: TThemeConfig;
 }
 
-export const useFilterLabels = ({ features }: IProps): TSearchLabel[] => {
+export const useFilterLabels = ({ features, themeConfig }: IProps): TSearchLabel[] => {
   const [availableFilters, setAvailableFilters] = useState<TSearchLabel[]>([]);
 
   useEffect(() => {
@@ -38,6 +39,25 @@ export const useFilterLabels = ({ features }: IProps): TSearchLabel[] => {
         value: "subdivision",
       });
     }
+    if (themeConfig.searchCategories.includes("Litigation")) {
+      searchQueryGroup.filters.push(
+        {
+          field: "type",
+          op: "contains",
+          value: "jurisdiction",
+        },
+        {
+          field: "type",
+          op: "contains",
+          value: "case_category",
+        },
+        {
+          field: "type",
+          op: "contains",
+          value: "principal_law",
+        }
+      );
+    }
 
     const loadedFilteredLabels = loadFilteredLabels(searchQueryGroup);
 
@@ -47,7 +67,7 @@ export const useFilterLabels = ({ features }: IProps): TSearchLabel[] => {
     const allFilterLabels = Promise.all([loadedFilteredLabels, loadedLabelTaxonomy]);
 
     allFilterLabels.then(([filteredLabels, labelTaxonomy]) => setAvailableFilters([...filteredLabels, ...labelTaxonomy]));
-  }, [features.subdivisions]);
+  }, [features.subdivisions, themeConfig.searchCategories]);
 
   return availableFilters;
 };
