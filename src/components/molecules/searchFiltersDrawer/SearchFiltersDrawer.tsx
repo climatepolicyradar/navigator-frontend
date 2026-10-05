@@ -21,7 +21,7 @@ export const SearchFiltersDrawer = ({ filterGroup }: IProps) => {
         className="flex gap-2 items-center px-3 py-2 bg-bg-primary text-sm text-text-primary font-medium leading-5 border border-border-normal rounded-full"
         onClick={() => setIsOpen((current) => !current)}
       >
-        {Icon && <Icon size={16} className="text-elem-icon" />}
+        {Icon && <Icon size={16} className="text-text-brand" />}
         <span>{title}</span>
       </button>
       <Drawer
