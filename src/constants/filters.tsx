@@ -6,7 +6,7 @@ export const PASSAGE_FILTER_GROUPS: TFiltersGroupConfig[] = [
   {
     container: "popover",
     emptyStateRender: ZeroStateSearchNoTopics,
-    prepareRootLabels: prepareTopicFilters,
+    prepareRootLabels: prepareTopicFilters([]),
     rootLabelTypes: ["concept"],
     title: "Topic",
   },
