@@ -33,9 +33,24 @@ export const LABEL_DISPLAY_REPLACEMENTS: TLabelDisplayReplacement[] = [
     subtitle: "Funding source of publisher",
   },
   {
+    idMatch: ["group", "case_category"].join(SEP),
+    name: "Case categories",
+    subtitle: "Including industries, laws and topics",
+  },
+  {
     idMatch: ["group", "entity_type"].join(SEP),
     name: "Type",
     subtitle: "Project or guidance",
+  },
+  {
+    idMatch: ["group", "jurisdiction"].join(SEP),
+    name: "Jurisdictions",
+    subtitle: "Publishing court or entity",
+  },
+  {
+    idMatch: ["group", "principal_law"].join(SEP),
+    name: "Principal laws",
+    subtitle: "Organised by article and governing body",
   },
   {
     parentId: ["category", "Multilateral Climate Fund project"].join(SEP),
