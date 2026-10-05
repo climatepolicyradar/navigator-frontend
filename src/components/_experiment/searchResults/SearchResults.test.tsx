@@ -32,19 +32,28 @@ const emptyResponse: SearchDocumentsResponse = {
 
 import { fetchSearchPrincipalDocuments, SearchDocument, SearchDocumentsResponse } from "@/api/search";
 import { createGroup } from "@/components/_experiment/advancedFilters/AdvancedFilters";
+import { DEFAULT_THEME_CONFIG } from "@/constants/themeConfig";
+import { IProps as IThemeContextProps, ThemeContext } from "@/context/ThemeContext";
 import { upsertPublishedDateRangeRules } from "@/utils/_experiment/dateRangeFilters";
 
 import { SearchContainer, shouldRetrySearch } from "./SearchResults";
 
 const searchError = (status: number) => Object.assign(new Error(`Search API error: ${status}`), { status });
 
+const loadedTheme: IThemeContextProps = { theme: "cpr", themeConfig: DEFAULT_THEME_CONFIG, loaded: true };
+
 // The queries set their own retry policy, so the client only supplies a provider.
-const renderWith = (ui: React.ReactElement) => {
+const renderWith = (ui: React.ReactElement, theme: IThemeContextProps = loadedTheme) => {
   const queryClient = new QueryClient();
-  const result = render(<QueryClientProvider client={queryClient}>{ui}</QueryClientProvider>);
+  const wrap = (node: React.ReactElement, themeValue: IThemeContextProps) => (
+    <QueryClientProvider client={queryClient}>
+      <ThemeContext.Provider value={themeValue}>{node}</ThemeContext.Provider>
+    </QueryClientProvider>
+  );
+  const result = render(wrap(ui, theme));
   return {
     ...result,
-    rerenderWith: (next: React.ReactElement) => result.rerender(<QueryClientProvider client={queryClient}>{next}</QueryClientProvider>),
+    rerenderWith: (next: React.ReactElement, nextTheme: IThemeContextProps = theme) => result.rerender(wrap(next, nextTheme)),
   };
 };
 
@@ -65,6 +74,24 @@ describe("SearchContainer", () => {
     renderWith(<SearchContainer filters={filtersWithDate} />);
 
     await waitFor(() => expect(fetchSearchPrincipalDocuments).toHaveBeenCalled());
+  });
+
+  it("waits for the theme config to load before searching, then applies its categories", async () => {
+    vi.mocked(fetchSearchPrincipalDocuments).mockClear();
+    const filters = upsertPublishedDateRangeRules(createGroup(), "2020:2025");
+
+    const { rerenderWith } = renderWith(<SearchContainer query="climate" filters={filters} />, { ...loadedTheme, loaded: false });
+
+    expect(await screen.findByTestId("search-loading")).toBeInTheDocument();
+    expect(fetchSearchPrincipalDocuments).not.toHaveBeenCalled();
+
+    rerenderWith(<SearchContainer query="climate" filters={filters} />, {
+      ...loadedTheme,
+      themeConfig: { ...DEFAULT_THEME_CONFIG, searchCategories: ["Litigation"] },
+    });
+
+    await waitFor(() => expect(fetchSearchPrincipalDocuments).toHaveBeenCalledTimes(1));
+    expect(JSON.stringify(vi.mocked(fetchSearchPrincipalDocuments).mock.calls[0][0].filters)).toContain("category::Litigation");
   });
 
   it("shows a generic message in the page for other search failures", async () => {

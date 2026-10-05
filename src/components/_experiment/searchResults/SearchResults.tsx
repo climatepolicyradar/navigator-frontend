@@ -82,7 +82,7 @@ export function SearchContainer({
   onSearchingChange?: (isSearching: boolean) => void;
   onResultClicked?: (document: SearchDocument, event: React.MouseEvent<HTMLButtonElement>) => void;
 }) {
-  const { themeConfig } = useContext(ThemeContext);
+  const { themeConfig, loaded } = useContext(ThemeContext);
   // Drop placeholder rules (e.g. default empty label row) so date-only filters still fetch.
   const nonEmptyFilters = useMemo(() => {
     if (!filters) return undefined;
@@ -104,7 +104,7 @@ export function SearchContainer({
         sort,
         signal,
       }),
-    enabled: hasSearch,
+    enabled: hasSearch && loaded,
     retry: shouldRetrySearch,
     // A term's results do not change within a session.
     refetchOnWindowFocus: false,

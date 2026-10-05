@@ -95,5 +95,6 @@ export const filterPathsToQueryGroup = (
 
   // Add the date range to the top level AND group or create one
   const dateFilters = buildDateRangeFilters(dateRange);
+  if (allLabelPaths.length === 0) return { op: "and", filters: dateFilters };
   return result.op === "and" ? { ...result, filters: [...result.filters, ...dateFilters] } : { op: "and", filters: [result, ...dateFilters] };
 };
