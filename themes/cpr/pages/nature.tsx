@@ -41,40 +41,56 @@ export default function NatureLandingPage() {
         {
           label: "Deforestation targets",
           params: {
-            [QUERY_PARAMS.query_string]: "Deforestation targets",
+            [QUERY_PARAMS.query_string]: "deforestation",
           },
           newParams: {
             [QUERY_PARAMS.filters]: JSON.stringify({
               op: "and",
-              filters: [{ field: "labels.value.id", op: "contains", value: "domain::Nature", checked: true }],
+              filters: [
+                { field: "labels.value.id", op: "contains", value: "domain::Nature", checked: true },
+                { field: "labels.value.id", op: "contains", value: "concept::Q1651", checked: true },
+              ],
             }),
-            [QUERY_PARAMS.query_string]: "Deforestation targets",
+            [QUERY_PARAMS.query_string]: "deforestation",
           },
         },
         {
           label: "Marine spatial planning",
           params: {
-            [QUERY_PARAMS.query_string]: "Marine spatial planning",
+            [QUERY_PARAMS.query_string]: "marine",
           },
           newParams: {
             [QUERY_PARAMS.filters]: JSON.stringify({
               op: "and",
-              filters: [{ field: "labels.value.id", op: "contains", value: "domain::Nature", checked: true }],
+              filters: [
+                { field: "labels.value.id", op: "contains", value: "domain::Nature", checked: true },
+                { field: "labels.value.id", op: "contains", value: "category::Policy", checked: true },
+                { field: "labels.value.id", op: "contains", value: "concept::Q1282", checked: true },
+              ],
             }),
-            [QUERY_PARAMS.query_string]: "Marine spatial planning",
+            [QUERY_PARAMS.query_string]: "marine",
           },
         },
         {
-          label: "Freshwater adaptation in South Asia",
+          label: "Agricultural subsidies in Europe & Central Asia",
           params: {
-            [QUERY_PARAMS.query_string]: "Freshwater adaptation in South Asia",
+            [QUERY_PARAMS.query_string]: "Agricultural subsidies in Europe & Central Asia",
           },
           newParams: {
             [QUERY_PARAMS.filters]: JSON.stringify({
               op: "and",
-              filters: [{ field: "labels.value.id", op: "contains", value: "domain::Nature", checked: true }],
+              filters: [
+                { field: "labels.value.id", op: "contains", value: "domain::Nature", checked: true },
+                { field: "labels.value.id", op: "contains", value: "region::ECS", checked: true },
+                {
+                  op: "and",
+                  filters: [
+                    { field: "labels.value.id", op: "contains", value: "concept::Q1274", checked: true },
+                    { field: "labels.value.id", op: "contains", value: "concept::Q786", checked: true },
+                  ],
+                },
+              ],
             }),
-            [QUERY_PARAMS.query_string]: "Freshwater adaptation in South Asia",
           },
         },
       ],
