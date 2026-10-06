@@ -3,6 +3,8 @@ import { renderHook, waitFor } from "@testing-library/react";
 import React from "react";
 
 import { DocumentLabelRelationship, SearchDocument, SearchDocumentsResponse } from "@/api/search";
+import { DEFAULT_THEME_CONFIG } from "@/constants/themeConfig";
+import { IProps as IThemeContextProps, ThemeContext } from "@/context/ThemeContext";
 
 import { useDocumentTopics } from "./useDocumentTopics";
 
@@ -40,14 +42,22 @@ const searchResponse = (results: SearchDocument[]): SearchDocumentsResponse =>
     results,
   }) as SearchDocumentsResponse;
 
-const renderUseDocumentTopics = (...args: Parameters<typeof useDocumentTopics>) => {
+const loadedTheme: IThemeContextProps = { theme: "cpr", themeConfig: DEFAULT_THEME_CONFIG, loaded: true };
+
+const renderUseDocumentTopicsWithTheme = (theme: IThemeContextProps, ...args: Parameters<typeof useDocumentTopics>) => {
   const queryClient = new QueryClient({
     defaultOptions: { queries: { retry: false } },
   });
-  const wrapper = ({ children }: { children: React.ReactNode }) => <QueryClientProvider client={queryClient}>{children}</QueryClientProvider>;
+  const wrapper = ({ children }: { children: React.ReactNode }) => (
+    <QueryClientProvider client={queryClient}>
+      <ThemeContext.Provider value={theme}>{children}</ThemeContext.Provider>
+    </QueryClientProvider>
+  );
 
   return renderHook(() => useDocumentTopics(...args), { wrapper });
 };
+
+const renderUseDocumentTopics = (...args: Parameters<typeof useDocumentTopics>) => renderUseDocumentTopicsWithTheme(loadedTheme, ...args);
 
 describe("useDocumentTopics", () => {
   beforeEach(() => {
@@ -138,6 +148,14 @@ describe("useDocumentTopics", () => {
     const { result } = renderUseDocumentTopics(["CCLW.executive.1.1"], {
       enabled: false,
     });
+
+    await waitFor(() => expect(result.current).toEqual([]));
+
+    expect(mockFetchSearchDocuments).not.toHaveBeenCalled();
+  });
+
+  it("does not search until the theme config has loaded, so its search categories are applied", async () => {
+    const { result } = renderUseDocumentTopicsWithTheme({ ...loadedTheme, loaded: false }, ["CCLW.executive.1.1"]);
 
     await waitFor(() => expect(result.current).toEqual([]));
 

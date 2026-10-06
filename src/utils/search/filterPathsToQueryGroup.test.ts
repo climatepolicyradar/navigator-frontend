@@ -848,5 +848,12 @@ describe("filterPathsToQueryGroup", () => {
         filters: [orCase.searchQueryGroup, gteFilter, lteFilter],
       });
     });
+
+    it("only includes date filters when there are no label filters", () => {
+      expect(filterPathsToQueryGroup([], dateRange, "and")).toEqual({
+        op: "and",
+        filters: [gteFilter, lteFilter],
+      });
+    });
   });
 });
