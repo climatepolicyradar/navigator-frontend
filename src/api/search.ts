@@ -99,11 +99,6 @@ function searchDocumentsUrl(): string {
 
 // Add default filters exclusive of search parameters to ensure they are always applied
 function configureDocumentsFilters(filters: TSearchQueryGroup | undefined, searchCategories: TLabelCategoryValue[]): TSearchQueryGroup {
-  const publishedStatusFilter: TSearchQueryRule = {
-    field: "attributes.status",
-    op: "contains",
-    value: "published",
-  };
   const publishedDateBoundsFilter: TSearchQueryGroup = {
     op: "and",
     filters: [
@@ -130,9 +125,8 @@ function configureDocumentsFilters(filters: TSearchQueryGroup | undefined, searc
     })),
   };
 
-  // Always constrain document searches to published documents. Add default date
-  // bounds only when the user has not provided any published_date rule.
-  const filtersWithConditionals: (TSearchQueryGroup | TSearchQueryRule)[] = [publishedStatusFilter];
+  const filtersWithConditionals: (TSearchQueryGroup | TSearchQueryRule)[] = [];
+
   if (!hasPublishedDateRule(filters)) {
     filtersWithConditionals.push(publishedDateBoundsFilter);
   }
