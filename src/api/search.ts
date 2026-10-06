@@ -1,4 +1,5 @@
-import { TSearchQueryGroup } from "@/types";
+import { ID_SEPARATOR } from "@/constants/chars";
+import { TLabelCategoryValue, TSearchQueryGroup, TSearchQueryRule, TThemeConfig } from "@/types";
 import { DATE_RANGE_MIN_YEAR, hasPublishedDateRule } from "@/utils/_experiment/dateRangeFilters";
 
 interface DocumentLabel {
@@ -81,7 +82,8 @@ export function getSearchApiStatus(error: unknown): number | undefined {
   return error instanceof Error ? (error as Error & { status?: number }).status : undefined;
 }
 
-interface SearchDocumentsParams {
+interface ISearchDocumentsParams {
+  themeConfig: TThemeConfig;
   query?: string;
   filters?: TSearchQueryGroup;
   page_size?: string;
@@ -96,28 +98,7 @@ function searchDocumentsUrl(): string {
 }
 
 // Add default filters exclusive of search parameters to ensure they are always applied
-function configureDocumentsFilters(filters: TSearchQueryGroup | undefined): TSearchQueryGroup {
-  // TODO: update this when we apply a more custom-app focused approach to categories
-  const litigationFilter: TSearchQueryGroup = {
-    op: "and",
-    filters: [
-      {
-        field: "labels.value.id",
-        op: "not_contains",
-        value: "category::Litigation",
-      },
-    ],
-  };
-  const publishedStatusFilter: TSearchQueryGroup = {
-    op: "and",
-    filters: [
-      {
-        field: "attributes.status",
-        op: "contains",
-        value: "published",
-      },
-    ],
-  };
+function configureDocumentsFilters(filters: TSearchQueryGroup | undefined, searchCategories: TLabelCategoryValue[]): TSearchQueryGroup {
   const publishedDateBoundsFilter: TSearchQueryGroup = {
     op: "and",
     filters: [
@@ -135,12 +116,22 @@ function configureDocumentsFilters(filters: TSearchQueryGroup | undefined): TSea
       },
     ],
   };
+  const categoriesFilter: TSearchQueryGroup = {
+    op: "or",
+    filters: searchCategories.map((categoryValue) => ({
+      op: "contains",
+      field: "labels.value.id",
+      value: ["category", categoryValue].join(ID_SEPARATOR),
+    })),
+  };
 
-  // Always constrain document searches to published documents. Add default date
-  // bounds only when the user has not provided any published_date rule.
-  const filtersWithConditionals: TSearchQueryGroup[] = [litigationFilter, publishedStatusFilter];
+  const filtersWithConditionals: (TSearchQueryGroup | TSearchQueryRule)[] = [];
+
   if (!hasPublishedDateRule(filters)) {
     filtersWithConditionals.push(publishedDateBoundsFilter);
+  }
+  if (searchCategories.length > 0) {
+    filtersWithConditionals.push(categoriesFilter);
   }
   if (filters) {
     filtersWithConditionals.push(filters);
@@ -152,9 +143,9 @@ function configureDocumentsFilters(filters: TSearchQueryGroup | undefined): TSea
   };
 }
 
-export async function fetchSearchDocuments(params: SearchDocumentsParams = {}): Promise<SearchDocumentsResponse> {
+export async function fetchSearchDocuments(params: ISearchDocumentsParams): Promise<SearchDocumentsResponse> {
   const url = new URL(searchDocumentsUrl());
-  const filters = configureDocumentsFilters(params.filters);
+  const filters = configureDocumentsFilters(params.filters, params.themeConfig.searchCategories);
 
   // This enables `bolding` in vespa AKA highlighting, which highlights the matched terms in the results.
   url.searchParams.set("bolding", "true");
@@ -170,24 +161,20 @@ export async function fetchSearchDocuments(params: SearchDocumentsParams = {}): 
   return res.json() as Promise<SearchDocumentsResponse>;
 }
 
-export function fetchSearchPrincipalDocuments(params: SearchDocumentsParams = {}): Promise<SearchDocumentsResponse> {
-  const principalDocumentsFilter: TSearchQueryGroup = {
-    op: "and",
-    filters: [
-      {
-        field: "labels.value.id",
-        op: "contains",
-        value: "status::Principal",
-      },
-    ],
+export function fetchSearchPrincipalDocuments(params: ISearchDocumentsParams): Promise<SearchDocumentsResponse> {
+  const principalDocumentsFilter: TSearchQueryRule = {
+    field: "labels.value.id",
+    op: "contains",
+    value: "status::Principal",
   };
+  const filters: (TSearchQueryGroup | TSearchQueryRule)[] = [principalDocumentsFilter];
+  if (params.filters) filters.push(params.filters);
+
   return fetchSearchDocuments({
     ...params,
-    filters: params.filters
-      ? {
-          op: "and",
-          filters: [principalDocumentsFilter, params.filters],
-        }
-      : principalDocumentsFilter,
+    filters: {
+      op: "and",
+      filters,
+    },
   });
 }
