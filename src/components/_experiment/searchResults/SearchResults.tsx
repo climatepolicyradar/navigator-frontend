@@ -7,7 +7,6 @@ import { DocumentCard } from "@/components/molecules/documentCard/DocumentCard";
 import { ThemeContext } from "@/context/ThemeContext";
 import { TSearchQueryGroup } from "@/types";
 import { sanitiseSearchQueryGroup } from "@/utils/filters/advancedFilters";
-import { restrictSearchCategories } from "@/utils/search/restrictSearchCategories";
 
 import { isFilterGroupEmpty } from "../advancedFilters/AdvancedFilters";
 
@@ -91,7 +90,6 @@ export function SearchContainer({
   }, [filters]);
 
   const hasSearch = !!query || !!nonEmptyFilters;
-  const categoryRestrictedFilters = nonEmptyFilters ? restrictSearchCategories(nonEmptyFilters, themeConfig) : nonEmptyFilters; // Only applies when there is a search
 
   const { data, isError, isPending } = useQuery({
     queryKey: ["searchDocuments", query, nonEmptyFilters, page_token, sort],
@@ -100,9 +98,10 @@ export function SearchContainer({
         query,
         page_size: SEARCH_RESULTS_PAGE_SIZE.toString(),
         page_token,
-        filters: categoryRestrictedFilters,
+        filters: nonEmptyFilters,
         sort,
         signal,
+        themeConfig,
       }),
     enabled: hasSearch && loaded,
     retry: shouldRetrySearch,
