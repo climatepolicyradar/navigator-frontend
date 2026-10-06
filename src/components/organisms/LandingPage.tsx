@@ -23,6 +23,8 @@ type TPartnerLogosProps = {
   partners: NonNullable<TLandingPageConfig["partners"]>;
 };
 
+const contentColumnsClass = "col-start-1 -col-end-1 cols-3:col-end-5 cols-4:col-end-7 cols-5:col-start-2";
+
 // The width the logos need on a single line, measured per item so it holds whether they are currently wrapped or not
 const getSingleLineWidth = (list: HTMLUListElement) => {
   const items = Array.from(list.children);
@@ -65,7 +67,7 @@ const PartnerLogos = ({ partners }: TPartnerLogosProps) => {
 
   return (
     <div className="col-start-1 -col-end-1 grid grid-cols-subgrid mt-10 mb-8 cols-4:mb-10 cols-5:mb-12">
-      <div className="col-start-1 -col-end-1 cols-5:col-start-2 cols-5:-col-end-2 flex flex-row items-center gap-3 mb-6">
+      <div className={joinTailwindClasses(contentColumnsClass, "flex flex-row items-center gap-3 mb-6")}>
         <h2 className="text-lg text-text-primary font-heavy">{partners.title}</h2>
         {shouldScroll && (
           <button
@@ -123,7 +125,6 @@ export const LandingPage = ({ config }: TProps) => {
   const suggestionLinkClass = heroImage
     ? "px-3 py-2 rounded-full text-base font-normal leading-6 bg-bg-inverse/50 hocus:bg-bg-inverse/64"
     : "justify-start p-1.5 pl-0";
-  const contentColumnsClass = "col-start-1 -col-end-1 cols-3:col-end-5 cols-4:col-end-7 cols-5:col-start-2";
   const searchColumnsClass = heroImage
     ? contentColumnsClass
     : "col-start-1 -col-end-1 cols-2:-col-end-2 cols-3:col-end-5 cols-4:col-end-6 cols-5:col-start-2";
@@ -142,8 +143,8 @@ export const LandingPage = ({ config }: TProps) => {
                 <span className={joinTailwindClasses("text-base leading-6 font-normal", descriptionTextClass)}>{config.hero.taxonomy}</span>
                 <h1 className="mt-0.5 mb-4 text-5xl text-balance font-heavy leading-none tracking-[-0.4px]">{config.hero.title}</h1>
               </div>
-              <div className="col-start-1 -col-end-1 cols-5:col-start-2 cols-5:-col-end-2">
-                <p className="text-xl text-balance leading-6">{config.hero.description}</p>
+              <div className={searchColumnsClass}>
+                <p className="text-xl leading-6">{config.hero.description}</p>
               </div>
             </FiveColumns>
             <FiveColumns className={searchSectionClass}>
