@@ -16,10 +16,10 @@ type TUseDocumentTopicsOptions = {
  * `search-api` concepts are in the format `concept::Q123`. The search UI keys them on the bare `id`.
  */
 export const useDocumentTopics = (documentIds: string[], { enabled = true }: TUseDocumentTopicsOptions = {}): TTopic[] => {
-  const { themeConfig } = useContext(ThemeContext);
+  const { themeConfig, loaded } = useContext(ThemeContext);
 
   const { data } = useQuery({
-    queryKey: ["document-topics", documentIds],
+    queryKey: ["document-topics", documentIds, themeConfig.searchCategories],
     queryFn: ({ signal }) =>
       fetchSearchDocuments({
         filters: { op: "and", filters: [{ op: "or", filters: documentIds.map((id) => ({ field: "id", op: "contains", value: id })) }] },
@@ -27,7 +27,8 @@ export const useDocumentTopics = (documentIds: string[], { enabled = true }: TUs
         signal,
         themeConfig,
       }),
-    enabled: enabled && documentIds.length > 0,
+    // Wait for the theme config so its search categories are applied
+    enabled: enabled && loaded && documentIds.length > 0,
   });
 
   return useMemo(() => {

@@ -91,7 +91,7 @@ describe("SearchContainer", () => {
     });
 
     await waitFor(() => expect(fetchSearchPrincipalDocuments).toHaveBeenCalledTimes(1));
-    expect(JSON.stringify(vi.mocked(fetchSearchPrincipalDocuments).mock.calls[0][0].filters)).toContain("category::Litigation");
+    expect(vi.mocked(fetchSearchPrincipalDocuments).mock.calls[0][0].themeConfig.searchCategories).toEqual(["Litigation"]);
   });
 
   it("shows a generic message in the page for other search failures", async () => {
