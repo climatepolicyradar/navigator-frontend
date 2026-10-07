@@ -1,6 +1,8 @@
 import { Meta, StoryObj } from "@storybook/nextjs-vite";
 import { Search } from "lucide-react";
-import { useState } from "react";
+import { ReactNode, useState } from "react";
+
+import { IconHighlights } from "@/components/fragments/icons/IconHighlights";
 
 import { Tabs } from "./Tabs";
 
@@ -83,6 +85,34 @@ export const WithPanels: TStory<TPrincipalPageTabId> = {
   render: useTabsRender,
 };
 
+const banner: ReactNode = (
+  <div className="px-8 py-4 flex gap-2 items-center bg-bg-attention text-base text-text-primary font-normal leading-5">
+    <IconHighlights variant="solid" />
+    <span>Switch tab to search for specific passages within this case</span>
+  </div>
+);
+
+export const WithBanner: TStory<TPrincipalPageTabId> = {
+  args: {
+    panelClassName: "px-8 py-6",
+    tabs: [
+      { id: "about", label: "About", panel: "About panel content." },
+      {
+        id: "search",
+        banner,
+        label: (
+          <>
+            <Search size={20} />
+            Search in documents
+          </>
+        ),
+        panel: "Search in documents panel content.",
+      },
+    ],
+  },
+  render: useTabsRender,
+};
+
 export const Sticky: TStory<TPrincipalPageTabId> = {
   args: {
     className: "top-0",
@@ -92,6 +122,7 @@ export const Sticky: TStory<TPrincipalPageTabId> = {
       { id: "about", label: "About", panel: <div className="h-[200vh]">Scroll down - the tabs stay at the top.</div> },
       {
         id: "search",
+        banner,
         label: (
           <>
             <Search size={20} />

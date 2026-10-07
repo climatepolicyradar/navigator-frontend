@@ -11,6 +11,7 @@ import { MetadataBlock } from "@/components/blocks/metadataBlock/MetadataBlock";
 import { NoteBlock } from "@/components/blocks/noteBlock/NoteBlock";
 import { TextBlock } from "@/components/blocks/textBlock/TextBlock";
 import { TopicsBlock } from "@/components/blocks/topicsBlock/TopicsBlock";
+import { IconHighlights } from "@/components/fragments/icons/IconHighlights";
 import { PassageSearch } from "@/components/organisms/passageSearch/PassageSearch";
 import { SearchLevelContext } from "@/context/SearchLevelContext";
 import useConfig from "@/hooks/useConfig";
@@ -188,6 +189,12 @@ export function PrincipalDrawer({ document, slug, open, onOpenChange, tab, onTab
                     changeTab={onTabChange}
                     onSearch={setNumberOfResults}
                   />
+                ),
+                banner: (
+                  <div className="px-8 py-4 flex gap-2 items-center bg-bg-attention text-base text-text-primary font-normal leading-5">
+                    <IconHighlights variant="solid" />
+                    <span>Switch tab to search for specific passages within this {getCategoryText("familySingular")}</span>
+                  </div>
                 ),
               },
             ]}
