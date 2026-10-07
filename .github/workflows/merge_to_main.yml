@@ -12,6 +12,7 @@ jobs:
     runs-on: ubuntu-latest
     outputs:
       run-observability-pulumi-up: ${{ steps.filter.outputs.run-observability-pulumi-up }}
+      run-posthog-pulumi-up: ${{ steps.filter.outputs.run-posthog-pulumi-up }}
     steps:
       - uses: actions/checkout@v7
       - uses: dorny/paths-filter@v4
@@ -20,6 +21,9 @@ jobs:
           filters: |
             run-observability-pulumi-up:
               - 'infra/observability/**'
+
+            run-posthog-pulumi-up:
+              - 'infra/posthog/**'
   # Faro apps aren't per-environment (see infra/faro/__main__.py's allowed_origins),
   # so there's a single production stack shared by staging, production, and review
   # deploys alike, rather than a staging/production pair like the other infra
@@ -122,6 +126,24 @@ jobs:
       stack: climatepolicyradar/frontend-observability/${{ matrix.environment }}
       # Grafana only - no AWS resources in this project, so no role to assume.
       aws-role: ""
+
+  # The PostHog reverse proxy. Nothing in the app points at it until
+  # src/context/PostHogInit.tsx is switched over, so this deploying on its own
+  # is a no-op for users.
+  posthog-pulumi-up:
+    uses: ./.github/workflows/pulumi_up.yml
+    secrets: inherit
+    needs: [changes]
+    if: needs.changes.outputs.run-posthog-pulumi-up == 'true'
+    strategy:
+      fail-fast: false
+      matrix:
+        environment: [staging, production]
+    with:
+      environment: ${{ matrix.environment }}
+      working-directory: ./infra/posthog
+      stack: climatepolicyradar/frontend-posthog/${{ matrix.environment }}
+      aws-role: navigator-infra-github-actions
 
   # Deploy Storybook
   storybook:
