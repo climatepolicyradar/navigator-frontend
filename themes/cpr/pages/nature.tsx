@@ -10,7 +10,7 @@ export default function NatureLandingPage() {
       description: "National laws and policies shaping how countries tackle biodiversity loss",
     },
     heroImage: {
-      src: "/images/nature/nature-bg.png",
+      src: "/images/nature/nature-hero.png",
     },
     partners: {
       title: "Our data sources",
