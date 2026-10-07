@@ -48,7 +48,7 @@ export const Tabs = <TabId extends string>({
           value={id}
           data-ph-capture-attribute-tab={id}
           data-ph-capture-attribute-tab-context={analytics?.context}
-          className="relative flex items-center justify-center gap-2 rounded-t-lg border border-transparent py-2 px-2 md:px-6 md:py-4 text-lg text-text-tertiary hocus:text-text-primary data-active:border-border-light data-active:border-b-bg-primary data-active:bg-bg-primary data-active:font-heavy data-active:text-text-primary"
+          className="relative flex items-center justify-center gap-2 rounded-t-lg border border-transparent py-2 px-2 md:px-6 md:py-4 text-lg text-text-brand data-active:border-border-light font-heavy data-active:border-b-bg-primary data-active:bg-bg-primary data-active:text-text-primary group"
         >
           {label}
           {typeof count === "number" && (

@@ -166,7 +166,7 @@ export function PrincipalDrawer({ document, slug, open, onOpenChange, tab, onTab
                 id: "about",
                 label: (
                   <>
-                    <LucideFileText size={20} className="text-elem-icon!" /> About
+                    <LucideFileText size={20} className="text-text-brand! group-data-active:text-elem-icon!" /> About
                   </>
                 ),
                 panel: <DrawerContent familyData={familyData} features={features} languages={languages} />,
@@ -176,7 +176,7 @@ export function PrincipalDrawer({ document, slug, open, onOpenChange, tab, onTab
                 count: noOfResults > 0 ? noOfResults : undefined,
                 label: (
                   <>
-                    <LucideSearch size={20} className="text-elem-icon!" />
+                    <LucideSearch size={20} className="text-text-brand! group-data-active:text-elem-icon!" />
                     Search in documents
                   </>
                 ),
