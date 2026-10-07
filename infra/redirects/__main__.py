@@ -51,4 +51,4 @@ redirects_lambda = aws.cloudfront.Function(
     publish=True,  # Make the function available to CloudFront.
 )
 
-pulumi.export("redirects-lambda-arn", redirects_cloudfront_key_value_store.arn)
+pulumi.export("redirects_lambda_arn", redirects_lambda.arn)
