@@ -316,7 +316,7 @@ export const FAQS_DICTIONARY: Record<TFAQKey, TFAQ> = {
           <li>We are actively improving accuracy by refining our models and ensuring consistency across different document types and languages.</li>
           <li>
             View the{" "}
-            <PageLink external href="https://docs.google.com/spreadsheets/d/1jMdB9nSnKf0RomZ6wAyGdOxEbXOIlHNVOgB8vPGyMXM/edit?gid=0#gid=0">
+            <PageLink external href="https://docs.google.com/spreadsheets/d/1jMdB9nSnKf0RomZ6wAyGdOxEbXOIlHNVOgB8vPGyMXM/edit?gid=0" hash="gid=0">
               performance metrics
             </PageLink>{" "}
             for our live classifiers for more information.
