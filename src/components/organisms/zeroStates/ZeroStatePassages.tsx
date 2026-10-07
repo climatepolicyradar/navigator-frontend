@@ -1,6 +1,6 @@
 import { LucideFileText, LucideFolderSearch, LucideScanSearch } from "lucide-react";
 
-import { TPrincipalDrawerTab } from "@/components/drawers/principalDrawer/PrincipalDrawer";
+import { TPrincipalDrawerTab } from "@/types";
 import { joinTailwindClasses } from "@/utils/tailwind";
 
 type TEmptyStateProps = {

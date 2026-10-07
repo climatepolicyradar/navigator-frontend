@@ -16,6 +16,7 @@ export * from "./search/query";
 export * from "./search/sort";
 export * from "./table";
 export * from "./tables/familyDocumentTopics";
+export * from "./tabs";
 export * from "./theme";
 export * from "./themeConfig";
 export * from "./topics";

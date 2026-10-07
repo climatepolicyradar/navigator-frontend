@@ -70,6 +70,16 @@ describe("Tabs", () => {
     expect(screen.queryByRole("tabpanel")).not.toBeInTheDocument();
   });
 
+  it("makes the tab header sticky when sticky is set", () => {
+    render(<Tabs tabs={baseTabs} value="about" onValueChange={() => {}} sticky />);
+    expect(screen.getByRole("tablist").parentElement).toHaveClass("sticky");
+  });
+
+  it("does not make the tab header sticky by default", () => {
+    render(<Tabs tabs={baseTabs} value="about" onValueChange={() => {}} />);
+    expect(screen.getByRole("tablist").parentElement).not.toHaveClass("sticky");
+  });
+
   it("names each tab and its tab set for analytics", () => {
     render(<Tabs tabs={baseTabs} value="about" onValueChange={() => {}} analytics={{ context: "principal-drawer" }} />);
 

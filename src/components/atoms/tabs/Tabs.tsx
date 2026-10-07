@@ -19,13 +19,23 @@ interface IProps<TabId extends string> {
   className?: string;
   onValueChange: (value: TabId) => void;
   panelClassName?: string;
+  sticky?: boolean;
   tabs: TTabsTab<TabId>[];
   tabsContainer?: (tabsList: ReactNode) => ReactNode;
   value: TabId;
 }
 
-export const Tabs = <TabId extends string>({ analytics, className, onValueChange, panelClassName, tabs, tabsContainer, value }: IProps<TabId>) => {
-  const allHeaderClasses = joinTailwindClasses("border-b border-border-light", className);
+export const Tabs = <TabId extends string>({
+  analytics,
+  className,
+  onValueChange,
+  panelClassName,
+  sticky,
+  tabs,
+  tabsContainer,
+  value,
+}: IProps<TabId>) => {
+  const allHeaderClasses = joinTailwindClasses("border-b border-border-light", sticky && "sticky z-10 bg-bg-primary", className);
 
   const tabsList = (
     <BaseTabs.List className="flex gap-1 -mb-px">

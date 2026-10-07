@@ -82,3 +82,25 @@ export const WithPanels: TStory<TPrincipalPageTabId> = {
   },
   render: useTabsRender,
 };
+
+export const Sticky: TStory<TPrincipalPageTabId> = {
+  args: {
+    className: "top-0",
+    panelClassName: "px-8 py-6",
+    sticky: true,
+    tabs: [
+      { id: "about", label: "About", panel: <div className="h-[200vh]">Scroll down - the tabs stay at the top.</div> },
+      {
+        id: "search",
+        label: (
+          <>
+            <Search size={20} />
+            Search in documents
+          </>
+        ),
+        panel: <div className="h-[200vh]">Search in documents panel content.</div>,
+      },
+    ],
+  },
+  render: useTabsRender,
+};

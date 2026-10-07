@@ -17,7 +17,7 @@ import useConfig from "@/hooks/useConfig";
 import { useDocumentTopics } from "@/hooks/useDocumentTopics";
 import { useSearchLevelValues } from "@/hooks/useSearchLevel";
 import { useText } from "@/hooks/useText";
-import { TFamilyPresentationalData, TFeatures } from "@/types";
+import { TFamilyPresentationalData, TFeatures, TPrincipalDrawerTab } from "@/types";
 import { getFamilyHeader } from "@/utils/family-header/getFamilyHeader";
 import { getFamilyMetadata } from "@/utils/family-metadata/getFamilyMetadata";
 import { flattenLevelToBaseQuery } from "@/utils/search/searchLevels";
@@ -32,8 +32,6 @@ function linkHref(doc: SearchDocument): string | undefined {
       return `/documents/${doc.attributes.deprecated_slug}`;
     }
 }
-
-export type TPrincipalDrawerTab = "about" | "search";
 
 type TDocumentDrawerProps = {
   document: SearchDocument | null; // The clicked search result, absent when the drawer is opened from a link
@@ -159,8 +157,9 @@ export function PrincipalDrawer({ document, slug, open, onOpenChange, tab, onTab
             analytics={{ context: "principal-drawer" }}
             onValueChange={onTabChange}
             value={tab}
-            className="-mx-8"
+            className="-mx-8 top-0"
             panelClassName="pt-4 md:pt-8"
+            sticky
             tabs={[
               {
                 id: "about",
