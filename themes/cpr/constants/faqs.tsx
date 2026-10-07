@@ -85,7 +85,7 @@ export const APP_FAQS: TFAQ[] = [
       <>
         <p>
           Climate Policy Radar powers{" "}
-          <PageLink external href="https://www.climatepolicyradar.org/what-we-do#tools">
+          <PageLink external href="https://www.climatepolicyradar.org/what-we-do" hash="tools">
             tools
           </PageLink>{" "}
           from different communities:
