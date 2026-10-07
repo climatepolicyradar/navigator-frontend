@@ -109,7 +109,7 @@ export const APP_FAQS: TFAQ[] = [
         </p>
         <p>
           When citing a specific data point(s) (for example, if citing a summary of a document), please refer to Terms and Conditions by our{" "}
-          <PageLink external href="https://app.climatepolicyradar.org/terms-of-use#data-from-third-party-sources">
+          <PageLink external href="https://app.climatepolicyradar.org/terms-of-use" hash="data-from-third-party-sources">
             third party data providers
           </PageLink>
           .
