@@ -18,10 +18,12 @@ const SEARCH_CONFIG: TLandingPageSearchConfig = {
   button: {
     label: "Get started",
     params: {
+      [QUERY_PARAMS.sort_order]: "desc",
       [QUERY_PARAMS.category]: "UN-submissions",
       [QUERY_PARAMS.author_type]: "Party",
     },
     newParams: {
+      [QUERY_PARAMS.sort]: "recent",
       [QUERY_PARAMS.filters]: JSON.stringify({
         op: "or",
         filters: [{ field: "labels.value.id", op: "contains", value: "category::UN submission", checked: true }],

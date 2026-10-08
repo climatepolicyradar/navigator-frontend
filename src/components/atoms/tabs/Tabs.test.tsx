@@ -70,6 +70,35 @@ describe("Tabs", () => {
     expect(screen.queryByRole("tabpanel")).not.toBeInTheDocument();
   });
 
+  it("makes the tab header sticky when sticky is set", () => {
+    render(<Tabs tabs={baseTabs} value="about" onValueChange={() => {}} sticky />);
+    expect(screen.getByRole("tablist").parentElement?.parentElement).toHaveClass("sticky");
+  });
+
+  it("does not make the tab header sticky by default", () => {
+    render(<Tabs tabs={baseTabs} value="about" onValueChange={() => {}} />);
+    expect(screen.getByRole("tablist").parentElement?.parentElement).not.toHaveClass("sticky");
+  });
+
+  it("renders a tab's banner when another tab is active", () => {
+    const tabs: TTabsTab<TTabId>[] = [baseTabs[0], { ...baseTabs[1], banner: "Search banner" }];
+    render(<Tabs tabs={tabs} value="about" onValueChange={() => {}} />);
+    expect(screen.getByText("Search banner")).toBeInTheDocument();
+  });
+
+  it("does not render a tab's banner when that tab is active", () => {
+    const tabs: TTabsTab<TTabId>[] = [baseTabs[0], { ...baseTabs[1], banner: "Search banner" }];
+    render(<Tabs tabs={tabs} value="search" onValueChange={() => {}} />);
+    expect(screen.queryByText("Search banner")).not.toBeInTheDocument();
+  });
+
+  it("makes the banner sticky with the tab header", () => {
+    const tabs: TTabsTab<TTabId>[] = [baseTabs[0], { ...baseTabs[1], banner: "Search banner" }];
+    render(<Tabs tabs={tabs} value="about" onValueChange={() => {}} sticky />);
+    expect(screen.getByText("Search banner").closest(".sticky")).toBe(screen.getByRole("tablist").closest(".sticky"));
+    expect(screen.getByText("Search banner").closest(".sticky")).not.toBeNull();
+  });
+
   it("names each tab and its tab set for analytics", () => {
     render(<Tabs tabs={baseTabs} value="about" onValueChange={() => {}} analytics={{ context: "principal-drawer" }} />);
 

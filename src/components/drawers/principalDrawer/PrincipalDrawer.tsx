@@ -11,13 +11,14 @@ import { MetadataBlock } from "@/components/blocks/metadataBlock/MetadataBlock";
 import { NoteBlock } from "@/components/blocks/noteBlock/NoteBlock";
 import { TextBlock } from "@/components/blocks/textBlock/TextBlock";
 import { TopicsBlock } from "@/components/blocks/topicsBlock/TopicsBlock";
+import { IconHighlights } from "@/components/fragments/icons/IconHighlights";
 import { PassageSearch } from "@/components/organisms/passageSearch/PassageSearch";
 import { SearchLevelContext } from "@/context/SearchLevelContext";
 import useConfig from "@/hooks/useConfig";
 import { useDocumentTopics } from "@/hooks/useDocumentTopics";
 import { useSearchLevelValues } from "@/hooks/useSearchLevel";
 import { useText } from "@/hooks/useText";
-import { TFamilyPresentationalData, TFeatures } from "@/types";
+import { TFamilyPresentationalData, TFeatures, TPrincipalDrawerTab } from "@/types";
 import { getFamilyHeader } from "@/utils/family-header/getFamilyHeader";
 import { getFamilyMetadata } from "@/utils/family-metadata/getFamilyMetadata";
 import { flattenLevelToBaseQuery } from "@/utils/search/searchLevels";
@@ -32,8 +33,6 @@ function linkHref(doc: SearchDocument): string | undefined {
       return `/documents/${doc.attributes.deprecated_slug}`;
     }
 }
-
-export type TPrincipalDrawerTab = "about" | "search";
 
 type TDocumentDrawerProps = {
   document: SearchDocument | null; // The clicked search result, absent when the drawer is opened from a link
@@ -159,14 +158,15 @@ export function PrincipalDrawer({ document, slug, open, onOpenChange, tab, onTab
             analytics={{ context: "principal-drawer" }}
             onValueChange={onTabChange}
             value={tab}
-            className="-mx-8"
+            className="-mx-8 top-0"
             panelClassName="pt-4 md:pt-8"
+            sticky
             tabs={[
               {
                 id: "about",
                 label: (
                   <>
-                    <LucideFileText size={20} className="text-elem-icon!" /> About
+                    <LucideFileText size={20} className="text-text-brand! group-data-active:text-elem-icon!" /> About
                   </>
                 ),
                 panel: <DrawerContent familyData={familyData} features={features} languages={languages} />,
@@ -176,7 +176,7 @@ export function PrincipalDrawer({ document, slug, open, onOpenChange, tab, onTab
                 count: noOfResults > 0 ? noOfResults : undefined,
                 label: (
                   <>
-                    <LucideSearch size={20} className="text-elem-icon!" />
+                    <LucideSearch size={20} className="text-text-brand! group-data-active:text-elem-icon!" />
                     Search in documents
                   </>
                 ),
@@ -189,6 +189,12 @@ export function PrincipalDrawer({ document, slug, open, onOpenChange, tab, onTab
                     changeTab={onTabChange}
                     onSearch={setNumberOfResults}
                   />
+                ),
+                banner: (
+                  <div className="px-8 py-4 flex gap-2 items-center bg-bg-attention text-base text-text-primary font-normal leading-5">
+                    <IconHighlights variant="solid" />
+                    <span>Switch tab to search for specific passages within this {getCategoryText("familySingular")}</span>
+                  </div>
                 ),
               },
             ]}

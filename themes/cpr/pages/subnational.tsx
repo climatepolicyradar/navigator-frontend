@@ -14,16 +14,25 @@ export default function NatureLandingPage() {
     },
     partners: {
       title: "The documents in this library have been kindly provided by organisations working at the forefront of subnational climate action:",
-      logos: [],
+      logos: [
+        { src: "/images/subnational/logo-under2.png", alt: "Under2 Coalition", width: 164, height: 96 },
+        { src: "/images/subnational/logo-polea.png", alt: "Polea, Política y Legislación Ambiental", width: 222, height: 96 },
+        { src: "/images/subnational/logo-scetti.png", alt: "Scetti, State Clean Electricity Transition Tracker India", width: 252, height: 96 },
+        { src: "/images/subnational/logo-gri.png", alt: "Grantham Research Institute on Climate Change and the Environment", width: 314, height: 96 },
+        { src: "/images/subnational/logo-laclima.png", alt: "LACLIMA", width: 160, height: 96 },
+        { src: "/images/subnational/logo-juma.png", alt: "Juma", width: 96, height: 96 },
+      ],
     },
     search: {
       button: {
         label: "Search subnational laws and policies",
         // TODO: Remove this, old search does not support domain::Nature
         params: {
+          [QUERY_PARAMS.sort_order]: "desc",
           [QUERY_PARAMS.query_string]: "",
         },
         newParams: {
+          [QUERY_PARAMS.sort]: "recent",
           [QUERY_PARAMS.filters]: JSON.stringify({
             op: "and",
             filters: [
