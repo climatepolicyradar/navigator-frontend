@@ -14,7 +14,7 @@ export const getFamilyData = async (slug: string): Promise<TFamilyPresentational
 
   let family: TDataInDocument;
   try {
-    const { data: dataInDocumentResponse } = await apiClient.get<TApiItemResponse>(`/data-in/documents/${slug}`);
+    const { data: dataInDocumentResponse } = await apiClient.get<TApiItemResponse>(`/data-in/documents/slug/${slug}`);
     family = validateDataInDocument(dataInDocumentResponse.data);
   } catch (error) {
     errors.push(new Error("Failed to fetch family data", error));

@@ -5,22 +5,6 @@ import { TDataInDocument } from "@/schemas";
 export const testFamilyImportId = "family-1";
 export const testFamilySlug = "test-family-slug";
 
-export const familySlugHandler = (overrides: Partial<{ status: number; body: unknown }> = {}) =>
-  http.get(`${process.env.CONCEPTS_API_URL}/families/slugs/${testFamilySlug}`, () => {
-    if (overrides.status && overrides.status !== 200) {
-      return HttpResponse.json(overrides.body ?? { detail: "Not Found" }, { status: overrides.status });
-    }
-    return HttpResponse.json({
-      data: overrides.body ?? {
-        name: testFamilySlug,
-        family_import_id: testFamilyImportId,
-        family_document_import_id: null,
-        collection_import_id: null,
-        created: "2024-01-01",
-      },
-    });
-  });
-
 export const vespaFamilyHandler = () =>
   http.get(`${process.env.BACKEND_API_URL}/families/${testFamilyImportId}`, () => {
     return HttpResponse.json({
@@ -54,7 +38,7 @@ export const testFamilyDataIn: TDataInDocument = {
 };
 
 export const dataInFamilyHandler = (overrides: Partial<{ status: number; body: unknown }> = {}) =>
-  http.get(`${process.env.CONCEPTS_API_URL}/data-in/documents/${testFamilyImportId}`, () => {
+  http.get(`${process.env.CONCEPTS_API_URL}/data-in/documents/slug/${testFamilySlug}`, () => {
     if (overrides.status && overrides.status !== 200) {
       return HttpResponse.json({ detail: "error" }, { status: overrides.status });
     }
