@@ -1,7 +1,7 @@
 import { LucideFileText, LucideSearch } from "lucide-react";
 import Head from "next/head";
 import { useRouter } from "next/router";
-import { useCallback, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 
 import { FiveColumns } from "@/components/atoms/columns/FiveColumns";
 import { Debug } from "@/components/atoms/debug/Debug";
@@ -33,6 +33,7 @@ import {
   TMatchedFamily,
   TFamilyPageBlock,
   TFamilyPublic,
+  TPrincipalDrawerTab,
   TSearchResponse,
   TTheme,
   TThemeConfig,
@@ -43,6 +44,7 @@ import { getFamilyMetadata } from "@/utils/family-metadata/getFamilyMetadata";
 import { getFamilyMetaDescription } from "@/utils/getFamilyMetaDescription";
 import { getLitigationCaseJSONLD } from "@/utils/json-ld/getLitigationCaseJSONLD";
 import { pluralise } from "@/utils/pluralise";
+import { getPersistedPrincipalDrawerTab, persistPrincipalDrawerTab } from "@/utils/principal/principalTabs";
 import { firstCase } from "@/utils/text/firstCase";
 import { familyTopicsHasTopics } from "@/utils/topics/processFamilyTopics";
 
@@ -63,12 +65,21 @@ export interface IProps {
 export const FamilyPage = ({ collections, debug, errors, family, familyTopics, features, theme, themeConfig }: IProps) => {
   const configQuery = useConfig();
   const { data: { languages = {} } = {} } = configQuery;
-  const [activeTab, setActiveTab] = useState<string>("about");
+  const [activeTab, setActiveTab] = useState<TPrincipalDrawerTab>("about");
   const [noOfResults, setNumberOfResults] = useState<number>(0);
   const { getCategoryTextLookup } = useText();
   const getCategoryText = getCategoryTextLookup(family.attribution.category);
 
-  const changeTab = (newValue: string) => setActiveTab(newValue);
+  // The cookie can only be read on the client, so restore the persisted tab after mount.
+  useEffect(() => {
+    // eslint-disable-next-line react-hooks/set-state-in-effect
+    setActiveTab(getPersistedPrincipalDrawerTab());
+  }, []);
+
+  const changeTab = (tab: TPrincipalDrawerTab) => {
+    setActiveTab(tab);
+    persistPrincipalDrawerTab(tab);
+  };
 
   /* Search matches */
 
@@ -193,7 +204,7 @@ export const FamilyPage = ({ collections, debug, errors, family, familyTopics, f
         />
         <PageHeader title={family.title} metadata={pageHeaderMetadata} />
         {isNewSearch ? (
-          <Tabs
+          <Tabs<TPrincipalDrawerTab>
             analytics={{ context: "family-page" }}
             onValueChange={changeTab}
             value={activeTab}

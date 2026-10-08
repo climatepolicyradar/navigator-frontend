@@ -45,9 +45,11 @@ export default function ICCNLandingPage() {
       button: {
         label: "Search progress reports",
         params: {
+          [QUERY_PARAMS.sort_order]: "desc",
           [QUERY_PARAMS.category]: "climate-council-reports",
         },
         newParams: {
+          [QUERY_PARAMS.sort]: "recent",
           [QUERY_PARAMS.filters]: JSON.stringify({
             op: "and",
             filters: [

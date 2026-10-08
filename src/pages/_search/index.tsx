@@ -7,7 +7,7 @@ import { createGroup, isFilterGroupEmpty, AdvancedFilters } from "@/components/_
 import { SEARCH_RESULTS_PAGE_SIZE, SearchContainer } from "@/components/_experiment/searchResults/SearchResults";
 import { FiveColumns } from "@/components/atoms/columns/FiveColumns";
 import { PageLink } from "@/components/atoms/pageLink/PageLink";
-import { PrincipalDrawer, TPrincipalDrawerTab } from "@/components/drawers/principalDrawer/PrincipalDrawer";
+import { PrincipalDrawer } from "@/components/drawers/principalDrawer/PrincipalDrawer";
 import Layout from "@/components/layouts/Main";
 import { DownloadSearch } from "@/components/molecules/downloadSearch/DownloadSearch";
 import { Pagination } from "@/components/molecules/pagination/Pagination";
@@ -22,11 +22,12 @@ import { useFilterLabels } from "@/hooks/useFilterLabels";
 import { useNestedSearchLevel } from "@/hooks/useSearchLevel";
 import { useText } from "@/hooks/useText";
 import { FilterGroupSchema } from "@/schemas";
-import { TSearchQueryGroup, TTheme } from "@/types";
+import { TPrincipalDrawerTab, TSearchQueryGroup, TTheme } from "@/types";
 import { getFeatureFlags } from "@/utils/featureFlags";
 import { getFeatures } from "@/utils/features";
 import { getFilterGroups } from "@/utils/filters/getFilterGroups";
 import { pluralise } from "@/utils/pluralise";
+import { getPersistedPrincipalDrawerTab, persistPrincipalDrawerTab } from "@/utils/principal/principalTabs";
 import { readConfigFile } from "@/utils/readConfigFile";
 import { conceptFiltersOnly, seedPassageLevel } from "@/utils/search/searchLevels";
 import { joinTailwindClasses } from "@/utils/tailwind";
@@ -87,8 +88,13 @@ const ShadowSearch = ({ theme, themeConfig, features }: TProps) => {
   // Land on the passages tab whenever a drawer opens onto a search, whether from a click or a link.
   if (principalLevel.id !== openedPrincipalId) {
     setOpenedPrincipalId(principalLevel.id);
-    if (principalLevel.id) setDrawerTab(principalHasSearch ? "search" : "about");
+    if (principalLevel.id) setDrawerTab(principalHasSearch ? "search" : getPersistedPrincipalDrawerTab());
   }
+
+  const onDrawerTabChange = (tab: TPrincipalDrawerTab) => {
+    setDrawerTab(tab);
+    persistPrincipalDrawerTab(tab);
+  };
 
   // Closing a level closes the levels nested inside it.
   const closePrincipalDrawer = () => {
@@ -220,7 +226,7 @@ const ShadowSearch = ({ theme, themeConfig, features }: TProps) => {
           onOpenChange={(open) => {
             if (!open) closePrincipalDrawer();
           }}
-          onTabChange={setDrawerTab}
+          onTabChange={onDrawerTabChange}
           open={!!principalLevel.id}
           tab={drawerTab}
         />

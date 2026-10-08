@@ -10,7 +10,6 @@ import Loader from "@/components/Loader";
 import { Button } from "@/components/atoms/button/Button";
 import { FiveColumns } from "@/components/atoms/columns/FiveColumns";
 import { EmptyDocument } from "@/components/documents/EmptyDocument";
-import { TPrincipalDrawerTab } from "@/components/drawers/principalDrawer/PrincipalDrawer";
 import { DocumentsFilter, TFilterableDocument } from "@/components/molecules/documentsFilter/DocumentsFilter";
 import { PassageBlock, TPassage as TPassageBlock } from "@/components/molecules/passageBlock/PassageBlock";
 import { SearchControls } from "@/components/organisms/searchControls/SearchControls";
@@ -23,7 +22,7 @@ import { posthogEventName } from "@/context/PostHogProvider";
 import { SearchLevelContext } from "@/context/SearchLevelContext";
 import { loadFilteredLabels } from "@/hooks/useLabelSearch";
 import { FilterGroupSchema } from "@/schemas";
-import { ISearchPassage, TFamilyDocumentPublic, TSearchLabel, TSearchQueryGroup, TTopic } from "@/types";
+import { ISearchPassage, TFamilyDocumentPublic, TPrincipalDrawerTab, TSearchLabel, TSearchQueryGroup, TTopic } from "@/types";
 import { queryGroupToFilterPaths } from "@/utils/search/queryGroupToFilterPaths";
 import { conceptFiltersOnly, flattenLevelToBaseQuery, levelParamKeys } from "@/utils/search/searchLevels";
 
