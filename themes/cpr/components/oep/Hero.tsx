@@ -30,9 +30,11 @@ const SEARCH_CONFIG: TLandingPageSearchConfig = {
   button: {
     label: "",
     params: {
+      [QUERY_PARAMS.sort_order]: "desc",
       [QUERY_PARAMS.category]: "offshore-wind-reports",
     },
     newParams: {
+      [QUERY_PARAMS.sort]: "recent",
       [QUERY_PARAMS.filters]: OFFSHORE_WIND_REPORT_FILTERS,
     },
   },

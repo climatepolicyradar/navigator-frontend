@@ -28,9 +28,11 @@ export default function NatureLandingPage() {
         label: "Search subnational laws and policies",
         // TODO: Remove this, old search does not support domain::Nature
         params: {
+          [QUERY_PARAMS.sort_order]: "desc",
           [QUERY_PARAMS.query_string]: "",
         },
         newParams: {
+          [QUERY_PARAMS.sort]: "recent",
           [QUERY_PARAMS.filters]: JSON.stringify({
             op: "and",
             filters: [
