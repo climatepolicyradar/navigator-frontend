@@ -67,7 +67,7 @@ describe("getFamilyData", () => {
   it("skips the slug lookup and uses importId directly when provided", async () => {
     server.use(dataInFamilyHandler(), vespaFamilyHandler());
 
-    const result = await getFamilyData("", testFamilyImportId);
+    const result = await getFamilyData("");
 
     expect(result.data).not.toBeNull();
     expect(result.data.family.import_id).toBe(testFamilyImportId);
