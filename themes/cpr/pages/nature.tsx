@@ -55,7 +55,7 @@ export default function NatureLandingPage() {
           },
         },
         {
-          label: "Marine spatial planning",
+          label: "Marine spatial planning policies",
           params: {
             [QUERY_PARAMS.query_string]: "marine",
           },
