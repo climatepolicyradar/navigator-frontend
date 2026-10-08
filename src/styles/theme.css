@@ -15,6 +15,7 @@
   --color-green: #a0af54;
   --color-forest: #164f4a;
   --color-cardboard: #b7ae8e;
+  --color-aluminium: #e8edf3;
 
   /* Color / UI / Text */
   --color-text-primary: var(--color-inky-black);
@@ -29,6 +30,7 @@
   --color-bg-inverse: var(--color-inky-black);
   --color-bg-brand: var(--color-inky-blue);
   --color-bg-flat: var(--color-neutral-100);
+  --color-bg-attention: var(--color-aluminium);
 
   /* Color / UI / Border */
   --color-border-normal: #101a2429;
