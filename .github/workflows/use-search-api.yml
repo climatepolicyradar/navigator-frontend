@@ -15,6 +15,7 @@ jobs:
       mode: ${{ steps.parse.outputs.mode }}
       target_url: ${{ steps.resolve.outputs.search_url }}
       search_pr_number: ${{ steps.parse.outputs.search_pr_number }}
+      themes: ${{ steps.parse.outputs.themes }}
     env:
       PULUMI_ACCESS_TOKEN: ${{ secrets.PULUMI_ACCESS_TOKEN }}
       ORG: climatepolicyradar
@@ -27,13 +28,30 @@ jobs:
         env:
           COMMENT_BODY: ${{ github.event.comment.body }}
         run: |
-          # Expect exactly "/use-search-api <arg>" where <arg> is "production"
-          # or a positive integer PR number. Reject anything else with a
-          # clear comment rather than silently doing nothing.
+          # Expect "/use-search-api <arg> [theme]" where <arg> is "production"
+          # or a positive integer PR number, and the optional [theme] limits the
+          # change to a single theme. Omitting it applies to all four, which
+          # stays the default so the four review stacks don't silently drift
+          # apart. Reject anything else with a clear comment rather than
+          # silently doing nothing.
+          all_themes='["cpr","cclw","mcf","ccc"]'
+          usage='Usage: `/use-search-api <search-api-pr-number> [theme]` or `/use-search-api production [theme]`, where `theme` is one of cpr, cclw, mcf, ccc.'
+
           arg=$(echo "$COMMENT_BODY" | awk '{print $2}')
+          theme_arg=$(echo "$COMMENT_BODY" | awk '{print $3}')
+
+          if [ -z "$theme_arg" ]; then
+            echo "themes=${all_themes}" >> "$GITHUB_OUTPUT"
+          elif echo "$theme_arg" | grep -qE '^(cpr|cclw|mcf|ccc)$'; then
+            echo "themes=[\"${theme_arg}\"]" >> "$GITHUB_OUTPUT"
+          else
+            echo "error=Could not parse \`${theme_arg}\` as a theme. ${usage}" >> "$GITHUB_OUTPUT"
+            echo "mode=error" >> "$GITHUB_OUTPUT"
+            exit 0
+          fi
 
           if [ -z "$arg" ]; then
-            echo "error=Usage: \`/use-search-api <search-api-pr-number>\` or \`/use-search-api production\`." >> "$GITHUB_OUTPUT"
+            echo "error=${usage}" >> "$GITHUB_OUTPUT"
             echo "mode=error" >> "$GITHUB_OUTPUT"
           elif [ "$arg" = "production" ]; then
             echo "mode=prod" >> "$GITHUB_OUTPUT"
@@ -41,7 +59,7 @@ jobs:
             echo "mode=pr" >> "$GITHUB_OUTPUT"
             echo "search_pr_number=$arg" >> "$GITHUB_OUTPUT"
           else
-            echo "error=Could not parse \`$arg\` as a PR number or \`production\`. Usage: \`/use-search-api <search-api-pr-number>\` or \`/use-search-api production\`." >> "$GITHUB_OUTPUT"
+            echo "error=Could not parse \`$arg\` as a PR number or \`production\`. ${usage}" >> "$GITHUB_OUTPUT"
             echo "mode=error" >> "$GITHUB_OUTPUT"
           fi
 
@@ -105,7 +123,6 @@ jobs:
     runs-on: ubuntu-latest
     permissions:
       pull-requests: write
-      actions: write
     # Shares its group with deploy-review-stack.yml's review-stack job (same
     # key format) so only one Pulumi deployment is ever in flight per
     # PR+theme stack -- a newer one (from either workflow) cancels a stale
@@ -122,7 +139,7 @@ jobs:
       GH_TOKEN: ${{ github.token }}
     strategy:
       matrix:
-        theme: [cpr, cclw, mcf, ccc]
+        theme: ${{ fromJSON(needs.use-search-api.outputs.themes) }}
     steps:
       - name: Determine target URL
         id: target
@@ -136,15 +153,13 @@ jobs:
             echo "url=${TARGET_URL}" >> "$GITHUB_OUTPUT"
           fi
 
-      - name: Compute stack name and override variable name
+      - name: Compute stack name
         id: stack
         env:
           PR_NUMBER: ${{ github.event.issue.number }}
           THEME: ${{ matrix.theme }}
         run: |
           echo "stack_name=pr-${THEME}-navigator-frontend-${PR_NUMBER}" >> "$GITHUB_OUTPUT"
-          theme_upper=$(echo "${THEME}" | tr '[:lower:]' '[:upper:]')
-          echo "override_var=SEARCH_API_OVERRIDE_${PR_NUMBER}_${theme_upper}" >> "$GITHUB_OUTPUT"
 
       - name: Checkout
         uses: actions/checkout@v7
@@ -152,30 +167,23 @@ jobs:
       - name: Install pulumi CLI
         uses: pulumi/actions@v7
 
-      # NEXT_PUBLIC_API_URL is passed straight through as a deployment
-      # environment variable (see the trigger step below) rather than via
-      # `pulumi config set`: config set/get/cp against an ephemeral PR stack
-      # from a preRunCommand proved unreliable -- a value set here via the
-      # Pulumi service was not visible to a freshly-cloned deployment
-      # executor's `config get` on the same stack moments later. A GitHub
-      # Actions repo variable is the durable record instead, so a later
-      # plain push (deploy-review-stack.yml) can still find and re-apply
-      # this override without touching Pulumi config at all.
-      - name: Record next_public_api_url override
-        if: needs.use-search-api.outputs.mode == 'pr'
-        env:
-          OVERRIDE_VAR: ${{ steps.stack.outputs.override_var }}
-          TARGET_URL: ${{ steps.target.outputs.url }}
-        run: |
-          gh variable set "${OVERRIDE_VAR}" --body "${TARGET_URL}" --repo "${{ github.repository }}"
-
-      - name: Clear next_public_api_url override
-        if: needs.use-search-api.outputs.mode == 'prod'
-        env:
-          OVERRIDE_VAR: ${{ steps.stack.outputs.override_var }}
-        run: |
-          gh variable delete "${OVERRIDE_VAR}" --repo "${{ github.repository }}" || true
-
+      # NEXT_PUBLIC_API_URL is inlined into the client bundle at `next build`
+      # time, so pointing a review stack at a different search-api means
+      # rebuilding the image, not just changing a task env var.
+      #
+      # The value reaches the Pulumi program via /PULUMI_ENV, a file the
+      # deployment executor sources before running `pulumi update`, written
+      # here by an extra pre-run command. Two other routes were tried and do
+      # not work: per-stack `pulumi config` does not survive, because review
+      # stacks are ephemeral and the inherited `config cp` pre-run command
+      # overwrites them from the theme's `*-review` template on every
+      # deployment; and `operationContext.environmentVariables` on a one-off
+      # POST /deployments is accepted with a 202 but silently discarded.
+      #
+      # The saved pre-run commands have to be read and re-sent explicitly:
+      # `inheritSettings` replaces operationContext wholesale rather than
+      # merging, so sending only the echo below would drop the `config cp`
+      # that gives the ephemeral stack its config at all.
       - name: Trigger update deployment for ${{ matrix.theme }}
         id: trigger_update
         env:
@@ -183,23 +191,38 @@ jobs:
           TARGET_URL: ${{ steps.target.outputs.url }}
           MODE: ${{ needs.use-search-api.outputs.mode }}
         run: |
+          settings=$(curl -fsSL \
+            -H "Authorization: token ${PULUMI_ACCESS_TOKEN}" \
+            "https://api.pulumi.com/api/stacks/${ORG}/${PROJECT}/${STACK_NAME}/deployments/settings")
+
+          # In prod mode no override is appended, so the template's own
+          # production next_public_api_url is what the rebuild picks up.
           if [ "$MODE" = "prod" ]; then
-            env_vars="{}"
+            payload=$(jq -n --argjson s "$settings" '{
+              operation: "update",
+              sourceContext: $s.sourceContext,
+              gitHub: $s.gitHub,
+              operationContext: $s.operationContext,
+            }')
           else
-            env_vars=$(jq -n --arg url "${TARGET_URL}" '{"NEXT_PUBLIC_API_URL": $url}')
+            payload=$(jq -n --argjson s "$settings" --arg url "${TARGET_URL}" '{
+              operation: "update",
+              sourceContext: $s.sourceContext,
+              gitHub: $s.gitHub,
+              operationContext: ($s.operationContext + {
+                preRunCommands: (
+                  ($s.operationContext.preRunCommands // [])
+                  + ["echo \"NEXT_PUBLIC_API_URL=\($url)\" >> /PULUMI_ENV"]
+                )
+              }),
+            }')
           fi
 
           response=$(curl -fsSL -w "\n%{http_code}" -X POST \
             -H "Authorization: token ${PULUMI_ACCESS_TOKEN}" \
             -H "Content-Type: application/json" \
             "https://api.pulumi.com/api/stacks/${ORG}/${PROJECT}/${STACK_NAME}/deployments" \
-            -d "{
-              \"operation\": \"update\",
-              \"inheritSettings\": true,
-              \"operationContext\": {
-                \"environmentVariables\": ${env_vars}
-              }
-            }")
+            -d "$payload")
 
           body=$(echo "$response" | head -n -1)
           status=$(echo "$response" | tail -n1)
