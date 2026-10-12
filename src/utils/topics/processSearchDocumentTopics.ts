@@ -1,7 +1,7 @@
 import { ID_SEPARATOR } from "@/constants/chars";
 import { IApiFamilyDocumentTopics, ISearchDocument } from "@/types";
-import { fetchAndProcessTopics } from "../fetchAndProcessTopics";
 import { groupByRootConcept } from "../conceptsGroupedbyRootConcept";
+import { fetchAndProcessTopics } from "../fetchAndProcessTopics";
 
 export const processSearchDocumentTopics = async (familyDocument: ISearchDocument): Promise<IApiFamilyDocumentTopics> => {
   const documentsWithConceptCounts: IApiFamilyDocumentTopics = { documents: [], conceptCounts: {}, rootConcepts: [], conceptsGrouped: {} };

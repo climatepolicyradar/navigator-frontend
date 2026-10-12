@@ -5,8 +5,6 @@ import { TDataInDocument, validateDataInDocument } from "@/schemas";
 import { IApiFamilyDocumentTopics, ISearchDocumentResponse, TApiItemResponse, TApiSlugResponse, TFamilyPresentationalResponse } from "@/types";
 import { processSearchDocumentTopics } from "@/utils/topics/processSearchDocumentTopics";
 
-
-
 export const getFamilyData = async (slug: string, importId?: string): Promise<TFamilyPresentationalResponse> => {
   /* Make API requests */
 
@@ -63,7 +61,6 @@ export const getFamilyData = async (slug: string, importId?: string): Promise<TF
     errors.push(new Error("Failed to fetch family topics data", error));
     return { data: null, errors };
   }
-  
 
   /* Transform API data for presentation */
 
