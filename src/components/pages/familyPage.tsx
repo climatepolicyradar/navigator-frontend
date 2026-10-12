@@ -56,7 +56,6 @@ export interface IProps {
   features: TFeatures;
   theme: TTheme;
   themeConfig: TThemeConfig;
-  vespaFamilyData?: TSearchResponse | null;
   debug?: {
     dataInDocument: TDataInDocument;
   };

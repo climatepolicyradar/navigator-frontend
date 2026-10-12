@@ -30,6 +30,10 @@ export interface ISearchDocument {
   attributes: Record<string, string | number | boolean>;
 }
 
+export interface ISearchDocumentResponse {
+  data: ISearchDocument;
+}
+
 interface IAggregationLabel {
   count: number;
   value: {

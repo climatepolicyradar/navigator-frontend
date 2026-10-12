@@ -8,14 +8,12 @@ export type TFamilyApiData = {
   collections: TDataInDocument[];
   family: TDataInDocument;
   familyTopics: IApiFamilyDocumentTopics | null;
-  vespaFamilyData: TApiSearchResponse | null;
 };
 
 export type TFamilyPresentationalData = {
   collections: TCollectionPublicWithFamilies[];
   family: TFamilyPublic;
   familyTopics: IFamilyDocumentTopics | null;
-  vespaFamilyData: TSearchResponse | null;
   debug?: {
     dataInDocument: TDataInDocument;
   };

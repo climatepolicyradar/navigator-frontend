@@ -2,14 +2,15 @@ import { ApiClient } from "@/api/http-common";
 import { getParentDocuments } from "@/bff/methods/getRelations";
 import { familyTransformer } from "@/bff/transformers/familyTransformer";
 import { TDataInDocument, validateDataInDocument } from "@/schemas";
-import { IApiFamilyDocumentTopics, TApiItemResponse, TApiSearchResponse, TApiSlugResponse, TFamilyPresentationalResponse } from "@/types";
-import { processFamilyTopics } from "@/utils/topics/processFamilyTopics";
+import { IApiFamilyDocumentTopics, ISearchDocumentResponse, TApiItemResponse, TApiSlugResponse, TFamilyPresentationalResponse } from "@/types";
+import { processSearchDocumentTopics } from "@/utils/topics/processSearchDocumentTopics";
+
+
 
 export const getFamilyData = async (slug: string, importId?: string): Promise<TFamilyPresentationalResponse> => {
   /* Make API requests */
 
   const errors: Error[] = [];
-  const backendApiClient = new ApiClient(process.env.BACKEND_API_URL);
   const apiClient = new ApiClient(process.env.CONCEPTS_API_URL);
 
   let familyImportId = importId;
@@ -54,26 +55,16 @@ export const getFamilyData = async (slug: string, importId?: string): Promise<TF
     return { data: null, errors };
   }
 
-  // The Vespa families data has the concepts data attached, which is why we need this
-  let vespaFamilyData: TApiSearchResponse;
-  try {
-    // max_hits_per_family=100 is set ensure we get all documents for a family
-    // this should probably be done in the `backend-api`, but it currently does not work
-    const vespaResponse = await backendApiClient.get<TApiSearchResponse>(`/families/${family.id}?max_hits_per_family=100`);
-    // http-common's get() returns error.response rather than throwing for Axios errors,
-    // so we must check the status explicitly rather than relying on catch for non-2xx responses.
-    if (vespaResponse?.status === 200) {
-      vespaFamilyData = vespaResponse.data;
-    } else if (vespaResponse?.status === 500) {
-      errors.push(new Error("Failed to fetch Vespa families data"));
-    }
-  } catch (error) {
-    errors.push(new Error("Failed to fetch Vespa families data", error));
-  }
-
-  // Package the family topics
   let familyTopics: IApiFamilyDocumentTopics;
-  if (vespaFamilyData) familyTopics = await processFamilyTopics(vespaFamilyData);
+  try {
+    const { data: {data: documentResponse} } = await apiClient.get<ISearchDocumentResponse>(`/search/documents/${family.id}`);
+    familyTopics = await processSearchDocumentTopics(documentResponse);
+    console.info(familyTopics)
+  } catch (error) {
+    errors.push(new Error("Failed to fetch family topics data", error));
+    return { data: null, errors };
+  }
+  
 
   /* Transform API data for presentation */
 
@@ -82,7 +73,6 @@ export const getFamilyData = async (slug: string, importId?: string): Promise<TF
       collections,
       family,
       familyTopics: familyTopics || null,
-      vespaFamilyData: vespaFamilyData || null,
     },
     errors
   );
