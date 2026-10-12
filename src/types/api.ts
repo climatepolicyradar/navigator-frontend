@@ -356,6 +356,14 @@ export type TApiFamilyPublic = {
 
 export type TApiDocumentPublic = Omit<TApiFamilyDocumentPublic, "events"> & { family: TApiFamilyPublic };
 
+export type TApiSlugResponse = {
+  name: string;
+  family_import_id: string | null;
+  family_document_import_id: string | null;
+  collection_import_id: string | null;
+  created: string;
+};
+
 export interface IApiFamilyDocumentTopics {
   documents: {
     importId: string;
