@@ -14,6 +14,9 @@ ENV NODE_ENV=production
 # @related: GITHUB_SHA_ENV_VAR
 ARG GITHUB_SHA
 ENV GITHUB_SHA=${GITHUB_SHA}
+
+# NEXT_PUBLIC_ vars are inlined into the client bundle at build time
+#
 # Client-side alias of GITHUB_SHA; also used as the Faro source map bundleId so
 # uploaded maps match the app.version reported at runtime.
 ENV NEXT_PUBLIC_GITHUB_SHA=${GITHUB_SHA}
@@ -23,7 +26,7 @@ ENV NEXT_PUBLIC_GITHUB_SHA=${GITHUB_SHA}
 ARG NEXT_STATIC_ENABLED
 ENV NEXT_STATIC_ENABLED=${NEXT_STATIC_ENABLED}
 
-# Faro environment tag; NEXT_PUBLIC_ vars are inlined into the client bundle at build time
+# Faro environment tag
 ARG NEXT_PUBLIC_FARO_ENVIRONMENT
 ENV NEXT_PUBLIC_FARO_ENVIRONMENT=${NEXT_PUBLIC_FARO_ENVIRONMENT}
 
@@ -32,11 +35,10 @@ ENV NEXT_PUBLIC_FARO_ENVIRONMENT=${NEXT_PUBLIC_FARO_ENVIRONMENT}
 ARG NEXT_PUBLIC_FARO_URL
 ENV NEXT_PUBLIC_FARO_URL=${NEXT_PUBLIC_FARO_URL}
 
-# Base URL search/concepts/passages calls are made against (src/api/search.ts,
-# src/hooks/useLabelSearch.ts, src/api/passages.ts,
-# src/pages/geographies/[id].tsx). Defaults to production in application code
-# if unset; review stacks can override it to point at a search-api review
-# stack via the /use-search-api PR comment command.
+# Base URL search/concepts/passages calls are made against. 
+# Defaults to production in application code if unset; review stacks can
+# override it to point at a search-api review stack via the /use-search-api 
+# PR comment command.
 ARG NEXT_PUBLIC_API_URL
 ENV NEXT_PUBLIC_API_URL=${NEXT_PUBLIC_API_URL}
 
