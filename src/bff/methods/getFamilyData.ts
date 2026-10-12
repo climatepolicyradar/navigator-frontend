@@ -59,7 +59,6 @@ export const getFamilyData = async (slug: string, importId?: string): Promise<TF
   try {
     const { data: {data: documentResponse} } = await apiClient.get<ISearchDocumentResponse>(`/search/documents/${family.id}`);
     familyTopics = await processSearchDocumentTopics(documentResponse);
-    console.info(familyTopics)
   } catch (error) {
     errors.push(new Error("Failed to fetch family topics data", error));
     return { data: null, errors };
