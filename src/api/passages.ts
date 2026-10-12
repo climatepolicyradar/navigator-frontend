@@ -9,13 +9,29 @@ const searchPassagesUrl = (): string => {
   return `${origin}/search/passages`;
 };
 
-const configurePassagesFilters = (documents: string[], filters?: TSearchQueryGroup): TSearchQueryGroup => {
-  const documentsFilter: TSearchQueryGroup = {
-    op: "or",
-    filters: documents.map((documentId) => ({ field: "document_id", op: "contains", value: documentId })),
-  };
+// The scope the passages are searched within. Enumerating member `document_id`s is what lets a
+// subset of a family's documents be searched, but a family can report no members at all (every
+// member deleted), and an empty `or` group reads to the API as "no constraint" rather than "match
+// nothing" - the search then escapes to the whole corpus. Passages carry their family's
+// `principal_id`, so it stands in as a single-value scope for the whole family when there is no
+// member to enumerate.
+const configurePassagesScope = (documents: string[], principalId?: string): TSearchQueryGroup => {
+  if (documents.length > 0) {
+    return {
+      op: "or",
+      filters: documents.map((documentId) => ({ field: "document_id", op: "contains", value: documentId })),
+    };
+  }
 
-  const filtersWithConditionals: TSearchQueryGroup[] = [documentsFilter];
+  if (principalId) {
+    return { op: "or", filters: [{ field: "principal_id", op: "contains", value: principalId }] };
+  }
+
+  throw new Error("Passage search needs a document or a principal to scope to");
+};
+
+const configurePassagesFilters = (documents: string[], principalId?: string, filters?: TSearchQueryGroup): TSearchQueryGroup => {
+  const filtersWithConditionals: TSearchQueryGroup[] = [configurePassagesScope(documents, principalId)];
 
   if (filters) filtersWithConditionals.push(filters);
 
@@ -28,6 +44,7 @@ const configurePassagesFilters = (documents: string[], filters?: TSearchQueryGro
 export const fetchSearchPassages = async ({
   query,
   documents,
+  principalId,
   filters,
   pageSize,
   pageToken,
@@ -38,7 +55,7 @@ export const fetchSearchPassages = async ({
 
   url.searchParams.set("bolding", "true");
   url.searchParams.set("query", query);
-  url.searchParams.set("filters", JSON.stringify(configurePassagesFilters(documents, filters)));
+  url.searchParams.set("filters", JSON.stringify(configurePassagesFilters(documents, principalId, filters)));
   if (pageSize !== undefined) url.searchParams.set("page_size", String(pageSize));
   if (pageToken !== undefined) url.searchParams.set("page_token", String(pageToken));
   const sortKey = sort ?? "relevance desc";

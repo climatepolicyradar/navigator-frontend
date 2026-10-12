@@ -145,6 +145,20 @@ const renderPrincipal = (initialParams: Record<string, unknown> = {}, documents 
   return renderWith(<PassageSearch documents={documents} concepts={concepts} documentsLabel="Documents in this Law" subject="these documents" />);
 };
 
+// The family-scoped panel as it is actually mounted, with the principal it belongs to.
+const renderFamily = (initialParams: Record<string, unknown> = {}, documents = principalDocuments) => {
+  Object.entries(initialParams).forEach(([key, value]) => url.seed(key, value));
+  return renderWith(
+    <PassageSearch
+      documents={documents}
+      principalId="CCLW.family.1.0"
+      concepts={concepts}
+      documentsLabel="Documents in this Law"
+      subject="these documents"
+    />
+  );
+};
+
 // The search input, its submit and its clear button belong to SearchControls, which is
 // covered by its own component's tests. The viewer only reacts to the term in the URL, so
 // these drive the param directly rather than the markup around it.
@@ -651,6 +665,50 @@ describe("PassageSearch", () => {
       renderPrincipal();
 
       expect(await screen.findByText(/Type a search or apply a topic filter. For more information about these documents/)).toBeInTheDocument();
+    });
+  });
+
+  // FUS-683: a family whose documents are all deleted reports no members, which used to send an
+  // empty document scope. The API reads that as "no constraint", so a topic search escaped its
+  // family and returned passages from the whole corpus.
+  describe("a family that reports no documents", () => {
+    it("still scopes the search to its own family", async () => {
+      renderFamily({ q: "renewable" }, []);
+
+      await waitFor(() =>
+        expect(mockFetchSearchPassages).toHaveBeenCalledWith(expect.objectContaining({ documents: [], principalId: "CCLW.family.1.0" }))
+      );
+    });
+
+    it("scopes a topic search to its own family", async () => {
+      renderFamily({ filters: topicFilter }, []);
+
+      await waitFor(() =>
+        expect(mockFetchSearchPassages).toHaveBeenCalledWith(expect.objectContaining({ documents: [], principalId: "CCLW.family.1.0" }))
+      );
+    });
+
+    it("does not search at all when there is no principal to fall back to", async () => {
+      renderPrincipal({ q: "renewable" }, []);
+
+      await waitFor(() => expect(screen.queryByText("Searching…")).not.toBeInTheDocument());
+      expect(mockFetchSearchPassages).not.toHaveBeenCalled();
+    });
+  });
+
+  describe("scoping a family-wide search", () => {
+    it("leans on the principal rather than listing every document", async () => {
+      renderFamily({ q: "renewable" });
+
+      await waitFor(() =>
+        expect(mockFetchSearchPassages).toHaveBeenCalledWith(expect.objectContaining({ documents: [], principalId: "CCLW.family.1.0" }))
+      );
+    });
+
+    it("still names the documents when the search is narrowed to a subset", async () => {
+      renderFamily({ q: "renewable", docs: ["CCLW.document.1.2"] });
+
+      await waitFor(() => expect(mockFetchSearchPassages).toHaveBeenCalledWith(expect.objectContaining({ documents: ["CCLW.document.1.2"] })));
     });
   });
 

@@ -39,6 +39,9 @@ type TProps = {
   concepts: TTopic[];
   documents: TFamilyDocumentPublic[];
   documentsLabel?: string;
+  // The family the documents belong to. Scopes a family-wide search on its own, so the panel
+  // still searches the right family when the family reports no documents to enumerate.
+  principalId?: string;
   enablePreview?: boolean;
   onSearch?: (numberOfResults: number) => void;
   subject?: string;
@@ -107,7 +110,7 @@ const DocumentPreview = memo(({ document, pageNumber, passages }: TDocumentPrevi
 ));
 DocumentPreview.displayName = "DocumentPreview";
 
-export const PassageSearch = ({ changeTab, concepts, documents, documentsLabel, enablePreview = false, onSearch, subject }: TProps) => {
+export const PassageSearch = ({ changeTab, concepts, documents, documentsLabel, enablePreview = false, onSearch, principalId, subject }: TProps) => {
   const router = useRouter();
   const posthog = usePostHog();
   const searchIndex = useRef(0);
@@ -160,14 +163,23 @@ export const PassageSearch = ({ changeTab, concepts, documents, documentsLabel, 
     return known.length > 0 ? known : allDocumentIds;
   }, [documentsParam, documentsById, allDocumentIds]);
 
-  const hasSearch = queryParam.length > 0 || !!conceptFilterParam;
+  // A full-family scope is sent as the principal rather than as every member id: the member list
+  // is empty for a family whose documents are all deleted, and an empty scope group is dropped by
+  // the API, which would widen the search to the whole corpus. Narrowing to a subset still
+  // enumerates ids, as that is the only way to express it.
+  const isNarrowedToSubset = selectedDocumentIds.length > 0 && selectedDocumentIds.length < allDocumentIds.length;
+  const scopedDocumentIds = principalId && !isNarrowedToSubset ? [] : selectedDocumentIds;
+  const hasScope = scopedDocumentIds.length > 0 || !!principalId;
+
+  const hasSearch = (queryParam.length > 0 || !!conceptFilterParam) && hasScope;
 
   const { data, isError, isFetching, isPending, fetchNextPage, hasNextPage, isFetchingNextPage } = useInfiniteQuery({
-    queryKey: ["passages", selectedDocumentIds, queryParam, conceptFilterParam, sort],
+    queryKey: ["passages", scopedDocumentIds, principalId, queryParam, conceptFilterParam, sort],
     queryFn: async ({ pageParam, signal }) => {
       const response = await fetchSearchPassages({
         query: queryParam,
-        documents: selectedDocumentIds,
+        documents: scopedDocumentIds,
+        principalId,
         filters: conceptFilterParam,
         pageSize: RESULTS_PER_PAGE,
         sort,
