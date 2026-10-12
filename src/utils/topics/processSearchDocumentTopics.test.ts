@@ -65,7 +65,15 @@ describe("processSearchDocumentTopics", () => {
         documents: [
           {
             type: "has_member",
-            value: { id: "CPR.document.i00000001.n0000", title: "Doc 1", description: null, labels: [], documents: [], items: [], attributes: { deprecated_slug: "doc-1" } },
+            value: {
+              id: "CPR.document.i00000001.n0000",
+              title: "Doc 1",
+              description: null,
+              labels: [],
+              documents: [],
+              items: [],
+              attributes: { deprecated_slug: "doc-1" },
+            },
           },
         ],
         expected: [{ importId: "CPR.document.i00000001.n0000", title: "Doc 1", slug: "doc-1", conceptCounts: {} }],

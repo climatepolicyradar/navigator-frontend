@@ -34,7 +34,6 @@ import {
   TFamilyPageBlock,
   TFamilyPublic,
   TPrincipalDrawerTab,
-  TSearchResponse,
   TTheme,
   TThemeConfig,
   TFeatures,

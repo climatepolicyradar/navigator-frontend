@@ -1,8 +1,8 @@
 import { TDataInDocument } from "@/schemas";
 
-import { IApiFamilyDocumentTopics, TApiSearchResponse } from "../api";
+import { IApiFamilyDocumentTopics } from "../api";
 import { IFamilyDocumentTopics } from "../tables/familyDocumentTopics";
-import { TCollectionPublicWithFamilies, TFamilyPublic, TSearchResponse } from "../types";
+import { TCollectionPublicWithFamilies, TFamilyPublic } from "../types";
 
 export type TFamilyApiData = {
   collections: TDataInDocument[];
