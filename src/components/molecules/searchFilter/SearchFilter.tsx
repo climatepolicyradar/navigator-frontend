@@ -7,9 +7,10 @@ import { FiltersContext } from "@/context/FiltersContext";
 import { FiltersLookupContext } from "@/context/FiltersLookupContext";
 import { TCheckboxState, TFilterPathLabel, TNestedSearchLabel } from "@/types";
 import { filterHasSelectedChildren } from "@/utils/filters/filterHasSelectedChildren";
-import { getFilterPathLabels, getLabelPathSignature } from "@/utils/filters/filterPaths";
+import { getFilterPathLabels } from "@/utils/filters/filterPaths";
 import { getFilterStatus } from "@/utils/filters/getFilterStatus";
 import { getLabelDisplay } from "@/utils/filters/getLabelDisplay";
+import { isFilterVisible } from "@/utils/filters/isFilterVisible";
 import { joinTailwindClasses } from "@/utils/tailwind";
 import { addSubStringHighlights } from "@/utils/text/addSubStringHighlights";
 
@@ -28,14 +29,10 @@ export const SearchFilter = ({ ancestorPath, label, level }: IProps) => {
   const checked = getFilterStatus(pathLabels, checkedLabelPaths);
 
   const isFiltered = searchTerm !== "";
-  const isVisible: boolean = useMemo(() => {
-    if (!isFiltered) return true;
-    const labelPathSignature = getLabelPathSignature(pathLabels);
-    const signatureMatches = matchingLabelPathSignatures.some(
-      (signature) => signature.startsWith(labelPathSignature + "/") || signature === labelPathSignature
-    );
-    return signatureMatches;
-  }, [isFiltered, matchingLabelPathSignatures, pathLabels]);
+  const isVisible = useMemo(
+    () => isFilterVisible(pathLabels, matchingLabelPathSignatures, isFiltered),
+    [isFiltered, matchingLabelPathSignatures, pathLabels]
+  );
   if (!isVisible) return null;
 
   const hasChildren = label.children.length > 0;
