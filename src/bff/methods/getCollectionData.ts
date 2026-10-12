@@ -13,8 +13,14 @@ export const getCollectionData = async (slug: string): Promise<TCollectionPresen
 
   let collection: TDataInDocument;
   try {
-    const { data: dataInCollectionResponse } = await apiClient.get<TApiItemResponse>(`/data-in/documents/slug/${slug}`);
-    collection = validateDataInDocument(dataInCollectionResponse.data);
+    const dataInCollectionResponse = await apiClient.get<TApiItemResponse>(`/data-in/documents/slug/${slug}`);
+    // http-common's get() returns error.response rather than throwing for Axios errors,
+    // so we must check the status explicitly rather than relying on catch for non-2xx responses.
+    if (dataInCollectionResponse?.status !== 200) {
+      errors.push(new Error("Failed to fetch collection data"));
+      return { data: null, errors };
+    }
+    collection = validateDataInDocument(dataInCollectionResponse.data.data);
   } catch (error) {
     errors.push(new Error("Failed to fetch collection data", error));
     return { data: null, errors };
