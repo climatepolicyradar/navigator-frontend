@@ -9,6 +9,7 @@ export interface IDocumentLabelRelationship {
   type: string;
   value: IDocumentLabel;
   timestamp: string | null;
+  document_id?: string | null;
 }
 
 export interface IDocumentRelationship {

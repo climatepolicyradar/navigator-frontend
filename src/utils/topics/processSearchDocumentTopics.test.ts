@@ -10,11 +10,12 @@ vi.mock("../conceptsGroupedbyRootConcept", () => ({
   groupByRootConcept: vi.fn().mockReturnValue({}),
 }));
 
-const conceptLabel = (id: string, count: number | null): IDocumentLabelRelationship => ({
+const conceptLabel = (id: string, count: number | null, documentId: string | null = null): IDocumentLabelRelationship => ({
   type: "concept",
   value: { id: `concept::${id}`, type: "concept", value: id },
   count,
   timestamp: null,
+  document_id: documentId,
 });
 
 const nonConceptLabel = (type: string, id: string): IDocumentLabelRelationship => ({
@@ -22,6 +23,7 @@ const nonConceptLabel = (type: string, id: string): IDocumentLabelRelationship =
   value: { id: `${type}::${id}`, type, value: id },
   count: null,
   timestamp: null,
+  document_id: null,
 });
 
 const makeFamilyDocument = (labels: ISearchDocument["labels"], documents: ISearchDocument["documents"] = []): ISearchDocument => ({
@@ -57,7 +59,12 @@ describe("processSearchDocumentTopics", () => {
   });
 
   describe("per-document entries", () => {
-    const testCases: { name: string; documents: IDocumentRelationship[]; expected: IApiFamilyDocumentTopics["documents"] }[] = [
+    const testCases: {
+      name: string;
+      labels?: IDocumentLabelRelationship[];
+      documents: IDocumentRelationship[];
+      expected: IApiFamilyDocumentTopics["documents"];
+    }[] = [
       {
         name: "maps importId, title and slug from the nested document relation",
         documents: [
@@ -77,6 +84,24 @@ describe("processSearchDocumentTopics", () => {
         expected: [{ importId: "CPR.document.i00000001.n0000", title: "Doc 1", slug: "doc-1", conceptCounts: {} }],
       },
       {
+        name: "treats a has_version relation the same as has_member",
+        documents: [
+          {
+            type: "has_version",
+            value: {
+              id: "CPR.document.i00000009.n0000",
+              title: "Doc 9",
+              description: null,
+              labels: [],
+              documents: [],
+              items: [],
+              attributes: { deprecated_slug: "doc-9" },
+            },
+          },
+        ],
+        expected: [{ importId: "CPR.document.i00000009.n0000", title: "Doc 9", slug: "doc-9", conceptCounts: {} }],
+      },
+      {
         name: "falls back to an empty slug when deprecated_slug is missing",
         documents: [
           {
@@ -87,7 +112,7 @@ describe("processSearchDocumentTopics", () => {
         expected: [{ importId: "CPR.document.i00000002.n0000", title: "Doc 2", slug: "", conceptCounts: {} }],
       },
       {
-        name: "ignores any concept labels present on the nested document relation",
+        name: "ignores any concept labels present on the nested document relation itself",
         documents: [
           {
             type: "has_member",
@@ -104,10 +129,67 @@ describe("processSearchDocumentTopics", () => {
         ],
         expected: [{ importId: "CPR.document.i00000003.n0000", title: "Doc 3", slug: "doc-3", conceptCounts: {} }],
       },
+      {
+        name: "derives conceptCounts from family-level labels matched by document_id",
+        labels: [conceptLabel("Q1", 5, "CPR.document.i00000004.n0000")],
+        documents: [
+          {
+            type: "has_member",
+            value: {
+              id: "CPR.document.i00000004.n0000",
+              title: "Doc 4",
+              description: null,
+              labels: [],
+              documents: [],
+              items: [],
+              attributes: { deprecated_slug: "doc-4" },
+            },
+          },
+        ],
+        expected: [{ importId: "CPR.document.i00000004.n0000", title: "Doc 4", slug: "doc-4", conceptCounts: { Q1: 5 } }],
+      },
+      {
+        name: "attributes family-level labels to the matching document only, across multiple documents",
+        labels: [
+          conceptLabel("Q1", 5, "CPR.document.i00000005.n0000"),
+          conceptLabel("Q2", 2, "CPR.document.i00000006.n0000"),
+          conceptLabel("Q1", 1, null), // not attributed to any document (e.g. family-wide only)
+        ],
+        documents: [
+          {
+            type: "has_member",
+            value: {
+              id: "CPR.document.i00000005.n0000",
+              title: "Doc 5",
+              description: null,
+              labels: [],
+              documents: [],
+              items: [],
+              attributes: { deprecated_slug: "doc-5" },
+            },
+          },
+          {
+            type: "has_member",
+            value: {
+              id: "CPR.document.i00000006.n0000",
+              title: "Doc 6",
+              description: null,
+              labels: [],
+              documents: [],
+              items: [],
+              attributes: { deprecated_slug: "doc-6" },
+            },
+          },
+        ],
+        expected: [
+          { importId: "CPR.document.i00000005.n0000", title: "Doc 5", slug: "doc-5", conceptCounts: { Q1: 5 } },
+          { importId: "CPR.document.i00000006.n0000", title: "Doc 6", slug: "doc-6", conceptCounts: { Q2: 2 } },
+        ],
+      },
     ];
 
-    it.each(testCases)("$name", async ({ documents, expected }) => {
-      const result = await processSearchDocumentTopics(makeFamilyDocument([], documents));
+    it.each(testCases)("$name", async ({ labels, documents, expected }) => {
+      const result = await processSearchDocumentTopics(makeFamilyDocument(labels ?? [], documents));
 
       expect(result.documents).toEqual(expected);
     });
