@@ -124,25 +124,29 @@ jobs:
 
           echo "Deployment settings configured for ${STACK_NAME}"
 
+      # Needed by the stack-tag read below. The later install step (before
+      # fetching the review URL) runs too late for this.
+      - name: Install pulumi CLI
+        if: steps.decide.outputs.action == 'update'
+        uses: pulumi/actions@v7
+
       - name: Look up next_public_api_url override
         id: override
         if: steps.decide.outputs.action == 'update'
         env:
-          PR_NUMBER: ${{ github.event.pull_request.number }}
-          THEME: ${{ matrix.theme }}
-          GH_TOKEN: ${{ github.token }}
+          STACK_NAME: ${{ steps.decide.outputs.stack_name }}
         run: |
-          # /use-search-api (use-search-api.yml) records an override here as
-          # a GitHub Actions repo variable, keyed by PR+theme, rather than in
-          # Pulumi per-stack config: `pulumi config set/get/cp` against an
-          # ephemeral PR stack from a preRunCommand proved unreliable in
-          # practice -- a value set via the service was not visible to a
-          # freshly-cloned deployment executor's `config get` on the same
-          # stack moments later. Picking it up here on every push is what
-          # makes the override survive a normal synchronize rebuild.
-          theme_upper=$(echo "${THEME}" | tr '[:lower:]' '[:upper:]')
-          override_var="SEARCH_API_OVERRIDE_${PR_NUMBER}_${theme_upper}"
-          url=$(gh variable get "${override_var}" --repo "${{ github.repository }}" 2>/dev/null || echo "")
+          # /use-search-api (use-search-api.yml) records the override as a
+          # Pulumi stack tag. Re-reading it here on every push is what makes
+          # the override survive an ordinary synchronize rebuild, which would
+          # otherwise reset the stack to the theme template's production URL.
+          #
+          # A stack tag rather than per-stack config, because review stacks are
+          # ephemeral and the `config cp` pre-run command above overwrites all
+          # of their config from the template on every single deployment. Tag
+          # storage is separate, so `config cp` leaves it untouched.
+          url=$(pulumi stack tag get search-api-override \
+            --stack "${ORG}/${PROJECT}/${STACK_NAME}" 2>/dev/null || echo "")
           echo "url=${url}" >> "$GITHUB_OUTPUT"
 
       - name: Trigger update deployment for ${{matrix.theme}}
@@ -150,33 +154,47 @@ jobs:
         if: steps.decide.outputs.action == 'update'
         env:
           STACK_NAME: ${{ steps.decide.outputs.stack_name }}
-          PR_NUMBER: ${{ github.event.pull_request.number }}
           BRANCH: ${{ github.head_ref }}
           OVERRIDE_URL: ${{ steps.override.outputs.url }}
         run: |
+          # NEXT_PUBLIC_API_URL has to reach the Pulumi program through
+          # /PULUMI_ENV, a file the deployment executor sources before running
+          # `pulumi update`. Passing it as operationContext.environmentVariables
+          # is accepted with a 202 and then silently discarded, so the override
+          # never reaches the Docker build arg that bakes it into the bundle.
+          #
+          # The saved settings are read and re-sent explicitly because
+          # `inheritSettings` replaces operationContext wholesale rather than
+          # merging: sending only the echo below would drop the `config cp`
+          # that gives this ephemeral stack its config at all.
+          settings=$(curl -fsSL \
+            -H "Authorization: token ${PULUMI_ACCESS_TOKEN}" \
+            "https://api.pulumi.com/api/stacks/${ORG}/${PROJECT}/${STACK_NAME}/deployments/settings")
+
           if [ -n "${OVERRIDE_URL}" ]; then
-            env_vars=$(jq -n --arg pr "${PR_NUMBER}" --arg url "${OVERRIDE_URL}" \
-              '{"PR_NUMBER": $pr, "NEXT_PUBLIC_API_URL": $url}')
+            extra_cmds=$(jq -n --arg url "${OVERRIDE_URL}" \
+              '["echo \"NEXT_PUBLIC_API_URL=\($url)\" >> /PULUMI_ENV"]')
           else
-            env_vars=$(jq -n --arg pr "${PR_NUMBER}" '{"PR_NUMBER": $pr}')
+            extra_cmds='[]'
           fi
+
+          payload=$(jq -n \
+            --argjson s "$settings" \
+            --argjson extra "$extra_cmds" \
+            --arg branch "refs/heads/${BRANCH}" '{
+              operation: "update",
+              sourceContext: {git: {branch: $branch}},
+              gitHub: $s.gitHub,
+              operationContext: ($s.operationContext + {
+                preRunCommands: (($s.operationContext.preRunCommands // []) + $extra),
+              }),
+            }')
 
           response=$(curl -fsSL -w "\n%{http_code}" -X POST \
             -H "Authorization: token ${PULUMI_ACCESS_TOKEN}" \
             -H "Content-Type: application/json" \
             "https://api.pulumi.com/api/stacks/${ORG}/${PROJECT}/${STACK_NAME}/deployments" \
-            -d "{
-              \"operation\": \"update\",
-              \"inheritSettings\": true,
-              \"sourceContext\": {
-                \"git\": {
-                  \"branch\": \"refs/heads/${BRANCH}\"
-                }
-              },
-              \"operationContext\": {
-                \"environmentVariables\": ${env_vars}
-              }
-            }")
+            -d "$payload")
 
           body=$(echo "$response" | head -n -1)
           status=$(echo "$response" | tail -n1)

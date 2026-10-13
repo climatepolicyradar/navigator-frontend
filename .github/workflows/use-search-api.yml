@@ -184,6 +184,31 @@ jobs:
       # `inheritSettings` replaces operationContext wholesale rather than
       # merging, so sending only the echo below would drop the `config cp`
       # that gives the ephemeral stack its config at all.
+
+      # Record the override as a Pulumi stack tag so deploy-review-stack.yml
+      # can re-apply it on the next ordinary push. Tags are chosen over the
+      # two homes tried before: per-stack config is wiped by the `config cp`
+      # pre-run command on every deployment, and GitHub Actions repo variables
+      # need the Administration permission, which GITHUB_TOKEN cannot hold.
+      # Tag storage is separate from config, so `config cp` leaves it alone,
+      # and PULUMI_ACCESS_TOKEN already has the access needed.
+      - name: Record override as stack tag
+        if: needs.use-search-api.outputs.mode == 'pr'
+        env:
+          STACK_NAME: ${{ steps.stack.outputs.stack_name }}
+          TARGET_URL: ${{ steps.target.outputs.url }}
+        run: |
+          pulumi stack tag set search-api-override "${TARGET_URL}" \
+            --stack "${ORG}/${PROJECT}/${STACK_NAME}"
+
+      - name: Clear override stack tag
+        if: needs.use-search-api.outputs.mode == 'prod'
+        env:
+          STACK_NAME: ${{ steps.stack.outputs.stack_name }}
+        run: |
+          pulumi stack tag rm search-api-override \
+            --stack "${ORG}/${PROJECT}/${STACK_NAME}" || true
+
       - name: Trigger update deployment for ${{ matrix.theme }}
         id: trigger_update
         env:
