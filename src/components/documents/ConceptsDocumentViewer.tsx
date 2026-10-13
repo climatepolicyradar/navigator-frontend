@@ -36,7 +36,7 @@ interface IProps {
   initialExactMatch?: boolean;
   initialPageNumber?: number;
   initialConceptFilters?: string[];
-  searchDocument: SearchDocument;
+  searchDocument?: SearchDocument;
   document: TFamilyDocumentPublic;
   searchStatus: TLoadingStatus;
   searchResultFamilies: TMatchedFamily[];
@@ -86,7 +86,7 @@ export const ConceptsDocumentViewer = ({
   const documentConcepts: TTopic[] = useMemo(() => {
     const uniqueConceptMap = new Map<string, { concept: TTopic; count: number }>();
 
-    searchDocument.labels
+    (searchDocument?.labels ?? [])
       .filter((labelRel) => labelRel.value.type === "concept")
       .forEach((labelRel) => {
         const [, conceptId] = labelRel.value.id.split(ID_SEPARATOR);

@@ -121,7 +121,7 @@ const DocumentPage = ({
         themeConfig={themeConfig}
         attributionUrl={family.attribution.url}
       >
-        <TopicsContext.Provider value={topicsData}>
+        <TopicsContext.Provider value={topicsData ?? { rootTopics: [], topics: [] }}>
           <section
             className="pb-8 flex-1 flex flex-col"
             data-analytics-date={family.published_date}

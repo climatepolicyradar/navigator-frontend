@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
 
-import { DocumentLabelRelationship, SearchDocument, SearchDocumentResponse } from "@/api/search";
+import { DocumentLabelRelationship, SearchDocument, ISearchDocumentResponse } from "@/api/search";
 
 import { extractTopicIds } from "./extractTopicIds";
 
@@ -18,7 +18,7 @@ const nonConceptLabel = (type: string, id: string): DocumentLabelRelationship =>
   timestamp: null,
 });
 
-const makeResponse = (labels: SearchDocument["labels"]): SearchDocumentResponse => ({
+const makeResponse = (labels: SearchDocument["labels"]): ISearchDocumentResponse => ({
   data: {
     id: "CPR.document.i00000001.n0000",
     title: "Test Document",

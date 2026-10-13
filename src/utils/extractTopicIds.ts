@@ -1,7 +1,7 @@
-import { SearchDocumentResponse } from "@/api/search";
+import { ISearchDocumentResponse } from "@/api/search";
 import { ID_SEPARATOR } from "@/constants/chars";
 
-export const extractTopicIds = (searchDocumentResponse: SearchDocumentResponse): string[] => {
+export const extractTopicIds = (searchDocumentResponse: ISearchDocumentResponse): string[] => {
   const topicIds = new Set<string>();
 
   searchDocumentResponse.data.labels
