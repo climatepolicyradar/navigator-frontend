@@ -145,7 +145,7 @@ jobs:
         run: |
           echo "app_id=$(echo "$APP_IDS" | jq -r '.["${{ matrix.theme }}"]')" >> "$GITHUB_OUTPUT"
 
-      - name: Build, tag, and push to ECR with 'latest' tag
+      - name: Build, tag, and push to ECR with 'latest' and commit SHA tags
         id: build-image
         env:
           ECR_REGISTRY: ${{ secrets.DOCKER_REGISTRY }}
@@ -155,14 +155,20 @@ jobs:
           THEME: ${{ matrix.theme }}
         # @related: GITHUB_SHA_ENV_VAR
         run: |
+          SHA_TAG=$(git rev-parse HEAD)
           docker build --build-arg THEME=${THEME} --build-arg NEXT_PUBLIC_FARO_ENVIRONMENT=staging --build-arg GITHUB_SHA=$(git rev-parse HEAD) \
             --build-arg NEXT_PUBLIC_FARO_URL=${{ steps.faro.outputs.collector_endpoint }} \
             --build-arg FARO_SOURCEMAP_API_KEY=${{ secrets.FARO_SOURCEMAP_API_KEY }} \
             --build-arg FARO_SOURCEMAP_APP_ID=${{ steps.faro-sourcemap.outputs.app_id }} \
             --build-arg FARO_SOURCEMAP_STACK_ID=${{ secrets.FARO_SOURCEMAP_STACK_ID }} \
-            -t $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG .
+            -t $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG -t $ECR_REGISTRY/$ECR_REPOSITORY:$SHA_TAG .
           docker push $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
-          echo "image=$ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG" >> $GITHUB_OUTPUT
+          docker push $ECR_REGISTRY/$ECR_REPOSITORY:$SHA_TAG
+          # Deploy by SHA, not by 'latest': the tag that goes live is the one
+          # a rollback can name later, and it pins this exact build even if a
+          # concurrent run moves 'latest'.
+          echo "image=$ECR_REGISTRY/$ECR_REPOSITORY:$SHA_TAG" >> $GITHUB_OUTPUT
+          echo "sha_tag=$SHA_TAG" >> $GITHUB_OUTPUT
 
       # Serve this build's JS/CSS from S3 so a client mid-session on the old
       # build can still fetch its chunks after the deploy below replaces the

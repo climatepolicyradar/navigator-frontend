@@ -1,5 +1,13 @@
-"""Component resource for ECR repository creation."""
+"""Component resource for ECR repository creation.
 
+Deploys push two tags per build: the commit SHA and `latest` (see the
+deploy workflows). The SHA tag is what a rollback names, so retention is
+by image *count* rather than age -- an age rule would delete the only
+images worth rolling back to during a quiet period, exactly when the
+last known-good build is furthest in the past.
+"""
+
+import json
 from dataclasses import dataclass
 
 import pulumi
@@ -12,6 +20,10 @@ from resources.util import tag_name
 class ECRRepositoryConfig:
     image_scan_on_push: bool = True
     image_tag_mutability: str = "MUTABLE"
+    # How many SHA-tagged builds to keep. Each is a rollback target, so this
+    # is the depth of deploy history a rollback can still reach. Counted per
+    # repository, and each theme has its own.
+    retained_image_count: int = 50
 
 
 class ECRRepository(pulumi.ComponentResource):
@@ -47,6 +59,7 @@ class ECRRepository(pulumi.ComponentResource):
 
         # Create ECR Repository
         self.repository = self._create_ecr_repo(config, opts)
+        self._create_lifecycle_policy(config)
 
         self.register_outputs(
             {
@@ -71,4 +84,36 @@ class ECRRepository(pulumi.ComponentResource):
             ),
             image_tag_mutability=config.image_tag_mutability,
             opts=resource_opts,
+        )
+
+    def _create_lifecycle_policy(self, config: ECRRepositoryConfig) -> None:
+        """Expire old images so SHA tags don't accumulate without bound.
+
+        Keeps the newest N images -- the rollback window -- and expires the
+        rest, including the untagged layers left behind when `latest` moves to
+        a newer build. The live build is always among the newest, and `latest`
+        points at an image that also carries a SHA tag, so neither is at risk.
+        """
+        policy = {
+            "rules": [
+                {
+                    "rulePriority": 1,
+                    "description": (
+                        "Keep the most recent tagged builds as rollback targets."
+                    ),
+                    "selection": {
+                        "tagStatus": "any",
+                        "countType": "imageCountMoreThan",
+                        "countNumber": config.retained_image_count,
+                    },
+                    "action": {"type": "expire"},
+                },
+            ]
+        }
+
+        aws.ecr.LifecyclePolicy(
+            f"{self._name}-lifecycle-policy",
+            repository=self.repository.name,
+            policy=json.dumps(policy),
+            opts=pulumi.ResourceOptions(parent=self),
         )
