@@ -14,11 +14,20 @@ export const processSearchDocumentTopics = async (familyDocument: ISearchDocumen
     });
 
   familyDocument.documents.forEach(({ value: doc }) => {
+    const conceptCounts: Record<string, number> = {};
+    familyDocument.labels
+      .filter((labelRel) => labelRel.value.type === "concept" && labelRel.document_id === doc.id)
+      .forEach((labelRel) => {
+        const wikibaseId = labelRel.value.id.split(ID_SEPARATOR)[1];
+        const count = labelRel.count ?? 0;
+        conceptCounts[wikibaseId] = (conceptCounts[wikibaseId] || 0) + count;
+      });
+
     documentsWithConceptCounts.documents.push({
       importId: doc.id,
       title: doc.title,
       slug: String(doc.attributes.deprecated_slug ?? ""),
-      conceptCounts: {},
+      conceptCounts,
     });
   });
 
