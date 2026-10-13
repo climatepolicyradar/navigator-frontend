@@ -52,15 +52,6 @@ export const DocumentPassages: TStory = {
   render: useSortRender,
 };
 
-/* The option is named in the trigger as soon as the selection moves off the default. */
-export const NonDefaultSelection: TStory = {
-  args: {
-    ...SearchResults.args,
-    value: "oldest",
-  },
-  render: useSortRender,
-};
-
 export const CustomLabel: TStory = {
   args: {
     ...SearchResults.args,

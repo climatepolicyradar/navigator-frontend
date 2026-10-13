@@ -12,16 +12,13 @@ interface IProps {
 
 export const Sort = ({ label = "Sort", onChange, sortOptions, value }: IProps) => {
   const selectedOption = sortOptions.find((option) => option.paramValue === value);
-  // The label alone reads as a prompt to sort; only name the option once the user has moved off the default.
-  const triggerLabel =
-    !selectedOption || sortOptions.length === 0 || selectedOption.paramValue === sortOptions[0].paramValue
-      ? label
-      : `${label}: ${selectedOption.label}`;
 
   return (
     <Select.Root value={value} onValueChange={(newValue) => onChange(newValue)}>
       <Select.Trigger className="inline-flex h-9 max-w-full min-w-0 items-center justify-between gap-2 rounded-full border border-border-normal bg-white px-4 py-1.5 text-left text-sm font-medium text-text-primary select-none transition-colors focus-visible:outline-2 focus-visible:-outline-offset-1 focus-visible:outline-blue-800 data-popup-open:bg-bg-flat">
-        <Select.Value className="truncate">{triggerLabel}</Select.Value>
+        <Select.Value className="truncate">
+          {label}: {selectedOption.label}
+        </Select.Value>
         <Select.Icon className="flex shrink-0">
           <LucideChevronDown width={16} height={16} aria-hidden />
         </Select.Icon>
