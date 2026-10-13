@@ -1,5 +1,6 @@
 import { QUERY_PARAMS } from "@/constants/queryParams";
 import { TSearchSuggestion } from "@/types";
+import { deflateFilters } from "@/utils/filters/deflate";
 
 const year = new Date().getUTCFullYear();
 
@@ -14,7 +15,7 @@ export const SUGGESTED_SEARCHES: TSearchSuggestion[] = [
       [QUERY_PARAMS.sort_order]: "desc",
     },
     newParams: {
-      [QUERY_PARAMS.filters]: JSON.stringify({
+      [QUERY_PARAMS.filters]: deflateFilters({
         op: "and",
         filters: [
           { field: "labels.value.id", op: "contains", value: "category::UN submission" },
@@ -43,7 +44,7 @@ export const SUGGESTED_SEARCHES: TSearchSuggestion[] = [
       [QUERY_PARAMS.concept_name]: "just transition",
     },
     newParams: {
-      [QUERY_PARAMS.filters]: JSON.stringify({
+      [QUERY_PARAMS.filters]: deflateFilters({
         op: "and",
         filters: [
           { field: "labels.value.id", op: "contains", value: "category::Law", checked: true },
@@ -68,7 +69,7 @@ export const SUGGESTED_SEARCHES: TSearchSuggestion[] = [
     },
     newParams: {
       [QUERY_PARAMS.query_string]: "marine",
-      [QUERY_PARAMS.filters]: JSON.stringify({
+      [QUERY_PARAMS.filters]: deflateFilters({
         op: "or",
         filters: [{ field: "labels.value.id", op: "contains", value: "concept::Q1282", checked: true }],
       }),
@@ -78,7 +79,7 @@ export const SUGGESTED_SEARCHES: TSearchSuggestion[] = [
     label: "Emissions reduction target",
     params: {},
     newParams: {
-      [QUERY_PARAMS.filters]: JSON.stringify({
+      [QUERY_PARAMS.filters]: deflateFilters({
         op: "and",
         filters: [
           { op: "or", filters: [{ field: "labels.value.id", op: "contains", value: "concept::Q1652", checked: true }] },
