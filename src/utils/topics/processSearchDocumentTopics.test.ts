@@ -1,7 +1,5 @@
 import { describe, expect, it, vi } from "vitest";
-
-import { DocumentLabelRelationship, DocumentRelationship, SearchDocument } from "@/api/search";
-import { IApiFamilyDocumentTopics } from "@/types";
+import { IApiFamilyDocumentTopics, IDocumentLabelRelationship, IDocumentRelationship, ISearchDocument } from "@/types";
 
 import { processSearchDocumentTopics } from "./processSearchDocumentTopics";
 
@@ -12,21 +10,21 @@ vi.mock("../conceptsGroupedbyRootConcept", () => ({
   groupByRootConcept: vi.fn().mockReturnValue({}),
 }));
 
-const conceptLabel = (id: string, count: number | null): DocumentLabelRelationship => ({
+const conceptLabel = (id: string, count: number | null): IDocumentLabelRelationship => ({
   type: "concept",
   value: { id: `concept::${id}`, type: "concept", value: id },
   count,
   timestamp: null,
 });
 
-const nonConceptLabel = (type: string, id: string): DocumentLabelRelationship => ({
+const nonConceptLabel = (type: string, id: string): IDocumentLabelRelationship => ({
   type,
   value: { id: `${type}::${id}`, type, value: id },
   count: null,
   timestamp: null,
 });
 
-const makeFamilyDocument = (labels: SearchDocument["labels"], documents: SearchDocument["documents"] = []): SearchDocument => ({
+const makeFamilyDocument = (labels: ISearchDocument["labels"], documents: ISearchDocument["documents"] = []): ISearchDocument => ({
   id: "CPR.family.i00000001.n0000",
   title: "Test Family",
   description: null,
@@ -59,7 +57,7 @@ describe("processSearchDocumentTopics", () => {
   });
 
   describe("per-document entries", () => {
-    const testCases: { name: string; documents: DocumentRelationship[]; expected: IApiFamilyDocumentTopics["documents"] }[] = [
+    const testCases: { name: string; documents: IDocumentRelationship[]; expected: IApiFamilyDocumentTopics["documents"] }[] = [
       {
         name: "maps importId, title and slug from the nested document relation",
         documents: [

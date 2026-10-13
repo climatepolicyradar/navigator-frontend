@@ -11,7 +11,7 @@ export interface IDocumentLabelRelationship {
   timestamp: string | null;
 }
 
-interface IDocumentRelationship {
+export interface IDocumentRelationship {
   type: string;
   value: ISearchDocument;
 }
