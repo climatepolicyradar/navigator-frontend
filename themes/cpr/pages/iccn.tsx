@@ -120,7 +120,7 @@ export default function ICCNLandingPage() {
                     { field: "labels.value.id", op: "contains", value: "category::Report" },
                     {
                       op: "or",
-                      filters: [{ field: "labels.value.id", op: "contains", value: "report_type::Climate+council+report", checked: true }],
+                      filters: [{ field: "labels.value.id", op: "contains", value: "report_type::Climate council report", checked: true }],
                     },
                   ],
                 },
