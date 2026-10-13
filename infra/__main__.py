@@ -482,13 +482,19 @@ if not is_review_stack_or_template:
                         "Statement": [
                             {
                                 "Effect": "Allow",
-                                "Action": ["s3:PutObject", "s3:DeleteObject"],
+                                "Action": [
+                                    "s3:PutObject",
+                                    "s3:DeleteObject",
+                                    # mark_stale_next_static.sh tags the assets
+                                    # of the build the deploy superseded.
+                                    "s3:PutObjectTagging",
+                                ],
                                 "Resource": f"{arn}/*",
                             },
                             {
                                 "Effect": "Allow",
-                                # aws s3 sync lists the destination to work out
-                                # what to skip, so it needs the bucket itself.
+                                # Both the upload and the tagging pass above
+                                # enumerate the destination.
                                 "Action": ["s3:ListBucket"],
                                 "Resource": arn,
                             },

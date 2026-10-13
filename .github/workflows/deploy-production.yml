@@ -112,14 +112,13 @@ jobs:
           fi
 
       - name: Upload static assets to S3
+        id: upload-static-assets
         env:
           BUCKET_NAME: ${{ inputs.theme }}-frontend-production-next-static
         run: |
           set -euo pipefail
-          # No --delete: these paths are per-build content hashes and must
-          # outlive the container that shipped them, for clients still holding
-          # the old HTML. The bucket lifecycle rule expires them instead.
-          aws s3 sync ./next-static "s3://${BUCKET_NAME}/_next/static/" \
+          echo "uploaded_static_assets_at=$(date -u +%Y-%m-%dT%H:%M:%SZ)" >> "$GITHUB_OUTPUT"
+          aws s3 cp ./next-static "s3://${BUCKET_NAME}/_next/static/" --recursive \
             --cache-control "public,max-age=31536000,immutable"
 
       # Runs after assets are uploaded, not on merge to main: pulumi up can
@@ -161,3 +160,23 @@ jobs:
         run: >
           .github/workflows/scripts/deploy_ecs_express.sh
           frontend-production ${{ inputs.theme }}-frontend-production ${{ steps.build-image.outputs.image }}
+
+      # The steps above still hold the infra role; tagging is scoped to the
+      # frontend deploy role.
+      - name: Configure AWS credentials (deploy)
+        uses: aws-actions/configure-aws-credentials@v6.3.0
+        with:
+          role-to-assume: arn:aws:iam::${{ secrets.AWS_ACCOUNT_ID }}:role/navigator-new-frontend-github-actions
+          role-session-name: GitHub_to_AWS_via_FederatedOIDC
+          aws-region: eu-west-1
+
+      # Last, and deliberately after the rollout rather than after the upload:
+      # until ECS reports success the previous build is still serving traffic,
+      # so tagging its assets would queue the live site's chunks for deletion.
+      - name: Mark superseded assets stale
+        env:
+          BUCKET_NAME: ${{ inputs.theme }}-frontend-production-next-static
+          UPLOADED_STATIC_ASSETS_AT: ${{ steps.upload-static-assets.outputs.uploaded_static_assets_at }}
+        run: >
+          .github/workflows/scripts/mark_stale_next_static.sh
+          "$BUCKET_NAME" "$UPLOADED_STATIC_ASSETS_AT"
