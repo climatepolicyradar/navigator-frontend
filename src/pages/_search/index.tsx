@@ -29,6 +29,7 @@ import { getFilterGroups } from "@/utils/filters/getFilterGroups";
 import { pluralise } from "@/utils/pluralise";
 import { getPersistedPrincipalDrawerTab, persistPrincipalDrawerTab } from "@/utils/principal/principalTabs";
 import { readConfigFile } from "@/utils/readConfigFile";
+import { getSearchSortDefault } from "@/utils/search/getSearchSortDefault";
 import { conceptFiltersOnly, seedPassageLevel } from "@/utils/search/searchLevels";
 import { joinTailwindClasses } from "@/utils/tailwind";
 
@@ -168,6 +169,7 @@ const ShadowSearch = ({ theme, themeConfig, features }: TProps) => {
             resultsNode={resultsSummary ? <div aria-live="polite">{resultsSummary}</div> : null}
             sortOptions={SEARCH_SORT_OPTIONS}
             sortParamKey="sort"
+            sortDefault={getSearchSortDefault}
           />
           {/* SEARCH RESULTS */}
           <div className={columnLayoutCss}>

@@ -10,7 +10,7 @@ import { SearchFiltersPopover } from "@/components/molecules/searchFiltersPopove
 import { Sort } from "@/components/molecules/sort/Sort";
 import { FiltersContext, TDateRange, TToggleFilterCallback } from "@/context/FiltersContext";
 import { FilterGroupSchema } from "@/schemas";
-import { SORT_VALUES, TFiltersGroupConfig, TSearchLabel, TSearchQueryGroup, TSortOptionConfig, TSortValue } from "@/types";
+import { SORT_VALUES, TFilterPathLabel, TFiltersGroupConfig, TSearchLabel, TSearchQueryGroup, TSortOptionConfig, TSortValue } from "@/types";
 import { sortFilterPathLabels } from "@/utils/filters/filterPaths";
 import { getSearchLabelValues } from "@/utils/filters/getSearchLabelValues";
 import { groupSearchLabels } from "@/utils/filters/groupSearchLabels";
@@ -41,6 +41,7 @@ interface IProps {
   resultsMostRecent?: Date | null;
   sortOptions: TSortOptionConfig[];
   sortParamKey: string;
+  sortDefault?: (checkedLabelPaths: TFilterPathLabel[][], query: string) => TSortValue;
 }
 
 export const SearchControls = ({
@@ -55,6 +56,7 @@ export const SearchControls = ({
   queryParamKey,
   resultsNode,
   resultsMostRecent,
+  sortDefault,
   sortOptions,
   sortParamKey,
 }: IProps) => {
@@ -63,11 +65,14 @@ export const SearchControls = ({
     filterParamKey,
     parseAsJson<TSearchQueryGroup>(FilterGroupSchema).withDefault(DEFAULT_SEARCH_QUERY_GROUP)
   );
+  const [, setCurrentPage] = useQueryState(pageParamKey, parseAsString.withDefault("1"));
+
+  // Default sort is dynamic
+  const fromFilterParam = queryGroupToFilterPaths(filterParam);
   const [sortParam, setSortParam] = useQueryState<TSortValue>(
     sortParamKey,
-    parseAsStringLiteral(SORT_VALUES).withDefault(sortOptions[0]?.paramValue)
+    parseAsStringLiteral(SORT_VALUES).withDefault(sortDefault ? sortDefault(fromFilterParam.filterPathLabels, queryParam) : sortOptions[0].paramValue)
   );
-  const [, setCurrentPage] = useQueryState(pageParamKey, parseAsString.withDefault("1"));
 
   const [searchInput, setSearchInput] = useState(queryParam);
   const [lastQueryParam, setLastQueryParam] = useState(queryParam); // Keep input in sync with query
@@ -88,12 +93,11 @@ export const SearchControls = ({
   const filterGroupsWithLabels = useMemo(() => groupSearchLabels(nestedLabels, filterGroups), [filterGroups, nestedLabels]);
 
   const { appliedDateRange, checkedLabelPaths } = useMemo(() => {
-    const fromFilterParam = queryGroupToFilterPaths(filterParam);
     return {
       appliedDateRange: fromFilterParam.dateRange,
       checkedLabelPaths: sortFilterPathLabels(fromFilterParam.filterPathLabels, filterGroups),
     };
-  }, [filterGroups, filterParam]);
+  }, [filterGroups, fromFilterParam]);
 
   const toggleFilter: TToggleFilterCallback = (labelPath, checked) => {
     const updatedCheckedLabelPaths = updateCheckedLabelPaths(checkedLabelPaths, labelPath, checked, filterGroups);
