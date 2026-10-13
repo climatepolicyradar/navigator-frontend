@@ -3,7 +3,7 @@ import { ChevronDown } from "lucide-react";
 import { useRouter } from "next/router";
 import React, { useContext, useEffect, useMemo, useReducer, useState } from "react";
 
-import { SearchDocument } from "@/api/search";
+import { DocumentLabelRelationship } from "@/api/search";
 import EmbeddedPDF from "@/components/EmbeddedPDF";
 import Loader from "@/components/Loader";
 import PassageMatches from "@/components/PassageMatches";
@@ -36,7 +36,7 @@ interface IProps {
   initialExactMatch?: boolean;
   initialPageNumber?: number;
   initialConceptFilters?: string[];
-  searchDocument?: SearchDocument;
+  labels?: DocumentLabelRelationship[];
   document: TFamilyDocumentPublic;
   searchStatus: TLoadingStatus;
   searchResultFamilies: TMatchedFamily[];
@@ -63,7 +63,7 @@ export const ConceptsDocumentViewer = ({
   initialPageNumber,
   initialConceptFilters,
   document,
-  searchDocument,
+  labels,
   searchStatus,
   searchResultFamilies,
   handleSemanticSearchChange,
@@ -86,7 +86,7 @@ export const ConceptsDocumentViewer = ({
   const documentConcepts: TTopic[] = useMemo(() => {
     const uniqueConceptMap = new Map<string, { concept: TTopic; count: number }>();
 
-    (searchDocument?.labels ?? [])
+    (labels ?? [])
       .filter((labelRel) => labelRel.value.type === "concept")
       .forEach((labelRel) => {
         const [, conceptId] = labelRel.value.id.split(ID_SEPARATOR);
@@ -110,7 +110,7 @@ export const ConceptsDocumentViewer = ({
         count,
       }))
       .sort((a, b) => (b.count || 0) - (a.count || 0));
-  }, [searchDocument, familyTopics]);
+  }, [labels, familyTopics]);
 
   const selectedConcepts = useMemo(
     () =>
