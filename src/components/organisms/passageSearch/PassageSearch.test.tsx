@@ -145,8 +145,8 @@ const renderPrincipal = (initialParams: Record<string, unknown> = {}, documents 
   return renderWith(<PassageSearch documents={documents} concepts={concepts} documentsLabel="Documents in this Law" subject="these documents" />);
 };
 
-// The family-scoped panel as it is actually mounted, with the principal it belongs to.
-const renderFamily = (initialParams: Record<string, unknown> = {}, documents = principalDocuments) => {
+// The principal-scoped panel as it is actually mounted, with the principal id it belongs to.
+const renderWithPrincipalId = (initialParams: Record<string, unknown> = {}, documents = principalDocuments) => {
   Object.entries(initialParams).forEach(([key, value]) => url.seed(key, value));
   return renderWith(
     <PassageSearch
@@ -668,20 +668,20 @@ describe("PassageSearch", () => {
     });
   });
 
-  // FUS-683: a family whose documents are all deleted reports no members, which used to send an
-  // empty document scope. The API reads that as "no constraint", so a topic search escaped its
-  // family and returned passages from the whole corpus.
-  describe("a family that reports no documents", () => {
-    it("still scopes the search to its own family", async () => {
-      renderFamily({ q: "renewable" }, []);
+  // FUS-683: a principal whose documents are all deleted reports no members, which used to send
+  // an empty document scope. The API reads that as "no constraint", so a topic search escaped its
+  // principal and returned passages from the whole corpus.
+  describe("a principal that reports no documents", () => {
+    it("still scopes the search to its own principal", async () => {
+      renderWithPrincipalId({ q: "renewable" }, []);
 
       await waitFor(() =>
         expect(mockFetchSearchPassages).toHaveBeenCalledWith(expect.objectContaining({ documents: [], principalId: "CCLW.family.1.0" }))
       );
     });
 
-    it("scopes a topic search to its own family", async () => {
-      renderFamily({ filters: topicFilter }, []);
+    it("scopes a topic search to its own principal", async () => {
+      renderWithPrincipalId({ filters: topicFilter }, []);
 
       await waitFor(() =>
         expect(mockFetchSearchPassages).toHaveBeenCalledWith(expect.objectContaining({ documents: [], principalId: "CCLW.family.1.0" }))
@@ -696,9 +696,9 @@ describe("PassageSearch", () => {
     });
   });
 
-  describe("scoping a family-wide search", () => {
+  describe("scoping a principal-wide search", () => {
     it("leans on the principal rather than listing every document", async () => {
-      renderFamily({ q: "renewable" });
+      renderWithPrincipalId({ q: "renewable" });
 
       await waitFor(() =>
         expect(mockFetchSearchPassages).toHaveBeenCalledWith(expect.objectContaining({ documents: [], principalId: "CCLW.family.1.0" }))
@@ -706,7 +706,7 @@ describe("PassageSearch", () => {
     });
 
     it("still names the documents when the search is narrowed to a subset", async () => {
-      renderFamily({ q: "renewable", docs: ["CCLW.document.1.2"] });
+      renderWithPrincipalId({ q: "renewable", docs: ["CCLW.document.1.2"] });
 
       await waitFor(() => expect(mockFetchSearchPassages).toHaveBeenCalledWith(expect.objectContaining({ documents: ["CCLW.document.1.2"] })));
     });

@@ -10,11 +10,11 @@ const searchPassagesUrl = (): string => {
 };
 
 // The scope the passages are searched within. Enumerating member `document_id`s is what lets a
-// subset of a family's documents be searched, but a family can report no members at all (every
-// member deleted), and an empty `or` group reads to the API as "no constraint" rather than "match
-// nothing" - the search then escapes to the whole corpus. Passages carry their family's
-// `principal_id`, so it stands in as a single-value scope for the whole family when there is no
-// member to enumerate.
+// subset of a principal's documents be searched, but a principal can report no members at all
+// (every member deleted), and an empty `or` group reads to the API as "no constraint" rather than
+// "match nothing" - the search then escapes to the whole corpus. Passages carry their
+// `principal_id`, so it stands in as a single-value scope for the whole principal when there is
+// no member to enumerate.
 const configurePassagesScope = (documents: string[], principalId?: string): TSearchQueryGroup => {
   if (documents.length > 0) {
     return {

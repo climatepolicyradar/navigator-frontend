@@ -33,9 +33,9 @@ describe("fetchSearchPassages", () => {
     });
   });
 
-  // The defect behind FUS-683: a family whose documents are all deleted produces an empty `or`
+  // The defect behind FUS-683: a principal whose documents are all deleted produces an empty `or`
   // group, which the API treats as "no constraint" rather than "match nothing", so the search
-  // escapes to the whole corpus. Falling back to the principal keeps the scope on the family.
+  // escapes to the whole corpus. Falling back to the principal id keeps the scope in place.
   it("scopes to the principal when there are no documents to enumerate", async () => {
     await fetchSearchPassages({ query: "", documents: [], principalId: "UNFCCC.family.824.0", filters: topicFilter });
 

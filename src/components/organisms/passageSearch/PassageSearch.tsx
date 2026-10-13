@@ -39,8 +39,8 @@ type TProps = {
   concepts: TTopic[];
   documents: TFamilyDocumentPublic[];
   documentsLabel?: string;
-  // The family the documents belong to. Scopes a family-wide search on its own, so the panel
-  // still searches the right family when the family reports no documents to enumerate.
+  // The principal the documents belong to. Scopes a principal-wide search on its own, so the
+  // panel still searches the right principal when the principal reports no documents to enumerate.
   principalId?: string;
   enablePreview?: boolean;
   onSearch?: (numberOfResults: number) => void;
@@ -163,10 +163,10 @@ export const PassageSearch = ({ changeTab, concepts, documents, documentsLabel, 
     return known.length > 0 ? known : allDocumentIds;
   }, [documentsParam, documentsById, allDocumentIds]);
 
-  // A full-family scope is sent as the principal rather than as every member id: the member list
-  // is empty for a family whose documents are all deleted, and an empty scope group is dropped by
-  // the API, which would widen the search to the whole corpus. Narrowing to a subset still
-  // enumerates ids, as that is the only way to express it.
+  // A full-principal scope is sent as the principal id rather than as every member id: the member
+  // list is empty for a principal whose documents are all deleted, and an empty scope group is
+  // dropped by the API, which would widen the search to the whole corpus. Narrowing to a subset
+  // still enumerates ids, as that is the only way to express it.
   const isNarrowedToSubset = selectedDocumentIds.length > 0 && selectedDocumentIds.length < allDocumentIds.length;
   const scopedDocumentIds = principalId && !isNarrowedToSubset ? [] : selectedDocumentIds;
   const hasScope = scopedDocumentIds.length > 0 || !!principalId;

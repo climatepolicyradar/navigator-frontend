@@ -62,8 +62,8 @@ export interface ISearchPassagesResponse {
 export interface ISearchPassagesParams {
   query: string;
   documents: string[];
-  // The family the passages belong to. Scopes the search when `documents` is empty, which a
-  // family whose members are all deleted reports.
+  // The principal the passages belong to. Scopes the search when `documents` is empty, which a
+  // principal whose members are all deleted reports.
   principalId?: string;
   filters?: TSearchQueryGroup | null;
   pageSize?: number;
