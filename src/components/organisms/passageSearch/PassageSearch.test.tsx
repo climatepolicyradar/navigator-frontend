@@ -6,6 +6,7 @@ import * as nextRouterMock from "next-router-mock";
 
 import { SearchLevelContext } from "@/context/SearchLevelContext";
 import { IPassageLabel, ISearchPassage, TFamilyDocumentPublic, TSearchQueryGroup, TTopic } from "@/types";
+import { deflateFilters } from "@/utils/filters/deflate";
 
 import { PassageSearch, TOPIC_HIGHLIGHT_COLOURS as TOPIC_COLOURS } from "./PassageSearch";
 
@@ -799,9 +800,7 @@ describe("PassageSearch", () => {
 
       await userEvent.click(await screen.findByRole("button", { name: /Certain ecological/ }));
 
-      await waitFor(() =>
-        expect(mockRouter.asPath).toBe(`/documents/main-document?filters=${encodeURIComponent(JSON.stringify(topicFilter))}&q=renewable`)
-      );
+      await waitFor(() => expect(mockRouter.asPath).toBe(`/documents/main-document?filters=${deflateFilters(topicFilter)}&q=renewable`));
     });
   });
 

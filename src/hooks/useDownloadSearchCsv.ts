@@ -5,6 +5,7 @@ import { isFilterGroupEmpty } from "@/components/_experiment/advancedFilters/Adv
 import { SORT_PARAMS_LOOKUP } from "@/constants/sort";
 import { TApiLoadingStatus, TSearchQueryGroup, TSearchQueryRule, TSortValue, TThemeConfig } from "@/types";
 import { sanitiseSearchQueryGroup } from "@/utils/filters/advancedFilters";
+import { deflateFilters } from "@/utils/filters/deflate";
 
 const DOWNLOAD_MAX_RESULTS = 500;
 
@@ -43,7 +44,8 @@ export function buildDownloadSearchCsvUrl(params: IDownloadSearchCsvParams): URL
   }
 
   const combinedFilters = configureDocumentsFilters({ op: "and", filters: filtersToApply }, params.themeConfig.searchCategories);
-  url.searchParams.set("filters", JSON.stringify(combinedFilters));
+  url.searchParams.set("filters", deflateFilters(combinedFilters));
+  url.searchParams.set("encoding", "deflate");
 
   url.searchParams.set("order_by", SORT_PARAMS_LOOKUP[params.sort]);
   url.searchParams.set("max_results", DOWNLOAD_MAX_RESULTS.toString());

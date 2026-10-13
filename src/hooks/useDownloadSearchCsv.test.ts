@@ -3,10 +3,16 @@ import { act, renderHook, waitFor } from "@testing-library/react";
 import { configureDocumentsFilters } from "@/api/search";
 import { DEFAULT_THEME_CONFIG } from "@/constants/themeConfig";
 import { TLabelCategoryValue, TSearchQueryGroup, TThemeConfig } from "@/types";
+import { inflateFilters } from "@/utils/filters/deflate";
 
-import { buildDownloadSearchCsvUrl, useDownloadSearchCsv } from "./useDownloadSearchCsv";
+import {
+  buildDownloadSearchCsvUrl,
+  useDownloadSearchCsv,
+} from "./useDownloadSearchCsv";
 
-const themeConfigWithCategories = (searchCategories: TLabelCategoryValue[]): TThemeConfig => ({
+const themeConfigWithCategories = (
+  searchCategories: TLabelCategoryValue[],
+): TThemeConfig => ({
   ...DEFAULT_THEME_CONFIG,
   searchCategories,
 });
@@ -35,7 +41,9 @@ describe("buildDownloadSearchCsvUrl", () => {
       sort: "relevance",
     });
 
-    expect(url.origin + url.pathname).toBe("https://api.example.org/search/documents:download");
+    expect(url.origin + url.pathname).toBe(
+      "https://api.example.org/search/documents:download",
+    );
     expect(url.searchParams.get("query")).toBe("flood risk");
     expect(url.searchParams.get("order_by")).toBe("relevance desc");
     expect(url.searchParams.get("max_results")).toBe("500");
@@ -48,25 +56,25 @@ describe("buildDownloadSearchCsvUrl", () => {
       buildDownloadSearchCsvUrl({
         themeConfig: NO_CATEGORIES,
         sort: "recent",
-      }).searchParams.get("order_by")
+      }).searchParams.get("order_by"),
     ).toBe("attributes.published_date desc");
     expect(
       buildDownloadSearchCsvUrl({
         themeConfig: NO_CATEGORIES,
         sort: "oldest",
-      }).searchParams.get("order_by")
+      }).searchParams.get("order_by"),
     ).toBe("attributes.published_date asc");
     expect(
       buildDownloadSearchCsvUrl({
         themeConfig: NO_CATEGORIES,
         sort: "title_asc",
-      }).searchParams.get("order_by")
+      }).searchParams.get("order_by"),
     ).toBe("title asc");
     expect(
       buildDownloadSearchCsvUrl({
         themeConfig: NO_CATEGORIES,
         sort: "title_desc",
-      }).searchParams.get("order_by")
+      }).searchParams.get("order_by"),
     ).toBe("title desc");
   });
 
@@ -89,11 +97,16 @@ describe("buildDownloadSearchCsvUrl", () => {
       sort: "relevance",
       filters: {
         op: "and",
-        filters: [{ field: "attributes.status", op: "contains", value: "published" }],
+        filters: [
+          { field: "attributes.status", op: "contains", value: "published" },
+        ],
       },
     });
 
-    const filters = JSON.parse(url.searchParams.get("filters") ?? "{}");
+    expect(url.searchParams.get("encoding")).toBe("deflate");
+    const filters = JSON.parse(
+      inflateFilters(url.searchParams.get("filters") ?? ""),
+    );
     expect(filters.op).toBe("and");
     // The caller's tree sits alongside the always-on principal rule, under the
     // default published-date bounds that configureDocumentsFilters adds.
@@ -107,7 +120,9 @@ describe("buildDownloadSearchCsvUrl", () => {
         },
         {
           op: "and",
-          filters: [{ field: "attributes.status", op: "contains", value: "published" }],
+          filters: [
+            { field: "attributes.status", op: "contains", value: "published" },
+          ],
         },
       ],
     });
@@ -125,7 +140,9 @@ describe("buildDownloadSearchCsvUrl", () => {
       },
     });
 
-    const filters = JSON.parse(url.searchParams.get("filters") ?? "{}");
+    const filters = JSON.parse(
+      inflateFilters(url.searchParams.get("filters") ?? ""),
+    );
     expect(filters.filters).toContainEqual({
       op: "and",
       filters: [
@@ -147,7 +164,9 @@ describe("buildDownloadSearchCsvUrl", () => {
       sort: "relevance",
     });
 
-    const filters = JSON.parse(url.searchParams.get("filters") ?? "{}");
+    const filters = JSON.parse(
+      inflateFilters(url.searchParams.get("filters") ?? ""),
+    );
     expect(filters.filters).toContainEqual({
       op: "or",
       filters: [
@@ -168,7 +187,9 @@ describe("buildDownloadSearchCsvUrl", () => {
       sort: "relevance",
     });
 
-    expect(url.searchParams.get("filters")).not.toContain("category::");
+    expect(inflateFilters(url.searchParams.get("filters") ?? "")).not.toContain(
+      "category::",
+    );
   });
 
   it("applies the same default filters as the results list, so the download matches what is on screen", () => {
@@ -176,16 +197,20 @@ describe("buildDownloadSearchCsvUrl", () => {
     const themeConfig = themeConfigWithCategories(["Litigation"]);
     const filters: TSearchQueryGroup = {
       op: "and",
-      filters: [{ field: "attributes.status", op: "contains", value: "published" }],
+      filters: [
+        { field: "attributes.status", op: "contains", value: "published" },
+      ],
     };
 
     const downloadFilters = JSON.parse(
-      buildDownloadSearchCsvUrl({
-        query: "bananas",
-        themeConfig,
-        filters,
-        sort: "relevance",
-      }).searchParams.get("filters") ?? "{}"
+      inflateFilters(
+        buildDownloadSearchCsvUrl({
+          query: "bananas",
+          themeConfig,
+          filters,
+          sort: "relevance",
+        }).searchParams.get("filters") ?? "",
+      ),
     );
     const listFilters = configureDocumentsFilters(
       {
@@ -199,7 +224,7 @@ describe("buildDownloadSearchCsvUrl", () => {
           filters,
         ],
       },
-      themeConfig.searchCategories
+      themeConfig.searchCategories,
     );
 
     expect(downloadFilters).toEqual(JSON.parse(JSON.stringify(listFilters)));
@@ -242,14 +267,18 @@ describe("useDownloadSearchCsv", () => {
     const blob = new Blob(["document_id,title\n1,Climate Act\n"], {
       type: "text/csv",
     });
-    vi.spyOn(global, "fetch").mockResolvedValue(new Response(blob, { status: 200 }));
+    vi.spyOn(global, "fetch").mockResolvedValue(
+      new Response(blob, { status: 200 }),
+    );
     const clickSpy = vi.fn();
     const realCreateElement = document.createElement.bind(document);
-    const createElementSpy = vi.spyOn(document, "createElement").mockImplementation((tag: string) => {
-      const el = realCreateElement(tag);
-      if (tag === "a") el.click = clickSpy;
-      return el;
-    });
+    const createElementSpy = vi
+      .spyOn(document, "createElement")
+      .mockImplementation((tag: string) => {
+        const el = realCreateElement(tag);
+        if (tag === "a") el.click = clickSpy;
+        return el;
+      });
 
     const { result } = renderHook(() => useDownloadSearchCsv());
 
@@ -270,7 +299,9 @@ describe("useDownloadSearchCsv", () => {
   });
 
   it("goes to error status when the response is not ok", async () => {
-    vi.spyOn(global, "fetch").mockResolvedValue(new Response("", { status: 500 }));
+    vi.spyOn(global, "fetch").mockResolvedValue(
+      new Response("", { status: 500 }),
+    );
 
     const { result } = renderHook(() => useDownloadSearchCsv());
 
@@ -302,7 +333,9 @@ describe("useDownloadSearchCsv", () => {
   });
 
   it("resetStatus returns to idle", async () => {
-    vi.spyOn(global, "fetch").mockResolvedValue(new Response("", { status: 500 }));
+    vi.spyOn(global, "fetch").mockResolvedValue(
+      new Response("", { status: 500 }),
+    );
     const { result } = renderHook(() => useDownloadSearchCsv());
 
     act(() => {

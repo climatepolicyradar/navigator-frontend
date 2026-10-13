@@ -1,4 +1,5 @@
 import { TSearchQueryGroup } from "@/types";
+import { deflateFilters } from "@/utils/filters/deflate";
 
 import {
   flattenLevelToBaseQuery,
@@ -83,7 +84,7 @@ describe("flattenLevelToBaseQuery", () => {
   it("serialises a level onto the base params", () => {
     expect(flattenLevelToBaseQuery({ documents: ["CCLW.document.1.1", "CCLW.document.1.2"], filters: mixedFilters, query: "flood risk" })).toEqual({
       docs: "CCLW.document.1.1,CCLW.document.1.2",
-      filters: JSON.stringify(mixedFilters),
+      filters: deflateFilters(mixedFilters),
       q: "flood risk",
     });
   });
