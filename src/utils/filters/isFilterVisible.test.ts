@@ -12,23 +12,23 @@ const createPathLabel = (value: string): TFilterPathLabel => ({
 describe("isFilterVisible", () => {
   const pathLabels: TFilterPathLabel[] = [createPathLabel("self"), createPathLabel("parent")];
 
-  it("returns true when isFiltered is true", () => {
-    expect(isFilterVisible(pathLabels, [], true)).toBe(true);
+  it("returns true when isFiltered is false", () => {
+    expect(isFilterVisible(pathLabels, [], false)).toBe(true);
   });
 
   it("returns true when the filter matches", () => {
     const matchingLabelPathSignatures = [getLabelPathSignature([createPathLabel("self"), createPathLabel("parent")])];
-    expect(isFilterVisible(pathLabels, matchingLabelPathSignatures, false)).toBe(true);
+    expect(isFilterVisible(pathLabels, matchingLabelPathSignatures, true)).toBe(true);
   });
 
   it("returns true when a child filter matches", () => {
     const matchingLabelPathSignatures = [getLabelPathSignature([createPathLabel("child"), createPathLabel("self"), createPathLabel("parent")])];
-    expect(isFilterVisible(pathLabels, matchingLabelPathSignatures, false)).toBe(true);
+    expect(isFilterVisible(pathLabels, matchingLabelPathSignatures, true)).toBe(true);
   });
 
   it("returns true when an ancestor filter matches", () => {
     const matchingLabelPathSignatures = [getLabelPathSignature([createPathLabel("parent")])];
-    expect(isFilterVisible(pathLabels, matchingLabelPathSignatures, false)).toBe(true);
+    expect(isFilterVisible(pathLabels, matchingLabelPathSignatures, true)).toBe(true);
   });
 
   it("returns false with no direct, ancestor, or child match", () => {
@@ -37,6 +37,6 @@ describe("isFilterVisible", () => {
       getLabelPathSignature([createPathLabel("selfish"), createPathLabel("parent")]),
       getLabelPathSignature([createPathLabel("other")]),
     ];
-    expect(isFilterVisible(pathLabels, matchingLabelPathSignatures, false)).toBe(false);
+    expect(isFilterVisible(pathLabels, matchingLabelPathSignatures, true)).toBe(false);
   });
 });
