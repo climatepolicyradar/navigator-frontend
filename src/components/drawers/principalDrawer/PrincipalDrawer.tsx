@@ -183,6 +183,7 @@ export function PrincipalDrawer({ document, slug, open, onOpenChange, tab, onTab
                 panel: (
                   <PassageSearch
                     documents={familyData.family.documents}
+                    principalId={familyData.family.import_id}
                     concepts={conceptTopics}
                     documentsLabel={`Documents in this ${firstCase(getCategoryText("familySingular"))}`}
                     subject="these documents"

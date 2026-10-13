@@ -235,6 +235,7 @@ export const FamilyPage = ({ collections, debug, errors, family, familyTopics, f
                       <PassageSearch
                         changeTab={changeTab}
                         documents={family.documents}
+                        principalId={family.import_id}
                         concepts={conceptTopics}
                         documentsLabel={`Documents in this ${firstCase(getCategoryText("familySingular"))}`}
                         subject="these documents"
