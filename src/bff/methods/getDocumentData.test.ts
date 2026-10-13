@@ -3,10 +3,10 @@ import { describe, expect, it } from "vitest";
 import {
   dataInDocumentHandler,
   documentSlugHandler,
+  searchDocumentHandler,
   testDocumentDataIn,
   testDocumentImportId,
   testDocumentSlug,
-  vespaDocumentHandler,
 } from "@/tests/mocks/api/documentDataHandlers";
 import { testFamilyDataIn, testFamilyImportId } from "@/tests/mocks/api/familyDataHandlers";
 import { server } from "@/tests/mocks/server";
@@ -15,7 +15,7 @@ import { getDocumentData } from "./getDocumentData";
 
 describe("getDocumentData", () => {
   it("returns document data on the happy path", async () => {
-    server.use(documentSlugHandler(), dataInDocumentHandler(), vespaDocumentHandler());
+    server.use(documentSlugHandler(), dataInDocumentHandler(), searchDocumentHandler());
 
     const result = await getDocumentData(testDocumentSlug);
 
@@ -72,7 +72,7 @@ describe("getDocumentData", () => {
           documents: [{ type: "member_of", value: testFamilyDataIn }],
         },
       }),
-      vespaDocumentHandler()
+      searchDocumentHandler()
     );
 
     const result = await getDocumentData(testDocumentSlug);
