@@ -1,11 +1,11 @@
 import { useQuery } from "@tanstack/react-query";
 import React, { Fragment, useContext, useEffect, useMemo } from "react";
 
-import { fetchSearchPrincipalDocuments, getSearchApiStatus, SearchDocument, SearchDocumentsResponse, SearchDocumentsSortKey } from "@/api/search";
+import { fetchSearchPrincipalDocuments, getSearchApiStatus } from "@/api/search";
 import Loader from "@/components/Loader";
 import { DocumentCard } from "@/components/molecules/documentCard/DocumentCard";
 import { ThemeContext } from "@/context/ThemeContext";
-import { TSearchQueryGroup } from "@/types";
+import { ISearchDocument, ISearchDocumentsResponse, TSearchQueryGroup, TSortValue } from "@/types";
 import { sanitiseSearchQueryGroup } from "@/utils/filters/advancedFilters";
 
 import { isFilterGroupEmpty } from "../advancedFilters/AdvancedFilters";
@@ -13,7 +13,7 @@ import { isFilterGroupEmpty } from "../advancedFilters/AdvancedFilters";
 export const SEARCH_RESULTS_PAGE_SIZE = 10;
 
 // Principal = Family in old model
-const isPrincipal = (result: SearchDocument): boolean => {
+const isPrincipal = (result: ISearchDocument): boolean => {
   return result.labels.some((label) => label.type === "status" && label.value.value === "Principal");
 };
 
@@ -25,8 +25,8 @@ function SearchResults({
   data,
   onResultClicked,
 }: {
-  data: SearchDocumentsResponse;
-  onResultClicked?: (document: SearchDocument, event: React.MouseEvent<HTMLButtonElement>) => void;
+  data: ISearchDocumentsResponse;
+  onResultClicked?: (document: ISearchDocument, event: React.MouseEvent<HTMLButtonElement>) => void;
 }) {
   // Number of results on the pages before this one
   const positionOffset = (data.page - 1) * data.page_size;
@@ -76,10 +76,10 @@ export function SearchContainer({
   query?: string;
   filters?: TSearchQueryGroup;
   page_token?: string;
-  sort?: SearchDocumentsSortKey;
+  sort?: TSortValue;
   onTotalResultsChange?: (total: number | null) => void;
   onSearchingChange?: (isSearching: boolean) => void;
-  onResultClicked?: (document: SearchDocument, event: React.MouseEvent<HTMLButtonElement>) => void;
+  onResultClicked?: (document: ISearchDocument, event: React.MouseEvent<HTMLButtonElement>) => void;
 }) {
   const { themeConfig, loaded } = useContext(ThemeContext);
   // Drop placeholder rules (e.g. default empty label row) so date-only filters still fetch.

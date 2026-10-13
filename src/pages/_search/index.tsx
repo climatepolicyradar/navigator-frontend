@@ -2,7 +2,7 @@ import { GetServerSideProps, InferGetServerSidePropsType } from "next";
 import { useQueryState, parseAsString, parseAsJson } from "nuqs";
 import { useCallback, useContext, useMemo, useState, type SetStateAction } from "react";
 
-import { normaliseSearchDocumentsSortKey, SearchDocument } from "@/api/search";
+import { normaliseSearchDocumentsSortKey } from "@/api/search";
 import { createGroup, isFilterGroupEmpty, AdvancedFilters } from "@/components/_experiment/advancedFilters/AdvancedFilters";
 import { SEARCH_RESULTS_PAGE_SIZE, SearchContainer } from "@/components/_experiment/searchResults/SearchResults";
 import { FiveColumns } from "@/components/atoms/columns/FiveColumns";
@@ -22,7 +22,7 @@ import { useFilterLabels } from "@/hooks/useFilterLabels";
 import { useNestedSearchLevel } from "@/hooks/useSearchLevel";
 import { useText } from "@/hooks/useText";
 import { FilterGroupSchema } from "@/schemas";
-import { TPrincipalDrawerTab, TSearchQueryGroup, TTheme } from "@/types";
+import { ISearchDocument, TPrincipalDrawerTab, TSearchQueryGroup, TTheme } from "@/types";
 import { getFeatureFlags } from "@/utils/featureFlags";
 import { getFeatures } from "@/utils/features";
 import { getFilterGroups } from "@/utils/filters/getFilterGroups";
@@ -76,7 +76,7 @@ const ShadowSearch = ({ theme, themeConfig, features }: TProps) => {
 
   // The clicked result names the drawer without waiting on a fetch. It is kept while the drawer
   // animates closed, and is absent when the level arrives from a shared link.
-  const [selectedDocument, setSelectedDocument] = useState<SearchDocument | null>(null);
+  const [selectedDocument, setSelectedDocument] = useState<ISearchDocument | null>(null);
   const principalSlug = principalLevel.id ?? (selectedDocument?.attributes.deprecated_slug as string) ?? null;
   const principalHasSearch = !!principalLevel.search.query || !!conceptFiltersOnly(principalLevel.search.filters);
   const documentHasSearch = !!documentLevel.search.query || !!conceptFiltersOnly(documentLevel.search.filters);

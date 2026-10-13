@@ -1,8 +1,8 @@
 import { useState } from "react";
 
-import { SEARCH_DOCUMENT_SORT_PARAMS, SearchDocumentsSortKey } from "@/api/search";
 import { isFilterGroupEmpty } from "@/components/_experiment/advancedFilters/AdvancedFilters";
-import { TApiLoadingStatus, TSearchQueryGroup } from "@/types";
+import { SORT_PARAMS_LOOKUP } from "@/constants/sort";
+import { TApiLoadingStatus, TSearchQueryGroup, TSortValue } from "@/types";
 import { sanitiseSearchQueryGroup } from "@/utils/filters/advancedFilters";
 
 const DOWNLOAD_MAX_RESULTS = 500;
@@ -19,7 +19,7 @@ function downloadSearchCsvUrl(): string {
   return `${origin}/search/documents:download`;
 }
 
-export function buildDownloadSearchCsvUrl(params: { query?: string; filters?: TSearchQueryGroup; sort: SearchDocumentsSortKey }): URL {
+export function buildDownloadSearchCsvUrl(params: { query?: string; filters?: TSearchQueryGroup; sort: TSortValue }): URL {
   const url = new URL(downloadSearchCsvUrl());
 
   if (params.query) url.searchParams.set("query", params.query);
@@ -33,7 +33,7 @@ export function buildDownloadSearchCsvUrl(params: { query?: string; filters?: TS
   const combinedFilters: TSearchQueryGroup = { op: "and", filters: filtersToApply };
   url.searchParams.set("filters", JSON.stringify(combinedFilters));
 
-  url.searchParams.set("order_by", SEARCH_DOCUMENT_SORT_PARAMS[params.sort]);
+  url.searchParams.set("order_by", SORT_PARAMS_LOOKUP[params.sort]);
   url.searchParams.set("max_results", DOWNLOAD_MAX_RESULTS.toString());
 
   return url;
@@ -50,7 +50,7 @@ function triggerBlobDownload(blob: Blob, fileName: string) {
 export function useDownloadSearchCsv() {
   const [status, setStatus] = useState<TApiLoadingStatus>("idle");
 
-  const download = async (params: { query?: string; filters?: TSearchQueryGroup; sort: SearchDocumentsSortKey }) => {
+  const download = async (params: { query?: string; filters?: TSearchQueryGroup; sort: TSortValue }) => {
     setStatus("loading");
 
     try {

@@ -1,20 +1,19 @@
 import { MouseEventHandler, ReactNode } from "react";
 
-import { SearchDocument } from "@/api/search";
 import { Geographies } from "@/components/molecules/geographies/Geographies";
-import { IMetadata } from "@/types";
+import { IMetadata, ISearchDocument } from "@/types";
 import { formatDate } from "@/utils/timedate";
 
-const getDocumentGeography = (document: SearchDocument): ReactNode => {
+const getDocumentGeography = (document: ISearchDocument): ReactNode => {
   const allGeographies = document.labels.filter((relation) => relation.type === "geography").map((relation) => relation.value);
   return <Geographies geographyLabels={allGeographies} limit={2} noLinks />;
 };
 
-const getDocumentPublishedYear = (doc: SearchDocument): ReactNode => {
+const getDocumentPublishedYear = (doc: ISearchDocument): ReactNode => {
   return doc.attributes.published_date ? formatDate(doc.attributes.published_date as string)[0] : undefined;
 };
 
-const getDocumentType = (document: SearchDocument): ReactNode => {
+const getDocumentType = (document: ISearchDocument): ReactNode => {
   const category = document.labels.filter((label) => label.type === "category")[0];
   return category?.value.value ?? null;
 };
@@ -27,8 +26,8 @@ type TDocumentAnalytics = {
 };
 
 type TProps = {
-  document: SearchDocument;
-  onClick?: (document: SearchDocument, event: React.MouseEvent<HTMLButtonElement>) => void;
+  document: ISearchDocument;
+  onClick?: (document: ISearchDocument, event: React.MouseEvent<HTMLButtonElement>) => void;
   analytics?: TDocumentAnalytics;
 };
 

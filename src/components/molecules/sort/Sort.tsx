@@ -1,13 +1,13 @@
 import { Select } from "@base-ui/react/select";
 import { LucideCheck, LucideChevronDown } from "lucide-react";
 
-import { TSortOptionConfig } from "@/types";
+import { TSortOptionConfig, TSortValue } from "@/types";
 
 interface IProps {
   label?: string;
-  onChange: (value: string) => void;
+  onChange: (value: TSortValue) => void;
   sortOptions: TSortOptionConfig[];
-  value: string;
+  value: TSortValue;
 }
 
 export const Sort = ({ label = "Sort", onChange, sortOptions, value }: IProps) => {

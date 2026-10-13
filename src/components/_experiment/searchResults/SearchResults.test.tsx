@@ -20,7 +20,7 @@ vi.mock("@/api/search", async (importOriginal) => {
   };
 });
 
-const emptyResponse: SearchDocumentsResponse = {
+const emptyResponse: ISearchDocumentsResponse = {
   results: [],
   total_size: 0,
   page: 1,
@@ -30,10 +30,11 @@ const emptyResponse: SearchDocumentsResponse = {
   previous_page: null,
 };
 
-import { fetchSearchPrincipalDocuments, SearchDocument, SearchDocumentsResponse } from "@/api/search";
+import { fetchSearchPrincipalDocuments } from "@/api/search";
 import { createGroup } from "@/components/_experiment/advancedFilters/AdvancedFilters";
 import { DEFAULT_THEME_CONFIG } from "@/constants/themeConfig";
 import { IProps as IThemeContextProps, ThemeContext } from "@/context/ThemeContext";
+import { ISearchDocument, ISearchDocumentsResponse } from "@/types";
 import { upsertPublishedDateRangeRules } from "@/utils/_experiment/dateRangeFilters";
 
 import { SearchContainer, shouldRetrySearch } from "./SearchResults";
@@ -57,7 +58,7 @@ const renderWith = (ui: React.ReactElement, theme: IThemeContextProps = loadedTh
   };
 };
 
-const principalResult = (id: string): SearchDocument => ({
+const principalResult = (id: string): ISearchDocument => ({
   id,
   title: id,
   description: null,

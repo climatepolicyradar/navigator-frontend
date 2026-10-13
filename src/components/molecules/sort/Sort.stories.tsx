@@ -1,6 +1,8 @@
 import { Meta, StoryObj } from "@storybook/nextjs-vite";
 import { useState } from "react";
 
+import { TSortValue } from "@/types";
+
 import { Sort } from "./Sort";
 
 const meta = {
@@ -20,7 +22,7 @@ export default meta;
 
 const useSortRender = ({ sortOptions, value, ...props }: React.ComponentProps<typeof Sort>) => {
   const [selectedId, setSelectedId] = useState(value);
-  const changeValue = (newValue: string) => setSelectedId(newValue);
+  const changeValue = (newValue: TSortValue) => setSelectedId(newValue);
 
   return <Sort {...props} sortOptions={sortOptions} onChange={changeValue} value={selectedId} />;
 };
@@ -42,10 +44,10 @@ export const SearchResults: TStory = {
 export const DocumentPassages: TStory = {
   args: {
     sortOptions: [
-      { paramValue: "relevance desc", label: "Relevance" },
-      { paramValue: "idx asc", label: "Page Number" },
+      { paramValue: "relevance", label: "Relevance" },
+      { paramValue: "page", label: "Page Number" },
     ],
-    value: "relevance desc",
+    value: "relevance",
   },
   render: useSortRender,
 };

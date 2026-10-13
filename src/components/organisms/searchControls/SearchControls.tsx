@@ -1,5 +1,5 @@
 import { LucideSearch } from "lucide-react";
-import { parseAsJson, parseAsString, useQueryState } from "nuqs";
+import { parseAsJson, parseAsString, parseAsStringLiteral, useQueryState } from "nuqs";
 import { Fragment, ReactNode, SubmitEventHandler, useMemo, useState } from "react";
 
 import { Input } from "@/components/atoms/input/Input";
@@ -10,7 +10,7 @@ import { SearchFiltersPopover } from "@/components/molecules/searchFiltersPopove
 import { Sort } from "@/components/molecules/sort/Sort";
 import { FiltersContext, TDateRange, TToggleFilterCallback } from "@/context/FiltersContext";
 import { FilterGroupSchema } from "@/schemas";
-import { TFiltersGroupConfig, TSearchLabel, TSearchQueryGroup, TSortOptionConfig } from "@/types";
+import { SORT_VALUES, TFiltersGroupConfig, TSearchLabel, TSearchQueryGroup, TSortOptionConfig, TSortValue } from "@/types";
 import { sortFilterPathLabels } from "@/utils/filters/filterPaths";
 import { getSearchLabelValues } from "@/utils/filters/getSearchLabelValues";
 import { groupSearchLabels } from "@/utils/filters/groupSearchLabels";
@@ -63,9 +63,11 @@ export const SearchControls = ({
     filterParamKey,
     parseAsJson<TSearchQueryGroup>(FilterGroupSchema).withDefault(DEFAULT_SEARCH_QUERY_GROUP)
   );
-  const [sortParam, setSortParam] = useQueryState(sortParamKey, parseAsString.withDefault(sortOptions[0]?.paramValue || ""));
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  const [_currentPage, setCurrentPage] = useQueryState(pageParamKey, parseAsString.withDefault("1"));
+  const [sortParam, setSortParam] = useQueryState<TSortValue>(
+    sortParamKey,
+    parseAsStringLiteral(SORT_VALUES).withDefault(sortOptions[0]?.paramValue)
+  );
+  const [, setCurrentPage] = useQueryState(pageParamKey, parseAsString.withDefault("1"));
 
   const [searchInput, setSearchInput] = useState(queryParam);
   const [lastQueryParam, setLastQueryParam] = useState(queryParam); // Keep input in sync with query
@@ -109,7 +111,7 @@ export const SearchControls = ({
     setCurrentPage("1");
   };
 
-  const onSort = (sortValue: string) => {
+  const onSort = (sortValue: TSortValue) => {
     setSortParam(sortValue);
     setCurrentPage("1");
   };

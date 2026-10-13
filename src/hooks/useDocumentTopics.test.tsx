@@ -2,9 +2,9 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { renderHook, waitFor } from "@testing-library/react";
 import React from "react";
 
-import { DocumentLabelRelationship, SearchDocument, SearchDocumentsResponse } from "@/api/search";
 import { DEFAULT_THEME_CONFIG } from "@/constants/themeConfig";
 import { IProps as IThemeContextProps, ThemeContext } from "@/context/ThemeContext";
+import { IDocumentLabelRelationship, ISearchDocument, ISearchDocumentsResponse } from "@/types";
 
 import { useDocumentTopics } from "./useDocumentTopics";
 
@@ -13,14 +13,14 @@ vi.mock("@/api/search", () => ({
   fetchSearchDocuments: mockFetchSearchDocuments,
 }));
 
-const label = (id: string, value: string, type: string): DocumentLabelRelationship => ({
+const label = (id: string, value: string, type: string): IDocumentLabelRelationship => ({
   count: null,
   type: "labels",
   value: { id, value, type },
   timestamp: null,
 });
 
-const searchDocument = (id: string, labels: DocumentLabelRelationship[]): SearchDocument =>
+const searchDocument = (id: string, labels: IDocumentLabelRelationship[]): ISearchDocument =>
   ({
     id,
     title: id,
@@ -29,9 +29,9 @@ const searchDocument = (id: string, labels: DocumentLabelRelationship[]): Search
     documents: [],
     items: [],
     attributes: {},
-  }) as SearchDocument;
+  }) as ISearchDocument;
 
-const searchResponse = (results: SearchDocument[]): SearchDocumentsResponse =>
+const searchResponse = (results: ISearchDocument[]): ISearchDocumentsResponse =>
   ({
     total_size: results.length,
     page: 1,
@@ -40,7 +40,7 @@ const searchResponse = (results: SearchDocument[]): SearchDocumentsResponse =>
     next_page: null,
     previous_page: null,
     results,
-  }) as SearchDocumentsResponse;
+  }) as ISearchDocumentsResponse;
 
 const loadedTheme: IThemeContextProps = { theme: "cpr", themeConfig: DEFAULT_THEME_CONFIG, loaded: true };
 

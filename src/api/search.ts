@@ -1,86 +1,21 @@
 import { ID_SEPARATOR } from "@/constants/chars";
-import { TLabelCategoryValue, TSearchQueryGroup, TSearchQueryRule, TThemeConfig } from "@/types";
+import { SORT_PARAMS_LOOKUP } from "@/constants/sort";
+import { ISearchDocumentsResponse, SORT_VALUES, TLabelCategoryValue, TSearchQueryGroup, TSearchQueryRule, TSortValue, TThemeConfig } from "@/types";
 import { DATE_RANGE_MIN_YEAR, hasPublishedDateRule } from "@/utils/_experiment/dateRangeFilters";
 
-interface DocumentLabel {
-  id: string;
-  value: string;
-  type: string;
-}
-
-export interface DocumentLabelRelationship {
-  count: number | null;
-  type: string;
-  value: DocumentLabel;
-  timestamp: string | null;
-}
-
-export interface DocumentRelationship {
-  type: string;
-  value: SearchDocument;
-}
-
-interface DocumentItem {
-  url: string | null;
-}
-
-export interface SearchDocument {
-  id: string;
-  title: string;
-  description: string | null;
-  labels: DocumentLabelRelationship[];
-  documents: DocumentRelationship[];
-  items: DocumentItem[];
-  attributes: Record<string, string | number | boolean>;
-}
-
-export interface IAggregationLabel {
-  count: number;
-  value: {
-    id: string;
-    type: string;
-    value: string;
-  };
-}
-
-export interface SearchDocumentsResponse {
-  total_size: number | null;
-  page: number;
-  page_size: number;
-  total_pages: number | null;
-  next_page: string | null;
-  previous_page: string | null;
-  results: SearchDocument[];
-  aggregations?: {
-    labels: IAggregationLabel[];
-  };
-}
-
-export const SEARCH_DOCUMENT_SORT_KEYS = ["relevance", "recent", "oldest", "title_asc", "title_desc"] as const;
-
-export type SearchDocumentsSortKey = (typeof SEARCH_DOCUMENT_SORT_KEYS)[number];
-
-export const SEARCH_DOCUMENT_SORT_PARAMS: Record<SearchDocumentsSortKey, string> = {
-  relevance: "relevance desc",
-  recent: "attributes.published_date desc",
-  oldest: "attributes.published_date asc",
-  title_asc: "title asc",
-  title_desc: "title desc",
+const isSearchDocumentsSortKey = (value: string): value is TSortValue => {
+  return SORT_VALUES.includes(value as TSortValue);
 };
 
-function isSearchDocumentsSortKey(raw: string): raw is SearchDocumentsSortKey {
-  return (SEARCH_DOCUMENT_SORT_KEYS as readonly string[]).includes(raw);
-}
-
-export function normaliseSearchDocumentsSortKey(raw: string | null | undefined): SearchDocumentsSortKey {
+export const normaliseSearchDocumentsSortKey = (raw: string | null | undefined): TSortValue => {
   // Converts the raw URL `sort` query value to a known sort key (invalid to
   // `relevance`).
   return raw && isSearchDocumentsSortKey(raw) ? raw : "relevance";
-}
+};
 
-export function getSearchApiStatus(error: unknown): number | undefined {
+export const getSearchApiStatus = (error: unknown): number | undefined => {
   return error instanceof Error ? (error as Error & { status?: number }).status : undefined;
-}
+};
 
 interface ISearchDocumentsParams {
   themeConfig: TThemeConfig;
@@ -88,17 +23,17 @@ interface ISearchDocumentsParams {
   filters?: TSearchQueryGroup;
   page_size?: string;
   page_token?: string;
-  sort?: SearchDocumentsSortKey;
+  sort?: TSortValue;
   signal?: AbortSignal;
 }
 
-function searchDocumentsUrl(): string {
+const searchDocumentsUrl = (): string => {
   const origin = (process.env.NEXT_PUBLIC_API_URL || "https://api.climatepolicyradar.org").replace(/\/$/, "");
   return `${origin}/search/documents`;
-}
+};
 
 // Add default filters exclusive of search parameters to ensure they are always applied
-function configureDocumentsFilters(filters: TSearchQueryGroup | undefined, searchCategories: TLabelCategoryValue[]): TSearchQueryGroup {
+const configureDocumentsFilters = (filters: TSearchQueryGroup | undefined, searchCategories: TLabelCategoryValue[]): TSearchQueryGroup => {
   const publishedDateBoundsFilter: TSearchQueryGroup = {
     op: "and",
     filters: [
@@ -141,9 +76,9 @@ function configureDocumentsFilters(filters: TSearchQueryGroup | undefined, searc
     op: "and",
     filters: filtersWithConditionals,
   };
-}
+};
 
-export async function fetchSearchDocuments(params: ISearchDocumentsParams): Promise<SearchDocumentsResponse> {
+export const fetchSearchDocuments = async (params: ISearchDocumentsParams): Promise<ISearchDocumentsResponse> => {
   const url = new URL(searchDocumentsUrl());
   const filters = configureDocumentsFilters(params.filters, params.themeConfig.searchCategories);
 
@@ -154,14 +89,14 @@ export async function fetchSearchDocuments(params: ISearchDocumentsParams): Prom
   if (params.page_size !== undefined) url.searchParams.set("page_size", params.page_size);
   if (params.page_token !== undefined) url.searchParams.set("page_token", params.page_token);
   const sortKey = params.sort ?? "relevance";
-  url.searchParams.set("order_by", SEARCH_DOCUMENT_SORT_PARAMS[sortKey]);
+  url.searchParams.set("order_by", SORT_PARAMS_LOOKUP[sortKey]);
 
   const res = await fetch(url, { signal: params.signal });
   if (!res.ok) throw Object.assign(new Error(`Search API error: ${res.status}`), { status: res.status });
-  return res.json() as Promise<SearchDocumentsResponse>;
-}
+  return res.json() as Promise<ISearchDocumentsResponse>;
+};
 
-export function fetchSearchPrincipalDocuments(params: ISearchDocumentsParams): Promise<SearchDocumentsResponse> {
+export const fetchSearchPrincipalDocuments = (params: ISearchDocumentsParams): Promise<ISearchDocumentsResponse> => {
   const principalDocumentsFilter: TSearchQueryRule = {
     field: "labels.value.id",
     op: "contains",
@@ -177,4 +112,4 @@ export function fetchSearchPrincipalDocuments(params: ISearchDocumentsParams): P
       filters,
     },
   });
-}
+};
