@@ -55,11 +55,16 @@ export const getFamilyData = async (slug: string, importId?: string): Promise<TF
 
   let familyTopics: IApiFamilyDocumentTopics;
   try {
-    const { data: {data: documentResponse} } = await apiClient.get<ISearchDocumentResponse>(`/search/documents/${family.id}`);
-    familyTopics = await processSearchDocumentTopics(documentResponse);
+    const documentApiResponse = await apiClient.get<ISearchDocumentResponse>(`/search/documents/${family.id}`);
+    // http-common's get() returns error.response rather than throwing for Axios errors,
+    // so we must check the status explicitly rather than relying on catch for non-2xx responses.
+    if (documentApiResponse?.status === 200) {
+      familyTopics = await processSearchDocumentTopics(documentApiResponse.data.data);
+    } else if (documentApiResponse?.status === 500) {
+      errors.push(new Error("Failed to fetch family topics data"));
+    }
   } catch (error) {
     errors.push(new Error("Failed to fetch family topics data", error));
-    return { data: null, errors };
   }
 
   /* Transform API data for presentation */
