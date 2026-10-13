@@ -23,6 +23,11 @@ export type TSearchQueryRule =
       value: string;
     }
   | {
+      field: "principal_id";
+      op: "contains";
+      value: string;
+    }
+  | {
       field: "id";
       op: "contains";
       value: string;

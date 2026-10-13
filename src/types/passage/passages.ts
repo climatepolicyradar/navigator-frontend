@@ -62,6 +62,9 @@ export interface ISearchPassagesResponse {
 export interface ISearchPassagesParams {
   query: string;
   documents: string[];
+  // The principal the passages belong to. Scopes the search when `documents` is empty, which a
+  // principal whose members are all deleted reports.
+  principalId?: string;
   filters?: TSearchQueryGroup | null;
   pageSize?: number;
   // 1-indexed page number. The API's `page` parameter is currently ignored, and its
