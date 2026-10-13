@@ -18,9 +18,10 @@ const SEARCH_CONFIG: TLandingPageSearchConfig = {
   button: {
     label: "Get started",
     params: {
-      [QUERY_PARAMS.sort_order]: "desc",
       [QUERY_PARAMS.category]: "UN-submissions",
       [QUERY_PARAMS.author_type]: "Party",
+      [QUERY_PARAMS.sort_field]: "date",
+      [QUERY_PARAMS.sort_order]: "desc",
     },
     newParams: {
       [QUERY_PARAMS.sort]: "recent",
@@ -93,6 +94,31 @@ const SEARCH_CONFIG: TLandingPageSearchConfig = {
                 { op: "or", filters: [{ field: "labels.value.id", op: "contains", value: "country::TUR", checked: true }] },
               ],
             },
+          ],
+        }),
+      },
+    },
+    {
+      label: "Indigenous Peoples in Canada",
+      params: {
+        [QUERY_PARAMS.category]: "UN-submissions",
+        [QUERY_PARAMS.author_type]: "Party",
+        [QUERY_PARAMS.country]: "canada",
+        [QUERY_PARAMS.concept_name]: "indigenous people",
+      },
+      newParams: {
+        [QUERY_PARAMS.filters]: JSON.stringify({
+          op: "and",
+          filters: [
+            { field: "labels.value.id", op: "contains", value: "category::UN submission", checked: true },
+            {
+              op: "and",
+              filters: [
+                { field: "labels.value.id", op: "contains", value: "region::NAC" },
+                { op: "or", filters: [{ field: "labels.value.id", op: "contains", value: "country::CAN", checked: true }] },
+              ],
+            },
+            { field: "labels.value.id", op: "contains", value: "concept::Q684", checked: true },
           ],
         }),
       },
