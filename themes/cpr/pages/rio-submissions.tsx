@@ -38,6 +38,8 @@ const SEARCH_CONFIG: TLandingPageSearchConfig = {
         [QUERY_PARAMS.author_type]: "Party",
         [QUERY_PARAMS["_document.type"]]: "National Biodiversity Strategy and Action Plan (NBSAP)",
         [QUERY_PARAMS.concept_name]: "target",
+        [QUERY_PARAMS.sort_field]: "date",
+        [QUERY_PARAMS.sort_order]: "desc",
       },
       newParams: {
         [QUERY_PARAMS.filters]: JSON.stringify({
@@ -69,10 +71,11 @@ const SEARCH_CONFIG: TLandingPageSearchConfig = {
             { field: "labels.value.id", op: "contains", value: "concept::Q1651", checked: true },
           ],
         }),
+        [QUERY_PARAMS.sort]: "recent",
       },
     },
     {
-      label: "Mongolia's submissions to the Rio Conventions",
+      label: "Türkiye's submissions to the Rio Conventions",
       params: {
         [QUERY_PARAMS.category]: "UN-submissions",
         [QUERY_PARAMS.author_type]: "Party",
@@ -86,8 +89,8 @@ const SEARCH_CONFIG: TLandingPageSearchConfig = {
             {
               op: "and",
               filters: [
-                { field: "labels.value.id", op: "contains", value: "region::EAS" },
-                { op: "or", filters: [{ field: "labels.value.id", op: "contains", value: "country::MNG", checked: true }] },
+                { field: "labels.value.id", op: "contains", value: "region::ECS" },
+                { op: "or", filters: [{ field: "labels.value.id", op: "contains", value: "country::TUR", checked: true }] },
               ],
             },
           ],

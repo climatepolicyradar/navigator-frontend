@@ -40,14 +40,14 @@ const SEARCH_CONFIG: TLandingPageSearchConfig = {
   },
   suggestions: [
     {
-      label: "Offshore wind development",
+      label: "Grid connection",
       params: {
         [QUERY_PARAMS.category]: "offshore-wind-reports",
-        [QUERY_PARAMS.query_string]: "Offshore wind development",
+        [QUERY_PARAMS.query_string]: "Grid connection",
       },
       newParams: {
         [QUERY_PARAMS.filters]: OFFSHORE_WIND_REPORT_FILTERS,
-        [QUERY_PARAMS.query_string]: "Offshore wind development",
+        [QUERY_PARAMS.query_string]: "Grid connection",
       },
     },
     {
@@ -85,6 +85,33 @@ const SEARCH_CONFIG: TLandingPageSearchConfig = {
               ],
             },
             { field: "labels.value.id", op: "contains", value: "concept::Q1282", checked: true },
+          ],
+        }),
+      },
+    },
+    {
+      label: "Social inclusion",
+      params: {
+        [QUERY_PARAMS.category]: "offshore-wind-reports",
+      },
+      newParams: {
+        [QUERY_PARAMS.filters]: JSON.stringify({
+          op: "and",
+          filters: [
+            {
+              op: "and",
+              filters: [
+                { field: "labels.value.id", op: "contains", value: "category::Report" },
+                {
+                  op: "and",
+                  filters: [
+                    { field: "labels.value.id", op: "contains", value: "report_type::Industry report" },
+                    { op: "or", filters: [{ field: "labels.value.id", op: "contains", value: "entity_type::Offshore wind report", checked: true }] },
+                  ],
+                },
+              ],
+            },
+            { field: "labels.value.id", op: "contains", value: "concept::Q58", checked: true },
           ],
         }),
       },
