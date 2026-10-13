@@ -4,6 +4,7 @@ import { PageLink } from "@/components/atoms/pageLink/PageLink";
 import { ID_SEPARATOR } from "@/constants/chars";
 import { QUERY_PARAMS } from "@/constants/queryParams";
 import { IFamilyDocumentTopics, TTopic, TFamilyPublic, TTableColumn, TTableRow, TFeatures } from "@/types";
+import { deflateFilters } from "@/utils/filters/deflate";
 import { filterPathsToQueryGroup } from "@/utils/search/filterPathsToQueryGroup";
 import { firstCase } from "@/utils/text/firstCase";
 import { formatDateShort } from "@/utils/timedate";
@@ -24,7 +25,7 @@ const getTopicQuery = (topic: TTopic, isNewSearch: boolean): Record<string, stri
     "and"
   );
 
-  return { [QUERY_PARAMS.filters]: JSON.stringify(filters) };
+  return { [QUERY_PARAMS.filters]: deflateFilters(filters) };
 };
 
 export const getTopicDrawerDocumentTableRows = (
