@@ -20,14 +20,14 @@ const focusOnLatestBlock = async (page: Page): Promise<Locator> => {
   return latestBlock;
 };
 
-test.describe("CCC latest cases feed", () => {
+test.describe("CCC homepage", () => {
   test.beforeEach(async ({ page }) => {
     await page.goto("/");
     await genericPage.waitUntilLoaded(page, "The Climate Litigation Database");
     await genericPage.dismissPopups(page);
   });
 
-  test("shows the most recent database additions, each linking to its document", async ({ page }) => {
+  test("shows the most recent database additions in the latest cases feed, each linking to its document", async ({ page }) => {
     const latestBlock = await focusOnLatestBlock(page);
     const items = latestBlock.getByRole("listitem");
 
@@ -45,7 +45,7 @@ test.describe("CCC latest cases feed", () => {
     }
   });
 
-  test("orders latest cases by date added, most recent first", async ({ page }) => {
+  test("orders the latest cases feed by date added, most recent first", async ({ page }) => {
     const latestBlock = await focusOnLatestBlock(page);
     const dateTexts = await latestBlock.getByRole("listitem").getByRole("paragraph").allInnerTexts();
 
@@ -62,7 +62,7 @@ test.describe("CCC latest cases feed", () => {
     }
   });
 
-  test("view all cases leads to search results sorted by most recent", async ({ page }) => {
+  test("clicking the 'View all cases' link leads to search results sorted by most recent", async ({ page }) => {
     const latestBlock = await focusOnLatestBlock(page);
     const viewAllLink = latestBlock.getByRole("link", { name: /View all cases/ });
 
