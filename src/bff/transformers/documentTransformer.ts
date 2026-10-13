@@ -4,7 +4,7 @@ import { TDocumentApiData, TDocumentPresentationalResponse } from "@/types";
 
 export const documentTransformer = (documentApiData: TDocumentApiData, errors: Error[]): TDocumentPresentationalResponse => {
   try {
-    const { document, topicsData, vespaDocumentData } = documentApiData;
+    const { document, topicsData, searchDocument } = documentApiData;
 
     const documentPublic = transformDocument(document, []);
     const family = transformDocumentFamily(document.documents || []);
@@ -16,7 +16,7 @@ export const documentTransformer = (documentApiData: TDocumentApiData, errors: E
         document: documentPublic,
         family,
         topicsData,
-        vespaDocumentData,
+        searchDocument,
         debug: {
           dataInDocument: document,
         },

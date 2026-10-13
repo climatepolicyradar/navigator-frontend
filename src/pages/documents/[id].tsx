@@ -51,7 +51,7 @@ const DocumentPage = ({
   theme,
   themeConfig,
   topicsData,
-  vespaDocumentData,
+  searchDocument,
 }: InferGetServerSidePropsType<typeof getServerSideProps>) => {
   const router = useRouter();
   const qsSearchString = router.query[QUERY_PARAMS.query_string];
@@ -144,7 +144,7 @@ const DocumentPage = ({
                 initialExactMatch={exactMatchQuery}
                 initialPageNumber={startingPageNumber}
                 initialConceptFilters={conceptFilters}
-                vespaDocumentData={vespaDocumentData}
+                searchDocument={searchDocument}
                 document={document}
                 searchStatus={status}
                 searchResultFamilies={isEmptySearch(router.query) ? [] : families}

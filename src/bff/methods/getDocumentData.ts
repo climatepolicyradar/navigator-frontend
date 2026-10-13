@@ -1,7 +1,8 @@
 import { ApiClient } from "@/api/http-common";
+import { SearchDocument, SearchDocumentResponse } from "@/api/search";
 import { documentTransformer } from "@/bff/transformers/documentTransformer";
 import { TDataInDocument, validateDataInDocument } from "@/schemas";
-import { TApiItemResponse, TApiSearchResponse, TApiSlugResponse, TDocumentPresentationalResponse, TTopics } from "@/types";
+import { TApiItemResponse, TApiSlugResponse, TDocumentPresentationalResponse, TTopics } from "@/types";
 import { extractTopicIds } from "@/utils/extractTopicIds";
 import { fetchAndProcessTopics } from "@/utils/fetchAndProcessTopics";
 
@@ -9,7 +10,6 @@ export const getDocumentData = async (slug: string): Promise<TDocumentPresentati
   /* Make API requests */
 
   const errors: Error[] = [];
-  const backendApiClient = new ApiClient(process.env.BACKEND_API_URL);
   const apiClient = new ApiClient(process.env.CONCEPTS_API_URL);
 
   let slugResponse: TApiSlugResponse;
@@ -36,24 +36,18 @@ export const getDocumentData = async (slug: string): Promise<TDocumentPresentati
     return { data: null, errors };
   }
 
-  let vespaDocumentData: TApiSearchResponse;
-  try {
-    const vespaResponse = await backendApiClient.get<TApiSearchResponse>(`/document/${document.id}`);
-    // http-common's get() returns error.response rather than throwing for Axios errors,
-    // so we must check the status explicitly rather than relying on catch for non-2xx responses.
-    if (vespaResponse?.status === 200) {
-      vespaDocumentData = vespaResponse.data;
-    } else if (vespaResponse?.status === 500) {
-      errors.push(new Error("Failed to fetch Vespa document data"));
-    }
-  } catch (error) {
-    errors.push(new Error("Failed to fetch Vespa document data", error));
-  }
-
   let topicsData: TTopics;
-  if (vespaDocumentData) topicsData = await fetchAndProcessTopics(extractTopicIds(vespaDocumentData));
+  let searchDocument: SearchDocument;
+  try {
+    const { data: searchDocumentResponse } = await apiClient.get<SearchDocumentResponse>(`/search/documents/${document.id}`);
+    searchDocument = searchDocumentResponse.data;
+    topicsData = await fetchAndProcessTopics(extractTopicIds(searchDocumentResponse));
+  } catch (error) {
+    errors.push(new Error("Failed to fetch document topics data", error));
+    return { data: null, errors };
+  }
 
   /* Transform API data for presentation */
 
-  return documentTransformer({ document, topicsData, vespaDocumentData }, errors);
+  return documentTransformer({ document, topicsData, searchDocument }, errors);
 };

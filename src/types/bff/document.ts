@@ -1,20 +1,20 @@
+import { SearchDocument } from "@/api/search";
 import { TDataInDocument } from "@/schemas";
 
-import { TApiSearchResponse } from "../api";
 import { TTopics } from "../topics";
-import { TFamilyDocumentPublic, TFamilyPublic, TSearchResponse } from "../types";
+import { TFamilyDocumentPublic, TFamilyPublic } from "../types";
 
 export type TDocumentApiData = {
   document: TDataInDocument;
   topicsData: TTopics;
-  vespaDocumentData: TApiSearchResponse;
+  searchDocument: SearchDocument;
 };
 
 export type TDocumentPresentationalData = {
   document: TFamilyDocumentPublic;
   family: TFamilyPublic;
   topicsData: TTopics;
-  vespaDocumentData: TSearchResponse;
+  searchDocument: SearchDocument;
   debug?: {
     dataInDocument: TDataInDocument;
   };
