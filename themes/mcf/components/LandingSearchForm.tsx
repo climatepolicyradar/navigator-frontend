@@ -4,31 +4,7 @@ import { useState, useEffect, useRef, ChangeEvent } from "react";
 
 import { Button } from "@/components/atoms/button/Button";
 import { SearchDropdown } from "@/components/forms/SearchDropdown";
-import { QUERY_PARAMS } from "@/constants/queryParams";
-
-const EXAMPLE_SEARCHES = [
-  {
-    id: 1,
-    label: "Adaptation",
-    params: {
-      [QUERY_PARAMS.query_string]: "Adaptation",
-    },
-  },
-  {
-    id: 2,
-    label: "Extreme Weather",
-    params: {
-      [QUERY_PARAMS.query_string]: "Extreme Weather",
-    },
-  },
-  {
-    id: 3,
-    label: "Philippines",
-    params: {
-      [QUERY_PARAMS.country]: "philippines",
-    },
-  },
-];
+import { SUGGESTED_SEARCHES } from "@/mcf/constants/suggestedSearches";
 
 interface IProps {
   placeholder?: string;
@@ -99,17 +75,17 @@ const LandingSearchForm = ({ placeholder, input, handleSearchInput }: IProps) =>
       </form>
       <div className="hidden mt-4 md:flex flex-wrap items-center gap-2 justify-center">
         <span className="text-mcf-blue">Suggestions:</span>
-        {EXAMPLE_SEARCHES.map((example) => (
+        {SUGGESTED_SEARCHES.map((suggestedSearch, searchIndex) => (
           <Button
-            key={example.id}
+            key={searchIndex}
             rounded
             size="small"
             variant="ghost"
             className="hover:!bg-gray-100 !text-gray-500 underline"
-            onClick={() => handleQuickSearch(example.params)}
-            data-cy={`example-search-${example.id}`}
+            onClick={() => handleQuickSearch(suggestedSearch.params)}
+            data-cy={`example-search-${searchIndex}`}
           >
-            {example.label}
+            {suggestedSearch.label}
           </Button>
         ))}
       </div>
