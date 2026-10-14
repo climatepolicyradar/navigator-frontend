@@ -27,7 +27,11 @@ const searchDocumentsUrl = (): string => {
 };
 
 // Add default filters exclusive of search parameters to ensure they are always applied
-export function configureDocumentsFilters(filters: TSearchQueryGroup | undefined, searchCategories: TLabelCategoryValue[]): TSearchQueryGroup {
+export function configureDocumentsFilters(
+  filters: TSearchQueryGroup | undefined,
+  searchCategories: TLabelCategoryValue[],
+  searchExcludeLabels: { type: string; value: string }[] = []
+): TSearchQueryGroup {
   const publishedDateBoundsFilter: TSearchQueryGroup = {
     op: "and",
     filters: [
@@ -62,6 +66,9 @@ export function configureDocumentsFilters(filters: TSearchQueryGroup | undefined
   if (searchCategories.length > 0) {
     filtersWithConditionals.push(categoriesFilter);
   }
+  searchExcludeLabels.forEach(({ type, value }) => {
+    filtersWithConditionals.push({ op: "not_contains", field: "labels.value.id", value: [type, value].join(ID_SEPARATOR) });
+  });
   if (filters) {
     filtersWithConditionals.push(filters);
   }
@@ -74,7 +81,7 @@ export function configureDocumentsFilters(filters: TSearchQueryGroup | undefined
 
 export const fetchSearchDocuments = async (params: ISearchDocumentsParams): Promise<ISearchDocumentsResponse> => {
   const url = new URL(searchDocumentsUrl());
-  const filters = configureDocumentsFilters(params.filters, params.themeConfig.searchCategories);
+  const filters = configureDocumentsFilters(params.filters, params.themeConfig.searchCategories, params.themeConfig.searchExcludeLabels);
 
   // This enables `bolding` in vespa AKA highlighting, which highlights the matched terms in the results.
   url.searchParams.set("bolding", "true");
