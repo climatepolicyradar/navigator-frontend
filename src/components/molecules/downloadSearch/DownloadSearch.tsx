@@ -83,7 +83,7 @@ export const DownloadSearch = ({ hasSearch, query, filters, sort, totalResults }
       <DownloadSearchModal
         isOpen={isModalOpen}
         onClose={closeModal}
-        onDownload={() => download({ query, filters, sort })}
+        onDownload={() => download({ query, themeConfig, filters, sort })}
         status={status}
         totalResults={totalResults}
       />
