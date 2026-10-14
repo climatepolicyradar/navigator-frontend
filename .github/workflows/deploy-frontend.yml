@@ -101,6 +101,8 @@ jobs:
           echo "cluster=frontend-${ENVIRONMENT}" >> "$GITHUB_OUTPUT"
           echo "service=${THEME}-frontend-${ENVIRONMENT}" >> "$GITHUB_OUTPUT"
           echo "image=${ECR_REGISTRY}/navigator-frontend-${THEME}:${DOCKER_TAG}" >> "$GITHUB_OUTPUT"
+          echo "theme=${THEME}" >> "$GITHUB_OUTPUT"
+          echo "environment=${ENVIRONMENT}" >> "$GITHUB_OUTPUT"
 
       # Fail with a clear message rather than letting ECS fail to pull. Builds
       # from before SHA tagging was introduced only pushed 'latest'.
@@ -119,8 +121,50 @@ jobs:
             exit 1
           fi
 
+      # Announce in #prod-updates before the deploy starts, so the team can
+      # correlate it with whatever incident prompted it. Staging stacks are
+      # deliberately not announced -- a staging rollback is not an incident signal.
+      - name: Compose Slack message
+        if: steps.target.outputs.environment == 'production'
+        env:
+          DOCKER_TAG: ${{ github.event.inputs.docker-tag }}
+          THEME: ${{ steps.target.outputs.theme }}
+        run: |
+          set -euo pipefail
+          COMMIT_URL="https://github.com/${{ github.repository }}/commit/${DOCKER_TAG}"
+          RUN_URL="https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}"
+          MESSAGE="⏪ Skipping staging verification and deploying straight to production: hotfixing *${THEME}* to <${COMMIT_URL}|${DOCKER_TAG:0:7}> (<${RUN_URL}|logs>)"
+          jq -n --arg msg "$MESSAGE" '{text: $msg, mrkdwn: true}' > slack-payload.json
+
+      - uses: slackapi/slack-github-action@v4.0.0
+        if: steps.target.outputs.environment == 'production'
+        with:
+          webhook: ${{ secrets.SLACK_WEBHOOK_URL_PRODUCTION_UPDATES_CHANNEL }}
+          webhook-type: incoming-webhook
+          payload-file-path: slack-payload.json
+
       - name: Deploy to ECS
         run: >
           .github/workflows/scripts/deploy_ecs_express.sh
           ${{ steps.target.outputs.cluster }} ${{ steps.target.outputs.service }}
           ${{ steps.target.outputs.image }}
+
+      # A silently failed rollback is the worst case during an incident: the
+      # team would otherwise assume the hotfix landed.
+      - name: Compose Slack failure message
+        if: failure() && steps.target.outputs.environment == 'production'
+        env:
+          DOCKER_TAG: ${{ github.event.inputs.docker-tag }}
+          THEME: ${{ steps.target.outputs.theme }}
+        run: |
+          set -euo pipefail
+          RUN_URL="https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}"
+          MESSAGE="❌ Hotfix of production *${THEME}* to ${DOCKER_TAG:0:7} failed (<${RUN_URL}|logs>)"
+          jq -n --arg msg "$MESSAGE" '{text: $msg, mrkdwn: true}' > slack-payload.json
+
+      - uses: slackapi/slack-github-action@v4.0.0
+        if: failure() && steps.target.outputs.environment == 'production'
+        with:
+          webhook: ${{ secrets.SLACK_WEBHOOK_URL_PRODUCTION_UPDATES_CHANNEL }}
+          webhook-type: incoming-webhook
+          payload-file-path: slack-payload.json
