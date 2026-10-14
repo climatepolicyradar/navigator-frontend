@@ -48,7 +48,7 @@ const ShadowSearch = ({ theme, themeConfig, features }: TProps) => {
   const [filters, setFiltersInUrl] = useQueryState("filters", parseAsJson<TSearchQueryGroup>(FilterGroupSchema).withDefault(createGroup()));
   // pagination state
   const [currentPage, setCurrentPage] = useQueryState("page_token", parseAsString.withDefault("1"));
-  const [sortParam, setSortParam] = useQueryState<TSortValue>("sort", parseAsStringLiteral(SORT_VALUES));
+  const [sortParam, setSortParam] = useQueryState<TSortValue>("sort", parseAsStringLiteral(SORT_VALUES).withOptions({ clearOnDefault: false }));
   const [totalNoOfResults, setTotalNoOfResults] = useState<number | null>(null);
   const [isSearching, setIsSearching] = useState(false);
 

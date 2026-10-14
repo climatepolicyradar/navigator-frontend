@@ -127,7 +127,10 @@ export const PassageSearch = ({ changeTab, concepts, documents, documentsLabel, 
   const paramKeys = useMemo(() => levelParamKeys(searchLevel), [searchLevel]);
   const [queryParam, setQueryParam] = useQueryState(paramKeys.query, parseAsString.withDefault(""));
   const [filterParam, setFilterParams] = useQueryState(paramKeys.filters, parseAsJson<TSearchQueryGroup>(FilterGroupSchema));
-  const [sortParam] = useQueryState<TSortValue>(paramKeys.sort, parseAsStringLiteral(SORT_VALUES).withDefault(PASSAGE_SORT_OPTIONS[0].paramValue));
+  const [sortParam] = useQueryState<TSortValue>(
+    paramKeys.sort,
+    parseAsStringLiteral(SORT_VALUES).withDefault(PASSAGE_SORT_OPTIONS[0].paramValue).withOptions({ clearOnDefault: false })
+  );
   const [documentsParam, setDocumentsParam] = useQueryState(paramKeys.documents, parseAsArrayOf(parseAsString).withDefault([]));
   const [pageNumber, setPageNumber] = useState<number | null>(null);
   const [availableConcepts, setAvailableConcepts] = useState<TSearchLabel[]>([]);

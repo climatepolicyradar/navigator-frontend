@@ -71,7 +71,9 @@ export const SearchControls = ({
   const fromFilterParam = queryGroupToFilterPaths(filterParam);
   const [sortParam, setSortParam] = useQueryState<TSortValue>(
     sortParamKey,
-    parseAsStringLiteral(SORT_VALUES).withDefault(sortDefault ? sortDefault(fromFilterParam.filterPathLabels, queryParam) : sortOptions[0].paramValue)
+    parseAsStringLiteral(SORT_VALUES)
+      .withDefault(sortDefault ? sortDefault(fromFilterParam.filterPathLabels, queryParam) : sortOptions[0].paramValue)
+      .withOptions({ clearOnDefault: false })
   );
 
   const [searchInput, setSearchInput] = useState(queryParam);
