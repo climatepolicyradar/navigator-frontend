@@ -1,17 +1,7 @@
 import { ID_SEPARATOR } from "@/constants/chars";
 import { SORT_PARAMS_LOOKUP } from "@/constants/sort";
-import { ISearchDocumentsResponse, SORT_VALUES, TLabelCategoryValue, TSearchQueryGroup, TSearchQueryRule, TSortValue, TThemeConfig } from "@/types";
+import { ISearchDocumentsResponse, TLabelCategoryValue, TSearchQueryGroup, TSearchQueryRule, TSortValue, TThemeConfig } from "@/types";
 import { DATE_RANGE_MIN_YEAR, hasPublishedDateRule } from "@/utils/_experiment/dateRangeFilters";
-
-const isSearchDocumentsSortKey = (value: string): value is TSortValue => {
-  return SORT_VALUES.includes(value as TSortValue);
-};
-
-export const normaliseSearchDocumentsSortKey = (raw: string | null | undefined): TSortValue => {
-  // Converts the raw URL `sort` query value to a known sort key (invalid to
-  // `relevance`).
-  return raw && isSearchDocumentsSortKey(raw) ? raw : "relevance";
-};
 
 export const getSearchApiStatus = (error: unknown): number | undefined => {
   return error instanceof Error ? (error as Error & { status?: number }).status : undefined;
