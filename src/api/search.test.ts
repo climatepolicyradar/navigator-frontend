@@ -73,4 +73,16 @@ describe("fetchSearchDocuments", () => {
     const url = vi.mocked(global.fetch).mock.calls[0][0] as URL;
     expect(url.searchParams.has("msm")).toBe(false);
   });
+
+  it("excludes the theme's excluded labels from results", async () => {
+    await fetchSearchDocuments({
+      themeConfig: { ...themeConfigWithCategories([]), searchExcludeLabels: [{ type: "author_type", value: "Non-Party" }] },
+    });
+
+    expect(JSON.parse(requestedFilters()).filters).toContainEqual({
+      op: "not_contains",
+      field: "labels.value.id",
+      value: "author_type::Non-Party",
+    });
+  });
 });

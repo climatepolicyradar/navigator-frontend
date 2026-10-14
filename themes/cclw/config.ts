@@ -152,6 +152,7 @@ const config: TThemeConfig = {
     },
   ],
   searchCategories: ["UN submission", "Law", "Policy"],
+  searchExcludeLabels: [{ type: "author_type", value: "Non-Party" }],
   labelVariations: {},
   links: {
     downloadDatabase: "https://form.jotform.com/233131638610347",

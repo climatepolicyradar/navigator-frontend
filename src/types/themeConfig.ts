@@ -110,6 +110,8 @@ export type TThemeConfig = {
   deprecatedFilters: TThemeConfigFilter[];
   documentTypeLabels: TLabelPattern[];
   searchCategories: TLabelCategoryValue[];
+  // Labels to always exclude from document search results for this theme.
+  searchExcludeLabels?: { type: string; value: string }[];
   labelVariations: TPartialRecord<TLabelVariationKey, TLabelVariation>;
   links: TPartialRecord<TThemeLinkKey, string>;
   pageMetadata: Record<TThemePageMetadataKey, TThemePageMetadata>;
