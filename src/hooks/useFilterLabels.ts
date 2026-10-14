@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 
+import { useEnvConfig } from "@/context/EnvConfig";
 import { loadFilteredLabels, loadLabelTaxonomy } from "@/hooks/useLabelSearch";
 import { TFeatures, TSearchLabel, TSearchQueryGroup, TThemeConfig } from "@/types";
 
@@ -9,6 +10,7 @@ interface IProps {
 }
 
 export const useFilterLabels = ({ features, themeConfig }: IProps): TSearchLabel[] => {
+  const { API_URL } = useEnvConfig();
   const [availableFilters, setAvailableFilters] = useState<TSearchLabel[]>([]);
 
   useEffect(() => {
@@ -59,15 +61,15 @@ export const useFilterLabels = ({ features, themeConfig }: IProps): TSearchLabel
       );
     }
 
-    const loadedFilteredLabels = loadFilteredLabels(searchQueryGroup);
+    const loadedFilteredLabels = loadFilteredLabels(API_URL, searchQueryGroup);
 
     // We have to append this data until the categories taxonomy data source data is fixed
     // @see: https://linear.app/climate-policy-radar/issue/APP-2266/fusion-enrichment-fleshing-out-the-publishedcanonicallabels
-    const loadedLabelTaxonomy = loadLabelTaxonomy();
+    const loadedLabelTaxonomy = loadLabelTaxonomy(API_URL);
     const allFilterLabels = Promise.all([loadedFilteredLabels, loadedLabelTaxonomy]);
 
     allFilterLabels.then(([filteredLabels, labelTaxonomy]) => setAvailableFilters([...filteredLabels, ...labelTaxonomy]));
-  }, [features.subdivisions, themeConfig.searchCategories]);
+  }, [features.subdivisions, themeConfig.searchCategories, API_URL]);
 
   return availableFilters;
 };

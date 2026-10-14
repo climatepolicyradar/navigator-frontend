@@ -3,6 +3,8 @@ import { TLabelCategoryValue, TThemeConfig } from "@/types";
 
 import { fetchSearchDocuments } from "./search";
 
+const TEST_API_URL = "https://api.climatepolicyradar.org";
+
 const themeConfigWithCategories = (searchCategories: TLabelCategoryValue[]): TThemeConfig => ({
   ...DEFAULT_THEME_CONFIG,
   searchCategories,
@@ -23,13 +25,13 @@ describe("fetchSearchDocuments", () => {
   });
 
   it("does not restrict categories when the theme has no search categories", async () => {
-    await fetchSearchDocuments({ themeConfig: themeConfigWithCategories([]) });
+    await fetchSearchDocuments({ apiUrl: TEST_API_URL, themeConfig: themeConfigWithCategories([]) });
 
     expect(requestedFilters()).not.toContain("category::");
   });
 
   it("restricts results to any of the theme's search categories", async () => {
-    await fetchSearchDocuments({ themeConfig: themeConfigWithCategories(["Law", "Policy"]) });
+    await fetchSearchDocuments({ apiUrl: TEST_API_URL, themeConfig: themeConfigWithCategories(["Law", "Policy"]) });
 
     expect(JSON.parse(requestedFilters()).filters).toContainEqual({
       op: "or",

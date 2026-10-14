@@ -2,6 +2,7 @@ import { useState } from "react";
 
 import { SEARCH_DOCUMENT_SORT_PARAMS, SearchDocumentsSortKey } from "@/api/search";
 import { isFilterGroupEmpty } from "@/components/_experiment/advancedFilters/AdvancedFilters";
+import { useEnvConfig } from "@/context/EnvConfig";
 import { TApiLoadingStatus, TSearchQueryGroup } from "@/types";
 import { sanitiseSearchQueryGroup } from "@/utils/filters/advancedFilters";
 
@@ -14,13 +15,17 @@ const PRINCIPAL_DOCUMENTS_FILTER: TSearchQueryGroup = {
   filters: [{ field: "labels.value.id", op: "contains", value: "status::Principal" }],
 };
 
-function downloadSearchCsvUrl(): string {
-  const origin = (process.env.NEXT_PUBLIC_API_URL || "https://api.climatepolicyradar.org").replace(/\/$/, "");
-  return `${origin}/search/documents:download`;
+function downloadSearchCsvUrl(apiUrl: string): string {
+  return `${apiUrl.replace(/\/$/, "")}/search/documents:download`;
 }
 
-export function buildDownloadSearchCsvUrl(params: { query?: string; filters?: TSearchQueryGroup; sort: SearchDocumentsSortKey }): URL {
-  const url = new URL(downloadSearchCsvUrl());
+export function buildDownloadSearchCsvUrl(params: {
+  apiUrl: string;
+  query?: string;
+  filters?: TSearchQueryGroup;
+  sort: SearchDocumentsSortKey;
+}): URL {
+  const url = new URL(downloadSearchCsvUrl(params.apiUrl));
 
   if (params.query) url.searchParams.set("query", params.query);
 
@@ -48,13 +53,14 @@ function triggerBlobDownload(blob: Blob, fileName: string) {
 }
 
 export function useDownloadSearchCsv() {
+  const { API_URL } = useEnvConfig();
   const [status, setStatus] = useState<TApiLoadingStatus>("idle");
 
   const download = async (params: { query?: string; filters?: TSearchQueryGroup; sort: SearchDocumentsSortKey }) => {
     setStatus("loading");
 
     try {
-      const url = buildDownloadSearchCsvUrl(params);
+      const url = buildDownloadSearchCsvUrl({ ...params, apiUrl: API_URL });
       const response = await fetch(url);
       if (!response.ok) {
         setStatus("error");
