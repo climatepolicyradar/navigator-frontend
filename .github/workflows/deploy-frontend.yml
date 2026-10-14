@@ -121,12 +121,9 @@ jobs:
             exit 1
           fi
 
-      # This workflow is how we hotfix production: it deploys an arbitrary
-      # existing image, skipping the staging verification a normal deploy to
-      # main goes through. Announce that in #prod-updates before the deploy
-      # starts, so the team can correlate it with whatever incident prompted
-      # it. Staging stacks are deliberately not announced -- a staging
-      # rollback is not an incident signal.
+      # Announce in #prod-updates before the deploy starts, so the team can
+      # correlate it with whatever incident prompted it. Staging stacks are
+      # deliberately not announced -- a staging rollback is not an incident signal.
       - name: Compose Slack message
         if: steps.target.outputs.environment == 'production'
         env:
