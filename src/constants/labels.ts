@@ -1,5 +1,7 @@
 import { ID_SEPARATOR as SEP } from "./chars";
 
+export const SUBNATIONAL_LABEL_TYPE = "level";
+
 type TLabelDisplayReplacement = {
   parentId?: string;
   idMatch: string;
