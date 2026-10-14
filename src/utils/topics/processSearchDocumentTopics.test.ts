@@ -1,4 +1,5 @@
 import { describe, expect, it, vi } from "vitest";
+
 import { IApiFamilyDocumentTopics, IDocumentLabelRelationship, IDocumentRelationship, ISearchDocument } from "@/types";
 
 import { processSearchDocumentTopics } from "./processSearchDocumentTopics";

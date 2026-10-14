@@ -1,5 +1,6 @@
 import { ID_SEPARATOR } from "@/constants/chars";
 import { IApiFamilyDocumentTopics, ISearchDocument } from "@/types";
+
 import { groupByRootConcept } from "../conceptsGroupedbyRootConcept";
 import { fetchAndProcessTopics } from "../fetchAndProcessTopics";
 
