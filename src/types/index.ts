@@ -10,6 +10,7 @@ export * from "./label";
 export * from "./landingPage";
 export * from "./passage/passages";
 export * from "./passage/search";
+export * from "./search/api";
 export * from "./search/filters";
 export * from "./search/labels";
 export * from "./search/query";

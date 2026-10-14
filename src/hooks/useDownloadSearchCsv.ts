@@ -1,8 +1,9 @@
 import { useState } from "react";
 
-import { configureDocumentsFilters, SEARCH_DOCUMENT_SORT_PARAMS, SearchDocumentsSortKey } from "@/api/search";
+import { configureDocumentsFilters } from "@/api/search";
 import { isFilterGroupEmpty } from "@/components/_experiment/advancedFilters/AdvancedFilters";
-import { TApiLoadingStatus, TSearchQueryGroup, TSearchQueryRule, TThemeConfig } from "@/types";
+import { SORT_PARAMS_LOOKUP } from "@/constants/sort";
+import { TApiLoadingStatus, TSearchQueryGroup, TSearchQueryRule, TSortValue, TThemeConfig } from "@/types";
 import { sanitiseSearchQueryGroup } from "@/utils/filters/advancedFilters";
 
 const DOWNLOAD_MAX_RESULTS = 500;
@@ -19,7 +20,7 @@ interface IDownloadSearchCsvParams {
   query?: string;
   themeConfig: TThemeConfig;
   filters?: TSearchQueryGroup;
-  sort: SearchDocumentsSortKey;
+  sort: TSortValue;
 }
 
 function downloadSearchCsvUrl(): string {
@@ -44,7 +45,7 @@ export function buildDownloadSearchCsvUrl(params: IDownloadSearchCsvParams): URL
   const combinedFilters = configureDocumentsFilters({ op: "and", filters: filtersToApply }, params.themeConfig.searchCategories);
   url.searchParams.set("filters", JSON.stringify(combinedFilters));
 
-  url.searchParams.set("order_by", SEARCH_DOCUMENT_SORT_PARAMS[params.sort]);
+  url.searchParams.set("order_by", SORT_PARAMS_LOOKUP[params.sort]);
   url.searchParams.set("max_results", DOWNLOAD_MAX_RESULTS.toString());
 
   return url;

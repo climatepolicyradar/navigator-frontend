@@ -1,8 +1,7 @@
 import { GetServerSideProps, InferGetServerSidePropsType } from "next";
-import { useQueryState, parseAsString, parseAsJson } from "nuqs";
+import { useQueryState, parseAsString, parseAsJson, parseAsStringLiteral } from "nuqs";
 import { useCallback, useContext, useMemo, useState, type SetStateAction } from "react";
 
-import { normaliseSearchDocumentsSortKey, SearchDocument } from "@/api/search";
 import { createGroup, isFilterGroupEmpty, AdvancedFilters } from "@/components/_experiment/advancedFilters/AdvancedFilters";
 import { SEARCH_RESULTS_PAGE_SIZE, SearchContainer } from "@/components/_experiment/searchResults/SearchResults";
 import { FiveColumns } from "@/components/atoms/columns/FiveColumns";
@@ -22,13 +21,15 @@ import { useFilterLabels } from "@/hooks/useFilterLabels";
 import { useNestedSearchLevel } from "@/hooks/useSearchLevel";
 import { useText } from "@/hooks/useText";
 import { FilterGroupSchema } from "@/schemas";
-import { TPrincipalDrawerTab, TSearchQueryGroup, TTheme } from "@/types";
+import { ISearchDocument, SORT_VALUES, TPrincipalDrawerTab, TSearchQueryGroup, TSortValue, TTheme } from "@/types";
 import { getFeatureFlags } from "@/utils/featureFlags";
 import { getFeatures } from "@/utils/features";
 import { getFilterGroups } from "@/utils/filters/getFilterGroups";
 import { pluralise } from "@/utils/pluralise";
 import { getPersistedPrincipalDrawerTab, persistPrincipalDrawerTab } from "@/utils/principal/principalTabs";
 import { readConfigFile } from "@/utils/readConfigFile";
+import { getSearchSortDefault } from "@/utils/search/getSearchSortDefault";
+import { queryGroupToFilterPaths } from "@/utils/search/queryGroupToFilterPaths";
 import { conceptFiltersOnly, seedPassageLevel } from "@/utils/search/searchLevels";
 import { joinTailwindClasses } from "@/utils/tailwind";
 
@@ -47,10 +48,14 @@ const ShadowSearch = ({ theme, themeConfig, features }: TProps) => {
   const [filters, setFiltersInUrl] = useQueryState("filters", parseAsJson<TSearchQueryGroup>(FilterGroupSchema).withDefault(createGroup()));
   // pagination state
   const [currentPage, setCurrentPage] = useQueryState("page_token", parseAsString.withDefault("1"));
-  const [sortParam, setSortParam] = useQueryState("sort", parseAsString.withDefault("relevance"));
-  const sortKey = normaliseSearchDocumentsSortKey(sortParam);
+  const [sortParam, setSortParam] = useQueryState<TSortValue>("sort", parseAsStringLiteral(SORT_VALUES).withOptions({ clearOnDefault: false }));
   const [totalNoOfResults, setTotalNoOfResults] = useState<number | null>(null);
   const [isSearching, setIsSearching] = useState(false);
+
+  const sortValue: TSortValue = useMemo(() => {
+    if (sortParam) return sortParam;
+    return getSearchSortDefault(queryGroupToFilterPaths(filters).filterPathLabels, query);
+  }, [filters, query, sortParam]);
 
   const searchFilterGroups = useMemo(() => getFilterGroups({ features, getAppText, theme }), [features, getAppText, theme]);
 
@@ -76,7 +81,7 @@ const ShadowSearch = ({ theme, themeConfig, features }: TProps) => {
 
   // The clicked result names the drawer without waiting on a fetch. It is kept while the drawer
   // animates closed, and is absent when the level arrives from a shared link.
-  const [selectedDocument, setSelectedDocument] = useState<SearchDocument | null>(null);
+  const [selectedDocument, setSelectedDocument] = useState<ISearchDocument | null>(null);
   const principalSlug = principalLevel.id ?? (selectedDocument?.attributes.deprecated_slug as string) ?? null;
   const principalHasSearch = !!principalLevel.search.query || !!conceptFiltersOnly(principalLevel.search.filters);
   const documentHasSearch = !!documentLevel.search.query || !!conceptFiltersOnly(documentLevel.search.filters);
@@ -149,7 +154,7 @@ const ShadowSearch = ({ theme, themeConfig, features }: TProps) => {
                 </PageLink>
               )}
             </span>
-            <DownloadSearch hasSearch={hasSearch} query={query} filters={filters} sort={sortKey} totalResults={totalNoOfResults} />
+            <DownloadSearch hasSearch={hasSearch} query={query} filters={filters} sort={sortValue} totalResults={totalNoOfResults} />
           </div>
           {/* CONTROLS - FILTERS, SORT, etc */}
           {/* TODO add most recent date from search results */}
@@ -168,6 +173,7 @@ const ShadowSearch = ({ theme, themeConfig, features }: TProps) => {
             resultsNode={resultsSummary ? <div aria-live="polite">{resultsSummary}</div> : null}
             sortOptions={SEARCH_SORT_OPTIONS}
             sortParamKey="sort"
+            sortDefault={getSearchSortDefault}
           />
           {/* SEARCH RESULTS */}
           <div className={columnLayoutCss}>
@@ -175,7 +181,7 @@ const ShadowSearch = ({ theme, themeConfig, features }: TProps) => {
               query={query}
               filters={filters}
               page_token={currentPage}
-              sort={sortKey}
+              sort={sortValue}
               onTotalResultsChange={setTotalNoOfResults}
               onSearchingChange={setIsSearching}
               onResultClicked={(document, event) => {

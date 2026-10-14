@@ -15,7 +15,7 @@ export const SUGGESTED_SEARCHES: TSearchSuggestion[] = [
       [QUERY_PARAMS.filters]: JSON.stringify({
         op: "and",
         filters: [
-          { field: "labels.value.id", op: "contains", value: "category::UN+submission" },
+          { field: "labels.value.id", op: "contains", value: "category::UN submission" },
           {
             op: "and",
             filters: [
@@ -23,7 +23,7 @@ export const SUGGESTED_SEARCHES: TSearchSuggestion[] = [
               {
                 op: "or",
                 filters: [
-                  { field: "labels.value.id", op: "contains", value: "entity_type::Nationally+Determined+Contribution+(NDC)", checked: true },
+                  { field: "labels.value.id", op: "contains", value: "entity_type::Nationally Determined Contribution (NDC)", checked: true },
                 ],
               },
             ],
@@ -85,7 +85,7 @@ export const SUGGESTED_SEARCHES: TSearchSuggestion[] = [
         op: "and",
         filters: [
           { field: "labels.value.id", op: "contains", value: "category::Law" },
-          { op: "or", filters: [{ field: "labels.value.id", op: "contains", value: "law_type::Framework+law", checked: true }] },
+          { op: "or", filters: [{ field: "labels.value.id", op: "contains", value: "law_type::Framework law", checked: true }] },
         ],
       }),
       [QUERY_PARAMS.sort]: "recent",

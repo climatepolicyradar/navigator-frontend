@@ -414,16 +414,16 @@ describe("PassageSearch", () => {
     };
 
     it("searches on the level's own params", async () => {
-      renderInDrawer({ principal_q: "renewable", principal_filters: topicFilter, principal_sort: "idx asc", principal_docs: ["CCLW.document.1.2"] });
+      renderInDrawer({ principal_q: "renewable", principal_filters: topicFilter, principal_sort: "page", principal_docs: ["CCLW.document.1.2"] });
 
       await waitFor(() => expect(mockFetchSearchPassages).toHaveBeenCalledTimes(1));
       expect(mockFetchSearchPassages).toHaveBeenCalledWith(
-        expect.objectContaining({ query: "renewable", filters: topicFilter, sort: "idx asc", documents: ["CCLW.document.1.2"] })
+        expect.objectContaining({ query: "renewable", filters: topicFilter, sort: "page", documents: ["CCLW.document.1.2"] })
       );
     });
 
     it("ignores the search on the page behind it", async () => {
-      renderInDrawer({ q: "renewable", filters: topicFilter, sort: "idx asc" });
+      renderInDrawer({ q: "renewable", filters: topicFilter, sort: "page" });
 
       expect(await screen.findByText("Search passages")).toBeInTheDocument();
       expect(mockFetchSearchPassages).not.toHaveBeenCalled();
@@ -590,7 +590,7 @@ describe("PassageSearch", () => {
       await sortBy("Page Number");
 
       expect(await screen.findByText("page:3")).toBeInTheDocument();
-      expect(mockFetchSearchPassages).toHaveBeenLastCalledWith(expect.objectContaining({ sort: "idx asc" }));
+      expect(mockFetchSearchPassages).toHaveBeenLastCalledWith(expect.objectContaining({ sort: "page" }));
     });
 
     it("does not jump when a search returns nothing", async () => {

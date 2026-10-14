@@ -1,4 +1,4 @@
-import { TSearchQueryGroup } from "@/types";
+import { TSearchQueryGroup, TSortValue } from "@/types";
 
 export interface IPassageBoundingBox {
   coordinates: { x: number; y: number }[];
@@ -72,5 +72,5 @@ export interface ISearchPassagesParams {
   // this and comparing the running result count against `total_size`.
   pageToken?: number;
   signal?: AbortSignal;
-  sort?: string;
+  sort?: TSortValue;
 }

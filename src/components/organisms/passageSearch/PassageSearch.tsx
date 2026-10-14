@@ -1,6 +1,6 @@
 import { useInfiniteQuery } from "@tanstack/react-query";
 import { useRouter } from "next/router";
-import { parseAsArrayOf, parseAsJson, parseAsString, useQueryState } from "nuqs";
+import { parseAsArrayOf, parseAsJson, parseAsString, parseAsStringLiteral, useQueryState } from "nuqs";
 import { usePostHog } from "posthog-js/react";
 import { memo, useCallback, useContext, useEffect, useMemo, useRef, useState } from "react";
 
@@ -22,7 +22,16 @@ import { posthogEventName } from "@/context/PostHogProvider";
 import { SearchLevelContext } from "@/context/SearchLevelContext";
 import { loadFilteredLabels } from "@/hooks/useLabelSearch";
 import { FilterGroupSchema } from "@/schemas";
-import { ISearchPassage, TFamilyDocumentPublic, TPrincipalDrawerTab, TSearchLabel, TSearchQueryGroup, TTopic } from "@/types";
+import {
+  ISearchPassage,
+  SORT_VALUES,
+  TFamilyDocumentPublic,
+  TPrincipalDrawerTab,
+  TSearchLabel,
+  TSearchQueryGroup,
+  TSortValue,
+  TTopic,
+} from "@/types";
 import { queryGroupToFilterPaths } from "@/utils/search/queryGroupToFilterPaths";
 import { conceptFiltersOnly, flattenLevelToBaseQuery, levelParamKeys } from "@/utils/search/searchLevels";
 
@@ -72,7 +81,7 @@ type TPassageResultsProps = {
   passages: TPassageBlock[];
   topicColours?: Map<string, string>;
   showDocument: boolean;
-  sort?: string;
+  sort?: TSortValue;
   total?: number;
 };
 
@@ -118,7 +127,10 @@ export const PassageSearch = ({ changeTab, concepts, documents, documentsLabel, 
   const paramKeys = useMemo(() => levelParamKeys(searchLevel), [searchLevel]);
   const [queryParam, setQueryParam] = useQueryState(paramKeys.query, parseAsString.withDefault(""));
   const [filterParam, setFilterParams] = useQueryState(paramKeys.filters, parseAsJson<TSearchQueryGroup>(FilterGroupSchema));
-  const [sort] = useQueryState(paramKeys.sort, parseAsString.withDefault(PASSAGE_SORT_OPTIONS[0].paramValue));
+  const [sortParam] = useQueryState<TSortValue>(
+    paramKeys.sort,
+    parseAsStringLiteral(SORT_VALUES).withDefault(PASSAGE_SORT_OPTIONS[0].paramValue).withOptions({ clearOnDefault: false })
+  );
   const [documentsParam, setDocumentsParam] = useQueryState(paramKeys.documents, parseAsArrayOf(parseAsString).withDefault([]));
   const [pageNumber, setPageNumber] = useState<number | null>(null);
   const [availableConcepts, setAvailableConcepts] = useState<TSearchLabel[]>([]);
@@ -134,10 +146,10 @@ export const PassageSearch = ({ changeTab, concepts, documents, documentsLabel, 
   // Adjusting during render rather than in an effect avoids a second render pass with a stale value.
   // The filter group is compared serialised, so the check does not rest on the parser returning a stable object.
   const filterKey = JSON.stringify(conceptFilterParam);
-  const [previousSearch, setPreviousSearch] = useState({ queryParam, filterKey, sort });
+  const [previousSearch, setPreviousSearch] = useState({ queryParam, filterKey, sort: sortParam });
   const [hasNavigatedForSearch, setHasNavigatedForSearch] = useState(false);
-  if (queryParam !== previousSearch.queryParam || filterKey !== previousSearch.filterKey || sort !== previousSearch.sort) {
-    setPreviousSearch({ queryParam, filterKey, sort });
+  if (queryParam !== previousSearch.queryParam || filterKey !== previousSearch.filterKey || sortParam !== previousSearch.sort) {
+    setPreviousSearch({ queryParam, filterKey, sort: sortParam });
     setHasNavigatedForSearch(false);
   }
 
@@ -174,7 +186,7 @@ export const PassageSearch = ({ changeTab, concepts, documents, documentsLabel, 
   const hasSearch = (queryParam.length > 0 || !!conceptFilterParam) && hasScope;
 
   const { data, isError, isFetching, isPending, fetchNextPage, hasNextPage, isFetchingNextPage } = useInfiniteQuery({
-    queryKey: ["passages", scopedDocumentIds, principalId, queryParam, conceptFilterParam, sort],
+    queryKey: ["passages", scopedDocumentIds, principalId, queryParam, conceptFilterParam, sortParam],
     queryFn: async ({ pageParam, signal }) => {
       const response = await fetchSearchPassages({
         query: queryParam,
@@ -182,7 +194,7 @@ export const PassageSearch = ({ changeTab, concepts, documents, documentsLabel, 
         principalId,
         filters: conceptFilterParam,
         pageSize: RESULTS_PER_PAGE,
-        sort,
+        sort: sortParam,
         pageToken: pageParam,
         signal,
       });
@@ -361,7 +373,7 @@ export const PassageSearch = ({ changeTab, concepts, documents, documentsLabel, 
           <PassageResults
             passages={passages}
             showDocument={!enablePreview}
-            sort={sort}
+            sort={sortParam}
             total={totalMatches}
             onDocumentLinkClick={enablePreview ? undefined : handleDocumentLinkClick}
             onPassageClick={handlePassageClick}

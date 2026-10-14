@@ -3,12 +3,11 @@ import { LucideChevronDown, LucideDownload, LucideFileText, LucideSearch } from 
 import { usePostHog } from "posthog-js/react";
 import { useContext, useState } from "react";
 
-import { SearchDocumentsSortKey } from "@/api/search";
 import { PageLink } from "@/components/atoms/pageLink/PageLink";
 import { posthogEventName } from "@/context/PostHogProvider";
 import { ThemeContext } from "@/context/ThemeContext";
 import { useDownloadSearchCsv } from "@/hooks/useDownloadSearchCsv";
-import { TSearchQueryGroup } from "@/types";
+import { TSearchQueryGroup, TSortValue } from "@/types";
 
 import { DownloadSearchModal } from "./DownloadSearchModal";
 
@@ -16,7 +15,7 @@ interface IProps {
   hasSearch: boolean;
   query?: string;
   filters?: TSearchQueryGroup;
-  sort: SearchDocumentsSortKey;
+  sort: TSortValue;
   totalResults: number | null;
 }
 

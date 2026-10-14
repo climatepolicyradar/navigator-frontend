@@ -27,7 +27,7 @@ export const SUGGESTED_SEARCHES: TSearchSuggestion[] = [
               { field: "labels.value.id", op: "contains", value: "principal_law::Brazil" },
               {
                 op: "or",
-                filters: [{ field: "labels.value.id", op: "contains", value: "principal_law::Federal+Constitution+of+1988", checked: true }],
+                filters: [{ field: "labels.value.id", op: "contains", value: "principal_law::Federal Constitution of 1988", checked: true }],
               },
             ],
           },
@@ -61,11 +61,11 @@ export const SUGGESTED_SEARCHES: TSearchSuggestion[] = [
           {
             op: "and",
             filters: [
-              { field: "labels.value.id", op: "contains", value: "principal_law::United+States" },
+              { field: "labels.value.id", op: "contains", value: "principal_law::United States" },
               {
                 op: "or",
                 filters: [
-                  { field: "labels.value.id", op: "contains", value: "principal_law::National+Environmental+Policy+Act+(NEPA)", checked: true },
+                  { field: "labels.value.id", op: "contains", value: "principal_law::National Environmental Policy Act (NEPA)", checked: true },
                 ],
               },
             ],
