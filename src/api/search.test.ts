@@ -39,4 +39,18 @@ describe("fetchSearchDocuments", () => {
       ],
     });
   });
+
+  it("requires a minimum fraction of the query's terms to match", async () => {
+    await fetchSearchDocuments({ themeConfig: themeConfigWithCategories([]), query: "adaptation strategy" });
+
+    const url = vi.mocked(global.fetch).mock.calls[0][0] as URL;
+    expect(url.searchParams.get("msm")).toBe("0.7");
+  });
+
+  it("does not send a minimum match when there is no query", async () => {
+    await fetchSearchDocuments({ themeConfig: themeConfigWithCategories([]) });
+
+    const url = vi.mocked(global.fetch).mock.calls[0][0] as URL;
+    expect(url.searchParams.has("msm")).toBe(false);
+  });
 });

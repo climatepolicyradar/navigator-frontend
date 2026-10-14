@@ -1,6 +1,6 @@
 import { useState } from "react";
 
-import { configureDocumentsFilters } from "@/api/search";
+import { configureDocumentsFilters, SEARCH_DOCUMENTS_MIN_SHOULD_MATCH } from "@/api/search";
 import { isFilterGroupEmpty } from "@/components/_experiment/advancedFilters/AdvancedFilters";
 import { SORT_PARAMS_LOOKUP } from "@/constants/sort";
 import { TApiLoadingStatus, TSearchQueryGroup, TSearchQueryRule, TSortValue, TThemeConfig } from "@/types";
@@ -31,7 +31,10 @@ function downloadSearchCsvUrl(): string {
 export function buildDownloadSearchCsvUrl(params: IDownloadSearchCsvParams): URL {
   const url = new URL(downloadSearchCsvUrl());
 
-  if (params.query) url.searchParams.set("query", params.query);
+  if (params.query) {
+    url.searchParams.set("query", params.query);
+    url.searchParams.set("msm", String(SEARCH_DOCUMENTS_MIN_SHOULD_MATCH));
+  }
 
   // Build the same filter tree the results list requests, so the CSV contains exactly
   // the rows on screen. configureDocumentsFilters adds the theme's search categories
