@@ -23,7 +23,7 @@ const searchDocumentsUrl = (): string => {
 };
 
 // Add default filters exclusive of search parameters to ensure they are always applied
-const configureDocumentsFilters = (filters: TSearchQueryGroup | undefined, searchCategories: TLabelCategoryValue[]): TSearchQueryGroup => {
+export function configureDocumentsFilters(filters: TSearchQueryGroup | undefined, searchCategories: TLabelCategoryValue[]): TSearchQueryGroup {
   const publishedDateBoundsFilter: TSearchQueryGroup = {
     op: "and",
     filters: [
@@ -66,7 +66,7 @@ const configureDocumentsFilters = (filters: TSearchQueryGroup | undefined, searc
     op: "and",
     filters: filtersWithConditionals,
   };
-};
+}
 
 export const fetchSearchDocuments = async (params: ISearchDocumentsParams): Promise<ISearchDocumentsResponse> => {
   const url = new URL(searchDocumentsUrl());
@@ -82,7 +82,10 @@ export const fetchSearchDocuments = async (params: ISearchDocumentsParams): Prom
   url.searchParams.set("order_by", SORT_PARAMS_LOOKUP[sortKey]);
 
   const res = await fetch(url, { signal: params.signal });
-  if (!res.ok) throw Object.assign(new Error(`Search API error: ${res.status}`), { status: res.status });
+  if (!res.ok)
+    throw Object.assign(new Error(`Search API error: ${res.status}`), {
+      status: res.status,
+    });
   return res.json() as Promise<ISearchDocumentsResponse>;
 };
 

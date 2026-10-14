@@ -10,10 +10,15 @@ import { DownloadSearch } from "./DownloadSearch";
 vi.mock("next/router", () => nextRouterMock);
 
 const mockCapture = vi.hoisted(() => vi.fn());
-vi.mock("posthog-js/react", () => ({ usePostHog: () => ({ capture: mockCapture }) }));
+vi.mock("posthog-js/react", () => ({
+  usePostHog: () => ({ capture: mockCapture }),
+}));
 
 const DOWNLOAD_URL = "https://form.jotform.com/250202141318339";
-const themeConfig = { links: { downloadDatabase: DOWNLOAD_URL } } as TThemeConfig;
+const themeConfig = {
+  links: { downloadDatabase: DOWNLOAD_URL },
+  searchCategories: [],
+} as unknown as TThemeConfig;
 
 const emptyFilters: TSearchQueryGroup = { op: "and", filters: [] };
 
@@ -35,7 +40,10 @@ describe("DownloadSearch", () => {
     await user.click(screen.getByRole("link", { name: "All data" }));
 
     expect(mockCapture).toHaveBeenCalledTimes(1);
-    expect(mockCapture).toHaveBeenCalledWith("search:download_click", { download_type: "all_data", download_url: DOWNLOAD_URL });
+    expect(mockCapture).toHaveBeenCalledWith("search:download_click", {
+      download_type: "all_data",
+      download_url: DOWNLOAD_URL,
+    });
   });
 
   it("captures nothing until a download is chosen", async () => {

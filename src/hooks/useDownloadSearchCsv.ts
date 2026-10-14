@@ -1,36 +1,48 @@
 import { useState } from "react";
 
+import { configureDocumentsFilters } from "@/api/search";
 import { isFilterGroupEmpty } from "@/components/_experiment/advancedFilters/AdvancedFilters";
 import { SORT_PARAMS_LOOKUP } from "@/constants/sort";
-import { TApiLoadingStatus, TSearchQueryGroup, TSortValue } from "@/types";
+import { TApiLoadingStatus, TSearchQueryGroup, TSearchQueryRule, TSortValue, TThemeConfig } from "@/types";
 import { sanitiseSearchQueryGroup } from "@/utils/filters/advancedFilters";
 
 const DOWNLOAD_MAX_RESULTS = 500;
 
 // Mirrors fetchSearchPrincipalDocuments's principal-only filter in src/api/search.ts,
 // so the download matches what the user sees on the results list.
-const PRINCIPAL_DOCUMENTS_FILTER: TSearchQueryGroup = {
-  op: "and",
-  filters: [{ field: "labels.value.id", op: "contains", value: "status::Principal" }],
+const PRINCIPAL_DOCUMENTS_FILTER: TSearchQueryRule = {
+  field: "labels.value.id",
+  op: "contains",
+  value: "status::Principal",
 };
+
+interface IDownloadSearchCsvParams {
+  query?: string;
+  themeConfig: TThemeConfig;
+  filters?: TSearchQueryGroup;
+  sort: TSortValue;
+}
 
 function downloadSearchCsvUrl(): string {
   const origin = (process.env.NEXT_PUBLIC_API_URL || "https://api.climatepolicyradar.org").replace(/\/$/, "");
   return `${origin}/search/documents:download`;
 }
 
-export function buildDownloadSearchCsvUrl(params: { query?: string; filters?: TSearchQueryGroup; sort: TSortValue }): URL {
+export function buildDownloadSearchCsvUrl(params: IDownloadSearchCsvParams): URL {
   const url = new URL(downloadSearchCsvUrl());
 
   if (params.query) url.searchParams.set("query", params.query);
 
-  const filtersToApply: TSearchQueryGroup[] = [PRINCIPAL_DOCUMENTS_FILTER];
+  // Build the same filter tree the results list requests, so the CSV contains exactly
+  // the rows on screen. configureDocumentsFilters adds the theme's search categories
+  // (e.g. category::Litigation on CCC) and the published-date bounds.
+  const filtersToApply: (TSearchQueryGroup | TSearchQueryRule)[] = [PRINCIPAL_DOCUMENTS_FILTER];
   const sanitisedFilters = params.filters ? sanitiseSearchQueryGroup(params.filters) : null;
   if (sanitisedFilters && !isFilterGroupEmpty(sanitisedFilters)) {
     filtersToApply.push(sanitisedFilters);
   }
 
-  const combinedFilters: TSearchQueryGroup = { op: "and", filters: filtersToApply };
+  const combinedFilters = configureDocumentsFilters({ op: "and", filters: filtersToApply }, params.themeConfig.searchCategories);
   url.searchParams.set("filters", JSON.stringify(combinedFilters));
 
   url.searchParams.set("order_by", SORT_PARAMS_LOOKUP[params.sort]);
@@ -50,7 +62,7 @@ function triggerBlobDownload(blob: Blob, fileName: string) {
 export function useDownloadSearchCsv() {
   const [status, setStatus] = useState<TApiLoadingStatus>("idle");
 
-  const download = async (params: { query?: string; filters?: TSearchQueryGroup; sort: TSortValue }) => {
+  const download = async (params: IDownloadSearchCsvParams) => {
     setStatus("loading");
 
     try {

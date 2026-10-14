@@ -106,8 +106,10 @@ recommended to run the app in this way for local development. Please read the
 - Select the app you want to deploy
 - "Run workflow"
 
-This builds and pushes to the ECR `latest` tag which then
-[automatically triggers a deploy](https://docs.aws.amazon.com/apprunner/latest/dg/manage-deploy.html).
+This builds the image and pushes it to ECR under two tags: the commit SHA and
+`latest`. The workflow then deploys that SHA-tagged image to ECS explicitly via
+`.github/workflows/scripts/deploy_ecs_express.sh` -- pushing a tag does not
+trigger a deploy by itself.
 
 ### 🔔 I've merged a buggy commit into `main`
 
@@ -118,12 +120,17 @@ No worries. Just disable the deployment actions above and let people know in the
 
 ### 🔙 Rollback
 
-- To rollback find
+- Find
   [the merge commit](https://github.com/climatepolicyradar/navigator-frontend/commits/main/)
-  which will have a corresponding ECR container built
-- use the navigator-infra
-  [Deploy frontend GitHub action](https://github.com/climatepolicyradar/navigator-infra/actions/workflows/deploy-frontend.yml)
-  to deploy the SHA
+  you want to go back to. Every staging and production deploy pushes an image
+  tagged with its commit SHA, so any previously deployed commit is a valid
+  rollback target.
+- Run the
+  [Deploy hashed image to AWS action](https://github.com/climatepolicyradar/navigator-frontend/actions/workflows/deploy-frontend.yml),
+  passing that SHA as the `docker-tag` and selecting the matching stack.
+- Only commits built _after_ SHA tagging was introduced can be rolled back to;
+  earlier builds only ever pushed `latest`. Older images also age out of ECR --
+  see `retained_image_count` in `infra/resources/ecr_repository.py`.
 
 ## 🎨 Theming
 
