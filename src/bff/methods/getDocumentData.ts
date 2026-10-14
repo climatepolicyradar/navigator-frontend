@@ -1,8 +1,7 @@
 import { ApiClient } from "@/api/http-common";
-import { SearchDocument, ISearchDocumentResponse } from "@/api/search";
 import { documentTransformer } from "@/bff/transformers/documentTransformer";
 import { TDataInDocument, validateDataInDocument } from "@/schemas";
-import { TApiItemResponse, TApiSlugResponse, TDocumentPresentationalResponse, TTopics } from "@/types";
+import { ISearchDocument, ISearchDocumentResponse, TApiItemResponse, TApiSlugResponse, TDocumentPresentationalResponse, TTopics } from "@/types";
 import { extractTopicIds } from "@/utils/extractTopicIds";
 import { fetchAndProcessTopics } from "@/utils/fetchAndProcessTopics";
 
@@ -37,7 +36,7 @@ export const getDocumentData = async (slug: string): Promise<TDocumentPresentati
   }
 
   let topicsData: TTopics;
-  let searchDocument: SearchDocument;
+  let searchDocument: ISearchDocument;
   try {
     const documentApiResponse = await apiClient.get<ISearchDocumentResponse>(`/search/documents/${document.id}`);
     // http-common's get() returns error.response rather than throwing for Axios errors,

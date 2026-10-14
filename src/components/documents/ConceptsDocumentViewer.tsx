@@ -3,7 +3,6 @@ import { ChevronDown } from "lucide-react";
 import { useRouter } from "next/router";
 import React, { useContext, useEffect, useMemo, useReducer, useState } from "react";
 
-import { DocumentLabelRelationship } from "@/api/search";
 import EmbeddedPDF from "@/components/EmbeddedPDF";
 import Loader from "@/components/Loader";
 import PassageMatches from "@/components/PassageMatches";
@@ -20,7 +19,7 @@ import { MAX_RESULTS } from "@/constants/paging";
 import { SEARCH_PASSAGE_ORDER } from "@/constants/searchPassagesOrder";
 import { SEARCH_SETTINGS } from "@/constants/searchSettings";
 import { TopicsContext } from "@/context/TopicsContext";
-import { TTopic, TFamilyDocumentPublic, TLoadingStatus, TMatchedFamily, TPassage } from "@/types";
+import { TTopic, TFamilyDocumentPublic, TLoadingStatus, TMatchedFamily, TPassage, IDocumentLabelRelationship } from "@/types";
 import { getCurrentSearchChoice } from "@/utils/getCurrentSearchChoice";
 import { getPassageResultsContext } from "@/utils/getPassageResultsContext";
 import { getCurrentPassagesOrderChoice } from "@/utils/getPassagesSortOrder";
@@ -36,7 +35,7 @@ interface IProps {
   initialExactMatch?: boolean;
   initialPageNumber?: number;
   initialConceptFilters?: string[];
-  labels?: DocumentLabelRelationship[];
+  labels?: IDocumentLabelRelationship[];
   document: TFamilyDocumentPublic;
   searchStatus: TLoadingStatus;
   searchResultFamilies: TMatchedFamily[];

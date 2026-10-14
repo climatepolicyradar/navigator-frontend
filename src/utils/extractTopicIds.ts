@@ -1,5 +1,5 @@
-import { ISearchDocumentResponse } from "@/api/search";
 import { ID_SEPARATOR } from "@/constants/chars";
+import { ISearchDocumentResponse } from "@/types";
 
 export const extractTopicIds = (searchDocumentResponse: ISearchDocumentResponse): string[] => {
   const topicIds = new Set<string>();

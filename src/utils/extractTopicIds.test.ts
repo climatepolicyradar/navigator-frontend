@@ -1,24 +1,24 @@
 import { describe, expect, it } from "vitest";
 
-import { DocumentLabelRelationship, SearchDocument, ISearchDocumentResponse } from "@/api/search";
+import { IDocumentLabelRelationship, ISearchDocument, ISearchDocumentResponse } from "@/types";
 
 import { extractTopicIds } from "./extractTopicIds";
 
-const conceptLabel = (id: string): DocumentLabelRelationship => ({
+const conceptLabel = (id: string): IDocumentLabelRelationship => ({
   type: "concept",
   value: { id: `concept::${id}`, type: "concept", value: id },
   count: 1,
   timestamp: null,
 });
 
-const nonConceptLabel = (type: string, id: string): DocumentLabelRelationship => ({
+const nonConceptLabel = (type: string, id: string): IDocumentLabelRelationship => ({
   type,
   value: { id: `${type}::${id}`, type, value: id },
   count: null,
   timestamp: null,
 });
 
-const makeResponse = (labels: SearchDocument["labels"]): ISearchDocumentResponse => ({
+const makeResponse = (labels: ISearchDocument["labels"]): ISearchDocumentResponse => ({
   data: {
     id: "CPR.document.i00000001.n0000",
     title: "Test Document",
