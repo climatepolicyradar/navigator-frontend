@@ -131,6 +131,9 @@ No worries. Just disable the deployment actions above and let people know in the
 - Only commits built _after_ SHA tagging was introduced can be rolled back to;
   earlier builds only ever pushed `latest`. Older images also age out of ECR --
   see `retained_image_count` in `infra/resources/ecr_repository.py`.
+- Rolling back a production stack posts to the `#prod-updates` Slack channel
+  before the deploy starts, naming the theme and commit SHA, and again if the
+  deploy fails. Staging stacks are not announced.
 
 ## 🎨 Theming
 
