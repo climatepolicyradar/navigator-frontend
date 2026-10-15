@@ -51,7 +51,7 @@ const DocumentPage = ({
   theme,
   themeConfig,
   topicsData,
-  vespaDocumentData,
+  searchDocument,
 }: InferGetServerSidePropsType<typeof getServerSideProps>) => {
   const router = useRouter();
   const qsSearchString = router.query[QUERY_PARAMS.query_string];
@@ -121,7 +121,7 @@ const DocumentPage = ({
         themeConfig={themeConfig}
         attributionUrl={family.attribution.url}
       >
-        <TopicsContext.Provider value={topicsData}>
+        <TopicsContext.Provider value={topicsData ?? { rootTopics: [], topics: [] }}>
           <section
             className="pb-8 flex-1 flex flex-col"
             data-analytics-date={family.published_date}
@@ -144,7 +144,7 @@ const DocumentPage = ({
                 initialExactMatch={exactMatchQuery}
                 initialPageNumber={startingPageNumber}
                 initialConceptFilters={conceptFilters}
-                vespaDocumentData={vespaDocumentData}
+                labels={searchDocument?.labels}
                 document={document}
                 searchStatus={status}
                 searchResultFamilies={isEmptySearch(router.query) ? [] : families}

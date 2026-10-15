@@ -1,6 +1,7 @@
 import { LandingPage } from "@/components/organisms/LandingPage";
 import { QUERY_PARAMS } from "@/constants/queryParams";
 import { TLandingPageConfig } from "@/types";
+import { deflateFilters } from "@/utils/filters/deflate";
 
 export default function NatureLandingPage() {
   const landingPageConfig: TLandingPageConfig = {
@@ -33,7 +34,7 @@ export default function NatureLandingPage() {
         },
         newParams: {
           [QUERY_PARAMS.sort]: "recent",
-          [QUERY_PARAMS.filters]: JSON.stringify({
+          [QUERY_PARAMS.filters]: deflateFilters({
             op: "and",
             filters: [{ field: "labels.value.id", op: "contains", value: "domain::Nature", checked: true }],
           }),
@@ -46,7 +47,7 @@ export default function NatureLandingPage() {
             [QUERY_PARAMS.query_string]: "deforestation",
           },
           newParams: {
-            [QUERY_PARAMS.filters]: JSON.stringify({
+            [QUERY_PARAMS.filters]: deflateFilters({
               op: "and",
               filters: [
                 { field: "labels.value.id", op: "contains", value: "domain::Nature", checked: true },
@@ -62,7 +63,7 @@ export default function NatureLandingPage() {
             [QUERY_PARAMS.query_string]: "marine",
           },
           newParams: {
-            [QUERY_PARAMS.filters]: JSON.stringify({
+            [QUERY_PARAMS.filters]: deflateFilters({
               op: "and",
               filters: [
                 { field: "labels.value.id", op: "contains", value: "domain::Nature", checked: true },
@@ -79,7 +80,7 @@ export default function NatureLandingPage() {
             [QUERY_PARAMS.query_string]: "Agricultural subsidies in Europe & Central Asia",
           },
           newParams: {
-            [QUERY_PARAMS.filters]: JSON.stringify({
+            [QUERY_PARAMS.filters]: deflateFilters({
               op: "and",
               filters: [
                 { field: "labels.value.id", op: "contains", value: "domain::Nature", checked: true },

@@ -20,7 +20,7 @@ vi.mock("@/api/search", async (importOriginal) => {
   };
 });
 
-const emptyResponse: SearchDocumentsResponse = {
+const emptyResponse: ISearchDocumentsResponse = {
   results: [],
   total_size: 0,
   page: 1,
@@ -30,17 +30,22 @@ const emptyResponse: SearchDocumentsResponse = {
   previous_page: null,
 };
 
-import { fetchSearchPrincipalDocuments, SearchDocument, SearchDocumentsResponse } from "@/api/search";
+import { fetchSearchPrincipalDocuments } from "@/api/search";
 import { createGroup } from "@/components/_experiment/advancedFilters/AdvancedFilters";
 import { DEFAULT_THEME_CONFIG } from "@/constants/themeConfig";
 import { IProps as IThemeContextProps, ThemeContext } from "@/context/ThemeContext";
+import { ISearchDocument, ISearchDocumentsResponse } from "@/types";
 import { upsertPublishedDateRangeRules } from "@/utils/_experiment/dateRangeFilters";
 
 import { SearchContainer, shouldRetrySearch } from "./SearchResults";
 
 const searchError = (status: number) => Object.assign(new Error(`Search API error: ${status}`), { status });
 
-const loadedTheme: IThemeContextProps = { theme: "cpr", themeConfig: DEFAULT_THEME_CONFIG, loaded: true };
+const loadedTheme: IThemeContextProps = {
+  theme: "cpr",
+  themeConfig: DEFAULT_THEME_CONFIG,
+  loaded: true,
+};
 
 // The queries set their own retry policy, so the client only supplies a provider.
 const renderWith = (ui: React.ReactElement, theme: IThemeContextProps = loadedTheme) => {
@@ -57,11 +62,18 @@ const renderWith = (ui: React.ReactElement, theme: IThemeContextProps = loadedTh
   };
 };
 
-const principalResult = (id: string): SearchDocument => ({
+const principalResult = (id: string): ISearchDocument => ({
   id,
   title: id,
   description: null,
-  labels: [{ type: "status", value: { id: "status-principal", type: "status", value: "Principal" }, count: null, timestamp: null }],
+  labels: [
+    {
+      type: "status",
+      value: { id: "status-principal", type: "status", value: "Principal" },
+      count: null,
+      timestamp: null,
+    },
+  ],
   documents: [],
   items: [],
   attributes: {},
@@ -71,7 +83,7 @@ describe("SearchContainer", () => {
   it("triggers a search when only a date filter is applied with no text query or other filters", async () => {
     const filtersWithDate = upsertPublishedDateRangeRules(createGroup(), "2020:2025");
 
-    renderWith(<SearchContainer filters={filtersWithDate} />);
+    renderWith(<SearchContainer sort="relevance" filters={filtersWithDate} />);
 
     await waitFor(() => expect(fetchSearchPrincipalDocuments).toHaveBeenCalled());
   });
@@ -80,14 +92,17 @@ describe("SearchContainer", () => {
     vi.mocked(fetchSearchPrincipalDocuments).mockClear();
     const filters = upsertPublishedDateRangeRules(createGroup(), "2020:2025");
 
-    const { rerenderWith } = renderWith(<SearchContainer query="climate" filters={filters} />, { ...loadedTheme, loaded: false });
+    const { rerenderWith } = renderWith(<SearchContainer sort="relevance" query="climate" filters={filters} />, { ...loadedTheme, loaded: false });
 
     expect(await screen.findByTestId("search-loading")).toBeInTheDocument();
     expect(fetchSearchPrincipalDocuments).not.toHaveBeenCalled();
 
-    rerenderWith(<SearchContainer query="climate" filters={filters} />, {
+    rerenderWith(<SearchContainer sort="relevance" query="climate" filters={filters} />, {
       ...loadedTheme,
-      themeConfig: { ...DEFAULT_THEME_CONFIG, searchCategories: ["Litigation"] },
+      themeConfig: {
+        ...DEFAULT_THEME_CONFIG,
+        searchCategories: ["Litigation"],
+      },
     });
 
     await waitFor(() => expect(fetchSearchPrincipalDocuments).toHaveBeenCalledTimes(1));
@@ -97,7 +112,7 @@ describe("SearchContainer", () => {
   it("shows a generic message in the page for other search failures", async () => {
     vi.mocked(fetchSearchPrincipalDocuments).mockRejectedValueOnce(searchError(404));
 
-    renderWith(<SearchContainer query="climate" />);
+    renderWith(<SearchContainer sort="relevance" query="climate" />);
 
     expect(await screen.findByText(/something went wrong/i)).toBeInTheDocument();
   });
@@ -106,7 +121,7 @@ describe("SearchContainer", () => {
     vi.mocked(fetchSearchPrincipalDocuments).mockReturnValueOnce(new Promise(() => {}));
     const onSearchingChange = vi.fn();
 
-    renderWith(<SearchContainer query="climate" onSearchingChange={onSearchingChange} />);
+    renderWith(<SearchContainer sort="relevance" query="climate" onSearchingChange={onSearchingChange} />);
 
     expect(await screen.findByTestId("search-loading")).toBeInTheDocument();
     expect(screen.queryByTestId("search-results")).not.toBeInTheDocument();
@@ -114,18 +129,21 @@ describe("SearchContainer", () => {
   });
 
   it("replaces the previous results with the loader while the next page loads", async () => {
-    vi.mocked(fetchSearchPrincipalDocuments).mockResolvedValueOnce({ ...emptyResponse, total_size: 42 });
+    vi.mocked(fetchSearchPrincipalDocuments).mockResolvedValueOnce({
+      ...emptyResponse,
+      total_size: 42,
+    });
     const onTotalResultsChange = vi.fn();
     const onSearchingChange = vi.fn();
 
     const props = { query: "climate", onTotalResultsChange, onSearchingChange };
-    const { rerenderWith } = renderWith(<SearchContainer {...props} page_token="1" />);
+    const { rerenderWith } = renderWith(<SearchContainer sort="relevance" {...props} page_token="1" />);
     await waitFor(() => expect(screen.getByTestId("search-results")).toBeInTheDocument());
     expect(onSearchingChange).toHaveBeenLastCalledWith(false);
 
     // A second page that never settles, so the component stays mid-fetch.
     vi.mocked(fetchSearchPrincipalDocuments).mockReturnValueOnce(new Promise(() => {}));
-    rerenderWith(<SearchContainer {...props} page_token="2" />);
+    rerenderWith(<SearchContainer sort="relevance" {...props} page_token="2" />);
 
     expect(await screen.findByTestId("search-loading")).toBeInTheDocument();
     expect(screen.queryByTestId("search-results")).not.toBeInTheDocument();
@@ -156,7 +174,7 @@ describe("SearchContainer", () => {
       total_pages: 5,
     });
 
-    renderWith(<SearchContainer query="climate" />);
+    renderWith(<SearchContainer sort="relevance" query="climate" />);
 
     const [firstResult, secondResult] = await screen.findAllByRole("button");
     expect(firstResult).toHaveAttribute("data-ph-capture-attribute-position-page", "1");

@@ -2,7 +2,6 @@ import { useQuery } from "@tanstack/react-query";
 import { LucideFileText, LucideExternalLink, LucideSearch } from "lucide-react";
 import { Fragment, ReactNode, useState } from "react";
 
-import { SearchDocument } from "@/api/search";
 import { Drawer } from "@/components/atoms/drawer/Drawer";
 import { PageLink } from "@/components/atoms/pageLink/PageLink";
 import { Tabs } from "@/components/atoms/tabs/Tabs";
@@ -18,14 +17,14 @@ import useConfig from "@/hooks/useConfig";
 import { useDocumentTopics } from "@/hooks/useDocumentTopics";
 import { useSearchLevelValues } from "@/hooks/useSearchLevel";
 import { useText } from "@/hooks/useText";
-import { TFamilyPresentationalData, TFeatures, TPrincipalDrawerTab } from "@/types";
+import { ISearchDocument, TFamilyPresentationalData, TFeatures, TPrincipalDrawerTab } from "@/types";
 import { getFamilyHeader } from "@/utils/family-header/getFamilyHeader";
 import { getFamilyMetadata } from "@/utils/family-metadata/getFamilyMetadata";
 import { flattenLevelToBaseQuery } from "@/utils/search/searchLevels";
 import { firstCase } from "@/utils/text/firstCase";
 import { familyTopicsHasTopics } from "@/utils/topics/processFamilyTopics";
 
-function linkHref(doc: SearchDocument): string | undefined {
+function linkHref(doc: ISearchDocument): string | undefined {
   if (doc.attributes.deprecated_slug)
     if (doc.labels.find((label) => label.value.value === "Principal")) {
       return `/document/${doc.attributes.deprecated_slug}`;
@@ -35,7 +34,7 @@ function linkHref(doc: SearchDocument): string | undefined {
 }
 
 type TDocumentDrawerProps = {
-  document: SearchDocument | null; // The clicked search result, absent when the drawer is opened from a link
+  document: ISearchDocument | null; // The clicked search result, absent when the drawer is opened from a link
   slug: string | null;
   features: TFeatures;
   onOpenChange: (open: boolean) => void;

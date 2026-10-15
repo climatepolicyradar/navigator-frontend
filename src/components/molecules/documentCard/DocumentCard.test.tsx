@@ -1,10 +1,10 @@
 import { render, screen, fireEvent } from "@testing-library/react";
 
-import { SearchDocument } from "@/api/search";
+import { ISearchDocument } from "@/types";
 
 import { DocumentCard } from "./DocumentCard";
 
-const baseDocument: SearchDocument = {
+const baseDocument: ISearchDocument = {
   id: "doc-1",
   title: "National Climate Strategy",
   description: null,

@@ -12,6 +12,7 @@ import { ThemeContext } from "@/context/ThemeContext";
 import { Header } from "@/cpr/components/Header";
 import { NavBarGradient } from "@/cpr/components/NavBarGradient";
 import { TLandingPageSearchConfig } from "@/types";
+import { deflateFilters } from "@/utils/filters/deflate";
 import { getSuggestionParams } from "@/utils/getSuggestionParams";
 
 const SEARCH_CONFIG: TLandingPageSearchConfig = {
@@ -25,7 +26,7 @@ const SEARCH_CONFIG: TLandingPageSearchConfig = {
     },
     newParams: {
       [QUERY_PARAMS.sort]: "recent",
-      [QUERY_PARAMS.filters]: JSON.stringify({
+      [QUERY_PARAMS.filters]: deflateFilters({
         op: "or",
         filters: [{ field: "labels.value.id", op: "contains", value: "category::UN submission", checked: true }],
       }),
@@ -43,7 +44,7 @@ const SEARCH_CONFIG: TLandingPageSearchConfig = {
         [QUERY_PARAMS.sort_order]: "desc",
       },
       newParams: {
-        [QUERY_PARAMS.filters]: JSON.stringify({
+        [QUERY_PARAMS.filters]: deflateFilters({
           op: "and",
           filters: [
             {
@@ -83,7 +84,7 @@ const SEARCH_CONFIG: TLandingPageSearchConfig = {
         [QUERY_PARAMS.country]: "mongolia",
       },
       newParams: {
-        [QUERY_PARAMS.filters]: JSON.stringify({
+        [QUERY_PARAMS.filters]: deflateFilters({
           op: "and",
           filters: [
             { field: "labels.value.id", op: "contains", value: "category::UN submission", checked: true },
@@ -107,7 +108,7 @@ const SEARCH_CONFIG: TLandingPageSearchConfig = {
         [QUERY_PARAMS.concept_name]: "indigenous people",
       },
       newParams: {
-        [QUERY_PARAMS.filters]: JSON.stringify({
+        [QUERY_PARAMS.filters]: deflateFilters({
           op: "and",
           filters: [
             { field: "labels.value.id", op: "contains", value: "category::UN submission", checked: true },
@@ -132,7 +133,7 @@ const SEARCH_CONFIG: TLandingPageSearchConfig = {
         [QUERY_PARAMS.concept_name]: "subsidy",
       },
       newParams: {
-        [QUERY_PARAMS.filters]: JSON.stringify({
+        [QUERY_PARAMS.filters]: deflateFilters({
           op: "and",
           filters: [
             {

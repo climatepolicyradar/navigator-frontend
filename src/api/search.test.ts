@@ -1,5 +1,6 @@
 import { DEFAULT_THEME_CONFIG } from "@/constants/themeConfig";
 import { TLabelCategoryValue, TThemeConfig } from "@/types";
+import { inflateFilters } from "@/utils/filters/deflate";
 
 import { fetchSearchDocuments } from "./search";
 
@@ -10,7 +11,8 @@ const themeConfigWithCategories = (searchCategories: TLabelCategoryValue[]): TTh
 
 const requestedFilters = (): string => {
   const url = vi.mocked(global.fetch).mock.calls[0][0] as URL;
-  return url.searchParams.get("filters") ?? "";
+  expect(url.searchParams.get("encoding")).toBe("deflate");
+  return inflateFilters(url.searchParams.get("filters") ?? "");
 };
 
 describe("fetchSearchDocuments", () => {
@@ -38,5 +40,19 @@ describe("fetchSearchDocuments", () => {
         { op: "contains", field: "labels.value.id", value: "category::Policy" },
       ],
     });
+  });
+
+  it("requires a minimum fraction of the query's terms to match", async () => {
+    await fetchSearchDocuments({ themeConfig: themeConfigWithCategories([]), query: "adaptation strategy" });
+
+    const url = vi.mocked(global.fetch).mock.calls[0][0] as URL;
+    expect(url.searchParams.get("msm")).toBe("0.7");
+  });
+
+  it("does not send a minimum match when there is no query", async () => {
+    await fetchSearchDocuments({ themeConfig: themeConfigWithCategories([]) });
+
+    const url = vi.mocked(global.fetch).mock.calls[0][0] as URL;
+    expect(url.searchParams.has("msm")).toBe(false);
   });
 });

@@ -1,9 +1,11 @@
 import { useState } from "react";
 
-import { configureDocumentsFilters, SEARCH_DOCUMENT_SORT_PARAMS, SearchDocumentsSortKey } from "@/api/search";
+import { configureDocumentsFilters, SEARCH_DOCUMENTS_MIN_SHOULD_MATCH } from "@/api/search";
 import { isFilterGroupEmpty } from "@/components/_experiment/advancedFilters/AdvancedFilters";
-import { TApiLoadingStatus, TSearchQueryGroup, TSearchQueryRule, TThemeConfig } from "@/types";
+import { SORT_PARAMS_LOOKUP } from "@/constants/sort";
+import { TApiLoadingStatus, TSearchQueryGroup, TSearchQueryRule, TSortValue, TThemeConfig } from "@/types";
 import { sanitiseSearchQueryGroup } from "@/utils/filters/advancedFilters";
+import { deflateFilters } from "@/utils/filters/deflate";
 
 const DOWNLOAD_MAX_RESULTS = 500;
 
@@ -19,7 +21,7 @@ interface IDownloadSearchCsvParams {
   query?: string;
   themeConfig: TThemeConfig;
   filters?: TSearchQueryGroup;
-  sort: SearchDocumentsSortKey;
+  sort: TSortValue;
 }
 
 function downloadSearchCsvUrl(): string {
@@ -30,7 +32,10 @@ function downloadSearchCsvUrl(): string {
 export function buildDownloadSearchCsvUrl(params: IDownloadSearchCsvParams): URL {
   const url = new URL(downloadSearchCsvUrl());
 
-  if (params.query) url.searchParams.set("query", params.query);
+  if (params.query) {
+    url.searchParams.set("query", params.query);
+    url.searchParams.set("msm", String(SEARCH_DOCUMENTS_MIN_SHOULD_MATCH));
+  }
 
   // Build the same filter tree the results list requests, so the CSV contains exactly
   // the rows on screen. configureDocumentsFilters adds the theme's search categories
@@ -42,9 +47,10 @@ export function buildDownloadSearchCsvUrl(params: IDownloadSearchCsvParams): URL
   }
 
   const combinedFilters = configureDocumentsFilters({ op: "and", filters: filtersToApply }, params.themeConfig.searchCategories);
-  url.searchParams.set("filters", JSON.stringify(combinedFilters));
+  url.searchParams.set("filters", deflateFilters(combinedFilters));
+  url.searchParams.set("encoding", "deflate");
 
-  url.searchParams.set("order_by", SEARCH_DOCUMENT_SORT_PARAMS[params.sort]);
+  url.searchParams.set("order_by", SORT_PARAMS_LOOKUP[params.sort]);
   url.searchParams.set("max_results", DOWNLOAD_MAX_RESULTS.toString());
 
   return url;
