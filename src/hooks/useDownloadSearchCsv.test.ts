@@ -174,8 +174,15 @@ describe("buildDownloadSearchCsvUrl", () => {
   });
 
   it("applies the same default filters as the results list, so the download matches what is on screen", () => {
+    vi.useFakeTimers({ toFake: ["Date"], now: new Date("2026-01-01T00:00:00.000Z") });
+
+    onTestFinished(() => {
+      vi.useRealTimers();
+    });
+
     process.env.NEXT_PUBLIC_API_URL = "https://api.example.org";
     const themeConfig = themeConfigWithCategories(["Litigation"]);
+
     const filters: TSearchQueryGroup = {
       op: "and",
       filters: [{ field: "attributes.status", op: "contains", value: "published" }],
