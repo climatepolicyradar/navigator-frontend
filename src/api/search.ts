@@ -18,6 +18,9 @@ interface ISearchDocumentsParams {
   signal?: AbortSignal;
 }
 
+// Fraction of query terms a document must match, so extra words narrow the results
+export const SEARCH_DOCUMENTS_MIN_SHOULD_MATCH = 0.7;
+
 const searchDocumentsUrl = (): string => {
   const origin = (process.env.NEXT_PUBLIC_API_URL || "https://api.climatepolicyradar.org").replace(/\/$/, "");
   return `${origin}/search/documents`;
@@ -75,7 +78,10 @@ export const fetchSearchDocuments = async (params: ISearchDocumentsParams): Prom
 
   // This enables `bolding` in vespa AKA highlighting, which highlights the matched terms in the results.
   url.searchParams.set("bolding", "true");
-  if (params.query) url.searchParams.set("query", params.query);
+  if (params.query) {
+    url.searchParams.set("query", params.query);
+    url.searchParams.set("msm", String(SEARCH_DOCUMENTS_MIN_SHOULD_MATCH));
+  }
   if (filters) {
     url.searchParams.set("filters", deflateFilters(filters));
     url.searchParams.set("encoding", "deflate");

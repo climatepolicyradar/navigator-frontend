@@ -40,6 +40,7 @@ describe("buildDownloadSearchCsvUrl", () => {
     expect(url.searchParams.get("query")).toBe("flood risk");
     expect(url.searchParams.get("order_by")).toBe("relevance desc");
     expect(url.searchParams.get("max_results")).toBe("500");
+    expect(url.searchParams.get("msm")).toBe("0.7");
   });
 
   it("maps every sort key to its order_by clause", () => {
@@ -80,6 +81,7 @@ describe("buildDownloadSearchCsvUrl", () => {
     });
 
     expect(url.searchParams.has("query")).toBe(false);
+    expect(url.searchParams.has("msm")).toBe(false);
   });
 
   it("includes filters, restricted to principal documents, when given a non-empty filter tree", () => {
