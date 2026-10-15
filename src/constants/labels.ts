@@ -1,3 +1,5 @@
+import { TSearchQueryGroup, TSearchQueryRule } from "@/types";
+
 import { ID_SEPARATOR as SEP } from "./chars";
 
 export const SUBNATIONAL_LABEL_TYPE = "level";
@@ -68,5 +70,49 @@ export const LABEL_DISPLAY_REPLACEMENTS: TLabelDisplayReplacement[] = [
     parentId: ["category", "Global Stocktake"].join(SEP),
     idMatch: `author_type${SEP}`,
     type: "Type",
+  },
+];
+
+type TLabelSearchReplacement = {
+  idMatch: string;
+  filter: TSearchQueryRule | TSearchQueryGroup;
+};
+
+export const LABEL_SEARCH_REPLACEMENTS: TLabelSearchReplacement[] = [
+  {
+    idMatch: ["level", "Country"].join(SEP),
+    filter: {
+      op: "and",
+      filters: [
+        {
+          field: "labels.value.type",
+          op: "contains",
+          value: "country",
+        },
+        {
+          field: "labels.value.type",
+          op: "not_contains",
+          value: "subdivision",
+        },
+        {
+          field: "labels.value.id",
+          op: "not_contains",
+          value: ["country", "XAB"].join(SEP),
+        },
+        {
+          field: "labels.value.id",
+          op: "not_contains",
+          value: ["country", "EUR"].join(SEP),
+        },
+      ],
+    },
+  },
+  {
+    idMatch: ["level", "Subdivision"].join(SEP),
+    filter: {
+      field: "labels.value.type",
+      op: "contains",
+      value: "subdivision",
+    },
   },
 ];

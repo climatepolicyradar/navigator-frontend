@@ -443,7 +443,7 @@ const config: TThemeConfig = {
     litigation: false,
     "new-search": true,
     searchFamilySummary: false,
-    subdivisions: false,
+    subdivisions: true,
   },
 };
 
