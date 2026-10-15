@@ -35,6 +35,24 @@ export const vespaFamilyHandler = () =>
     });
   });
 
+export const searchDocumentsHandler = (overrides: Partial<{ status: number; body: unknown }> = {}) =>
+  http.get(`${process.env.CONCEPTS_API_URL}/search/documents/${testFamilyImportId}`, () => {
+    if (overrides.status && overrides.status !== 200) {
+      return HttpResponse.json({ detail: "error" }, { status: overrides.status });
+    }
+    return HttpResponse.json({
+      data: overrides.body ?? {
+        id: testFamilyImportId,
+        title: "Test Family",
+        description: null,
+        labels: [],
+        documents: [],
+        items: [],
+        attributes: {},
+      },
+    });
+  });
+
 // A minimal but schema-complete TDataInDocument for a family: satisfies validateFamilyAttributes
 // (deprecated_slug, published_date) and the activity_status/category/provider labels required by
 // transformFamily's downstream pipeline (transformAttribution, groupByType's mandatory-type check).

@@ -4,10 +4,10 @@ import { dataInCollectionHandler, testCollectionImportId } from "@/tests/mocks/a
 import {
   dataInFamilyHandler,
   familySlugHandler,
+  searchDocumentsHandler,
   testFamilyDataIn,
   testFamilyImportId,
   testFamilySlug,
-  vespaFamilyHandler,
 } from "@/tests/mocks/api/familyDataHandlers";
 import { server } from "@/tests/mocks/server";
 
@@ -15,7 +15,7 @@ import { getFamilyData } from "./getFamilyData";
 
 describe("getFamilyData", () => {
   it("returns family data on the happy path", async () => {
-    server.use(familySlugHandler(), dataInFamilyHandler(), vespaFamilyHandler());
+    server.use(familySlugHandler(), dataInFamilyHandler(), searchDocumentsHandler());
 
     const result = await getFamilyData(testFamilySlug);
 
@@ -65,7 +65,7 @@ describe("getFamilyData", () => {
   });
 
   it("skips the slug lookup and uses importId directly when provided", async () => {
-    server.use(dataInFamilyHandler(), vespaFamilyHandler());
+    server.use(dataInFamilyHandler(), searchDocumentsHandler());
 
     const result = await getFamilyData("", testFamilyImportId);
 
@@ -94,7 +94,7 @@ describe("getFamilyData", () => {
         },
       }),
       dataInCollectionHandler(),
-      vespaFamilyHandler()
+      searchDocumentsHandler()
     );
 
     const result = await getFamilyData(testFamilySlug);
@@ -125,7 +125,7 @@ describe("getFamilyData", () => {
           ],
         },
       }),
-      vespaFamilyHandler()
+      searchDocumentsHandler()
     );
 
     const result = await getFamilyData(testFamilySlug);

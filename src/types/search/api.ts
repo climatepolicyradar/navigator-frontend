@@ -9,9 +9,10 @@ export interface IDocumentLabelRelationship {
   type: string;
   value: IDocumentLabel;
   timestamp: string | null;
+  document_id?: string | null;
 }
 
-interface IDocumentRelationship {
+export interface IDocumentRelationship {
   type: string;
   value: ISearchDocument;
 }
@@ -28,6 +29,10 @@ export interface ISearchDocument {
   documents: IDocumentRelationship[];
   items: IDocumentItem[];
   attributes: Record<string, string | number | boolean>;
+}
+
+export interface ISearchDocumentResponse {
+  data: ISearchDocument;
 }
 
 interface IAggregationLabel {

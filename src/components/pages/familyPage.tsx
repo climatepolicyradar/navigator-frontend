@@ -34,7 +34,6 @@ import {
   TFamilyPageBlock,
   TFamilyPublic,
   TPrincipalDrawerTab,
-  TSearchResponse,
   TTheme,
   TThemeConfig,
   TFeatures,
@@ -56,7 +55,6 @@ export interface IProps {
   features: TFeatures;
   theme: TTheme;
   themeConfig: TThemeConfig;
-  vespaFamilyData?: TSearchResponse | null;
   debug?: {
     dataInDocument: TDataInDocument;
   };
