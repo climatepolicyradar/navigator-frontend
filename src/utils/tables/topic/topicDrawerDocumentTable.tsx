@@ -34,11 +34,10 @@ export const getTopicDrawerDocumentTableRows = (
   features: TFeatures,
   topic: TTopic
 ): TTableRow<TDocumentMentionsTableColumnId>[] => {
-  const conceptCountsKey = `${topic.wikibase_id}:${topic.preferred_label}`;
   const topicQuery = getTopicQuery(topic, features["new-search"]);
 
   return familyTopics.documents.reduce((rows, document) => {
-    const mentions = document.conceptCounts[conceptCountsKey];
+    const mentions = document.conceptCounts[topic.wikibase_id];
     if (!mentions) return rows;
 
     const contextLines: string[] = [];
