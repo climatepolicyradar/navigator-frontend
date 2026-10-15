@@ -1,5 +1,5 @@
 import { LucideSearch } from "lucide-react";
-import { parseAsJson, parseAsString, parseAsStringLiteral, useQueryState } from "nuqs";
+import { parseAsString, parseAsStringLiteral, useQueryState } from "nuqs";
 import { Fragment, ReactNode, SubmitEventHandler, useMemo, useState } from "react";
 
 import { Input } from "@/components/atoms/input/Input";
@@ -9,8 +9,8 @@ import { SearchFiltersDrawer } from "@/components/molecules/searchFiltersDrawer/
 import { SearchFiltersPopover } from "@/components/molecules/searchFiltersPopover/SearchFiltersPopover";
 import { Sort } from "@/components/molecules/sort/Sort";
 import { FiltersContext, TDateRange, TToggleFilterCallback } from "@/context/FiltersContext";
-import { FilterGroupSchema } from "@/schemas";
-import { SORT_VALUES, TFilterPathLabel, TFiltersGroupConfig, TSearchLabel, TSearchQueryGroup, TSortOptionConfig, TSortValue } from "@/types";
+import { SORT_VALUES, TFilterPathLabel, TFiltersGroupConfig, TSearchLabel, TSortOptionConfig, TSortValue } from "@/types";
+import { parseAsDeflatedFilters } from "@/utils/filters/deflate";
 import { sortFilterPathLabels } from "@/utils/filters/filterPaths";
 import { getSearchLabelValues } from "@/utils/filters/getSearchLabelValues";
 import { groupSearchLabels } from "@/utils/filters/groupSearchLabels";
@@ -61,10 +61,7 @@ export const SearchControls = ({
   sortParamKey,
 }: IProps) => {
   const [queryParam, setQueryParam] = useQueryState(queryParamKey, parseAsString.withDefault(""));
-  const [filterParam, setFilterParam] = useQueryState(
-    filterParamKey,
-    parseAsJson<TSearchQueryGroup>(FilterGroupSchema).withDefault(DEFAULT_SEARCH_QUERY_GROUP)
-  );
+  const [filterParam, setFilterParam] = useQueryState(filterParamKey, parseAsDeflatedFilters.withDefault(DEFAULT_SEARCH_QUERY_GROUP));
   const [, setCurrentPage] = useQueryState(pageParamKey, parseAsString.withDefault("1"));
 
   // Default sort is dynamic

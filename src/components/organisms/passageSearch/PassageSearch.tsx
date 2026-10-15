@@ -1,6 +1,6 @@
 import { useInfiniteQuery } from "@tanstack/react-query";
 import { useRouter } from "next/router";
-import { parseAsArrayOf, parseAsJson, parseAsString, parseAsStringLiteral, useQueryState } from "nuqs";
+import { parseAsArrayOf, parseAsString, parseAsStringLiteral, useQueryState } from "nuqs";
 import { usePostHog } from "posthog-js/react";
 import { memo, useCallback, useContext, useEffect, useMemo, useRef, useState } from "react";
 
@@ -21,17 +21,8 @@ import { PASSAGE_SORT_OPTIONS } from "@/constants/sort";
 import { posthogEventName } from "@/context/PostHogProvider";
 import { SearchLevelContext } from "@/context/SearchLevelContext";
 import { loadFilteredLabels } from "@/hooks/useLabelSearch";
-import { FilterGroupSchema } from "@/schemas";
-import {
-  ISearchPassage,
-  SORT_VALUES,
-  TFamilyDocumentPublic,
-  TPrincipalDrawerTab,
-  TSearchLabel,
-  TSearchQueryGroup,
-  TSortValue,
-  TTopic,
-} from "@/types";
+import { ISearchPassage, SORT_VALUES, TFamilyDocumentPublic, TPrincipalDrawerTab, TSearchLabel, TSortValue, TTopic } from "@/types";
+import { parseAsDeflatedFilters } from "@/utils/filters/deflate";
 import { queryGroupToFilterPaths } from "@/utils/search/queryGroupToFilterPaths";
 import { conceptFiltersOnly, flattenLevelToBaseQuery, levelParamKeys } from "@/utils/search/searchLevels";
 
@@ -126,7 +117,7 @@ export const PassageSearch = ({ changeTab, concepts, documents, documentsLabel, 
   const searchLevel = useContext(SearchLevelContext);
   const paramKeys = useMemo(() => levelParamKeys(searchLevel), [searchLevel]);
   const [queryParam, setQueryParam] = useQueryState(paramKeys.query, parseAsString.withDefault(""));
-  const [filterParam, setFilterParams] = useQueryState(paramKeys.filters, parseAsJson<TSearchQueryGroup>(FilterGroupSchema));
+  const [filterParam, setFilterParams] = useQueryState(paramKeys.filters, parseAsDeflatedFilters);
   const [sortParam] = useQueryState<TSortValue>(
     paramKeys.sort,
     parseAsStringLiteral(SORT_VALUES).withDefault(PASSAGE_SORT_OPTIONS[0].paramValue).withOptions({ clearOnDefault: false })

@@ -2,6 +2,7 @@ import { DEFAULT_FEATURES } from "@/constants/features";
 import { QUERY_PARAMS } from "@/constants/queryParams";
 import { DEFAULT_THEME_CONFIG } from "@/constants/themeConfig";
 import { GeographyV2, TFeatures, TSearchLabel, TThemeConfig } from "@/types";
+import { deflateFilters } from "@/utils/filters/deflate";
 import { filterPathsToQueryGroup } from "@/utils/search/filterPathsToQueryGroup";
 
 import { getGeoSearchLink } from "./getGeoSearchLink";
@@ -80,7 +81,7 @@ describe("getGeoSearchLink", () => {
       "and"
     );
 
-    expect(result.query).toEqual({ [QUERY_PARAMS.filters]: JSON.stringify(expectedFilters) });
+    expect(result.query).toEqual({ [QUERY_PARAMS.filters]: deflateFilters(expectedFilters) });
   });
 
   it("links to /search for old search", () => {
@@ -142,7 +143,7 @@ describe("getGeoSearchLink", () => {
 
     const expectedFilters = filterPathsToQueryGroup([[geographyLabel, region]], null, "and");
 
-    expect(result.query).toEqual({ [QUERY_PARAMS.filters]: JSON.stringify(expectedFilters) });
+    expect(result.query).toEqual({ [QUERY_PARAMS.filters]: deflateFilters(expectedFilters) });
   });
 
   it("includes the category query param for old search", () => {
@@ -172,7 +173,7 @@ describe("getGeoSearchLink", () => {
       "and"
     );
 
-    expect(result.query).toEqual({ [QUERY_PARAMS.filters]: JSON.stringify(expectedFilters) });
+    expect(result.query).toEqual({ [QUERY_PARAMS.filters]: deflateFilters(expectedFilters) });
   });
 
   it("only filters by geography for new search when the category has no known mapping", () => {
@@ -186,6 +187,6 @@ describe("getGeoSearchLink", () => {
 
     const expectedFilters = filterPathsToQueryGroup([[geographyLabel, region]], null, "and");
 
-    expect(result.query).toEqual({ [QUERY_PARAMS.filters]: JSON.stringify(expectedFilters) });
+    expect(result.query).toEqual({ [QUERY_PARAMS.filters]: deflateFilters(expectedFilters) });
   });
 });

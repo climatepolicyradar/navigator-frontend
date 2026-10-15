@@ -10,9 +10,10 @@ import { SiteWidth } from "@/components/panels/SiteWidth";
 import { QUERY_PARAMS } from "@/constants/queryParams";
 import { ThemeContext } from "@/context/ThemeContext";
 import { TLandingPageSearchConfig } from "@/types";
+import { deflateFilters } from "@/utils/filters/deflate";
 import { getSuggestionParams } from "@/utils/getSuggestionParams";
 
-const OFFSHORE_WIND_REPORT_FILTERS = JSON.stringify({
+const OFFSHORE_WIND_REPORT_FILTERS = deflateFilters({
   op: "and",
   filters: [
     { field: "labels.value.id", op: "contains", value: "category::Report" },
@@ -68,7 +69,7 @@ const SEARCH_CONFIG: TLandingPageSearchConfig = {
         [QUERY_PARAMS.concept_name]: "zoning and spatial planning",
       },
       newParams: {
-        [QUERY_PARAMS.filters]: JSON.stringify({
+        [QUERY_PARAMS.filters]: deflateFilters({
           op: "and",
           filters: [
             {
@@ -95,7 +96,7 @@ const SEARCH_CONFIG: TLandingPageSearchConfig = {
         [QUERY_PARAMS.category]: "offshore-wind-reports",
       },
       newParams: {
-        [QUERY_PARAMS.filters]: JSON.stringify({
+        [QUERY_PARAMS.filters]: deflateFilters({
           op: "and",
           filters: [
             {

@@ -1,5 +1,6 @@
 import { DEFAULT_THEME_CONFIG } from "@/constants/themeConfig";
 import { TLabelCategoryValue, TThemeConfig } from "@/types";
+import { inflateFilters } from "@/utils/filters/deflate";
 
 import { fetchSearchDocuments } from "./search";
 
@@ -10,7 +11,8 @@ const themeConfigWithCategories = (searchCategories: TLabelCategoryValue[]): TTh
 
 const requestedFilters = (): string => {
   const url = vi.mocked(global.fetch).mock.calls[0][0] as URL;
-  return url.searchParams.get("filters") ?? "";
+  expect(url.searchParams.get("encoding")).toBe("deflate");
+  return inflateFilters(url.searchParams.get("filters") ?? "");
 };
 
 describe("fetchSearchDocuments", () => {
