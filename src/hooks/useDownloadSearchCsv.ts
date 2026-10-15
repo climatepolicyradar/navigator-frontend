@@ -46,10 +46,13 @@ export function buildDownloadSearchCsvUrl(params: IDownloadSearchCsvParams): URL
     filtersToApply.push(sanitisedFilters);
   }
 
-  const combinedFilters = configureDocumentsFilters({ op: "and", filters: filtersToApply }, params.themeConfig.searchCategories);
-  url.searchParams.set("filters", deflateFilters(combinedFilters));
+  const combinedFilters = configureDocumentsFilters(
+    { op: "and", filters: filtersToApply },
+    params.themeConfig.searchCategories,
+    params.themeConfig.searchExcludeLabels
+  );
+  url.searchParams.set("filters", JSON.stringify(combinedFilters));
   url.searchParams.set("encoding", "deflate");
-
   url.searchParams.set("order_by", SORT_PARAMS_LOOKUP[params.sort]);
   url.searchParams.set("max_results", DOWNLOAD_MAX_RESULTS.toString());
 
