@@ -51,7 +51,7 @@ export const getFilterGroups = ({ features, getAppText, theme }: IProps): TFilte
     // Theme
     filterGroups.push({
       title: "Theme",
-      subtitle: "Narrow results to documents focused on specific topics",
+      subtitle: "Refine your search by core policy area",
       Icon: LucideBook,
       container: "drawer",
       rootLabelTypes: ["domain"],

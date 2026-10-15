@@ -5,24 +5,28 @@ import { TDataInDocument } from "@/schemas";
 export const testCollectionSlug = "test-collection-slug";
 export const testCollectionImportId = "collection-1";
 
-export const collectionSlugHandler = (overrides: Partial<{ status: number; body: unknown }> = {}) =>
-  http.get(`${process.env.CONCEPTS_API_URL}/families/slugs/${testCollectionSlug}`, () => {
+export const testChildFamilyImportId = "family-in-collection-1";
+
+// Used as the primary collection fetch in getCollectionData (fetched by slug).
+export const dataInCollectionBySlugHandler = (overrides: Partial<{ status: number; body: unknown }> = {}) =>
+  http.get(`${process.env.CONCEPTS_API_URL}/data-in/documents/slug/${testCollectionSlug}`, () => {
     if (overrides.status && overrides.status !== 200) {
-      return HttpResponse.json(overrides.body ?? { detail: "Not Found" }, { status: overrides.status });
+      return HttpResponse.json({ detail: "error" }, { status: overrides.status });
     }
     return HttpResponse.json({
       data: overrides.body ?? {
-        name: testCollectionSlug,
-        family_import_id: null,
-        family_document_import_id: null,
-        collection_import_id: testCollectionImportId,
-        created: "2024-01-01",
+        id: testCollectionImportId,
+        title: "Test Collection",
+        description: null,
+        attributes: { deprecated_slug: testCollectionSlug },
+        labels: [],
+        items: [],
+        documents: [],
       },
     });
   });
 
-export const testChildFamilyImportId = "family-in-collection-1";
-
+// Used for a family's parent collection fetch in getFamilyData (fetched by import id).
 export const dataInCollectionHandler = (overrides: Partial<{ status: number; body: unknown }> = {}) =>
   http.get(`${process.env.CONCEPTS_API_URL}/data-in/documents/${testCollectionImportId}`, () => {
     if (overrides.status && overrides.status !== 200) {
