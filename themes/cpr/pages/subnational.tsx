@@ -1,6 +1,7 @@
 import { LandingPage } from "@/components/organisms/LandingPage";
 import { QUERY_PARAMS } from "@/constants/queryParams";
 import { TLandingPageConfig } from "@/types";
+import { deflateFilters } from "@/utils/filters/deflate";
 
 export default function NatureLandingPage() {
   const landingPageConfig: TLandingPageConfig = {
@@ -33,7 +34,7 @@ export default function NatureLandingPage() {
         },
         newParams: {
           [QUERY_PARAMS.sort]: "recent",
-          [QUERY_PARAMS.filters]: JSON.stringify({
+          [QUERY_PARAMS.filters]: deflateFilters({
             op: "and",
             filters: [
               {

@@ -2,6 +2,7 @@ import { ID_SEPARATOR } from "@/constants/chars";
 import { SORT_PARAMS_LOOKUP } from "@/constants/sort";
 import { ISearchDocumentsResponse, TLabelCategoryValue, TSearchQueryGroup, TSearchQueryRule, TSortValue, TThemeConfig } from "@/types";
 import { DATE_RANGE_MIN_YEAR, hasPublishedDateRule } from "@/utils/_experiment/dateRangeFilters";
+import { deflateFilters } from "@/utils/filters/deflate";
 
 export const getSearchApiStatus = (error: unknown): number | undefined => {
   return error instanceof Error ? (error as Error & { status?: number }).status : undefined;
@@ -75,7 +76,10 @@ export const fetchSearchDocuments = async (params: ISearchDocumentsParams): Prom
   // This enables `bolding` in vespa AKA highlighting, which highlights the matched terms in the results.
   url.searchParams.set("bolding", "true");
   if (params.query) url.searchParams.set("query", params.query);
-  if (filters) url.searchParams.set("filters", JSON.stringify(filters));
+  if (filters) {
+    url.searchParams.set("filters", deflateFilters(filters));
+    url.searchParams.set("encoding", "deflate");
+  }
   if (params.page_size !== undefined) url.searchParams.set("page_size", params.page_size);
   if (params.page_token !== undefined) url.searchParams.set("page_token", params.page_token);
   const sortKey = params.sort ?? "relevance";

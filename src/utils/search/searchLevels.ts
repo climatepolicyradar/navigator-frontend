@@ -1,11 +1,10 @@
-import { parseAsArrayOf, parseAsJson, parseAsString } from "nuqs";
+import { parseAsArrayOf, parseAsString } from "nuqs";
 import type { UrlKeys } from "nuqs";
-import * as v from "valibot";
 
 import { QUERY_PARAMS } from "@/constants/queryParams";
 import { TDateRange } from "@/context/FiltersContext";
-import { FilterGroupSchema } from "@/schemas";
 import { TNestedSearchLevel, TSearchLevel, TSearchLevelValues, TSearchParamKeys, TSearchQueryGroup, TSearchQueryRule, isRule } from "@/types";
+import { deflateFilters, parseAsDeflatedFilters } from "@/utils/filters/deflate";
 
 import { filterQueryGroupRules, isLabelRuleOfTypes } from "./filterQueryGroupRules";
 import { queryGroupToFilterPaths } from "./queryGroupToFilterPaths";
@@ -48,7 +47,7 @@ export const levelParamKeys = (level: TSearchLevel): TSearchParamKeys => {
  */
 export const searchLevelParsers = {
   documents: parseAsArrayOf(parseAsString),
-  filters: parseAsJson<TSearchQueryGroup>(FilterGroupSchema),
+  filters: parseAsDeflatedFilters,
   query: parseAsString,
   sort: parseAsString,
 };
@@ -84,9 +83,9 @@ const NO_FILTERS: TFilterPaths = { filterPathLabels: [], dateRange: null };
 
 const readFilters = (raw: string | null): TFilterPaths => {
   try {
-    const parsed = raw ? v.safeParse(FilterGroupSchema, JSON.parse(raw)) : null;
-    if (!parsed?.success || !parsed.output.filters.length) return NO_FILTERS;
-    return queryGroupToFilterPaths(parsed.output);
+    const parsed = raw ? parseAsDeflatedFilters.parse(raw) : null;
+    if (!parsed?.filters.length) return NO_FILTERS;
+    return queryGroupToFilterPaths(parsed);
   } catch {
     return NO_FILTERS;
   }
@@ -161,6 +160,6 @@ export const flattenLevelToBaseQuery = ({
   query,
 }: Pick<TSearchLevelValues, "documents" | "filters" | "query">): Record<string, string | null> => ({
   [BASE_PARAM_KEYS.documents]: documents?.length ? documents.join(",") : null,
-  [BASE_PARAM_KEYS.filters]: filters ? JSON.stringify(filters) : null,
+  [BASE_PARAM_KEYS.filters]: filters ? deflateFilters(filters) : null,
   [BASE_PARAM_KEYS.query]: query || null,
 });

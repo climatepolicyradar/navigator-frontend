@@ -1,5 +1,5 @@
 import { GetServerSideProps, InferGetServerSidePropsType } from "next";
-import { useQueryState, parseAsString, parseAsJson, parseAsStringLiteral } from "nuqs";
+import { useQueryState, parseAsString, parseAsStringLiteral } from "nuqs";
 import { useCallback, useContext, useMemo, useState, type SetStateAction } from "react";
 
 import { createGroup, isFilterGroupEmpty, AdvancedFilters } from "@/components/_experiment/advancedFilters/AdvancedFilters";
@@ -20,10 +20,10 @@ import { TutorialContext } from "@/context/TutorialContext";
 import { useFilterLabels } from "@/hooks/useFilterLabels";
 import { useNestedSearchLevel } from "@/hooks/useSearchLevel";
 import { useText } from "@/hooks/useText";
-import { FilterGroupSchema } from "@/schemas";
 import { ISearchDocument, SORT_VALUES, TPrincipalDrawerTab, TSearchQueryGroup, TSortValue, TTheme } from "@/types";
 import { getFeatureFlags } from "@/utils/featureFlags";
 import { getFeatures } from "@/utils/features";
+import { parseAsDeflatedFilters } from "@/utils/filters/deflate";
 import { getFilterGroups } from "@/utils/filters/getFilterGroups";
 import { pluralise } from "@/utils/pluralise";
 import { getPersistedPrincipalDrawerTab, persistPrincipalDrawerTab } from "@/utils/principal/principalTabs";
@@ -45,7 +45,7 @@ const ShadowSearch = ({ theme, themeConfig, features }: TProps) => {
   // search query that is typed into the search box
   const [query, setQuery] = useQueryState("q", parseAsString.withDefault(""));
   // structured filters built in QueryBuilder
-  const [filters, setFiltersInUrl] = useQueryState("filters", parseAsJson<TSearchQueryGroup>(FilterGroupSchema).withDefault(createGroup()));
+  const [filters, setFiltersInUrl] = useQueryState("filters", parseAsDeflatedFilters.withDefault(createGroup()));
   // pagination state
   const [currentPage, setCurrentPage] = useQueryState("page_token", parseAsString.withDefault("1"));
   const [sortParam, setSortParam] = useQueryState<TSortValue>("sort", parseAsStringLiteral(SORT_VALUES).withOptions({ clearOnDefault: false }));
