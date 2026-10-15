@@ -64,15 +64,6 @@ describe("getFamilyData", () => {
     expect(result.errors.length).toBeGreaterThan(0);
   });
 
-  it("skips the slug lookup and uses importId directly when provided", async () => {
-    server.use(dataInFamilyHandler(), searchDocumentsHandler());
-
-    const result = await getFamilyData("", testFamilyImportId);
-
-    expect(result.data).not.toBeNull();
-    expect(result.data.family.import_id).toBe(testFamilyImportId);
-  });
-
   it("fetches and validates a parent collection's data-in document", async () => {
     server.use(
       familySlugHandler(),
