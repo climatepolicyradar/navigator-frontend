@@ -23,21 +23,21 @@ export const documentSlugHandler = (overrides: Partial<{ status: number; body: u
     });
   });
 
-export const vespaDocumentHandler = () =>
-  http.get(`${process.env.BACKEND_API_URL}/document/${testDocumentImportId}`, () => {
-    return HttpResponse.json(
-      {
-        hits: 0,
-        total_family_hits: 0,
-        query_time_ms: 1,
-        total_time_ms: 1,
-        continuation_token: null,
-        this_continuation_token: "",
-        prev_continuation_token: null,
-        families: [],
+// getDocumentData fetches the document's own search record from `/search/documents/${document.id}`
+// (see src/bff/methods/getDocumentData.ts) to derive its topics - not a vespa/family endpoint.
+export const searchDocumentHandler = () =>
+  http.get(`${process.env.CONCEPTS_API_URL}/search/documents/${testDocumentImportId}`, () => {
+    return HttpResponse.json({
+      data: {
+        id: testDocumentImportId,
+        title: "Test Document",
+        description: null,
+        labels: [],
+        documents: [],
+        items: [],
+        attributes: {},
       },
-      { status: 200 }
-    );
+    });
   });
 
 // A minimal but schema-complete TDataInDocument for a document: satisfies validateDocumentAttributes

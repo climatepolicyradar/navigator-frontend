@@ -1,16 +1,15 @@
-import { TSearchResponse } from "@/types";
+import { ID_SEPARATOR } from "@/constants/chars";
+import { ISearchDocumentResponse } from "@/types";
 
-export const extractTopicIds = (vespaSearchResponse: TSearchResponse): string[] => {
+export const extractTopicIds = (searchDocumentResponse: ISearchDocumentResponse): string[] => {
   const topicIds = new Set<string>();
 
-  (vespaSearchResponse.families ?? []).forEach((family) => {
-    family.hits.forEach((hit) => {
-      Object.keys(hit.concept_counts ?? {}).forEach((topicKey) => {
-        const [topicId] = topicKey.split(":");
-        topicIds.add(topicId);
-      });
+  searchDocumentResponse.data.labels
+    .filter((labelRel) => labelRel.value.type === "concept")
+    .forEach((labelRel) => {
+      const [, wikibaseId] = labelRel.value.id.split(ID_SEPARATOR);
+      topicIds.add(wikibaseId);
     });
-  });
 
   return Array.from(topicIds);
 };
