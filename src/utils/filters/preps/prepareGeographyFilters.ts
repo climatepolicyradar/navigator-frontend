@@ -8,26 +8,28 @@ const SUBNATIONAL_LABELS: TNestedSearchLabel[] = ["Country", "Subdivision"].map(
 
 // Split regions and geographies from each other under separate top-level groups, keeping each
 // country's region as a virtual parentPath so filtering still respects the relationship
-export const prepareGeographyFilters: TFiltersGroupPrep = (rootLabels) => {
-  const validRootLabels = rootLabels.filter((rootLabel) => rootLabel.type === "region");
+export const prepareGeographyFilters =
+  (subdivisionsFeature: boolean): TFiltersGroupPrep =>
+  (rootLabels) => {
+    const validRootLabels = rootLabels.filter((rootLabel) => rootLabel.type === "region");
 
-  const geographyLabels = validRootLabels.flatMap((regionLabel) =>
-    regionLabel.children
-      .filter((childLabel) => childLabel.type === "country")
-      .map((countryLabel) => ({ ...countryLabel, parentPath: [getFilterPathLabel(regionLabel)] }))
-  );
-  const regionLabels = validRootLabels.map<TNestedSearchLabel>((regionLabel) => ({ ...regionLabel, children: [] }));
+    const geographyLabels = validRootLabels.flatMap((regionLabel) =>
+      regionLabel.children
+        .filter((childLabel) => childLabel.type === "country")
+        .map((countryLabel) => ({ ...countryLabel, parentPath: [getFilterPathLabel(regionLabel)] }))
+    );
+    const regionLabels = validRootLabels.map<TNestedSearchLabel>((regionLabel) => ({ ...regionLabel, children: [] }));
 
-  return [
-    createGroupLabel("type", SUBNATIONAL_LABELS),
-    createGroupLabel("region", regionLabels),
-    createGroupLabel("geography", geographyLabels),
-    {
-      id: ["country", "XAB"].join(ID_SEPARATOR),
-      type: "country",
-      value: "International",
-      alternative_labels: [],
-      children: [],
-    },
-  ];
-};
+    return [
+      ...(subdivisionsFeature ? [createGroupLabel("type", SUBNATIONAL_LABELS)] : []),
+      createGroupLabel("region", regionLabels),
+      createGroupLabel("geography", geographyLabels),
+      {
+        id: ["country", "XAB"].join(ID_SEPARATOR),
+        type: "country",
+        value: "International",
+        alternative_labels: [],
+        children: [],
+      },
+    ];
+  };
