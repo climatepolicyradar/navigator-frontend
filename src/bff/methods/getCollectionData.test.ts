@@ -1,6 +1,11 @@
 import { describe, expect, it } from "vitest";
 
-import { dataInCollectionBySlugHandler, dataInChildFamilyHandler, testChildFamilyImportId, testCollectionSlug } from "@/tests/mocks/api/collectionDataHandlers";
+import {
+  dataInCollectionBySlugHandler,
+  dataInChildFamilyHandler,
+  testChildFamilyImportId,
+  testCollectionSlug,
+} from "@/tests/mocks/api/collectionDataHandlers";
 import { server } from "@/tests/mocks/server";
 
 import { getCollectionData } from "./getCollectionData";
