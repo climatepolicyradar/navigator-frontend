@@ -1,4 +1,3 @@
-import sortBy from "lodash/sortBy";
 import { ReactNode, useContext } from "react";
 
 import { SearchFilterGroups } from "@/components/molecules/searchFilterGroups/SearchFilterGroups";
@@ -7,6 +6,7 @@ import { SearchFilterParent } from "@/components/molecules/searchFilterParent/Se
 import { SearchFilters } from "@/components/molecules/searchFilters/SearchFilters";
 import { FiltersLookupContext } from "@/context/FiltersLookupContext";
 import { TFilterPathLabel, TNestedSearchLabel } from "@/types";
+import { sortLabelsByValue } from "@/utils/filters/sortLabelsByValue";
 import { joinTailwindClasses } from "@/utils/tailwind";
 
 const LOOKUP_THRESHOLD = 16;
@@ -47,7 +47,7 @@ export const SearchFilterLevel = ({ ancestorPath, emptyStateRender, indented, la
     );
   }
 
-  const sortedLabels = sortBy(labels, "value");
+  const sortedLabels = sortLabelsByValue(labels);
 
   // Grouped by type
   if (labelTypes.size > 1) {
