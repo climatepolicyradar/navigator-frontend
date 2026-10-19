@@ -26,6 +26,12 @@ const EXCLUDED_TOPICS_DICTIONARY: Record<TTheme, string[]> = {
   mcf: [],
 };
 
+/**
+ * Domains map to "Climate" / "Nature" currently and * these only make sense for CPR.
+ * This may widen if we add more domains hence this set.
+ */
+const THEMES_WITH_DOMAINS: Set<TTheme> = new Set(["cpr"]);
+
 interface IProps {
   features: TFeatures;
   getAppText: (textKey: TAppDictionaryKey) => string;
@@ -47,7 +53,7 @@ export const getFilterGroups = ({ features, getAppText, theme }: IProps): TFilte
     title: features.themes ? "Category" : getAppText("filterGroupFilters"),
   });
 
-  if (features.themes) {
+  if (features.themes && THEMES_WITH_DOMAINS.has(theme)) {
     // Theme
     filterGroups.push({
       title: "Theme",
