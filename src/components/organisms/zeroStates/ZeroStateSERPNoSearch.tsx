@@ -7,7 +7,7 @@ import { SUGGESTED_SEARCHES } from "@/themes/constants/suggestedSearches";
 
 export const ZeroStateSERPNoSearch = () => {
   const { themeConfig } = useContext(ThemeContext);
-  const href = themeConfig.features["new-search"] ? "/search" : "_search";
+  const href = themeConfig.features["new-search"] === true ? "/search" : "_search";
 
   return (
     <div className="px-5 py-8 flex flex-col items-center gap-4 border border-border-normal rounded-lg">

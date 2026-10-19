@@ -32,4 +32,8 @@ describe("isFeatureEnabled", () => {
   it("returns false with an unset config feature and a disabled feature flag", () => {
     expect(isFeatureEnabled({ configFeature: undefined, featureFlag: false })).toBe(false);
   });
+
+  it("returns false when set to never in the theme config AND feature flag is enabled", () => {
+    expect(isFeatureEnabled({ configFeature: "never", featureFlag: true })).toBe(false);
+  });
 });

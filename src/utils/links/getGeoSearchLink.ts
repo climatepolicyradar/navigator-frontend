@@ -57,7 +57,7 @@ export const getGeoSearchLink = ({
   }
 
   return {
-    href: themeConfig.features["new-search"] ? "/search" : "/_search", // Shadow search page if config feature off but feature flag on
+    href: themeConfig.features["new-search"] === true ? "/search" : "/_search", // Shadow search page if config feature off but feature flag on
     query: {
       [QUERY_PARAMS.filters]: deflateFilters(filterPathsToQueryGroup(checkedLabelPaths, null, "and")),
     },

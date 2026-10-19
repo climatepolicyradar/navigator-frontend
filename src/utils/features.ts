@@ -1,15 +1,37 @@
-import { AB_TEST_KEYS, CONFIG_FEATURE_KEYS, FEATURE_FLAG_KEYS, TConfigFeature, TFeatureFlag, TFeatureFlags, TFeatures, TThemeConfig } from "@/types";
+import {
+  AB_TEST_KEYS,
+  CONFIG_FEATURE_KEYS,
+  FEATURE_FLAG_KEYS,
+  TConfigFeature,
+  TConfigFeatureValue,
+  TFeatureFlag,
+  TFeatureFlags,
+  TFeatures,
+  TThemeConfig,
+} from "@/types";
 
 interface IArgs {
-  configFeature?: boolean;
+  configFeature?: TConfigFeatureValue;
   featureFlag?: boolean;
 }
 
-// Determines if an app feature is on or off by combining app-level config and PostHog feature flags
+/**
+ * Determines if a feature is on given its value and a feature flag value.
+ * Settings turned ON in themes are always on, regardless of flag.
+ * Settings turned off (false) in themes can be overridden by a flag.
+ * Settings set to "never" are always off and not overridable.
+ */
 export const isFeatureEnabled = ({ configFeature, featureFlag }: IArgs): boolean => {
-  if (configFeature === undefined && featureFlag === undefined) return true; // No feature control = on
-  if (configFeature === true) return true; // Config feature on = always on regardless of feature flags
-  return featureFlag === true; // Config feature off + feature flag = use feature flag. This will be off is the feature flag is undefined
+  switch (configFeature) {
+    case true:
+      return true;
+    case "never":
+      return false;
+    case false:
+      return featureFlag === true;
+    default:
+      return featureFlag ?? true;
+  }
 };
 
 // Constructs an object containing all feature flags & config features and whether they're enabled or not
@@ -32,7 +54,7 @@ export const getFeatures = (themeConfig: TThemeConfig, featureFlags: TFeatureFla
 
   // Turn on all feature flags when instructed to by E2E CI for testing
   if (process.env.E2E_TEST_FEATURE_FLAGS === "true") {
-    const featuresToEnable = FEATURE_FLAG_KEYS.filter((key) => key !== "debug");
+    const featuresToEnable = FEATURE_FLAG_KEYS.filter((key) => key !== "debug" && themeConfig.features[key as TConfigFeature] !== "never");
     featuresToEnable.forEach((feature) => (features[feature] = true));
   }
 

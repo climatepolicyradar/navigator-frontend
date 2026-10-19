@@ -168,6 +168,9 @@ An example of intentionally overlapping keys:
 on for all users on specific apps using the theme feature, and on other apps\
 turned on manually through the feature flags page to preview it.
 
+To stop a feature flag turning a feature on for a specific app, set its theme\
+feature to `"never"` (e.g. `themes: "never"` on non-CPR apps).
+
 ## 📜 License
 
 This project is licensed under the terms specified in [LICENSE.md](LICENSE.md).

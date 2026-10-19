@@ -444,6 +444,7 @@ const config: TThemeConfig = {
     "new-search": true,
     searchFamilySummary: false,
     subdivisions: false,
+    themes: false,
   },
 };
 

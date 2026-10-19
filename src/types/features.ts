@@ -20,6 +20,7 @@ export const CONFIG_FEATURE_KEYS = [
   "new-search",
   "searchFamilySummary",
   "subdivisions",
+  "themes",
 ] as const;
 
 /* Types */
@@ -29,7 +30,14 @@ export type TABTest = (typeof AB_TEST_KEYS)[number];
 export type TFeatureFlags = Record<TFeatureFlag | TABTest, boolean>; // Treat all PostHog feature flags the same as they're sourced at the same time
 
 export type TConfigFeature = (typeof CONFIG_FEATURE_KEYS)[number];
-export type TConfigFeatures = Record<TConfigFeature, boolean>;
+
+/**
+ * true -> This is on, regardless of feature flag.
+ * false -> This is off unless a feature flag turns it on.
+ * "never" -> This is off and feature flags are ignored.
+ */
+export type TConfigFeatureValue = boolean | "never";
+export type TConfigFeatures = Record<TConfigFeature, TConfigFeatureValue>;
 
 export type TFeature = TFeatureFlag | TABTest | TConfigFeature;
 export type TFeatures = Record<TFeature, boolean>;
