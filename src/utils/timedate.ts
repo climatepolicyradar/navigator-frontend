@@ -4,8 +4,11 @@ const ISO_DATE = /^(?<year>\d{4})-\d{2}-\d{2}/;
 const UK_DATE = /^\d{2}\/\d{2}\/(?<year>\d{4})$/;
 
 /**
- * This deliberately operates in string space as we're dealing in UTC only.
- * Going through new Date(...) starts converting TZs and throws off filters.
+ * This deliberately operates in string space: the year is read as written, ignoring any
+ * TZ offset, because going through new Date(...) converts TZs and throws off filters.
+ *
+ * Only the formats our data currently uses (ISO and DD/MM/YYYY) are recognised;
+ * anything else returns null. It extracts rather than validates.
  */
 export const getYear = (date: string | null): number | null => {
   if (!date) return null;
