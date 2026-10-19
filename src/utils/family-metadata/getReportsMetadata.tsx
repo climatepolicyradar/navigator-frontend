@@ -2,19 +2,19 @@ import { Geographies } from "@/components/molecules/geographies/Geographies";
 import { EN_DASH } from "@/constants/chars";
 import { IFamilyDocumentTopics, IMetadata, TFamilyPublic } from "@/types";
 import { getTopicsMetadataItem } from "@/utils/family-metadata/getTopicsMetadataItem";
-import { convertDate } from "@/utils/timedate";
+import { getYear } from "@/utils/timedate";
 import { familyTopicsHasTopics } from "@/utils/topics/processFamilyTopics";
 
 export function getReportsMetadata(family: TFamilyPublic, familyTopics: IFamilyDocumentTopics | null): IMetadata[] {
   const metadata = [];
 
-  const [year] = convertDate(family.published_date);
+  const year = getYear(family.published_date);
   const document_type = family.documents && family.documents.length > 0 ? family.documents[0].document_type : null;
 
   /* Year */
   metadata.push({
     label: "Year",
-    value: year || EN_DASH,
+    value: year ?? EN_DASH,
   });
 
   /* Geography */
