@@ -27,7 +27,7 @@ const EXCLUDED_TOPICS_DICTIONARY: Record<TTheme, string[]> = {
 };
 
 /**
- * Domains map to "Climate" / "Nature" currently and * these only make sense for CPR.
+ * Domains map to "Climate" / "Nature" currently and these only make sense for CPR.
  * This may widen if we add more domains hence this set.
  */
 const THEMES_WITH_DOMAINS: Set<TTheme> = new Set(["cpr"]);
