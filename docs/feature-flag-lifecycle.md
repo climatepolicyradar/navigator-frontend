@@ -60,36 +60,7 @@ fine for incremental release, but it does not hide the content from anyone who
 looks at the URL or the JavaScript bundle. Do not rely on it for anything
 confidential.
 
-## 4. Register the route, if you added a page
-
-Pages under `themes/<THEME>/pages/` are **not** routed by file path. They are
-served by the dynamic route at `src/pages/[page].tsx`, whose `getStaticPaths`
-builds its list solely from `themes/<THEME>/routes.json` with `fallback: false`.
-
-A page with no entry in that file is never generated, and its URL returns a real
-404 -- not the feature-flag 404. Add an entry:
-
-```json
-{
-  "title": "Your Page Title",
-  "path": "your-page",
-  "contentPath": "your-page"
-}
-```
-
-`path` is the URL segment (`/your-page`) and `contentPath` is the filename in
-`themes/<THEME>/pages/` without its extension. Confirm it worked by building the
-theme and checking the page is emitted:
-
-```sh
-THEME=<theme> npx next build
-ls .next/server/pages/your-page.html
-```
-
-Also check `themes/<THEME>/rewrites.json` and `redirects.json` in case the path
-you chose is already shadowed.
-
-## 5. Optionally add a per-theme switch
+## 4. Optionally add a per-theme switch
 
 If you want to be able to turn the feature on permanently for a given app later,
 also add the key to `CONFIG_FEATURE_KEYS` in `src/types/features.ts`, and to the
@@ -117,7 +88,7 @@ another deploy.
 If you do not need that switch, skip this step and leave the key in
 `FEATURE_FLAG_KEYS` alone.
 
-## 6. Make the flag appear at `/_feature-flags`
+## 5. Make the flag appear at `/_feature-flags`
 
 `/_feature-flags` does not list the keys in your code. It renders a single
 button that opens PostHog's own site-app widget, which lists **early access
@@ -148,7 +119,7 @@ Two things to know when testing:
   changing anything in PostHog.
 - The widget needs cookie consent and no ad-blocker.
 
-## 7. Enable it in a browser
+## 6. Enable it in a browser
 
 Once the early access feature exists, open `/_feature-flags` and toggle it.
 
