@@ -816,6 +816,75 @@ export const FILTER_TEST_CASES: TFilterTestCase[] = [
       ],
     },
   },
+  {
+    /*
+     * Three unrelated root labels, none of which is a parent of any other: one of type "country"
+     * (standing in for International) and two sharing a second type (the subnational levels).
+     *
+     * The two same-type labels are OR'd into one bucket, which previously left the lone checked
+     * rule leading an AND group - the same shape the parent/child cases above produce. Round
+     * tripping that through queryGroupToFilterPaths re-parented the levels under the country,
+     * unticking their checkboxes and merging their pills. Each bucket is therefore wrapped in its
+     * own group so the three stay siblings, while the API still receives `country AND (a OR b)`.
+     */
+    name: "a checked root filter beside a group of same-type siblings",
+    filterPathLabels: [
+      [
+        {
+          id: "country::XAB",
+          type: "country",
+          value: "XAB",
+        },
+      ],
+      [
+        {
+          id: "test_level::Country",
+          type: "test_level",
+          value: "Country",
+        },
+      ],
+      [
+        {
+          id: "test_level::Subdivision",
+          type: "test_level",
+          value: "Subdivision",
+        },
+      ],
+    ],
+    searchQueryGroup: {
+      op: "and",
+      filters: [
+        {
+          op: "or",
+          filters: [
+            {
+              field: "labels.value.id",
+              op: "contains",
+              value: "country::XAB",
+              checked: true,
+            },
+          ],
+        },
+        {
+          op: "or",
+          filters: [
+            {
+              field: "labels.value.id",
+              op: "contains",
+              value: "test_level::Country",
+              checked: true,
+            },
+            {
+              field: "labels.value.id",
+              op: "contains",
+              value: "test_level::Subdivision",
+              checked: true,
+            },
+          ],
+        },
+      ],
+    },
+  },
 ];
 
 describe("filterPathsToQueryGroup", () => {
