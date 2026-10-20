@@ -25,7 +25,6 @@ const SEARCH_CONFIG: TLandingPageSearchConfig = {
       [QUERY_PARAMS.sort_order]: "desc",
     },
     newParams: {
-      [QUERY_PARAMS.sort]: "recent",
       [QUERY_PARAMS.filters]: deflateFilters({
         op: "or",
         filters: [{ field: "labels.value.id", op: "contains", value: "category::UN submission", checked: true }],
