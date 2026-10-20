@@ -4,7 +4,9 @@ import userEvent from "@testing-library/user-event";
 import mockRouter from "next-router-mock";
 import * as nextRouterMock from "next-router-mock";
 
+import { EnvConfigContext } from "@/context/EnvConfig";
 import { SearchLevelContext } from "@/context/SearchLevelContext";
+import { envConfig } from "@/mocks/envConfig";
 import { IPassageLabel, ISearchPassage, TFamilyDocumentPublic, TSearchQueryGroup, TTopic } from "@/types";
 import { deflateFilters } from "@/utils/filters/deflate";
 
@@ -137,7 +139,11 @@ const concepts = [
 
 const renderWith = (ui: React.ReactElement) => {
   const queryClient = new QueryClient({ defaultOptions: { queries: { retry: false } } });
-  return render(<QueryClientProvider client={queryClient}>{ui}</QueryClientProvider>);
+  return render(
+    <QueryClientProvider client={queryClient}>
+      <EnvConfigContext.Provider value={envConfig}>{ui}</EnvConfigContext.Provider>
+    </QueryClientProvider>
+  );
 };
 
 // The document page: one document, with the PDF preview alongside the results.

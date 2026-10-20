@@ -3,7 +3,9 @@ import { renderHook, waitFor } from "@testing-library/react";
 import React from "react";
 
 import { DEFAULT_THEME_CONFIG } from "@/constants/themeConfig";
+import { EnvConfigContext } from "@/context/EnvConfig";
 import { IProps as IThemeContextProps, ThemeContext } from "@/context/ThemeContext";
+import { envConfig } from "@/mocks/envConfig";
 import { IDocumentLabelRelationship, ISearchDocument, ISearchDocumentsResponse } from "@/types";
 
 import { useDocumentTopics } from "./useDocumentTopics";
@@ -42,7 +44,11 @@ const searchResponse = (results: ISearchDocument[]): ISearchDocumentsResponse =>
     results,
   }) as ISearchDocumentsResponse;
 
-const loadedTheme: IThemeContextProps = { theme: "cpr", themeConfig: DEFAULT_THEME_CONFIG, loaded: true };
+const loadedTheme: IThemeContextProps = {
+  theme: "cpr",
+  themeConfig: DEFAULT_THEME_CONFIG,
+  loaded: true,
+};
 
 const renderUseDocumentTopicsWithTheme = (theme: IThemeContextProps, ...args: Parameters<typeof useDocumentTopics>) => {
   const queryClient = new QueryClient({
@@ -50,7 +56,9 @@ const renderUseDocumentTopicsWithTheme = (theme: IThemeContextProps, ...args: Pa
   });
   const wrapper = ({ children }: { children: React.ReactNode }) => (
     <QueryClientProvider client={queryClient}>
-      <ThemeContext.Provider value={theme}>{children}</ThemeContext.Provider>
+      <EnvConfigContext.Provider value={envConfig}>
+        <ThemeContext.Provider value={theme}>{children}</ThemeContext.Provider>
+      </EnvConfigContext.Provider>
     </QueryClientProvider>
   );
 

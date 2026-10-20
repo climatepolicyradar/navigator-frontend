@@ -9,6 +9,8 @@ export const getSearchApiStatus = (error: unknown): number | undefined => {
 };
 
 interface ISearchDocumentsParams {
+  /** API gateway base URL, from `useEnvConfig().API_URL` at the call site. */
+  apiUrl: string;
   themeConfig: TThemeConfig;
   query?: string;
   filters?: TSearchQueryGroup;
@@ -21,10 +23,7 @@ interface ISearchDocumentsParams {
 // Fraction of query terms a document must match, so extra words narrow the results
 export const SEARCH_DOCUMENTS_MIN_SHOULD_MATCH = 0.7;
 
-const searchDocumentsUrl = (): string => {
-  const origin = (process.env.NEXT_PUBLIC_API_URL || "https://api.climatepolicyradar.org").replace(/\/$/, "");
-  return `${origin}/search/documents`;
-};
+const searchDocumentsUrl = (apiUrl: string): string => `${apiUrl.replace(/\/$/, "")}/search/documents`;
 
 // Add default filters exclusive of search parameters to ensure they are always applied
 export function configureDocumentsFilters(filters: TSearchQueryGroup | undefined, searchCategories: TLabelCategoryValue[]): TSearchQueryGroup {
@@ -73,7 +72,7 @@ export function configureDocumentsFilters(filters: TSearchQueryGroup | undefined
 }
 
 export const fetchSearchDocuments = async (params: ISearchDocumentsParams): Promise<ISearchDocumentsResponse> => {
-  const url = new URL(searchDocumentsUrl());
+  const url = new URL(searchDocumentsUrl(params.apiUrl));
   const filters = configureDocumentsFilters(params.filters, params.themeConfig.searchCategories);
 
   // This enables `bolding` in vespa AKA highlighting, which highlights the matched terms in the results.

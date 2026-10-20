@@ -36,7 +36,6 @@ export default function GlobalStocktakeLandingPage() {
           [QUERY_PARAMS.query_string]: "",
         },
         newParams: {
-          [QUERY_PARAMS.sort]: "recent",
           [QUERY_PARAMS.filters]: deflateFilters({
             op: "and",
             filters: [GST_FILTER],
@@ -50,7 +49,6 @@ export default function GlobalStocktakeLandingPage() {
             [QUERY_PARAMS.sort_order]: "desc",
           },
           newParams: {
-            [QUERY_PARAMS.sort]: "recent",
             [QUERY_PARAMS.filters]: deflateFilters({
               op: "and",
               filters: [GST_FILTER],

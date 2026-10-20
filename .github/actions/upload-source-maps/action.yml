@@ -1,0 +1,55 @@
+name: Upload source maps to Faro
+description: >-
+  Uploads this build's client source maps to Grafana Faro so stack traces are
+  de-minified. Never fails the job: a Faro outage must not block a release.
+
+inputs:
+  maps-dir:
+    description: >-
+      Directory the build step exported the source maps to. These come from
+      the Dockerfile's `sourcemaps` stage, so they are never in the deployed
+      image and never reach the S3 static-asset bucket.
+    required: false
+    default: ./next-sourcemaps
+  theme:
+    description: Theme being deployed; the Faro app name is <theme>-frontend.
+    required: true
+  bundle-id:
+    description: >-
+      Commit SHA of this build. Must match the app.version the app reports at
+      runtime, or Faro cannot pair a stack trace with these maps.
+    required: true
+  api-key:
+    description: Faro source map API key.
+    required: true
+  app-id:
+    description: This theme's Faro app ID.
+    required: true
+  stack-id:
+    description: Grafana stack ID.
+    required: true
+
+runs:
+  using: composite
+  steps:
+    - name: Upload source maps to Faro
+      shell: bash
+      env:
+        FARO_SOURCEMAP_API_KEY: ${{ inputs.api-key }}
+        FARO_SOURCEMAP_APP_ID: ${{ inputs.app-id }}
+        FARO_SOURCEMAP_STACK_ID: ${{ inputs.stack-id }}
+      # $GITHUB_ACTION_PATH, not a workspace-relative path: a composite action's
+      # steps run with the workspace as cwd, so ./upload-source-maps.sh would
+      # not resolve.
+      run: |
+        "$GITHUB_ACTION_PATH/upload-source-maps.sh" \
+          "${{ inputs.maps-dir }}" \
+          "${{ inputs.theme }}-frontend" \
+          "${{ inputs.bundle-id }}"
+
+    # Source maps contain our original TypeScript; never leave them on the
+    # runner for a later step to pick up or publish.
+    - name: Remove exported source maps
+      if: always()
+      shell: bash
+      run: rm -rf "${{ inputs.maps-dir }}"
