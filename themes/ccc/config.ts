@@ -48,6 +48,10 @@ const config: TThemeConfig = {
     // Until then it stays false and the PostHog flag (0% rollout) controls access.
     "climate-cop31-2026": false,
     familyConceptsSearch: true,
+    // Deliberately off while subdivisions is on: ~95% of US federal cases also carry a state
+    // subdivision tag, so "Type: Country" would hide almost all of them. Needs the litigation
+    // geography data resolving (court level vs geography) before this can go live here.
+    "geography-type-filters": false,
     knowledgeGraph: true,
     litigation: true,
     "new-search": false,
