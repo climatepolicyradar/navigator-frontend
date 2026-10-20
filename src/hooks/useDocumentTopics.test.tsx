@@ -4,16 +4,9 @@ import React from "react";
 
 import { DEFAULT_THEME_CONFIG } from "@/constants/themeConfig";
 import { EnvConfigContext } from "@/context/EnvConfig";
-import {
-  IProps as IThemeContextProps,
-  ThemeContext,
-} from "@/context/ThemeContext";
+import { IProps as IThemeContextProps, ThemeContext } from "@/context/ThemeContext";
 import { envConfig } from "@/mocks/envConfig";
-import {
-  IDocumentLabelRelationship,
-  ISearchDocument,
-  ISearchDocumentsResponse,
-} from "@/types";
+import { IDocumentLabelRelationship, ISearchDocument, ISearchDocumentsResponse } from "@/types";
 
 import { useDocumentTopics } from "./useDocumentTopics";
 
@@ -22,21 +15,14 @@ vi.mock("@/api/search", () => ({
   fetchSearchDocuments: mockFetchSearchDocuments,
 }));
 
-const label = (
-  id: string,
-  value: string,
-  type: string,
-): IDocumentLabelRelationship => ({
+const label = (id: string, value: string, type: string): IDocumentLabelRelationship => ({
   count: null,
   type: "labels",
   value: { id, value, type },
   timestamp: null,
 });
 
-const searchDocument = (
-  id: string,
-  labels: IDocumentLabelRelationship[],
-): ISearchDocument =>
+const searchDocument = (id: string, labels: IDocumentLabelRelationship[]): ISearchDocument =>
   ({
     id,
     title: id,
@@ -64,10 +50,7 @@ const loadedTheme: IThemeContextProps = {
   loaded: true,
 };
 
-const renderUseDocumentTopicsWithTheme = (
-  theme: IThemeContextProps,
-  ...args: Parameters<typeof useDocumentTopics>
-) => {
+const renderUseDocumentTopicsWithTheme = (theme: IThemeContextProps, ...args: Parameters<typeof useDocumentTopics>) => {
   const queryClient = new QueryClient({
     defaultOptions: { queries: { retry: false } },
   });
@@ -82,9 +65,7 @@ const renderUseDocumentTopicsWithTheme = (
   return renderHook(() => useDocumentTopics(...args), { wrapper });
 };
 
-const renderUseDocumentTopics = (
-  ...args: Parameters<typeof useDocumentTopics>
-) => renderUseDocumentTopicsWithTheme(loadedTheme, ...args);
+const renderUseDocumentTopics = (...args: Parameters<typeof useDocumentTopics>) => renderUseDocumentTopicsWithTheme(loadedTheme, ...args);
 
 describe("useDocumentTopics", () => {
   beforeEach(() => {
@@ -117,11 +98,7 @@ describe("useDocumentTopics", () => {
 
   it("returns the documents' concepts as topics, keyed on the bare wikibase id", async () => {
     mockFetchSearchDocuments.mockResolvedValue(
-      searchResponse([
-        searchDocument("CCLW.executive.1.1", [
-          label("concept::Q123", "Adaptation", "concept"),
-        ]),
-      ]),
+      searchResponse([searchDocument("CCLW.executive.1.1", [label("concept::Q123", "Adaptation", "concept")])])
     );
 
     const { result } = renderUseDocumentTopics(["CCLW.executive.1.1"]);
@@ -142,7 +119,7 @@ describe("useDocumentTopics", () => {
           label("status::Principal", "Principal", "status"),
           label("language::en", "English", "language"),
         ]),
-      ]),
+      ])
     );
 
     const { result } = renderUseDocumentTopics(["CCLW.executive.1.1"]);
@@ -155,27 +132,16 @@ describe("useDocumentTopics", () => {
   it("offers a concept once however many of the documents mention it", async () => {
     mockFetchSearchDocuments.mockResolvedValue(
       searchResponse([
-        searchDocument("CCLW.executive.1.1", [
-          label("concept::Q123", "Adaptation", "concept"),
-        ]),
-        searchDocument("CCLW.executive.2.2", [
-          label("concept::Q123", "Adaptation", "concept"),
-          label("concept::Q456", "Mitigation", "concept"),
-        ]),
-      ]),
+        searchDocument("CCLW.executive.1.1", [label("concept::Q123", "Adaptation", "concept")]),
+        searchDocument("CCLW.executive.2.2", [label("concept::Q123", "Adaptation", "concept"), label("concept::Q456", "Mitigation", "concept")]),
+      ])
     );
 
-    const { result } = renderUseDocumentTopics([
-      "CCLW.executive.1.1",
-      "CCLW.executive.2.2",
-    ]);
+    const { result } = renderUseDocumentTopics(["CCLW.executive.1.1", "CCLW.executive.2.2"]);
 
     await waitFor(() => expect(result.current).toHaveLength(2));
 
-    expect(result.current.map((topic) => topic.wikibase_id)).toEqual([
-      "Q123",
-      "Q456",
-    ]);
+    expect(result.current.map((topic) => topic.wikibase_id)).toEqual(["Q123", "Q456"]);
   });
 
   it("does not search when there are no documents to search over", async () => {
@@ -197,10 +163,7 @@ describe("useDocumentTopics", () => {
   });
 
   it("does not search until the theme config has loaded, so its search categories are applied", async () => {
-    const { result } = renderUseDocumentTopicsWithTheme(
-      { ...loadedTheme, loaded: false },
-      ["CCLW.executive.1.1"],
-    );
+    const { result } = renderUseDocumentTopicsWithTheme({ ...loadedTheme, loaded: false }, ["CCLW.executive.1.1"]);
 
     await waitFor(() => expect(result.current).toEqual([]));
 

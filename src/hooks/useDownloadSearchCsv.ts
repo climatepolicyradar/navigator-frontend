@@ -1,19 +1,10 @@
 import { useState } from "react";
 
-import {
-  configureDocumentsFilters,
-  SEARCH_DOCUMENTS_MIN_SHOULD_MATCH,
-} from "@/api/search";
+import { configureDocumentsFilters, SEARCH_DOCUMENTS_MIN_SHOULD_MATCH } from "@/api/search";
 import { isFilterGroupEmpty } from "@/components/_experiment/advancedFilters/AdvancedFilters";
 import { SORT_PARAMS_LOOKUP } from "@/constants/sort";
 import { useEnvConfig } from "@/context/EnvConfig";
-import {
-  TApiLoadingStatus,
-  TSearchQueryGroup,
-  TSearchQueryRule,
-  TSortValue,
-  TThemeConfig,
-} from "@/types";
+import { TApiLoadingStatus, TSearchQueryGroup, TSearchQueryRule, TSortValue, TThemeConfig } from "@/types";
 import { sanitiseSearchQueryGroup } from "@/utils/filters/advancedFilters";
 import { deflateFilters } from "@/utils/filters/deflate";
 
@@ -38,9 +29,7 @@ function downloadSearchCsvUrl(apiUrl: string): string {
   return `${apiUrl.replace(/\/$/, "")}/search/documents:download`;
 }
 
-export function buildDownloadSearchCsvUrl(
-  params: IDownloadSearchCsvParams & { apiUrl: string },
-): URL {
+export function buildDownloadSearchCsvUrl(params: IDownloadSearchCsvParams & { apiUrl: string }): URL {
   const url = new URL(downloadSearchCsvUrl(params.apiUrl));
 
   if (params.query) {
@@ -51,20 +40,13 @@ export function buildDownloadSearchCsvUrl(
   // Build the same filter tree the results list requests, so the CSV contains exactly
   // the rows on screen. configureDocumentsFilters adds the theme's search categories
   // (e.g. category::Litigation on CCC) and the published-date bounds.
-  const filtersToApply: (TSearchQueryGroup | TSearchQueryRule)[] = [
-    PRINCIPAL_DOCUMENTS_FILTER,
-  ];
-  const sanitisedFilters = params.filters
-    ? sanitiseSearchQueryGroup(params.filters)
-    : null;
+  const filtersToApply: (TSearchQueryGroup | TSearchQueryRule)[] = [PRINCIPAL_DOCUMENTS_FILTER];
+  const sanitisedFilters = params.filters ? sanitiseSearchQueryGroup(params.filters) : null;
   if (sanitisedFilters && !isFilterGroupEmpty(sanitisedFilters)) {
     filtersToApply.push(sanitisedFilters);
   }
 
-  const combinedFilters = configureDocumentsFilters(
-    { op: "and", filters: filtersToApply },
-    params.themeConfig.searchCategories,
-  );
+  const combinedFilters = configureDocumentsFilters({ op: "and", filters: filtersToApply }, params.themeConfig.searchCategories);
   url.searchParams.set("filters", deflateFilters(combinedFilters));
   url.searchParams.set("encoding", "deflate");
 

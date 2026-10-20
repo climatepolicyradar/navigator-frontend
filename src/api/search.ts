@@ -1,23 +1,11 @@
 import { ID_SEPARATOR } from "@/constants/chars";
 import { SORT_PARAMS_LOOKUP } from "@/constants/sort";
-import {
-  ISearchDocumentsResponse,
-  TLabelCategoryValue,
-  TSearchQueryGroup,
-  TSearchQueryRule,
-  TSortValue,
-  TThemeConfig,
-} from "@/types";
-import {
-  DATE_RANGE_MIN_YEAR,
-  hasPublishedDateRule,
-} from "@/utils/_experiment/dateRangeFilters";
+import { ISearchDocumentsResponse, TLabelCategoryValue, TSearchQueryGroup, TSearchQueryRule, TSortValue, TThemeConfig } from "@/types";
+import { DATE_RANGE_MIN_YEAR, hasPublishedDateRule } from "@/utils/_experiment/dateRangeFilters";
 import { deflateFilters } from "@/utils/filters/deflate";
 
 export const getSearchApiStatus = (error: unknown): number | undefined => {
-  return error instanceof Error
-    ? (error as Error & { status?: number }).status
-    : undefined;
+  return error instanceof Error ? (error as Error & { status?: number }).status : undefined;
 };
 
 interface ISearchDocumentsParams {
@@ -35,14 +23,10 @@ interface ISearchDocumentsParams {
 // Fraction of query terms a document must match, so extra words narrow the results
 export const SEARCH_DOCUMENTS_MIN_SHOULD_MATCH = 0.7;
 
-const searchDocumentsUrl = (apiUrl: string): string =>
-  `${apiUrl.replace(/\/$/, "")}/search/documents`;
+const searchDocumentsUrl = (apiUrl: string): string => `${apiUrl.replace(/\/$/, "")}/search/documents`;
 
 // Add default filters exclusive of search parameters to ensure they are always applied
-export function configureDocumentsFilters(
-  filters: TSearchQueryGroup | undefined,
-  searchCategories: TLabelCategoryValue[],
-): TSearchQueryGroup {
+export function configureDocumentsFilters(filters: TSearchQueryGroup | undefined, searchCategories: TLabelCategoryValue[]): TSearchQueryGroup {
   const publishedDateBoundsFilter: TSearchQueryGroup = {
     op: "and",
     filters: [
@@ -87,14 +71,9 @@ export function configureDocumentsFilters(
   };
 }
 
-export const fetchSearchDocuments = async (
-  params: ISearchDocumentsParams,
-): Promise<ISearchDocumentsResponse> => {
+export const fetchSearchDocuments = async (params: ISearchDocumentsParams): Promise<ISearchDocumentsResponse> => {
   const url = new URL(searchDocumentsUrl(params.apiUrl));
-  const filters = configureDocumentsFilters(
-    params.filters,
-    params.themeConfig.searchCategories,
-  );
+  const filters = configureDocumentsFilters(params.filters, params.themeConfig.searchCategories);
 
   // This enables `bolding` in vespa AKA highlighting, which highlights the matched terms in the results.
   url.searchParams.set("bolding", "true");
@@ -106,10 +85,8 @@ export const fetchSearchDocuments = async (
     url.searchParams.set("filters", deflateFilters(filters));
     url.searchParams.set("encoding", "deflate");
   }
-  if (params.page_size !== undefined)
-    url.searchParams.set("page_size", params.page_size);
-  if (params.page_token !== undefined)
-    url.searchParams.set("page_token", params.page_token);
+  if (params.page_size !== undefined) url.searchParams.set("page_size", params.page_size);
+  if (params.page_token !== undefined) url.searchParams.set("page_token", params.page_token);
   const sortKey = params.sort ?? "relevance";
   url.searchParams.set("order_by", SORT_PARAMS_LOOKUP[sortKey]);
 
@@ -121,17 +98,13 @@ export const fetchSearchDocuments = async (
   return res.json() as Promise<ISearchDocumentsResponse>;
 };
 
-export const fetchSearchPrincipalDocuments = (
-  params: ISearchDocumentsParams,
-): Promise<ISearchDocumentsResponse> => {
+export const fetchSearchPrincipalDocuments = (params: ISearchDocumentsParams): Promise<ISearchDocumentsResponse> => {
   const principalDocumentsFilter: TSearchQueryRule = {
     field: "labels.value.id",
     op: "contains",
     value: "status::Principal",
   };
-  const filters: (TSearchQueryGroup | TSearchQueryRule)[] = [
-    principalDocumentsFilter,
-  ];
+  const filters: (TSearchQueryGroup | TSearchQueryRule)[] = [principalDocumentsFilter];
   if (params.filters) filters.push(params.filters);
 
   return fetchSearchDocuments({

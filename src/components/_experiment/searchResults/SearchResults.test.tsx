@@ -34,18 +34,14 @@ import { fetchSearchPrincipalDocuments } from "@/api/search";
 import { createGroup } from "@/components/_experiment/advancedFilters/AdvancedFilters";
 import { DEFAULT_THEME_CONFIG } from "@/constants/themeConfig";
 import { EnvConfigContext } from "@/context/EnvConfig";
-import {
-  IProps as IThemeContextProps,
-  ThemeContext,
-} from "@/context/ThemeContext";
+import { IProps as IThemeContextProps, ThemeContext } from "@/context/ThemeContext";
 import { envConfig } from "@/mocks/envConfig";
 import { ISearchDocument, ISearchDocumentsResponse } from "@/types";
 import { upsertPublishedDateRangeRules } from "@/utils/_experiment/dateRangeFilters";
 
 import { SearchContainer, shouldRetrySearch } from "./SearchResults";
 
-const searchError = (status: number) =>
-  Object.assign(new Error(`Search API error: ${status}`), { status });
+const searchError = (status: number) => Object.assign(new Error(`Search API error: ${status}`), { status });
 
 const loadedTheme: IThemeContextProps = {
   theme: "cpr",
@@ -54,10 +50,7 @@ const loadedTheme: IThemeContextProps = {
 };
 
 // The queries set their own retry policy, so the client only supplies a provider.
-const renderWith = (
-  ui: React.ReactElement,
-  theme: IThemeContextProps = loadedTheme,
-) => {
+const renderWith = (ui: React.ReactElement, theme: IThemeContextProps = loadedTheme) => {
   const queryClient = new QueryClient();
   const wrap = (node: React.ReactElement, themeValue: IThemeContextProps) => (
     <QueryClientProvider client={queryClient}>
@@ -69,10 +62,7 @@ const renderWith = (
   const result = render(wrap(ui, theme));
   return {
     ...result,
-    rerenderWith: (
-      next: React.ReactElement,
-      nextTheme: IThemeContextProps = theme,
-    ) => result.rerender(wrap(next, nextTheme)),
+    rerenderWith: (next: React.ReactElement, nextTheme: IThemeContextProps = theme) => result.rerender(wrap(next, nextTheme)),
   };
 };
 
@@ -95,75 +85,47 @@ const principalResult = (id: string): ISearchDocument => ({
 
 describe("SearchContainer", () => {
   it("triggers a search when only a date filter is applied with no text query or other filters", async () => {
-    const filtersWithDate = upsertPublishedDateRangeRules(
-      createGroup(),
-      "2020:2025",
-    );
+    const filtersWithDate = upsertPublishedDateRangeRules(createGroup(), "2020:2025");
 
     renderWith(<SearchContainer sort="relevance" filters={filtersWithDate} />);
 
-    await waitFor(() =>
-      expect(fetchSearchPrincipalDocuments).toHaveBeenCalled(),
-    );
+    await waitFor(() => expect(fetchSearchPrincipalDocuments).toHaveBeenCalled());
   });
 
   it("waits for the theme config to load before searching, then applies its categories", async () => {
     vi.mocked(fetchSearchPrincipalDocuments).mockClear();
     const filters = upsertPublishedDateRangeRules(createGroup(), "2020:2025");
 
-    const { rerenderWith } = renderWith(
-      <SearchContainer sort="relevance" query="climate" filters={filters} />,
-      { ...loadedTheme, loaded: false },
-    );
+    const { rerenderWith } = renderWith(<SearchContainer sort="relevance" query="climate" filters={filters} />, { ...loadedTheme, loaded: false });
 
     expect(await screen.findByTestId("search-loading")).toBeInTheDocument();
     expect(fetchSearchPrincipalDocuments).not.toHaveBeenCalled();
 
-    rerenderWith(
-      <SearchContainer sort="relevance" query="climate" filters={filters} />,
-      {
-        ...loadedTheme,
-        themeConfig: {
-          ...DEFAULT_THEME_CONFIG,
-          searchCategories: ["Litigation"],
-        },
+    rerenderWith(<SearchContainer sort="relevance" query="climate" filters={filters} />, {
+      ...loadedTheme,
+      themeConfig: {
+        ...DEFAULT_THEME_CONFIG,
+        searchCategories: ["Litigation"],
       },
-    );
+    });
 
-    await waitFor(() =>
-      expect(fetchSearchPrincipalDocuments).toHaveBeenCalledTimes(1),
-    );
-    expect(
-      vi.mocked(fetchSearchPrincipalDocuments).mock.calls[0][0].themeConfig
-        .searchCategories,
-    ).toEqual(["Litigation"]);
+    await waitFor(() => expect(fetchSearchPrincipalDocuments).toHaveBeenCalledTimes(1));
+    expect(vi.mocked(fetchSearchPrincipalDocuments).mock.calls[0][0].themeConfig.searchCategories).toEqual(["Litigation"]);
   });
 
   it("shows a generic message in the page for other search failures", async () => {
-    vi.mocked(fetchSearchPrincipalDocuments).mockRejectedValueOnce(
-      searchError(404),
-    );
+    vi.mocked(fetchSearchPrincipalDocuments).mockRejectedValueOnce(searchError(404));
 
     renderWith(<SearchContainer sort="relevance" query="climate" />);
 
-    expect(
-      await screen.findByText(/something went wrong/i),
-    ).toBeInTheDocument();
+    expect(await screen.findByText(/something went wrong/i)).toBeInTheDocument();
   });
 
   it("shows the loader on a first search, in place of any results", async () => {
-    vi.mocked(fetchSearchPrincipalDocuments).mockReturnValueOnce(
-      new Promise(() => {}),
-    );
+    vi.mocked(fetchSearchPrincipalDocuments).mockReturnValueOnce(new Promise(() => {}));
     const onSearchingChange = vi.fn();
 
-    renderWith(
-      <SearchContainer
-        sort="relevance"
-        query="climate"
-        onSearchingChange={onSearchingChange}
-      />,
-    );
+    renderWith(<SearchContainer sort="relevance" query="climate" onSearchingChange={onSearchingChange} />);
 
     expect(await screen.findByTestId("search-loading")).toBeInTheDocument();
     expect(screen.queryByTestId("search-results")).not.toBeInTheDocument();
@@ -179,21 +141,13 @@ describe("SearchContainer", () => {
     const onSearchingChange = vi.fn();
 
     const props = { query: "climate", onTotalResultsChange, onSearchingChange };
-    const { rerenderWith } = renderWith(
-      <SearchContainer sort="relevance" {...props} page_token="1" />,
-    );
-    await waitFor(() =>
-      expect(screen.getByTestId("search-results")).toBeInTheDocument(),
-    );
+    const { rerenderWith } = renderWith(<SearchContainer sort="relevance" {...props} page_token="1" />);
+    await waitFor(() => expect(screen.getByTestId("search-results")).toBeInTheDocument());
     expect(onSearchingChange).toHaveBeenLastCalledWith(false);
 
     // A second page that never settles, so the component stays mid-fetch.
-    vi.mocked(fetchSearchPrincipalDocuments).mockReturnValueOnce(
-      new Promise(() => {}),
-    );
-    rerenderWith(
-      <SearchContainer sort="relevance" {...props} page_token="2" />,
-    );
+    vi.mocked(fetchSearchPrincipalDocuments).mockReturnValueOnce(new Promise(() => {}));
+    rerenderWith(<SearchContainer sort="relevance" {...props} page_token="2" />);
 
     expect(await screen.findByTestId("search-loading")).toBeInTheDocument();
     expect(screen.queryByTestId("search-results")).not.toBeInTheDocument();
@@ -227,21 +181,9 @@ describe("SearchContainer", () => {
     renderWith(<SearchContainer sort="relevance" query="climate" />);
 
     const [firstResult, secondResult] = await screen.findAllByRole("button");
-    expect(firstResult).toHaveAttribute(
-      "data-ph-capture-attribute-position-page",
-      "1",
-    );
-    expect(firstResult).toHaveAttribute(
-      "data-ph-capture-attribute-position-total",
-      "21",
-    );
-    expect(firstResult).toHaveAttribute(
-      "data-ph-capture-attribute-results-total",
-      "43",
-    );
-    expect(secondResult).toHaveAttribute(
-      "data-ph-capture-attribute-position-total",
-      "22",
-    );
+    expect(firstResult).toHaveAttribute("data-ph-capture-attribute-position-page", "1");
+    expect(firstResult).toHaveAttribute("data-ph-capture-attribute-position-total", "21");
+    expect(firstResult).toHaveAttribute("data-ph-capture-attribute-results-total", "43");
+    expect(secondResult).toHaveAttribute("data-ph-capture-attribute-position-total", "22");
   });
 });

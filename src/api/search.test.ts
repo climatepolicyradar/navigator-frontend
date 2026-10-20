@@ -6,9 +6,7 @@ import { fetchSearchDocuments } from "./search";
 
 const TEST_API_URL = "https://api.climatepolicyradar.org";
 
-const themeConfigWithCategories = (
-  searchCategories: TLabelCategoryValue[],
-): TThemeConfig => ({
+const themeConfigWithCategories = (searchCategories: TLabelCategoryValue[]): TThemeConfig => ({
   ...DEFAULT_THEME_CONFIG,
   searchCategories,
 });

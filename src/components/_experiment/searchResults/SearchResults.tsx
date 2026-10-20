@@ -1,36 +1,23 @@
 import { useQuery } from "@tanstack/react-query";
 import React, { Fragment, useContext, useEffect, useMemo } from "react";
 
-import {
-  fetchSearchPrincipalDocuments,
-  getSearchApiStatus,
-} from "@/api/search";
+import { fetchSearchPrincipalDocuments, getSearchApiStatus } from "@/api/search";
 import Loader from "@/components/Loader";
 import { isFilterGroupEmpty } from "@/components/_experiment/advancedFilters/AdvancedFilters";
 import { DocumentCard } from "@/components/molecules/documentCard/DocumentCard";
 import { useEnvConfig } from "@/context/EnvConfig";
 import { ThemeContext } from "@/context/ThemeContext";
-import {
-  ISearchDocument,
-  ISearchDocumentsResponse,
-  TSearchQueryGroup,
-  TSortValue,
-} from "@/types";
+import { ISearchDocument, ISearchDocumentsResponse, TSearchQueryGroup, TSortValue } from "@/types";
 import { sanitiseSearchQueryGroup } from "@/utils/filters/advancedFilters";
 
 export const SEARCH_RESULTS_PAGE_SIZE = 10;
 
 // Principal = Family in old model
 const isPrincipal = (result: ISearchDocument): boolean => {
-  return result.labels.some(
-    (label) => label.type === "status" && label.value.value === "Principal",
-  );
+  return result.labels.some((label) => label.type === "status" && label.value.value === "Principal");
 };
 
-export const shouldRetrySearch = (
-  failureCount: number,
-  error: unknown,
-): boolean => {
+export const shouldRetrySearch = (failureCount: number, error: unknown): boolean => {
   return (getSearchApiStatus(error) ?? 500) >= 500 && failureCount < 3;
 };
 
@@ -39,10 +26,7 @@ function SearchResults({
   onResultClicked,
 }: {
   data: ISearchDocumentsResponse;
-  onResultClicked?: (
-    document: ISearchDocument,
-    event: React.MouseEvent<HTMLButtonElement>,
-  ) => void;
+  onResultClicked?: (document: ISearchDocument, event: React.MouseEvent<HTMLButtonElement>) => void;
 }) {
   // Number of results on the pages before this one
   const positionOffset = (data.page - 1) * data.page_size;
@@ -68,9 +52,7 @@ function SearchResults({
             )}
             {/* TODO: remove non-principal results */}
             {!isPrincipal(result) && (
-              <li
-                className={`flex gap-2 border border-transparent rounded-md py-2 pr-6 highlights`}
-              >
+              <li className={`flex gap-2 border border-transparent rounded-md py-2 pr-6 highlights`}>
                 <p>Shouldn't be showing a non-principle doc here</p>
               </li>
             )}
@@ -83,10 +65,7 @@ function SearchResults({
 
 interface ISearchContainerProps {
   filters?: TSearchQueryGroup;
-  onResultClicked?: (
-    document: ISearchDocument,
-    event: React.MouseEvent<HTMLButtonElement>,
-  ) => void;
+  onResultClicked?: (document: ISearchDocument, event: React.MouseEvent<HTMLButtonElement>) => void;
   onSearchingChange?: (isSearching: boolean) => void;
   onTotalResultsChange?: (total: number | null) => void;
   page_token?: string;
@@ -117,14 +96,7 @@ export function SearchContainer({
   const hasSearch = !!query || !!nonEmptyFilters;
 
   const { data, isError, isPending } = useQuery({
-    queryKey: [
-      "searchDocuments",
-      query,
-      nonEmptyFilters,
-      page_token,
-      sort,
-      API_URL,
-    ],
+    queryKey: ["searchDocuments", query, nonEmptyFilters, page_token, sort, API_URL],
     queryFn: ({ signal }) =>
       fetchSearchPrincipalDocuments({
         apiUrl: API_URL,
@@ -164,12 +136,7 @@ export function SearchContainer({
     );
   }
 
-  if (isError)
-    return (
-      <p className="py-10 text-center text-sm text-text-secondary">
-        Something went wrong with your search. Please try again.
-      </p>
-    );
+  if (isError) return <p className="py-10 text-center text-sm text-text-secondary">Something went wrong with your search. Please try again.</p>;
 
   return <SearchResults data={data} onResultClicked={onResultClicked} />;
 }
