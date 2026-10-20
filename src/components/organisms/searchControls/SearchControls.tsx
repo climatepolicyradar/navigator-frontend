@@ -66,8 +66,9 @@ export const SearchControls = ({
 
   // Default sort is dynamic
   const fromFilterParam = queryGroupToFilterPaths(filterParam);
-  // Parsed against the options actually on offer, not every sort value there is: the param is
-  // shared between searches, so one handed a value it cannot show would otherwise label it blank.
+  // Parsed against the options this control actually offers, not every sort value there is. The
+  // param is shared between searches, so a value from another search has to fall back to the
+  // default here; left accepted, it matches no option and the control renders blank.
   const sortValues = useMemo(() => sortOptions.map((option) => option.paramValue) as [TSortValue, ...TSortValue[]], [sortOptions]);
   const [sortParam, setSortParam] = useQueryState<TSortValue>(
     sortParamKey,
