@@ -1,7 +1,8 @@
 # Adding a feature flag
 
 How to put new work behind a PostHog feature flag, from registering the key to
-seeing it switched on in a browser.
+seeing it switched on in a browser -- and how to remove the flag again once the
+work has shipped.
 
 This covers the "Feature flag" column of the features table in the Features
 section of [README.md](../README.md) -- a PostHog flag at 0% rollout, used to
@@ -163,7 +164,74 @@ location.reload();
 and ignores any key not in `FEATURE_FLAG_KEYS`, so the key must already be
 registered in step 2 for this to work.
 
-## Checklist
+## Removing or sunsetting a feature flag
+
+A flag is temporary. Once the work behind it is either live for everyone or
+abandoned, remove it -- stale flags accumulate dead branches and make it unclear
+what is actually running in production.
+
+There are three ways a flag ends.
+
+### Option A: the feature ships to everyone
+
+The flag disappears entirely and the feature becomes unconditional.
+
+1. Delete the key from `FEATURE_FLAG_KEYS` in `src/types/features.ts`.
+2. Run `npm run type-check`. TypeScript will name every remaining reference,
+   because `TFeature` is derived from those arrays -- a `requiredFeature` or a
+   theme config entry using a removed key fails to compile, with the file and
+   line. Work through the list.
+3. Delete the gating itself, not just the key. Remove the `requiredFeature`
+   line, and unwrap any `features.yourFlag && ...` conditionals so the feature
+   renders unconditionally. Delete whatever branch handled the flag being off.
+4. If the key is in `CONFIG_FEATURE_KEYS`, remove it from there and from every
+   theme's `features` object too.
+5. Archive or delete the flag and its early access feature in PostHog, so nobody
+   toggles a key the code no longer reads.
+
+### Option B: the feature is abandoned
+
+Same as Option A, but delete the feature code along with the flag: the page, its
+`routes.json` entry, the components only it used, and its tests. Removing the
+flag while leaving the code behind is how dead pages survive for years.
+
+### Option C: the flag graduates to a theme feature
+
+Use this when a feature should be permanently on for some apps but not others.
+The key moves from `FEATURE_FLAG_KEYS` to `CONFIG_FEATURE_KEYS`, and each theme
+config sets it `true` or `false`. `knowledgeGraph` went through exactly this
+transition and is now config-only.
+
+⚠️ This changes what CI tests. `E2E_TEST_FEATURE_FLAGS=true` force-enables
+everything in `FEATURE_FLAG_KEYS` (except `debug`) and **does not touch**
+`CONFIG_FEATURE_KEYS` -- see `getFeatures()` in `src/utils/features.ts`. A
+feature that E2E tests exercised automatically while it was a flag will only be
+tested afterwards in themes whose config sets it to `true`.
+
+### Before you remove
+
+- Check the flag's rollout in PostHog first. Removing the key from the code
+  makes the feature unconditional for everyone, so confirm that is intended
+  rather than inferring it from the flag being enabled for you.
+- Grep for the key as a bare string. Most references are typed and the compiler
+  will catch them, but strings in tests, Storybook stories, E2E specs and CI
+  workflow files are not.
+- Old `feature_flags` cookies in users' browsers may still name the removed key.
+  That is harmless: `getFeatureFlags()` ignores any key not in
+  `FEATURE_FLAG_KEYS`.
+
+### Removal checklist
+
+- [ ] Confirmed the feature should be on (or gone) for everyone
+- [ ] Key deleted from `FEATURE_FLAG_KEYS`, and `CONFIG_FEATURE_KEYS` if present
+- [ ] Theme config entries removed
+- [ ] `npm run type-check` passes, with all flagged references resolved
+- [ ] Gating conditionals unwrapped, off-branches deleted
+- [ ] Grepped for the key as a string in tests, stories and workflows
+- [ ] Feature code and `routes.json` entry deleted, if abandoning
+- [ ] PostHog flag and early access feature archived
+
+## Adding checklist
 
 - [ ] PostHog flag created at 0% rollout
 - [ ] Key added to `FEATURE_FLAG_KEYS`
