@@ -7,7 +7,7 @@ import { WikiBaseConceptsContext } from "@/context/WikiBaseConceptsContext";
 import useConfig from "@/hooks/useConfig";
 import { TCategory, TCorpusTypeSubCategory, TFamilyConcept, TFamilyMetadata, TGeography, TLabel } from "@/types";
 import { getMostSpecificCourtsFromWikiConcepts } from "@/utils/getMostSpecificCourts";
-import { convertDate } from "@/utils/timedate";
+import { getYear } from "@/utils/timedate";
 
 interface IProps {
   category: TCategory;
@@ -61,7 +61,7 @@ export const FamilyMeta = ({ category, corpus_id, date, geographies, topics, aut
   const configQuery = useConfig();
   const { data: { countries = [], subdivisions = [] } = {} } = configQuery;
 
-  const [year] = convertDate(date);
+  const year = getYear(date);
 
   const familyJurisdictionConcepts = useFamilyJurisdictionConcepts(metadata);
   const mostSpecificCourtName = getMostSpecificCourtsFromWikiConcepts(familyJurisdictionConcepts);
@@ -69,7 +69,7 @@ export const FamilyMeta = ({ category, corpus_id, date, geographies, topics, aut
   return (
     <>
       <Geographies geographyLabels={upgradeGeographies(geographies, countries, subdivisions)} limit={2} />
-      {!isNaN(year) && <span>{`${category === "MCF" ? "Approval FY: " + year : year}`}</span>}
+      {year !== null && <span>{`${category === "MCF" ? "Approval FY: " + year : year}`}</span>}
       {mostSpecificCourtName && <span className="capitalize">{mostSpecificCourtName}</span>}
       {topics && topics.length > 0 && <span className="capitalize">{topics.join(", ")}</span>}
       {author && author.length > 0 && <span className="capitalize">{author.join(", ")}</span>}
