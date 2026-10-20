@@ -5,6 +5,7 @@ import { fetchSearchPrincipalDocuments, getSearchApiStatus } from "@/api/search"
 import Loader from "@/components/Loader";
 import { isFilterGroupEmpty } from "@/components/_experiment/advancedFilters/AdvancedFilters";
 import { DocumentCard } from "@/components/molecules/documentCard/DocumentCard";
+import { useEnvConfig } from "@/context/EnvConfig";
 import { ThemeContext } from "@/context/ThemeContext";
 import { ISearchDocument, ISearchDocumentsResponse, TSearchQueryGroup, TSortValue } from "@/types";
 import { sanitiseSearchQueryGroup } from "@/utils/filters/advancedFilters";
@@ -83,6 +84,7 @@ export function SearchContainer({
   sort,
 }: ISearchContainerProps) {
   const { themeConfig, loaded } = useContext(ThemeContext);
+  const { API_URL } = useEnvConfig();
 
   // Drop placeholder rules (e.g. default empty label row) so date-only filters still fetch.
   const nonEmptyFilters = useMemo(() => {
@@ -94,9 +96,10 @@ export function SearchContainer({
   const hasSearch = !!query || !!nonEmptyFilters;
 
   const { data, isError, isPending } = useQuery({
-    queryKey: ["searchDocuments", query, nonEmptyFilters, page_token, sort],
+    queryKey: ["searchDocuments", query, nonEmptyFilters, page_token, sort, API_URL],
     queryFn: ({ signal }) =>
       fetchSearchPrincipalDocuments({
+        apiUrl: API_URL,
         query,
         page_size: SEARCH_RESULTS_PAGE_SIZE.toString(),
         page_token,

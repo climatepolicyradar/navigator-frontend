@@ -130,7 +130,7 @@ jobs:
         if: steps.decide.outputs.action == 'update'
         uses: pulumi/actions@v7
 
-      - name: Look up next_public_api_url override
+      - name: Look up api_url override
         id: override
         if: steps.decide.outputs.action == 'update'
         env:
@@ -157,11 +157,11 @@ jobs:
           BRANCH: ${{ github.head_ref }}
           OVERRIDE_URL: ${{ steps.override.outputs.url }}
         run: |
-          # NEXT_PUBLIC_API_URL has to reach the Pulumi program through
+          # API_URL has to reach the Pulumi program through
           # /PULUMI_ENV, a file the deployment executor sources before running
           # `pulumi update`. Passing it as operationContext.environmentVariables
           # is accepted with a 202 and then silently discarded, so the override
-          # never reaches the Docker build arg that bakes it into the bundle.
+          # never reaches the task definition Pulumi builds.
           #
           # The saved settings are read and re-sent explicitly because
           # `inheritSettings` replaces operationContext wholesale rather than
@@ -173,7 +173,7 @@ jobs:
 
           if [ -n "${OVERRIDE_URL}" ]; then
             extra_cmds=$(jq -n --arg url "${OVERRIDE_URL}" \
-              '["echo \"NEXT_PUBLIC_API_URL=\($url)\" >> /PULUMI_ENV"]')
+              '["echo \"API_URL=\($url)\" >> /PULUMI_ENV"]')
           else
             extra_cmds='[]'
           fi
