@@ -4,12 +4,12 @@ on:
     inputs:
       environment:
         description: Environment that was deployed (staging or production), its SLACK_UPDATES_CHANNEL_WEBHOOK_URL secret is used
-        required: true
         type: string
+        required: true
       heading:
-        description: First line of the Slack message
-        required: true
+        description: Text of the Slack message
         type: string
+        required: true
 
 permissions:
   contents: read
@@ -19,39 +19,10 @@ jobs:
     name: Notify Slack
     runs-on: ubuntu-latest
     environment: ${{ inputs.environment }}
-    env:
-      LOG_FORMAT: "• <https://github.com/${{ github.repository }}/commit/%H|%h> %s - %an"
     steps:
-      - uses: actions/checkout@v7
-        with:
-          fetch-depth: 0
-
-      - name: List commits since previous push
-        if: github.event.before
-        run: git log --format="${LOG_FORMAT}" "${BEFORE}..${GITHUB_SHA}" > commits.txt
-        env:
-          BEFORE: ${{ github.event.before }}
-
-      - name: List recent commits
-        if: ${{ !github.event.before }}
-        run: git log --format="${LOG_FORMAT}" -5 "${GITHUB_SHA}" > commits.txt
-
-      - name: Compose Slack message
-        env:
-          HEADING: ${{ inputs.heading }}
-          RUN_URL: https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}
-        run: |
-          jq -n \
-            --arg url "${RUN_URL}" \
-            --arg heading "${HEADING}" \
-            --rawfile commits commits.txt \
-            '{
-              text: "❌ \($heading) (<\($url)|logs>)\n\($commits)",
-              mrkdwn: true
-            }' > slack-payload.json
-
       - uses: slackapi/slack-github-action@v4.0.0
         with:
-          webhook-type: incoming-webhook
           webhook: ${{ secrets.SLACK_UPDATES_CHANNEL_WEBHOOK_URL }}
-          payload-file-path: slack-payload.json
+          webhook-type: incoming-webhook
+          payload: |
+            text: "❌ ${{ inputs.heading }} (<https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}|logs>)"
