@@ -1,6 +1,9 @@
 {
   "name": "navigator-frontend",
   "private": true,
+  "engines": {
+    "node": ">=22.12.0"
+  },
   "scripts": {
     "dev": "next",
     "build": "next build",
