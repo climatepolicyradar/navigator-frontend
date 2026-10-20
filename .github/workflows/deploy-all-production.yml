@@ -73,9 +73,6 @@ jobs:
           SHA_TAG=$(git rev-parse HEAD)
           docker build --build-arg THEME=${THEME} --build-arg NEXT_STATIC_ENABLED=true --build-arg NEXT_PUBLIC_FARO_ENVIRONMENT=production --build-arg GITHUB_SHA=$(git rev-parse HEAD) \
             --build-arg NEXT_PUBLIC_FARO_URL=${{ steps.faro.outputs.collector_endpoint }} \
-            --build-arg FARO_SOURCEMAP_API_KEY=${{ secrets.FARO_SOURCEMAP_API_KEY }} \
-            --build-arg FARO_SOURCEMAP_APP_ID=${{ steps.faro-sourcemap.outputs.app_id }} \
-            --build-arg FARO_SOURCEMAP_STACK_ID=${{ secrets.FARO_SOURCEMAP_STACK_ID }} \
             -t $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG -t $ECR_REGISTRY/$ECR_REPOSITORY:$SHA_TAG .
           docker push $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
           docker push $ECR_REGISTRY/$ECR_REPOSITORY:$SHA_TAG
@@ -99,6 +96,12 @@ jobs:
           # cp nests under ./next-static/static when the target already exists,
           # which would publish every asset one level too deep.
           docker cp "$CONTAINER_ID":/app/.next/static/. ./next-static
+          # Source maps ride along in the image at /app/sourcemaps (outside
+          # .next/static, so never served). Pulled out here for the Faro
+          # upload after the deploy; ./next-sourcemaps is not synced to S3.
+          # @related: FUS-761
+          mkdir -p ./next-sourcemaps
+          docker cp "$CONTAINER_ID":/app/sourcemaps/. ./next-sourcemaps
           docker rm "$CONTAINER_ID"
           if [ -z "$(find ./next-static -type f -print -quit)" ]; then
             echo "::error::No static assets extracted from $IMAGE; refusing to deploy"
@@ -164,3 +167,16 @@ jobs:
         run: >
           .github/workflows/scripts/deploy_ecs_express.sh
           frontend-production ${{ matrix.theme }}-frontend-production ${{ steps.build-image.outputs.image }}
+
+      # Runs last and never blocks the release: source maps only make Faro
+      # stack traces readable, so a Grafana outage degrades observability
+      # rather than stopping a deploy (FUS-761).
+      - name: Upload source maps to Faro
+        continue-on-error: true
+        uses: ./.github/actions/upload-source-maps
+        with:
+          theme: ${{ matrix.theme }}
+          bundle-id: ${{ steps.build-image.outputs.sha_tag }}
+          api-key: ${{ secrets.FARO_SOURCEMAP_API_KEY }}
+          app-id: ${{ steps.faro-sourcemap.outputs.app_id }}
+          stack-id: ${{ secrets.FARO_SOURCEMAP_STACK_ID }}
