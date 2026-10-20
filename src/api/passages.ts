@@ -2,6 +2,7 @@
 // native fetch, the API gateway base URL passed in by the caller, and throwing
 // on a non-2xx so react-query can surface the error.
 
+import { SORT_PARAMS_LOOKUP } from "@/constants/sort";
 import { ISearchPassagesParams, ISearchPassagesResponse, TSearchQueryGroup } from "@/types";
 
 const searchPassagesUrl = (apiUrl: string): string => `${apiUrl.replace(/\/$/, "")}/search/passages`;
@@ -56,8 +57,8 @@ export const fetchSearchPassages = async ({
   url.searchParams.set("filters", JSON.stringify(configurePassagesFilters(documents, principalId, filters)));
   if (pageSize !== undefined) url.searchParams.set("page_size", String(pageSize));
   if (pageToken !== undefined) url.searchParams.set("page_token", String(pageToken));
-  const sortKey = sort ?? "relevance desc";
-  url.searchParams.set("order_by", sortKey);
+  const sortKey = sort ?? "relevance";
+  url.searchParams.set("order_by", SORT_PARAMS_LOOKUP[sortKey]);
 
   const res = await fetch(url, { signal });
   if (!res.ok) throw new Error(`Passage search API error: ${res.status}`);

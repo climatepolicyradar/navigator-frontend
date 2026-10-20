@@ -1,24 +1,36 @@
 import { useQuery } from "@tanstack/react-query";
 import React, { Fragment, useContext, useEffect, useMemo } from "react";
 
-import { fetchSearchPrincipalDocuments, getSearchApiStatus, SearchDocument, SearchDocumentsResponse, SearchDocumentsSortKey } from "@/api/search";
+import {
+  fetchSearchPrincipalDocuments,
+  getSearchApiStatus,
+} from "@/api/search";
 import Loader from "@/components/Loader";
+import { isFilterGroupEmpty } from "@/components/_experiment/advancedFilters/AdvancedFilters";
 import { DocumentCard } from "@/components/molecules/documentCard/DocumentCard";
 import { useEnvConfig } from "@/context/EnvConfig";
 import { ThemeContext } from "@/context/ThemeContext";
-import { TSearchQueryGroup } from "@/types";
+import {
+  ISearchDocument,
+  ISearchDocumentsResponse,
+  TSearchQueryGroup,
+  TSortValue,
+} from "@/types";
 import { sanitiseSearchQueryGroup } from "@/utils/filters/advancedFilters";
-
-import { isFilterGroupEmpty } from "../advancedFilters/AdvancedFilters";
 
 export const SEARCH_RESULTS_PAGE_SIZE = 10;
 
 // Principal = Family in old model
-const isPrincipal = (result: SearchDocument): boolean => {
-  return result.labels.some((label) => label.type === "status" && label.value.value === "Principal");
+const isPrincipal = (result: ISearchDocument): boolean => {
+  return result.labels.some(
+    (label) => label.type === "status" && label.value.value === "Principal",
+  );
 };
 
-export const shouldRetrySearch = (failureCount: number, error: unknown): boolean => {
+export const shouldRetrySearch = (
+  failureCount: number,
+  error: unknown,
+): boolean => {
   return (getSearchApiStatus(error) ?? 500) >= 500 && failureCount < 3;
 };
 
@@ -26,8 +38,11 @@ function SearchResults({
   data,
   onResultClicked,
 }: {
-  data: SearchDocumentsResponse;
-  onResultClicked?: (document: SearchDocument, event: React.MouseEvent<HTMLButtonElement>) => void;
+  data: ISearchDocumentsResponse;
+  onResultClicked?: (
+    document: ISearchDocument,
+    event: React.MouseEvent<HTMLButtonElement>,
+  ) => void;
 }) {
   // Number of results on the pages before this one
   const positionOffset = (data.page - 1) * data.page_size;
@@ -53,7 +68,9 @@ function SearchResults({
             )}
             {/* TODO: remove non-principal results */}
             {!isPrincipal(result) && (
-              <li className={`flex gap-2 border border-transparent rounded-md py-2 pr-6 highlights`}>
+              <li
+                className={`flex gap-2 border border-transparent rounded-md py-2 pr-6 highlights`}
+              >
                 <p>Shouldn't be showing a non-principle doc here</p>
               </li>
             )}
@@ -64,26 +81,32 @@ function SearchResults({
   );
 }
 
-export function SearchContainer({
-  query,
-  filters,
-  page_token,
-  sort,
-  onTotalResultsChange,
-  onSearchingChange,
-  onResultClicked,
-}: {
-  selectedLabels?: string[];
-  query?: string;
+interface ISearchContainerProps {
   filters?: TSearchQueryGroup;
-  page_token?: string;
-  sort?: SearchDocumentsSortKey;
-  onTotalResultsChange?: (total: number | null) => void;
+  onResultClicked?: (
+    document: ISearchDocument,
+    event: React.MouseEvent<HTMLButtonElement>,
+  ) => void;
   onSearchingChange?: (isSearching: boolean) => void;
-  onResultClicked?: (document: SearchDocument, event: React.MouseEvent<HTMLButtonElement>) => void;
-}) {
+  onTotalResultsChange?: (total: number | null) => void;
+  page_token?: string;
+  query?: string;
+  selectedLabels?: string[];
+  sort: TSortValue;
+}
+
+export function SearchContainer({
+  filters,
+  onResultClicked,
+  onSearchingChange,
+  onTotalResultsChange,
+  page_token,
+  query,
+  sort,
+}: ISearchContainerProps) {
   const { themeConfig, loaded } = useContext(ThemeContext);
   const { API_URL } = useEnvConfig();
+
   // Drop placeholder rules (e.g. default empty label row) so date-only filters still fetch.
   const nonEmptyFilters = useMemo(() => {
     if (!filters) return undefined;
@@ -94,7 +117,14 @@ export function SearchContainer({
   const hasSearch = !!query || !!nonEmptyFilters;
 
   const { data, isError, isPending } = useQuery({
-    queryKey: ["searchDocuments", query, nonEmptyFilters, page_token, sort, API_URL],
+    queryKey: [
+      "searchDocuments",
+      query,
+      nonEmptyFilters,
+      page_token,
+      sort,
+      API_URL,
+    ],
     queryFn: ({ signal }) =>
       fetchSearchPrincipalDocuments({
         apiUrl: API_URL,
@@ -134,7 +164,12 @@ export function SearchContainer({
     );
   }
 
-  if (isError) return <p className="py-10 text-center text-sm text-text-secondary">Something went wrong with your search. Please try again.</p>;
+  if (isError)
+    return (
+      <p className="py-10 text-center text-sm text-text-secondary">
+        Something went wrong with your search. Please try again.
+      </p>
+    );
 
   return <SearchResults data={data} onResultClicked={onResultClicked} />;
 }

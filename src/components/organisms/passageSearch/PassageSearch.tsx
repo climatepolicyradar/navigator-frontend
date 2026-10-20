@@ -1,8 +1,21 @@
 import { useInfiniteQuery } from "@tanstack/react-query";
 import { useRouter } from "next/router";
-import { parseAsArrayOf, parseAsJson, parseAsString, useQueryState } from "nuqs";
+import {
+  parseAsArrayOf,
+  parseAsString,
+  parseAsStringLiteral,
+  useQueryState,
+} from "nuqs";
 import { usePostHog } from "posthog-js/react";
-import { memo, useCallback, useContext, useEffect, useMemo, useRef, useState } from "react";
+import {
+  memo,
+  useCallback,
+  useContext,
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+} from "react";
 
 import { fetchSearchPassages } from "@/api/passages";
 import EmbeddedPDF from "@/components/EmbeddedPDF";
@@ -10,8 +23,14 @@ import Loader from "@/components/Loader";
 import { Button } from "@/components/atoms/button/Button";
 import { FiveColumns } from "@/components/atoms/columns/FiveColumns";
 import { EmptyDocument } from "@/components/documents/EmptyDocument";
-import { DocumentsFilter, TFilterableDocument } from "@/components/molecules/documentsFilter/DocumentsFilter";
-import { PassageBlock, TPassage as TPassageBlock } from "@/components/molecules/passageBlock/PassageBlock";
+import {
+  DocumentsFilter,
+  TFilterableDocument,
+} from "@/components/molecules/documentsFilter/DocumentsFilter";
+import {
+  PassageBlock,
+  TPassage as TPassageBlock,
+} from "@/components/molecules/passageBlock/PassageBlock";
 import { SearchControls } from "@/components/organisms/searchControls/SearchControls";
 import { ZeroStatePassages } from "@/components/organisms/zeroStates/ZeroStatePassages";
 import { ID_SEPARATOR } from "@/constants/chars";
@@ -22,10 +41,22 @@ import { useEnvConfig } from "@/context/EnvConfig";
 import { posthogEventName } from "@/context/PostHogProvider";
 import { SearchLevelContext } from "@/context/SearchLevelContext";
 import { loadFilteredLabels } from "@/hooks/useLabelSearch";
-import { FilterGroupSchema } from "@/schemas";
-import { ISearchPassage, TFamilyDocumentPublic, TPrincipalDrawerTab, TSearchLabel, TSearchQueryGroup, TTopic } from "@/types";
+import {
+  ISearchPassage,
+  SORT_VALUES,
+  TFamilyDocumentPublic,
+  TPrincipalDrawerTab,
+  TSearchLabel,
+  TSortValue,
+  TTopic,
+} from "@/types";
+import { parseAsDeflatedFilters } from "@/utils/filters/deflate";
 import { queryGroupToFilterPaths } from "@/utils/search/queryGroupToFilterPaths";
-import { conceptFiltersOnly, flattenLevelToBaseQuery, levelParamKeys } from "@/utils/search/searchLevels";
+import {
+  conceptFiltersOnly,
+  flattenLevelToBaseQuery,
+  levelParamKeys,
+} from "@/utils/search/searchLevels";
 
 export const TOPIC_HIGHLIGHT_COLOURS = [
   "bg-cyan-200 text-text-primary",
@@ -51,7 +82,10 @@ type TProps = {
 // The passages endpoint and the PassageBlock molecule name their fields differently. The
 // document title is not on the passage, so it is resolved from the scope and denormalised
 // on here - results can span several documents and need naming.
-const toPassageBlock = (passage: ISearchPassage, documentTitle: string): TPassageBlock => ({
+const toPassageBlock = (
+  passage: ISearchPassage,
+  documentTitle: string,
+): TPassageBlock => ({
   boldings: passage.boldings,
   content: passage.text,
   document_id: passage.document_id,
@@ -65,7 +99,12 @@ const toPassageBlock = (passage: ISearchPassage, documentTitle: string): TPassag
 
 // Colours are assigned from the selected topics rather than per passage, so a topic keeps one colour across every result
 const getTopicColours = (topicIds: string[]) =>
-  new Map(topicIds.map((id, index) => [id, TOPIC_HIGHLIGHT_COLOURS[index % TOPIC_HIGHLIGHT_COLOURS.length]]));
+  new Map(
+    topicIds.map((id, index) => [
+      id,
+      TOPIC_HIGHLIGHT_COLOURS[index % TOPIC_HIGHLIGHT_COLOURS.length],
+    ]),
+  );
 
 type TPassageResultsProps = {
   onDocumentLinkClick?: (passage: TPassageBlock) => void;
@@ -73,27 +112,43 @@ type TPassageResultsProps = {
   passages: TPassageBlock[];
   topicColours?: Map<string, string>;
   showDocument: boolean;
-  sort?: string;
+  sort?: TSortValue;
   total?: number;
 };
 
 // Memoised so that typing in the search input does not re-render every result card.
-const PassageResults = memo(({ onDocumentLinkClick, onPassageClick, passages, topicColours, showDocument, sort, total }: TPassageResultsProps) => (
-  <ul className="flex flex-col gap-4" id="passage-matches" aria-label="Passage matches">
-    {passages.map((passage, passageIndex) => (
-      <li key={passage.id}>
-        <PassageBlock
-          passage={passage}
-          analytics={{ position: passageIndex + 1, sort, total }}
-          topicColours={topicColours}
-          showDocument={showDocument}
-          onDocumentLinkClick={onDocumentLinkClick && (() => onDocumentLinkClick(passage))}
-          onPassageClick={onPassageClick}
-        />
-      </li>
-    ))}
-  </ul>
-));
+const PassageResults = memo(
+  ({
+    onDocumentLinkClick,
+    onPassageClick,
+    passages,
+    topicColours,
+    showDocument,
+    sort,
+    total,
+  }: TPassageResultsProps) => (
+    <ul
+      className="flex flex-col gap-4"
+      id="passage-matches"
+      aria-label="Passage matches"
+    >
+      {passages.map((passage, passageIndex) => (
+        <li key={passage.id}>
+          <PassageBlock
+            passage={passage}
+            analytics={{ position: passageIndex + 1, sort, total }}
+            topicColours={topicColours}
+            showDocument={showDocument}
+            onDocumentLinkClick={
+              onDocumentLinkClick && (() => onDocumentLinkClick(passage))
+            }
+            onPassageClick={onPassageClick}
+          />
+        </li>
+      ))}
+    </ul>
+  ),
+);
 PassageResults.displayName = "PassageResults";
 
 type TDocumentPreviewProps = {
@@ -106,28 +161,62 @@ type TDocumentPreviewProps = {
 // `startingPageNumber` is deliberately not passed: it sits in EmbeddedPDF's effect
 // dependencies, so feeding the current page back in would re-register the passages on
 // every passage click. The hook already leaves the reader where it is on a refresh.
-const DocumentPreview = memo(({ document, pageNumber, passages }: TDocumentPreviewProps) => (
-  <EmbeddedPDF document={document} documentPassageMatches={passages} pageNumber={pageNumber} />
-));
+const DocumentPreview = memo(
+  ({ document, pageNumber, passages }: TDocumentPreviewProps) => (
+    <EmbeddedPDF
+      document={document}
+      documentPassageMatches={passages}
+      pageNumber={pageNumber}
+    />
+  ),
+);
 DocumentPreview.displayName = "DocumentPreview";
 
-export const PassageSearch = ({ changeTab, concepts, documents, documentsLabel, enablePreview = false, onSearch, principalId, subject }: TProps) => {
+export const PassageSearch = ({
+  changeTab,
+  concepts,
+  documents,
+  documentsLabel,
+  enablePreview = false,
+  onSearch,
+  principalId,
+  subject,
+}: TProps) => {
   const router = useRouter();
   const posthog = usePostHog();
   const { API_URL } = useEnvConfig();
   const searchIndex = useRef(0);
   const searchLevel = useContext(SearchLevelContext);
   const paramKeys = useMemo(() => levelParamKeys(searchLevel), [searchLevel]);
-  const [queryParam, setQueryParam] = useQueryState(paramKeys.query, parseAsString.withDefault(""));
-  const [filterParam, setFilterParams] = useQueryState(paramKeys.filters, parseAsJson<TSearchQueryGroup>(FilterGroupSchema));
-  const [sort] = useQueryState(paramKeys.sort, parseAsString.withDefault(PASSAGE_SORT_OPTIONS[0].paramValue));
-  const [documentsParam, setDocumentsParam] = useQueryState(paramKeys.documents, parseAsArrayOf(parseAsString).withDefault([]));
+  const [queryParam, setQueryParam] = useQueryState(
+    paramKeys.query,
+    parseAsString.withDefault(""),
+  );
+  const [filterParam, setFilterParams] = useQueryState(
+    paramKeys.filters,
+    parseAsDeflatedFilters,
+  );
+  const [sortParam] = useQueryState<TSortValue>(
+    paramKeys.sort,
+    parseAsStringLiteral(SORT_VALUES)
+      .withDefault(PASSAGE_SORT_OPTIONS[0].paramValue)
+      .withOptions({ clearOnDefault: false }),
+  );
+  const [documentsParam, setDocumentsParam] = useQueryState(
+    paramKeys.documents,
+    parseAsArrayOf(parseAsString).withDefault([]),
+  );
   const [pageNumber, setPageNumber] = useState<number | null>(null);
-  const [availableConcepts, setAvailableConcepts] = useState<TSearchLabel[]>([]);
+  const [availableConcepts, setAvailableConcepts] = useState<TSearchLabel[]>(
+    [],
+  );
 
   // Only concept filters are offered here, and a level is seeded with only those, so anything else
   // in the parameter came from a hand-edited or shared URL and is not this search's to apply.
-  const conceptFilterParam = useMemo(() => conceptFiltersOnly(filterParam), [filterParam]);
+  const conceptFilterParam = useMemo(
+    () => conceptFiltersOnly(filterParam),
+    [filterParam],
+  );
 
   // Arm the jump to the first result when changed:
   // - the search query
@@ -136,10 +225,18 @@ export const PassageSearch = ({ changeTab, concepts, documents, documentsLabel, 
   // Adjusting during render rather than in an effect avoids a second render pass with a stale value.
   // The filter group is compared serialised, so the check does not rest on the parser returning a stable object.
   const filterKey = JSON.stringify(conceptFilterParam);
-  const [previousSearch, setPreviousSearch] = useState({ queryParam, filterKey, sort });
+  const [previousSearch, setPreviousSearch] = useState({
+    queryParam,
+    filterKey,
+    sort: sortParam,
+  });
   const [hasNavigatedForSearch, setHasNavigatedForSearch] = useState(false);
-  if (queryParam !== previousSearch.queryParam || filterKey !== previousSearch.filterKey || sort !== previousSearch.sort) {
-    setPreviousSearch({ queryParam, filterKey, sort });
+  if (
+    queryParam !== previousSearch.queryParam ||
+    filterKey !== previousSearch.filterKey ||
+    sortParam !== previousSearch.sort
+  ) {
+    setPreviousSearch({ queryParam, filterKey, sort: sortParam });
     setHasNavigatedForSearch(false);
   }
 
@@ -156,12 +253,20 @@ export const PassageSearch = ({ changeTab, concepts, documents, documentsLabel, 
     }).then(setAvailableConcepts);
   }, [API_URL]);
 
-  const documentsById = useMemo(() => new Map(documents.map((document) => [document.import_id, document])), [documents]);
-  const allDocumentIds = useMemo(() => documents.map((document) => document.import_id), [documents]);
+  const documentsById = useMemo(
+    () => new Map(documents.map((document) => [document.import_id, document])),
+    [documents],
+  );
+  const allDocumentIds = useMemo(
+    () => documents.map((document) => document.import_id),
+    [documents],
+  );
 
   // An absent or stale parameter means every document, which is also the starting state.
   const selectedDocumentIds = useMemo(() => {
-    const known = documentsParam.filter((importId) => documentsById.has(importId));
+    const known = documentsParam.filter((importId) =>
+      documentsById.has(importId),
+    );
     return known.length > 0 ? known : allDocumentIds;
   }, [documentsParam, documentsById, allDocumentIds]);
 
@@ -169,14 +274,33 @@ export const PassageSearch = ({ changeTab, concepts, documents, documentsLabel, 
   // list is empty for a principal whose documents are all deleted, and an empty scope group is
   // dropped by the API, which would widen the search to the whole corpus. Narrowing to a subset
   // still enumerates ids, as that is the only way to express it.
-  const isNarrowedToSubset = selectedDocumentIds.length > 0 && selectedDocumentIds.length < allDocumentIds.length;
-  const scopedDocumentIds = principalId && !isNarrowedToSubset ? [] : selectedDocumentIds;
+  const isNarrowedToSubset =
+    selectedDocumentIds.length > 0 &&
+    selectedDocumentIds.length < allDocumentIds.length;
+  const scopedDocumentIds =
+    principalId && !isNarrowedToSubset ? [] : selectedDocumentIds;
   const hasScope = scopedDocumentIds.length > 0 || !!principalId;
 
   const hasSearch = (queryParam.length > 0 || !!conceptFilterParam) && hasScope;
 
-  const { data, isError, isFetching, isPending, fetchNextPage, hasNextPage, isFetchingNextPage } = useInfiniteQuery({
-    queryKey: ["passages", scopedDocumentIds, principalId, queryParam, conceptFilterParam, sort, API_URL],
+  const {
+    data,
+    isError,
+    isFetching,
+    isPending,
+    fetchNextPage,
+    hasNextPage,
+    isFetchingNextPage,
+  } = useInfiniteQuery({
+    queryKey: [
+      "passages",
+      scopedDocumentIds,
+      principalId,
+      queryParam,
+      conceptFilterParam,
+      sortParam,
+      API_URL,
+    ],
     queryFn: async ({ pageParam, signal }) => {
       const response = await fetchSearchPassages({
         apiUrl: API_URL,
@@ -185,7 +309,7 @@ export const PassageSearch = ({ changeTab, concepts, documents, documentsLabel, 
         principalId,
         filters: conceptFilterParam,
         pageSize: RESULTS_PER_PAGE,
-        sort,
+        sort: sortParam,
         pageToken: pageParam,
         signal,
       });
@@ -208,7 +332,10 @@ export const PassageSearch = ({ changeTab, concepts, documents, documentsLabel, 
     // The API leaves `next_page` and `total_pages` unpopulated, so there is no cursor to
     // follow. Paging is driven by the running result count against the reported total.
     getNextPageParam: (lastPage, allPages) => {
-      const loaded = allPages.reduce((count, page) => count + page.results.length, 0);
+      const loaded = allPages.reduce(
+        (count, page) => count + page.results.length,
+        0,
+      );
       const total = lastPage.total_size ?? 0;
       // A page that comes back empty also ends paging, otherwise an over-reported total
       // would leave the button fetching nothing forever.
@@ -224,20 +351,39 @@ export const PassageSearch = ({ changeTab, concepts, documents, documentsLabel, 
   // Enabling the preview for a multi-document scope would need this resolved from the
   // clicked passage instead of taken from the scope.
   const previewDocument = documents[0];
-  const canPreview = enablePreview && !!previewDocument?.cdn_object && previewDocument.cdn_object.toLowerCase().endsWith(".pdf");
+  const canPreview =
+    enablePreview &&
+    !!previewDocument?.cdn_object &&
+    previewDocument.cdn_object.toLowerCase().endsWith(".pdf");
 
   const filterableDocuments: TFilterableDocument[] = useMemo(
-    () => documents.map((document) => ({ importId: document.import_id, title: document.title })),
-    [documents]
+    () =>
+      documents.map((document) => ({
+        importId: document.import_id,
+        title: document.title,
+      })),
+    [documents],
   );
 
   const totalMatches = hasSearch ? (data?.pages[0]?.total_size ?? 0) : 0;
 
-  const searchPassages = useMemo(() => (hasSearch ? (data?.pages ?? []).flatMap((page) => page.results) : []), [data, hasSearch]);
+  const searchPassages = useMemo(
+    () =>
+      hasSearch ? (data?.pages ?? []).flatMap((page) => page.results) : [],
+    [data, hasSearch],
+  );
 
   const passages = useMemo(
-    () => searchPassages.map((passage) => toPassageBlock(passage, documentsById.get(passage.document_id)?.title ?? documents[0]?.title ?? "")),
-    [searchPassages, documentsById, documents]
+    () =>
+      searchPassages.map((passage) =>
+        toPassageBlock(
+          passage,
+          documentsById.get(passage.document_id)?.title ??
+            documents[0]?.title ??
+            "",
+        ),
+      ),
+    [searchPassages, documentsById, documents],
   );
 
   // Notify the parent of the number of results
@@ -246,11 +392,20 @@ export const PassageSearch = ({ changeTab, concepts, documents, documentsLabel, 
   }, [totalMatches, onSearch]);
 
   // Avoid cases where the result state flashes before the request has resolved
-  const isLoading = hasSearch && !isFetchingNextPage && passages.length === 0 && (isPending || isFetching);
+  const isLoading =
+    hasSearch &&
+    !isFetchingNextPage &&
+    passages.length === 0 &&
+    (isPending || isFetching);
 
   // Navigate to the first match once a search returns
   const firstResultPage = passages[0]?.pages?.[0]?.page_number;
-  if (enablePreview && hasSearch && !hasNavigatedForSearch && firstResultPage !== undefined) {
+  if (
+    enablePreview &&
+    hasSearch &&
+    !hasNavigatedForSearch &&
+    firstResultPage !== undefined
+  ) {
     setHasNavigatedForSearch(true);
     // `page_number` is 0-indexed in the passage model; the PDF viewer is 1-indexed.
     setPageNumber(firstResultPage + 1);
@@ -258,14 +413,29 @@ export const PassageSearch = ({ changeTab, concepts, documents, documentsLabel, 
 
   // Get the selected topic IDs from the filters, each with its highlight colour
   const topicColours = useMemo(
-    () => getTopicColours(filterParam ? [...new Set(queryGroupToFilterPaths(filterParam).filterPathLabels.map(([label]) => label.id))] : []),
-    [filterParam]
+    () =>
+      getTopicColours(
+        filterParam
+          ? [
+              ...new Set(
+                queryGroupToFilterPaths(filterParam).filterPathLabels.map(
+                  ([label]) => label.id,
+                ),
+              ),
+            ]
+          : [],
+      ),
+    [filterParam],
   );
 
   // Only offer concept filters the scope actually has passages for
   const conceptFilters = useMemo(() => {
     const rankedIds = new Set(concepts.map((concept) => concept.wikibase_id));
-    return availableConcepts.filter((label) => label.type === "concept" && rankedIds.has(label.id.split(ID_SEPARATOR)[1]));
+    return availableConcepts.filter(
+      (label) =>
+        label.type === "concept" &&
+        rankedIds.has(label.id.split(ID_SEPARATOR)[1]),
+    );
   }, [availableConcepts, concepts]);
 
   const handleClear = () => {
@@ -275,7 +445,9 @@ export const PassageSearch = ({ changeTab, concepts, documents, documentsLabel, 
 
   const handleSelectionChange = (nextSelectedIds: string[]) => {
     // Every document selected is the default, so it is left out of the URL.
-    setDocumentsParam(nextSelectedIds.length === allDocumentIds.length ? null : nextSelectedIds);
+    setDocumentsParam(
+      nextSelectedIds.length === allDocumentIds.length ? null : nextSelectedIds,
+    );
   };
 
   // We have to run some logic because passages don't contain the document slug.
@@ -285,12 +457,18 @@ export const PassageSearch = ({ changeTab, concepts, documents, documentsLabel, 
       const slug = documentsById.get(passage.document_id)?.slug;
       if (!slug) return null;
 
-      const baseQuery = flattenLevelToBaseQuery({ documents: null, filters: conceptFilterParam, query: queryParam });
-      const query = Object.fromEntries(Object.entries(baseQuery).filter(([, value]) => value !== null)) as Record<string, string>;
+      const baseQuery = flattenLevelToBaseQuery({
+        documents: null,
+        filters: conceptFilterParam,
+        query: queryParam,
+      });
+      const query = Object.fromEntries(
+        Object.entries(baseQuery).filter(([, value]) => value !== null),
+      ) as Record<string, string>;
 
       return { pathname: `/documents/${slug}`, query };
     },
-    [conceptFilterParam, documentsById, queryParam]
+    [conceptFilterParam, documentsById, queryParam],
   );
 
   const handleDocumentLinkClick = useCallback(
@@ -299,9 +477,12 @@ export const PassageSearch = ({ changeTab, concepts, documents, documentsLabel, 
       if (!href) return;
 
       const search = new URLSearchParams(href.query).toString();
-      window.open(search ? `${href.pathname}?${search}` : href.pathname, "_blank");
+      window.open(
+        search ? `${href.pathname}?${search}` : href.pathname,
+        "_blank",
+      );
     },
-    [documentHref]
+    [documentHref],
   );
 
   const handlePassageClick = useCallback(
@@ -317,7 +498,7 @@ export const PassageSearch = ({ changeTab, concepts, documents, documentsLabel, 
       const href = documentHref(passage);
       if (href) router.push(href);
     },
-    [canPreview, documentHref, enablePreview, router]
+    [canPreview, documentHref, enablePreview, router],
   );
 
   const controls = (
@@ -342,8 +523,13 @@ export const PassageSearch = ({ changeTab, concepts, documents, documentsLabel, 
       sortOptions={PASSAGE_SORT_OPTIONS}
       sortParamKey={paramKeys.sort}
       resultsNode={
-        <p className="text-sm text-text-secondary text-right" aria-live="polite">
-          {isLoading ? "Searching…" : `${totalMatches} matching ${totalMatches === 1 ? "passage" : "passages"}`}
+        <p
+          className="text-sm text-text-secondary text-right"
+          aria-live="polite"
+        >
+          {isLoading
+            ? "Searching…"
+            : `${totalMatches} matching ${totalMatches === 1 ? "passage" : "passages"}`}
         </p>
       }
     />
@@ -357,22 +543,30 @@ export const PassageSearch = ({ changeTab, concepts, documents, documentsLabel, 
         </div>
       )}
       {!isLoading && isError && (
-        <p className="py-10 text-center text-sm text-text-secondary">Something went wrong with your search. Please try again.</p>
+        <p className="py-10 text-center text-sm text-text-secondary">
+          Something went wrong with your search. Please try again.
+        </p>
       )}
       {!isLoading && !isError && passages.length > 0 && (
         <>
           <PassageResults
             passages={passages}
             showDocument={!enablePreview}
-            sort={sort}
+            sort={sortParam}
             total={totalMatches}
-            onDocumentLinkClick={enablePreview ? undefined : handleDocumentLinkClick}
+            onDocumentLinkClick={
+              enablePreview ? undefined : handleDocumentLinkClick
+            }
             onPassageClick={handlePassageClick}
             topicColours={topicColours}
           />
           {hasNextPage && (
             <div className="flex flex-col items-center gap-2 pt-4">
-              <Button variant="outlined" onClick={() => fetchNextPage()} disabled={isFetchingNextPage}>
+              <Button
+                variant="outlined"
+                onClick={() => fetchNextPage()}
+                disabled={isFetchingNextPage}
+              >
                 {isFetchingNextPage ? "Loading…" : "Load more"}
               </Button>
               <p className="text-sm text-text-secondary" aria-live="polite">
@@ -398,7 +592,9 @@ export const PassageSearch = ({ changeTab, concepts, documents, documentsLabel, 
     return (
       <section className="flex flex-col gap-4" id="passage-search">
         <FiveColumns>
-          <div className="col-start-1 -col-end-1 py-4 flex flex-col gap-y-4">{controls}</div>
+          <div className="col-start-1 -col-end-1 py-4 flex flex-col gap-y-4">
+            {controls}
+          </div>
           <div className="col-start-1 -col-end-1">{results}</div>
         </FiveColumns>
       </section>
@@ -407,7 +603,9 @@ export const PassageSearch = ({ changeTab, concepts, documents, documentsLabel, 
   return (
     <section className="flex-1 flex flex-col" id="passage-search">
       <FiveColumns>
-        <div className="col-start-1 -col-end-1 py-4 flex flex-col gap-y-4">{controls}</div>
+        <div className="col-start-1 -col-end-1 py-4 flex flex-col gap-y-4">
+          {controls}
+        </div>
       </FiveColumns>
 
       <div className="flex flex-col border-t border-border-light lg:flex-row lg:h-[80vh]">
@@ -418,8 +616,19 @@ export const PassageSearch = ({ changeTab, concepts, documents, documentsLabel, 
           {results}
         </div>
 
-        <div id="document-preview" className="w-full h-[600px] border-t border-border-light lg:w-1/2 lg:h-full lg:border-t-0 lg:border-l">
-          {canPreview ? <DocumentPreview document={previewDocument} pageNumber={pageNumber} passages={searchPassages} /> : <EmptyDocument />}
+        <div
+          id="document-preview"
+          className="w-full h-[600px] border-t border-border-light lg:w-1/2 lg:h-full lg:border-t-0 lg:border-l"
+        >
+          {canPreview ? (
+            <DocumentPreview
+              document={previewDocument}
+              pageNumber={pageNumber}
+              passages={searchPassages}
+            />
+          ) : (
+            <EmptyDocument />
+          )}
         </div>
       </div>
     </section>

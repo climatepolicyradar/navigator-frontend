@@ -7,37 +7,21 @@ import { testFamilyDataIn } from "./familyDataHandlers";
 export const testDocumentSlug = "test-document-slug";
 export const testDocumentImportId = "document-1";
 
-export const documentSlugHandler = (overrides: Partial<{ status: number; body: unknown }> = {}) =>
-  http.get(`${process.env.CONCEPTS_API_URL}/families/slugs/${testDocumentSlug}`, () => {
-    if (overrides.status && overrides.status !== 200) {
-      return HttpResponse.json(overrides.body ?? { detail: "Not Found" }, { status: overrides.status });
-    }
+// getDocumentData fetches the document's own search record from `/search/documents/${document.id}`
+// (see src/bff/methods/getDocumentData.ts) to derive its topics - not a vespa/family endpoint.
+export const searchDocumentHandler = () =>
+  http.get(`${process.env.CONCEPTS_API_URL}/search/documents/${testDocumentImportId}`, () => {
     return HttpResponse.json({
-      data: overrides.body ?? {
-        name: testDocumentSlug,
-        family_import_id: null,
-        family_document_import_id: testDocumentImportId,
-        collection_import_id: null,
-        created: "2024-01-01",
+      data: {
+        id: testDocumentImportId,
+        title: "Test Document",
+        description: null,
+        labels: [],
+        documents: [],
+        items: [],
+        attributes: {},
       },
     });
-  });
-
-export const vespaDocumentHandler = () =>
-  http.get(`${process.env.BACKEND_API_URL}/document/${testDocumentImportId}`, () => {
-    return HttpResponse.json(
-      {
-        hits: 0,
-        total_family_hits: 0,
-        query_time_ms: 1,
-        total_time_ms: 1,
-        continuation_token: null,
-        this_continuation_token: "",
-        prev_continuation_token: null,
-        families: [],
-      },
-      { status: 200 }
-    );
   });
 
 // A minimal but schema-complete TDataInDocument for a document: satisfies validateDocumentAttributes
@@ -58,7 +42,7 @@ export const testDocumentDataIn: TDataInDocument = {
 };
 
 export const dataInDocumentHandler = (overrides: Partial<{ status: number; body: unknown }> = {}) =>
-  http.get(`${process.env.CONCEPTS_API_URL}/data-in/documents/${testDocumentImportId}`, () => {
+  http.get(`${process.env.CONCEPTS_API_URL}/data-in/documents/slug/${testDocumentSlug}`, () => {
     if (overrides.status && overrides.status !== 200) {
       return HttpResponse.json({ detail: "error" }, { status: overrides.status });
     }

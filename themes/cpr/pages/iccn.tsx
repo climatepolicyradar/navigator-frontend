@@ -1,6 +1,7 @@
 import { LandingPage } from "@/components/organisms/LandingPage";
 import { QUERY_PARAMS } from "@/constants/queryParams";
 import { TLandingPageConfig } from "@/types";
+import { deflateFilters } from "@/utils/filters/deflate";
 
 export default function ICCNLandingPage() {
   const landingPageConfig: TLandingPageConfig = {
@@ -49,8 +50,7 @@ export default function ICCNLandingPage() {
           [QUERY_PARAMS.category]: "climate-council-reports",
         },
         newParams: {
-          [QUERY_PARAMS.sort]: "recent",
-          [QUERY_PARAMS.filters]: JSON.stringify({
+          [QUERY_PARAMS.filters]: deflateFilters({
             op: "and",
             filters: [
               { field: "labels.value.id", op: "contains", value: "category::Report" },
@@ -67,7 +67,7 @@ export default function ICCNLandingPage() {
             [QUERY_PARAMS.concept_name]: "emissions reduction target",
           },
           newParams: {
-            [QUERY_PARAMS.filters]: JSON.stringify({
+            [QUERY_PARAMS.filters]: deflateFilters({
               op: "and",
               filters: [
                 {
@@ -93,14 +93,13 @@ export default function ICCNLandingPage() {
             [QUERY_PARAMS.sort_order]: "desc",
           },
           newParams: {
-            [QUERY_PARAMS.filters]: JSON.stringify({
+            [QUERY_PARAMS.filters]: deflateFilters({
               op: "and",
               filters: [
                 { field: "labels.value.id", op: "contains", value: "category::Report" },
                 { op: "or", filters: [{ field: "labels.value.id", op: "contains", value: "report_type::Climate council report", checked: true }] },
               ],
             }),
-            [QUERY_PARAMS.sort]: "recent",
           },
         },
         {
@@ -110,7 +109,7 @@ export default function ICCNLandingPage() {
             [QUERY_PARAMS.concept_name]: ["adaptation/resilience", "hot extremes"],
           },
           newParams: {
-            [QUERY_PARAMS.filters]: JSON.stringify({
+            [QUERY_PARAMS.filters]: deflateFilters({
               op: "and",
               filters: [
                 {
@@ -119,7 +118,7 @@ export default function ICCNLandingPage() {
                     { field: "labels.value.id", op: "contains", value: "category::Report" },
                     {
                       op: "or",
-                      filters: [{ field: "labels.value.id", op: "contains", value: "report_type::Climate+council+report", checked: true }],
+                      filters: [{ field: "labels.value.id", op: "contains", value: "report_type::Climate council report", checked: true }],
                     },
                   ],
                 },

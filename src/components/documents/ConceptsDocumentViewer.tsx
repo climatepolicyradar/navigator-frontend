@@ -14,11 +14,12 @@ import { Info } from "@/components/molecules/info/Info";
 import { ConceptPicker } from "@/components/organisms/ConceptPicker";
 import { FullWidth } from "@/components/panels/FullWidth";
 import { SideCol } from "@/components/panels/SideCol";
+import { ID_SEPARATOR } from "@/constants/chars";
 import { MAX_RESULTS } from "@/constants/paging";
 import { SEARCH_PASSAGE_ORDER } from "@/constants/searchPassagesOrder";
 import { SEARCH_SETTINGS } from "@/constants/searchSettings";
 import { TopicsContext } from "@/context/TopicsContext";
-import { TTopic, TFamilyDocumentPublic, TLoadingStatus, TMatchedFamily, TPassage, TSearchResponse } from "@/types";
+import { TTopic, TFamilyDocumentPublic, TLoadingStatus, TMatchedFamily, TPassage, IDocumentLabelRelationship } from "@/types";
 import { getCurrentSearchChoice } from "@/utils/getCurrentSearchChoice";
 import { getPassageResultsContext } from "@/utils/getPassageResultsContext";
 import { getCurrentPassagesOrderChoice } from "@/utils/getPassagesSortOrder";
@@ -34,7 +35,7 @@ interface IProps {
   initialExactMatch?: boolean;
   initialPageNumber?: number;
   initialConceptFilters?: string[];
-  vespaDocumentData: TSearchResponse;
+  labels?: IDocumentLabelRelationship[];
   document: TFamilyDocumentPublic;
   searchStatus: TLoadingStatus;
   searchResultFamilies: TMatchedFamily[];
@@ -61,7 +62,7 @@ export const ConceptsDocumentViewer = ({
   initialPageNumber,
   initialConceptFilters,
   document,
-  vespaDocumentData,
+  labels,
   searchStatus,
   searchResultFamilies,
   handleSemanticSearchChange,
@@ -84,24 +85,23 @@ export const ConceptsDocumentViewer = ({
   const documentConcepts: TTopic[] = useMemo(() => {
     const uniqueConceptMap = new Map<string, { concept: TTopic; count: number }>();
 
-    (vespaDocumentData?.families ?? []).forEach((family) => {
-      family.hits.forEach((hit) => {
-        Object.entries(hit.concept_counts ?? {}).forEach(([conceptKey, count]) => {
-          const [conceptId] = conceptKey.split(":");
-          const matchingConcept = familyTopics.find((concept) => concept.wikibase_id === conceptId);
+    (labels ?? [])
+      .filter((labelRel) => labelRel.value.type === "concept")
+      .forEach((labelRel) => {
+        const [, conceptId] = labelRel.value.id.split(ID_SEPARATOR);
+        const matchingConcept = familyTopics.find((concept) => concept.wikibase_id === conceptId);
 
-          if (matchingConcept) {
-            const existingEntry = uniqueConceptMap.get(conceptId);
-            const updatedCount = existingEntry ? existingEntry.count + count : count;
+        if (matchingConcept) {
+          const count = labelRel.count ?? 0;
+          const existingEntry = uniqueConceptMap.get(conceptId);
+          const updatedCount = existingEntry ? existingEntry.count + count : count;
 
-            uniqueConceptMap.set(conceptId, {
-              concept: matchingConcept,
-              count: updatedCount,
-            });
-          }
-        });
+          uniqueConceptMap.set(conceptId, {
+            concept: matchingConcept,
+            count: updatedCount,
+          });
+        }
       });
-    });
 
     return Array.from(uniqueConceptMap.values())
       .map(({ concept, count }) => ({
@@ -109,7 +109,7 @@ export const ConceptsDocumentViewer = ({
         count,
       }))
       .sort((a, b) => (b.count || 0) - (a.count || 0));
-  }, [vespaDocumentData, familyTopics]);
+  }, [labels, familyTopics]);
 
   const selectedConcepts = useMemo(
     () =>

@@ -2,6 +2,7 @@ import { TQueryOverrides } from "@/components/atoms/pageLink/PageLink";
 import { ID_SEPARATOR } from "@/constants/chars";
 import { QUERY_PARAMS } from "@/constants/queryParams";
 import { GeographyV2, TFeatures, TFilterPathLabel, TSearchLabel, TThemeConfig } from "@/types";
+import { deflateFilters } from "@/utils/filters/deflate";
 import { filterPathsToQueryGroup } from "@/utils/search/filterPathsToQueryGroup";
 
 // Manually map old categories to new label paths as they intentionally don't match up automatically
@@ -58,7 +59,7 @@ export const getGeoSearchLink = ({
   return {
     href: themeConfig.features["new-search"] ? "/search" : "/_search", // Shadow search page if config feature off but feature flag on
     query: {
-      [QUERY_PARAMS.filters]: JSON.stringify(filterPathsToQueryGroup(checkedLabelPaths, null, "and")),
+      [QUERY_PARAMS.filters]: deflateFilters(filterPathsToQueryGroup(checkedLabelPaths, null, "and")),
     },
   };
 };
