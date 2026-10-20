@@ -1,0 +1,28 @@
+name: Notify deploy failure
+on:
+  workflow_call:
+    inputs:
+      environment:
+        description: Environment that was deployed (staging or production), its SLACK_UPDATES_CHANNEL_WEBHOOK_URL secret is used
+        type: string
+        required: true
+      heading:
+        description: Text of the Slack message
+        type: string
+        required: true
+
+permissions:
+  contents: read
+
+jobs:
+  notify:
+    name: Notify Slack
+    runs-on: ubuntu-latest
+    environment: ${{ inputs.environment }}
+    steps:
+      - uses: slackapi/slack-github-action@v4.0.0
+        with:
+          webhook: ${{ secrets.SLACK_UPDATES_CHANNEL_WEBHOOK_URL }}
+          webhook-type: incoming-webhook
+          payload: |
+            text: "❌ GitHub ${{ inputs.heading }} (<https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}|logs>)"
