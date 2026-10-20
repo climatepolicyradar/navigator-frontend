@@ -25,4 +25,4 @@ jobs:
           webhook: ${{ secrets.SLACK_UPDATES_CHANNEL_WEBHOOK_URL }}
           webhook-type: incoming-webhook
           payload: |
-            text: "❌ GitHub ${{ inputs.heading }} (<https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}|logs>)"
+            text: "❌ GitHub navigator-frontend ${{ inputs.heading }} (<https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}|logs>)"
