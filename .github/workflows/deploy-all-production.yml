@@ -164,3 +164,12 @@ jobs:
         run: >
           .github/workflows/scripts/deploy_ecs_express.sh
           frontend-production ${{ matrix.theme }}-frontend-production ${{ steps.build-image.outputs.image }}
+
+  notify-failure:
+    needs: deploy-production
+    if: failure()
+    uses: ./.github/workflows/notify-deploy-failure.yml
+    secrets: inherit
+    with:
+      environment: production
+      heading: Production deploy (all themes) failed

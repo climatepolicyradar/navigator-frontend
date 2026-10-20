@@ -254,3 +254,16 @@ jobs:
         run: >
           .github/workflows/scripts/deploy_ecs_express.sh
           frontend-staging ${{ matrix.theme }}-frontend-staging ${{ steps.build-image.outputs.image }}
+
+  notify-failure:
+    needs:
+      - changes
+      - pulumi-up-shared-resources
+      - observability-pulumi-up
+      - deploy-staging
+    if: failure()
+    uses: ./.github/workflows/notify-deploy-failure.yml
+    secrets: inherit
+    with:
+      environment: staging
+      heading: Staging deploy failed
