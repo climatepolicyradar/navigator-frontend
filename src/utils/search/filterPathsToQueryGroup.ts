@@ -55,7 +55,15 @@ const buildGroupFromPaths = (
   }
 
   if (typeGroupResults.length === 1) return typeGroupResults[0];
-  return { op: "and", filters: typeGroupResults };
+
+  // A lone checked rule leading this AND would be indistinguishable from a parent followed by its
+  // children, so wrap it to keep each type bucket self-contained (logically identical for the API)
+  const [firstResult, ...otherResults] = typeGroupResults;
+  const leadsAmbiguously =
+    "checked" in firstResult && firstResult.checked && otherResults.some((result) => !("field" in result) && result.op === "or");
+  const disambiguatedResults = leadsAmbiguously ? [wrapInGroup(firstResult), ...otherResults] : typeGroupResults;
+
+  return { op: "and", filters: disambiguatedResults };
 };
 
 const buildDateRangeFilters = ([startYear, endYear]: [number, number]): TSearchQueryRule[] => [
