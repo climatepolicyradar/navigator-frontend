@@ -153,6 +153,10 @@ export const seedPassageLevel = ({ filters = null, query = null, sort = null }: 
 /**
  * When navigating to a Principal or Document page we want to preserve the filters
  * from the drawer and apply to the page as the base/main query
+ *
+ * The sort is explicitly nulled rather than left out: these links keep the current query, so a
+ * param not overridden here is inherited. The destination searches passages, which only orders by
+ * relevance or page, and the results page's orderings are rejected outright by that endpoint.
  */
 export const flattenLevelToBaseQuery = ({
   documents,
@@ -162,4 +166,5 @@ export const flattenLevelToBaseQuery = ({
   [BASE_PARAM_KEYS.documents]: documents?.length ? documents.join(",") : null,
   [BASE_PARAM_KEYS.filters]: filters ? deflateFilters(filters) : null,
   [BASE_PARAM_KEYS.query]: query || null,
+  [BASE_PARAM_KEYS.sort]: null,
 });
