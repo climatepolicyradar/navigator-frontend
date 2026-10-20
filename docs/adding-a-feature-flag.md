@@ -220,6 +220,44 @@ tested afterwards in themes whose config sets it to `true`.
   That is harmless: `getFeatureFlags()` ignores any key not in
   `FEATURE_FLAG_KEYS`.
 
+### Tidying up in PostHog
+
+Do this only after the code change has deployed. While the key is still in
+`FEATURE_FLAG_KEYS`, removing the flag in PostHog turns the feature off for
+everyone who had opted in.
+
+PostHog offers three options, in increasing severity.
+
+**Disable** sets the flag inactive and changes nothing else -- targeting,
+variants and payloads are kept. It stops evaluating for every consumer. Use it
+to check nothing breaks before committing to removal, since it is trivially
+reversible.
+
+**Archive** hides the flag from the default list and keeps its configuration and
+history. A flag must be disabled to be archived, so archiving an active flag
+disables it in the same step. This is the usual end state for a flag whose
+feature has shipped: the record survives, but it stops cluttering the list.
+
+**Delete** is a soft delete. The flag stops being served and leaves the list,
+but its configuration and history are retained, and it can be brought back with
+**Restore feature flag** on the flag's page. PostHog also counts flags against a
+per-team limit, so deleting genuinely dead flags frees capacity.
+
+⚠️ PostHog **blocks deletion** while something still references the flag, and
+tells you what. Most relevant here: a flag linked to an **early access feature**
+cannot be deleted until that link is removed. If you followed step 6 when adding
+the flag, delete or unlink the early access feature first.
+
+Deletion is also blocked by a running experiment (draft, stopped and completed
+are fine), a linked survey, session replay recording conditions, or another
+active flag that depends on this one.
+
+Removing the flag in PostHog is safe for our code even if the key lingers:
+globally inactive flags are omitted from PostHog's response entirely, so
+`/_feature-flags` never writes them to the `feature_flags` cookie, and
+`DEFAULT_FEATURE_FLAGS` starts every key at `false`. The feature reads as off
+rather than erroring.
+
 ### Removal checklist
 
 - [ ] Confirmed the feature should be on (or gone) for everyone
@@ -229,7 +267,8 @@ tested afterwards in themes whose config sets it to `true`.
 - [ ] Gating conditionals unwrapped, off-branches deleted
 - [ ] Grepped for the key as a string in tests, stories and workflows
 - [ ] Feature code and `routes.json` entry deleted, if abandoning
-- [ ] PostHog flag and early access feature archived
+- [ ] Early access feature deleted or unlinked, if one was created
+- [ ] PostHog flag disabled, then archived or deleted -- after the code deployed
 
 ## Adding checklist
 
