@@ -18,6 +18,7 @@ import { ID_SEPARATOR } from "@/constants/chars";
 import { PASSAGE_FILTER_GROUPS } from "@/constants/filters";
 import { RESULTS_PER_PAGE } from "@/constants/paging";
 import { PASSAGE_SORT_OPTIONS } from "@/constants/sort";
+import { useEnvConfig } from "@/context/EnvConfig";
 import { posthogEventName } from "@/context/PostHogProvider";
 import { SearchLevelContext } from "@/context/SearchLevelContext";
 import { loadFilteredLabels } from "@/hooks/useLabelSearch";
@@ -113,6 +114,7 @@ DocumentPreview.displayName = "DocumentPreview";
 export const PassageSearch = ({ changeTab, concepts, documents, documentsLabel, enablePreview = false, onSearch, principalId, subject }: TProps) => {
   const router = useRouter();
   const posthog = usePostHog();
+  const { API_URL } = useEnvConfig();
   const searchIndex = useRef(0);
   const searchLevel = useContext(SearchLevelContext);
   const paramKeys = useMemo(() => levelParamKeys(searchLevel), [searchLevel]);
@@ -137,7 +139,11 @@ export const PassageSearch = ({ changeTab, concepts, documents, documentsLabel, 
   // Adjusting during render rather than in an effect avoids a second render pass with a stale value.
   // The filter group is compared serialised, so the check does not rest on the parser returning a stable object.
   const filterKey = JSON.stringify(conceptFilterParam);
-  const [previousSearch, setPreviousSearch] = useState({ queryParam, filterKey, sort: sortParam });
+  const [previousSearch, setPreviousSearch] = useState({
+    queryParam,
+    filterKey,
+    sort: sortParam,
+  });
   const [hasNavigatedForSearch, setHasNavigatedForSearch] = useState(false);
   if (queryParam !== previousSearch.queryParam || filterKey !== previousSearch.filterKey || sortParam !== previousSearch.sort) {
     setPreviousSearch({ queryParam, filterKey, sort: sortParam });
@@ -145,7 +151,7 @@ export const PassageSearch = ({ changeTab, concepts, documents, documentsLabel, 
   }
 
   useEffect(() => {
-    loadFilteredLabels({
+    loadFilteredLabels(API_URL, {
       op: "or",
       filters: [
         {
@@ -155,7 +161,7 @@ export const PassageSearch = ({ changeTab, concepts, documents, documentsLabel, 
         },
       ],
     }).then(setAvailableConcepts);
-  }, []);
+  }, [API_URL]);
 
   const documentsById = useMemo(() => new Map(documents.map((document) => [document.import_id, document])), [documents]);
   const allDocumentIds = useMemo(() => documents.map((document) => document.import_id), [documents]);
@@ -177,9 +183,10 @@ export const PassageSearch = ({ changeTab, concepts, documents, documentsLabel, 
   const hasSearch = (queryParam.length > 0 || !!conceptFilterParam) && hasScope;
 
   const { data, isError, isFetching, isPending, fetchNextPage, hasNextPage, isFetchingNextPage } = useInfiniteQuery({
-    queryKey: ["passages", scopedDocumentIds, principalId, queryParam, conceptFilterParam, sortParam],
+    queryKey: ["passages", scopedDocumentIds, principalId, queryParam, conceptFilterParam, sortParam, API_URL],
     queryFn: async ({ pageParam, signal }) => {
       const response = await fetchSearchPassages({
+        apiUrl: API_URL,
         query: queryParam,
         documents: scopedDocumentIds,
         principalId,
@@ -227,7 +234,11 @@ export const PassageSearch = ({ changeTab, concepts, documents, documentsLabel, 
   const canPreview = enablePreview && !!previewDocument?.cdn_object && previewDocument.cdn_object.toLowerCase().endsWith(".pdf");
 
   const filterableDocuments: TFilterableDocument[] = useMemo(
-    () => documents.map((document) => ({ importId: document.import_id, title: document.title })),
+    () =>
+      documents.map((document) => ({
+        importId: document.import_id,
+        title: document.title,
+      })),
     [documents]
   );
 
@@ -285,7 +296,11 @@ export const PassageSearch = ({ changeTab, concepts, documents, documentsLabel, 
       const slug = documentsById.get(passage.document_id)?.slug;
       if (!slug) return null;
 
-      const baseQuery = flattenLevelToBaseQuery({ documents: null, filters: conceptFilterParam, query: queryParam });
+      const baseQuery = flattenLevelToBaseQuery({
+        documents: null,
+        filters: conceptFilterParam,
+        query: queryParam,
+      });
       const query = Object.fromEntries(Object.entries(baseQuery).filter(([, value]) => value !== null)) as Record<string, string>;
 
       return { pathname: `/documents/${slug}`, query };
