@@ -172,4 +172,4 @@ jobs:
     secrets: inherit
     with:
       environment: production
-      heading: Production deploy (all themes) failed
+      heading: production deploy (all themes) failed

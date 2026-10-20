@@ -175,4 +175,4 @@ jobs:
     secrets: inherit
     with:
       environment: production
-      heading: Production deploy of ${{ inputs.theme }} failed
+      heading: production deploy of ${{ inputs.theme }} failed

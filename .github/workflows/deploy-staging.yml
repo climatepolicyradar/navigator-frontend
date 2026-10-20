@@ -266,4 +266,4 @@ jobs:
     secrets: inherit
     with:
       environment: staging
-      heading: Staging deploy failed
+      heading: staging deploy failed
