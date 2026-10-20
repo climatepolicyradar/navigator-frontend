@@ -7,7 +7,7 @@
 /* Features */
 
 // PostHog feature flags with 0% rollout. Must be manually enabled at /_feature-flags to be enabled
-export const FEATURE_FLAG_KEYS = ["climate-cop31-2026", "debug", "new-search", "themes"] as const;
+export const FEATURE_FLAG_KEYS = ["climate-cop31-2026", "debug", "geography-type-filters", "new-search", "themes"] as const;
 
 // PostHog feature flags with 1-100% rollout. Automatically rolled to each consenting user. Can also be present on /_feature-flags if configured in PostHog as an early access feature
 export const AB_TEST_KEYS = ["ab-family-topic-block"] as const;
@@ -16,6 +16,7 @@ export const AB_TEST_KEYS = ["ab-family-topic-block"] as const;
 export const CONFIG_FEATURE_KEYS = [
   "climate-cop31-2026",
   "familyConceptsSearch",
+  "geography-type-filters",
   "knowledgeGraph",
   "litigation",
   "new-search",

@@ -9,7 +9,7 @@ const SUBNATIONAL_LABELS: TNestedSearchLabel[] = ["Country", "Subdivision"].map(
 // Split regions and geographies from each other under separate top-level groups, keeping each
 // country's region as a virtual parentPath so filtering still respects the relationship
 export const prepareGeographyFilters =
-  (subdivisionsFeature: boolean): TFiltersGroupPrep =>
+  (showSubnationalTypes: boolean): TFiltersGroupPrep =>
   (rootLabels) => {
     const validRootLabels = rootLabels.filter((rootLabel) => rootLabel.type === "region");
 
@@ -21,7 +21,7 @@ export const prepareGeographyFilters =
     const regionLabels = validRootLabels.map<TNestedSearchLabel>((regionLabel) => ({ ...regionLabel, children: [] }));
 
     return [
-      ...(subdivisionsFeature ? [createGroupLabel("type", SUBNATIONAL_LABELS)] : []),
+      ...(showSubnationalTypes ? [createGroupLabel("type", SUBNATIONAL_LABELS)] : []),
       createGroupLabel("region", regionLabels),
       createGroupLabel("geography", geographyLabels),
       {
