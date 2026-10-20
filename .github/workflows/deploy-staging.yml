@@ -260,7 +260,7 @@ jobs:
 
       # Runs last and never blocks the release: source maps only make Faro
       # stack traces readable, so a Grafana outage degrades observability
-      # rather than stopping a deploy (FUS-761).
+      # rather than stopping a deploy.
       - name: Upload source maps to Faro
         continue-on-error: true
         uses: ./.github/actions/upload-source-maps
@@ -270,3 +270,15 @@ jobs:
           api-key: ${{ secrets.FARO_SOURCEMAP_API_KEY }}
           app-id: ${{ steps.faro-sourcemap.outputs.app_id }}
           stack-id: ${{ secrets.FARO_SOURCEMAP_STACK_ID }}
+  notify-failure:
+    needs:
+      - changes
+      - pulumi-up-shared-resources
+      - observability-pulumi-up
+      - deploy-staging
+    if: failure()
+    uses: ./.github/workflows/notify-deploy-failure.yml
+    secrets: inherit
+    with:
+      environment: staging
+      heading: staging deploy failed

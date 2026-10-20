@@ -183,3 +183,11 @@ jobs:
           api-key: ${{ secrets.FARO_SOURCEMAP_API_KEY }}
           app-id: ${{ steps.faro-sourcemap.outputs.app_id }}
           stack-id: ${{ secrets.FARO_SOURCEMAP_STACK_ID }}
+  notify-failure:
+    needs: deploy-production
+    if: failure()
+    uses: ./.github/workflows/notify-deploy-failure.yml
+    secrets: inherit
+    with:
+      environment: production
+      heading: production deploy of ${{ inputs.theme }} failed
