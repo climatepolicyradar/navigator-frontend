@@ -33,7 +33,6 @@ export default function NatureLandingPage() {
           [QUERY_PARAMS.query_string]: "Nature",
         },
         newParams: {
-          [QUERY_PARAMS.sort]: "recent",
           [QUERY_PARAMS.filters]: deflateFilters({
             op: "and",
             filters: [{ field: "labels.value.id", op: "contains", value: "domain::Nature", checked: true }],

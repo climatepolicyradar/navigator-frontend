@@ -31,7 +31,6 @@ export const SUGGESTED_SEARCHES: TSearchSuggestion[] = [
           },
         ],
       }),
-      [QUERY_PARAMS.sort]: "recent",
     },
   },
   {
@@ -89,7 +88,6 @@ export const SUGGESTED_SEARCHES: TSearchSuggestion[] = [
           { op: "or", filters: [{ field: "labels.value.id", op: "contains", value: "law_type::Framework law", checked: true }] },
         ],
       }),
-      [QUERY_PARAMS.sort]: "recent",
     },
   },
 ];

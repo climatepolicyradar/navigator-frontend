@@ -2,7 +2,9 @@ import { render, screen, waitFor } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import * as nextRouterMock from "next-router-mock";
 
+import { EnvConfigContext } from "@/context/EnvConfig";
 import { ThemeContext } from "@/context/ThemeContext";
+import { envConfig } from "@/mocks/envConfig";
 import { TSearchQueryGroup, TThemeConfig } from "@/types";
 
 import { DownloadSearch } from "./DownloadSearch";
@@ -24,9 +26,11 @@ const emptyFilters: TSearchQueryGroup = { op: "and", filters: [] };
 
 const renderDownloadSearch = (overrides: Partial<React.ComponentProps<typeof DownloadSearch>> = {}) =>
   render(
-    <ThemeContext.Provider value={{ theme: "cpr", themeConfig, loaded: true }}>
-      <DownloadSearch hasSearch={false} query="" filters={emptyFilters} sort="relevance" totalResults={null} {...overrides} />
-    </ThemeContext.Provider>
+    <EnvConfigContext.Provider value={envConfig}>
+      <ThemeContext.Provider value={{ theme: "cpr", themeConfig, loaded: true }}>
+        <DownloadSearch hasSearch={false} query="" filters={emptyFilters} sort="relevance" totalResults={null} {...overrides} />
+      </ThemeContext.Provider>
+    </EnvConfigContext.Provider>
   );
 
 describe("DownloadSearch", () => {

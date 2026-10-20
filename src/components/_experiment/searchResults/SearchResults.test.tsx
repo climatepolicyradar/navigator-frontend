@@ -33,7 +33,9 @@ const emptyResponse: ISearchDocumentsResponse = {
 import { fetchSearchPrincipalDocuments } from "@/api/search";
 import { createGroup } from "@/components/_experiment/advancedFilters/AdvancedFilters";
 import { DEFAULT_THEME_CONFIG } from "@/constants/themeConfig";
+import { EnvConfigContext } from "@/context/EnvConfig";
 import { IProps as IThemeContextProps, ThemeContext } from "@/context/ThemeContext";
+import { envConfig } from "@/mocks/envConfig";
 import { ISearchDocument, ISearchDocumentsResponse } from "@/types";
 import { upsertPublishedDateRangeRules } from "@/utils/_experiment/dateRangeFilters";
 
@@ -52,7 +54,9 @@ const renderWith = (ui: React.ReactElement, theme: IThemeContextProps = loadedTh
   const queryClient = new QueryClient();
   const wrap = (node: React.ReactElement, themeValue: IThemeContextProps) => (
     <QueryClientProvider client={queryClient}>
-      <ThemeContext.Provider value={themeValue}>{node}</ThemeContext.Provider>
+      <EnvConfigContext.Provider value={envConfig}>
+        <ThemeContext.Provider value={themeValue}>{node}</ThemeContext.Provider>
+      </EnvConfigContext.Provider>
     </QueryClientProvider>
   );
   const result = render(wrap(ui, theme));

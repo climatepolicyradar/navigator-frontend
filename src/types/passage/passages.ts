@@ -60,6 +60,8 @@ export interface ISearchPassagesResponse {
 }
 
 export interface ISearchPassagesParams {
+  // API gateway base URL, from `useEnvConfig().API_URL` at the call site.
+  apiUrl: string;
   query: string;
   documents: string[];
   // The principal the passages belong to. Scopes the search when `documents` is empty, which a

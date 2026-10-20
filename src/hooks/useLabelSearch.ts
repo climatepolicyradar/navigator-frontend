@@ -2,6 +2,7 @@ import debounce from "lodash/debounce";
 import { useEffect, useMemo, useState } from "react";
 
 import { ApiClient } from "@/api/http-common";
+import { useEnvConfig } from "@/context/EnvConfig";
 import { TSearchLabel, TSearchQueryGroup } from "@/types";
 
 type TLabelsResponse = {
@@ -13,8 +14,7 @@ interface UseLabelSearchOptions {
   debounceDelay?: number;
 }
 
-export const loadLabels = async (query: string): Promise<TSearchLabel[]> => {
-  const apiUrl = process.env.NEXT_PUBLIC_API_URL || "https://api.climatepolicyradar.org";
+export const loadLabels = async (apiUrl: string, query: string): Promise<TSearchLabel[]> => {
   const client = new ApiClient(apiUrl);
   // Exclude these types as it is legacy data, or not relevant to the search UI.
   const defaultFilter = {
@@ -94,19 +94,17 @@ export const loadLabels = async (query: string): Promise<TSearchLabel[]> => {
   return response.data.results || [];
 };
 
-export async function loadFilteredLabels(filters: TSearchQueryGroup) {
-  const apiUrl = process.env.NEXT_PUBLIC_API_URL || "https://api.climatepolicyradar.org";
+export async function loadFilteredLabels(apiUrl: string, filters: TSearchQueryGroup) {
   const client = new ApiClient(apiUrl);
   const response = await client.get<TLabelsResponse>(`/search/labels?page_size=10000&filters=${encodeURIComponent(JSON.stringify(filters))}`, null);
   return response.data.results || [];
 }
 
-export async function loadLabelTaxonomy() {
+export async function loadLabelTaxonomy(apiUrl: string) {
   /**
    * This is temporary fix until the categories taxonomy data source data is fixed
    * @see: https://linear.app/climate-policy-radar/issue/APP-2266/fusion-enrichment-fleshing-out-the-publishedcanonicallabels
    */
-  const apiUrl = process.env.NEXT_PUBLIC_API_URL || "https://api.climatepolicyradar.org";
   const client = new ApiClient(apiUrl);
   const response = await client.get<TLabelsResponse>(`/search/labels-taxonomy`, null);
   return response.data.results || [];
@@ -125,6 +123,7 @@ export async function loadLabelTaxonomy() {
  */
 export function useLabelSearch(query: string, options: UseLabelSearchOptions = {}) {
   const { debounceDelay = 300 } = options;
+  const { API_URL } = useEnvConfig();
 
   const [results, setResults] = useState<TSearchLabel[]>([]);
   const [isLoading, setIsLoading] = useState(false);
@@ -139,7 +138,7 @@ export function useLabelSearch(query: string, options: UseLabelSearchOptions = {
 
         setIsLoading(true);
         try {
-          const response = await loadLabels(q);
+          const response = await loadLabels(API_URL, q);
           setResults(response || []);
         } catch {
           setResults([]);
@@ -147,7 +146,7 @@ export function useLabelSearch(query: string, options: UseLabelSearchOptions = {
           setIsLoading(false);
         }
       }, debounceDelay),
-    [debounceDelay]
+    [debounceDelay, API_URL]
   );
 
   useEffect(() => {

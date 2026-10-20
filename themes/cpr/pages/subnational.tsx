@@ -41,7 +41,6 @@ export default function NatureLandingPage() {
           [QUERY_PARAMS.query_string]: "",
         },
         newParams: {
-          [QUERY_PARAMS.sort]: "recent",
           [QUERY_PARAMS.filters]: deflateFilters({
             op: "and",
             filters: [SUBNATIONAL_FILTER],

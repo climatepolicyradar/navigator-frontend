@@ -185,7 +185,11 @@ const config: TThemeConfig = {
   },
   tutorials: ["knowledgeGraph"],
   features: {
+    // Only toggle to true here when you want the COP31 content to go live.
+    // Until then it stays false and the PostHog flag (0% rollout) controls access.
+    "climate-cop31-2026": false,
     familyConceptsSearch: false,
+    "geography-type-filters": false,
     knowledgeGraph: true,
     litigation: false,
     "new-search": false,

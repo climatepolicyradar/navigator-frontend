@@ -3,9 +3,6 @@ WORKDIR /app
 
 COPY . .
 RUN npm ci
-# scripts/upload-source-maps.sh below needs bash; Alpine's default /bin/sh (busybox ash) doesn't support it.
-# curl is required by @grafana/faro-cli, which shells out to it to upload source maps.
-RUN apk add --no-cache bash curl
 
 ARG THEME
 ENV THEME=${THEME}
@@ -35,13 +32,6 @@ ENV NEXT_PUBLIC_FARO_ENVIRONMENT=${NEXT_PUBLIC_FARO_ENVIRONMENT}
 ARG NEXT_PUBLIC_FARO_URL
 ENV NEXT_PUBLIC_FARO_URL=${NEXT_PUBLIC_FARO_URL}
 
-# Base URL search/concepts/passages calls are made against. 
-# Defaults to production in application code if unset; review stacks can
-# override it to point at a search-api review stack via the /use-search-api 
-# PR comment command.
-ARG NEXT_PUBLIC_API_URL
-ENV NEXT_PUBLIC_API_URL=${NEXT_PUBLIC_API_URL}
-
 # Faro source map upload credentials, consumed by scripts/upload-source-maps.sh
 # below; not required for local/dev builds (upload is skipped if unset).
 ARG FARO_SOURCEMAP_API_KEY
@@ -55,11 +45,22 @@ ENV FARO_SOURCEMAP_STACK_ID=${FARO_SOURCEMAP_STACK_ID}
 RUN sed "s/__THEME__/${THEME}/g" tsconfig.base.json > tsconfig.json
 
 RUN npm run build
-# Must run before the .next/static copy below: uploads then deletes the maps
-# productionBrowserSourceMaps emitted, so the image never serves them publicly.
-RUN ./scripts/upload-source-maps.sh .next/static "${THEME}-frontend" "${GITHUB_SHA}"
 RUN cp -r public .next/standalone/public
-RUN cp -r .next/static .next/standalone/.next/static
+# Source maps are uploaded to Faro *after* the deploy
+# (.github/actions/upload-source-maps), so unlike before they still exist here.
+#
+# They must not stay in .next/static: productionBrowserSourceMaps makes Next.js
+# serve that directory, so a map left there publishes our TypeScript source,
+# and the deploy's `aws s3 sync` of the same directory would push ~4x the size
+# of the code into a public bucket.
+#
+# So they move to /app/sourcemaps: a path Next.js never serves, which the
+# deploy `docker cp`s out for the Faro upload and which costs ~12MB in the
+# image. @related: FUS-761
+RUN cp -r .next/static .next/standalone/.next/static \
+	&& (cd .next/standalone/.next/static \
+		&& find . -name '*.map' -type f -exec install -D {} /app/sourcemaps/{} \;) \
+	&& find .next/standalone/.next/static -name '*.map' -type f -delete
 
 # Runner must match builder Node major version; Next.js standalone built on Node 24
 # can crash on Node 20 (Alpine 3.20 apk nodejs). Pin platform for App Runner (x86_64).
@@ -68,6 +69,13 @@ WORKDIR /app
 
 RUN addgroup -g 1001 -S nodejs && adduser -S nextjs -u 1001
 COPY --from=builder /app/.next/standalone ./
+# Client source maps for the post-deploy Faro upload
+# (.github/actions/upload-source-maps). Outside .next/static, so Next.js never
+# serves them; the deploy extracts them with `docker cp`. Kept in the image
+# rather than a separate build stage because a second `docker build --target`
+# does not reliably reuse the first build's cache and rebuilt the whole app.
+# @related: FUS-761
+COPY --from=builder /app/sourcemaps ./sourcemaps
 RUN chown -R nextjs:nodejs .
 
 USER nextjs

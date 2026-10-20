@@ -33,7 +33,6 @@ export const SUGGESTED_SEARCHES: TSearchSuggestion[] = [
           },
         ],
       }),
-      [QUERY_PARAMS.sort]: "recent",
     },
   },
   {
