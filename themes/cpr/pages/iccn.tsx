@@ -50,7 +50,6 @@ export default function ICCNLandingPage() {
           [QUERY_PARAMS.category]: "climate-council-reports",
         },
         newParams: {
-          [QUERY_PARAMS.sort]: "recent",
           [QUERY_PARAMS.filters]: deflateFilters({
             op: "and",
             filters: [
@@ -101,7 +100,6 @@ export default function ICCNLandingPage() {
                 { op: "or", filters: [{ field: "labels.value.id", op: "contains", value: "report_type::Climate council report", checked: true }] },
               ],
             }),
-            [QUERY_PARAMS.sort]: "recent",
           },
         },
         {
