@@ -167,9 +167,10 @@ jobs:
       - name: Install pulumi CLI
         uses: pulumi/actions@v7
 
-      # NEXT_PUBLIC_API_URL is inlined into the client bundle at `next build`
-      # time, so pointing a review stack at a different search-api means
-      # rebuilding the image, not just changing a task env var.
+      # API_URL is a runtime ECS task environment variable, so pointing
+      # a review stack at a different search-api redeploys the task rather than
+      # rebuilding the image. It still has to reach the Pulumi program, because
+      # Pulumi owns the task definition.
       #
       # The value reaches the Pulumi program via /PULUMI_ENV, a file the
       # deployment executor sources before running `pulumi update`, written
@@ -221,7 +222,7 @@ jobs:
             "https://api.pulumi.com/api/stacks/${ORG}/${PROJECT}/${STACK_NAME}/deployments/settings")
 
           # In prod mode no override is appended, so the template's own
-          # production next_public_api_url is what the rebuild picks up.
+          # production api_url is what the redeploy picks up.
           if [ "$MODE" = "prod" ]; then
             payload=$(jq -n --argjson s "$settings" '{
               operation: "update",
@@ -237,7 +238,7 @@ jobs:
               operationContext: ($s.operationContext + {
                 preRunCommands: (
                   ($s.operationContext.preRunCommands // [])
-                  + ["echo \"NEXT_PUBLIC_API_URL=\($url)\" >> /PULUMI_ENV"]
+                  + ["echo \"API_URL=\($url)\" >> /PULUMI_ENV"]
                 )
               }),
             }')

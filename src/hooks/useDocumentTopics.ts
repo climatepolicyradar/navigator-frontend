@@ -3,6 +3,7 @@ import { useContext, useMemo } from "react";
 
 import { fetchSearchDocuments } from "@/api/search";
 import { ID_SEPARATOR } from "@/constants/chars";
+import { useEnvConfig } from "@/context/EnvConfig";
 import { ThemeContext } from "@/context/ThemeContext";
 import { TTopic } from "@/types";
 
@@ -17,11 +18,13 @@ type TUseDocumentTopicsOptions = {
  */
 export const useDocumentTopics = (documentIds: string[], { enabled = true }: TUseDocumentTopicsOptions = {}): TTopic[] => {
   const { themeConfig, loaded } = useContext(ThemeContext);
+  const { API_URL } = useEnvConfig();
 
   const { data } = useQuery({
-    queryKey: ["document-topics", documentIds, themeConfig.searchCategories],
+    queryKey: ["document-topics", documentIds, themeConfig.searchCategories, API_URL],
     queryFn: ({ signal }) =>
       fetchSearchDocuments({
+        apiUrl: API_URL,
         filters: { op: "and", filters: [{ op: "or", filters: documentIds.map((id) => ({ field: "id", op: "contains", value: id })) }] },
         page_size: String(documentIds.length),
         signal,

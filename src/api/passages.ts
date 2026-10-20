@@ -1,14 +1,11 @@
 // Passage search against the v2 API. Mirrors the conventions in `./search.ts`:
-// native fetch, `NEXT_PUBLIC_API_URL` with a public fallback, and throwing on a
-// non-2xx so react-query can surface the error.
+// native fetch, the API gateway base URL passed in by the caller, and throwing
+// on a non-2xx so react-query can surface the error.
 
 import { SORT_PARAMS_LOOKUP } from "@/constants/sort";
 import { ISearchPassagesParams, ISearchPassagesResponse, TSearchQueryGroup } from "@/types";
 
-const searchPassagesUrl = (): string => {
-  const origin = (process.env.NEXT_PUBLIC_API_URL || "https://api.climatepolicyradar.org").replace(/\/$/, "");
-  return `${origin}/search/passages`;
-};
+const searchPassagesUrl = (apiUrl: string): string => `${apiUrl.replace(/\/$/, "")}/search/passages`;
 
 // The scope the passages are searched within. Enumerating member `document_id`s is what lets a
 // subset of a principal's documents be searched, but a principal can report no members at all
@@ -43,6 +40,7 @@ const configurePassagesFilters = (documents: string[], principalId?: string, fil
 };
 
 export const fetchSearchPassages = async ({
+  apiUrl,
   query,
   documents,
   principalId,
@@ -52,7 +50,7 @@ export const fetchSearchPassages = async ({
   signal,
   sort,
 }: ISearchPassagesParams): Promise<ISearchPassagesResponse> => {
-  const url = new URL(searchPassagesUrl());
+  const url = new URL(searchPassagesUrl(apiUrl));
 
   url.searchParams.set("bolding", "true");
   url.searchParams.set("query", query);

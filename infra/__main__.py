@@ -57,6 +57,31 @@ next_public_faro_url = frontend_faro_stack.require_output(
     f"{theme}_faro_collector_endpoint"
 )
 
+stack = pulumi.get_stack()
+is_review_stack = stack.startswith("pr-")
+is_review_template = "review" in stack
+is_review_stack_or_template = is_review_stack or is_review_template
+
+# Base URL of the API gateway the frontend's API calls go through. Named for
+# the gateway rather than any one service behind it, because the gateway fans
+# a single host out to several services by path.
+#
+# Review stacks can be pointed at a search-api review build by overriding it,
+# passed as a deployment environment variable (see use-search-api.yml and
+# deploy-review-stack.yml, which write it to /PULUMI_ENV) rather than through
+# Pulumi per-stack config: review stacks are ephemeral and the inherited
+# `pulumi config cp` pre-run command overwrites their config from the theme's
+# `*-review` template on every deployment.
+#
+# This is a runtime ECS task environment variable, not a Docker build arg, so
+# changing it redeploys the task rather than rebuilding the image. See
+# src/context/EnvConfig.ts for how it reaches the browser.
+api_url = config.require("api_url")
+if is_review_stack:
+    api_url = os.environ.get("API_URL") or api_url
+
+pulumi.info(f"api_url: {api_url}")
+
 FRONTEND_ENV = {
     "BACKEND_API_TOKEN": config.require("backend_api_token"),
     "BACKEND_API_URL": config.require("backend_api_url"),
@@ -68,6 +93,7 @@ FRONTEND_ENV = {
     "TARGETS_URL": config.require("targets_url"),
     "CDN_URL": config.require("cdn_url"),
     "CONCEPTS_API_URL": config.require("concepts_api_url"),
+    "API_URL": api_url,
     "NEXT_PUBLIC_FARO_URL": next_public_faro_url,
     "NEXT_PUBLIC_FARO_APP_NAME": config.require("next_public_faro_app_name"),
     "NEXT_PUBLIC_FARO_APP_NAMESPACE": config.require("next_public_faro_app_namespace"),
@@ -82,31 +108,13 @@ FRONTEND_ENV = {
 # Create App Runner service
 ########################################################################
 
-stack = pulumi.get_stack()
-is_review_stack = stack.startswith("pr-")
-is_review_template = "review" in stack
-is_review_stack_or_template = is_review_stack or is_review_template
 if is_review_stack:
     # Extract PR number from stack name like "pr-climatepolicyradar-navigator-frontend-1139"
     match = re.search(r"(\d+)$", stack)
     pr_number = match.group(1) if match else stack[-8:]  # fallback to last 8 chars
     review_name = f"review-{theme}-frontend-{pr_number}"
-
-    # Review stacks can be pointed at a search-api review build via
-    # NEXT_PUBLIC_API_URL, passed as a deployment environment variable (see
-    # use-search-api.yml and deploy-review-stack.yml) rather than through
-    # Pulumi per-stack config: `pulumi config set/get/cp` against an
-    # ephemeral PR stack from a preRunCommand proved unreliable in practice
-    # -- a value set moments earlier via the service was not visible to a
-    # freshly-cloned deployment executor's `config get` on the same stack.
-    next_public_api_url = os.environ.get("NEXT_PUBLIC_API_URL") or config.require(
-        "next_public_api_url"
-    )
 else:
     review_name = None
-    next_public_api_url = config.require("next_public_api_url")
-
-pulumi.info(f"next_public_api_url: {next_public_api_url}")
 
 # ---------------------------------------------------------------------------
 # Auto-tag all AWS resources on review stacks for cost tracking & cleanup.
@@ -200,7 +208,6 @@ if is_review_stack and shared_resources_env == "production":
         build_args={
             "THEME": theme,
             "GITHUB_SHA": stack,
-            "NEXT_PUBLIC_API_URL": next_public_api_url,
         },
         push=True,
         registries=[
@@ -215,9 +222,9 @@ if is_review_stack and shared_resources_env == "production":
     )
 
     # Use the digest-based identifier: the tag string is static per PR stack,
-    # so ECS would see no diff on rebuilds (e.g. after changing
-    # next_public_api_url) and never redeploy. The digest changes whenever
-    # the built image content changes, forcing a new task definition.
+    # so ECS would see no diff on rebuilds and never redeploy. The digest
+    # changes whenever the built image content changes, forcing a new task
+    # definition.
     repository_url = review_ecr_url
     image_identifier = pulumi.Output.concat(review_ecr_url, "@", frontend_image.digest)
     pulumi.info(f"Repository URL: {review_ecr_url}")
