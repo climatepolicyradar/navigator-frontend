@@ -1,3 +1,4 @@
+import { PageLink } from "@/components/atoms/pageLink/PageLink";
 import { LandingPage } from "@/components/organisms/LandingPage";
 import { QUERY_PARAMS } from "@/constants/queryParams";
 import { TLandingPageConfig, TSearchQueryGroup, TSearchQueryRule } from "@/types";
@@ -30,12 +31,26 @@ export default function GlobalStocktakeLandingPage() {
   const landingPageConfig: TLandingPageConfig = {
     hero: {
       taxonomy: "Data library",
-      title: "Global Stocktake",
-      description: "Search submissions to the UNFCCC Global Stocktake from parties and non-Party stakeholders.",
+      title: "Global Stocktake 1 Explorer",
+      description: "Explore and analyse all inputs to the first Global Stocktake",
+    },
+    heroImage: {
+      src: "/images/global-stocktake/gst-hero.jpg",
+    },
+    partners: {
+      title: "In partnership with",
+      logos: [
+        {
+          src: "/images/global-stocktake/logo-unfccc.png",
+          alt: "United Nations Framework Convention on Climate Change",
+          width: 860,
+          height: 192,
+        },
+      ],
     },
     search: {
       button: {
-        label: "Search Global Stocktake submissions",
+        label: "Search submissions to the first Global Stocktake",
         params: {
           [QUERY_PARAMS.sort_order]: "desc",
           [QUERY_PARAMS.query_string]: "",
@@ -123,18 +138,59 @@ export default function GlobalStocktakeLandingPage() {
         content: (
           <>
             <p className="mb-4">
-              The Global Stocktake is the process by which countries and other stakeholders take stock of collective progress towards the goals of the
-              Paris Agreement. It repeats every five years, and each cycle produces a large body of submitted evidence.
+              The first Global Stocktake concluded on 13 December 2023 at the UN climate summit COP28 in Dubai, United Arab Emirates. It was the
+              world&apos;s first full assessment of progress towards the goals of the Paris Agreement.{" "}
+              <PageLink
+                external
+                underline
+                className="text-text-brand"
+                href="https://unfccc.int/topics/global-stocktake/about-the-global-stocktake/outcome-of-the-first-global-stocktake"
+              >
+                Read the official negotiated outcome
+              </PageLink>
+              .
             </p>
             <p className="mb-4">
-              This library brings those submissions together so they can be searched in full text, alongside the rest of the climate policy record.
-              Submissions come from parties to the agreement and from non-Party stakeholders such as research institutions, civil society and industry
-              groups.
+              The Global Stocktake Explorer brings together more than 1,800+ documents and 200,000+ pages. Search the full text of every document,
+              with documents in other languages translated into English.
+            </p>
+            <p className="mb-4">It includes:</p>
+            <ul className="mb-4 list-disc pl-5">
+              <li>
+                <span className="font-medium">Party submissions:</span> NDCs, National Adaptation Plans, long-term strategies (LT-LEDS), Biennial
+                Transparency, Update and Biennial Reports, National Communications, National Inventory Reports and Adaptation Communications
+              </li>
+              <li>
+                <span className="font-medium">Non-party inputs:</span> IPCC reports, synthesis and technical analysis reports, submissions to the
+                Global Stocktake, Facilitative Sharing of Views and Fast-Start Finance reports
+              </li>
+            </ul>
+            <p className="mb-4">
+              Documents are sourced from UNFCCC portals (Global Stocktake Information Portal, NDC Registry, Adaptation Communications Registry, NAP
+              Central, TNA Portal), Fast-Start Finance country reports and the IPCC, in line with decision 19/CMA.1 para 37.
+            </p>
+            <p className="mb-4">Submissions to the second Global Stocktake will be added from early 2027.</p>
+          </>
+        ),
+      },
+      {
+        title: "Methodology",
+        content: (
+          <>
+            <p className="mb-4">
+              This collection is powered by Climate Policy Radar, turning documents from every country into searchable, accessible and useful
+              information.
             </p>
             <p className="mb-4">
-              Every document currently in this library was submitted to the first Global Stocktake (GST1), and the searches above are scoped to that
-              cycle. You can clear the GST1 filter on the search page at any time to look across every stocktake in the library.
+              We build and train models that automatically read and extract text from PDFs and websites, so we can structure and share information
+              from thousands of documents.
             </p>
+            <p className="mb-4">The models are:</p>
+            <ul className="list-disc pl-5">
+              <li>Trained on expert-built, topic-relevant knowledge</li>
+              <li>Reviewed and improved by researchers and policy professionals</li>
+              <li>Transparent, multilingual, and auditable by design</li>
+            </ul>
           </>
         ),
       },
