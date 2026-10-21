@@ -101,6 +101,9 @@ jobs:
     strategy:
       matrix:
         theme: [cpr, cclw, mcf, ccc]
+    concurrency:
+      group: deploy-staging-${{ matrix.theme }}
+      cancel-in-progress: false
 
     runs-on: ubuntu-latest
     environment: staging
