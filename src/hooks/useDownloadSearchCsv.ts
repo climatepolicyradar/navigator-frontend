@@ -51,7 +51,7 @@ export function buildDownloadSearchCsvUrl(params: IDownloadSearchCsvParams & { a
     params.themeConfig.searchCategories,
     params.themeConfig.searchExcludeLabels
   );
-  url.searchParams.set("filters", JSON.stringify(combinedFilters));
+  url.searchParams.set("filters", deflateFilters(combinedFilters));
   url.searchParams.set("encoding", "deflate");
   url.searchParams.set("order_by", SORT_PARAMS_LOOKUP[params.sort]);
   url.searchParams.set("max_results", DOWNLOAD_MAX_RESULTS.toString());
