@@ -12,6 +12,9 @@ jobs:
       matrix:
         theme: [cpr, cclw, mcf, ccc]
     name: Deploy ${{ github.sha }} to ${{ matrix.theme }} production
+    concurrency:
+      group: deploy-production-${{ matrix.theme }}
+      cancel-in-progress: false
     runs-on: ubuntu-latest
     environment:
       name: production
