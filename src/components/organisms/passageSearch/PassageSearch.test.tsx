@@ -3,6 +3,7 @@ import { act, render, screen, waitFor, within } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import mockRouter from "next-router-mock";
 import * as nextRouterMock from "next-router-mock";
+import { NuqsTestingAdapter } from "nuqs/adapters/testing";
 
 import { EnvConfigContext } from "@/context/EnvConfig";
 import { SearchLevelContext } from "@/context/SearchLevelContext";
@@ -29,74 +30,84 @@ vi.mock("posthog-js/react", () => ({ usePostHog: () => ({ capture: mockCapture }
 // Stubbed so the suite makes no network calls of its own.
 vi.mock("@/hooks/useLabelSearch", () => ({ loadFilteredLabels: () => Promise.resolve([]) }));
 
-// A stateful stand-in for the URL params. nuqs' own testing adapter is fully controlled and
-// reverts the value after every write, which the component reads as a browser navigation.
-// The real adapter (wired in _app.tsx) keeps the value, so this fake reproduces production
-// semantics: read the initial value, then hold what is written. The store is shared across
-// hook instances and keyed by param, because the viewer and its SearchControls both read
-// `q`, `filters` and `sort`, and a write from one must reach the other.
-const url = vi.hoisted(() => {
-  const values = new Map<string, unknown>();
-  const listeners = new Set<() => void>();
-  const notify = () => listeners.forEach((listener) => listener());
+/*
+  The URL as the tests drive it. nuqs' own testing adapter backs this: `searchParams` is the
+  initial querystring, `hasMemory` keeps what the component writes instead of reverting it, and
+  re-rendering the adapter with a new querystring stands in for a navigation.
+
+  Params are held serialised, as they are in a real URL, so every value goes through the parser
+  the component declares - a `sort` the passage search does not offer lands on its default rather
+  than being passed straight through.
+*/
+const url = (() => {
+  let params = new URLSearchParams();
+  let rerenderAdapter: ((search: string) => void) | null = null;
+  // The url as it stood when the component mounted. Writes are measured against this, so the
+  // params a test seeded up front do not read as changes the component made.
+  let baseline = "";
+  const updates: URLSearchParams[] = [];
+
+  // Serialised as the component would write it, so a seed and a write are the same shape.
+  // Filters are seeded as raw JSON, which their parser accepts alongside the deflated form.
+  const serialise = (value: unknown): string => {
+    if (typeof value === "string") return value;
+    if (Array.isArray(value)) return value.join(",");
+    return JSON.stringify(value);
+  };
+
+  const apply = (next: URLSearchParams) => {
+    params = next;
+    rerenderAdapter?.(params.toString());
+  };
+
   return {
-    // Every write the component made, so URL side effects can be asserted directly.
-    writes: [] as { key: string; value: unknown }[],
+    get search() {
+      return params.toString();
+    },
+    // Every param the component changed, in order, as {key, value} pairs. Derived by diffing
+    // successive URLs rather than recorded at the call site, so it reflects the url, not intent.
+    get writes() {
+      const seen: { key: string; value: string | null }[] = [];
+      let previous = new URLSearchParams(baseline);
+      for (const update of updates) {
+        for (const key of new Set([...previous.keys(), ...update.keys()])) {
+          const before = previous.get(key);
+          const after = update.get(key);
+          if (before === after) continue;
+          seen.push({ key, value: after });
+        }
+        previous = update;
+      }
+      return seen;
+    },
     reset: () => {
-      values.clear();
-      url.writes = [];
+      params = new URLSearchParams();
+      baseline = "";
+      updates.length = 0;
+      rerenderAdapter = null;
     },
-    // Puts a param in place as though the page had been opened with it, without logging a write.
+    // Puts a param in place as though the page carried it, without counting as a write.
     seed: (key: string, value: unknown) => {
-      values.set(key, value);
-      notify();
+      const next = new URLSearchParams(params.toString());
+      next.set(key, serialise(value));
+      apply(next);
     },
-    read: (key: string, fallback: unknown) => (values.has(key) ? values.get(key) : fallback),
-    write: (key: string, value: unknown, fallback?: unknown) => {
-      url.writes.push({ key, value });
-      // Clearing a param removes it from the url, leaving every reader on its own default rather
-      // than on a shared null - two components read `filters` with different defaults.
-      if (value === null || value === undefined) values.delete(key);
-      else values.set(key, value ?? fallback);
-      notify();
-    },
-    // nuqs drops a param from the url once it is set back to its parser default, leaving
-    // each reader on its own default rather than on a shared null.
     clear: (key: string) => {
-      values.delete(key);
-      notify();
+      const next = new URLSearchParams(params.toString());
+      next.delete(key);
+      apply(next);
     },
-    subscribe: (listener: () => void) => {
-      listeners.add(listener);
-      return (): void => {
-        listeners.delete(listener);
-      };
+    // Wired up by the render helpers so a seed after mount reaches the mounted adapter.
+    attach: (rerender: (search: string) => void) => {
+      rerenderAdapter = rerender;
+      baseline = params.toString();
     },
-  };
-});
-vi.mock("nuqs", async (importOriginal) => {
-  const actual = await importOriginal<typeof import("nuqs")>();
-  const { useSyncExternalStore } = await import("react");
-  return {
-    ...actual,
-    useQueryState: (key: string, parser: { defaultValue?: unknown; parse?: (value: string) => unknown }) => {
-      // A seeded param stands in for one in the url, so it goes through the parser exactly as the
-      // real adapter would: a value the parser rejects has to land on the default, not pass through.
-      const read = () => {
-        const raw = url.read(key, parser?.defaultValue);
-        if (typeof raw !== "string" || !parser?.parse) return raw;
-        return parser.parse(raw) ?? parser?.defaultValue;
-      };
-      return [
-        useSyncExternalStore(url.subscribe, read, read),
-        (next: unknown) => {
-          url.write(key, next, parser?.defaultValue);
-          return Promise.resolve(new URLSearchParams());
-        },
-      ];
+    record: (next: URLSearchParams) => {
+      updates.push(next);
+      params = next;
     },
   };
-});
+})();
 
 const buildPassage = (overrides: Partial<ISearchPassage> = {}): ISearchPassage => ({
   boldings: [],
@@ -139,11 +150,18 @@ const concepts = [
 
 const renderWith = (ui: React.ReactElement) => {
   const queryClient = new QueryClient({ defaultOptions: { queries: { retry: false } } });
-  return render(
-    <QueryClientProvider client={queryClient}>
-      <EnvConfigContext.Provider value={envConfig}>{ui}</EnvConfigContext.Provider>
-    </QueryClientProvider>
+  // The adapter is re-rendered with a new querystring whenever a test drives the url, which is
+  // how nuqs surfaces an external navigation to the hooks beneath it.
+  const tree = (search: string) => (
+    <NuqsTestingAdapter searchParams={search} hasMemory onUrlUpdate={({ searchParams }) => url.record(searchParams)}>
+      <QueryClientProvider client={queryClient}>
+        <EnvConfigContext.Provider value={envConfig}>{ui}</EnvConfigContext.Provider>
+      </QueryClientProvider>
+    </NuqsTestingAdapter>
   );
+  const result = render(tree(url.search));
+  url.attach((search) => result.rerender(tree(search)));
+  return result;
 };
 
 // The document page: one document, with the PDF preview alongside the results.
@@ -471,15 +489,12 @@ describe("PassageSearch", () => {
 
       await userEvent.type(screen.getByRole("textbox"), " targets{Enter}");
 
-      await waitFor(() =>
-        expect(url.writes).toEqual([
-          { key: "principal_q", value: "renewable targets" },
-          {
-            key: "principal_page_token",
-            value: "1",
-          },
-        ])
-      );
+      /*
+        Only the level's own `q` reaches the url. The page token is reset alongside it, but to the
+        parser's default, and nuqs drops a param at its default - so page one is the absent param.
+      */
+      await waitFor(() => expect(url.writes).toEqual([{ key: "principal_q", value: "renewable targets" }]));
+      expect(url.writes.map(({ key }) => key)).not.toContain("q");
     });
   });
 
@@ -784,7 +799,7 @@ describe("PassageSearch", () => {
       const list = await openDocumentsFilter();
       await userEvent.click(within(list).getByRole("checkbox", { name: /Decree on renewable energy sources/ }));
 
-      await waitFor(() => expect(url.writes).toContainEqual({ key: "docs", value: ["CCLW.document.1.1", "CCLW.document.1.2"] }));
+      await waitFor(() => expect(url.writes).toContainEqual({ key: "docs", value: "CCLW.document.1.1,CCLW.document.1.2" }));
     });
 
     it("leaves the url clean when every document is selected again", async () => {
