@@ -86,11 +86,23 @@ describe("flattenLevelToBaseQuery", () => {
       docs: "CCLW.document.1.1,CCLW.document.1.2",
       filters: deflateFilters(mixedFilters),
       q: "flood risk",
+      sort: null,
     });
   });
 
   it("nulls the params it has no value for, so nothing is inherited", () => {
-    expect(flattenLevelToBaseQuery({ documents: [], filters: null, query: "" })).toEqual({ docs: null, filters: null, q: null });
+    expect(flattenLevelToBaseQuery({ documents: [], filters: null, query: "" })).toEqual({
+      docs: null,
+      filters: null,
+      q: null,
+      sort: null,
+    });
+  });
+
+  // The results page and the document page share the `sort` param but not its values, and the
+  // passages endpoint rejects the results page's orderings, so the sort must not travel.
+  it("drops the sort the page behind it was using", () => {
+    expect(flattenLevelToBaseQuery({ documents: [], filters: null, query: "flood risk" }).sort).toBeNull();
   });
 });
 

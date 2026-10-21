@@ -79,8 +79,14 @@ vi.mock("nuqs", async (importOriginal) => {
   const { useSyncExternalStore } = await import("react");
   return {
     ...actual,
-    useQueryState: (key: string, parser: { defaultValue?: unknown }) => {
-      const read = () => url.read(key, parser?.defaultValue);
+    useQueryState: (key: string, parser: { defaultValue?: unknown; parse?: (value: string) => unknown }) => {
+      // A seeded param stands in for one in the url, so it goes through the parser exactly as the
+      // real adapter would: a value the parser rejects has to land on the default, not pass through.
+      const read = () => {
+        const raw = url.read(key, parser?.defaultValue);
+        if (typeof raw !== "string" || !parser?.parse) return raw;
+        return parser.parse(raw) ?? parser?.defaultValue;
+      };
       return [
         useSyncExternalStore(url.subscribe, read, read),
         (next: unknown) => {
@@ -254,6 +260,30 @@ describe("PassageSearch", () => {
       await searchFor("");
 
       expect(await screen.findByText("Search passages")).toBeInTheDocument();
+    });
+  });
+
+  /*
+    The `sort` param is shared with the results page, whose options the passages endpoint rejects.
+    Anything this search does not offer has to read as its own default rather than be passed on.
+  */
+  describe("handling the sort order", () => {
+    it("sorts by one of its own values from the url", async () => {
+      renderWithPreview({ q: "renewable", sort: "page" });
+
+      await waitFor(() => expect(mockFetchSearchPassages).toHaveBeenCalledWith(expect.objectContaining({ sort: "page" })));
+    });
+
+    it.each(["recent", "oldest", "title_asc", "title_desc"])("falls back to relevance for the results page's %s", async (sort) => {
+      renderWithPreview({ q: "renewable", sort });
+
+      await waitFor(() => expect(mockFetchSearchPassages).toHaveBeenCalledWith(expect.objectContaining({ sort: "relevance" })));
+    });
+
+    it("labels the control as Relevance when the url carries a results page sort", async () => {
+      renderWithPreview({ q: "renewable", sort: "recent" });
+
+      expect(await screen.findByRole("combobox")).toHaveTextContent("Relevance");
     });
   });
 
