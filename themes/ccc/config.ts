@@ -57,6 +57,7 @@ const config: TThemeConfig = {
     "new-search": false,
     searchFamilySummary: true,
     subdivisions: true,
+    themes: false,
   },
 };
 

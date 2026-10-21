@@ -22,6 +22,7 @@ export const CONFIG_FEATURE_KEYS = [
   "new-search",
   "searchFamilySummary",
   "subdivisions",
+  "themes",
 ] as const;
 
 /* Types */
