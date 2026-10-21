@@ -1,6 +1,6 @@
-import { LucidePause, LucidePlay, LucideSearch } from "lucide-react";
+import { LucideSearch } from "lucide-react";
 import Image from "next/image";
-import { useContext, useEffect, useRef, useState } from "react";
+import { useContext } from "react";
 
 import { Button } from "@/components/atoms/button/Button";
 import { FiveColumns } from "@/components/atoms/columns/FiveColumns";
@@ -25,83 +25,22 @@ type TPartnerLogosProps = {
 
 const contentColumnsClass = "col-start-1 -col-end-1 cols-3:col-end-5 cols-4:col-end-7 cols-5:col-start-2";
 
-// The width the logos need on a single line, measured per item so it holds whether they are currently wrapped or not
-const getSingleLineWidth = (list: HTMLUListElement) => {
-  const items = Array.from(list.children);
-  const gap = parseFloat(window.getComputedStyle(list).columnGap) || 0;
-
-  return items.reduce((total, item) => total + item.getBoundingClientRect().width, 0) + gap * Math.max(items.length - 1, 0);
-};
-
-const PartnerLogos = ({ partners }: TPartnerLogosProps) => {
-  const containerRef = useRef<HTMLDivElement>(null);
-  const listRef = useRef<HTMLUListElement>(null);
-  const [shouldScroll, setShouldScroll] = useState(false);
-  const [isPaused, setIsPaused] = useState(false);
-
-  useEffect(() => {
-    const container = containerRef.current;
-    const list = listRef.current;
-    if (!container || !list) return;
-
-    // Only scroll when the logos would not fit on one line, and only for those who have not asked for less motion
-    const motionQuery = window.matchMedia("(prefers-reduced-motion: reduce)");
-    const update = () => setShouldScroll(!motionQuery.matches && getSingleLineWidth(list) > container.clientWidth);
-    const observer = new ResizeObserver(update);
-
-    observer.observe(container);
-    observer.observe(list);
-    motionQuery.addEventListener("change", update);
-
-    return () => {
-      observer.disconnect();
-      motionQuery.removeEventListener("change", update);
-    };
-  }, []);
-
-  const logoItems = partners.logos.map((logo, logoIndex) => (
-    <li key={logoIndex}>
-      <Image {...logo} alt={logo.alt} className="h-12 w-auto" />
-    </li>
-  ));
-
-  return (
-    <div className="col-start-1 -col-end-1 grid grid-cols-subgrid mt-10 mb-8 cols-4:mb-10 cols-5:mb-12">
-      <div className={joinTailwindClasses(contentColumnsClass, "flex flex-row items-center gap-3 mb-6")}>
-        <h2 className="text-lg text-text-primary font-heavy">{partners.title}</h2>
-        {shouldScroll && (
-          <button
-            type="button"
-            onClick={() => setIsPaused((paused) => !paused)}
-            className="p-1.5 text-text-secondary hocus:text-text-primary border border-border-light rounded-full"
-          >
-            {isPaused ? <LucidePlay size={16} /> : <LucidePause size={16} />}
-            <span className="sr-only">{isPaused ? "Play" : "Pause"} scrolling logos</span>
-          </button>
-        )}
-      </div>
-      {/* Sits in the content column so the first logo lines up with the heading
-          and the body copy below, whether the row is static or scrolling. */}
-      <div ref={containerRef} className={joinTailwindClasses(contentColumnsClass, "overflow-hidden")}>
-        <div
-          className={joinTailwindClasses(
-            shouldScroll && "flex w-max animate-marquee hover:[animation-play-state:paused] focus-within:[animation-play-state:paused]",
-            isPaused && "[animation-play-state:paused]"
-          )}
-        >
-          <ul ref={listRef} className={joinTailwindClasses("flex items-center gap-10", shouldScroll ? "shrink-0 pr-10" : "flex-wrap")}>
-            {logoItems}
-          </ul>
-          {shouldScroll && (
-            <ul aria-hidden className="flex shrink-0 items-center gap-10 pr-10">
-              {logoItems}
-            </ul>
-          )}
-        </div>
-      </div>
+const PartnerLogos = ({ partners }: TPartnerLogosProps) => (
+  <div className="col-start-1 -col-end-1 grid grid-cols-subgrid mt-10 mb-8 cols-4:mb-10 cols-5:mb-12">
+    <div className={joinTailwindClasses(contentColumnsClass, "mb-6")}>
+      <h2 className="text-lg text-text-primary font-heavy">{partners.title}</h2>
     </div>
-  );
-};
+    {/* Sits in the content column so the first logo lines up with the heading
+        above and the body copy below, wrapping onto further lines as needed. */}
+    <ul className={joinTailwindClasses(contentColumnsClass, "flex flex-wrap items-center gap-x-10 gap-y-6")}>
+      {partners.logos.map((logo, logoIndex) => (
+        <li key={logoIndex}>
+          <Image {...logo} alt={logo.alt} className="h-12 w-auto" />
+        </li>
+      ))}
+    </ul>
+  </div>
+);
 
 export const LandingPage = ({ config }: TProps) => {
   const { themeConfig } = useContext(ThemeContext);
