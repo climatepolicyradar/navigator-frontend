@@ -9,7 +9,7 @@ import { SearchFiltersDrawer } from "@/components/molecules/searchFiltersDrawer/
 import { SearchFiltersPopover } from "@/components/molecules/searchFiltersPopover/SearchFiltersPopover";
 import { Sort } from "@/components/molecules/sort/Sort";
 import { FiltersContext, TDateRange, TToggleFilterCallback } from "@/context/FiltersContext";
-import { SORT_VALUES, TFilterPathLabel, TFiltersGroupConfig, TSearchLabel, TSortOptionConfig, TSortValue } from "@/types";
+import { TFilterPathLabel, TFiltersGroupConfig, TSearchLabel, TSortOptionConfig, TSortValue } from "@/types";
 import { parseAsDeflatedFilters } from "@/utils/filters/deflate";
 import { sortFilterPathLabels } from "@/utils/filters/filterPaths";
 import { getSearchLabelValues } from "@/utils/filters/getSearchLabelValues";
@@ -66,9 +66,13 @@ export const SearchControls = ({
 
   // Default sort is dynamic
   const fromFilterParam = queryGroupToFilterPaths(filterParam);
+  // Parsed against the options this control actually offers, not every sort value there is. The
+  // param is shared between searches, so a value from another search has to fall back to the
+  // default here; left accepted, it matches no option and the control renders blank.
+  const sortValues = useMemo(() => sortOptions.map((option) => option.paramValue) as [TSortValue, ...TSortValue[]], [sortOptions]);
   const [sortParam, setSortParam] = useQueryState<TSortValue>(
     sortParamKey,
-    parseAsStringLiteral(SORT_VALUES)
+    parseAsStringLiteral(sortValues)
       .withDefault(sortDefault ? sortDefault(fromFilterParam.filterPathLabels, queryParam) : sortOptions[0].paramValue)
       .withOptions({ clearOnDefault: false })
   );

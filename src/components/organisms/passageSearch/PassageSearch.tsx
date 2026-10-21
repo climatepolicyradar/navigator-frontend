@@ -17,12 +17,12 @@ import { ZeroStatePassages } from "@/components/organisms/zeroStates/ZeroStatePa
 import { ID_SEPARATOR } from "@/constants/chars";
 import { PASSAGE_FILTER_GROUPS } from "@/constants/filters";
 import { RESULTS_PER_PAGE } from "@/constants/paging";
-import { PASSAGE_SORT_OPTIONS } from "@/constants/sort";
+import { PASSAGE_SORT_OPTIONS, PASSAGE_SORT_VALUES } from "@/constants/sort";
 import { useEnvConfig } from "@/context/EnvConfig";
 import { posthogEventName } from "@/context/PostHogProvider";
 import { SearchLevelContext } from "@/context/SearchLevelContext";
 import { loadFilteredLabels } from "@/hooks/useLabelSearch";
-import { ISearchPassage, SORT_VALUES, TFamilyDocumentPublic, TPrincipalDrawerTab, TSearchLabel, TSortValue, TTopic } from "@/types";
+import { ISearchPassage, TFamilyDocumentPublic, TPrincipalDrawerTab, TSearchLabel, TSortValue, TTopic } from "@/types";
 import { parseAsDeflatedFilters } from "@/utils/filters/deflate";
 import { queryGroupToFilterPaths } from "@/utils/search/queryGroupToFilterPaths";
 import { conceptFiltersOnly, flattenLevelToBaseQuery, levelParamKeys } from "@/utils/search/searchLevels";
@@ -122,7 +122,7 @@ export const PassageSearch = ({ changeTab, concepts, documents, documentsLabel, 
   const [filterParam, setFilterParams] = useQueryState(paramKeys.filters, parseAsDeflatedFilters);
   const [sortParam] = useQueryState<TSortValue>(
     paramKeys.sort,
-    parseAsStringLiteral(SORT_VALUES).withDefault(PASSAGE_SORT_OPTIONS[0].paramValue).withOptions({ clearOnDefault: false })
+    parseAsStringLiteral(PASSAGE_SORT_VALUES).withDefault(PASSAGE_SORT_OPTIONS[0].paramValue).withOptions({ clearOnDefault: false })
   );
   const [documentsParam, setDocumentsParam] = useQueryState(paramKeys.documents, parseAsArrayOf(parseAsString).withDefault([]));
   const [pageNumber, setPageNumber] = useState<number | null>(null);
