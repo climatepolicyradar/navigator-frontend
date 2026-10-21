@@ -76,6 +76,7 @@ describe("fetchSearchDocuments", () => {
 
   it("excludes the theme's excluded labels from results", async () => {
     await fetchSearchDocuments({
+      apiUrl: TEST_API_URL,
       themeConfig: { ...themeConfigWithCategories([]), searchExcludeLabels: [{ type: "author_type", value: "Non-Party" }] },
     });
 
