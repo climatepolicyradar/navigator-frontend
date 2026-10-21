@@ -5,6 +5,24 @@ on:
   pull_request:
     types: [labeled, unlabeled, synchronize, closed]
     branches: [main]
+  # Lets another workflow (e.g. test-redirects.yml) deploy/refresh a single
+  # theme's review stack directly, without needing the deploy:dev label -
+  # a label added via GITHUB_TOKEN wouldn't trigger the pull_request path
+  # above anyway (GitHub doesn't chain workflow runs off GITHUB_TOKEN events).
+  workflow_call:
+    inputs:
+      pr_number:
+        description: PR number to deploy a review stack for
+        required: true
+        type: number
+      theme:
+        description: Theme to deploy (cpr, cclw, mcf, or ccc)
+        required: true
+        type: string
+    outputs:
+      review_url:
+        description: The deployed review stack's URL
+        value: ${{ jobs.review-stack.outputs.review_url }}
 
 jobs:
   review-stack:
@@ -19,7 +37,7 @@ jobs:
     # the two queueing behind each other on the Pulumi side where a wait
     # step elsewhere can time out waiting for its turn.
     concurrency:
-      group: review-stack-${{ matrix.theme }}-${{ github.event.pull_request.number }}
+      group: review-stack-${{ matrix.theme }}-${{ github.event_name == 'workflow_call' && inputs.pr_number || github.event.pull_request.number }}
       cancel-in-progress: true
     env:
       PULUMI_ACCESS_TOKEN: ${{ secrets.PULUMI_ACCESS_TOKEN }}
@@ -27,7 +45,11 @@ jobs:
       PROJECT: frontend
     strategy:
       matrix:
-        theme: [cpr, cclw, mcf, ccc]
+        # workflow_call only ever wants the one theme it was called for;
+        # the label-driven pull_request trigger still fans out across all four.
+        theme: ${{ github.event_name == 'workflow_call' && fromJson(format('["{0}"]', inputs.theme)) || fromJson('["cpr", "cclw", "mcf", "ccc"]') }}
+    outputs:
+      review_url: ${{ steps.fetch_url.outputs.review_url }}
     steps:
       - name: Check if deploy:dev label is present
         id: label_check
@@ -46,14 +68,19 @@ jobs:
       - name: Determine action
         id: decide
         env:
+          EVENT_NAME: ${{ github.event_name }}
           EVENT_ACTION: ${{ github.event.action }}
           HAS_LABEL: ${{ steps.label_check.outputs.has_label }}
-          PR_NUMBER: ${{ github.event.pull_request.number }}
+          PR_NUMBER: ${{ github.event_name == 'workflow_call' && inputs.pr_number || github.event.pull_request.number }}
           THEME: ${{matrix.theme}}
         run: |
           action="none"
 
-          if [ "$EVENT_ACTION" = "closed" ]; then
+          if [ "$EVENT_NAME" = "workflow_call" ]; then
+            # Direct invocation (e.g. test-redirects.yml): always (re)deploy
+            # the given theme, regardless of deploy:dev label state.
+            action="update"
+          elif [ "$EVENT_ACTION" = "closed" ]; then
             action="destroy"
           elif [ "$HAS_LABEL" = "true" ]; then
             if [ "$EVENT_ACTION" = "labeled" ] || \
@@ -273,7 +300,7 @@ jobs:
           GH_TOKEN: ${{ github.token }}
           THEME: ${{ matrix.theme }}
           REVIEW_URL: ${{ steps.fetch_url.outputs.review_url }}
-          PR_NUMBER: ${{ github.event.pull_request.number }}
+          PR_NUMBER: ${{ github.event_name == 'workflow_call' && inputs.pr_number || github.event.pull_request.number }}
           DEPLOYMENT_ID: ${{ steps.trigger_update.outputs.deployment_id }}
           STACK_NAME: ${{ steps.decide.outputs.stack_name }}
         run: |
