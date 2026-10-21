@@ -80,7 +80,9 @@ const PartnerLogos = ({ partners }: TPartnerLogosProps) => {
           </button>
         )}
       </div>
-      <div ref={containerRef} className="col-start-1 -col-end-1 overflow-hidden">
+      {/* Sits in the content column so the first logo lines up with the heading
+          and the body copy below, whether the row is static or scrolling. */}
+      <div ref={containerRef} className={joinTailwindClasses(contentColumnsClass, "overflow-hidden")}>
         <div
           className={joinTailwindClasses(
             shouldScroll && "flex w-max animate-marquee hover:[animation-play-state:paused] focus-within:[animation-play-state:paused]",
