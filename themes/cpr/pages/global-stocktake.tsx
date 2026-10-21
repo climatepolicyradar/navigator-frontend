@@ -37,9 +37,12 @@ export default function GlobalStocktakeLandingPage() {
     heroImage: {
       src: "/images/global-stocktake/gst-hero.jpg",
     },
-    headerPartner: {
-      label: "In partnership with",
-      markImage: { src: "/images/global-stocktake/mark-unfccc-white.png", alt: "UNFCCC", width: 80, height: 64 },
+    headerLogo: {
+      alt: "Climate Policy Radar, in partnership with UNFCCC",
+      darkSrc: "/images/global-stocktake/logo-cpr-unfccc-dark.png",
+      lightSrc: "/images/global-stocktake/logo-cpr-unfccc-light.png",
+      width: 848,
+      height: 128,
     },
     partners: {
       title: "In partnership with",

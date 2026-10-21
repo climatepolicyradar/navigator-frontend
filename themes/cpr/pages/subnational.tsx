@@ -1,3 +1,4 @@
+import { PageLink } from "@/components/atoms/pageLink/PageLink";
 import { LandingPage } from "@/components/organisms/LandingPage";
 import { ID_SEPARATOR } from "@/constants/chars";
 import { SUBNATIONAL_LABEL_TYPE } from "@/constants/labels";
@@ -135,9 +136,41 @@ export default function NatureLandingPage() {
             <p className="mb-4">
               The dataset will grow over time to include more states and regions. If you cannot find a policy, plan, or law for a particular state or
               region, this does not mean it does not exist. For more on the scope of documents included, see our{" "}
-              <a href="https://github.com/climatepolicyradar/methodology/blob/main/METHODOLOGY.md">methodology page</a>. If you come across any
-              documents missing, <a href="https://form.jotform.com/233294135296359">please get in touch</a>.
+              <PageLink
+                external
+                underline
+                className="text-text-brand"
+                href="https://github.com/climatepolicyradar/methodology/blob/main/METHODOLOGY.md"
+              >
+                methodology page
+              </PageLink>
+              . If you come across any documents missing,{" "}
+              <PageLink external underline className="text-text-brand" href="https://form.jotform.com/233294135296359">
+                please get in touch
+              </PageLink>
+              .
             </p>
+          </>
+        ),
+      },
+      {
+        title: "Methodology",
+        content: (
+          <>
+            <p className="mb-4">
+              This library is powered by Climate Policy Radar, turning documents from every country into searchable, accessible, and useful
+              information.
+            </p>
+            <p className="mb-4">
+              We build and train models that can automatically read and extract text from PDFs and websites, enabling us to structure and share
+              information from thousands of documents.
+            </p>
+            <p className="mb-4">The models are:</p>
+            <ul className="list-disc pl-5">
+              <li>Trained on expert-built, topic-relevant knowledge</li>
+              <li>Reviewed and improved by researchers and policy professionals</li>
+              <li>Transparent, multilingual, and auditable by design</li>
+            </ul>
           </>
         ),
       },

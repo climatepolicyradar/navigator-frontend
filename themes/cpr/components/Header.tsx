@@ -19,13 +19,22 @@ type TThemedProps = {
   theme?: TTheme;
 };
 
-export const CPRLogo = ({ theme = "light" }: TThemedProps) => (
+const CPR_LOGO: NonNullable<IProps["logo"]> = {
+  alt: "Climate Policy Radar logo",
+  darkSrc: "/images/cpr-logo-horizontal-new-dark.svg",
+  lightSrc: "/images/cpr-logo-horizontal-new.svg",
+  width: 228,
+  height: 35,
+};
+
+export const CPRLogo = ({ theme = "light", logo = CPR_LOGO }: TThemedProps & Pick<IProps, "logo">) => (
   <PageLink href="/" data-cy="cpr-logo">
     <Image
-      src={theme === "dark" ? "/images/cpr-logo-horizontal-new-dark.svg" : "/images/cpr-logo-horizontal-new.svg"}
-      width={228}
-      height={35}
-      alt="Climate Policy Radar logo"
+      src={theme === "dark" ? logo.darkSrc : logo.lightSrc}
+      width={logo.width}
+      height={logo.height}
+      alt={logo.alt}
+      className="w-auto h-[35px]"
       data-cy="cpr-logo"
       loading="eager"
     />
@@ -50,7 +59,7 @@ export const CPRMenuButton = ({ theme = "light" }: TThemedProps) => {
 interface IProps {
   landingPage?: boolean;
   landingPageWithHero?: boolean;
-  partner?: TLandingPageConfig["headerPartner"];
+  logo?: TLandingPageConfig["headerLogo"];
 }
 
 const OTHER_APPS = [
@@ -86,7 +95,7 @@ const OtherAppsBar = () => (
   </div>
 );
 
-export const Header = ({ landingPage = false, landingPageWithHero = false, partner }: IProps) => {
+export const Header = ({ landingPage = false, landingPageWithHero = false, logo }: IProps) => {
   const router = useRouter();
   const features = useContext(FeaturesContext);
   const newSearch = features["new-search"];
@@ -107,21 +116,7 @@ export const Header = ({ landingPage = false, landingPageWithHero = false, partn
   return (
     <NavBar
       headerClasses={navBarClasses}
-      logo={<CPRLogo theme={theme} />}
-      logoPartner={
-        partner && (
-          <p
-            className={joinTailwindClasses(
-              "flex items-center gap-1.5 mt-0.5 text-sm leading-4",
-              theme === "dark" ? "text-white" : "text-text-primary"
-            )}
-          >
-            {partner.label}
-            <Image {...partner.markImage} alt="" aria-hidden className="h-4 w-auto" />
-            {partner.markImage.alt}
-          </p>
-        )
-      }
+      logo={<CPRLogo theme={theme} logo={logo} />}
       menu={newSearch ? <MenuButtons theme={theme} /> : <MainMenu icon={menuIcon} links={MENU_LINKS} />}
       showLogo={!isHomePage}
       showSearch={showSearch}

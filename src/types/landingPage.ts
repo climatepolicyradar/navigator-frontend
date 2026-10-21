@@ -35,9 +35,15 @@ export type TLandingPageConfig = {
   heroImage?: {
     src: string;
   };
-  headerPartner?: {
-    label: string;
-    markImage: TImageProps;
+  // Replaces the CPR logo in the header with a co-branded lockup, e.g. CPR
+  // "in partnership with UNFCCC". Needs a light and a dark variant because the
+  // header renders dark over a hero image and light everywhere else.
+  headerLogo?: {
+    alt: string;
+    darkSrc: string;
+    lightSrc: string;
+    width: number;
+    height: number;
   };
   organisation?: {
     name: string;
