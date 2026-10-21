@@ -1,7 +1,9 @@
 import { renderHook, waitFor } from "@testing-library/react";
+import React from "react";
 
 import { DEFAULT_FEATURES } from "@/constants/features";
 import { DEFAULT_THEME_CONFIG } from "@/constants/themeConfig";
+import { EnvConfigContext } from "@/context/EnvConfig";
 import { TFeatures, TSearchLabel, TThemeConfig } from "@/types";
 
 import { useFilterLabels } from "./useFilterLabels";
@@ -15,7 +17,13 @@ vi.mock("@/hooks/useLabelSearch", () => ({
 
 const label = (id: string): TSearchLabel => ({ id }) as TSearchLabel;
 
-const renderUseFilterLabels = (features: TFeatures, themeConfig: TThemeConfig) => renderHook(() => useFilterLabels({ features, themeConfig }));
+const wrapper = ({ children }: { children: React.ReactNode }) => (
+  // @ts-expect-error - partial EnvConfig value is fine for this test
+  <EnvConfigContext.Provider value={{}}>{children}</EnvConfigContext.Provider>
+);
+
+const renderUseFilterLabels = (features: TFeatures, themeConfig: TThemeConfig) =>
+  renderHook(() => useFilterLabels({ features, themeConfig }), { wrapper });
 
 describe("useFilterLabels", () => {
   beforeEach(() => {
@@ -28,7 +36,7 @@ describe("useFilterLabels", () => {
 
     await waitFor(() => expect(mockLoadFilteredLabels).toHaveBeenCalled());
 
-    expect(mockLoadFilteredLabels.mock.calls[0][0]).toEqual({
+    expect(mockLoadFilteredLabels.mock.calls[0][1]).toEqual({
       op: "or",
       filters: [
         { field: "type", op: "contains", value: "concept" },
@@ -44,7 +52,7 @@ describe("useFilterLabels", () => {
 
     await waitFor(() => expect(mockLoadFilteredLabels).toHaveBeenCalled());
 
-    expect(mockLoadFilteredLabels.mock.calls[0][0].filters).toContainEqual({ field: "type", op: "contains", value: "subdivision" });
+    expect(mockLoadFilteredLabels.mock.calls[0][1].filters).toContainEqual({ field: "type", op: "contains", value: "subdivision" });
   });
 
   it("additionally requests litigation label types for themes with the Litigation search category", async () => {
@@ -52,7 +60,7 @@ describe("useFilterLabels", () => {
 
     await waitFor(() => expect(mockLoadFilteredLabels).toHaveBeenCalled());
 
-    expect(mockLoadFilteredLabels.mock.calls[0][0].filters).toEqual(
+    expect(mockLoadFilteredLabels.mock.calls[0][1].filters).toEqual(
       expect.arrayContaining([
         { field: "type", op: "contains", value: "jurisdiction" },
         { field: "type", op: "contains", value: "case_category" },
