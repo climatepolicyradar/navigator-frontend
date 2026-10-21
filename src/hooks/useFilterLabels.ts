@@ -32,6 +32,11 @@ export const useFilterLabels = ({ features, themeConfig }: IProps): TSearchLabel
           op: "contains",
           value: "country",
         },
+        {
+          field: "type",
+          op: "contains",
+          value: "author",
+        },
       ],
     };
     if (features.subdivisions) {
