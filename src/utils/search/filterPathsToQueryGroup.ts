@@ -3,6 +3,9 @@ import { TFilterPathLabel, TSearchQueryGroup, TSearchQueryRule } from "@/types";
 
 export const DEFAULT_SEARCH_QUERY_GROUP: TSearchQueryGroup = { op: "and", filters: [{ field: "labels.value.id", op: "contains", value: "" }] };
 
+// map country + region to geography, so are OR'd together (same type) rather than AND'd
+const getTypeCategory = (type: string): string => (type === "country" || type === "region" ? "geography" : type);
+
 const makeRule = (value: string, checked?: true): TSearchQueryRule => ({
   field: "labels.value.id",
   op: "contains",
@@ -43,9 +46,10 @@ const buildGroupFromPaths = (
 
   const labelsByType = new Map<string, (TSearchQueryGroup | TSearchQueryRule)[]>();
   for (const [type, result] of rootResults) {
-    const bucket = labelsByType.get(type) ?? [];
+    const category = getTypeCategory(type);
+    const bucket = labelsByType.get(category) ?? [];
     bucket.push(result);
-    labelsByType.set(type, bucket);
+    labelsByType.set(category, bucket);
   }
 
   const typeGroupResults: (TSearchQueryGroup | TSearchQueryRule)[] = [];

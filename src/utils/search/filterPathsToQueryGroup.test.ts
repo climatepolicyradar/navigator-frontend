@@ -7,7 +7,7 @@ import { DEFAULT_SEARCH_QUERY_GROUP, filterPathsToQueryGroup } from "./filterPat
  * 1. all TFilterPathLabel are represented in the output by a TSearchQueryRule
  * 2. TFilterPathLabel that are children of another TFilterPathLabel are surrounded by an AND
  * 3. sibling TFilterPathLabel with the same type are surrounded by an OR, except type "concept" which is surrounded by an AND
- * 4. sibling TFilterPathLabel with different types are surrounded by an AND
+ * 4. sibling TFilterPathLabel with different types are surrounded by an AND, except types "country" and "region" which are surrounded by an OR
  * 5. nested TFilterPathLabel are separated from each other by at least one TSearchQueryGroup
  */
 
@@ -445,6 +445,62 @@ export const FILTER_TEST_CASES: TFilterTestCase[] = [
               checked: true,
             },
           ],
+        },
+      ],
+    },
+  },
+  {
+    name: "multiple filters, siblings + different geography types",
+    filterPathLabels: [
+      [
+        {
+          id: "country::GBR",
+          type: "country",
+          value: "GBR",
+        },
+        {
+          id: "region::Europe & Central Asia",
+          type: "region",
+          value: "Europe & Central Asia",
+        },
+      ],
+      [
+        {
+          id: "country::XAB",
+          type: "country",
+          value: "XAB",
+        },
+      ],
+    ],
+    searchQueryGroup: {
+      op: "or",
+      filters: [
+        {
+          op: "and",
+          filters: [
+            {
+              field: "labels.value.id",
+              op: "contains",
+              value: "region::Europe & Central Asia",
+            },
+            {
+              op: "or",
+              filters: [
+                {
+                  field: "labels.value.id",
+                  op: "contains",
+                  value: "country::GBR",
+                  checked: true,
+                },
+              ],
+            },
+          ],
+        },
+        {
+          field: "labels.value.id",
+          op: "contains",
+          value: "country::XAB",
+          checked: true,
         },
       ],
     },
