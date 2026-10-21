@@ -1,7 +1,24 @@
 import { LandingPage } from "@/components/organisms/LandingPage";
+import { ID_SEPARATOR } from "@/constants/chars";
+import { SUBNATIONAL_LABEL_TYPE } from "@/constants/labels";
 import { QUERY_PARAMS } from "@/constants/queryParams";
-import { TLandingPageConfig } from "@/types";
+import { TLandingPageConfig, TSearchQueryRule } from "@/types";
 import { deflateFilters } from "@/utils/filters/deflate";
+
+// Scopes searches to subnational geographies. Shared by the search button and
+// every suggestion so the three cannot drift apart.
+//
+// This is an artificial label: queryGroupToAPIFilters rewrites it into a
+// `labels.value.type contains subdivision` rule when the search request is
+// built (see LABEL_SEARCH_REPLACEMENTS). Filtering on labels.value.type here
+// directly would not survive the URL parser, whose schema only permits
+// labels.value.id and attributes.published_date.
+const SUBNATIONAL_FILTER: TSearchQueryRule = {
+  field: "labels.value.id",
+  op: "contains",
+  value: [SUBNATIONAL_LABEL_TYPE, "Subdivision"].join(ID_SEPARATOR),
+  checked: true,
+};
 
 export default function NatureLandingPage() {
   const landingPageConfig: TLandingPageConfig = {
@@ -27,7 +44,6 @@ export default function NatureLandingPage() {
     search: {
       button: {
         label: "Search subnational laws and policies",
-        // TODO: Remove this, old search does not support domain::Nature
         params: {
           [QUERY_PARAMS.sort_order]: "desc",
           [QUERY_PARAMS.query_string]: "",
@@ -35,24 +51,72 @@ export default function NatureLandingPage() {
         newParams: {
           [QUERY_PARAMS.filters]: deflateFilters({
             op: "and",
-            filters: [
-              {
-                field: "labels.value.type",
-                op: "contains",
-                value: "country",
-                checked: true,
-              },
-              {
-                field: "labels.value.type",
-                op: "not_contains",
-                value: "subdivision",
-                checked: true,
-              },
-            ],
+            filters: [SUBNATIONAL_FILTER],
           }),
         },
       },
-      suggestions: [],
+      suggestions: [
+        {
+          label: "See the latest",
+          params: {
+            [QUERY_PARAMS.sort_order]: "desc",
+          },
+          newParams: {
+            [QUERY_PARAMS.sort]: "recent",
+            [QUERY_PARAMS.filters]: deflateFilters({
+              op: "and",
+              filters: [SUBNATIONAL_FILTER],
+            }),
+          },
+        },
+        {
+          label: "Indigenous Peoples in Brazilian states",
+          params: {
+            [QUERY_PARAMS.country]: "brazil",
+            [QUERY_PARAMS.concept_name]: "indigenous people",
+          },
+          newParams: {
+            [QUERY_PARAMS.filters]: deflateFilters({
+              op: "and",
+              filters: [
+                SUBNATIONAL_FILTER,
+                {
+                  op: "or",
+                  filters: [{ field: "labels.value.id", op: "contains", value: "concept::Q684", checked: true }],
+                },
+                {
+                  op: "and",
+                  filters: [
+                    { field: "labels.value.id", op: "contains", value: "region::LCN" },
+                    {
+                      op: "or",
+                      filters: [{ field: "labels.value.id", op: "contains", value: "country::BRA", checked: true }],
+                    },
+                  ],
+                },
+              ],
+            }),
+          },
+        },
+        {
+          label: "Infrastructure & settlements adaptation",
+          params: {
+            [QUERY_PARAMS.concept_name]: "infrastructure and settlements adaptation",
+          },
+          newParams: {
+            [QUERY_PARAMS.filters]: deflateFilters({
+              op: "and",
+              filters: [
+                SUBNATIONAL_FILTER,
+                {
+                  op: "or",
+                  filters: [{ field: "labels.value.id", op: "contains", value: "concept::Q1834", checked: true }],
+                },
+              ],
+            }),
+          },
+        },
+      ],
     },
     textContent: [
       {
