@@ -27,22 +27,23 @@ on:
 
 jobs:
   setup:
-    # Computes pr_number/themes once so every downstream context (concurrency,
-    # strategy.matrix, steps) can read the same values via needs.setup.outputs
-    # instead of repeating this event_name check in each spot.
+    # Computes is_workflow_call/pr_number/themes once so every downstream
+    # context (concurrency, strategy.matrix, steps) can read the same values
+    # via needs.setup.outputs instead of repeating this check in each spot.
     runs-on: ubuntu-latest
     outputs:
+      is_workflow_call: ${{ steps.vars.outputs.is_workflow_call }}
       pr_number: ${{ steps.vars.outputs.pr_number }}
       themes: ${{ steps.vars.outputs.themes }}
     steps:
-      - name: Compute pr_number and themes
+      - name: Compute is_workflow_call, pr_number and themes
         id: vars
         env:
-          # workflow_call only ever wants the one theme it was called for;
-          # the label-driven pull_request trigger still fans out across all four.
-          PR_NUMBER: ${{ github.event_name == 'workflow_call' && inputs.pr_number || github.event.pull_request.number }}
-          THEMES: ${{ github.event_name == 'workflow_call' && format('["{0}"]', inputs.theme) || '["cpr", "cclw", "mcf", "ccc"]' }}
+          IS_WORKFLOW_CALL: ${{ inputs.theme != '' }}
+          PR_NUMBER: ${{ inputs.theme != '' && inputs.pr_number || github.event.pull_request.number }}
+          THEMES: ${{ inputs.theme != '' && format('["{0}"]', inputs.theme) || '["cpr", "cclw", "mcf", "ccc"]' }}
         run: |
+          echo "is_workflow_call=$IS_WORKFLOW_CALL" >> "$GITHUB_OUTPUT"
           echo "pr_number=$PR_NUMBER" >> "$GITHUB_OUTPUT"
           echo "themes=$THEMES" >> "$GITHUB_OUTPUT"
 
@@ -65,6 +66,7 @@ jobs:
       PULUMI_ACCESS_TOKEN: ${{ secrets.PULUMI_ACCESS_TOKEN }}
       ORG: climatepolicyradar
       PROJECT: frontend
+      IS_WORKFLOW_CALL: ${{ needs.setup.outputs.is_workflow_call }}
       PR_NUMBER: ${{ needs.setup.outputs.pr_number }}
     strategy:
       matrix:
@@ -89,14 +91,13 @@ jobs:
       - name: Determine action
         id: decide
         env:
-          EVENT_NAME: ${{ github.event_name }}
           EVENT_ACTION: ${{ github.event.action }}
           HAS_LABEL: ${{ steps.label_check.outputs.has_label }}
           THEME: ${{matrix.theme}}
         run: |
           action="none"
 
-          if [ "$EVENT_NAME" = "workflow_call" ]; then
+          if [ "$IS_WORKFLOW_CALL" = "true" ]; then
             # Direct invocation (e.g. test-redirects.yml): always (re)deploy
             # the given theme, regardless of deploy:dev label state.
             action="update"
