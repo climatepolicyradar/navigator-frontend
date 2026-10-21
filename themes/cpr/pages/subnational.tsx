@@ -142,7 +142,7 @@ export default function SubnationalLandingPage() {
         ),
       },
     ],
-    requiredFeature: "themes",
+    requiredFeature: "geography-type-filters",
   };
   return <LandingPage config={landingPageConfig} />;
 }
