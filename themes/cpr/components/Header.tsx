@@ -117,7 +117,8 @@ export const Header = ({ landingPage = false, landingPageWithHero = false, partn
             )}
           >
             {partner.label}
-            <Image {...partner.markImage} alt={partner.markImage.alt} className="h-4 w-auto" />
+            <Image {...partner.markImage} alt="" aria-hidden className="h-4 w-auto" />
+            {partner.markImage.alt}
           </p>
         )
       }
