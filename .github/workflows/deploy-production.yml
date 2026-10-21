@@ -24,6 +24,9 @@ permissions:
 jobs:
   deploy-production:
     name: Deploy ${{ github.sha }} to ${{ inputs.theme }} production
+    concurrency:
+      group: deploy-production-${{ inputs.theme }}
+      cancel-in-progress: false
     runs-on: ubuntu-latest
     environment:
       name: production
