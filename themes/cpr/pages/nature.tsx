@@ -147,7 +147,7 @@ export default function NatureLandingPage() {
                 external
                 underline
                 className="text-text-brand"
-                href="https://github.com/climatepolicyradar/methodology/blob/main/METHODOLOGY.md"
+                href="https://github.com/climatepolicyradar/methodology/blob/main/NaturePolicyLibrary-Methodology.md"
               >
                 Nature Policy Library methodology
               </PageLink>{" "}
