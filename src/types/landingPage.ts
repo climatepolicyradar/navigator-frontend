@@ -35,6 +35,10 @@ export type TLandingPageConfig = {
   heroImage?: {
     src: string;
   };
+  headerPartner?: {
+    label: string;
+    markImage: TImageProps;
+  };
   organisation?: {
     name: string;
     logoImage: TImageProps;

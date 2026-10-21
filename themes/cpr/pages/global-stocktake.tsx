@@ -37,6 +37,10 @@ export default function GlobalStocktakeLandingPage() {
     heroImage: {
       src: "/images/global-stocktake/gst-hero.jpg",
     },
+    headerPartner: {
+      label: "In partnership with",
+      markImage: { src: "/images/global-stocktake/mark-unfccc-white.png", alt: "UNFCCC", width: 80, height: 64 },
+    },
     partners: {
       title: "In partnership with",
       logos: [

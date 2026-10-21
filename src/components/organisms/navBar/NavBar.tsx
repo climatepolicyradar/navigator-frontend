@@ -7,13 +7,14 @@ import { joinTailwindClasses } from "@/utils/tailwind";
 interface IProps {
   headerClasses?: string;
   logo: ReactNode;
+  logoPartner?: ReactNode;
   menu: ReactNode;
   showLogo?: boolean;
   showSearch?: boolean;
   topContent?: ReactNode;
 }
 
-export const NavBar = ({ headerClasses = "", logo, menu, showLogo = true, showSearch = true, topContent }: IProps) => {
+export const NavBar = ({ headerClasses = "", logo, logoPartner, menu, showLogo = true, showSearch = true, topContent }: IProps) => {
   const [isScrolled, setIsScrolled] = useState(false);
 
   useEffect(() => {
@@ -38,7 +39,10 @@ export const NavBar = ({ headerClasses = "", logo, menu, showLogo = true, showSe
         columnOverrides={["grid-cols-[1fr_auto]", "cols-2:grid-cols-[1fr_auto]", "cols-3:grid-cols-[1fr_auto]"]}
       >
         {showLogo && (
-          <div className={`flex items-center col-start-1 -col-end-1 cols-4:col-end-3 ${!showSearch ? "col-end-1 cols-2:col-end-2" : ""}`}>{logo}</div>
+          <div className={`flex flex-col justify-center col-start-1 -col-end-1 cols-4:col-end-3 ${!showSearch ? "col-end-1 cols-2:col-end-2" : ""}`}>
+            {logo}
+            {logoPartner}
+          </div>
         )}
         {showSearch && (
           <div className="flex items-center cols-4:col-start-3 cols-4:-col-end-2 cols-5:-col-end-3">

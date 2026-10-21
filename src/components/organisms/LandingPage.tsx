@@ -87,7 +87,7 @@ const PartnerLogos = ({ partners }: TPartnerLogosProps) => {
             isPaused && "[animation-play-state:paused]"
           )}
         >
-          <ul ref={listRef} className={joinTailwindClasses("flex items-center gap-10", shouldScroll ? "shrink-0 pr-10" : "flex-wrap justify-center")}>
+          <ul ref={listRef} className={joinTailwindClasses("flex items-center gap-10", shouldScroll ? "shrink-0 pr-10" : "flex-wrap")}>
             {logoItems}
           </ul>
           {shouldScroll && (
@@ -135,13 +135,13 @@ export const LandingPage = ({ config }: TProps) => {
   return isAvailable ? (
     <Layout title={config.hero.title} description={config.hero.description} theme="cpr">
       <div className={joinTailwindClasses(heroImage && "relative")}>
-        <Header landingPage landingPageWithHero={!!heroImage} />
+        <Header landingPage landingPageWithHero={!!heroImage} partner={config.headerPartner} />
         <main id="main" className={joinTailwindClasses("pb-4 cols-4:pb-12 cols-5:pb-24", mainSpacingClass)}>
           <div className={joinTailwindClasses(textClass, heroImageClass)} style={heroImage && { backgroundImage: `url(${heroImage.src})` }}>
             <FiveColumns>
               <div className="col-start-1 -col-end-1 cols-2:-col-end-2 cols-3:col-end-5 cols-4:col-end-6 cols-5:col-start-2">
                 <span className={joinTailwindClasses("text-base leading-6 font-normal", descriptionTextClass)}>{config.hero.taxonomy}</span>
-                <h1 className="mt-0.5 mb-4 text-5xl text-balance font-heavy leading-none tracking-[-0.4px]">{config.hero.title}</h1>
+                <h1 className="mt-0.5 mb-4 text-5xl text-pretty font-heavy leading-none tracking-[-0.4px]">{config.hero.title}</h1>
               </div>
               <div className={searchColumnsClass}>
                 <p className="text-xl leading-6">{config.hero.description}</p>

@@ -10,6 +10,7 @@ import { NavBar } from "@/components/organisms/navBar/NavBar";
 import { FeaturesContext } from "@/context/FeaturesContext";
 import { MenuButtons } from "@/cpr/components/MenuButtons";
 import { MENU_LINKS } from "@/cpr/constants/menuLinks";
+import { TLandingPageConfig } from "@/types";
 import { joinTailwindClasses } from "@/utils/tailwind";
 
 type TTheme = "light" | "dark";
@@ -49,6 +50,7 @@ export const CPRMenuButton = ({ theme = "light" }: TThemedProps) => {
 interface IProps {
   landingPage?: boolean;
   landingPageWithHero?: boolean;
+  partner?: TLandingPageConfig["headerPartner"];
 }
 
 const OTHER_APPS = [
@@ -84,7 +86,7 @@ const OtherAppsBar = () => (
   </div>
 );
 
-export const Header = ({ landingPage = false, landingPageWithHero = false }: IProps) => {
+export const Header = ({ landingPage = false, landingPageWithHero = false, partner }: IProps) => {
   const router = useRouter();
   const features = useContext(FeaturesContext);
   const newSearch = features["new-search"];
@@ -106,6 +108,19 @@ export const Header = ({ landingPage = false, landingPageWithHero = false }: IPr
     <NavBar
       headerClasses={navBarClasses}
       logo={<CPRLogo theme={theme} />}
+      logoPartner={
+        partner && (
+          <p
+            className={joinTailwindClasses(
+              "flex items-center gap-1.5 mt-0.5 text-sm leading-4",
+              theme === "dark" ? "text-white" : "text-text-primary"
+            )}
+          >
+            {partner.label}
+            <Image {...partner.markImage} alt={partner.markImage.alt} className="h-4 w-auto" />
+          </p>
+        )
+      }
       menu={newSearch ? <MenuButtons theme={theme} /> : <MainMenu icon={menuIcon} links={MENU_LINKS} />}
       showLogo={!isHomePage}
       showSearch={showSearch}
