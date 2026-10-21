@@ -20,7 +20,7 @@ const SUBNATIONAL_FILTER: TSearchQueryRule = {
   checked: true,
 };
 
-export default function NatureLandingPage() {
+export default function SubnationalLandingPage() {
   const landingPageConfig: TLandingPageConfig = {
     hero: {
       taxonomy: "Data library",
@@ -142,7 +142,7 @@ export default function NatureLandingPage() {
         ),
       },
     ],
-    requiredFeature: "themes",
+    requiredFeature: "geography-type-filters",
   };
   return <LandingPage config={landingPageConfig} />;
 }
