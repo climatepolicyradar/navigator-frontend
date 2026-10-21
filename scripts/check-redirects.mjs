@@ -59,7 +59,8 @@ async function checkRule(rule) {
     try {
       result = await headManual(current);
     } catch (err) {
-      return { rule, ok: false, reason: `request failed for ${current}: ${err.message}` };
+      const reason = err.cause?.message ?? err.message;
+      return { rule, ok: false, reason: `request failed for ${current} : ${reason}` };
     }
 
     if (hop === 0 && result.status !== expectedStatus) {
