@@ -1,14 +1,22 @@
 import { LandingPage } from "@/components/organisms/LandingPage";
+import { ID_SEPARATOR } from "@/constants/chars";
+import { SUBNATIONAL_LABEL_TYPE } from "@/constants/labels";
 import { QUERY_PARAMS } from "@/constants/queryParams";
 import { TLandingPageConfig, TSearchQueryRule } from "@/types";
 import { deflateFilters } from "@/utils/filters/deflate";
 
 // Scopes searches to subnational geographies. Shared by the search button and
 // every suggestion so the three cannot drift apart.
+//
+// This is an artificial label: queryGroupToAPIFilters rewrites it into a
+// `labels.value.type contains subdivision` rule when the search request is
+// built (see LABEL_SEARCH_REPLACEMENTS). Filtering on labels.value.type here
+// directly would not survive the URL parser, whose schema only permits
+// labels.value.id and attributes.published_date.
 const SUBNATIONAL_FILTER: TSearchQueryRule = {
-  field: "labels.value.type",
+  field: "labels.value.id",
   op: "contains",
-  value: "subdivision",
+  value: [SUBNATIONAL_LABEL_TYPE, "Subdivision"].join(ID_SEPARATOR),
   checked: true,
 };
 
