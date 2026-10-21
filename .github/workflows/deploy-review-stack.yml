@@ -25,7 +25,28 @@ on:
         value: ${{ jobs.review-stack.outputs.review_url }}
 
 jobs:
+  setup:
+    # Computes pr_number/themes once so every downstream context (concurrency,
+    # strategy.matrix, steps) can read the same values via needs.setup.outputs
+    # instead of repeating this event_name check in each spot.
+    runs-on: ubuntu-latest
+    outputs:
+      pr_number: ${{ steps.vars.outputs.pr_number }}
+      themes: ${{ steps.vars.outputs.themes }}
+    steps:
+      - name: Compute pr_number and themes
+        id: vars
+        env:
+          # workflow_call only ever wants the one theme it was called for;
+          # the label-driven pull_request trigger still fans out across all four.
+          PR_NUMBER: ${{ github.event_name == 'workflow_call' && inputs.pr_number || github.event.pull_request.number }}
+          THEMES: ${{ github.event_name == 'workflow_call' && format('["{0}"]', inputs.theme) || '["cpr", "cclw", "mcf", "ccc"]' }}
+        run: |
+          echo "pr_number=$PR_NUMBER" >> "$GITHUB_OUTPUT"
+          echo "themes=$THEMES" >> "$GITHUB_OUTPUT"
+
   review-stack:
+    needs: setup
     permissions:
       pull-requests: write
       actions: read
@@ -37,17 +58,16 @@ jobs:
     # the two queueing behind each other on the Pulumi side where a wait
     # step elsewhere can time out waiting for its turn.
     concurrency:
-      group: review-stack-${{ matrix.theme }}-${{ github.event_name == 'workflow_call' && inputs.pr_number || github.event.pull_request.number }}
+      group: review-stack-${{ matrix.theme }}-${{ needs.setup.outputs.pr_number }}
       cancel-in-progress: true
     env:
       PULUMI_ACCESS_TOKEN: ${{ secrets.PULUMI_ACCESS_TOKEN }}
       ORG: climatepolicyradar
       PROJECT: frontend
+      PR_NUMBER: ${{ needs.setup.outputs.pr_number }}
     strategy:
       matrix:
-        # workflow_call only ever wants the one theme it was called for;
-        # the label-driven pull_request trigger still fans out across all four.
-        theme: ${{ github.event_name == 'workflow_call' && fromJson(format('["{0}"]', inputs.theme)) || fromJson('["cpr", "cclw", "mcf", "ccc"]') }}
+        theme: ${{ fromJson(needs.setup.outputs.themes) }}
     outputs:
       review_url: ${{ steps.fetch_url.outputs.review_url }}
     steps:
@@ -71,7 +91,6 @@ jobs:
           EVENT_NAME: ${{ github.event_name }}
           EVENT_ACTION: ${{ github.event.action }}
           HAS_LABEL: ${{ steps.label_check.outputs.has_label }}
-          PR_NUMBER: ${{ github.event_name == 'workflow_call' && inputs.pr_number || github.event.pull_request.number }}
           THEME: ${{matrix.theme}}
         run: |
           action="none"
@@ -300,7 +319,6 @@ jobs:
           GH_TOKEN: ${{ github.token }}
           THEME: ${{ matrix.theme }}
           REVIEW_URL: ${{ steps.fetch_url.outputs.review_url }}
-          PR_NUMBER: ${{ github.event_name == 'workflow_call' && inputs.pr_number || github.event.pull_request.number }}
           DEPLOYMENT_ID: ${{ steps.trigger_update.outputs.deployment_id }}
           STACK_NAME: ${{ steps.decide.outputs.stack_name }}
         run: |
