@@ -1,24 +1,41 @@
 import { GetServerSidePropsContext, MetadataRoute } from "next";
 
 import { ApiClient } from "@/api/http-common";
+import { fetchSearchPrincipalDocuments } from "@/api/search";
 import CCCthemeConfig from "@/ccc/config";
-import { TApiFamilyPublic } from "@/types";
+import { ISearchDocument } from "@/types";
 import { extractGeographySlugs } from "@/utils/geography";
 import { toSitemapXml } from "@/utils/sitemap";
 
-const buildSitemap = async (): Promise<MetadataRoute.Sitemap> => {
-  const allCorpusIds = CCCthemeConfig.deprecatedCategories?.options.flatMap((option) => option.value) || [];
-  const allCorpusIdsSearchParams = allCorpusIds.map((corpusId) => ["corpus.import_id", corpusId]);
-  const urlSearchParams = new URLSearchParams(allCorpusIdsSearchParams);
+const SITEMAP_PAGE_SIZE = "500";
 
+const fetchAllPrincipalDocuments = async (): Promise<ISearchDocument[]> => {
+  const documents: ISearchDocument[] = [];
+
+  for (let page = 1; ; page++) {
+    const { results } = await fetchSearchPrincipalDocuments({
+      apiUrl: process.env.CONCEPTS_API_URL,
+      themeConfig: CCCthemeConfig,
+      page_size: SITEMAP_PAGE_SIZE,
+      page_token: String(page),
+      sort: "oldest",
+    });
+    documents.push(...results);
+    if (results.length < Number(SITEMAP_PAGE_SIZE)) break;
+  }
+
+  return documents;
+};
+
+const buildSitemap = async (): Promise<MetadataRoute.Sitemap> => {
   /* Families */
 
-  const familiesData = await fetch(`https://api.climatepolicyradar.org/families/?${urlSearchParams.toString()}`).then((resp) => resp.json());
-  const familiesSiteMap = familiesData.data.map((family: TApiFamilyPublic) => {
+  const principalDocuments = await fetchAllPrincipalDocuments();
+  const familiesSiteMap = principalDocuments.map((document) => {
     return {
-      url: `https://www.climatecasechart.com/document/${family.slug}`,
-      lastModified: family.last_updated_date,
-      changeFrequency: "daily",
+      url: `https://www.climatecasechart.com/document/${document.attributes.deprecated_slug}`,
+      lastModified: document.attributes.last_updated_date as string,
+      changeFrequency: "daily" as const,
       priority: 1,
     };
   });
@@ -33,7 +50,7 @@ const buildSitemap = async (): Promise<MetadataRoute.Sitemap> => {
   const geographiesSiteMap = geographySlugs.map((slug) => ({
     url: `https://www.climatecasechart.com/geographies/${slug}`,
     lastModified: new Date(),
-    changeFrequency: "daily",
+    changeFrequency: "daily" as const,
     priority: 0.75,
   }));
 
