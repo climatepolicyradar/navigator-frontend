@@ -2,8 +2,10 @@ import { DEFAULT_FEATURES } from "@/constants/features";
 import { QUERY_PARAMS } from "@/constants/queryParams";
 import { DEFAULT_THEME_CONFIG } from "@/constants/themeConfig";
 import { GeographyV2, TFeatures, TSearchLabel, TThemeConfig } from "@/types";
-import { deflateFilters } from "@/utils/filters/deflate";
+import { deflateFilters, inflateFilters } from "@/utils/filters/deflate";
+import { getLabelPathSignature } from "@/utils/filters/filterPaths";
 import { filterPathsToQueryGroup } from "@/utils/search/filterPathsToQueryGroup";
+import { queryGroupToFilterPaths } from "@/utils/search/queryGroupToFilterPaths";
 
 import { getGeoSearchLink } from "./getGeoSearchLink";
 
@@ -27,6 +29,10 @@ const geographyLabel: TSearchLabel = {
   value: "Kenya",
   labels: [{ type: "subconcept_of", value: region, timestamp: null, passages_id: null, count: null }],
 };
+
+// The geography filter renders countries under a group root, which the link has to match
+const geographyGroup = { id: "group::geography", type: "group", value: "geography" };
+const geographyPath = [geographyLabel, region, geographyGroup];
 
 const oldSearchFeatures: TFeatures = { ...DEFAULT_FEATURES, "new-search": false };
 const newSearchFeatures: TFeatures = { ...DEFAULT_FEATURES, "new-search": true };
@@ -75,11 +81,7 @@ describe("getGeoSearchLink", () => {
       themeConfig: themeConfigWithNewSearch,
     });
 
-    const expectedFilters = filterPathsToQueryGroup(
-      [[geographyLabel, region], [{ id: "category::Law", type: "category", value: "Law" }]],
-      null,
-      "and"
-    );
+    const expectedFilters = filterPathsToQueryGroup([geographyPath, [{ id: "category::Law", type: "category", value: "Law" }]], null, "and");
 
     expect(result.query).toEqual({ [QUERY_PARAMS.filters]: deflateFilters(expectedFilters) });
   });
@@ -141,7 +143,7 @@ describe("getGeoSearchLink", () => {
       themeConfig: themeConfigWithNewSearch,
     });
 
-    const expectedFilters = filterPathsToQueryGroup([[geographyLabel, region]], null, "and");
+    const expectedFilters = filterPathsToQueryGroup([geographyPath], null, "and");
 
     expect(result.query).toEqual({ [QUERY_PARAMS.filters]: deflateFilters(expectedFilters) });
   });
@@ -167,13 +169,28 @@ describe("getGeoSearchLink", () => {
       themeConfig: themeConfigWithNewSearch,
     });
 
-    const expectedFilters = filterPathsToQueryGroup(
-      [[geographyLabel, region], [{ id: "category::Policy", type: "category", value: "Policy" }]],
-      null,
-      "and"
-    );
+    const expectedFilters = filterPathsToQueryGroup([geographyPath, [{ id: "category::Policy", type: "category", value: "Policy" }]], null, "and");
 
     expect(result.query).toEqual({ [QUERY_PARAMS.filters]: deflateFilters(expectedFilters) });
+  });
+
+  /*
+    The geography panel renders countries beneath a group root, so a path without it matches no
+    checkbox: the filter applies to the results but the boxes read as unticked.
+  */
+  it("roots the geography path where the filter panel renders it", () => {
+    const result = getGeoSearchLink({
+      categoryId: "All",
+      features: newSearchFeatures,
+      geography,
+      geographyLabel,
+      themeConfig: themeConfigWithNewSearch,
+    });
+
+    const filters = JSON.parse(inflateFilters(result.query[QUERY_PARAMS.filters] as string));
+    const checkedPaths = queryGroupToFilterPaths(filters).filterPathLabels;
+
+    expect(checkedPaths.map(getLabelPathSignature)).toEqual(["group::geography/region::Africa/country::Kenya"]);
   });
 
   it("only filters by geography for new search when the category has no known mapping", () => {
@@ -185,7 +202,7 @@ describe("getGeoSearchLink", () => {
       themeConfig: themeConfigWithNewSearch,
     });
 
-    const expectedFilters = filterPathsToQueryGroup([[geographyLabel, region]], null, "and");
+    const expectedFilters = filterPathsToQueryGroup([geographyPath], null, "and");
 
     expect(result.query).toEqual({ [QUERY_PARAMS.filters]: deflateFilters(expectedFilters) });
   });

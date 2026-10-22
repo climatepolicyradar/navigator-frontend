@@ -2,8 +2,13 @@ import { TQueryOverrides } from "@/components/atoms/pageLink/PageLink";
 import { ID_SEPARATOR } from "@/constants/chars";
 import { QUERY_PARAMS } from "@/constants/queryParams";
 import { GeographyV2, TFeatures, TFilterPathLabel, TSearchLabel, TThemeConfig } from "@/types";
+import { createGroupLabel } from "@/utils/filters/createGroupLabel";
 import { deflateFilters } from "@/utils/filters/deflate";
+import { getFilterPathLabel } from "@/utils/filters/filterPaths";
 import { filterPathsToQueryGroup } from "@/utils/search/filterPathsToQueryGroup";
+
+// The group root the Geography filter renders countries beneath, from prepareGeographyFilters
+const GEOGRAPHY_GROUP_PATH_LABEL = getFilterPathLabel(createGroupLabel("geography", []));
 
 // Manually map old categories to new label paths as they intentionally don't match up automatically
 const CATEGORY_LABEL_PATH_LOOKUP: Record<string, string[]> = {
@@ -49,7 +54,10 @@ export const getGeoSearchLink = ({
 
   const checkedLabelPaths: TFilterPathLabel[][] = [];
   const regionLabel = geographyLabel.labels.find((label) => label.type === "subconcept_of" && label.value.type === "region");
-  checkedLabelPaths.push([geographyLabel, regionLabel.value]);
+  // The Geography filter splits regions and countries under their own group roots, so a country
+  // path has to carry that root: the panel matches a checkbox by its whole path, and one rooted
+  // anywhere else matches nothing, leaving every box unticked while the filter still applies.
+  checkedLabelPaths.push([geographyLabel, regionLabel.value, GEOGRAPHY_GROUP_PATH_LABEL]);
 
   if (categoryId !== "All") {
     const categoryLabelPath = CATEGORY_LABEL_PATH_LOOKUP[categoryId];
