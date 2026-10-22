@@ -59,14 +59,13 @@ export interface ISearchPassagesResponse {
   results: ISearchPassage[];
 }
 
+export type TPassagesScope = { kind: "documents"; documentIds: [string, ...string[]] } | { kind: "principal"; principalId: string };
+
 export interface ISearchPassagesParams {
   // API gateway base URL, from `useEnvConfig().API_URL` at the call site.
   apiUrl: string;
   query: string;
-  documents: string[];
-  // The principal the passages belong to. Scopes the search when `documents` is empty, which a
-  // principal whose members are all deleted reports.
-  principalId?: string;
+  scope: TPassagesScope;
   filters?: TSearchQueryGroup | null;
   pageSize?: number;
   // 1-indexed page number. The API's `page` parameter is currently ignored, and its
