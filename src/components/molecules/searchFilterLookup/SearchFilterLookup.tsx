@@ -19,10 +19,14 @@ interface IProps {
   level: number;
 }
 
+// A label matches on its own name, its id, or any of the alternative names the
+// concept is also known by, so that e.g. "first nations" finds "indigenous people"
+const getSearchableLabelTexts = (label: TNestedSearchLabel): string[] => [label.value, label.id, ...(label.alternative_labels ?? [])];
+
 // Gets a label path signature for each label or their children that partially includes the searchText
 const getMatchingLabelPathSignatures = (labels: TNestedSearchLabel[], ancestorPath: TFilterPathLabel[], searchableSearchText: string): string[] => {
   return labels.flatMap((label) => {
-    const isMatch = toSearchableText(label.value).includes(searchableSearchText) || toSearchableText(label.id).includes(searchableSearchText);
+    const isMatch = getSearchableLabelTexts(label).some((text) => toSearchableText(text).includes(searchableSearchText));
     const pathLabels = getFilterPathLabels(label, ancestorPath);
     return [
       ...(isMatch ? [getLabelPathSignature(pathLabels)] : []),
