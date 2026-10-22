@@ -27,7 +27,7 @@ export default function NatureLandingPage() {
     },
     search: {
       button: {
-        label: "Search Nature laws and policies",
+        label: "Search nature laws and policies",
         // TODO: Remove this, old search does not support domain::Nature
         params: {
           [QUERY_PARAMS.sort_order]: "desc",
