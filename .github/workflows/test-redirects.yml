@@ -1,0 +1,73 @@
+# trunk-ignore-all(checkov/CKV2_GHA_1)
+name: Test redirects
+
+# Runs whenever a theme's redirects.json changes: deploys (or refreshes) that
+# theme's review stack directly via deploy-review-stack.yml's workflow_call
+# entry point - independent of whether the PR carries the deploy:dev label -
+# then live-checks every redirect in the file against it.
+#
+# Note: this means touching themes/*/redirects.json causes a real Pulumi
+# deployment on every push to the PR, even without deploy:dev applied.
+on:
+  pull_request:
+    types: [opened, synchronize, reopened]
+    paths:
+      - themes/*/redirects.json
+
+jobs:
+  changed-theme:
+    runs-on: ubuntu-latest
+    permissions:
+      pull-requests: read
+    outputs:
+      theme: ${{ steps.filter.outputs.changes }}
+    steps:
+      - uses: dorny/paths-filter@v4
+        id: filter
+        with:
+          filters: |
+            cpr:
+              - 'themes/cpr/redirects.json'
+            mcf:
+              - 'themes/mcf/redirects.json'
+            cclw:
+              - 'themes/cclw/redirects.json'
+            ccc:
+              - 'themes/ccc/redirects.json'
+
+      # The complexity of adding multiple redirect changes thus spinning up multiple review stacks
+      # and the risk of introducing errors at the edge has lead to allowing only 1 theme at a time
+      - name: Fail if multiple themes' redirects.json changed in one PR
+        if: fromJSON(steps.filter.outputs.changes)[1] != null
+        run: |
+          echo "Multiple themes' redirects.json changed in one PR: ${{ steps.filter.outputs.changes }}"
+          echo "This workflow only checks one theme at a time - split the change into separate PRs."
+          exit 1
+
+  deploy-review-stack:
+    needs: changed-theme
+    if: fromJSON(needs.changed-theme.outputs.theme)[0] != null
+    permissions:
+      pull-requests: write
+      actions: read
+    uses: ./.github/workflows/deploy-review-stack.yml
+    with:
+      pr_number: ${{ github.event.pull_request.number }}
+      theme: ${{ fromJSON(needs.changed-theme.outputs.theme)[0] }}
+    secrets: inherit
+
+  check:
+    needs: [changed-theme, deploy-review-stack]
+    if: fromJSON(needs.changed-theme.outputs.theme)[0] != null
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+
+      - uses: actions/setup-node@v7
+        with:
+          node-version-file: .nvmrc
+
+      - run: |
+          node scripts/check-redirects.mjs \
+            --base-url "${{ needs.deploy-review-stack.outputs.review_url }}" \
+            --file "themes/${{ fromJSON(needs.changed-theme.outputs.theme)[0] }}/redirects.json"

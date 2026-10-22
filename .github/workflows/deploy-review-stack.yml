@@ -5,9 +5,50 @@ on:
   pull_request:
     types: [labeled, unlabeled, synchronize, closed]
     branches: [main]
+  # When this workflow is called by e.g. test-redirects.yml - you need to specify
+  # the `pr_number` as labelling it with `dev:deploy` would not kick of this workflow
+  # as GitHub doesn't chain workflow runs off `GITHUB_TOKEN` events, and `github.event.pull_request.number`
+  # is not available.
+  # We only support 1 theme for now, as we only support 1 output review_url
+  workflow_call:
+    inputs:
+      pr_number:
+        description: PR number to deploy a review stack for
+        required: true
+        type: number
+      theme:
+        description: Theme to deploy (cpr, cclw, mcf, or ccc)
+        required: true
+        type: string
+    outputs:
+      review_url:
+        description: The deployed review stack's URL
+        value: ${{ jobs.review-stack.outputs.review_url }}
 
 jobs:
+  setup:
+    # Computes is_workflow_call/pr_number/themes once so every downstream
+    # context (concurrency, strategy.matrix, steps) can read the same values
+    # via needs.setup.outputs instead of repeating this check in each spot.
+    runs-on: ubuntu-latest
+    outputs:
+      is_workflow_call: ${{ steps.vars.outputs.is_workflow_call }}
+      pr_number: ${{ steps.vars.outputs.pr_number }}
+      themes: ${{ steps.vars.outputs.themes }}
+    steps:
+      - name: Compute is_workflow_call, pr_number and themes
+        id: vars
+        env:
+          IS_WORKFLOW_CALL: ${{ inputs.theme != '' }}
+          PR_NUMBER: ${{ inputs.theme != '' && inputs.pr_number || github.event.pull_request.number }}
+          THEMES: ${{ inputs.theme != '' && format('["{0}"]', inputs.theme) || '["cpr", "cclw", "mcf", "ccc"]' }}
+        run: |
+          echo "is_workflow_call=$IS_WORKFLOW_CALL" >> "$GITHUB_OUTPUT"
+          echo "pr_number=$PR_NUMBER" >> "$GITHUB_OUTPUT"
+          echo "themes=$THEMES" >> "$GITHUB_OUTPUT"
+
   review-stack:
+    needs: setup
     permissions:
       pull-requests: write
       actions: read
@@ -19,15 +60,19 @@ jobs:
     # the two queueing behind each other on the Pulumi side where a wait
     # step elsewhere can time out waiting for its turn.
     concurrency:
-      group: review-stack-${{ matrix.theme }}-${{ github.event.pull_request.number }}
+      group: review-stack-${{ matrix.theme }}-${{ needs.setup.outputs.pr_number }}
       cancel-in-progress: true
     env:
       PULUMI_ACCESS_TOKEN: ${{ secrets.PULUMI_ACCESS_TOKEN }}
       ORG: climatepolicyradar
       PROJECT: frontend
+      IS_WORKFLOW_CALL: ${{ needs.setup.outputs.is_workflow_call }}
+      PR_NUMBER: ${{ needs.setup.outputs.pr_number }}
     strategy:
       matrix:
-        theme: [cpr, cclw, mcf, ccc]
+        theme: ${{ fromJson(needs.setup.outputs.themes) }}
+    outputs:
+      review_url: ${{ steps.fetch_url.outputs.review_url }}
     steps:
       - name: Check if deploy:dev label is present
         id: label_check
@@ -48,12 +93,15 @@ jobs:
         env:
           EVENT_ACTION: ${{ github.event.action }}
           HAS_LABEL: ${{ steps.label_check.outputs.has_label }}
-          PR_NUMBER: ${{ github.event.pull_request.number }}
           THEME: ${{matrix.theme}}
         run: |
           action="none"
 
-          if [ "$EVENT_ACTION" = "closed" ]; then
+          if [ "$IS_WORKFLOW_CALL" = "true" ]; then
+            # Direct invocation (e.g. test-redirects.yml): always (re)deploy
+            # the given theme, regardless of deploy:dev label state.
+            action="update"
+          elif [ "$EVENT_ACTION" = "closed" ]; then
             action="destroy"
           elif [ "$HAS_LABEL" = "true" ]; then
             if [ "$EVENT_ACTION" = "labeled" ] || \
@@ -273,7 +321,6 @@ jobs:
           GH_TOKEN: ${{ github.token }}
           THEME: ${{ matrix.theme }}
           REVIEW_URL: ${{ steps.fetch_url.outputs.review_url }}
-          PR_NUMBER: ${{ github.event.pull_request.number }}
           DEPLOYMENT_ID: ${{ steps.trigger_update.outputs.deployment_id }}
           STACK_NAME: ${{ steps.decide.outputs.stack_name }}
         run: |

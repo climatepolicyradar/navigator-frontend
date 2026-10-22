@@ -148,6 +148,7 @@ const config: TThemeConfig = {
     "new-search": false,
     searchFamilySummary: true,
     subdivisions: false,
+    themes: false,
   },
 };
 

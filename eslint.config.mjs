@@ -40,6 +40,8 @@ const eslintConfig = [
       // k6 scripts uploaded to Grafana Synthetic Monitoring; they import from
       // k6/*, which resolves only inside the k6 runtime.
       "infra/observability/*.js",
+      // standalone CLI scripts run directly with node, not part of the Next.js/TS program
+      "scripts/*.mjs",
     ],
   },
   {
