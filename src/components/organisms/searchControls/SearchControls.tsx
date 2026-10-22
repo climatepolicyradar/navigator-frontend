@@ -16,6 +16,7 @@ import { getSearchLabelValues } from "@/utils/filters/getSearchLabelValues";
 import { groupSearchLabels } from "@/utils/filters/groupSearchLabels";
 import { nestSearchLabels } from "@/utils/filters/nestSearchLabels";
 import { updateCheckedLabelPaths } from "@/utils/filters/updateCheckedLabelPaths";
+import { filterGroupFilters } from "@/utils/search/filterGroupFilters";
 import { DEFAULT_SEARCH_QUERY_GROUP, filterPathsToQueryGroup } from "@/utils/search/filterPathsToQueryGroup";
 import { queryGroupToFilterPaths } from "@/utils/search/queryGroupToFilterPaths";
 import { PAGE_TOKEN_PARAM_KEY } from "@/utils/search/searchLevels";
@@ -64,8 +65,28 @@ export const SearchControls = ({
   const [filterParam, setFilterParam] = useQueryState(filterParamKey, parseAsDeflatedFilters.withDefault(DEFAULT_SEARCH_QUERY_GROUP));
   const [, setCurrentPage] = useQueryState(pageParamKey, parseAsString.withDefault("1"));
 
+  // The labels each group offers, which say which filter types these controls can apply
+  const nestedLabels = useMemo(() => nestSearchLabels(labels), [labels]);
+  const filterGroupsWithLabels = useMemo(() => groupSearchLabels(nestedLabels, filterGroups), [filterGroups, nestedLabels]);
+
+  /*
+    The param is shared between searches, so it can hold filters these controls do not offer -
+    a link from the results page carries its whole tree to a passage search, which only filters
+    on topics. Read against the groups on show, so a filter that is not applied is not drawn as a
+    chip: the chip would do nothing when removed, and names the raw id, as the labels behind the
+    other filter types are never loaded here.
+
+    Read against the prepared groups rather than the config: a group's declared root types leave
+    out the types nested beneath them (Geography is rooted on regions but offers their countries
+    too), and a rule dropped here is erased from the url by the next toggle.
+  */
+  const ownedFilterParam = useMemo(
+    () => filterGroupFilters(filterParam, filterGroupsWithLabels) ?? DEFAULT_SEARCH_QUERY_GROUP,
+    [filterParam, filterGroupsWithLabels]
+  );
+
   // Default sort is dynamic
-  const fromFilterParam = queryGroupToFilterPaths(filterParam);
+  const fromFilterParam = queryGroupToFilterPaths(ownedFilterParam);
   // Parsed against the options this control actually offers, not every sort value there is. The
   // param is shared between searches, so a value from another search has to fall back to the
   // default here; left accepted, it matches no option and the control renders blank.
@@ -86,14 +107,12 @@ export const SearchControls = ({
   }
 
   // Chips for already-checked filters must resolve to a name even if that label falls outside the (possibly narrower) set offered in the menu, so fall back to `nameLabels`.
-  const nestedLabels = useMemo(() => nestSearchLabels(labels), [labels]);
   const nestedNameLabels = useMemo(() => {
     const extra = (nameLabels ?? []).filter((label) => !labels.some((l) => l.id === label.id));
     return nestSearchLabels([...labels, ...extra]);
   }, [labels, nameLabels]);
 
   const labelValues = useMemo(() => getSearchLabelValues(nestedNameLabels), [nestedNameLabels]);
-  const filterGroupsWithLabels = useMemo(() => groupSearchLabels(nestedLabels, filterGroups), [filterGroups, nestedLabels]);
 
   const { appliedDateRange, checkedLabelPaths } = useMemo(() => {
     return {

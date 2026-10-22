@@ -74,6 +74,26 @@ describe("AppliedFilters", () => {
     expect(toggleFilter).toHaveBeenCalledWith(topLevelPath, false);
   });
 
+  it("names the filter in the remove button as the chip does", () => {
+    const rawPath: TFilterPathLabel[] = [{ id: "region::ECS", type: "region", value: "ECS" }];
+    render(
+      <FiltersContext.Provider
+        value={{
+          appliedDateRange: null,
+          checkedLabelPaths: [rawPath],
+          clearFilters: vi.fn(),
+          labelValues: { "region::ECS": "Europe & Central Asia" },
+          setDateRange: vi.fn(),
+          toggleFilter: vi.fn(),
+        }}
+      >
+        <AppliedFilters showClearAll />
+      </FiltersContext.Provider>
+    );
+
+    expect(screen.getByRole("button", { name: "Remove Europe & Central Asia" })).toBeInTheDocument();
+  });
+
   it("calls clearFilters when clicking 'Clear all'", async () => {
     const clearFilters = vi.fn();
     renderWithFiltersContext([topLevelPath], clearFilters);

@@ -61,7 +61,7 @@ export const AppliedFilters = ({ ancestorPath = [], className, filterGroups = []
             <button
               type="button"
               className="p-1 -m-1 text-inky-blue"
-              aria-label={`Remove ${label.value}`}
+              aria-label={`Remove ${labelValues[label.id] || label.value}`}
               onClick={() => toggleFilter(labelPath, false)}
             >
               <LucideX size={16} aria-hidden={true} />
