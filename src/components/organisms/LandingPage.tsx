@@ -34,12 +34,13 @@ const PartnerLogos = ({ partners }: TPartnerLogosProps) => (
       <div className={joinTailwindClasses(contentColumnsClass, "mb-6")}>
         <h2 className="text-lg text-text-primary font-heavy">{partners.title}</h2>
       </div>
-      {/* One row from tablet up, where the logos shrink to share the width.
-          Narrower than that they would be illegible, so they wrap instead. */}
-      <ul className={joinTailwindClasses(contentColumnsClass, "flex flex-wrap cols-2:flex-nowrap items-center justify-between gap-6")}>
+      {/* Starts at the text's left edge but runs on to the end of the grid, so
+          the logos have the rest of the page width to spread into at a readable
+          size rather than squeezing into the narrower text column. */}
+      <ul className="col-start-1 -col-end-1 cols-5:col-start-2 flex flex-wrap items-center gap-x-10 gap-y-6">
         {partners.logos.map((logo, logoIndex) => (
-          <li key={logoIndex} className="min-w-0 shrink">
-            <Image {...logo} alt={logo.alt} className="h-12 max-w-full w-auto object-contain" />
+          <li key={logoIndex}>
+            <Image {...logo} alt={logo.alt} className="h-12 w-auto object-contain" />
           </li>
         ))}
       </ul>
