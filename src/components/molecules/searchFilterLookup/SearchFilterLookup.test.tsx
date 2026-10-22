@@ -10,7 +10,14 @@ import { SearchFilterLookup } from "./SearchFilterLookup";
 const renderAndSearch = async (labels: TNestedSearchLabel[], searchText: string) => {
   render(
     <FiltersContext.Provider
-      value={{ appliedDateRange: null, checkedLabelPaths: [], clearFilters: vi.fn(), labelValues: {}, setDateRange: vi.fn(), toggleFilter: vi.fn() }}
+      value={{
+        appliedDateRange: null,
+        checkedLabelPaths: [],
+        clearFilters: vi.fn(),
+        labelValues: {},
+        setDateRange: vi.fn(),
+        toggleFilter: vi.fn(),
+      }}
     >
       <SearchFilterLookup ancestorPath={[]} labels={labels} level={1} />
     </FiltersContext.Provider>
@@ -42,7 +49,14 @@ describe("SearchFilterLookup", () => {
         id: "parent",
         type: "author",
         value: "Parent Node",
-        children: [{ id: "grandchild", type: "author", value: "electric vehicles", children: [] }],
+        children: [
+          {
+            id: "grandchild",
+            type: "author",
+            value: "electric vehicles",
+            children: [],
+          },
+        ],
       },
     ];
 
@@ -51,13 +65,75 @@ describe("SearchFilterLookup", () => {
     expect(screen.getByText("Electric vehicles")).toBeInTheDocument();
   });
 
+  it("shows a label whose alternative name matches the search term", async () => {
+    const labels: TNestedSearchLabel[] = [
+      {
+        id: "concept::Q684",
+        type: "concept",
+        value: "indigenous people",
+        alternative_labels: ["first nations"],
+        children: [],
+      },
+    ];
+
+    await renderAndSearch(labels, "first nations");
+
+    expect(screen.getByText("Indigenous people")).toBeInTheDocument();
+  });
+
+  it("shows a grandchild whose alternative name matches the search term", async () => {
+    const labels: TNestedSearchLabel[] = [
+      {
+        id: "parent",
+        type: "concept",
+        value: "Parent Node",
+        children: [
+          {
+            id: "concept::Q684",
+            type: "concept",
+            value: "indigenous people",
+            alternative_labels: ["first nations"],
+            children: [],
+          },
+        ],
+      },
+    ];
+
+    await renderAndSearch(labels, "first nations");
+
+    expect(screen.getByText("Indigenous people")).toBeInTheDocument();
+  });
+
+  it("does not show a label whose alternative names do not match the search term", async () => {
+    const labels: TNestedSearchLabel[] = [
+      {
+        id: "concept::Q1370",
+        type: "concept",
+        value: "Solar Panel",
+        alternative_labels: ["photovoltaics"],
+        children: [],
+      },
+    ];
+
+    await renderAndSearch(labels, "first nations");
+
+    expect(screen.queryByText("Solar Panel")).not.toBeInTheDocument();
+  });
+
   it("shows a child whose deeper descendant matches the search term", async () => {
     const labels: TNestedSearchLabel[] = [
       {
         id: "parent",
         type: "author",
         value: "Parent Node",
-        children: [{ id: "grandchild", type: "author", value: "electric vehicles", children: [] }],
+        children: [
+          {
+            id: "grandchild",
+            type: "author",
+            value: "electric vehicles",
+            children: [],
+          },
+        ],
       },
     ];
 
