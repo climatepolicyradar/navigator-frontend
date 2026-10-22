@@ -451,6 +451,7 @@ describe("PassageSearch", () => {
         expect(await screen.findByText("Search passages")).toBeInTheDocument();
         expect(mockFetchSearchPassages).not.toHaveBeenCalled();
       });
+      it("draws no chip for one", async () => {
     });
   });
 
