@@ -214,6 +214,8 @@ const makeLabel = (id: string, startIndex: number, endIndex: number): IPassageLa
 // A geography filter, as the results page writes it - not this search's to apply.
 const countryRule = { field: "labels.value.id", op: "contains", value: "country::LVA", checked: true } as const;
 
+const dateRule = { field: "attributes.published_date", key: "published_date", op: "gte", value: "2021-01-01" } as const;
+
 const filterBy = async (filters: TSearchQueryGroup) => {
   await act(async () => url.seed("filters", filters));
 };
@@ -452,6 +454,12 @@ describe("PassageSearch", () => {
         expect(mockFetchSearchPassages).not.toHaveBeenCalled();
       });
       it("draws no chip for one", async () => {
+        renderWithPreview({ q: "renewable", filters: { op: "and", filters: [...topicFilter.filters, countryRule, dateRule] } });
+
+        const applied = await screen.findByRole("list", { name: "Applied filters" });
+        expect(within(applied).queryByRole("button", { name: "Remove LVA" })).not.toBeInTheDocument();
+        expect(within(applied).queryByRole("button", { name: "Remove date range" })).not.toBeInTheDocument();
+      });
     });
   });
 
