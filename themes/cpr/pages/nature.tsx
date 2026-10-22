@@ -1,3 +1,4 @@
+import { PageLink } from "@/components/atoms/pageLink/PageLink";
 import { LandingPage } from "@/components/organisms/LandingPage";
 import { QUERY_PARAMS } from "@/constants/queryParams";
 import { TLandingPageConfig } from "@/types";
@@ -104,15 +105,21 @@ export default function NatureLandingPage() {
           <>
             <p>
               The Nature Policy Library brings together over 3000 national laws and policies that document how countries are implementing the{" "}
-              <a href="https://www.cbd.int/gbf">Kunming-Montreal Global Biodiversity Framework</a>. Nature-based solutions – actions that work with
-              nature to address wider challenges, including climate change – are a particular area of interest. To be included, documents must be
-              motivated by biodiversity or nature concerns, be a national environmental framework law (e.g. Environment Act), or govern a priority
-              sector (e.g. forestry, agriculture) – and must carry legal force or set out a current policy objective.
+              <PageLink external underline className="text-text-brand" href="https://www.cbd.int/gbf">
+                Kunming-Montreal Global Biodiversity Framework
+              </PageLink>
+              . Nature-based solutions – actions that work with nature to address wider challenges, including climate change – are a particular area
+              of interest. To be included, documents must be motivated by biodiversity or nature concerns, be a national environmental framework law
+              (e.g. Environment Act), or govern a priority sector (e.g. forestry, agriculture) – and must carry legal force or set out a current
+              policy objective.
             </p>
             <p>
               This is a first step, not a comprehensive picture. Coverage currently builds on the approach we have developed for climate policy,
               alongside new additions sourced specifically for this collection. We will continue to broaden both coverage and scope, and we welcome
-              collaboration, contributions, and feedback – get in touch: <a href="mailto:info@climatepolicyradar.org">info@climatepolicyradar.org</a>
+              collaboration, contributions, and feedback – get in touch:{" "}
+              <PageLink external underline className="text-text-brand" href="mailto:info@climatepolicyradar.org">
+                info@climatepolicyradar.org
+              </PageLink>
             </p>
           </>
         ),
@@ -129,11 +136,23 @@ export default function NatureLandingPage() {
               We build and train models that can automatically read and extract text from PDFs and websites, enabling us to structure and share
               information from thousands of documents.
             </p>
-            <ul className="list-disc pl-5">
+            <ul className="mb-4 list-disc pl-5">
               <li>Trained on expert-built, topic-relevant knowledge</li>
               <li>Reviewed and improved by researchers and policy professionals</li>
               <li>Transparent, multilingual, and auditable by design</li>
             </ul>
+            <p>
+              Read our{" "}
+              <PageLink
+                external
+                underline
+                className="text-text-brand"
+                href="https://github.com/climatepolicyradar/methodology/blob/main/NaturePolicyLibrary-Methodology.md"
+              >
+                Nature Policy Library methodology
+              </PageLink>{" "}
+              for more information.
+            </p>
           </>
         ),
       },
