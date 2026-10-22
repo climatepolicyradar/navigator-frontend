@@ -8,7 +8,7 @@ import { deflateFilters } from "@/utils/filters/deflate";
 
 export const SEARCH_PASSAGES_MIN_SHOULD_MATCH = 0.7;
 
-const searchPassagesUrl = (apiUrl: string): string => `${apiUrl.replace(/\/$/, "")}/search/passages/within`;
+const searchPassagesUrl = (apiUrl: string): string => `${apiUrl.replace(/\/$/, "")}/search/passages:within`;
 
 const scopeDocumentIds = (scope: TPassagesScope): string[] => {
   switch (scope.kind) {

@@ -35,7 +35,7 @@ describe("fetchSearchPassages", () => {
       scope: { kind: "documents", documentIds: ["CCLW.doc.1.0", "CCLW.doc.2.0"] },
     });
 
-    expect(requestedUrl().pathname).toBe("/search/passages/within");
+    expect(requestedUrl().pathname).toBe("/search/passages:within");
     expect(requestedDocumentIds()).toEqual(["CCLW.doc.1.0", "CCLW.doc.2.0"]);
   });
 
