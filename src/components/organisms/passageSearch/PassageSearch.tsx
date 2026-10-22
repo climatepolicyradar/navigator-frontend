@@ -1,4 +1,4 @@
-import { useInfiniteQuery } from "@tanstack/react-query";
+import { skipToken, useInfiniteQuery } from "@tanstack/react-query";
 import { useRouter } from "next/router";
 import { parseAsArrayOf, parseAsString, parseAsStringLiteral, useQueryState } from "nuqs";
 import { usePostHog } from "posthog-js/react";
@@ -22,7 +22,7 @@ import { useEnvConfig } from "@/context/EnvConfig";
 import { posthogEventName } from "@/context/PostHogProvider";
 import { SearchLevelContext } from "@/context/SearchLevelContext";
 import { loadFilteredLabels } from "@/hooks/useLabelSearch";
-import { ISearchPassage, TFamilyDocumentPublic, TPrincipalDrawerTab, TSearchLabel, TSortValue, TTopic } from "@/types";
+import { ISearchPassage, TFamilyDocumentPublic, TPassagesScope, TPrincipalDrawerTab, TSearchLabel, TSortValue, TTopic } from "@/types";
 import { parseAsDeflatedFilters } from "@/utils/filters/deflate";
 import { queryGroupToFilterPaths } from "@/utils/search/queryGroupToFilterPaths";
 import { conceptFiltersOnly, flattenLevelToBaseQuery, levelParamKeys } from "@/utils/search/searchLevels";
@@ -62,6 +62,22 @@ const toPassageBlock = (passage: ISearchPassage, documentTitle: string): TPassag
   labels: passage.labels ?? undefined,
   pages: passage.pages?.map((pageNumber) => ({ page_number: pageNumber })),
 });
+
+const getPassagesScope = (selectedDocumentIds: string[], allDocumentCount: number, principalId?: string): TPassagesScope | null => {
+  const isNarrowedToSubset = selectedDocumentIds.length > 0 && selectedDocumentIds.length < allDocumentCount;
+
+  if (principalId && !isNarrowedToSubset) {
+    return { kind: "principal", principalId };
+  }
+
+  const [firstDocumentId, ...otherDocumentIds] = selectedDocumentIds;
+
+  if (firstDocumentId === undefined) {
+    return null;
+  }
+
+  return { kind: "documents", documentIds: [firstDocumentId, ...otherDocumentIds] };
+};
 
 // Colours are assigned from the selected topics rather than per passage, so a topic keeps one colour across every result
 const getTopicColours = (topicIds: string[]) =>
@@ -176,41 +192,44 @@ export const PassageSearch = ({ changeTab, concepts, documents, documentsLabel, 
   // list is empty for a principal whose documents are all deleted, and an empty scope group is
   // dropped by the API, which would widen the search to the whole corpus. Narrowing to a subset
   // still enumerates ids, as that is the only way to express it.
-  const isNarrowedToSubset = selectedDocumentIds.length > 0 && selectedDocumentIds.length < allDocumentIds.length;
-  const scopedDocumentIds = principalId && !isNarrowedToSubset ? [] : selectedDocumentIds;
-  const hasScope = scopedDocumentIds.length > 0 || !!principalId;
+  const scope = useMemo(
+    () => getPassagesScope(selectedDocumentIds, allDocumentIds.length, principalId),
+    [selectedDocumentIds, allDocumentIds.length, principalId]
+  );
 
-  const hasSearch = (queryParam.length > 0 || !!conceptFilterParam) && hasScope;
+  const hasSearch = (queryParam.length > 0 || !!conceptFilterParam) && scope !== null;
 
   const { data, isError, isFetching, isPending, fetchNextPage, hasNextPage, isFetchingNextPage } = useInfiniteQuery({
-    queryKey: ["passages", scopedDocumentIds, principalId, queryParam, conceptFilterParam, sortParam, API_URL],
-    queryFn: async ({ pageParam, signal }) => {
-      const response = await fetchSearchPassages({
-        apiUrl: API_URL,
-        query: queryParam,
-        documents: scopedDocumentIds,
-        principalId,
-        filters: conceptFilterParam,
-        pageSize: RESULTS_PER_PAGE,
-        sort: sortParam,
-        pageToken: pageParam,
-        signal,
-      });
+    queryKey: ["passages", scope, queryParam, conceptFilterParam, sortParam, API_URL],
+    queryFn:
+      scope === null
+        ? skipToken
+        : async ({ pageParam, signal }) => {
+            const response = await fetchSearchPassages({
+              apiUrl: API_URL,
+              query: queryParam,
+              scope,
+              filters: conceptFilterParam,
+              pageSize: RESULTS_PER_PAGE,
+              sort: sortParam,
+              pageToken: pageParam,
+              signal,
+            });
 
-      // Reported from the fetcher so each page is reported once, rather than on every render.
-      // `search_index` 1 is the search the view opened with; `page` above 1 is loading more of it
-      if (pageParam === 1) searchIndex.current += 1;
-      posthog?.capture(posthogEventName("search", "results", "fetch"), {
-        search_level: searchLevel,
-        search_query: queryParam || undefined,
-        search_index: searchIndex.current,
-        page: pageParam,
-        results_total: response.total_size ?? 0,
-        documents_total: selectedDocumentIds.length,
-      });
+            // Reported from the fetcher so each page is reported once, rather than on every render.
+            // `search_index` 1 is the search the view opened with; `page` above 1 is loading more of it
+            if (pageParam === 1) searchIndex.current += 1;
+            posthog?.capture(posthogEventName("search", "results", "fetch"), {
+              search_level: searchLevel,
+              search_query: queryParam || undefined,
+              search_index: searchIndex.current,
+              page: pageParam,
+              results_total: response.total_size ?? 0,
+              documents_total: selectedDocumentIds.length,
+            });
 
-      return response;
-    },
+            return response;
+          },
     initialPageParam: 1,
     // The API leaves `next_page` and `total_pages` unpopulated, so there is no cursor to
     // follow. Paging is driven by the running result count against the reported total.
