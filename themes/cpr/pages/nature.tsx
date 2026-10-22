@@ -27,7 +27,7 @@ export default function NatureLandingPage() {
     },
     search: {
       button: {
-        label: "Search Nature laws and policies",
+        label: "Search nature laws and policies",
         // TODO: Remove this, old search does not support domain::Nature
         params: {
           [QUERY_PARAMS.sort_order]: "desc",
@@ -104,7 +104,7 @@ export default function NatureLandingPage() {
         content: (
           <>
             <p>
-              The Nature Policy Library brings together over 3000 national laws and policies that document how countries are implementing the{" "}
+              The Nature Policy Library brings together over 3000 national laws and policies that shape how countries are implementing the{" "}
               <PageLink external underline className="text-text-brand" href="https://www.cbd.int/gbf">
                 Kunming-Montreal Global Biodiversity Framework
               </PageLink>
