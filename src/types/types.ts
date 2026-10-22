@@ -138,7 +138,14 @@ export type TCategory =
   | "UNFCCC";
 export type TCorpusTypeSubCategory = "AF" | "CIF" | "GCF" | "GEF" | "Laws and Policies" | "Intl. agreements" | "Litigation" | "Reports";
 
-export type TAttributionCategory = "Law" | "Litigation" | "Multilateral Climate Fund project" | "Policy" | "Report" | "UN submission";
+export type TAttributionCategory =
+  | "Global Stocktake"
+  | "Law"
+  | "Litigation"
+  | "Multilateral Climate Fund project"
+  | "Policy"
+  | "Report"
+  | "UN submission";
 
 export type TEvent = {
   title: string;
