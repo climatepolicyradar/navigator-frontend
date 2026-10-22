@@ -104,14 +104,11 @@ export default function NatureLandingPage() {
         content: (
           <>
             <p>
-              The Nature Policy Library brings together over 3000 national laws and policies that document how countries are implementing the{" "}
-              <PageLink external underline className="text-text-brand" href="https://www.cbd.int/gbf">
-                Kunming-Montreal Global Biodiversity Framework
-              </PageLink>
-              . Nature-based solutions – actions that work with nature to address wider challenges, including climate change – are a particular area
-              of interest. To be included, documents must be motivated by biodiversity or nature concerns, be a national environmental framework law
-              (e.g. Environment Act), or govern a priority sector (e.g. forestry, agriculture) – and must carry legal force or set out a current
-              policy objective.
+              The Nature Policy Library brings together over 3000 national laws and policies that shape how countries are implementing the{" "}
+              <PageLink external underline className="text-text-brand" href="https://www.cbd.int/gbf">Kunming-Montreal Global Biodiversity Framework</PageLink>. Nature-based solutions – actions that work with
+              nature to address wider challenges, including climate change – are a particular area of interest. To be included, documents must be
+              motivated by biodiversity or nature concerns, be a national environmental framework law (e.g. Environment Act), or govern a priority
+              sector (e.g. forestry, agriculture) – and must carry legal force or set out a current policy objective.
             </p>
             <p>
               This is a first step, not a comprehensive picture. Coverage currently builds on the approach we have developed for climate policy,
