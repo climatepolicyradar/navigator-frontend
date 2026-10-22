@@ -65,14 +65,25 @@ export const SearchControls = ({
   const [filterParam, setFilterParam] = useQueryState(filterParamKey, parseAsDeflatedFilters.withDefault(DEFAULT_SEARCH_QUERY_GROUP));
   const [, setCurrentPage] = useQueryState(pageParamKey, parseAsString.withDefault("1"));
 
+  // The labels each group offers, which say which filter types these controls can apply
+  const nestedLabels = useMemo(() => nestSearchLabels(labels), [labels]);
+  const filterGroupsWithLabels = useMemo(() => groupSearchLabels(nestedLabels, filterGroups), [filterGroups, nestedLabels]);
+
   /*
     The param is shared between searches, so it can hold filters these controls do not offer -
     a link from the results page carries its whole tree to a passage search, which only filters
     on topics. Read against the groups on show, so a filter that is not applied is not drawn as a
     chip: the chip would do nothing when removed, and names the raw id, as the labels behind the
     other filter types are never loaded here.
+
+    Read against the prepared groups rather than the config: a group's declared root types leave
+    out the types nested beneath them (Geography is rooted on regions but offers their countries
+    too), and a rule dropped here is erased from the url by the next toggle.
   */
-  const ownedFilterParam = useMemo(() => filterGroupFilters(filterParam, filterGroups) ?? DEFAULT_SEARCH_QUERY_GROUP, [filterParam, filterGroups]);
+  const ownedFilterParam = useMemo(
+    () => filterGroupFilters(filterParam, filterGroupsWithLabels) ?? DEFAULT_SEARCH_QUERY_GROUP,
+    [filterParam, filterGroupsWithLabels]
+  );
 
   // Default sort is dynamic
   const fromFilterParam = queryGroupToFilterPaths(ownedFilterParam);
@@ -96,14 +107,12 @@ export const SearchControls = ({
   }
 
   // Chips for already-checked filters must resolve to a name even if that label falls outside the (possibly narrower) set offered in the menu, so fall back to `nameLabels`.
-  const nestedLabels = useMemo(() => nestSearchLabels(labels), [labels]);
   const nestedNameLabels = useMemo(() => {
     const extra = (nameLabels ?? []).filter((label) => !labels.some((l) => l.id === label.id));
     return nestSearchLabels([...labels, ...extra]);
   }, [labels, nameLabels]);
 
   const labelValues = useMemo(() => getSearchLabelValues(nestedNameLabels), [nestedNameLabels]);
-  const filterGroupsWithLabels = useMemo(() => groupSearchLabels(nestedLabels, filterGroups), [filterGroups, nestedLabels]);
 
   const { appliedDateRange, checkedLabelPaths } = useMemo(() => {
     return {
