@@ -1,4 +1,4 @@
-import { motion, AnimatePresence } from "framer-motion";
+import { AnimatePresence, LazyMotion, domAnimation, m } from "framer-motion";
 import { ChevronDown, ChevronUp } from "lucide-react";
 import { useEffect, useState } from "react";
 
@@ -49,34 +49,36 @@ export const Accordion = ({
         </div>
         <span className="text-[#202020] opacity-40 group-hover:opacity-100">{isOpen ? <ChevronUp /> : <ChevronDown />}</span>
       </button>
-      <AnimatePresence initial={false}>
-        {isOpen && (
-          <motion.div
-            key="content"
-            initial="collapsed"
-            animate="open"
-            exit="collapsed"
-            variants={{
-              collapsed: { opacity: 0, height: 0, marginTop: 0 },
-              open: { opacity: 1, height: "auto", marginTop: "14px" },
-            }}
-            transition={{ duration: 0.35, ease: [0.04, 0.62, 0.23, 0.98] }}
-          >
-            <div
-              className={`relative max-h-[${fixedHeight}] ${
-                overflowOverride
-                  ? "overflow-visible"
-                  : "overflow-y-scroll scrollbar-thumb-gray-200 scrollbar-thin scrollbar-track-white scrollbar-thumb-rounded-full hover:scrollbar-thumb-[#6b7280]"
-              } `}
+      <LazyMotion features={domAnimation}>
+        <AnimatePresence initial={false}>
+          {isOpen && (
+            <m.div
+              key="content"
+              initial="collapsed"
+              animate="open"
+              exit="collapsed"
+              variants={{
+                collapsed: { opacity: 0, height: 0, marginTop: 0 },
+                open: { opacity: 1, height: "auto", marginTop: "14px" },
+              }}
+              transition={{ duration: 0.35, ease: [0.04, 0.62, 0.23, 0.98] }}
             >
-              <>
-                {children}
-                {showFade === "true" && <span className="h-[34px] sticky block bottom-0 w-full bg-gradient-to-b from-transparent to-white"></span>}
-              </>
-            </div>
-          </motion.div>
-        )}
-      </AnimatePresence>
+              <div
+                className={`relative max-h-[${fixedHeight}] ${
+                  overflowOverride
+                    ? "overflow-visible"
+                    : "overflow-y-scroll scrollbar-thumb-gray-200 scrollbar-thin scrollbar-track-white scrollbar-thumb-rounded-full hover:scrollbar-thumb-[#6b7280]"
+                } `}
+              >
+                <>
+                  {children}
+                  {showFade === "true" && <span className="h-[34px] sticky block bottom-0 w-full bg-gradient-to-b from-transparent to-white"></span>}
+                </>
+              </div>
+            </m.div>
+          )}
+        </AnimatePresence>
+      </LazyMotion>
     </div>
   );
 };
