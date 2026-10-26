@@ -77,6 +77,8 @@ jobs:
       - name: Install dependencies
         working-directory: infra/platform
         run: uv sync
+      - name: Install pulumi
+        uses: pulumi/actions@v7
       - name: Pulumi up
         working-directory: infra/platform
         run: pulumi up --yes --skip-preview --stack climatepolicyradar/frontend-platform/staging

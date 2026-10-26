@@ -35,6 +35,8 @@ jobs:
       - name: Install dependencies
         working-directory: infra/faro
         run: uv sync
+      - name: Install pulumi
+        uses: pulumi/actions@v7
       - name: Pulumi up
         working-directory: infra/faro
         run: pulumi up --yes --skip-preview --stack climatepolicyradar/frontend-faro/production
