@@ -255,7 +255,9 @@ describe("PassageSearch", () => {
       renderWithPreview({ q: "renewable" });
 
       await waitFor(() => expect(mockFetchSearchPassages).toHaveBeenCalledTimes(1));
-      expect(mockFetchSearchPassages).toHaveBeenCalledWith(expect.objectContaining({ query: "renewable", documents: ["CCLW.document.1.1"] }));
+      expect(mockFetchSearchPassages).toHaveBeenCalledWith(
+        expect.objectContaining({ query: "renewable", scope: { kind: "documents", documentIds: ["CCLW.document.1.1"] } })
+      );
     });
 
     it("searches when a term is submitted in the search box", async () => {
@@ -482,7 +484,12 @@ describe("PassageSearch", () => {
 
       await waitFor(() => expect(mockFetchSearchPassages).toHaveBeenCalledTimes(1));
       expect(mockFetchSearchPassages).toHaveBeenCalledWith(
-        expect.objectContaining({ query: "renewable", filters: topicFilter, sort: "page", documents: ["CCLW.document.1.2"] })
+        expect.objectContaining({
+          query: "renewable",
+          filters: topicFilter,
+          sort: "page",
+          scope: { kind: "documents", documentIds: ["CCLW.document.1.2"] },
+        })
       );
     });
 
@@ -682,7 +689,7 @@ describe("PassageSearch", () => {
         expect(mockFetchSearchPassages).toHaveBeenCalledWith(
           expect.objectContaining({
             query: "renewable",
-            documents: ["CCLW.document.1.1", "CCLW.document.1.2", "CCLW.document.1.3"],
+            scope: { kind: "documents", documentIds: ["CCLW.document.1.1", "CCLW.document.1.2", "CCLW.document.1.3"] },
           })
         )
       );
@@ -691,7 +698,11 @@ describe("PassageSearch", () => {
     it("searches only the documents named in the url", async () => {
       renderPrincipal({ q: "renewable", docs: ["CCLW.document.1.2"] });
 
-      await waitFor(() => expect(mockFetchSearchPassages).toHaveBeenCalledWith(expect.objectContaining({ documents: ["CCLW.document.1.2"] })));
+      await waitFor(() =>
+        expect(mockFetchSearchPassages).toHaveBeenCalledWith(
+          expect.objectContaining({ scope: { kind: "documents", documentIds: ["CCLW.document.1.2"] } })
+        )
+      );
     });
 
     it("falls back to every document when the url names none it recognises", async () => {
@@ -699,7 +710,7 @@ describe("PassageSearch", () => {
 
       await waitFor(() =>
         expect(mockFetchSearchPassages).toHaveBeenCalledWith(
-          expect.objectContaining({ documents: ["CCLW.document.1.1", "CCLW.document.1.2", "CCLW.document.1.3"] })
+          expect.objectContaining({ scope: { kind: "documents", documentIds: ["CCLW.document.1.1", "CCLW.document.1.2", "CCLW.document.1.3"] } })
         )
       );
     });
@@ -737,7 +748,9 @@ describe("PassageSearch", () => {
       renderWithPrincipalId({ q: "renewable" }, []);
 
       await waitFor(() =>
-        expect(mockFetchSearchPassages).toHaveBeenCalledWith(expect.objectContaining({ documents: [], principalId: "CCLW.family.1.0" }))
+        expect(mockFetchSearchPassages).toHaveBeenCalledWith(
+          expect.objectContaining({ scope: { kind: "principal", principalId: "CCLW.family.1.0" } })
+        )
       );
     });
 
@@ -745,7 +758,9 @@ describe("PassageSearch", () => {
       renderWithPrincipalId({ filters: topicFilter }, []);
 
       await waitFor(() =>
-        expect(mockFetchSearchPassages).toHaveBeenCalledWith(expect.objectContaining({ documents: [], principalId: "CCLW.family.1.0" }))
+        expect(mockFetchSearchPassages).toHaveBeenCalledWith(
+          expect.objectContaining({ scope: { kind: "principal", principalId: "CCLW.family.1.0" } })
+        )
       );
     });
 
@@ -762,14 +777,20 @@ describe("PassageSearch", () => {
       renderWithPrincipalId({ q: "renewable" });
 
       await waitFor(() =>
-        expect(mockFetchSearchPassages).toHaveBeenCalledWith(expect.objectContaining({ documents: [], principalId: "CCLW.family.1.0" }))
+        expect(mockFetchSearchPassages).toHaveBeenCalledWith(
+          expect.objectContaining({ scope: { kind: "principal", principalId: "CCLW.family.1.0" } })
+        )
       );
     });
 
     it("still names the documents when the search is narrowed to a subset", async () => {
       renderWithPrincipalId({ q: "renewable", docs: ["CCLW.document.1.2"] });
 
-      await waitFor(() => expect(mockFetchSearchPassages).toHaveBeenCalledWith(expect.objectContaining({ documents: ["CCLW.document.1.2"] })));
+      await waitFor(() =>
+        expect(mockFetchSearchPassages).toHaveBeenCalledWith(
+          expect.objectContaining({ scope: { kind: "documents", documentIds: ["CCLW.document.1.2"] } })
+        )
+      );
     });
   });
 
@@ -798,7 +819,9 @@ describe("PassageSearch", () => {
       await userEvent.click(within(list).getByRole("checkbox", { name: /Amendment to the renewable energies law/ }));
 
       await waitFor(() =>
-        expect(mockFetchSearchPassages).toHaveBeenLastCalledWith(expect.objectContaining({ documents: ["CCLW.document.1.1", "CCLW.document.1.3"] }))
+        expect(mockFetchSearchPassages).toHaveBeenLastCalledWith(
+          expect.objectContaining({ scope: { kind: "documents", documentIds: ["CCLW.document.1.1", "CCLW.document.1.3"] } })
+        )
       );
     });
 

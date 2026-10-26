@@ -1,12 +1,17 @@
 import { TSearchQueryGroup } from "@/types";
+import { inflateFilters } from "@/utils/filters/deflate";
 
 import { fetchSearchPassages } from "./passages";
 
 const TEST_API_URL = "https://api.climatepolicyradar.org";
 
+const requestedUrl = (): URL => vi.mocked(global.fetch).mock.calls[0][0] as URL;
+
+const requestedDocumentIds = (): string[] => requestedUrl().searchParams.getAll("document_id");
+
 const requestedFilters = (): TSearchQueryGroup => {
-  const url = vi.mocked(global.fetch).mock.calls[0][0] as URL;
-  return JSON.parse(url.searchParams.get("filters") ?? "{}");
+  const url = requestedUrl();
+  return JSON.parse(inflateFilters(url.searchParams.get("filters") ?? ""));
 };
 
 const topicFilter: TSearchQueryGroup = {
@@ -23,59 +28,70 @@ describe("fetchSearchPassages", () => {
     vi.restoreAllMocks();
   });
 
-  it("scopes to the given documents", async () => {
+  it("searches within the given documents", async () => {
     await fetchSearchPassages({
       apiUrl: TEST_API_URL,
       query: "",
-      documents: ["CCLW.doc.1.0", "CCLW.doc.2.0"],
-      principalId: "CCLW.family.1.0",
+      scope: { kind: "documents", documentIds: ["CCLW.doc.1.0", "CCLW.doc.2.0"] },
     });
 
-    expect(requestedFilters().filters).toContainEqual({
-      op: "or",
-      filters: [
-        { field: "document_id", op: "contains", value: "CCLW.doc.1.0" },
-        { field: "document_id", op: "contains", value: "CCLW.doc.2.0" },
-      ],
-    });
+    expect(requestedUrl().pathname).toBe("/search/passages:within");
+    expect(requestedDocumentIds()).toEqual(["CCLW.doc.1.0", "CCLW.doc.2.0"]);
   });
 
-  // The defect behind FUS-683: a principal whose documents are all deleted produces an empty `or`
-  // group, which the API treats as "no constraint" rather than "match nothing", so the search
-  // escapes to the whole corpus. Falling back to the principal id keeps the scope in place.
-  it("scopes to the principal when there are no documents to enumerate", async () => {
+  it("searches within a principal by its id", async () => {
     await fetchSearchPassages({
       apiUrl: TEST_API_URL,
       query: "",
-      documents: [],
-      principalId: "UNFCCC.family.824.0",
+      scope: { kind: "principal", principalId: "UNFCCC.family.824.0" },
       filters: topicFilter,
     });
 
-    expect(requestedFilters()).toEqual({
-      op: "and",
-      filters: [{ op: "or", filters: [{ field: "principal_id", op: "contains", value: "UNFCCC.family.824.0" }] }, topicFilter],
-    });
+    expect(requestedDocumentIds()).toEqual(["UNFCCC.family.824.0"]);
   });
 
-  it("never sends an empty scope group, which the API would drop", async () => {
+  it("sends the filters deflated", async () => {
     await fetchSearchPassages({
       apiUrl: TEST_API_URL,
       query: "",
-      documents: [],
-      principalId: "UNFCCC.family.824.0",
+      scope: { kind: "documents", documentIds: ["CCLW.doc.1.0"] },
       filters: topicFilter,
     });
 
-    const scopeGroups = requestedFilters().filters.filter((filter) => "filters" in filter && filter.filters.length === 0);
-    expect(scopeGroups).toEqual([]);
+    expect(requestedUrl().searchParams.get("encoding")).toBe("deflate");
+    expect(requestedFilters()).toEqual(topicFilter);
   });
 
-  // Without a document or a principal there is nothing to scope to. Searching anyway would run
-  // over the whole corpus, so the request is refused rather than silently widened.
-  it("refuses to search when there is neither a document nor a principal to scope to", async () => {
-    await expect(fetchSearchPassages({ apiUrl: TEST_API_URL, query: "", documents: [], filters: topicFilter })).rejects.toThrow(/scope/i);
+  it("requires a share of the query terms to match", async () => {
+    await fetchSearchPassages({
+      apiUrl: TEST_API_URL,
+      query: "adaptation",
+      scope: { kind: "documents", documentIds: ["CCLW.doc.1.0"] },
+    });
 
-    expect(global.fetch).not.toHaveBeenCalled();
+    expect(requestedUrl().searchParams.get("msm")).toBe("0.7");
+  });
+
+  it("omits the query and msm when there is no query", async () => {
+    await fetchSearchPassages({
+      apiUrl: TEST_API_URL,
+      query: "",
+      scope: { kind: "documents", documentIds: ["CCLW.doc.1.0"] },
+      filters: topicFilter,
+    });
+
+    expect(requestedUrl().searchParams.has("query")).toBe(false);
+    expect(requestedUrl().searchParams.has("msm")).toBe(false);
+  });
+
+  it("omits the filters and their encoding when there are none", async () => {
+    await fetchSearchPassages({
+      apiUrl: TEST_API_URL,
+      query: "adaptation",
+      scope: { kind: "documents", documentIds: ["CCLW.doc.1.0"] },
+    });
+
+    expect(requestedUrl().searchParams.has("filters")).toBe(false);
+    expect(requestedUrl().searchParams.has("encoding")).toBe(false);
   });
 });

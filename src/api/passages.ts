@@ -3,47 +3,28 @@
 // on a non-2xx so react-query can surface the error.
 
 import { SORT_PARAMS_LOOKUP } from "@/constants/sort";
-import { ISearchPassagesParams, ISearchPassagesResponse, TSearchQueryGroup } from "@/types";
+import { ISearchPassagesParams, ISearchPassagesResponse, TPassagesScope } from "@/types";
+import { deflateFilters } from "@/utils/filters/deflate";
 
-const searchPassagesUrl = (apiUrl: string): string => `${apiUrl.replace(/\/$/, "")}/search/passages`;
+// set to match SEARCH_DOCUMENTS_MIN_SHOULD_MATCH currently
+// but left as a separate const so it can diverge in future
+export const SEARCH_PASSAGES_MIN_SHOULD_MATCH = 0.7;
 
-// The scope the passages are searched within. Enumerating member `document_id`s is what lets a
-// subset of a principal's documents be searched, but a principal can report no members at all
-// (every member deleted), and an empty `or` group reads to the API as "no constraint" rather than
-// "match nothing" - the search then escapes to the whole corpus. Passages carry their
-// `principal_id`, so it stands in as a single-value scope for the whole principal when there is
-// no member to enumerate.
-const configurePassagesScope = (documents: string[], principalId?: string): TSearchQueryGroup => {
-  if (documents.length > 0) {
-    return {
-      op: "or",
-      filters: documents.map((documentId) => ({ field: "document_id", op: "contains", value: documentId })),
-    };
+const searchPassagesUrl = (apiUrl: string): string => `${apiUrl.replace(/\/$/, "")}/search/passages:within`;
+
+const scopeDocumentIds = (scope: TPassagesScope): string[] => {
+  switch (scope.kind) {
+    case "documents":
+      return scope.documentIds;
+    case "principal":
+      return [scope.principalId];
   }
-
-  if (principalId) {
-    return { op: "or", filters: [{ field: "principal_id", op: "contains", value: principalId }] };
-  }
-
-  throw new Error("Passage search needs a document or a principal to scope to");
-};
-
-const configurePassagesFilters = (documents: string[], principalId?: string, filters?: TSearchQueryGroup): TSearchQueryGroup => {
-  const filtersWithConditionals: TSearchQueryGroup[] = [configurePassagesScope(documents, principalId)];
-
-  if (filters) filtersWithConditionals.push(filters);
-
-  return {
-    op: "and",
-    filters: filtersWithConditionals,
-  };
 };
 
 export const fetchSearchPassages = async ({
   apiUrl,
   query,
-  documents,
-  principalId,
+  scope,
   filters,
   pageSize,
   pageToken,
@@ -51,16 +32,37 @@ export const fetchSearchPassages = async ({
   sort,
 }: ISearchPassagesParams): Promise<ISearchPassagesResponse> => {
   const url = new URL(searchPassagesUrl(apiUrl));
-
   url.searchParams.set("bolding", "true");
-  url.searchParams.set("query", query);
-  url.searchParams.set("filters", JSON.stringify(configurePassagesFilters(documents, principalId, filters)));
-  if (pageSize !== undefined) url.searchParams.set("page_size", String(pageSize));
-  if (pageToken !== undefined) url.searchParams.set("page_token", String(pageToken));
+
+  if (query) {
+    url.searchParams.set("query", query);
+    url.searchParams.set("msm", String(SEARCH_PASSAGES_MIN_SHOULD_MATCH));
+  }
+
+  for (const documentId of scopeDocumentIds(scope)) {
+    url.searchParams.append("document_id", documentId);
+  }
+
+  if (filters) {
+    url.searchParams.set("filters", deflateFilters(filters));
+    url.searchParams.set("encoding", "deflate");
+  }
+
+  if (pageSize !== undefined) {
+    url.searchParams.set("page_size", String(pageSize));
+  }
+
+  if (pageToken !== undefined) {
+    url.searchParams.set("page_token", String(pageToken));
+  }
+
   const sortKey = sort ?? "relevance";
   url.searchParams.set("order_by", SORT_PARAMS_LOOKUP[sortKey]);
-
   const res = await fetch(url, { signal });
-  if (!res.ok) throw new Error(`Passage search API error: ${res.status}`);
+
+  if (!res.ok) {
+    throw new Error(`Passage search API error: ${res.status}`);
+  }
+
   return res.json() as Promise<ISearchPassagesResponse>;
 };
