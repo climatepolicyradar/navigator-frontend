@@ -193,11 +193,23 @@ export default function GlobalStocktakeLandingPage() {
               from thousands of documents.
             </p>
             <p className="mb-4">The models are:</p>
-            <ul className="list-disc pl-5">
+            <ul className="mb-4 list-disc pl-5">
               <li>Trained on expert-built, topic-relevant knowledge</li>
               <li>Reviewed and improved by researchers and policy professionals</li>
               <li>Transparent, multilingual, and auditable by design</li>
             </ul>
+            <p>
+              Read our{" "}
+              <PageLink
+                external
+                underline
+                className="text-text-brand"
+                href="https://github.com/climatepolicyradar/methodology/blob/main/GST1-Methodology.md"
+              >
+                Global Stocktake methodology
+              </PageLink>{" "}
+              for more information.
+            </p>
           </>
         ),
       },
