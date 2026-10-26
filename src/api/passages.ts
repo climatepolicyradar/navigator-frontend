@@ -6,6 +6,8 @@ import { SORT_PARAMS_LOOKUP } from "@/constants/sort";
 import { ISearchPassagesParams, ISearchPassagesResponse, TPassagesScope } from "@/types";
 import { deflateFilters } from "@/utils/filters/deflate";
 
+// set to match SEARCH_DOCUMENTS_MIN_SHOULD_MATCH currently
+// but left as a separate const so it can diverge in future
 export const SEARCH_PASSAGES_MIN_SHOULD_MATCH = 0.7;
 
 const searchPassagesUrl = (apiUrl: string): string => `${apiUrl.replace(/\/$/, "")}/search/passages:within`;
