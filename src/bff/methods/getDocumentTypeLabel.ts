@@ -1,8 +1,5 @@
 import { TLabel, TLabelCondition, TLabelMatch, TLabelPattern } from "@/types";
-
-export const and = (...conditions: TLabelCondition[]): TLabelCondition => ({ and: conditions });
-
-export const or = (...conditions: TLabelCondition[]): TLabelCondition => ({ or: conditions });
+import { and, or } from "@/utils/data-in/labelConditions";
 
 export const COMMON_DOCUMENT_TYPE_LABELS: TLabelPattern[] = [
   {
@@ -53,10 +50,6 @@ export const COMMON_DOCUMENT_TYPE_LABELS: TLabelPattern[] = [
     match: { id: "category::UN submission" },
     pattern: "UN submission",
   },
-  {
-    match: { type: "category" },
-    pattern: "{{category}}",
-  },
 ];
 
 const matchesLabel = (label: TLabel, match: TLabelMatch): boolean =>
@@ -86,12 +79,12 @@ const findLabels = (labels: TLabel[], condition: TLabelCondition): TLabel[] | nu
   return findMatch(labels, condition);
 };
 
-export const getDocumentTypeLabel = (labels: TLabel[], rules: ReadonlyArray<TLabelPattern>): string => {
+export const getDocumentTypeLabel = (labels: TLabel[], rules: ReadonlyArray<TLabelPattern>): string | null => {
   for (const rule of rules) {
     const matched = findLabels(labels, rule.match);
     if (matched !== null) {
       return matched.reduce((text, label) => text.replaceAll(`{{${label.type}}}`, label.value), rule.pattern);
     }
   }
-  throw new Error("No document type label rule matched");
+  return null;
 };

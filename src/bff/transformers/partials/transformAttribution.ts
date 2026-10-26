@@ -13,10 +13,11 @@ export const transformAttribution = (labels: TDataInLabel[]): TFamilyAttribution
     corpusImageAlt: providerLabel.value.value ?? "",
     corpusNote: providerLabel.value.attributes.corpus_text ?? "",
     provider: providerLabel.value.value,
-    taxonomy: getDocumentTypeLabel(
-      labels.map((label) => label.value),
-      [...(themeConfig.documentTypeLabels ?? []), ...COMMON_DOCUMENT_TYPE_LABELS]
-    ),
+    taxonomy:
+      getDocumentTypeLabel(
+        labels.map((label) => label.value),
+        [...(themeConfig.documentTypeLabels ?? []), ...COMMON_DOCUMENT_TYPE_LABELS]
+      ) ?? categoryLabel.value.value,
   };
 
   if (providerLabel.value.attributes.corpus_image_url) {

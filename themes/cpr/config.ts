@@ -1,5 +1,5 @@
-import { and } from "@/bff/methods/getDocumentTypeLabel";
 import { TThemeConfig } from "@/types";
+import { and } from "@/utils/data-in/labelConditions";
 
 const config: TThemeConfig = {
   documentTypeLabels: [

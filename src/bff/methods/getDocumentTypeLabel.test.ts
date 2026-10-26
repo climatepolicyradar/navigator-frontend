@@ -12,7 +12,7 @@ const label = (id: string): TLabel => {
 
 describe("getDocumentTypeLabel", () => {
   describe("on CPR", () => {
-    const getLabel = (labels: TLabel[]): string => {
+    const getLabel = (labels: TLabel[]): string | null => {
       const rules = [...cprConfig.documentTypeLabels, ...COMMON_DOCUMENT_TYPE_LABELS];
       return getDocumentTypeLabel(labels, rules);
     };
@@ -42,14 +42,14 @@ describe("getDocumentTypeLabel", () => {
       expect(getLabel(labels)).toBe("Global Stocktake 1");
     });
 
-    it("shows only GST when not a UN submission and there is no round", () => {
+    it("matches nothing for GST alone, leaving it to the category fallback", () => {
       const labels = ["category::Global Stocktake"].map(label);
-      expect(getLabel(labels)).toBe("Global Stocktake");
+      expect(getLabel(labels)).toBeNull();
     });
   });
 
   describe("on other sites", () => {
-    const getLabel = (labels: TLabel[]): string => {
+    const getLabel = (labels: TLabel[]): string | null => {
       const rules = COMMON_DOCUMENT_TYPE_LABELS;
       return getDocumentTypeLabel(labels, rules);
     };
@@ -89,14 +89,9 @@ describe("getDocumentTypeLabel", () => {
       expect(getLabel(labels)).toBe("Legislative");
     });
 
-    it("falls back to the category", () => {
+    it("matches nothing for other categories, leaving them to the category fallback", () => {
       const labels = ["category::Policy"].map(label);
-      expect(getLabel(labels)).toBe("Policy");
-    });
-
-    it("throws when no rule matches", () => {
-      const labels = ["agent::UNFCCC"].map(label);
-      expect(() => getLabel(labels)).toThrow();
+      expect(getLabel(labels)).toBeNull();
     });
   });
 });
