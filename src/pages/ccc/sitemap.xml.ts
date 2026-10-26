@@ -10,21 +10,15 @@ import { toSitemapXml } from "@/utils/sitemap";
 const SITEMAP_PAGE_SIZE = "500";
 
 const fetchAllPrincipalDocuments = async (): Promise<ISearchDocument[]> => {
-  const documents: ISearchDocument[] = [];
+  const { results } = await fetchSearchPrincipalDocuments({
+    apiUrl: process.env.CONCEPTS_API_URL,
+    themeConfig: CCCthemeConfig,
+    page_size: SITEMAP_PAGE_SIZE,
+    page_token: "1",
+    sort: "recent",
+  });
 
-  for (let page = 1; ; page++) {
-    const { results } = await fetchSearchPrincipalDocuments({
-      apiUrl: process.env.CONCEPTS_API_URL,
-      themeConfig: CCCthemeConfig,
-      page_size: SITEMAP_PAGE_SIZE,
-      page_token: String(page),
-      sort: "oldest",
-    });
-    documents.push(...results);
-    if (results.length < Number(SITEMAP_PAGE_SIZE)) break;
-  }
-
-  return documents;
+  return results;
 };
 
 const buildSitemap = async (): Promise<MetadataRoute.Sitemap> => {
