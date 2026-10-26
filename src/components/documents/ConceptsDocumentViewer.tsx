@@ -1,4 +1,4 @@
-import { AnimatePresence, motion } from "framer-motion";
+import { AnimatePresence, LazyMotion, domAnimation, m } from "framer-motion";
 import { ChevronDown } from "lucide-react";
 import { useRouter } from "next/router";
 import React, { useContext, useEffect, useMemo, useReducer, useState } from "react";
@@ -253,18 +253,20 @@ export const ConceptsDocumentViewer = ({
                         <span>{getCurrentSearchChoice(router.query) === "true" ? SEARCH_SETTINGS.exact : SEARCH_SETTINGS.semantic}</span>
                         <ChevronDown />
                       </button>
-                      <AnimatePresence initial={false}>
-                        {showSearchOptions && (
-                          <motion.div key="content" initial="collapsed" animate="open" exit="collapsed" variants={SETTINGS_ANIMATION_VARIANTS}>
-                            <SearchSettings
-                              queryParams={router.query}
-                              handleSearchChange={handleSemanticSearchChange}
-                              setShowOptions={setShowSearchOptions}
-                              extraClasses="w-[280px]"
-                            />
-                          </motion.div>
-                        )}
-                      </AnimatePresence>
+                      <LazyMotion features={domAnimation}>
+                        <AnimatePresence initial={false}>
+                          {showSearchOptions && (
+                            <m.div key="content" initial="collapsed" animate="open" exit="collapsed" variants={SETTINGS_ANIMATION_VARIANTS}>
+                              <SearchSettings
+                                queryParams={router.query}
+                                handleSearchChange={handleSemanticSearchChange}
+                                setShowOptions={setShowSearchOptions}
+                                extraClasses="w-[280px]"
+                              />
+                            </m.div>
+                          )}
+                        </AnimatePresence>
+                      </LazyMotion>
                     </div>
                     <div className="relative">
                       <button
@@ -277,17 +279,19 @@ export const ConceptsDocumentViewer = ({
                         </span>
                         <ChevronDown />
                       </button>
-                      <AnimatePresence initial={false}>
-                        {showSortOptions && (
-                          <motion.div key="content" initial="collapsed" animate="open" exit="collapsed" variants={SETTINGS_ANIMATION_VARIANTS}>
-                            <SearchSettings
-                              queryParams={router.query}
-                              setShowOptions={setShowSortOptions}
-                              handlePassagesOrderChange={handlePassagesOrderChange}
-                            />
-                          </motion.div>
-                        )}
-                      </AnimatePresence>
+                      <LazyMotion features={domAnimation}>
+                        <AnimatePresence initial={false}>
+                          {showSortOptions && (
+                            <m.div key="content" initial="collapsed" animate="open" exit="collapsed" variants={SETTINGS_ANIMATION_VARIANTS}>
+                              <SearchSettings
+                                queryParams={router.query}
+                                setShowOptions={setShowSortOptions}
+                                handlePassagesOrderChange={handlePassagesOrderChange}
+                              />
+                            </m.div>
+                          )}
+                        </AnimatePresence>
+                      </LazyMotion>
                     </div>
                   </div>
                   <div className="">
