@@ -15,7 +15,7 @@ export const transformFamily = (document: TDataInDocument): TFamilyPublic => {
 
   const { documents, labels } = document;
   const groupedLabels = groupByType<TDataInLabel, TDataInLabelType>(labels, LABEL_TYPES, MANDATORY_FAMILY_LABEL_TYPES);
-  const attribution = transformAttribution(groupedLabels);
+  const attribution = transformAttribution(labels);
   const { familyEvents, documentEvents } = transformFamilyEvents(document, attribution.category);
 
   return {
