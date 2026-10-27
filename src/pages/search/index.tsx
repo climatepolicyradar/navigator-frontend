@@ -9,10 +9,10 @@ import { useEffect, useRef, useState } from "react";
 import { ApiClient } from "@/api/http-common";
 import { ExternalLink } from "@/components/ExternalLink";
 import { LinkWithQuery } from "@/components/LinkWithQuery";
-import Loader from "@/components/Loader";
 import { SlideOut } from "@/components/atoms/SlideOut/SlideOut";
 import { Button } from "@/components/atoms/button/Button";
 import { Drawer } from "@/components/atoms/drawer/Drawer";
+import { Loading } from "@/components/atoms/loading/Loading";
 import { PageLink } from "@/components/atoms/pageLink/PageLink";
 import { BreadCrumbs } from "@/components/breadcrumbs/Breadcrumbs";
 import { SearchResultDrawer } from "@/components/drawers/searchResult/SearchResultDrawer";
@@ -496,7 +496,7 @@ const Search = ({ familyConceptsData, features, theme, themeConfig, topicsData }
                     } cols-4:translate-y-[0%] cols-4:h-full cols-4:sticky cols-4:top-[72px] cols-4:z-50 bg-white md:bg-transparent`}
                   >
                     {configQuery.isFetching ? (
-                      <Loader size="20px" />
+                      <Loading size={20} />
                     ) : (
                       <>
                         <div className="sticky cols-4:top-[72px] h-screen cols-4:h-[calc(100vh-72px)] px-5 cols-4:border-r border-[#d1d5db] pt-5 pb-[180px] overflow-y-auto scrollbar-thumb-gray-200 scrollbar-thin scrollbar-track-white scrollbar-thumb-rounded-full hover:scrollbar-thumb-[#6b7280] cols-4:pb-4">
@@ -582,7 +582,7 @@ const Search = ({ familyConceptsData, features, theme, themeConfig, topicsData }
                       <div className="mt-5">
                         {status === "loading" ? (
                           <div className="w-full flex justify-center h-96">
-                            <Loader />
+                            <Loading />
                           </div>
                         ) : (
                           <>

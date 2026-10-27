@@ -3,7 +3,7 @@ import { ParsedUrlQuery } from "querystring";
 import { ChevronRight } from "lucide-react";
 import { useEffect, useState, useContext } from "react";
 
-import Loader from "@/components/Loader";
+import { Loading } from "@/components/atoms/loading/Loading";
 import { Accordion } from "@/components/accordion/Accordion";
 import { Heading } from "@/components/accordion/Heading";
 import { Badge } from "@/components/atoms/badge/Badge";
@@ -78,7 +78,7 @@ const SearchFilters = ({
 
   return (
     <div id="search_filters" data-cy="search-filters" className="text-sm text-text-secondary flex flex-col gap-5">
-      {themeConfigStatus === "loading" && <Loader size="20px" />}
+      {themeConfigStatus === "loading" && <Loading size={20} />}
       <div className="flex justify-between">
         <div className="flex items-center gap-2">
           <p className="text-[15px] text-text-primary font-normal">Filters</p>

@@ -6,9 +6,9 @@ import { memo, useCallback, useContext, useEffect, useMemo, useRef, useState } f
 
 import { fetchSearchPassages } from "@/api/passages";
 import EmbeddedPDF from "@/components/EmbeddedPDF";
-import Loader from "@/components/Loader";
 import { Button } from "@/components/atoms/button/Button";
 import { FiveColumns } from "@/components/atoms/columns/FiveColumns";
+import { Loading } from "@/components/atoms/loading/Loading";
 import { EmptyDocument } from "@/components/documents/EmptyDocument";
 import { DocumentsFilter, TFilterableDocument } from "@/components/molecules/documentsFilter/DocumentsFilter";
 import { PassageBlock, TPassage as TPassageBlock } from "@/components/molecules/passageBlock/PassageBlock";
@@ -387,7 +387,7 @@ export const PassageSearch = ({ changeTab, concepts, documents, documentsLabel, 
     <>
       {isLoading && (
         <div className="flex justify-center">
-          <Loader />
+          <Loading />
         </div>
       )}
       {!isLoading && isError && (
