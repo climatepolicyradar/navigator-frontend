@@ -108,7 +108,7 @@ export type TThemeConfig = {
   defaultCorpora?: string[];
   deprecatedCategories?: TThemeConfigCategory;
   deprecatedFilters: TThemeConfigFilter[];
-  documentTypeLabels?: TLabelPattern[];
+  documentTypeLabels: TLabelPattern[];
   searchCategories: TLabelCategoryValue[];
   labelVariations: TPartialRecord<TLabelVariationKey, TLabelVariation>;
   links: TPartialRecord<TThemeLinkKey, string>;

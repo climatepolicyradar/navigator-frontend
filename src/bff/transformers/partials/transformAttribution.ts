@@ -1,4 +1,5 @@
-import { COMMON_DOCUMENT_TYPE_LABELS, getDocumentTypeLabel } from "@/bff/methods/getDocumentTypeLabel";
+import { getDocumentTypeLabel } from "@/bff/methods/getDocumentTypeLabel";
+import { COMMON_DOCUMENT_TYPE_LABELS } from "@/constants/documentTypeLabels";
 import { TDataInLabel, validateProviderLabel } from "@/schemas";
 import themeConfig from "@/themes/config";
 import { TAttributionCategory, TFamilyAttribution } from "@/types";
@@ -16,7 +17,7 @@ export const transformAttribution = (labels: TDataInLabel[]): TFamilyAttribution
     taxonomy:
       getDocumentTypeLabel(
         labels.map((label) => label.value),
-        [...(themeConfig.documentTypeLabels ?? []), ...COMMON_DOCUMENT_TYPE_LABELS]
+        [...themeConfig.documentTypeLabels, ...COMMON_DOCUMENT_TYPE_LABELS]
       ) ?? categoryLabel.value.value,
   };
 

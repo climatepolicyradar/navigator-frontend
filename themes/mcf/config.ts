@@ -1,6 +1,7 @@
 import { TThemeConfig } from "@/types";
 
 const config: TThemeConfig = {
+  documentTypeLabels: [],
   defaultCorpora: [
     "MCF.corpus.GCF.n0000",
     "MCF.corpus.GEF.n0000",

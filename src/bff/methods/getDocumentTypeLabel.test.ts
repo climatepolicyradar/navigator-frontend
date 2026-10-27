@@ -1,9 +1,10 @@
 import { describe, expect, it } from "vitest";
 
+import { COMMON_DOCUMENT_TYPE_LABELS } from "@/constants/documentTypeLabels";
 import cprConfig from "@/cpr/config";
 import { TLabel } from "@/types";
 
-import { COMMON_DOCUMENT_TYPE_LABELS, getDocumentTypeLabel } from "./getDocumentTypeLabel";
+import { getDocumentTypeLabel } from "./getDocumentTypeLabel";
 
 const label = (id: string): TLabel => {
   const [type, value] = id.split("::");
