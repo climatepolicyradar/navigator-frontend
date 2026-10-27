@@ -15,6 +15,4 @@ export const groupSearchLabels = (nestedLabels: TNestedSearchLabel[], filterGrou
 
     return { ...group, nestedLabels: preparedRootLabels };
   });
-  // TODO reimplement
-  // .filter((group) => group.emptyStateRender || group.container === "datepicker" || group.nestedLabels.length > 0);
 };
