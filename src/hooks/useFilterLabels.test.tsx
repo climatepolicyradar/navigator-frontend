@@ -84,6 +84,20 @@ describe("useFilterLabels", () => {
 
     const { result } = renderUseFilterLabels(DEFAULT_FEATURES, DEFAULT_THEME_CONFIG);
 
-    await waitFor(() => expect(result.current).toEqual([label("concept::Q1"), label("category::Law")]));
+    await waitFor(() => expect(result.current.filters).toEqual([label("concept::Q1"), label("category::Law")]));
+  });
+
+  it("is not loaded until all filter labels have resolved", async () => {
+    let resolveGeographyTaxonomy: (labels: TSearchLabel[]) => void = () => {};
+    mockLoadGeographyTaxonomy.mockReturnValue(new Promise((resolve) => (resolveGeographyTaxonomy = resolve)));
+
+    const { result } = renderUseFilterLabels(DEFAULT_FEATURES, DEFAULT_THEME_CONFIG);
+
+    expect(result.current.loaded).toBe(false);
+
+    resolveGeographyTaxonomy([label("geography::GBR")]);
+
+    await waitFor(() => expect(result.current.loaded).toBe(true));
+    expect(result.current.filters).toEqual([label("geography::GBR")]);
   });
 });

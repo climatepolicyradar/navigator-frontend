@@ -10,7 +10,7 @@ export const Loading = ({ className, size = 80 }: IProps) => {
 
   return (
     <div className={containerClasses}>
-      <object className="radar" type="image/svg+xml" data="/images/radar-loader.svg" width={size} />
+      <object className="radar" type="image/svg+xml" data="/images/radar-loader.svg" style={{ width: `${size}px` }} />
     </div>
   );
 };
