@@ -10,9 +10,11 @@ import { useFilterLabels } from "./useFilterLabels";
 
 const mockLoadFilteredLabels = vi.hoisted(() => vi.fn());
 const mockLoadLabelTaxonomy = vi.hoisted(() => vi.fn());
+const mockLoadGeographyTaxonomy = vi.hoisted(() => vi.fn());
 vi.mock("@/hooks/useLabelSearch", () => ({
   loadFilteredLabels: mockLoadFilteredLabels,
   loadLabelTaxonomy: mockLoadLabelTaxonomy,
+  loadGeographyTaxonomy: mockLoadGeographyTaxonomy,
 }));
 
 const label = (id: string): TSearchLabel => ({ id }) as TSearchLabel;
@@ -29,9 +31,10 @@ describe("useFilterLabels", () => {
   beforeEach(() => {
     mockLoadFilteredLabels.mockReset().mockResolvedValue([]);
     mockLoadLabelTaxonomy.mockReset().mockResolvedValue([]);
+    mockLoadGeographyTaxonomy.mockReset().mockResolvedValue([]);
   });
 
-  it("always requests concept, region, country and author labels for the sidebar", async () => {
+  it("always requests concept and author labels for the sidebar", async () => {
     renderUseFilterLabels(DEFAULT_FEATURES, DEFAULT_THEME_CONFIG);
 
     await waitFor(() => expect(mockLoadFilteredLabels).toHaveBeenCalled());
@@ -40,19 +43,25 @@ describe("useFilterLabels", () => {
       op: "or",
       filters: [
         { field: "type", op: "contains", value: "concept" },
-        { field: "type", op: "contains", value: "region" },
-        { field: "type", op: "contains", value: "country" },
         { field: "type", op: "contains", value: "author" },
       ],
     });
   });
 
-  it("additionally requests subdivision labels when the subdivisions feature is on", async () => {
+  it("requests the region and country geography taxonomy by default", async () => {
+    renderUseFilterLabels(DEFAULT_FEATURES, DEFAULT_THEME_CONFIG);
+
+    await waitFor(() => expect(mockLoadGeographyTaxonomy).toHaveBeenCalled());
+
+    expect(mockLoadGeographyTaxonomy.mock.calls[0][1]).toEqual(["region", "country"]);
+  });
+
+  it("additionally requests subdivision geography taxonomy when the subdivisions feature is on", async () => {
     renderUseFilterLabels({ ...DEFAULT_FEATURES, subdivisions: true }, DEFAULT_THEME_CONFIG);
 
-    await waitFor(() => expect(mockLoadFilteredLabels).toHaveBeenCalled());
+    await waitFor(() => expect(mockLoadGeographyTaxonomy).toHaveBeenCalled());
 
-    expect(mockLoadFilteredLabels.mock.calls[0][1].filters).toContainEqual({ field: "type", op: "contains", value: "subdivision" });
+    expect(mockLoadGeographyTaxonomy.mock.calls[0][1]).toEqual(["region", "country", "subdivision"]);
   });
 
   it("additionally requests litigation label types for themes with the Litigation search category", async () => {
