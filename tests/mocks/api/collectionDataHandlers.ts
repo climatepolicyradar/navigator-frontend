@@ -55,7 +55,7 @@ export const testChildFamilyDataIn: TDataInDocument = {
   attributes: { deprecated_slug: "child-family-slug", published_date: "2024-01-01" },
   labels: [
     { type: "activity_status", value: { id: "activity_status::published", type: "concept", value: "Published", labels: [] } },
-    { type: "category", value: { id: "category::policy", type: "concept", value: "Policy", labels: [] } },
+    { type: "category", value: { id: "category::policy", type: "category", value: "Policy", labels: [] } },
     {
       type: "provider",
       value: { id: "provider::cpr", type: "agent", value: "CPR", labels: [], attributes: {} },

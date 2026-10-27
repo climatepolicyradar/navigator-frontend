@@ -1,6 +1,7 @@
 import { TQueryParams } from "@/constants/queryParams";
 
 import { TConfigFeatures } from "./features";
+import { TLabel, TLabelId } from "./label";
 import { TTutorialName } from "./tutorial";
 
 type TPartialRecord<Key extends string, Value> = Partial<Record<Key, Value>>;
@@ -94,10 +95,20 @@ type TThemePageMetadata = {
   description: string;
 };
 
+export type TLabelMatch = Partial<Pick<TLabel, "type" | "value"> & { id: TLabelId }>;
+
+export type TLabelCondition = { and: ReadonlyArray<TLabelCondition> } | { or: ReadonlyArray<TLabelCondition> } | TLabelMatch;
+
+export type TLabelPattern = {
+  match: TLabelCondition;
+  pattern: string;
+};
+
 export type TThemeConfig = {
   defaultCorpora?: string[];
   deprecatedCategories?: TThemeConfigCategory;
   deprecatedFilters: TThemeConfigFilter[];
+  documentTypeLabels: TLabelPattern[];
   searchCategories: TLabelCategoryValue[];
   labelVariations: TPartialRecord<TLabelVariationKey, TLabelVariation>;
   links: TPartialRecord<TThemeLinkKey, string>;

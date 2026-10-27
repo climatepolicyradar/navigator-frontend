@@ -1,6 +1,41 @@
 import { TThemeConfig } from "@/types";
+import { and } from "@/utils/data-in/labelConditions";
 
 const config: TThemeConfig = {
+  documentTypeLabels: [
+    {
+      match: and({ type: "un_convention" }, { id: "process::GST1" }),
+      pattern: "{{un_convention}}, Global Stocktake 1",
+    },
+    {
+      match: and({ type: "un_convention" }, { id: "process::GST2" }),
+      pattern: "{{un_convention}}, Global Stocktake 2",
+    },
+    {
+      match: and({ id: "category::UN submission" }, { id: "process::GST1" }),
+      pattern: "UN submission, Global Stocktake 1",
+    },
+    {
+      match: and({ id: "category::UN submission" }, { id: "process::GST2" }),
+      pattern: "UN submission, Global Stocktake 2",
+    },
+    {
+      match: { id: "process::GST1" },
+      pattern: "Global Stocktake 1",
+    },
+    {
+      match: { id: "process::GST2" },
+      pattern: "Global Stocktake 2",
+    },
+    {
+      match: and({ type: "un_convention" }, { id: "category::Global Stocktake" }),
+      pattern: "{{un_convention}}, Global Stocktake",
+    },
+    {
+      match: and({ id: "category::UN submission" }, { id: "category::Global Stocktake" }),
+      pattern: "UN submission, Global Stocktake",
+    },
+  ],
   deprecatedCategories: {
     label: "Document Type",
     options: [
