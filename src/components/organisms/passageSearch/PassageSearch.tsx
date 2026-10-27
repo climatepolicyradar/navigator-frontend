@@ -143,6 +143,7 @@ export const PassageSearch = ({ changeTab, concepts, documents, documentsLabel, 
   const [documentsParam, setDocumentsParam] = useQueryState(paramKeys.documents, parseAsArrayOf(parseAsString).withDefault([]));
   const [pageNumber, setPageNumber] = useState<number | null>(null);
   const [availableConcepts, setAvailableConcepts] = useState<TSearchLabel[]>([]);
+  const [loadedConcepts, setLoadedConcepts] = useState(false);
 
   // Only concept filters are offered here, and a level is seeded with only those, so anything else
   // in the parameter came from a hand-edited or shared URL and is not this search's to apply.
@@ -176,7 +177,9 @@ export const PassageSearch = ({ changeTab, concepts, documents, documentsLabel, 
           value: "concept",
         },
       ],
-    }).then(setAvailableConcepts);
+    })
+      .then(setAvailableConcepts)
+      .finally(() => setLoadedConcepts(true));
   }, [API_URL]);
 
   const documentsById = useMemo(() => new Map(documents.map((document) => [document.import_id, document])), [documents]);
@@ -370,6 +373,7 @@ export const PassageSearch = ({ changeTab, concepts, documents, documentsLabel, 
         )
       }
       labels={conceptFilters}
+      labelsLoaded={loadedConcepts}
       nameLabels={availableConcepts}
       pageParamKey={paramKeys.pageToken}
       queryParamKey={paramKeys.query}
