@@ -29,7 +29,7 @@ const searchDocumentsUrl = (apiUrl: string): string => `${apiUrl.replace(/\/$/, 
 export function configureDocumentsFilters(
   filters: TSearchQueryGroup | undefined,
   searchCategories: TLabelCategoryValue[],
-  searchExcludeLabels: { type: string; value: string }[] = []
+  searchExcludeLabels: string[] = []
 ): TSearchQueryGroup {
   const publishedDateBoundsFilter: TSearchQueryGroup = {
     op: "and",
@@ -65,8 +65,8 @@ export function configureDocumentsFilters(
   if (searchCategories.length > 0) {
     filtersWithConditionals.push(categoriesFilter);
   }
-  searchExcludeLabels.forEach(({ type, value }) => {
-    filtersWithConditionals.push({ op: "not_contains", field: "labels.value.id", value: [type, value].join(ID_SEPARATOR) });
+  searchExcludeLabels.forEach((id) => {
+    filtersWithConditionals.push({ op: "not_contains", field: "labels.value.id", value: id });
   });
   if (filters) {
     filtersWithConditionals.push(filters);

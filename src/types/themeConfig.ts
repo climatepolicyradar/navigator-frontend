@@ -110,8 +110,8 @@ export type TThemeConfig = {
   deprecatedFilters: TThemeConfigFilter[];
   documentTypeLabels: TLabelPattern[];
   searchCategories: TLabelCategoryValue[];
-  // Labels to always exclude from document search results for this theme.
-  searchExcludeLabels?: { type: string; value: string }[];
+  // Label IDs (e.g. "author_type::Non-Party") to always exclude from document search results for this theme.
+  searchExcludeLabels?: string[];
   labelVariations: TPartialRecord<TLabelVariationKey, TLabelVariation>;
   links: TPartialRecord<TThemeLinkKey, string>;
   pageMetadata: Record<TThemePageMetadataKey, TThemePageMetadata>;
