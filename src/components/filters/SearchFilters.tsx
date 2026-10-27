@@ -3,10 +3,10 @@ import { ParsedUrlQuery } from "querystring";
 import { ChevronRight } from "lucide-react";
 import { useEffect, useState, useContext } from "react";
 
-import { Loading } from "@/components/atoms/loading/Loading";
 import { Accordion } from "@/components/accordion/Accordion";
 import { Heading } from "@/components/accordion/Heading";
 import { Badge } from "@/components/atoms/badge/Badge";
+import { Loading } from "@/components/atoms/loading/Loading";
 import { AppliedFilters } from "@/components/filters/AppliedFilters";
 import { DateRange } from "@/components/filters/DateRange";
 import { FilterOptions } from "@/components/filters/FilterOptions";
