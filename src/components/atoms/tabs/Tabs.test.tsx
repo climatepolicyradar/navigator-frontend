@@ -106,4 +106,48 @@ describe("Tabs", () => {
     expect(screen.getByRole("tab", { name: "Search in documents" })).toHaveAttribute("data-ph-capture-attribute-tab-context", "principal-drawer");
     expect(screen.getByRole("tab", { name: "About" })).toHaveAttribute("data-ph-capture-attribute-tab", "about");
   });
+
+  it("scrolls back to the top of the page when the tab changes", () => {
+    const scrollTo = vi.spyOn(window, "scrollTo").mockImplementation(() => {});
+    const { rerender } = render(<Tabs tabs={baseTabs} value="search" onValueChange={() => {}} />);
+
+    rerender(<Tabs tabs={baseTabs} value="about" onValueChange={() => {}} />);
+
+    expect(scrollTo).toHaveBeenCalledWith({ top: 0 });
+  });
+
+  it("does not scroll on the first render", () => {
+    const scrollTo = vi.spyOn(window, "scrollTo").mockImplementation(() => {});
+
+    render(<Tabs tabs={baseTabs} value="search" onValueChange={() => {}} />);
+
+    expect(scrollTo).not.toHaveBeenCalled();
+  });
+
+  it("does not scroll when re-rendering on the same tab", () => {
+    const scrollTo = vi.spyOn(window, "scrollTo").mockImplementation(() => {});
+    const { rerender } = render(<Tabs tabs={baseTabs} value="about" onValueChange={() => {}} />);
+    scrollTo.mockClear();
+
+    rerender(<Tabs tabs={baseTabs} value="about" onValueChange={() => {}} />);
+
+    expect(scrollTo).not.toHaveBeenCalled();
+  });
+  it("scrolls the nearest scrollable ancestor back to the top instead of the page", () => {
+    const scrollTo = vi.spyOn(window, "scrollTo").mockImplementation(() => {});
+    const container = document.createElement("div");
+    // jsdom reports no layout, so stand in for a container the browser has made scrollable.
+    Object.defineProperty(container, "scrollHeight", { value: 500, configurable: true });
+    Object.defineProperty(container, "clientHeight", { value: 100, configurable: true });
+    container.style.overflowY = "auto";
+    const containerScrollTo = vi.fn();
+    container.scrollTo = containerScrollTo;
+    document.body.appendChild(container);
+
+    const { rerender } = render(<Tabs tabs={baseTabs} value="search" onValueChange={() => {}} />, { container });
+    rerender(<Tabs tabs={baseTabs} value="about" onValueChange={() => {}} />);
+
+    expect(containerScrollTo).toHaveBeenCalledWith({ top: 0 });
+    expect(scrollTo).not.toHaveBeenCalled();
+  });
 });

@@ -1,5 +1,5 @@
 import { Tabs as BaseTabs } from "@base-ui/react/tabs";
-import { ReactNode } from "react";
+import { ReactNode, useEffect, useRef } from "react";
 
 import { joinTailwindClasses } from "@/utils/tailwind";
 
@@ -26,6 +26,18 @@ interface IProps<TabId extends string> {
   value: TabId;
 }
 
+// Tabs sit on the page in some places and inside a scrollable drawer in others, so the element
+// that needs resetting is whichever one actually scrolls above the panel.
+const getScrollParent = (element: HTMLElement | null): HTMLElement | null => {
+  for (let current = element; current; current = current.parentElement) {
+    const { overflowY } = getComputedStyle(current);
+    const scrolls = overflowY === "auto" || overflowY === "scroll";
+    if (scrolls && current.scrollHeight > current.clientHeight) return current;
+  }
+
+  return null;
+};
+
 export const Tabs = <TabId extends string>({
   analytics,
   className,
@@ -36,6 +48,18 @@ export const Tabs = <TabId extends string>({
   tabsContainer,
   value,
 }: IProps<TabId>) => {
+  // Base UI unmounts the inactive panel, so a tab switch changes the content height and the
+  // browser keeps - and clamps - the old scroll offset. Reset it so each tab opens at the top.
+  const rootRef = useRef<HTMLDivElement>(null);
+  const previousValue = useRef(value);
+
+  useEffect(() => {
+    if (previousValue.current === value) return;
+    previousValue.current = value;
+
+    (getScrollParent(rootRef.current) ?? window).scrollTo({ top: 0 });
+  }, [value]);
+
   const allHeaderClasses = joinTailwindClasses(sticky && "sticky z-10 bg-bg-primary", className);
 
   const bannerTab = tabs.find((tab) => !!tab.banner && tab.id !== value);
@@ -68,7 +92,7 @@ export const Tabs = <TabId extends string>({
   );
 
   return (
-    <BaseTabs.Root value={value} onValueChange={(newValue) => onValueChange(newValue as TabId)}>
+    <BaseTabs.Root ref={rootRef} value={value} onValueChange={(newValue) => onValueChange(newValue as TabId)}>
       <div className={allHeaderClasses}>
         <div className="border-b border-border-light">{tabsContainer ? tabsContainer(tabsList) : tabsList}</div>
         {bannerTab && <div className="bg-bg-brand text-text-inverse">{bannerTab.banner}</div>}
