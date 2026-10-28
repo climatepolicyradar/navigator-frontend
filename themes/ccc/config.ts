@@ -5,6 +5,7 @@ const config: TThemeConfig = {
   defaultCorpora: ["Academic.corpus.Litigation.n0000"],
   deprecatedFilters: [],
   searchCategories: ["Litigation"],
+  searchExcludeLabels: [],
   labelVariations: {
     date: {
       label: "Filing year",

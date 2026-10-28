@@ -78,6 +78,26 @@ describe("useFilterLabels", () => {
     );
   });
 
+  it("excludes configured searchExcludeLabels from the filter query", async () => {
+    renderUseFilterLabels(DEFAULT_FEATURES, { ...DEFAULT_THEME_CONFIG, searchExcludeLabels: ["author_type::Non-Party"] });
+
+    await waitFor(() => expect(mockLoadFilteredLabels).toHaveBeenCalled());
+
+    expect(mockLoadFilteredLabels.mock.calls[0][1]).toEqual({
+      op: "and",
+      filters: [
+        {
+          op: "or",
+          filters: [
+            { field: "type", op: "contains", value: "concept" },
+            { field: "type", op: "contains", value: "author" },
+          ],
+        },
+        { field: "id", op: "not_contains", value: "author_type::Non-Party" },
+      ],
+    });
+  });
+
   it("combines the filtered labels with the label taxonomy", async () => {
     mockLoadFilteredLabels.mockResolvedValue([label("concept::Q1")]);
     mockLoadLabelTaxonomy.mockResolvedValue([label("category::Law")]);

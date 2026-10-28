@@ -54,7 +54,17 @@ export const useFilterLabels = ({ features, themeConfig }: IProps) => {
       );
     }
 
-    const loadedFilteredLabels = loadFilteredLabels(API_URL, searchQueryGroup);
+    const excludeLabelRules: TSearchQueryGroup["filters"] = themeConfig.searchExcludeLabels.map((id) => ({
+      field: "id",
+      op: "not_contains",
+      value: id,
+    }));
+
+    const filterGroup: TSearchQueryGroup = excludeLabelRules.length
+      ? { op: "and", filters: [searchQueryGroup, ...excludeLabelRules] }
+      : searchQueryGroup;
+
+    const loadedFilteredLabels = loadFilteredLabels(API_URL, filterGroup);
 
     // We have to append this data until the label -> label relationship data is available from data-lake
     // @see: https://linear.app/climate-policy-radar/issue/FUS-823/write-up-the-current-state-of-play-of-label-label-relationships
@@ -69,7 +79,7 @@ export const useFilterLabels = ({ features, themeConfig }: IProps) => {
       .finally(() => {
         setLoaded(true);
       });
-  }, [features.subdivisions, themeConfig.searchCategories, API_URL]);
+  }, [features.subdivisions, themeConfig.searchCategories, themeConfig.searchExcludeLabels, API_URL]);
 
   return {
     filters,
