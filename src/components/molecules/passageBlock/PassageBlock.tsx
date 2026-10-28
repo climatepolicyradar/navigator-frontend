@@ -51,9 +51,9 @@ type TProps = {
 };
 
 const formatPageRange = (pageNumbers: number[]): string => {
-  if (pageNumbers.length <= 1) return pageNumbers[0].toString() ?? "";
+  if (pageNumbers.length <= 1) return pageNumbers[0]?.toString() ?? "";
 
-  const sortedPageNumbers = [...pageNumbers].sort();
+  const sortedPageNumbers = [...pageNumbers].sort((a, b) => a - b);
   return [sortedPageNumbers[0], sortedPageNumbers[sortedPageNumbers.length - 1]].join(EN_DASH);
 };
 
