@@ -10,6 +10,7 @@ export const DEFAULT_THEME_CONFIG: TThemeConfig = {
   labelVariations: {},
   searchCategories: [],
   searchExcludeLabels: [],
+  downloadColumns: [],
   links: {},
   pageMetadata: {
     default: DEFAULT_PAGE_METADATA,

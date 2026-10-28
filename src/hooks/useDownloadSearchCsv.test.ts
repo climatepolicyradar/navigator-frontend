@@ -34,6 +34,38 @@ describe("buildDownloadSearchCsvUrl", () => {
     expect(url.searchParams.get("msm")).toBe("0.7");
   });
 
+  it("requests the theme's download columns, one param each, in configured order", () => {
+    const url = buildDownloadSearchCsvUrl({
+      apiUrl: TEST_API_URL,
+      themeConfig: { ...DEFAULT_THEME_CONFIG, downloadColumns: ["ID", "TITLE", "GEOGRAPHIES"] },
+      sort: "relevance",
+    });
+
+    expect(url.searchParams.getAll("columns")).toEqual(["ID", "TITLE", "GEOGRAPHIES"]);
+  });
+
+  it("omits columns when the theme configures none, leaving the API's default set", () => {
+    const url = buildDownloadSearchCsvUrl({
+      apiUrl: TEST_API_URL,
+      themeConfig: { ...DEFAULT_THEME_CONFIG, downloadColumns: [] },
+      sort: "relevance",
+    });
+
+    expect(url.searchParams.has("columns")).toBe(false);
+  });
+
+  it("omits columns when the theme config predates the field, rather than failing the download", () => {
+    const url = buildDownloadSearchCsvUrl({
+      apiUrl: TEST_API_URL,
+      // Themes reach the hook from an API payload, which may be served by a
+      // deployment older than `downloadColumns`.
+      themeConfig: { ...DEFAULT_THEME_CONFIG, downloadColumns: undefined } as unknown as TThemeConfig,
+      sort: "relevance",
+    });
+
+    expect(url.searchParams.has("columns")).toBe(false);
+  });
+
   it("maps every sort key to its order_by clause", () => {
     const forSort = (sort: "recent" | "oldest" | "title_asc" | "title_desc") =>
       buildDownloadSearchCsvUrl({

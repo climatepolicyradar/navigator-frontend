@@ -35,6 +35,26 @@ export type TLabelCategoryValue =
   | "Report"
   | "UN submission";
 
+export type TDownloadColumn =
+  | "ID"
+  | "TITLE"
+  | "DESCRIPTION"
+  | "GEOGRAPHIES"
+  | "PUBLISHED_DATE"
+  | "ENTITY_TYPE"
+  | "CATEGORY"
+  | "PROVIDER"
+  | "COLLECTION_TITLE"
+  | "BUNDLE_ID"
+  | "BUNDLE_TITLE"
+  | "CASE_STATUS"
+  | "CASE_NUMBER"
+  | "AT_ISSUE"
+  | "ORIGINAL_CASE_NAME"
+  | "PRINCIPAL_LAWS"
+  | "CASE_CATEGORIES"
+  | "JURISDICTIONS";
+
 export type TLabelVariationKey = "country" | "date" | "region";
 type TLabelVariation = {
   category: string[];
@@ -112,6 +132,8 @@ export type TThemeConfig = {
   searchCategories: TLabelCategoryValue[];
   // Label IDs (e.g. "author_type::Non-Party") to always exclude from document search results for this theme.
   searchExcludeLabels: string[];
+  // Columns to request for "download this search", in the order they appear in the CSV.
+  downloadColumns: TDownloadColumn[];
   labelVariations: TPartialRecord<TLabelVariationKey, TLabelVariation>;
   links: TPartialRecord<TThemeLinkKey, string>;
   pageMetadata: Record<TThemePageMetadataKey, TThemePageMetadata>;

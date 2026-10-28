@@ -6,6 +6,22 @@ const config: TThemeConfig = {
   deprecatedFilters: [],
   searchCategories: ["Litigation"],
   searchExcludeLabels: [],
+  downloadColumns: [
+    "ID",
+    "TITLE",
+    "DESCRIPTION",
+    "BUNDLE_ID",
+    "BUNDLE_TITLE",
+    "GEOGRAPHIES",
+    "PUBLISHED_DATE",
+    "CASE_STATUS",
+    "CASE_NUMBER",
+    "AT_ISSUE",
+    "ORIGINAL_CASE_NAME",
+    "PRINCIPAL_LAWS",
+    "CASE_CATEGORIES",
+    "JURISDICTIONS",
+  ],
   labelVariations: {
     date: {
       label: "Filing year",

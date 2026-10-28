@@ -56,6 +56,10 @@ export function buildDownloadSearchCsvUrl(params: IDownloadSearchCsvParams & { a
   url.searchParams.set("order_by", SORT_PARAMS_LOOKUP[params.sort]);
   url.searchParams.set("max_results", DOWNLOAD_MAX_RESULTS.toString());
 
+  // A theme with no columns configured appends nothing, leaving
+  // the API to fall back to its own default set rather than failing the download.
+  (params.themeConfig.downloadColumns ?? []).forEach((column) => url.searchParams.append("columns", column));
+
   return url;
 }
 

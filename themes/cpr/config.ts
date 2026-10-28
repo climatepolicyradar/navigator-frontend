@@ -436,6 +436,7 @@ const config: TThemeConfig = {
   ],
   searchCategories: ["Corporate Disclosure", "Global Stocktake", "Law", "Multilateral Climate Fund project", "Policy", "Report", "UN submission"],
   searchExcludeLabels: [],
+  downloadColumns: ["ID", "TITLE", "DESCRIPTION", "GEOGRAPHIES", "PUBLISHED_DATE", "ENTITY_TYPE", "CATEGORY", "PROVIDER", "COLLECTION_TITLE"],
   labelVariations: {
     date: {
       label: "First published",
