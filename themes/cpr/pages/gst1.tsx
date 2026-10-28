@@ -27,11 +27,11 @@ const GST1_GROUP: TSearchQueryGroup = {
   filters: [{ field: "labels.value.id", op: "contains", value: "process::GST1", checked: true }],
 };
 
-export default function GlobalStocktakeLandingPage() {
+export default function GST1LandingPage() {
   const landingPageConfig: TLandingPageConfig = {
     hero: {
       taxonomy: "Data library",
-      title: "Global Stocktake 1 Explorer",
+      title: "First Global Stocktake Explorer",
       description: "Explore and analyse all inputs to the first Global Stocktake",
     },
     heroImage: {
