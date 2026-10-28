@@ -111,7 +111,7 @@ export type TThemeConfig = {
   documentTypeLabels: TLabelPattern[];
   searchCategories: TLabelCategoryValue[];
   // Label IDs (e.g. "author_type::Non-Party") to always exclude from document search results for this theme.
-  searchExcludeLabels?: string[];
+  searchExcludeLabels: string[];
   labelVariations: TPartialRecord<TLabelVariationKey, TLabelVariation>;
   links: TPartialRecord<TThemeLinkKey, string>;
   pageMetadata: Record<TThemePageMetadataKey, TThemePageMetadata>;

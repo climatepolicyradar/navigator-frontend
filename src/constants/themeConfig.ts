@@ -9,6 +9,7 @@ export const DEFAULT_THEME_CONFIG: TThemeConfig = {
   documentTypeLabels: [],
   labelVariations: {},
   searchCategories: [],
+  searchExcludeLabels: [],
   links: {},
   pageMetadata: {
     default: DEFAULT_PAGE_METADATA,

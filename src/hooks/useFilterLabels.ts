@@ -54,7 +54,7 @@ export const useFilterLabels = ({ features, themeConfig }: IProps) => {
       );
     }
 
-    const excludeLabelRules: TSearchQueryGroup["filters"] = (themeConfig.searchExcludeLabels ?? []).map((id) => ({
+    const excludeLabelRules: TSearchQueryGroup["filters"] = themeConfig.searchExcludeLabels.map((id) => ({
       field: "id",
       op: "not_contains",
       value: id,
