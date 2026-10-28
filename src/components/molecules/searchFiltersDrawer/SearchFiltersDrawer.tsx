@@ -1,14 +1,11 @@
 import { useState } from "react";
 
 import { Drawer } from "@/components/atoms/drawer/Drawer";
+import { Loading } from "@/components/atoms/loading/Loading";
 import { SearchFilterLevel } from "@/components/organisms/searchFilterLevel/SearchFilterLevel";
-import { TFiltersGroup } from "@/types";
+import { IFilterGroupComponentProps } from "@/types";
 
-interface IProps {
-  filterGroup: TFiltersGroup;
-}
-
-export const SearchFiltersDrawer = ({ filterGroup }: IProps) => {
+export const SearchFiltersDrawer = ({ filterGroup, loading }: IFilterGroupComponentProps) => {
   const [isOpen, setIsOpen] = useState(false);
 
   if (filterGroup.container !== "drawer") return null;
@@ -35,7 +32,11 @@ export const SearchFiltersDrawer = ({ filterGroup }: IProps) => {
           </>
         }
       >
-        <SearchFilterLevel ancestorPath={[]} labels={nestedLabels} level={1} topLevelDefaultOpen={filterGroup.topLevelDefaultOpen} renderParents />
+        {loading ? (
+          <Loading />
+        ) : (
+          <SearchFilterLevel ancestorPath={[]} labels={nestedLabels} level={1} topLevelDefaultOpen={filterGroup.topLevelDefaultOpen} renderParents />
+        )}
       </Drawer>
     </>
   );

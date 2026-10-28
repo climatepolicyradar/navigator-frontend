@@ -1,12 +1,12 @@
 import { AnimatePresence, motion } from "framer-motion";
 import { ChevronDown } from "lucide-react";
 import { useRouter } from "next/router";
-import React, { useContext, useEffect, useMemo, useReducer, useState } from "react";
+import { useContext, useEffect, useMemo, useReducer, useState } from "react";
 
 import EmbeddedPDF from "@/components/EmbeddedPDF";
-import Loader from "@/components/Loader";
 import PassageMatches from "@/components/PassageMatches";
 import { Button } from "@/components/atoms/button/Button";
+import { Loading } from "@/components/atoms/loading/Loading";
 import { EmptyDocument } from "@/components/documents/EmptyDocument";
 import { EmptyPassages } from "@/components/documents/EmptyPassages";
 import { SearchSettings } from "@/components/filters/SearchSettings";
@@ -232,7 +232,7 @@ export const ConceptsDocumentViewer = ({
           >
             {isLoading ? (
               <div className="w-full flex justify-center flex-1 bg-white">
-                <Loader />
+                <Loading />
               </div>
             ) : (
               <>
