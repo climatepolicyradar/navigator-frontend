@@ -6,6 +6,38 @@ import { joinTailwindClasses } from "@/utils/tailwind";
 
 import styles from "./Drawer.module.css";
 
+type TScrollRootContext = {
+  onNestedOpen: () => void;
+  onNestedClose: () => void;
+};
+
+const ScrollRootContext = createContext<TScrollRootContext | null>(null);
+
+// Whether the scroll area of a selfScrolling drawer should be marked as the scroll root
+const ScrollMarkerContext = createContext(false);
+
+type TDrawerScrollAreaProps = {
+  children?: ReactNode;
+  className?: string;
+};
+
+export const DrawerScrollArea = ({ children, className }: TDrawerScrollAreaProps) => {
+  const isScrollRoot = useContext(ScrollMarkerContext);
+
+  return (
+    <div data-drawer-scroll={isScrollRoot ? "" : undefined} data-base-ui-swipe-ignore className={joinTailwindClasses("overflow-y-auto", className)}>
+      {children}
+    </div>
+  );
+};
+
+const SWIPE_DIRECTION_MAP: Record<TDirection, "left" | "right" | "up" | "down"> = {
+  left: "left",
+  right: "right",
+  top: "up",
+  bottom: "down",
+};
+
 type TDirection = "left" | "right" | "top" | "bottom";
 
 type TProps = Omit<DrawerRootProps, "swipeDirection"> & {
@@ -14,38 +46,23 @@ type TProps = Omit<DrawerRootProps, "swipeDirection"> & {
   title?: ReactNode;
   titleExtras?: ReactNode;
   direction?: TDirection;
+  selfScrolling?: boolean; // Children manage their own scrolling instead of the drawer
   /** Marks this drawer's content as the root PostHog measures scroll depth against while it is open */
   trackScroll?: boolean;
   wide?: boolean;
 };
 
-const swipeDirectionMap: Record<TDirection, "left" | "right" | "up" | "down"> = {
-  left: "left",
-  right: "right",
-  top: "up",
-  bottom: "down",
-};
-
-/**
- * PostHog measures scroll depth against the first element matching its `scroll_root_selector`, so
- * when drawers are nested only the innermost open one may be marked.
- *
- * Tracked drawers tell their nearest tracked ancestor when they open, so the ancestor can stand
- * down while they are on top. This only reaches drawers rendered inside one another, which is how
- * every nested drawer works today (a principal drawer renders the document and topic drawers).
- *
- * Opted into per drawer: swapping the scroll root mid-page-view mixes two elements into one
- * measurement, so only drawers that open on a URL change - and so start their own page view - mark
- * themselves. `trackScroll` therefore needs the controlled `open` prop.
- */
-type TScrollRootContext = {
-  onNestedOpen: () => void;
-  onNestedClose: () => void;
-};
-
-const ScrollRootContext = createContext<TScrollRootContext | null>(null);
-
-export const Drawer = ({ children, childrenClassName, title, titleExtras, direction = "right", trackScroll, wide, ...rootProps }: TProps) => {
+export const Drawer = ({
+  children,
+  childrenClassName,
+  title,
+  titleExtras,
+  direction = "right",
+  selfScrolling,
+  trackScroll,
+  wide,
+  ...rootProps
+}: TProps) => {
   const trackedAncestor = useContext(ScrollRootContext);
   const [openNestedCount, setOpenNestedCount] = useState(0);
 
@@ -57,17 +74,18 @@ export const Drawer = ({ children, childrenClassName, title, titleExtras, direct
     []
   );
 
-  const isTracking = !!trackScroll && !!rootProps.open;
+  const isTrackingScroll = !!trackScroll && !!rootProps.open;
+  const isScrollRoot = isTrackingScroll && openNestedCount === 0;
 
   useEffect(() => {
-    if (!isTracking || !trackedAncestor) return;
+    if (!isTrackingScroll || !trackedAncestor) return;
 
     trackedAncestor.onNestedOpen();
     return trackedAncestor.onNestedClose;
-  }, [isTracking, trackedAncestor]);
+  }, [isTrackingScroll, trackedAncestor]);
 
   return (
-    <BaseDrawer.Root {...rootProps} swipeDirection={swipeDirectionMap[direction]}>
+    <BaseDrawer.Root {...rootProps} swipeDirection={SWIPE_DIRECTION_MAP[direction]}>
       <BaseDrawer.Portal>
         <div onClick={(event) => event.stopPropagation()}>
           <BaseDrawer.Backdrop className="fixed inset-0 bg-inky-black duration-200 [--backdrop-opacity:0.2] min-h-dvh opacity-[calc(var(--backdrop-opacity)*(1-var(--drawer-swipe-progress)))] transition-opacity ease-[cubic-bezier(0.32,0.72,0,1)] data-swiping:duration-0 data-ending-style:opacity-0 data-starting-style:opacity-0" />
@@ -87,11 +105,16 @@ export const Drawer = ({ children, childrenClassName, title, titleExtras, direct
                 </div>
               </div>
               <div
-                data-drawer-scroll={isTracking && openNestedCount === 0 ? "" : undefined}
+                data-drawer-scroll={isScrollRoot && !selfScrolling ? "" : undefined}
                 data-base-ui-swipe-ignore
-                className={joinTailwindClasses("overflow-y-auto px-4 pb-8 md:px-8", childrenClassName)}
+                className={joinTailwindClasses(
+                  selfScrolling ? "flex-1 min-h-0 flex flex-col" : "overflow-y-auto px-4 pb-8 md:px-8",
+                  childrenClassName
+                )}
               >
-                <ScrollRootContext.Provider value={isTracking ? scrollRootContext : trackedAncestor}>{children}</ScrollRootContext.Provider>
+                <ScrollRootContext.Provider value={isTrackingScroll ? scrollRootContext : trackedAncestor}>
+                  <ScrollMarkerContext.Provider value={isScrollRoot}>{children}</ScrollMarkerContext.Provider>
+                </ScrollRootContext.Provider>
               </div>
             </BaseDrawer.Popup>
           </BaseDrawer.Viewport>
