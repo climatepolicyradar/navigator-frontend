@@ -70,6 +70,12 @@ describe("PassageBlock", () => {
     expect(screen.getByText(`Pages 1${EN_DASH}3`)).toBeInTheDocument();
   });
 
+  it("orders the page range numerically, not as strings", () => {
+    const passage: TPassage = { ...basePassage, pages: [{ page_number: 9 }, { page_number: 8 }] };
+    render(<PassageBlock passage={passage} />);
+    expect(screen.getByText(`Pages 9${EN_DASH}10`)).toBeInTheDocument();
+  });
+
   it("does not render a page number for an empty pages array", () => {
     const passage: TPassage = { ...basePassage, pages: [] };
     render(<PassageBlock passage={passage} />);
