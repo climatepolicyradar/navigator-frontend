@@ -3,7 +3,7 @@ import { useEffect, useMemo, useState } from "react";
 
 import { ApiClient } from "@/api/http-common";
 import { useEnvConfig } from "@/context/EnvConfig";
-import { TSearchLabel, TSearchQueryGroup } from "@/types";
+import { GeographyTypeV2, TSearchLabel, TSearchQueryGroup } from "@/types";
 
 type TLabelsResponse = {
   results: TSearchLabel[];
@@ -102,11 +102,23 @@ export async function loadFilteredLabels(apiUrl: string, filters: TSearchQueryGr
 
 export async function loadLabelTaxonomy(apiUrl: string) {
   /**
-   * This is temporary fix until the categories taxonomy data source data is fixed
-   * @see: https://linear.app/climate-policy-radar/issue/APP-2266/fusion-enrichment-fleshing-out-the-publishedcanonicallabels
+   * This is temporary fix until the categories taxonomy data contains label -> label relationships
+   * @see: https://linear.app/climate-policy-radar/issue/FUS-823/write-up-the-current-state-of-play-of-label-label-relationships
    */
   const client = new ApiClient(apiUrl);
   const response = await client.get<TLabelsResponse>(`/search/labels-taxonomy`, null);
+  return response.data.results || [];
+}
+
+export async function loadGeographyTaxonomy(apiUrl: string, geographyTypes: GeographyTypeV2[]) {
+  /**
+   * This is temporary fix until the geographies taxonomy data contains label -> label relationships
+   * @see: https://linear.app/climate-policy-radar/issue/FUS-823/write-up-the-current-state-of-play-of-label-label-relationships
+   */
+  const client = new ApiClient(apiUrl);
+  const urlSearchParams = new URLSearchParams();
+  geographyTypes.forEach((type) => urlSearchParams.append("type", type));
+  const response = await client.get<TLabelsResponse>(`/search/geographies-taxonomy?${urlSearchParams.toString()}`, null);
   return response.data.results || [];
 }
 

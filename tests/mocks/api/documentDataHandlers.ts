@@ -33,7 +33,7 @@ export const testDocumentDataIn: TDataInDocument = {
   title: "Test Document",
   description: null,
   attributes: { status: "published", deprecated_slug: testDocumentSlug },
-  labels: [{ type: "category", value: { id: "category::policy", type: "concept", value: "Policy", labels: [] } }],
+  labels: [{ type: "category", value: { id: "category::policy", type: "category", value: "Policy", labels: [] } }],
   items: [
     { type: "cdn", url: "https://cdn.example.com/test-document.pdf", content_type: "application/pdf" },
     { type: "source", url: "https://example.com/test-document", content_type: null },
