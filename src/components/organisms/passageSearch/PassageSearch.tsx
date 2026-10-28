@@ -16,6 +16,7 @@ import { SearchControls } from "@/components/organisms/searchControls/SearchCont
 import { ZeroStatePassages } from "@/components/organisms/zeroStates/ZeroStatePassages";
 import { ID_SEPARATOR } from "@/constants/chars";
 import { PASSAGE_FILTER_GROUPS } from "@/constants/filters";
+import { TOPIC_HIGHLIGHT_COLOURS } from "@/constants/highlights";
 import { RESULTS_PER_PAGE } from "@/constants/paging";
 import { PASSAGE_SORT_OPTIONS, PASSAGE_SORT_VALUES } from "@/constants/sort";
 import { useEnvConfig } from "@/context/EnvConfig";
@@ -26,14 +27,6 @@ import { ISearchPassage, TFamilyDocumentPublic, TPassagesScope, TPrincipalDrawer
 import { parseAsDeflatedFilters } from "@/utils/filters/deflate";
 import { queryGroupToFilterPaths } from "@/utils/search/queryGroupToFilterPaths";
 import { conceptFiltersOnly, flattenLevelToBaseQuery, levelParamKeys } from "@/utils/search/searchLevels";
-
-export const TOPIC_HIGHLIGHT_COLOURS = [
-  "bg-cyan-200 text-text-primary",
-  "bg-purple-200 text-text-primary",
-  "bg-pink-200 text-text-primary",
-  "bg-lime-200 text-text-primary",
-  "bg-orange-200 text-text-primary",
-];
 
 type TProps = {
   changeTab?: (tab: TPrincipalDrawerTab) => void;

@@ -1,9 +1,10 @@
 import { render, screen, fireEvent } from "@testing-library/react";
 
 import { EN_DASH } from "@/constants/chars";
+import { QUERY_HIGHLIGHT_COLOUR } from "@/constants/highlights";
 import { IPassageLabel } from "@/types";
 
-import { PassageBlock, QUERY_HIGHLIGHT_COLOUR as QUERY_COLOUR, TPassage } from "./PassageBlock";
+import { PassageBlock, TPassage } from "./PassageBlock";
 
 // Colours are assigned by the caller, so any class names will do
 const TOPIC_A = "topic-a";
@@ -207,7 +208,7 @@ describe("PassageBlock", () => {
 
       const highlighted = screen.getAllByText(/^climate$/i);
       expect(highlighted).toHaveLength(2);
-      highlighted.forEach((span) => expect(span).toHaveClass("bg-yellow-200"));
+      highlighted.forEach((span) => expect(span).toHaveClass(QUERY_HIGHLIGHT_COLOUR));
     });
 
     it("gives the query the text it shares with a topic, and starts the topic after it", () => {
@@ -215,7 +216,7 @@ describe("PassageBlock", () => {
       const passage: TPassage = { ...boldingPassage, labels: [makeSpanLabel("Climate adaptation", 0, 18)] };
       render(<PassageBlock passage={passage} topicColours={new Map([["concept-Climate adaptation", TOPIC_A]])} />);
 
-      expect(screen.getByText("Climate")).toHaveClass(QUERY_COLOUR);
+      expect(screen.getByText("Climate")).toHaveClass(QUERY_HIGHLIGHT_COLOUR);
       expect(screen.getByText("adaptation")).toHaveClass(TOPIC_A);
       // Nothing carries both, and the text is unchanged
       expect(screen.getByText("Climate").parentElement).toHaveTextContent(boldingPassage.content);
