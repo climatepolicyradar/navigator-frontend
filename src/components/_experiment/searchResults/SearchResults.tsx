@@ -2,8 +2,8 @@ import { useQuery } from "@tanstack/react-query";
 import React, { Fragment, useContext, useEffect, useMemo } from "react";
 
 import { fetchSearchPrincipalDocuments, getSearchApiStatus } from "@/api/search";
-import Loader from "@/components/Loader";
 import { isFilterGroupEmpty } from "@/components/_experiment/advancedFilters/AdvancedFilters";
+import { Loading } from "@/components/atoms/loading/Loading";
 import { DocumentCard } from "@/components/molecules/documentCard/DocumentCard";
 import { useEnvConfig } from "@/context/EnvConfig";
 import { ThemeContext } from "@/context/ThemeContext";
@@ -131,7 +131,7 @@ export function SearchContainer({
   if (isSearching) {
     return (
       <div className="flex justify-center" data-cy="search-loading">
-        <Loader />
+        <Loading />
       </div>
     );
   }

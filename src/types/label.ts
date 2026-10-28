@@ -1,3 +1,5 @@
+import { ID_SEPARATOR } from "@/constants/chars";
+
 // The most generic label type
 export type TLabel = {
   id: string;
@@ -5,3 +7,5 @@ export type TLabel = {
   value: string;
   children?: TLabel[];
 };
+
+export type TLabelId = `${string}${typeof ID_SEPARATOR}${string}`;

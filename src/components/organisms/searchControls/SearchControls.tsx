@@ -35,6 +35,7 @@ interface IProps {
   filterParamKey: string;
   filtersSlot?: ReactNode;
   labels: TSearchLabel[];
+  labelsLoaded: boolean;
   nameLabels?: TSearchLabel[];
   pageParamKey?: string;
   queryParamKey: string;
@@ -52,6 +53,7 @@ export const SearchControls = ({
   filterParamKey,
   filtersSlot,
   labels,
+  labelsLoaded,
   nameLabels,
   pageParamKey = PAGE_TOKEN_PARAM_KEY,
   queryParamKey,
@@ -175,7 +177,7 @@ export const SearchControls = ({
               return (
                 <Fragment key={group.title}>
                   {group.afterPartition && <div className="w-px h-6 mx-3 bg-border-normal hidden sm:block" />}
-                  <SearchFilters filterGroup={group} />
+                  <SearchFilters filterGroup={group} loading={!labelsLoaded} />
                 </Fragment>
               );
             })}

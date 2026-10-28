@@ -1,21 +1,24 @@
-import { getTaxonomy } from "@/bff/methods/getTaxonomy";
-import { TDataInLabel, TDataInLabelType, validateProviderLabel } from "@/schemas";
+import { getDocumentTypeLabel } from "@/bff/methods/getDocumentTypeLabel";
+import { COMMON_DOCUMENT_TYPE_LABELS } from "@/constants/documentTypeLabels";
+import { TDataInLabel, validateProviderLabel } from "@/schemas";
+import themeConfig from "@/themes/config";
 import { TAttributionCategory, TFamilyAttribution } from "@/types";
-import { TItemsByType } from "@/utils/data-in/groupByType";
 
-export const transformAttribution = (groupedLabels: TItemsByType<TDataInLabel, TDataInLabelType>): TFamilyAttribution => {
-  const label = groupedLabels.provider.find((label) => label.value.type === "agent");
+export const transformAttribution = (labels: TDataInLabel[]): TFamilyAttribution => {
+  const label = labels.find((label) => label.type === "provider" && label.value.type === "agent");
   const providerLabel = validateProviderLabel(label);
+  const categoryLabel = labels.find((label) => label.type === "category");
 
   const attribution: TFamilyAttribution = {
-    category: groupedLabels.category[0].value.value as TAttributionCategory,
+    category: categoryLabel.value.value as TAttributionCategory,
     corpusImageAlt: providerLabel.value.value ?? "",
     corpusNote: providerLabel.value.attributes.corpus_text ?? "",
     provider: providerLabel.value.value,
-    taxonomy: getTaxonomy(
-      groupedLabels.category[0].value.value.toLowerCase() as Lowercase<TAttributionCategory>,
-      groupedLabels.provider[0].value.value
-    ),
+    taxonomy:
+      getDocumentTypeLabel(
+        labels.map((label) => label.value),
+        [...themeConfig.documentTypeLabels, ...COMMON_DOCUMENT_TYPE_LABELS]
+      ) ?? categoryLabel.value.value,
   };
 
   if (providerLabel.value.attributes.corpus_image_url) {

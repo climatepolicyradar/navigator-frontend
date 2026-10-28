@@ -2,34 +2,37 @@ import { useQuery } from "@tanstack/react-query";
 
 import { dayInMilliseconds } from "@/constants/dayInMilleseconds";
 import { useEnvConfig } from "@/context/EnvConfig";
-import { TApiItemResponse, TApiGeographyWithDocumentCounts, TGeographyWithDocumentCounts } from "@/types";
+import { TApiItemResponse, TApiGeographyLabelCount, TGeographyWithDocumentCounts } from "@/types";
 
-import useThemeConfig from "./useThemeConfig";
 import { ApiClient } from "../api/http-common";
+
+/* data-in identifies geographies by a prefixed label id, e.g. "subdivision::MX-TAB",
+ * whereas consumers of this hook work in bare ISO-3166-2 codes. */
+const SUBDIVISION_LABEL_PREFIX = "subdivision::";
+
+const toSubdivisionWithCounts = (geography: TApiGeographyLabelCount): TGeographyWithDocumentCounts => ({
+  code: geography.id.replace(SUBDIVISION_LABEL_PREFIX, ""),
+  name: geography.name,
+  type: geography.type,
+  count: geography.count,
+});
 
 export default function useSubdivisions() {
   const { CONCEPTS_API_URL } = useEnvConfig();
-  const { themeConfig } = useThemeConfig();
-  const defaultCorpora = themeConfig?.defaultCorpora;
-  const corpora = defaultCorpora ?? themeConfig?.deprecatedCategories?.options.find((option) => option.slug === "All")?.value;
-  const corpusFilters = corpora ? corpora?.map((corpus) => `&corpus.import_id=${corpus}`).join("") : "";
 
   return useQuery({
     queryKey: ["all-subdivisions-with-data"],
     queryFn: async () => {
       const client = new ApiClient();
-      const queryResponse = await client.get<TApiItemResponse<TApiGeographyWithDocumentCounts[]>>(
-        `${CONCEPTS_API_URL}/families/aggregations/by-geography?documents.document_status=published${corpusFilters}`,
+      const queryResponse = await client.get<TApiItemResponse<TApiGeographyLabelCount[]>>(
+        `${CONCEPTS_API_URL}/data-in/documents:aggregateByGeography?attributes.status=published&labels.value.type=subdivision`,
         null
       );
-      const geographies: TGeographyWithDocumentCounts[] = queryResponse.data.data;
 
-      const subdivisions = geographies.filter((item) => item.type === "ISO-3166-2");
-      return subdivisions;
+      return queryResponse.data.data.map(toSubdivisionWithCounts);
     },
     refetchOnWindowFocus: false,
     refetchOnMount: false,
     gcTime: dayInMilliseconds,
-    enabled: Boolean(themeConfig),
   });
 }

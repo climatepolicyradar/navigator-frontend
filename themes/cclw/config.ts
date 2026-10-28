@@ -1,6 +1,7 @@
 import { TThemeConfig } from "@/types";
 
 const config: TThemeConfig = {
+  documentTypeLabels: [],
   deprecatedCategories: {
     label: "Category",
     options: [

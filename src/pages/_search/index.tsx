@@ -41,7 +41,7 @@ type TProps = InferGetServerSidePropsType<typeof getServerSideProps>;
 const ShadowSearch = ({ theme, themeConfig, features }: TProps) => {
   const { removeCompletedTutorial } = useContext(TutorialContext);
   const { getAppText } = useText();
-  const availableFilters = useFilterLabels({ features, themeConfig });
+  const { filters: availableFilters, loaded: filtersLoaded } = useFilterLabels({ features, themeConfig });
 
   // search query that is typed into the search box
   const [query, setQuery] = useQueryState("q", parseAsString.withDefault(""));
@@ -152,6 +152,7 @@ const ShadowSearch = ({ theme, themeConfig, features }: TProps) => {
             filterGroups={searchFilterGroups}
             filterParamKey="filters"
             labels={availableFilters}
+            labelsLoaded={filtersLoaded}
             queryParamKey="q"
             resultsNode={resultsSummary ? <div aria-live="polite">{resultsSummary}</div> : null}
             sortOptions={SEARCH_SORT_OPTIONS}

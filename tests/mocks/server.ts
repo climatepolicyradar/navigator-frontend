@@ -3,7 +3,7 @@ import { setupServer } from "msw/node";
 import { backendApiSearchHandler } from "./api/backendApiHandlers";
 import { conceptHandlers } from "./api/conceptHandlers";
 import { configHandlers } from "./api/configHandlers";
-import { familiesHandlers } from "./api/familiesHandlers";
+import { dataInHandlers } from "./api/dataInHandlers";
 import { geographiesHandlers } from "./api/geographiesHandlers";
 import { searchHandlers } from "./api/searchHandlers";
 
@@ -13,6 +13,6 @@ export const server = setupServer(
   ...geographiesHandlers,
   ...searchHandlers,
   ...conceptHandlers,
-  ...familiesHandlers,
+  ...dataInHandlers,
   ...backendApiSearchHandler
 );

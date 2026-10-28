@@ -1,4 +1,4 @@
-import { TApiDataInCategory, TAttributionCategory, TCategory, TCorpusTypeSubCategory } from "@/types";
+import { TApiDataInCategory, TCategory, TCorpusTypeSubCategory } from "@/types";
 
 export const CATEGORY_MAP: Record<TCategory, TApiDataInCategory> = {
   Executive: "Policy",
@@ -15,111 +15,70 @@ export const CATEGORY_MAP: Record<TCategory, TApiDataInCategory> = {
   UNFCCC: "UN submission",
 };
 
-type TAnyCategory = Lowercase<TCategory | TAttributionCategory>;
-
-type TTaxonomyMatch = {
-  taxonomy: string;
-  category: TAnyCategory[]; // Must match at least one of these categories
-  provider?: string[]; // If provided must also match at least one of these providers
-  corpusId?: string; // Optional exact corpus ID match. Overrides above matches
+const getReportTaxonomy = (corpusTypeName: string): string => {
+  switch (corpusTypeName) {
+    case "OEP":
+    case "Ocean Energy Pathways":
+      return "Offshore Wind Report";
+    case "AF":
+    case "Adaptation Fund":
+    case "CIF":
+    case "The Climate Investment Funds":
+    case "GCF":
+    case "Green Climate Fund":
+    case "GEF":
+    case "Global Environment Facility":
+      return "Guidance";
+    default:
+      return "Report";
+  }
 };
 
-const TAXONOMY_MATCHES: TTaxonomyMatch[] = [
-  /* UNFCCC */
-  {
-    taxonomy: "CBD Submission",
-    corpusId: "UN.corpus.UNCBD.n0000",
-    category: ["un submission", "unfccc"],
-    provider: ["UNCBD"],
-  },
-  {
-    taxonomy: "UNCCD submission",
-    corpusId: "UN.corpus.UNCCD.n0000",
-    category: ["un submission", "unfccc"],
-    provider: ["UNCCD"],
-  },
-  {
-    taxonomy: "UNFCCC submission",
-    corpusId: "UNFCCC.corpus.i00000001.n0000",
-    category: ["un submission", "unfccc"],
-    provider: ["UNFCCC"],
-  },
-  /* Reports */
-  {
-    taxonomy: "Offshore Wind Report",
-    category: ["report", "reports"],
-    provider: ["OEP", "Ocean Energy Pathways"],
-  },
-  {
-    taxonomy: "Guidance",
-    category: ["report", "reports"],
-    provider: ["AF", "Adaptation Fund", "CIF", "The Climate Investment Funds", "GCF", "Green Climate Fund", "GEF", "Global Environment Facility"],
-  },
-  {
-    taxonomy: "Report",
-    category: ["report", "reports"],
-  },
-  /* MCF */
-  {
-    taxonomy: "Adaptation Fund",
-    category: ["mcf", "multilateral climate fund project"],
-    provider: ["AF", "Adaptation Fund"],
-  },
-  {
-    taxonomy: "Climate Investment Fund",
-    category: ["mcf", "multilateral climate fund project"],
-    provider: ["CIF", "The Climate Investment Funds"],
-  },
-  {
-    taxonomy: "Green Climate Fund",
-    category: ["mcf", "multilateral climate fund project"],
-    provider: ["GCF", "Green Climate Fund"],
-  },
-  {
-    taxonomy: "Global Environment Facility",
-    category: ["mcf", "multilateral climate fund project"],
-    provider: ["GEF", "Global Environment Facility"],
-  },
-  /* Everything else */
-  {
-    taxonomy: "Litigation",
-    category: ["litigation"],
-  },
-  {
-    taxonomy: "Legislative",
-    category: ["law", "legislative"],
-  },
-  {
-    taxonomy: "Policy",
-    category: ["executive", "policy"],
-  },
-  {
-    taxonomy: "UN Submission",
-    category: ["un submission", "unfccc"],
-  },
-  {
-    taxonomy: "MCF",
-    category: ["mcf"],
-  },
-];
-
-export const getTaxonomy = (category: TAnyCategory, provider: string, corpusId?: string): string => {
-  const taxonomyMatch = TAXONOMY_MATCHES.find((match) => {
-    if (match.corpusId && match.corpusId === corpusId) return true;
-    if (!match.category.some((cat) => cat === category)) return false;
-
-    if (match.provider) {
-      return match.provider.some((prov) => prov === provider);
-    } else {
-      return true;
-    }
-  });
-
-  return taxonomyMatch?.taxonomy ?? category;
+const getFundTaxonomy = (source: string): string => {
+  switch (source) {
+    case "AF":
+    case "Adaptation Fund":
+      return "Adaptation Fund";
+    case "CIF":
+    case "The Climate Investment Funds":
+      return "Climate Investment Fund";
+    case "GCF":
+    case "Green Climate Fund":
+      return "Green Climate Fund";
+    case "GEF":
+    case "Global Environment Facility":
+      return "Global Environment Facility";
+    default:
+      return "multilateral climate fund project";
+  }
 };
 
-export const getTaxonomyFromV1 = (oldCategory: TCategory, subCategory: TCorpusTypeSubCategory, source: string, corpusId: string) => {
+export const getTaxonomyFromV1 = (oldCategory: TCategory, subCategory: TCorpusTypeSubCategory, source: string, corpusId: string): string => {
   const category = CATEGORY_MAP[oldCategory];
-  const provider = ["Multilateral Climate Fund project", "UN submission"].includes(category) ? source : subCategory;
-  return getTaxonomy(category.toLowerCase() as Lowercase<TCategory>, provider, corpusId);
+  const isUNSubmission = category === "UN submission";
+
+  if (corpusId === "UN.corpus.UNCBD.n0000" || (isUNSubmission && source === "UNCBD")) {
+    return "CBD Submission";
+  }
+  if (corpusId === "UN.corpus.UNCCD.n0000" || (isUNSubmission && source === "UNCCD")) {
+    return "UNCCD submission";
+  }
+  if (corpusId === "UNFCCC.corpus.i00000001.n0000" || (isUNSubmission && source === "UNFCCC")) {
+    return "UNFCCC submission";
+  }
+
+  switch (category) {
+    case "UN submission":
+      return "UN Submission";
+    case "Report":
+      return getReportTaxonomy(subCategory);
+    case "Multilateral Climate Fund project":
+      return getFundTaxonomy(source);
+    case "Law":
+      return "Legislative";
+    case "Policy":
+      return "Policy";
+    case "Litigation":
+      return "Litigation";
+  }
 };

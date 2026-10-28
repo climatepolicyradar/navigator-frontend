@@ -1,6 +1,7 @@
 import { TThemeConfig } from "@/types";
 
 const config: TThemeConfig = {
+  documentTypeLabels: [],
   defaultCorpora: ["Academic.corpus.Litigation.n0000"],
   deprecatedFilters: [],
   searchCategories: ["Litigation"],
