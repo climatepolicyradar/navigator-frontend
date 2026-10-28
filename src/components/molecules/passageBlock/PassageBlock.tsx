@@ -3,14 +3,13 @@ import { useEffect, useState } from "react";
 
 import { ProductSupport } from "@/components/molecules/productSupport/ProductSupport";
 import { EN_DASH } from "@/constants/chars";
+import { QUERY_HIGHLIGHT_COLOUR } from "@/constants/highlights";
 import { IPassageBolding, IPassageLabel } from "@/types";
 import { joinNodes } from "@/utils/reactNode";
 import { THighlightRange, addHighlights } from "@/utils/text/addHighlights";
 import { resolveHighlightRanges } from "@/utils/text/resolveHighlightRanges";
 
 const COPY_FEEDBACK_TIMEOUT = 1000;
-
-export const QUERY_HIGHLIGHT_COLOUR = "bg-yellow-200 text-text-primary";
 
 type TPassagePage = {
   page_number: number;

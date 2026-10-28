@@ -1,11 +1,10 @@
 import Script from "next/script";
 import { useRef, useMemo, useEffect, useContext } from "react";
 
+import { Loading } from "@/components/atoms/loading/Loading";
 import { AdobeContext } from "@/context/AdobeContext";
 import usePDFPreview, { TViewerPassage } from "@/hooks/usePDFPreview";
 import { TFamilyDocumentPublic, TLoadingStatus } from "@/types";
-
-import Loader from "./Loader";
 
 interface IProps {
   document: TFamilyDocumentPublic;
@@ -41,7 +40,7 @@ const EmbeddedPDF = ({ document, documentPassageMatches = [], pageNumber = null,
       <Script src="https://acrobatservices.adobe.com/view-sdk/viewer.js" />
       {!document ? (
         <div className="flex-1 flex justify-center">
-          <Loader />
+          <Loading />
         </div>
       ) : (
         <div ref={containerRef} id="pdf-div" className="h-full" data-analytics-document={document.content_type}></div>

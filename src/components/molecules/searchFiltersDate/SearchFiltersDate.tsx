@@ -6,7 +6,7 @@ import { useContext, useState } from "react";
 
 import { Input } from "@/components/atoms/input/Input";
 import { FiltersContext, TDateRange } from "@/context/FiltersContext";
-import { TFiltersGroup } from "@/types";
+import { IFilterGroupComponentProps } from "@/types";
 
 type TRadioValue = number | null | undefined;
 
@@ -46,11 +46,7 @@ const radioOptionToDateRange = (value: TRadioValue): TDateRange => {
 
 const isValidYear = (value: string): boolean => value.length === 4 && !Number.isNaN(Number(value));
 
-interface IProps {
-  filterGroup: TFiltersGroup;
-}
-
-export const SearchFiltersDate = ({ filterGroup }: IProps) => {
+export const SearchFiltersDate = ({ filterGroup }: IFilterGroupComponentProps) => {
   const { appliedDateRange, setDateRange } = useContext(FiltersContext);
   const [dateFilterState, setDateFilterState] = useState<TDateFilterState>(() => dateRangeToFilterState(appliedDateRange));
   const [prevAppliedDateRange, setPrevAppliedDateRange] = useState(appliedDateRange); // Avoids needing a useEffect to listen to appliedDateRange changing beyond this component

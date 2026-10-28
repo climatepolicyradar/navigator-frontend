@@ -9,9 +9,10 @@ interface IProps {
   themeConfig: TThemeConfig;
 }
 
-export const useFilterLabels = ({ features, themeConfig }: IProps): TSearchLabel[] => {
+export const useFilterLabels = ({ features, themeConfig }: IProps) => {
   const { API_URL } = useEnvConfig();
-  const [availableFilters, setAvailableFilters] = useState<TSearchLabel[]>([]);
+  const [loaded, setLoaded] = useState(false);
+  const [filters, setFilters] = useState<TSearchLabel[]>([]);
 
   useEffect(() => {
     const geographyTypes: GeographyTypeV2[] = ["region", "country"];
@@ -61,10 +62,17 @@ export const useFilterLabels = ({ features, themeConfig }: IProps): TSearchLabel
     const loadedGeographiesTaxonomy = loadGeographyTaxonomy(API_URL, geographyTypes);
     const allFilterLabels = Promise.all([loadedFilteredLabels, loadedLabelTaxonomy, loadedGeographiesTaxonomy]);
 
-    allFilterLabels.then(([filteredLabels, labelsTaxonomy, geographiesTaxonomy]) =>
-      setAvailableFilters([...filteredLabels, ...labelsTaxonomy, ...geographiesTaxonomy])
-    );
+    allFilterLabels
+      .then(([filteredLabels, labelsTaxonomy, geographiesTaxonomy]) => {
+        setFilters([...filteredLabels, ...labelsTaxonomy, ...geographiesTaxonomy]);
+      })
+      .finally(() => {
+        setLoaded(true);
+      });
   }, [features.subdivisions, themeConfig.searchCategories, API_URL]);
 
-  return availableFilters;
+  return {
+    filters,
+    loaded,
+  };
 };

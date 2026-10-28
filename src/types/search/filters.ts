@@ -40,3 +40,10 @@ export type TFiltersGroupConfig = TFiltersGroupDrawerConfig | TFiltersGroupPopov
 export type TFiltersGroup = TFiltersGroupConfig & {
   nestedLabels: TNestedSearchLabel[];
 };
+
+/* Props */
+
+export interface IFilterGroupComponentProps {
+  filterGroup: TFiltersGroup;
+  loading: boolean;
+}

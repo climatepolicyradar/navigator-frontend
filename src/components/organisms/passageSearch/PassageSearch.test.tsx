@@ -5,13 +5,14 @@ import mockRouter from "next-router-mock";
 import * as nextRouterMock from "next-router-mock";
 import { NuqsTestingAdapter } from "nuqs/adapters/testing";
 
+import { TOPIC_HIGHLIGHT_COLOURS } from "@/constants/highlights";
 import { EnvConfigContext } from "@/context/EnvConfig";
 import { SearchLevelContext } from "@/context/SearchLevelContext";
 import { envConfig } from "@/mocks/envConfig";
 import { IPassageLabel, ISearchPassage, TFamilyDocumentPublic, TSearchQueryGroup, TTopic } from "@/types";
 import { deflateFilters } from "@/utils/filters/deflate";
 
-import { PassageSearch, TOPIC_HIGHLIGHT_COLOURS as TOPIC_COLOURS } from "./PassageSearch";
+import { PassageSearch } from "./PassageSearch";
 
 vi.mock("next/router", () => nextRouterMock);
 
@@ -364,7 +365,7 @@ describe("PassageSearch", () => {
 
         await filterBy(topicFilter);
 
-        expect(await screen.findByText("ecological")).toHaveClass(TOPIC_COLOURS[0]);
+        expect(await screen.findByText("ecological")).toHaveClass(TOPIC_HIGHLIGHT_COLOURS[0]);
         // The other label is on the passage but its topic was not ticked
         expect(screen.queryByText("cultivation")).not.toBeInTheDocument();
       });
@@ -385,7 +386,7 @@ describe("PassageSearch", () => {
 
         const highlighted = await screen.findAllByText("cultivation");
         expect(highlighted).toHaveLength(2);
-        highlighted.forEach((span) => expect(span).toHaveClass(TOPIC_COLOURS[1]));
+        highlighted.forEach((span) => expect(span).toHaveClass(TOPIC_HIGHLIGHT_COLOURS[1]));
       });
 
       it("highlights nothing when there are no filters", async () => {
@@ -410,7 +411,7 @@ describe("PassageSearch", () => {
           ],
         });
 
-        expect(await screen.findByText("ecological")).toHaveClass(TOPIC_COLOURS[0]);
+        expect(await screen.findByText("ecological")).toHaveClass(TOPIC_HIGHLIGHT_COLOURS[0]);
         expect(screen.queryByText("cultivation")).not.toBeInTheDocument();
       });
 

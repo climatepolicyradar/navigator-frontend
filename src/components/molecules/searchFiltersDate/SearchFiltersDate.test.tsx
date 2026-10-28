@@ -31,7 +31,7 @@ const renderWithFiltersContext = (
     <FiltersContext.Provider
       value={{ appliedDateRange, checkedLabelPaths: [], clearFilters: vi.fn(), labelValues: {}, setDateRange, toggleFilter: vi.fn() }}
     >
-      <SearchFiltersDate filterGroup={filterGroup} />
+      <SearchFiltersDate filterGroup={filterGroup} loading={false} />
     </FiltersContext.Provider>
   );
 

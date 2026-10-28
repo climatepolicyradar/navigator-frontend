@@ -6,9 +6,9 @@ import { memo, useCallback, useContext, useEffect, useMemo, useRef, useState } f
 
 import { fetchSearchPassages } from "@/api/passages";
 import EmbeddedPDF from "@/components/EmbeddedPDF";
-import Loader from "@/components/Loader";
 import { Button } from "@/components/atoms/button/Button";
 import { FiveColumns } from "@/components/atoms/columns/FiveColumns";
+import { Loading } from "@/components/atoms/loading/Loading";
 import { EmptyDocument } from "@/components/documents/EmptyDocument";
 import { DocumentsFilter, TFilterableDocument } from "@/components/molecules/documentsFilter/DocumentsFilter";
 import { PassageBlock, TPassage as TPassageBlock } from "@/components/molecules/passageBlock/PassageBlock";
@@ -16,6 +16,7 @@ import { SearchControls } from "@/components/organisms/searchControls/SearchCont
 import { ZeroStatePassages } from "@/components/organisms/zeroStates/ZeroStatePassages";
 import { ID_SEPARATOR } from "@/constants/chars";
 import { PASSAGE_FILTER_GROUPS } from "@/constants/filters";
+import { TOPIC_HIGHLIGHT_COLOURS } from "@/constants/highlights";
 import { RESULTS_PER_PAGE } from "@/constants/paging";
 import { PASSAGE_SORT_OPTIONS, PASSAGE_SORT_VALUES } from "@/constants/sort";
 import { useEnvConfig } from "@/context/EnvConfig";
@@ -26,14 +27,6 @@ import { ISearchPassage, TFamilyDocumentPublic, TPassagesScope, TPrincipalDrawer
 import { parseAsDeflatedFilters } from "@/utils/filters/deflate";
 import { queryGroupToFilterPaths } from "@/utils/search/queryGroupToFilterPaths";
 import { conceptFiltersOnly, flattenLevelToBaseQuery, levelParamKeys } from "@/utils/search/searchLevels";
-
-export const TOPIC_HIGHLIGHT_COLOURS = [
-  "bg-cyan-200 text-text-primary",
-  "bg-purple-200 text-text-primary",
-  "bg-pink-200 text-text-primary",
-  "bg-lime-200 text-text-primary",
-  "bg-orange-200 text-text-primary",
-];
 
 type TProps = {
   changeTab?: (tab: TPrincipalDrawerTab) => void;
@@ -143,6 +136,7 @@ export const PassageSearch = ({ changeTab, concepts, documents, documentsLabel, 
   const [documentsParam, setDocumentsParam] = useQueryState(paramKeys.documents, parseAsArrayOf(parseAsString).withDefault([]));
   const [pageNumber, setPageNumber] = useState<number | null>(null);
   const [availableConcepts, setAvailableConcepts] = useState<TSearchLabel[]>([]);
+  const [loadedConcepts, setLoadedConcepts] = useState(false);
 
   // Only concept filters are offered here, and a level is seeded with only those, so anything else
   // in the parameter came from a hand-edited or shared URL and is not this search's to apply.
@@ -176,7 +170,9 @@ export const PassageSearch = ({ changeTab, concepts, documents, documentsLabel, 
           value: "concept",
         },
       ],
-    }).then(setAvailableConcepts);
+    })
+      .then(setAvailableConcepts)
+      .finally(() => setLoadedConcepts(true));
   }, [API_URL]);
 
   const documentsById = useMemo(() => new Map(documents.map((document) => [document.import_id, document])), [documents]);
@@ -370,6 +366,7 @@ export const PassageSearch = ({ changeTab, concepts, documents, documentsLabel, 
         )
       }
       labels={conceptFilters}
+      labelsLoaded={loadedConcepts}
       nameLabels={availableConcepts}
       pageParamKey={paramKeys.pageToken}
       queryParamKey={paramKeys.query}
@@ -387,7 +384,7 @@ export const PassageSearch = ({ changeTab, concepts, documents, documentsLabel, 
     <>
       {isLoading && (
         <div className="flex justify-center">
-          <Loader />
+          <Loading />
         </div>
       )}
       {!isLoading && isError && (
