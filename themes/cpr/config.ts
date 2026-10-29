@@ -113,11 +113,6 @@ const config: TThemeConfig = {
         ],
       },
       {
-        label: "Corporate Disclosures",
-        slug: "corporate-disclosures",
-        value: ["CPR.corpus.i00000002.n0000"],
-      },
-      {
         label: "Climate Council Reports",
         slug: "climate-council-reports",
         value: ["ICCN.corpus.i00000001.n0000"],
