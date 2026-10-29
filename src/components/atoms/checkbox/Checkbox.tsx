@@ -10,9 +10,15 @@ interface IProps extends BaseCheckbox.Root.Props {
   className?: string;
   noClickLabel?: boolean;
   onCheckedChange: (value: TCheckboxState) => void;
+  analyticsProps?: Record<`data-capture-ph-${string}`, string | undefined>;
 }
 
-export const Checkbox = ({ children: label, className, noClickLabel, ...rootProps }: IProps) => {
+// Base UI re-dispatches clicks to a hidden input, which PostHog would otherwise autocapture as extra click and change events
+const excludeFromAutocapture = (input: HTMLInputElement | null) => {
+  input?.classList.add("ph-no-capture");
+};
+
+export const Checkbox = ({ analyticsProps, children: label, className, noClickLabel, ...rootProps }: IProps) => {
   const labelId = useId();
 
   const wrapperClasses = joinTailwindClasses(
@@ -39,8 +45,14 @@ export const Checkbox = ({ children: label, className, noClickLabel, ...rootProp
   const Wrapper = noClickLabel ? "div" : "label";
 
   return (
-    <Wrapper className={wrapperClasses}>
-      <BaseCheckbox.Root className={rootClasses} aria-labelledby={noClickLabel ? labelId : undefined} {...rootProps} onCheckedChange={handleChange}>
+    <Wrapper className={wrapperClasses} {...analyticsProps}>
+      <BaseCheckbox.Root
+        className={rootClasses}
+        aria-labelledby={noClickLabel ? labelId : undefined}
+        {...rootProps}
+        onCheckedChange={handleChange}
+        inputRef={excludeFromAutocapture}
+      >
         <BaseCheckbox.Indicator className="flex items-center justify-center text-white">
           <IndicatorIcon size={16} aria-hidden={true} />
         </BaseCheckbox.Indicator>
