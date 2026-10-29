@@ -153,6 +153,7 @@ const config: TThemeConfig = {
   ],
   searchCategories: ["UN submission", "Law", "Policy"],
   searchExcludeLabels: ["author_type::Non-Party"],
+  downloadColumns: ["ID", "TITLE", "DESCRIPTION", "GEOGRAPHIES", "PUBLISHED_DATE", "ENTITY_TYPE", "CATEGORY", "PROVIDER", "COLLECTION_TITLE"],
   labelVariations: {},
   links: {
     downloadDatabase: "https://form.jotform.com/233131638610347",
