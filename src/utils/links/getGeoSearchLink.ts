@@ -48,8 +48,9 @@ export const getGeoSearchLink = ({
   // New search
 
   const checkedLabelPaths: TFilterPathLabel[][] = [];
-  const regionLabel = geographyLabel.labels.find((label) => label.type === "subconcept_of" && label.value.type === "region");
-  checkedLabelPaths.push([geographyLabel, regionLabel.value]);
+  const parentType = geographyLabel.type === "subdivision" ? "country" : "region";
+  const parentLabel = geographyLabel.labels.find((label) => label.type === "subconcept_of" && label.value.type === parentType);
+  checkedLabelPaths.push(parentLabel ? [geographyLabel, parentLabel.value] : [geographyLabel]);
 
   if (categoryId !== "All") {
     const categoryLabelPath = CATEGORY_LABEL_PATH_LOOKUP[categoryId];
