@@ -1,20 +1,16 @@
 import { Drawer as BaseDrawer, DrawerRootProps } from "@base-ui/react/drawer";
 import { LucideX } from "lucide-react";
-import { createContext, ReactNode, useContext, useEffect, useMemo, useState } from "react";
+import { createContext, ReactNode, useContext } from "react";
 
 import { joinTailwindClasses } from "@/utils/tailwind";
 
 import styles from "./Drawer.module.css";
 
-type TScrollRootContext = {
-  onNestedOpen: () => void;
-  onNestedClose: () => void;
-};
-
-const ScrollRootContext = createContext<TScrollRootContext | null>(null);
+// Ensure PostHog measures scroll depth against the tabbed content, not the drawer or the non-drawer page content
+export const DRAWER_SCROLL_ROOT_SELECTOR = "[data-drawer-scroll]:not([data-nested-drawer-open] *)";
 
 // Whether the scroll area of a selfScrolling drawer should be marked as the scroll root
-const ScrollMarkerContext = createContext(false);
+const TrackScrollContext = createContext(false);
 
 type TDrawerScrollAreaProps = {
   children?: ReactNode;
@@ -22,10 +18,14 @@ type TDrawerScrollAreaProps = {
 };
 
 export const DrawerScrollArea = ({ children, className }: TDrawerScrollAreaProps) => {
-  const isScrollRoot = useContext(ScrollMarkerContext);
+  const isTrackingScroll = useContext(TrackScrollContext);
 
   return (
-    <div data-drawer-scroll={isScrollRoot ? "" : undefined} data-base-ui-swipe-ignore className={joinTailwindClasses("overflow-y-auto", className)}>
+    <div
+      data-drawer-scroll={isTrackingScroll ? "" : undefined}
+      data-base-ui-swipe-ignore
+      className={joinTailwindClasses("overflow-y-auto", className)}
+    >
       {children}
     </div>
   );
@@ -63,26 +63,7 @@ export const Drawer = ({
   wide,
   ...rootProps
 }: TProps) => {
-  const trackedAncestor = useContext(ScrollRootContext);
-  const [openNestedCount, setOpenNestedCount] = useState(0);
-
-  const scrollRootContext = useMemo(
-    () => ({
-      onNestedOpen: () => setOpenNestedCount((count) => count + 1),
-      onNestedClose: () => setOpenNestedCount((count) => count - 1),
-    }),
-    []
-  );
-
   const isTrackingScroll = !!trackScroll && !!rootProps.open;
-  const isScrollRoot = isTrackingScroll && openNestedCount === 0;
-
-  useEffect(() => {
-    if (!isTrackingScroll || !trackedAncestor) return;
-
-    trackedAncestor.onNestedOpen();
-    return trackedAncestor.onNestedClose;
-  }, [isTrackingScroll, trackedAncestor]);
 
   return (
     <BaseDrawer.Root {...rootProps} swipeDirection={SWIPE_DIRECTION_MAP[direction]}>
@@ -105,16 +86,14 @@ export const Drawer = ({
                 </div>
               </div>
               <div
-                data-drawer-scroll={isScrollRoot && !selfScrolling ? "" : undefined}
+                data-drawer-scroll={isTrackingScroll && !selfScrolling ? "" : undefined}
                 data-base-ui-swipe-ignore
                 className={joinTailwindClasses(
                   selfScrolling ? "flex-1 min-h-0 flex flex-col" : "overflow-y-auto px-4 pb-8 md:px-8",
                   childrenClassName
                 )}
               >
-                <ScrollRootContext.Provider value={isTrackingScroll ? scrollRootContext : trackedAncestor}>
-                  <ScrollMarkerContext.Provider value={isScrollRoot}>{children}</ScrollMarkerContext.Provider>
-                </ScrollRootContext.Provider>
+                <TrackScrollContext.Provider value={isTrackingScroll}>{children}</TrackScrollContext.Provider>
               </div>
             </BaseDrawer.Popup>
           </BaseDrawer.Viewport>

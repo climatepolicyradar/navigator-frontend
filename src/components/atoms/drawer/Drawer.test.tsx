@@ -1,10 +1,8 @@
 import { render, screen } from "@testing-library/react";
 
-import { Drawer, DrawerScrollArea } from "./Drawer";
+import { Drawer, DRAWER_SCROLL_ROOT_SELECTOR, DrawerScrollArea } from "./Drawer";
 
-// The attribute PostHog's `scroll_root_selector` looks for, so scroll depth is measured against
-// the drawer the user is actually scrolling rather than the page behind it.
-const scrollRoots = () => Array.from(document.querySelectorAll("[data-drawer-scroll]"));
+const scrollRoots = () => Array.from(document.querySelectorAll(DRAWER_SCROLL_ROOT_SELECTOR));
 
 const drawerContent = (name: string) => screen.getByText(name).closest("[data-drawer-scroll]");
 
