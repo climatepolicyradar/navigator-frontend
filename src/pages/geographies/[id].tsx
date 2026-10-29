@@ -104,7 +104,7 @@ export const getServerSideProps = (async (context) => {
   }
 
   let geographyLabel: TSearchLabel = null;
-  if (features["new-search"] && theme !== "ccc") {
+  if (features["new-search"]) {
     const client = new ApiClient(process.env.API_URL);
     const isSubdivision = geographyV2.type === "subdivision";
     const labelType = isSubdivision ? "subdivision" : "country";
