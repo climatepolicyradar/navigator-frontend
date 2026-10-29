@@ -1,4 +1,6 @@
 import { useQuery } from "@tanstack/react-query";
+import { useQueryState } from "nuqs";
+import { usePostHog } from "posthog-js/react";
 import React, { Fragment, useContext, useEffect, useMemo } from "react";
 
 import { fetchSearchPrincipalDocuments, getSearchApiStatus } from "@/api/search";
@@ -6,9 +8,13 @@ import { isFilterGroupEmpty } from "@/components/_experiment/advancedFilters/Adv
 import { Loading } from "@/components/atoms/loading/Loading";
 import { DocumentCard } from "@/components/molecules/documentCard/DocumentCard";
 import { useEnvConfig } from "@/context/EnvConfig";
+import { posthogEventName } from "@/context/PostHogProvider";
 import { ThemeContext } from "@/context/ThemeContext";
 import { ISearchDocument, ISearchDocumentsResponse, TSearchQueryGroup, TSortValue } from "@/types";
 import { sanitiseSearchQueryGroup } from "@/utils/filters/advancedFilters";
+import { parseAsDeflatedFilters } from "@/utils/filters/deflate";
+import { DEFAULT_SEARCH_QUERY_GROUP } from "@/utils/search/filterPathsToQueryGroup";
+import { queryGroupToFilterPaths } from "@/utils/search/queryGroupToFilterPaths";
 
 export const SEARCH_RESULTS_PAGE_SIZE = 10;
 
@@ -85,6 +91,8 @@ export function SearchContainer({
 }: ISearchContainerProps) {
   const { themeConfig, loaded } = useContext(ThemeContext);
   const { API_URL } = useEnvConfig();
+  const posthog = usePostHog();
+  const [filterGroups] = useQueryState("filters", parseAsDeflatedFilters.withDefault(DEFAULT_SEARCH_QUERY_GROUP));
 
   // Drop placeholder rules (e.g. default empty label row) so date-only filters still fetch.
   const nonEmptyFilters = useMemo(() => {
@@ -97,8 +105,8 @@ export function SearchContainer({
 
   const { data, isError, isPending } = useQuery({
     queryKey: ["searchDocuments", query, nonEmptyFilters, page_token, sort, API_URL],
-    queryFn: ({ signal }) =>
-      fetchSearchPrincipalDocuments({
+    queryFn: async ({ signal }) => {
+      const response = await fetchSearchPrincipalDocuments({
         apiUrl: API_URL,
         query,
         page_size: SEARCH_RESULTS_PAGE_SIZE.toString(),
@@ -107,7 +115,21 @@ export function SearchContainer({
         sort,
         signal,
         themeConfig,
-      }),
+      });
+
+      try {
+        posthog.capture(posthogEventName("search", "results", "fetch"), {
+          hits: response.total_size,
+          query,
+          filters: queryGroupToFilterPaths(filterGroups).filterPathLabels.map((filterPath) => filterPath[0].id),
+        });
+      } catch (error) {
+        // An analytics error shouldn't stop the search response from being served
+        console.error(error);
+      }
+
+      return response;
+    },
     enabled: hasSearch && loaded,
     retry: shouldRetrySearch,
     // A term's results do not change within a session.
