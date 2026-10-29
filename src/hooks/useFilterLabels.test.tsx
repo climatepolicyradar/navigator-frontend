@@ -17,7 +17,13 @@ vi.mock("@/hooks/useLabelSearch", () => ({
   loadGeographyTaxonomy: mockLoadGeographyTaxonomy,
 }));
 
+const mockFetchGeographiesAggregate = vi.hoisted(() => vi.fn());
+vi.mock("@/api/search", () => ({
+  fetchGeographiesAggregate: mockFetchGeographiesAggregate,
+}));
+
 const label = (id: string): TSearchLabel => ({ id }) as TSearchLabel;
+const geographyLabel = (id: string, type: string): TSearchLabel => ({ id, type }) as TSearchLabel;
 
 const wrapper = ({ children }: { children: React.ReactNode }) => (
   // @ts-expect-error - partial EnvConfig value is fine for this test
@@ -32,6 +38,7 @@ describe("useFilterLabels", () => {
     mockLoadFilteredLabels.mockReset().mockResolvedValue([]);
     mockLoadLabelTaxonomy.mockReset().mockResolvedValue([]);
     mockLoadGeographyTaxonomy.mockReset().mockResolvedValue([]);
+    mockFetchGeographiesAggregate.mockReset().mockResolvedValue([]);
   });
 
   it("always requests concept and author labels for the sidebar", async () => {
@@ -65,7 +72,10 @@ describe("useFilterLabels", () => {
   });
 
   it("additionally requests litigation label types for themes with the Litigation search category", async () => {
-    renderUseFilterLabels(DEFAULT_FEATURES, { ...DEFAULT_THEME_CONFIG, searchCategories: ["Litigation"] });
+    renderUseFilterLabels(DEFAULT_FEATURES, {
+      ...DEFAULT_THEME_CONFIG,
+      searchCategories: ["Litigation"],
+    });
 
     await waitFor(() => expect(mockLoadFilteredLabels).toHaveBeenCalled());
 
@@ -79,7 +89,10 @@ describe("useFilterLabels", () => {
   });
 
   it("excludes configured searchExcludeLabels from the filter query", async () => {
-    renderUseFilterLabels(DEFAULT_FEATURES, { ...DEFAULT_THEME_CONFIG, searchExcludeLabels: ["author_type::Non-Party"] });
+    renderUseFilterLabels(DEFAULT_FEATURES, {
+      ...DEFAULT_THEME_CONFIG,
+      searchExcludeLabels: ["author_type::Non-Party"],
+    });
 
     await waitFor(() => expect(mockLoadFilteredLabels).toHaveBeenCalled());
 
@@ -105,6 +118,54 @@ describe("useFilterLabels", () => {
     const { result } = renderUseFilterLabels(DEFAULT_FEATURES, DEFAULT_THEME_CONFIG);
 
     await waitFor(() => expect(result.current.filters).toEqual([label("concept::Q1"), label("category::Law")]));
+  });
+
+  it("drops subdivisions the app has no documents for", async () => {
+    mockLoadGeographyTaxonomy.mockResolvedValue([
+      geographyLabel("subdivision::AT-3", "subdivision"),
+      geographyLabel("subdivision::GB-NIR", "subdivision"),
+    ]);
+    mockFetchGeographiesAggregate.mockResolvedValue([
+      {
+        id: "subdivision::GB-NIR",
+        name: "Northern Ireland",
+        type: "subdivision",
+        count: 4,
+      },
+    ]);
+
+    const { result } = renderUseFilterLabels({ ...DEFAULT_FEATURES, subdivisions: true }, DEFAULT_THEME_CONFIG);
+
+    await waitFor(() => expect(result.current.loaded).toBe(true));
+    expect(result.current.filters.map((filterLabel) => filterLabel.id)).toEqual(["subdivision::GB-NIR"]);
+  });
+
+  it("keeps regions and countries regardless of the aggregate", async () => {
+    mockLoadGeographyTaxonomy.mockResolvedValue([geographyLabel("region::ECS", "region"), geographyLabel("country::AUT", "country")]);
+    mockFetchGeographiesAggregate.mockResolvedValue([]);
+
+    const { result } = renderUseFilterLabels({ ...DEFAULT_FEATURES, subdivisions: true }, DEFAULT_THEME_CONFIG);
+
+    await waitFor(() => expect(result.current.loaded).toBe(true));
+    expect(result.current.filters.map((filterLabel) => filterLabel.id)).toEqual(["region::ECS", "country::AUT"]);
+  });
+
+  it("does not request the aggregate when the subdivisions feature is off", async () => {
+    renderUseFilterLabels(DEFAULT_FEATURES, DEFAULT_THEME_CONFIG);
+
+    await waitFor(() => expect(mockLoadGeographyTaxonomy).toHaveBeenCalled());
+
+    expect(mockFetchGeographiesAggregate).not.toHaveBeenCalled();
+  });
+
+  it("keeps every subdivision when the aggregate request fails", async () => {
+    mockLoadGeographyTaxonomy.mockResolvedValue([geographyLabel("subdivision::AT-3", "subdivision")]);
+    mockFetchGeographiesAggregate.mockRejectedValue(new Error("Search API error: 503"));
+
+    const { result } = renderUseFilterLabels({ ...DEFAULT_FEATURES, subdivisions: true }, DEFAULT_THEME_CONFIG);
+
+    await waitFor(() => expect(result.current.loaded).toBe(true));
+    expect(result.current.filters.map((filterLabel) => filterLabel.id)).toEqual(["subdivision::AT-3"]);
   });
 
   it("is not loaded until all filter labels have resolved", async () => {

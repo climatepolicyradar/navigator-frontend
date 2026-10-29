@@ -1,6 +1,15 @@
 import { ID_SEPARATOR } from "@/constants/chars";
 import { SORT_PARAMS_LOOKUP } from "@/constants/sort";
-import { ISearchDocumentsResponse, TLabelCategoryValue, TSearchQueryGroup, TSearchQueryRule, TSortValue, TThemeConfig } from "@/types";
+import {
+  GeographyTypeV2,
+  ISearchDocumentsResponse,
+  TApiGeographyLabelCount,
+  TLabelCategoryValue,
+  TSearchQueryGroup,
+  TSearchQueryRule,
+  TSortValue,
+  TThemeConfig,
+} from "@/types";
 import { DATE_RANGE_MIN_YEAR, hasPublishedDateRule } from "@/utils/_experiment/dateRangeFilters";
 import { deflateFilters } from "@/utils/filters/deflate";
 
@@ -66,7 +75,11 @@ export function configureDocumentsFilters(
     filtersWithConditionals.push(categoriesFilter);
   }
   searchExcludeLabels.forEach((id) => {
-    filtersWithConditionals.push({ op: "not_contains", field: "labels.value.id", value: id });
+    filtersWithConditionals.push({
+      op: "not_contains",
+      field: "labels.value.id",
+      value: id,
+    });
   });
   if (filters) {
     filtersWithConditionals.push(filters);
@@ -121,4 +134,54 @@ export const fetchSearchPrincipalDocuments = (params: ISearchDocumentsParams): P
       filters,
     },
   });
+};
+
+const geographiesAggregateUrl = (apiUrl: string): string => `${apiUrl.replace(/\/$/, "")}/search/geographies:aggregate`;
+
+interface IGeographiesAggregateParams {
+  /** API gateway base URL, from `useEnvConfig().API_URL` at the call site. */
+  apiUrl: string;
+  themeConfig: TThemeConfig;
+  /** Geography types to count. Omit for every type. */
+  geographyTypes?: GeographyTypeV2[];
+  signal?: AbortSignal;
+}
+
+interface IGeographiesAggregateResponse {
+  data: {
+    count: number;
+    value: { id: string; value: string; type: string };
+  }[];
+}
+
+/**
+ * Count documents per geography label, scoped to this app.
+ *
+ * Only geographies the app has documents for come back, so a filter built from
+ * this cannot offer a value that returns no results (@see FUS-842).
+ *
+ * The app-level filters are the ones `fetchSearchDocuments` applies, so the
+ * counts describe the same document set a search would return (@see FUS-475).
+ */
+export const fetchGeographiesAggregate = async (params: IGeographiesAggregateParams): Promise<TApiGeographyLabelCount[]> => {
+  const url = new URL(geographiesAggregateUrl(params.apiUrl));
+  const filters = configureDocumentsFilters(undefined, params.themeConfig.searchCategories, params.themeConfig.searchExcludeLabels);
+
+  params.geographyTypes?.forEach((type) => url.searchParams.append("labels.value.type", type));
+  url.searchParams.set("filters", deflateFilters(filters));
+  url.searchParams.set("encoding", "deflate");
+
+  const res = await fetch(url, { signal: params.signal });
+  if (!res.ok)
+    throw Object.assign(new Error(`Search API error: ${res.status}`), {
+      status: res.status,
+    });
+
+  const body = (await res.json()) as IGeographiesAggregateResponse;
+  return body.data.map(({ count, value }) => ({
+    id: value.id,
+    name: value.value,
+    type: value.type,
+    count,
+  }));
 };
