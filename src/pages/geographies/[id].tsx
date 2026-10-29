@@ -104,26 +104,28 @@ export const getServerSideProps = (async (context) => {
   }
 
   let geographyLabel: TSearchLabel = null;
-  // TODO support subdivisions and therefore CCC
   if (features["new-search"] && theme !== "ccc") {
     const client = new ApiClient(process.env.API_URL);
+    const isSubdivision = geographyV2.type === "subdivision";
+    const labelType = isSubdivision ? "subdivision" : "country";
+    const parentType = isSubdivision ? "country" : "region";
     const filters = {
       op: "and",
       filters: [
         {
           field: "type",
           op: "contains",
-          value: "country",
+          value: labelType,
         },
       ],
     };
     const response = await client.get<TLabelsResponse>(`/search/labels?page_size=10000&filters=${encodeURIComponent(JSON.stringify(filters))}`, null);
 
-    // Ensure there is a label for this geography that includes a parent region as we need it to build a search query
-    const expectedId = `country::${geographyV2.id}`;
+    // Ensure there is a label for this geography that includes a parent as we need it to build a search query
+    const expectedId = `${labelType}::${geographyV2.id}`;
     geographyLabel =
       response.data.results.find(
-        (label) => label.id === expectedId && label.labels.some((subLabel) => subLabel.type === "subconcept_of" && subLabel.value.type === "region")
+        (label) => label.id === expectedId && label.labels.some((subLabel) => subLabel.type === "subconcept_of" && subLabel.value.type === parentType)
       ) ?? null;
 
     if (!geographyLabel) return { notFound: true };
