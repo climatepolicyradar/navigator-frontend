@@ -63,6 +63,10 @@ export const AppliedFilters = ({ ancestorPath = [], className, filterGroups = []
               className="p-1 -m-1 text-inky-blue"
               aria-label={`Remove ${labelValues[label.id] || label.value}`}
               onClick={() => toggleFilter(labelPath, false)}
+              data-ph-capture-attribute-button-purpose="applied-filter"
+              data-ph-capture-attribute-type={label.type}
+              data-ph-capture-attribute-value={label.value}
+              data-ph-capture-attribute-action="uncheck"
             >
               <LucideX size={16} aria-hidden={true} />
             </button>
@@ -84,6 +88,8 @@ export const AppliedFilters = ({ ancestorPath = [], className, filterGroups = []
             className="px-3 py-1 text-sm text-text-brand font-normal leading-5 underline"
             aria-label="Clear all filters"
             onClick={() => clearFilters()}
+            data-ph-capture-attribute-button-purpose="clear-filters"
+            data-ph-capture-attribute-ids={labels.map((labelPath) => labelPath[0].id).join(",")}
           >
             Reset
           </button>
