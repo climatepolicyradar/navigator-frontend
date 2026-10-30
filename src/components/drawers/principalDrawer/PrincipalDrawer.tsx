@@ -2,7 +2,7 @@ import { useQuery } from "@tanstack/react-query";
 import { LucideFileText, LucideExternalLink, LucideSearch } from "lucide-react";
 import { Fragment, ReactNode, useState } from "react";
 
-import { Drawer } from "@/components/atoms/drawer/Drawer";
+import { Drawer, DrawerScrollArea } from "@/components/atoms/drawer/Drawer";
 import { PageLink } from "@/components/atoms/pageLink/PageLink";
 import { Tabs } from "@/components/atoms/tabs/Tabs";
 import { DocumentsBlock } from "@/components/blocks/documentsBlock/DocumentsBlock";
@@ -32,6 +32,8 @@ function linkHref(doc: ISearchDocument): string | undefined {
       return `/documents/${doc.attributes.deprecated_slug}`;
     }
 }
+
+const panelScrollClasses = "h-full px-4 pt-4 pb-8 md:px-8 md:pt-8";
 
 type TDocumentDrawerProps = {
   document: ISearchDocument | null; // The clicked search result, absent when the drawer is opened from a link
@@ -143,11 +145,12 @@ export function PrincipalDrawer({ document, slug, open, onOpenChange, tab, onTab
           </PageLink>
         ) : undefined
       }
+      selfScrolling
       trackScroll
       wide
     >
       {isLoading && (
-        <div className="flex justify-center py-12">
+        <div className="flex justify-center py-12 px-4 md:px-8">
           <span className="h-8 w-8 animate-spin rounded-full border-4 border-neutral-200 border-t-inky-blue" />
         </div>
       )}
@@ -157,9 +160,8 @@ export function PrincipalDrawer({ document, slug, open, onOpenChange, tab, onTab
             analytics={{ context: "principal-drawer" }}
             onValueChange={onTabChange}
             value={tab}
-            className="-mx-8 top-0"
-            panelClassName="pt-4 md:pt-8"
-            sticky
+            className="flex flex-col flex-1 min-h-0"
+            panelClassName="flex-1 min-h-0"
             tabs={[
               {
                 id: "about",
@@ -168,7 +170,11 @@ export function PrincipalDrawer({ document, slug, open, onOpenChange, tab, onTab
                     <LucideFileText size={20} className="text-text-brand! group-data-active:text-elem-icon!" /> About
                   </>
                 ),
-                panel: <DrawerContent familyData={familyData} features={features} languages={languages} />,
+                panel: (
+                  <DrawerScrollArea className={panelScrollClasses}>
+                    <DrawerContent familyData={familyData} features={features} languages={languages} />
+                  </DrawerScrollArea>
+                ),
               },
               {
                 id: "search",
@@ -180,15 +186,17 @@ export function PrincipalDrawer({ document, slug, open, onOpenChange, tab, onTab
                   </>
                 ),
                 panel: (
-                  <PassageSearch
-                    documents={familyData.family.documents}
-                    principalId={familyData.family.import_id}
-                    concepts={conceptTopics}
-                    documentsLabel={`Documents in this ${firstCase(getCategoryText("familySingular"))}`}
-                    subject="these documents"
-                    changeTab={onTabChange}
-                    onSearch={setNumberOfResults}
-                  />
+                  <DrawerScrollArea className={panelScrollClasses}>
+                    <PassageSearch
+                      documents={familyData.family.documents}
+                      principalId={familyData.family.import_id}
+                      concepts={conceptTopics}
+                      documentsLabel={`Documents in this ${firstCase(getCategoryText("familySingular"))}`}
+                      subject="these documents"
+                      changeTab={onTabChange}
+                      onSearch={setNumberOfResults}
+                    />
+                  </DrawerScrollArea>
                 ),
                 banner: (
                   <div className="px-8 py-4 flex gap-2 items-center bg-bg-attention text-base text-text-primary font-normal leading-5">
@@ -198,11 +206,11 @@ export function PrincipalDrawer({ document, slug, open, onOpenChange, tab, onTab
                 ),
               },
             ]}
-            tabsContainer={(tabsList) => <div className="pl-8">{tabsList}</div>}
+            tabsContainer={(tabsList) => <div className="pl-4 md:pl-8">{tabsList}</div>}
           />
         </SearchLevelContext>
       )}
-      {!isLoading && !familyData && <p>Sorry, this document has failed to load.</p>}
+      {!isLoading && !familyData && <p className="px-4 md:px-8">Sorry, this document has failed to load.</p>}
     </Drawer>
   );
 }

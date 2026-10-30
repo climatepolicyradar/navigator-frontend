@@ -80,6 +80,11 @@ describe("Tabs", () => {
     expect(screen.getByRole("tablist").parentElement?.parentElement).not.toHaveClass("sticky");
   });
 
+  it("applies className to the tabs root", () => {
+    render(<Tabs tabs={baseTabs} value="about" onValueChange={() => {}} className="flex-1" />);
+    expect(screen.getByRole("tablist").parentElement?.parentElement?.parentElement).toHaveClass("flex-1");
+  });
+
   it("renders a tab's banner when another tab is active", () => {
     const tabs: TTabsTab<TTabId>[] = [baseTabs[0], { ...baseTabs[1], banner: "Search banner" }];
     render(<Tabs tabs={tabs} value="about" onValueChange={() => {}} />);

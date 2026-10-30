@@ -206,7 +206,6 @@ export const FamilyPage = ({ collections, debug, errors, family, familyTopics, f
             analytics={{ context: "family-page" }}
             onValueChange={changeTab}
             value={activeTab}
-            className=""
             panelClassName="pt-8"
             tabs={[
               {
