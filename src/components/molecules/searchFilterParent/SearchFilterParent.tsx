@@ -42,6 +42,13 @@ export const SearchFilterParent = ({ ancestorPath, defaultOpen = false, label, l
     setIsExpanded((current) => !current);
   };
 
+  const analyticsAttributes = {
+    "data-ph-capture-attribute-button-purpose": "search-filter",
+    "data-ph-capture-attribute-label-type": label.type,
+    "data-ph-capture-attribute-label-value": label.value,
+    "data-ph-capture-attribute-action": checked === true ? "uncheck" : "check",
+  };
+
   const labelClickBehaviour = hasChildren
     ? { onClick: (event: MouseEvent) => event.stopPropagation(), noClickLabel: true }
     : { onClick: undefined, noClickLabel: false };
@@ -66,6 +73,9 @@ export const SearchFilterParent = ({ ancestorPath, defaultOpen = false, label, l
               onClick={labelClickBehaviour.onClick}
               noClickLabel={labelClickBehaviour.noClickLabel}
               className="flex-1 gap-4! items-start!"
+              // with children clicking the label opens the accordion, so avoid click tracking
+              analyticsProps={hasChildren ? undefined : analyticsAttributes}
+              {...(hasChildren ? analyticsAttributes : {})}
             >
               <span className="text-base text-text-primary font-medium leading-5">{name}</span>
               {subtitle && <span className="text-sm text-text-secondary font-normal leading-5">{subtitle}</span>}

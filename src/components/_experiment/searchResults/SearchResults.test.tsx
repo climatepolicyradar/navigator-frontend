@@ -1,5 +1,6 @@
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { render, screen, waitFor } from "@testing-library/react";
+import { NuqsTestingAdapter } from "nuqs/adapters/testing";
 import React from "react";
 import { vi } from "vitest";
 
@@ -53,11 +54,13 @@ const loadedTheme: IThemeContextProps = {
 const renderWith = (ui: React.ReactElement, theme: IThemeContextProps = loadedTheme) => {
   const queryClient = new QueryClient();
   const wrap = (node: React.ReactElement, themeValue: IThemeContextProps) => (
-    <QueryClientProvider client={queryClient}>
-      <EnvConfigContext.Provider value={envConfig}>
-        <ThemeContext.Provider value={themeValue}>{node}</ThemeContext.Provider>
-      </EnvConfigContext.Provider>
-    </QueryClientProvider>
+    <NuqsTestingAdapter>
+      <QueryClientProvider client={queryClient}>
+        <EnvConfigContext.Provider value={envConfig}>
+          <ThemeContext.Provider value={themeValue}>{node}</ThemeContext.Provider>
+        </EnvConfigContext.Provider>
+      </QueryClientProvider>
+    </NuqsTestingAdapter>
   );
   const result = render(wrap(ui, theme));
   return {
