@@ -407,7 +407,9 @@ const TermsOfUse = () => {
                     <td>Nature-based Solutions (NbS) laws and policies</td>
                     <td>October 2026</td>
                     <td>
-                      <ExternalLink url="https://nature4climate.org/terms-and-conditions/">View</ExternalLink>
+                      <ExternalLink url="https://nature4climate.org/wp-content/uploads/2025/10/NbS_Report_2025NbSTracker_v03_CB-lr.pdf">
+                        View
+                      </ExternalLink>
                     </td>
                   </tr>
                   <tr>
