@@ -4,7 +4,7 @@ import { TFiltersGroupPrep, TNestedSearchLabel } from "@/types";
 import { createGroupLabel, createLabel } from "@/utils/filters/createGroupLabel";
 import { getFilterPathLabel } from "@/utils/filters/filterPaths";
 
-const SUBNATIONAL_LABELS: TNestedSearchLabel[] = ["Country/Territory", "Subnational"].map((value) => createLabel(SUBNATIONAL_LABEL_TYPE, value));
+const SUBNATIONAL_LABELS: TNestedSearchLabel[] = ["Country", "Subdivision"].map((value) => createLabel(SUBNATIONAL_LABEL_TYPE, value));
 
 // Split regions and geographies from each other under separate top-level groups, keeping each
 // country's region as a virtual parentPath so filtering still respects the relationship
