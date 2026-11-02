@@ -113,11 +113,6 @@ const config: TThemeConfig = {
         ],
       },
       {
-        label: "Corporate Disclosures",
-        slug: "corporate-disclosures",
-        value: ["CPR.corpus.i00000002.n0000"],
-      },
-      {
         label: "Climate Council Reports",
         slug: "climate-council-reports",
         value: ["ICCN.corpus.i00000001.n0000"],
@@ -434,7 +429,7 @@ const config: TThemeConfig = {
       ],
     },
   ],
-  searchCategories: ["Corporate Disclosure", "Global Stocktake", "Law", "Multilateral Climate Fund project", "Policy", "Report", "UN submission"],
+  searchCategories: ["Global Stocktake", "Law", "Multilateral Climate Fund project", "Policy", "Report", "UN submission"],
   searchExcludeLabels: [],
   downloadColumns: ["ID", "TITLE", "DESCRIPTION", "GEOGRAPHIES", "PUBLISHED_DATE", "ENTITY_TYPE", "CATEGORY", "PROVIDER", "COLLECTION_TITLE"],
   labelVariations: {
