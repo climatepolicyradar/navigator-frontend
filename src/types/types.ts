@@ -417,7 +417,13 @@ export type TFamilyPublic = {
 export type TCategorySummary = {
   id: string;
   count: number;
-  families: TFamily[];
+  families: TFamilySummary[];
   title: string;
   singularAndPlural: TSingularAndPlural;
+};
+
+export type TFamilySummary = {
+  href: string;
+  metadata: string[];
+  title: string;
 };

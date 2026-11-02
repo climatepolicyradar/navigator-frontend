@@ -6,7 +6,7 @@ import { deflateFilters } from "@/utils/filters/deflate";
 import { filterPathsToQueryGroup } from "@/utils/search/filterPathsToQueryGroup";
 
 // Manually map old categories to new label paths as they intentionally don't match up automatically
-const CATEGORY_LABEL_PATH_LOOKUP: Record<string, string[]> = {
+export const CATEGORY_LABEL_PATH_LOOKUP: Record<string, string[]> = {
   "climate-council-reports": ["report_type::Climate council report", "category::Report"],
   "climate-finance-projects": ["category::Multilateral Climate Fund project"],
   "corporate-disclosures": ["category::Corporate Disclosure"],
@@ -17,7 +17,7 @@ const CATEGORY_LABEL_PATH_LOOKUP: Record<string, string[]> = {
   "UN-submissions": ["category::UN submission"],
 };
 
-const createLabel = (id: string): TFilterPathLabel => {
+export const createLabel = (id: string): TFilterPathLabel => {
   const [type, value] = id.split(ID_SEPARATOR);
   return { id, type, value };
 };
