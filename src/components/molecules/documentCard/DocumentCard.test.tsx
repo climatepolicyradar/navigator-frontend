@@ -1,6 +1,6 @@
 import { render, screen, fireEvent } from "@testing-library/react";
 
-import { ISearchDocument } from "@/types";
+import { IDocumentLabelRelationship, ISearchDocument } from "@/types";
 
 import { DocumentCard } from "./DocumentCard";
 
@@ -53,6 +53,23 @@ describe("DocumentCard", () => {
   it("renders the document type from the category label", () => {
     render(<DocumentCard document={baseDocument} onClick={() => {}} />);
     expect(screen.getByText("Policy")).toBeInTheDocument();
+  });
+
+  it("renders a pattern-derived document type when a document type rule matches", () => {
+    const label: IDocumentLabelRelationship = {
+      type: "category",
+      timestamp: null,
+      count: null,
+      value: {
+        id: "category::Law",
+        type: "category",
+        value: "Law",
+      },
+    };
+
+    const doc = { ...baseDocument, labels: [label] };
+    render(<DocumentCard document={doc} onClick={() => {}} />);
+    expect(screen.getByText("Legislative")).toBeInTheDocument();
   });
 
   it("renders a country geography label with its flag emoji", () => {

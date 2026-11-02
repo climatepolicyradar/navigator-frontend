@@ -1,3 +1,5 @@
+import { COMMON_DOCUMENT_TYPE_LABELS } from "@/constants/documentTypeLabels";
+import themeConfig from "@/themes/config";
 import { TLabel, TLabelCondition, TLabelMatch, TLabelPattern } from "@/types";
 
 const matchesLabel = (label: TLabel, match: TLabelMatch): boolean =>
@@ -27,12 +29,13 @@ const findLabels = (labels: TLabel[], condition: TLabelCondition): TLabel[] | nu
   return findMatch(labels, condition);
 };
 
-export const getDocumentTypeLabel = (labels: TLabel[], rules: ReadonlyArray<TLabelPattern>): string | null => {
-  for (const rule of rules) {
+export const getDocumentTypeLabel = (labels: TLabel[], rules?: ReadonlyArray<TLabelPattern>): string | null => {
+  for (const rule of rules ?? [...themeConfig.documentTypeLabels, ...COMMON_DOCUMENT_TYPE_LABELS]) {
     const matched = findLabels(labels, rule.match);
+
     if (matched !== null) {
       return matched.reduce((text, label) => text.replaceAll(`{{${label.type}}}`, label.value), rule.pattern);
     }
   }
-  return null;
+  return labels.find((label) => label.type === "category")?.value ?? null;
 };
