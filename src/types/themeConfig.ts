@@ -124,14 +124,20 @@ export type TLabelPattern = {
   pattern: string;
 };
 
+export type TOnDirectLinkPolicy = { action: "not_found" } | { action: "redirect"; to: string };
+
+export type TSearchExcludeLabel = {
+  id: string;
+  onDirectLink: TOnDirectLinkPolicy;
+};
+
 export type TThemeConfig = {
   defaultCorpora?: string[];
   deprecatedCategories?: TThemeConfigCategory;
   deprecatedFilters: TThemeConfigFilter[];
   documentTypeLabels: TLabelPattern[];
   searchCategories: TLabelCategoryValue[];
-  // Label IDs (e.g. "author_type::Non-Party") to always exclude from document search results for this theme.
-  searchExcludeLabels: string[];
+  searchExcludeLabels: TSearchExcludeLabel[];
   // Columns to request for "download this search", in the order they appear in the CSV.
   downloadColumns: TDownloadColumn[];
   labelVariations: TPartialRecord<TLabelVariationKey, TLabelVariation>;

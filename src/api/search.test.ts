@@ -79,7 +79,7 @@ describe("fetchSearchDocuments", () => {
       apiUrl: TEST_API_URL,
       themeConfig: {
         ...themeConfigWithCategories([]),
-        searchExcludeLabels: ["author_type::Non-Party"],
+        searchExcludeLabels: [{ id: "author_type::Non-Party", onDirectLink: { action: "not_found" } }],
       },
     });
 
@@ -118,7 +118,7 @@ describe("fetchGeographiesAggregate", () => {
       apiUrl: TEST_API_URL,
       themeConfig: {
         ...themeConfigWithCategories(["Litigation"]),
-        searchExcludeLabels: ["author_type::Non-Party"],
+        searchExcludeLabels: [{ id: "author_type::Non-Party", onDirectLink: { action: "not_found" } }],
       },
     });
 

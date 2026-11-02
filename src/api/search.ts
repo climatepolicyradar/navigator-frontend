@@ -5,6 +5,7 @@ import {
   ISearchDocumentsResponse,
   TApiGeographyLabelCount,
   TLabelCategoryValue,
+  TSearchExcludeLabel,
   TSearchQueryGroup,
   TSearchQueryRule,
   TSortValue,
@@ -38,7 +39,7 @@ const searchDocumentsUrl = (apiUrl: string): string => `${apiUrl.replace(/\/$/, 
 export function configureDocumentsFilters(
   filters: TSearchQueryGroup | undefined,
   searchCategories: TLabelCategoryValue[],
-  searchExcludeLabels: string[] = []
+  searchExcludeLabels: TSearchExcludeLabel[] = []
 ): TSearchQueryGroup {
   const publishedDateBoundsFilter: TSearchQueryGroup = {
     op: "and",
@@ -74,11 +75,11 @@ export function configureDocumentsFilters(
   if (searchCategories.length > 0) {
     filtersWithConditionals.push(categoriesFilter);
   }
-  searchExcludeLabels.forEach((id) => {
+  searchExcludeLabels.forEach(({ id: labelId }) => {
     filtersWithConditionals.push({
       op: "not_contains",
       field: "labels.value.id",
-      value: id,
+      value: labelId,
     });
   });
   if (filters) {
