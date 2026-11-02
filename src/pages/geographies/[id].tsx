@@ -1,11 +1,11 @@
 import { GetServerSideProps, InferGetServerSidePropsType } from "next";
 
 import { ApiClient } from "@/api/http-common";
-import { TLabelsResponse } from "@/components/_experiment/intellisearch";
 import { GeographyPage } from "@/components/pages/geographyPage";
 import { SYSTEM_GEO_NAMES } from "@/constants/systemGeos";
 import { withEnvConfig } from "@/context/EnvConfig";
 import { getCountryCode, getCountryName } from "@/helpers/getCountryFields";
+import { loadGeographyTaxonomy } from "@/hooks/useLabelSearch";
 import { TApiItemResponse, GeographyV2, TSearch, TGeography, TSearchLabel, GeographyTypeV2 } from "@/types";
 import buildSearchQuery from "@/utils/buildSearchQuery";
 import { extractNestedData } from "@/utils/extractNestedData";
@@ -105,26 +105,18 @@ export const getServerSideProps = (async (context) => {
 
   let geographyLabel: TSearchLabel = null;
   if (features["new-search"]) {
-    const client = new ApiClient(process.env.API_URL);
     const isSubdivision = geographyV2.type === "subdivision";
     const labelType = isSubdivision ? "subdivision" : "country";
     const parentType = isSubdivision ? "country" : "region";
-    const filters = {
-      op: "and",
-      filters: [
-        {
-          field: "type",
-          op: "contains",
-          value: labelType,
-        },
-      ],
-    };
-    const response = await client.get<TLabelsResponse>(`/search/labels?page_size=10000&filters=${encodeURIComponent(JSON.stringify(filters))}`, null);
+
+    // The taxonomy is where the geo hierarchy lives until dynamic labels and their relationships
+    // come in, so it carries every geography and its parent.
+    const geographyTaxonomy = await loadGeographyTaxonomy(process.env.API_URL, [labelType]);
 
     // Ensure there is a label for this geography that includes a parent as we need it to build a search query
     const expectedId = `${labelType}::${geographyV2.id}`;
     geographyLabel =
-      response.data.results.find(
+      geographyTaxonomy.find(
         (label) => label.id === expectedId && label.labels.some((subLabel) => subLabel.type === "subconcept_of" && subLabel.value.type === parentType)
       ) ?? null;
 

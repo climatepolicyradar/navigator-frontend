@@ -58,22 +58,26 @@ export const TopicDrawer = ({ family, familyTopics, features, onOpenChange, open
         </div>
       </div>
 
-      <h3 className="mt-9 mb-5 text-lg text-text-primary font-heavy leading-6">Documents that mention this topic</h3>
-      <InteractiveTable<TDocumentMentionsTableColumnId>
-        columns={TOPIC_DRAWER_DOCUMENTS_TABLE_COLUMNS}
-        rows={documentRows}
-        defaultSort={{ column: "mentions", order: "desc" }}
-      />
-      <p className="mt-3 text-sm text-text-tertiary italic">
-        We automatically identify mentions of key topics in documents, helping you quickly find exactly where they are. Accuracy is not 100%.{" "}
-        <PageLink
-          href="/faq"
-          hash="topics-faqs"
-          className="inline-block underline underline-offset-4 decoration-border-normal hover:decoration-inky-blue"
-        >
-          Learn more
-        </PageLink>
-      </p>
+      {documentRows.length > 0 && (
+        <>
+          <h3 className="mt-9 mb-5 text-lg text-text-primary font-heavy leading-6">Documents that mention this topic</h3>
+          <InteractiveTable<TDocumentMentionsTableColumnId>
+            columns={TOPIC_DRAWER_DOCUMENTS_TABLE_COLUMNS}
+            rows={documentRows}
+            defaultSort={{ column: "mentions", order: "desc" }}
+          />
+          <p className="mt-3 text-sm text-text-tertiary italic">
+            We automatically identify mentions of key topics in documents, helping you quickly find exactly where they are. Accuracy is not 100%.{" "}
+            <PageLink
+              href="/faq"
+              hash="topics-faqs"
+              className="inline-block underline underline-offset-4 decoration-border-normal hover:decoration-inky-blue"
+            >
+              Learn more
+            </PageLink>
+          </p>
+        </>
+      )}
     </Drawer>
   );
 };
