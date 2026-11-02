@@ -1,5 +1,6 @@
-import { MouseEventHandler, ReactNode } from "react";
+import { MouseEventHandler, ReactNode, useMemo } from "react";
 
+import { getDocumentTypeLabel } from "@/bff/methods/getDocumentTypeLabel";
 import { Geographies } from "@/components/molecules/geographies/Geographies";
 import { IMetadata, ISearchDocument } from "@/types";
 import { formatDate } from "@/utils/timedate";
@@ -11,11 +12,6 @@ const getDocumentGeography = (document: ISearchDocument): ReactNode => {
 
 const getDocumentPublishedYear = (doc: ISearchDocument): ReactNode => {
   return doc.attributes.published_date ? formatDate(doc.attributes.published_date as string)[0] : undefined;
-};
-
-const getDocumentType = (document: ISearchDocument): ReactNode => {
-  const category = document.labels.filter((label) => label.type === "category")[0];
-  return category?.value.value ?? null;
 };
 
 type TDocumentAnalytics = {
@@ -40,10 +36,15 @@ export function DocumentCard({ document, onClick, analytics }: TProps) {
     onClick?.(document, event);
   };
 
+  const typeLabel: string | null = useMemo(() => {
+    const labels = document.labels.map((label) => label.value);
+    return getDocumentTypeLabel(labels);
+  }, [document]);
+
   const metadata: IMetadata[] = [
     { label: "Geography", value: getDocumentGeography(document) },
     { label: "Year", value: getDocumentPublishedYear(document) },
-    { label: "Type", value: getDocumentType(document) },
+    { label: "Type", value: typeLabel },
   ];
 
   return (

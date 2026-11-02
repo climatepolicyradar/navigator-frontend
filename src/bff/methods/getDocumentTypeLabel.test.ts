@@ -43,9 +43,9 @@ describe("getDocumentTypeLabel", () => {
       expect(getLabel(labels)).toBe("Global Stocktake 1");
     });
 
-    it("matches nothing for GST alone, leaving it to the category fallback", () => {
+    it("falls back to the category label for GST alone", () => {
       const labels = ["category::Global Stocktake"].map(label);
-      expect(getLabel(labels)).toBeNull();
+      expect(getLabel(labels)).toBe("Global Stocktake");
     });
   });
 
@@ -90,9 +90,9 @@ describe("getDocumentTypeLabel", () => {
       expect(getLabel(labels)).toBe("Legislative");
     });
 
-    it("matches nothing for other categories, leaving them to the category fallback", () => {
+    it("falls back to the category label for other categories", () => {
       const labels = ["category::Policy"].map(label);
-      expect(getLabel(labels)).toBeNull();
+      expect(getLabel(labels)).toBe("Policy");
     });
   });
 });
