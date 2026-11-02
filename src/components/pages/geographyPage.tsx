@@ -1,7 +1,8 @@
 import sortBy from "lodash/fp/sortBy";
-import { useCallback, useState } from "react";
+import { useCallback, useContext, useState } from "react";
 
 import { ApiClient } from "@/api/http-common";
+import { fetchSearchPrincipalDocuments } from "@/api/search";
 import { LinkWithQuery } from "@/components/LinkWithQuery";
 import { Debug } from "@/components/atoms/debug/Debug";
 import { INTRO_BLOCK_TITLE, IntroBlock } from "@/components/blocks/introBlock/IntroBlock";
@@ -18,9 +19,37 @@ import { TPublicEnvConfig } from "@/context/EnvConfig";
 import { FeaturesContext } from "@/context/FeaturesContext";
 import { GeographiesContext } from "@/context/GeographiesContext";
 import { useText } from "@/hooks/useText";
-import { TSearch, TGeographyPageBlock, IMetadata, GeographyV2, TTheme, TThemeConfig, TFeatures, TApiSearch, TSearchLabel } from "@/types";
+import {
+  TSearch,
+  TGeographyPageBlock,
+  IMetadata,
+  GeographyV2,
+  ISearchDocumentsResponse,
+  TTheme,
+  TThemeConfig,
+  TFeatures,
+  TApiSearch,
+  TFilterPathLabel,
+  TSearchLabel,
+} from "@/types";
 import buildSearchQuery from "@/utils/buildSearchQuery";
+import { TCategoryResults, toCategoryResults } from "@/utils/cards/getFamilySummaries";
 import { getGeographyMetaData } from "@/utils/getGeographyMetadata";
+import { CATEGORY_LABEL_PATH_LOOKUP, createLabel } from "@/utils/links/getGeoSearchLink";
+import { filterPathsToQueryGroup } from "@/utils/search/filterPathsToQueryGroup";
+
+const geographyLabelPaths = (geographyLabel: TSearchLabel, categoryId: string): TFilterPathLabel[][] => {
+  const parentType = geographyLabel.type === "subdivision" ? "country" : "region";
+  const parentLabel = geographyLabel.labels.find((label) => label.type === "subconcept_of" && label.value.type === parentType);
+  const labelPaths: TFilterPathLabel[][] = [parentLabel ? [geographyLabel, parentLabel.value] : [geographyLabel]];
+
+  // The cards and the "All" link beside them need to show the same documents, so this
+  // mirrors @see getGeoSearchLink's scoping (@see FUS-875)
+  const categoryLabelPath = CATEGORY_LABEL_PATH_LOOKUP[categoryId];
+  if (categoryLabelPath) labelPaths.push(categoryLabelPath.map(createLabel));
+
+  return labelPaths;
+};
 
 export interface IProps {
   features: TFeatures;
@@ -29,7 +58,7 @@ export interface IProps {
   geographyLabel: TSearchLabel | null;
   theme: string;
   themeConfig: TThemeConfig;
-  vespaSearchResults?: TSearch;
+  vespaSearchResults?: TSearch | ISearchDocumentsResponse;
   envConfig: TPublicEnvConfig;
 }
 
@@ -67,8 +96,10 @@ export const GeographyPage = ({
 
   /* Search requests */
 
-  const [searchResultsByCategory, setSearchResultsByCategory] = useState<{ [categorySlug: string]: TSearch }>({
-    All: vespaSearchResults,
+  const isNewSearch = features["new-search"];
+  const geographiesForCards = useContext(GeographiesContext);
+  const [summariesByCategory, setSummariesByCategory] = useState<{ [categorySlug: string]: TCategoryResults }>({
+    All: toCategoryResults(vespaSearchResults, isNewSearch, geographiesForCards),
   });
 
   /* Blocks */
@@ -113,19 +144,35 @@ export const GeographyPage = ({
         const backendApiClient = new ApiClient(envConfig.BACKEND_API_URL, envConfig.BACKEND_API_TOKEN);
 
         const fetchFamiliesByCategory = async (category: string) => {
-          const searchQuery = buildSearchQuery({ l: geographyV2.slug, c: category, page_size: "4" }, themeConfig);
-          const search: TApiSearch = await backendApiClient
-            .post("/searches", searchQuery, {
-              headers: {
-                accept: "application/json",
-                "Content-Type": "application/json",
-              },
-            })
-            .then((response) => response.data);
+          // New search reads the search API, the same store the search page reads. The legacy
+          // `/searches` call holds none of the new Nature data documents.
+          const results = isNewSearch
+            ? toCategoryResults(
+                await fetchSearchPrincipalDocuments({
+                  apiUrl: envConfig.API_URL,
+                  themeConfig,
+                  filters: filterPathsToQueryGroup(geographyLabelPaths(geographyLabel, category), null, "and"),
+                  page_size: "4",
+                }),
+                true,
+                geographiesForCards
+              )
+            : toCategoryResults(
+                await backendApiClient
+                  .post<TApiSearch>("/searches", buildSearchQuery({ l: geographyV2.slug, c: category, page_size: "4" }, themeConfig), {
+                    headers: {
+                      accept: "application/json",
+                      "Content-Type": "application/json",
+                    },
+                  })
+                  .then((response) => response.data),
+                false,
+                geographiesForCards
+              );
 
-          setSearchResultsByCategory((currentFamilies) => ({
-            ...currentFamilies,
-            [category]: search,
+          setSummariesByCategory((currentResults) => ({
+            ...currentResults,
+            [category]: results,
           }));
         };
 
@@ -152,8 +199,8 @@ export const GeographyPage = ({
               return {
                 id: categorySummary.slug,
                 title: categorySummary.title,
-                families: searchResultsByCategory[categorySummary.slug]?.families || [],
-                count: searchResultsByCategory[categorySummary.slug]?.total_family_hits,
+                families: summariesByCategory[categorySummary.slug]?.families || [],
+                count: summariesByCategory[categorySummary.slug]?.count,
                 singularAndPlural: [getAppText("familySingular"), getAppText("familyPlural")],
               };
             })}
@@ -162,7 +209,7 @@ export const GeographyPage = ({
             geographyLabel={geographyLabel}
           />
         );
-      }, [envConfig, geographyLabel, geographyV2, getAppText, searchResultsByCategory, themeConfig]),
+      }, [envConfig, geographiesForCards, geographyLabel, geographyV2, getAppText, isNewSearch, summariesByCategory, themeConfig]),
       sideBarItem: { display: "Recent " + getAppText("familyPlural") },
     },
     statistics: {
