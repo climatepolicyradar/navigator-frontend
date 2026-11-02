@@ -29,7 +29,7 @@
     "@grafana/faro-web-tracing": "^2.12.1",
     "@opentelemetry/api-logs": "^0.223.0",
     "@opentelemetry/instrumentation": "^0.223.0",
-    "@opentelemetry/sdk-logs": "^0.223.0",
+    "@opentelemetry/sdk-logs": "^3.0.0",
     "@opentelemetry/sdk-trace-node": "^2.12.0",
     "@tanstack/react-query": "^5.104.3",
     "@tanstack/react-query-devtools": "^5.104.3",
