@@ -6,6 +6,7 @@ import posthog from "posthog-js";
 import { PostHogProvider as PHProvider, usePostHog } from "posthog-js/react";
 import { Suspense, useEffect } from "react";
 
+import { DRAWER_SCROLL_ROOT_SELECTOR } from "@/components/atoms/drawer/Drawer";
 import { getCookie } from "@/utils/cookies";
 import { levelIdParamKey, searchLevelFromParams, searchPropertiesFromParams, TOPIC_PARAM_KEY } from "@/utils/search/searchLevels";
 
@@ -107,8 +108,7 @@ export default function PostHogInit({ consent = false, pageViewProps = NO_PAGE_V
       api_host: "https://eu.i.posthog.com",
       capture_pageview: true,
       capture_pageleave: true,
-      // Drawers scroll their own container. `html` keeps page scroll measured when none is open
-      scroll_root_selector: ["[data-drawer-scroll]", "html"],
+      scroll_root_selector: [DRAWER_SCROLL_ROOT_SELECTOR, "html"],
     });
     window.sessionStorage.setItem("posthogLoaded", "true");
   }, []);
