@@ -25,6 +25,7 @@ import { TTheme } from "@/types";
 import { CleanRouterQuery } from "@/utils/cleanRouterQuery";
 import { getFeatureFlags } from "@/utils/featureFlags";
 import { getFeatures } from "@/utils/features";
+import { getDirectLinkRedirect } from "@/utils/getDirectLinkRedirect";
 import { getLitigationDocumentJSONLD } from "@/utils/json-ld/getLitigationDocumentJSONLD";
 import { readConfigFile } from "@/utils/readConfigFile";
 
@@ -192,6 +193,8 @@ export const getServerSideProps = (async (context) => {
     console.error(`[documents.getServerSideProps]: url: ${context.req.url}, params: ${context.params}`);
     console.error(err);
   });
+  const directLinkRedirect = getDirectLinkRedirect(documentData, slug, features);
+  if (directLinkRedirect) return directLinkRedirect;
   if (documentData === null) return { notFound: true };
 
   return {

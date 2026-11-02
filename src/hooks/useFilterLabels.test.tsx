@@ -50,7 +50,11 @@ describe("useFilterLabels", () => {
   });
 
   it("counts against the documents a search of this app would return", async () => {
-    const themeConfig = { ...DEFAULT_THEME_CONFIG, searchCategories: ["Law" as const], searchExcludeLabels: ["author_type::Non-Party"] };
+    const themeConfig = {
+      ...DEFAULT_THEME_CONFIG,
+      searchCategories: ["Law" as const],
+      searchExcludeLabels: [{ id: "author_type::Non-Party", onDirectLink: { action: "not_found" as const } }],
+    };
     renderUseFilterLabels(DEFAULT_FEATURES, themeConfig);
     await waitFor(() => expect(mockLoadTaxonomy).toHaveBeenCalled());
     expect(mockLoadTaxonomy.mock.calls[0][1].filters).toEqual(
