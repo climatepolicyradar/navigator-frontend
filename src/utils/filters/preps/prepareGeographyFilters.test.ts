@@ -53,7 +53,7 @@ describe("prepareGeographyFilters", () => {
     expect(geographyGroup.children).toEqual([]);
   });
 
-  it("adds the Country/Subdivision type group when the geography type filters feature is on", () => {
+  it("adds the Country/Subnational type group when the geography type filters feature is on", () => {
     const rootLabels = [region("Europe", [country("France")])];
     const [typeGroup, regionGroup, geographyGroup] = prepareGeographyFilters(true)(rootLabels);
 

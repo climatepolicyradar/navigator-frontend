@@ -47,6 +47,10 @@ export const LABEL_DISPLAY_REPLACEMENTS: TLabelDisplayReplacement[] = [
     subtitle: "Project or guidance",
   },
   {
+    idMatch: ["group", "geography"].join(SEP),
+    name: "Country/Territory & Subnational",
+  },
+  {
     idMatch: ["group", "jurisdiction"].join(SEP),
     name: "Jurisdictions",
     subtitle: "Publishing court or entity",
@@ -55,6 +59,14 @@ export const LABEL_DISPLAY_REPLACEMENTS: TLabelDisplayReplacement[] = [
     idMatch: ["group", "principal_law"].join(SEP),
     name: "Principal laws",
     subtitle: "Organised by article and governing body",
+  },
+  {
+    idMatch: ["level", "Country"].join(SEP),
+    name: "Country/Territory",
+  },
+  {
+    idMatch: ["level", "Subdivision"].join(SEP),
+    name: "Subnational",
   },
   {
     parentId: ["category", "Multilateral Climate Fund project"].join(SEP),
