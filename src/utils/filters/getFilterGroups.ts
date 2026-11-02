@@ -64,7 +64,6 @@ export const getFilterGroups = ({ features, getAppText, theme }: IProps): TFilte
     Icon: LucideEarth,
     prepareRootLabels: prepareGeographyFilters(features["geography-type-filters"]),
     rootLabelTypes: ["region"],
-    subtitle: "Publish location of main document",
     title: "Geography",
     topLevelDefaultOpen: true,
   });
