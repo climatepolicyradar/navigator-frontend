@@ -47,23 +47,23 @@ export type TCategoryResults = {
   count: number;
 };
 
+const isSearchDocumentsResponse = (results: ISearchDocumentsResponse | TSearch): results is ISearchDocumentsResponse =>
+  Array.isArray((results as ISearchDocumentsResponse).results);
+
 /**
  * Normalise either search's response into the cards and count the recents block renders.
  *
  * The two searches return different shapes, so this is the one place that knows about both.
+ * The shape itself decides how to read the response, so a stale `new-search` flag renders
+ * nothing rather than throwing.
  */
-export const toCategoryResults = (
-  results: ISearchDocumentsResponse | TSearch | undefined,
-  isNewSearch: boolean,
-  allGeographies: GeographyV2[]
-): TCategoryResults => {
+export const toCategoryResults = (results: ISearchDocumentsResponse | TSearch | undefined, allGeographies: GeographyV2[]): TCategoryResults => {
   if (!results) return { families: [], count: 0 };
 
-  if (isNewSearch) {
-    const { results: principals, total_size } = results as ISearchDocumentsResponse;
-    return { families: principals.map(principalToSummary), count: total_size ?? 0 };
+  if (isSearchDocumentsResponse(results)) {
+    return { families: results.results.map(principalToSummary), count: results.total_size ?? 0 };
   }
 
-  const { families, total_family_hits } = results as TSearch;
+  const { families, total_family_hits } = results;
   return { families: (families || []).map((family) => familyToSummary(family, allGeographies)), count: total_family_hits ?? 0 };
 };

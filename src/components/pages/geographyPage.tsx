@@ -38,6 +38,9 @@ import { getGeographyMetaData } from "@/utils/getGeographyMetadata";
 import { CATEGORY_LABEL_PATH_LOOKUP, createLabel } from "@/utils/links/getGeoSearchLink";
 import { filterPathsToQueryGroup } from "@/utils/search/filterPathsToQueryGroup";
 
+// The recents block shows a single row of cards per category.
+const RECENT_FAMILIES_PAGE_SIZE = 4;
+
 const geographyLabelPaths = (geographyLabel: TSearchLabel, categoryId: string): TFilterPathLabel[][] => {
   const parentType = geographyLabel.type === "subdivision" ? "country" : "region";
   const parentLabel = geographyLabel.labels.find((label) => label.type === "subconcept_of" && label.value.type === parentType);
@@ -99,7 +102,7 @@ export const GeographyPage = ({
   const isNewSearch = features["new-search"];
   const geographiesForCards = useContext(GeographiesContext);
   const [summariesByCategory, setSummariesByCategory] = useState<{ [categorySlug: string]: TCategoryResults }>({
-    All: toCategoryResults(vespaSearchResults, isNewSearch, geographiesForCards),
+    All: toCategoryResults(vespaSearchResults, geographiesForCards),
   });
 
   /* Blocks */
@@ -152,21 +155,23 @@ export const GeographyPage = ({
                   apiUrl: envConfig.API_URL,
                   themeConfig,
                   filters: filterPathsToQueryGroup(geographyLabelPaths(geographyLabel, category), null, "and"),
-                  page_size: "4",
+                  page_size: String(RECENT_FAMILIES_PAGE_SIZE),
                 }),
-                true,
                 geographiesForCards
               )
             : toCategoryResults(
                 await backendApiClient
-                  .post<TApiSearch>("/searches", buildSearchQuery({ l: geographyV2.slug, c: category, page_size: "4" }, themeConfig), {
-                    headers: {
-                      accept: "application/json",
-                      "Content-Type": "application/json",
-                    },
-                  })
+                  .post<TApiSearch>(
+                    "/searches",
+                    buildSearchQuery({ l: geographyV2.slug, c: category, page_size: String(RECENT_FAMILIES_PAGE_SIZE) }, themeConfig),
+                    {
+                      headers: {
+                        accept: "application/json",
+                        "Content-Type": "application/json",
+                      },
+                    }
+                  )
                   .then((response) => response.data),
-                false,
                 geographiesForCards
               );
 
