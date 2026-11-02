@@ -330,6 +330,16 @@ const TermsOfUse = () => {
                   </tr>
                   <tr>
                     <td>
+                      <ExternalLink url="https://www.goldstandard.org/">GoldStandard</ExternalLink>
+                    </td>
+                    <td>Carbon Market Regulation laws and policies</td>
+                    <td>February 2025</td>
+                    <td>
+                      <ExternalLink url="https://www.goldstandard.org/terms-and-conditions">View</ExternalLink>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td>
                       <ExternalLink url="https://www.lseg.com/en">LSEG</ExternalLink>
                     </td>
                     <td>
@@ -388,6 +398,18 @@ const TermsOfUse = () => {
                     <td>April 2026</td>
                     <td>
                       <ExternalLink url="https://www.climatecouncils.org/tcs/">View</ExternalLink>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td>
+                      <ExternalLink url="https://nature4climate.org/">Nature4Climate</ExternalLink>
+                    </td>
+                    <td>Nature-based Solutions (NbS) laws and policies</td>
+                    <td>October 2026</td>
+                    <td>
+                      <ExternalLink url="https://nature4climate.org/wp-content/uploads/2025/10/NbS_Report_2025NbSTracker_v03_CB-lr.pdf">
+                        View
+                      </ExternalLink>
                     </td>
                   </tr>
                   <tr>
