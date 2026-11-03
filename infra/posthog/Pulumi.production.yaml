@@ -1,0 +1,8 @@
+config:
+  aws:region: eu-west-1
+  # Intentionally opaque. PostHog's guidance is that a proxy hostname a
+  # blocklist maintainer can recognise -- analytics, tracking, telemetry,
+  # posthog -- gets blocked like the endpoint it replaced, which would leave us
+  # exactly where we started.
+  # @see: https://posthog.com/docs/advanced/proxy/cloudfront
+  frontend-posthog:proxy_domain: t.climatepolicyradar.org

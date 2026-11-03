@@ -1,0 +1,4 @@
+config:
+  aws:region: eu-west-1
+  # @see the note in Pulumi.production.yaml on why this name gives nothing away.
+  frontend-posthog:proxy_domain: t.staging.climatepolicyradar.org
