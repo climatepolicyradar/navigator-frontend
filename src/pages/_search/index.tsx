@@ -1,6 +1,6 @@
 import { GetServerSideProps, InferGetServerSidePropsType } from "next";
 import { useQueryState, parseAsString, parseAsStringLiteral } from "nuqs";
-import { useContext, useMemo, useState } from "react";
+import { useContext, useEffect, useMemo, useState } from "react";
 
 import { createGroup, isFilterGroupEmpty } from "@/components/_experiment/advancedFilters/AdvancedFilters";
 import { SEARCH_RESULTS_PAGE_SIZE, SearchContainer } from "@/components/_experiment/searchResults/SearchResults";
@@ -31,7 +31,7 @@ import { readConfigFile } from "@/utils/readConfigFile";
 import { getSearchSortDefault } from "@/utils/search/getSearchSortDefault";
 import { queryGroupToAPIFilters } from "@/utils/search/queryGroupToAPIFilters";
 import { queryGroupToFilterPaths } from "@/utils/search/queryGroupToFilterPaths";
-import { conceptFiltersOnly, seedPassageLevel } from "@/utils/search/searchLevels";
+import { seedPassageLevel } from "@/utils/search/searchLevels";
 import { joinTailwindClasses } from "@/utils/tailwind";
 
 const columnLayoutCss = "col-start-1 -col-end-1 cols-5:col-start-2 cols-5:-col-end-2";
@@ -69,18 +69,14 @@ const ShadowSearch = ({ theme, themeConfig, features }: TProps) => {
   // animates closed, and is absent when the level arrives from a shared link.
   const [selectedDocument, setSelectedDocument] = useState<ISearchDocument | null>(null);
   const principalSlug = principalLevel.id ?? (selectedDocument?.attributes.deprecated_slug as string) ?? null;
-  const principalHasSearch = !!principalLevel.search.query || !!conceptFiltersOnly(principalLevel.search.filters);
-  const documentHasSearch = !!documentLevel.search.query || !!conceptFiltersOnly(documentLevel.search.filters);
 
-  // If we have a document search also active, start on "about" as that is where the document drawer lives
-  const [drawerTab, setDrawerTab] = useState<TPrincipalDrawerTab>(principalHasSearch && !documentHasSearch ? "search" : "about");
-  const [openedPrincipalId, setOpenedPrincipalId] = useState(principalLevel.id);
+  const [drawerTab, setDrawerTab] = useState<TPrincipalDrawerTab>("about");
 
-  // Land on the passages tab whenever a drawer opens onto a search, whether from a click or a link.
-  if (principalLevel.id !== openedPrincipalId) {
-    setOpenedPrincipalId(principalLevel.id);
-    if (principalLevel.id) setDrawerTab(principalHasSearch ? "search" : getPersistedPrincipalDrawerTab());
-  }
+  // The cookie can only be read on the client, so restore the persisted tab after mount.
+  useEffect(() => {
+    // eslint-disable-next-line react-hooks/set-state-in-effect
+    setDrawerTab(getPersistedPrincipalDrawerTab());
+  }, []);
 
   const onDrawerTabChange = (tab: TPrincipalDrawerTab) => {
     setDrawerTab(tab);
