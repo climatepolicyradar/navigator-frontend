@@ -5,12 +5,15 @@ import { Geographies, GEOGRAPHY_LABEL_TYPES } from "@/components/molecules/geogr
 import { FiltersContext } from "@/context/FiltersContext";
 import { TFilterPathLabel, TFiltersGroupConfig } from "@/types";
 import { getLabelPathSignature, sortFilterPathLabels } from "@/utils/filters/filterPaths";
+import { getLabelDisplay } from "@/utils/filters/getLabelDisplay";
 import { joinTailwindClasses } from "@/utils/tailwind";
 
 const getDateRangeLabel = (dateRange: [number, number]): string => `${dateRange[0]}-${dateRange[1]}`;
 
+const getLabelName = (labelValues: Record<string, string>, label: TFilterPathLabel): string => labelValues[label.id] || getLabelDisplay(label).name;
+
 const getAppliedFilterLabel = (labelValues: Record<string, string>, labelPath: TFilterPathLabel[]): ReactNode => {
-  const getLabelValue = (label: TFilterPathLabel) => labelValues[label.id] || label.value;
+  const getLabelValue = (label: TFilterPathLabel) => getLabelName(labelValues, label);
   const isGeography = labelPath.some((label) => GEOGRAPHY_LABEL_TYPES.includes(label.type));
 
   if (isGeography) {
@@ -54,10 +57,11 @@ export const AppliedFilters = ({ ancestorPath = [], className, filterGroups = []
     <ul className={allClasses} aria-label="Applied filters">
       {labels.map((labelPath) => {
         const label = labelPath[0];
+        const labelDisplay = getAppliedFilterLabel(labelValues, labelPath);
 
         return (
           <li key={label.id} className="flex flex-nowrap gap-1 pl-3 pr-2 py-1 bg-[#1A4F8C1A] rounded-full">
-            <span className="block text-sm text-text-primary text-nowrap font-medium leading-5">{getAppliedFilterLabel(labelValues, labelPath)}</span>
+            <span className="block text-sm text-text-primary text-nowrap font-medium leading-5">{labelDisplay}</span>
             <button
               type="button"
               className="p-1 -m-1 text-inky-blue"

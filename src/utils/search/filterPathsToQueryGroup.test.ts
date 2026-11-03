@@ -651,9 +651,9 @@ export const FILTER_TEST_CASES: TFilterTestCase[] = [
           value: "Adaptation Communication (AC)",
         },
         {
-          id: "un_convention::UNFCCC",
+          id: "un_convention::CBD",
           type: "un_convention",
-          value: "UNFCCC",
+          value: "CBD",
         },
         {
           id: "category::UN submission",
@@ -700,7 +700,7 @@ export const FILTER_TEST_CASES: TFilterTestCase[] = [
                 {
                   field: "labels.value.id",
                   op: "contains",
-                  value: "un_convention::UNFCCC",
+                  value: "un_convention::CBD",
                 },
                 {
                   op: "or",
