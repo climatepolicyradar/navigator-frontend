@@ -1,6 +1,7 @@
 import { transformDocument } from "@/bff/transformers/partials/transformDocument";
 import { transformDocumentFamily } from "@/bff/transformers/partials/transformDocumentFamily";
 import { TDocumentApiData, TDocumentPresentationalResponse } from "@/types";
+import { getDirectLinkPolicy } from "@/utils/getDirectLinkPolicy";
 
 export const documentTransformer = (documentApiData: TDocumentApiData, errors: Error[]): TDocumentPresentationalResponse => {
   try {
@@ -17,6 +18,7 @@ export const documentTransformer = (documentApiData: TDocumentApiData, errors: E
         family,
         topicsData,
         searchDocument,
+        directLinkPolicy: getDirectLinkPolicy(document.labels),
         debug: {
           dataInDocument: document,
         },

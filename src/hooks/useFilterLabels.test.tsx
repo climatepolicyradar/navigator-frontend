@@ -91,7 +91,7 @@ describe("useFilterLabels", () => {
   it("excludes configured searchExcludeLabels from the filter query", async () => {
     renderUseFilterLabels(DEFAULT_FEATURES, {
       ...DEFAULT_THEME_CONFIG,
-      searchExcludeLabels: ["author_type::Non-Party"],
+      searchExcludeLabels: [{ id: "author_type::Non-Party", onDirectLink: { action: "not_found" } }],
     });
 
     await waitFor(() => expect(mockLoadFilteredLabels).toHaveBeenCalled());
