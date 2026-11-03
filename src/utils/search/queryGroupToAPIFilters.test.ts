@@ -94,5 +94,34 @@ describe("queryGroupToAPIFilters", () => {
         filters: [otherFilter, LABEL_SEARCH_REPLACEMENTS[0].filter],
       });
     });
+
+    it("narrows UNFCCC to the approved Party document types", () => {
+      // @see: https://linear.app/climate-policy-radar/issue/FUS-611
+      expect(queryGroupToAPIFilters({ op: "and", filters: [getOriginalFilter("un_convention::UNFCCC")] })).toEqual({
+        op: "and",
+        filters: [
+          {
+            op: "and",
+            filters: [
+              getOriginalFilter("un_convention::UNFCCC"),
+              {
+                op: "or",
+                filters: [
+                  "Nationally Determined Contribution (NDC)",
+                  "National Adaptation Plan (NAP)",
+                  "Biennial Transparency Report (BTR)",
+                  "Long-term Low-emission Development Strategy (LT-LEDS)",
+                  "Biennial Update Report (BUR)",
+                  "Biennial Report (BR)",
+                  "National Communication (NC)",
+                  "National Inventory Report (NIR)",
+                  "Adaptation Communication (AC)",
+                ].map((entityType) => getOriginalFilter(`entity_type::${entityType}`)),
+              },
+            ],
+          },
+        ],
+      });
+    });
   });
 });
