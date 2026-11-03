@@ -90,7 +90,41 @@ type TLabelSearchReplacement = {
   filter: TSearchQueryRule | TSearchQueryGroup;
 };
 
+const UNFCCC_APPROVED_ENTITY_TYPES = [
+  "Nationally Determined Contribution (NDC)",
+  "National Adaptation Plan (NAP)",
+  "Biennial Transparency Report (BTR)",
+  "Long-term Low-emission Development Strategy (LT-LEDS)",
+  "Biennial Update Report (BUR)",
+  "Biennial Report (BR)",
+  "National Communication (NC)",
+  "National Inventory Report (NIR)",
+  "Adaptation Communication (AC)",
+];
+
 export const LABEL_SEARCH_REPLACEMENTS: TLabelSearchReplacement[] = [
+  {
+    // @see: https://linear.app/climate-policy-radar/issue/FUS-611
+    idMatch: ["un_convention", "UNFCCC"].join(SEP),
+    filter: {
+      op: "and",
+      filters: [
+        {
+          field: "labels.value.id",
+          op: "contains",
+          value: ["un_convention", "UNFCCC"].join(SEP),
+        },
+        {
+          op: "or",
+          filters: UNFCCC_APPROVED_ENTITY_TYPES.map((entityType) => ({
+            field: "labels.value.id",
+            op: "contains",
+            value: ["entity_type", entityType].join(SEP),
+          })),
+        },
+      ],
+    },
+  },
   {
     idMatch: ["level", "Country"].join(SEP),
     filter: {

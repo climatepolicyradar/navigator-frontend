@@ -474,12 +474,12 @@ const config: TThemeConfig = {
     // Until then it stays false and the PostHog flag (0% rollout) controls access.
     "climate-cop31-2026": false,
     familyConceptsSearch: false,
-    "geography-type-filters": false,
+    "geography-type-filters": true,
     knowledgeGraph: true,
     litigation: false,
     "new-search": true,
     searchFamilySummary: false,
-    subdivisions: false,
+    subdivisions: true,
     themes: true,
   },
 };
