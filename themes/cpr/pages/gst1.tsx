@@ -158,18 +158,19 @@ export default function GST1LandingPage() {
               .
             </p>
             <p className="mb-4">
-              The Global Stocktake Explorer brings together more than 1,800+ documents and 200,000+ pages. Search the full text of every document,
+              The Global Stocktake Explorer brings together more than 1,600+ documents and 200,000+ pages. Search the full text of every document,
               with documents in other languages translated into English.
             </p>
             <p className="mb-4">It includes:</p>
             <ul className="mb-4 list-disc pl-5">
               <li>
-                <span className="font-medium">Party submissions:</span> NDCs, National Adaptation Plans, long-term strategies (LT-LEDS), Biennial
-                Transparency, Update and Biennial Reports, National Communications, National Inventory Reports and Adaptation Communications
+                <span className="font-medium">Party submissions:</span> Nationally Determined Contributions (NDCs), long-term strategies (LT-LEDS),
+                Biennial Update Reports (BURs), Biennial Reports (BRs), National Communications (NCs), National Inventory Reports (NIRs) and
+                Adaptation Communications (ACs)
               </li>
               <li>
-                <span className="font-medium">Non-party inputs:</span> IPCC reports, synthesis and technical analysis reports, submissions to the
-                Global Stocktake, Facilitative Sharing of Views and Fast-Start Finance reports
+                <span className="font-medium">Non-party inputs:</span> submissions to the Global Stocktake, IPCC reports, synthesis and technical
+                analysis reports, Facilitative Sharing of Views and Fast-Start Finance reports
               </li>
             </ul>
             <p className="mb-4">
@@ -185,8 +186,7 @@ export default function GST1LandingPage() {
         content: (
           <>
             <p className="mb-4">
-              This collection is powered by Climate Policy Radar, turning documents from every country into searchable, accessible and useful
-              information.
+              This collection is powered by Climate Policy Radar, turning documents into searchable, accessible and useful information.
             </p>
             <p className="mb-4">
               We build and train models that automatically read and extract text from PDFs and websites, so we can structure and share information
