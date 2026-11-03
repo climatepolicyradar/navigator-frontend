@@ -176,7 +176,9 @@ const TermsOfUse = () => {
                 </thead>
                 <tbody>
                   <tr>
-                    <td>Grantham Research Institute, LSE</td>
+                    <td>
+                      <ExternalLink url="https://www.lse.ac.uk/granthaminstitute/">Grantham Research Institute, LSE</ExternalLink>
+                    </td>
                     <td>Law and policy document summaries; selected document metadata</td>
                     <td>October 2022</td>
                     <td>
