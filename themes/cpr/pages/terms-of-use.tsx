@@ -415,6 +415,38 @@ const TermsOfUse = () => {
                     </td>
                   </tr>
                   <tr>
+                    <td>
+                      <ExternalLink url="https://scetti.org/profiles/">Scetti</ExternalLink>
+                    </td>
+                    <td>Indian state-level policy data</td>
+                    <td>November 2026</td>
+                    <td>
+                      <ExternalLink url="https://scetti.org/ccl/">View</ExternalLink>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td>
+                      <ExternalLink url="https://www.theclimategroup.org/under2-coalition">Under2 Coalition</ExternalLink>
+                    </td>
+                    <td>State-level data with global coverage</td>
+                    <td>November 2026</td>
+                    <td>
+                      <em>Please refer to the original publication source before citing the document or using it in any other way.</em>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td>
+                      <ExternalLink url="https://governance.transitiondigital.org/en">NDC Align</ExternalLink> (JUMA/
+                      <ExternalLink url="https://www.lse.ac.uk/granthaminstitute/">GRI</ExternalLink>/
+                      <ExternalLink url="https://www.laclima.org/en/noticias">LaClima</ExternalLink>)
+                    </td>
+                    <td>Brazilian state-level policy data</td>
+                    <td>November 2026</td>
+                    <td>
+                      <ExternalLink url="https://www.lse.ac.uk/granthaminstitute/cclw-terms-and-conditions/">View</ExternalLink>
+                    </td>
+                  </tr>
+                  <tr>
                     <td>Additional data sources will be added here as they are added to the CPR database and app</td>
                     <td></td>
                     <td></td>
