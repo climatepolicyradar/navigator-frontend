@@ -1,6 +1,6 @@
 import { ParsedUrlQuery } from "querystring";
 
-import { AnimatePresence, motion } from "framer-motion";
+import { AnimatePresence, LazyMotion, domAnimation, m } from "framer-motion";
 import { ChevronDown, Loader as LuLoader } from "lucide-react";
 import { GetServerSideProps, InferGetServerSidePropsType } from "next";
 import { useRouter } from "next/router";
@@ -639,25 +639,27 @@ const Search = ({ familyConceptsData, features, theme, themeConfig, topicsData }
                                       </span>
                                       <ChevronDown />
                                     </button>
-                                    <AnimatePresence initial={false}>
-                                      {showSearchOptions && (
-                                        <motion.div
-                                          key="content"
-                                          initial="hidden"
-                                          animate="visible"
-                                          exit="hidden"
-                                          variants={SETTINGS_ANIMATION_VARIANTS}
-                                        >
-                                          <SearchSettings
-                                            queryParams={router.query}
-                                            handleSearchChange={handleSearchChange}
-                                            setShowOptions={setShowSearchOptions}
-                                            settingsButtonRef={searchSettingsButtonRef}
-                                            extraClasses="w-[280px]"
-                                          />
-                                        </motion.div>
-                                      )}
-                                    </AnimatePresence>
+                                    <LazyMotion features={domAnimation}>
+                                      <AnimatePresence initial={false}>
+                                        {showSearchOptions && (
+                                          <m.div
+                                            key="content"
+                                            initial="hidden"
+                                            animate="visible"
+                                            exit="hidden"
+                                            variants={SETTINGS_ANIMATION_VARIANTS}
+                                          >
+                                            <SearchSettings
+                                              queryParams={router.query}
+                                              handleSearchChange={handleSearchChange}
+                                              setShowOptions={setShowSearchOptions}
+                                              settingsButtonRef={searchSettingsButtonRef}
+                                              extraClasses="w-[280px]"
+                                            />
+                                          </m.div>
+                                        )}
+                                      </AnimatePresence>
+                                    </LazyMotion>
                                   </div>
                                   <div className="relative z-8 -top-0.5 flex justify-end">
                                     <button
@@ -679,24 +681,26 @@ const Search = ({ familyConceptsData, features, theme, themeConfig, topicsData }
                                       </span>{" "}
                                       <ChevronDown />
                                     </button>
-                                    <AnimatePresence initial={false}>
-                                      {showSortOptions && (
-                                        <motion.div
-                                          key="content"
-                                          initial="hidden"
-                                          animate="visible"
-                                          exit="hidden"
-                                          variants={SETTINGS_ANIMATION_VARIANTS}
-                                        >
-                                          <SearchSettings
-                                            queryParams={router.query}
-                                            handleSortClick={handleSortClick}
-                                            setShowOptions={setShowSortOptions}
-                                            settingsButtonRef={sortSettingsButtonRef}
-                                          />
-                                        </motion.div>
-                                      )}
-                                    </AnimatePresence>
+                                    <LazyMotion features={domAnimation}>
+                                      <AnimatePresence initial={false}>
+                                        {showSortOptions && (
+                                          <m.div
+                                            key="content"
+                                            initial="hidden"
+                                            animate="visible"
+                                            exit="hidden"
+                                            variants={SETTINGS_ANIMATION_VARIANTS}
+                                          >
+                                            <SearchSettings
+                                              queryParams={router.query}
+                                              handleSortClick={handleSortClick}
+                                              setShowOptions={setShowSortOptions}
+                                              settingsButtonRef={sortSettingsButtonRef}
+                                            />
+                                          </m.div>
+                                        )}
+                                      </AnimatePresence>
+                                    </LazyMotion>
                                   </div>
                                 </div>
                               </div>
