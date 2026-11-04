@@ -71,3 +71,55 @@ jobs:
           node scripts/check-redirects.mjs \
             --base-url "${{ needs.deploy-review-stack.outputs.review_url }}" \
             --file "themes/${{ fromJSON(needs.changed-theme.outputs.theme)[0] }}/redirects.json"
+
+  teardown:
+    needs: [changed-theme, deploy-review-stack, check]
+    # The review stack this workflow creates exists only as a fixture for the
+    # check above, so it is destroyed as soon as the check is done rather than
+    # lingering until the PR closes. `always()` matters here as a failing check
+    # means a PR sits open for days, so the teardown must not be skipped.
+    #
+    # deploy-review-stack.yml's own destroy path can't cover this. It is
+    # reached via the `closed` pull_request event, whereas this stack is
+    # created through workflow_call, where `is_workflow_call` short-circuits
+    # the action to `update` so will never reach the destroy branch.
+    if: always() && fromJSON(needs.changed-theme.outputs.theme)[0] != null
+    runs-on: ubuntu-latest
+    env:
+      PULUMI_ACCESS_TOKEN: ${{ secrets.PULUMI_ACCESS_TOKEN }}
+      ORG: climatepolicyradar
+      PROJECT: frontend
+    steps:
+      - name: Trigger destroy deployment
+        env:
+          STACK_NAME: pr-${{ fromJSON(needs.changed-theme.outputs.theme)[0] }}-navigator-frontend-${{ github.event.pull_request.number }}
+        run: |
+          # Check if the stack exists before attempting destroy - the deploy
+          # job may have failed before creating it.
+          stack_status=$(curl -s -o /dev/null -w "%{http_code}" \
+            -H "Authorization: token ${PULUMI_ACCESS_TOKEN}" \
+            "https://api.pulumi.com/api/stacks/${ORG}/${PROJECT}/${STACK_NAME}")
+
+          if [ "$stack_status" -eq 404 ]; then
+            echo "Stack ${STACK_NAME} does not exist, nothing to destroy"
+            exit 0
+          fi
+
+          response=$(curl -fsSL -w "\n%{http_code}" -X POST \
+            -H "Authorization: token ${PULUMI_ACCESS_TOKEN}" \
+            -H "Content-Type: application/json" \
+            "https://api.pulumi.com/api/stacks/${ORG}/${PROJECT}/${STACK_NAME}/deployments" \
+            -d "{
+              \"operation\": \"destroy\",
+              \"inheritSettings\": true,
+              \"operationContext\": {
+                \"options\": {
+                  \"deleteAfterDestroy\": true
+                }
+              }
+            }")
+
+          body=$(echo "$response" | head -n -1)
+          status=$(echo "$response" | tail -n1)
+          echo "Destroy triggered: HTTP $status"
+          echo "$body" | jq .
