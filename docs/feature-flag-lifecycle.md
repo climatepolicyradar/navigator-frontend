@@ -191,7 +191,6 @@ feature keys to booleans:
 
 ```ts
 features: {
-  "climate-cop31-2026": false,
   familyConceptsSearch: false,
   knowledgeGraph: true,
   "new-search": true,
