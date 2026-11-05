@@ -62,9 +62,6 @@ const config: TThemeConfig = {
   },
   tutorials: ["climateLitigationDatabase", "knowledgeGraph"],
   features: {
-    // Only toggle to true here when you want the COP31 content to go live.
-    // Until then it stays false and the PostHog flag (0% rollout) controls access.
-    "climate-cop31-2026": false,
     familyConceptsSearch: true,
     // Deliberately off while subdivisions is on: ~95% of US federal cases also carry a state
     // subdivision tag, so "Type: Country" would hide almost all of them. Needs the litigation

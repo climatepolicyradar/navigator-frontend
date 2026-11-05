@@ -214,7 +214,6 @@ export default function GST1LandingPage() {
         ),
       },
     ],
-    requiredFeature: "climate-cop31-2026",
   };
   return <LandingPage config={landingPageConfig} />;
 }
