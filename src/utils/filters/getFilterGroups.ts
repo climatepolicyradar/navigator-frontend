@@ -22,7 +22,7 @@ const FILTER_PREP_DICTIONARY: Record<TTheme, TFiltersGroupPrep | null> = {
 const EXCLUDED_TOPICS_DICTIONARY: Record<TTheme, string[]> = {
   ccc: ["Q1277", "Q32", "Q911", "Q912"],
   cclw: [],
-  cpr: ["Q1277", "Q32", "Q911", "Q912"],
+  cpr: [],
   mcf: [],
 };
 
