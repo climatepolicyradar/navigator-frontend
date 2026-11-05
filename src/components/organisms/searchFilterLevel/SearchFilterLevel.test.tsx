@@ -26,6 +26,26 @@ describe("SearchFilterLevel", () => {
     expect(screen.queryByText("Document Type")).not.toBeInTheDocument();
   });
 
+  it("keeps entity type and document type in one group when a third type forces grouping", () => {
+    render(
+      <SearchFilterLevel
+        ancestorPath={[]}
+        level={2}
+        labels={[
+          label("entity_type", "Nationally Determined Contribution (NDC)"),
+          label("document_type", "Submission to the Global Stocktake"),
+          label("process", "GST1"),
+        ]}
+      />
+    );
+
+    expect(screen.getByText("Process")).toBeInTheDocument();
+    expect(screen.getByText("Entity Type")).toBeInTheDocument();
+    expect(screen.queryByText("Document Type")).not.toBeInTheDocument();
+    expect(screen.getByText("Nationally Determined Contribution (NDC)")).toBeInTheDocument();
+    expect(screen.getByText("Submission to the Global Stocktake")).toBeInTheDocument();
+  });
+
   it("still groups labels whose types are genuinely different", () => {
     render(<SearchFilterLevel ancestorPath={[]} level={2} labels={[label("author_type", "Party"), label("process", "GST1 Submission")]} />);
     expect(screen.getByText("Author Type")).toBeInTheDocument();

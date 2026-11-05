@@ -6,6 +6,7 @@ import { ChevronDown } from "lucide-react";
 import { SearchFilterLevel } from "@/components/organisms/searchFilterLevel/SearchFilterLevel";
 import { TFilterPathLabel, TNestedSearchLabel } from "@/types";
 import { getLabelDisplay } from "@/utils/filters/getLabelDisplay";
+import { getTypeCategory } from "@/utils/search/filterPathsToQueryGroup";
 
 interface IProps {
   ancestorPath: TFilterPathLabel[];
@@ -14,7 +15,7 @@ interface IProps {
 }
 
 export const SearchFilterGroups = ({ ancestorPath, labels, level }: IProps) => {
-  const groups = sortBy(Object.entries(groupBy(labels, "type")), "0");
+  const groups = sortBy(Object.entries(groupBy(labels, (label) => getTypeCategory(label.type))), "0");
 
   const defaultValue = level === 2 ? groups.map(([type]) => type) : undefined;
 

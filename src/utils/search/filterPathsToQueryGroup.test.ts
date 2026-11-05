@@ -1,4 +1,4 @@
-import { TFilterPathLabel, TSearchQueryGroup } from "@/types";
+import { TFilterPathLabel, TSearchQueryGroup, TSearchQueryRule } from "@/types";
 
 import { DEFAULT_SEARCH_QUERY_GROUP, filterPathsToQueryGroup } from "./filterPathsToQueryGroup";
 
@@ -7,7 +7,8 @@ import { DEFAULT_SEARCH_QUERY_GROUP, filterPathsToQueryGroup } from "./filterPat
  * 1. all TFilterPathLabel are represented in the output by a TSearchQueryRule
  * 2. TFilterPathLabel that are children of another TFilterPathLabel are surrounded by an AND
  * 3. sibling TFilterPathLabel with the same type are surrounded by an OR, except type "concept" which is surrounded by an AND
- * 4. sibling TFilterPathLabel with different types are surrounded by an AND, except types "country" and "region" which are surrounded by an OR
+ * 4. sibling TFilterPathLabel with different types are surrounded by an AND, except the types that share a category:
+ *    "country" + "region", and "document_type" + "entity_type", which are surrounded by an OR
  * 5. nested TFilterPathLabel are separated from each other by at least one TSearchQueryGroup
  */
 
@@ -17,6 +18,14 @@ type TFilterTestCase = {
   searchQueryGroup: TSearchQueryGroup;
 };
 
+// Dumb constructors for the expected shapes: no logic, so the table never asserts against the
+// implementation's own decisions (whether to wrap a lone rule in a group is behaviour under test)
+const label = (type: string, value: string): TFilterPathLabel => ({ id: [type, value].join("::"), type, value });
+const and = (...filters: (TSearchQueryGroup | TSearchQueryRule)[]): TSearchQueryGroup => ({ op: "and", filters });
+const or = (...filters: (TSearchQueryGroup | TSearchQueryRule)[]): TSearchQueryGroup => ({ op: "or", filters });
+const id_contains = (value: string): TSearchQueryRule => ({ field: "labels.value.id", op: "contains", value });
+const id_contains_checked = (value: string): TSearchQueryRule => ({ field: "labels.value.id", op: "contains", value, checked: true });
+
 export const FILTER_TEST_CASES: TFilterTestCase[] = [
   {
     name: "no filters",
@@ -25,921 +34,168 @@ export const FILTER_TEST_CASES: TFilterTestCase[] = [
   },
   {
     name: "one first level filter",
-    filterPathLabels: [
-      [
-        {
-          id: "category::Multilateral Climate Fund project",
-          type: "category",
-          value: "Multilateral Climate Fund project",
-        },
-      ],
-    ],
-    searchQueryGroup: {
-      op: "or",
-      filters: [
-        {
-          field: "labels.value.id",
-          op: "contains",
-          value: "category::Multilateral Climate Fund project",
-          checked: true,
-        },
-      ],
-    },
+    filterPathLabels: [[label("category", "Multilateral Climate Fund project")]],
+    searchQueryGroup: or(id_contains_checked("category::Multilateral Climate Fund project")),
   },
   {
     name: "multiple first level filters",
-    filterPathLabels: [
-      [
-        {
-          id: "category::Multilateral Climate Fund project",
-          type: "category",
-          value: "Multilateral Climate Fund project",
-        },
-      ],
-      [
-        {
-          id: "category::UN submission",
-          type: "category",
-          value: "UN submission",
-        },
-      ],
-    ],
-    searchQueryGroup: {
-      op: "or",
-      filters: [
-        {
-          field: "labels.value.id",
-          op: "contains",
-          value: "category::Multilateral Climate Fund project",
-          checked: true,
-        },
-        {
-          field: "labels.value.id",
-          op: "contains",
-          value: "category::UN submission",
-          checked: true,
-        },
-      ],
-    },
+    filterPathLabels: [[label("category", "Multilateral Climate Fund project")], [label("category", "UN submission")]],
+    searchQueryGroup: or(id_contains_checked("category::Multilateral Climate Fund project"), id_contains_checked("category::UN submission")),
   },
   {
     name: "multiple first level concept filters",
-    filterPathLabels: [
-      [
-        {
-          id: "concept::Adaptation",
-          type: "concept",
-          value: "Adaptation",
-        },
-      ],
-      [
-        {
-          id: "concept::Mitigation",
-          type: "concept",
-          value: "Mitigation",
-        },
-      ],
-    ],
-    searchQueryGroup: {
-      op: "and",
-      filters: [
-        {
-          field: "labels.value.id",
-          op: "contains",
-          value: "concept::Adaptation",
-          checked: true,
-        },
-        {
-          field: "labels.value.id",
-          op: "contains",
-          value: "concept::Mitigation",
-          checked: true,
-        },
-      ],
-    },
+    filterPathLabels: [[label("concept", "Adaptation")], [label("concept", "Mitigation")]],
+    searchQueryGroup: and(id_contains_checked("concept::Adaptation"), id_contains_checked("concept::Mitigation")),
   },
   {
     name: "one second level filter",
-    filterPathLabels: [
-      [
-        {
-          id: "un_convention::UNCCD",
-          type: "un_convention",
-          value: "UNCCD",
-        },
-        {
-          id: "category::UN submission",
-          type: "category",
-          value: "UN submission",
-        },
-      ],
-    ],
-    searchQueryGroup: {
-      op: "and",
-      filters: [
-        {
-          field: "labels.value.id",
-          op: "contains",
-          value: "category::UN submission",
-        },
-        {
-          op: "or",
-          filters: [
-            {
-              field: "labels.value.id",
-              op: "contains",
-              value: "un_convention::UNCCD",
-              checked: true,
-            },
-          ],
-        },
-      ],
-    },
+    filterPathLabels: [[label("un_convention", "UNCCD"), label("category", "UN submission")]],
+    searchQueryGroup: and(id_contains("category::UN submission"), or(id_contains_checked("un_convention::UNCCD"))),
   },
   {
     name: "one second level filter and its parent",
-    filterPathLabels: [
-      [
-        {
-          id: "category::UN submission",
-          type: "category",
-          value: "UN submission",
-        },
-      ],
-      [
-        {
-          id: "un_convention::UNCCD",
-          type: "un_convention",
-          value: "UNCCD",
-        },
-        {
-          id: "category::UN submission",
-          type: "category",
-          value: "UN submission",
-        },
-      ],
-    ],
-    searchQueryGroup: {
-      op: "and",
-      filters: [
-        {
-          field: "labels.value.id",
-          op: "contains",
-          value: "category::UN submission",
-          checked: true,
-        },
-        {
-          op: "or",
-          filters: [
-            {
-              field: "labels.value.id",
-              op: "contains",
-              value: "un_convention::UNCCD",
-              checked: true,
-            },
-          ],
-        },
-      ],
-    },
+    filterPathLabels: [[label("category", "UN submission")], [label("un_convention", "UNCCD"), label("category", "UN submission")]],
+    searchQueryGroup: and(id_contains_checked("category::UN submission"), or(id_contains_checked("un_convention::UNCCD"))),
   },
   {
     name: "multiple second level filters, siblings + same type",
     filterPathLabels: [
-      [
-        {
-          id: "author_type::Corporate",
-          type: "author_type",
-          value: "Corporate",
-        },
-        {
-          id: "category::Report",
-          type: "category",
-          value: "Report",
-        },
-      ],
-      [
-        {
-          id: "author_type::Individual",
-          type: "author_type",
-          value: "Individual",
-        },
-        {
-          id: "category::Report",
-          type: "category",
-          value: "Report",
-        },
-      ],
+      [label("author_type", "Corporate"), label("category", "Report")],
+      [label("author_type", "Individual"), label("category", "Report")],
     ],
-    searchQueryGroup: {
-      op: "and",
-      filters: [
-        {
-          field: "labels.value.id",
-          op: "contains",
-          value: "category::Report",
-        },
-        {
-          op: "or",
-          filters: [
-            {
-              field: "labels.value.id",
-              op: "contains",
-              value: "author_type::Corporate",
-              checked: true,
-            },
-            {
-              field: "labels.value.id",
-              op: "contains",
-              value: "author_type::Individual",
-              checked: true,
-            },
-          ],
-        },
-      ],
-    },
+    searchQueryGroup: and(
+      id_contains("category::Report"),
+      or(id_contains_checked("author_type::Corporate"), id_contains_checked("author_type::Individual"))
+    ),
   },
   {
     name: "multiple second level filters, siblings + same type (concept)",
     filterPathLabels: [
-      [
-        {
-          id: "concept::Adaptation",
-          type: "concept",
-          value: "Adaptation",
-        },
-        {
-          id: "category::Report",
-          type: "category",
-          value: "Report",
-        },
-      ],
-      [
-        {
-          id: "concept::Mitigation",
-          type: "concept",
-          value: "Mitigation",
-        },
-        {
-          id: "category::Report",
-          type: "category",
-          value: "Report",
-        },
-      ],
+      [label("concept", "Adaptation"), label("category", "Report")],
+      [label("concept", "Mitigation"), label("category", "Report")],
     ],
-    searchQueryGroup: {
-      op: "and",
-      filters: [
-        {
-          field: "labels.value.id",
-          op: "contains",
-          value: "category::Report",
-        },
-        {
-          op: "and",
-          filters: [
-            {
-              field: "labels.value.id",
-              op: "contains",
-              value: "concept::Adaptation",
-              checked: true,
-            },
-            {
-              field: "labels.value.id",
-              op: "contains",
-              value: "concept::Mitigation",
-              checked: true,
-            },
-          ],
-        },
-      ],
-    },
+    searchQueryGroup: and(
+      id_contains("category::Report"),
+      and(id_contains_checked("concept::Adaptation"), id_contains_checked("concept::Mitigation"))
+    ),
   },
   {
     name: "multiple second level filters, siblings + different types (1+1)",
     filterPathLabels: [
-      [
-        {
-          id: "author_type::Corporate",
-          type: "author_type",
-          value: "Corporate",
-        },
-        {
-          id: "category::Report",
-          type: "category",
-          value: "Report",
-        },
-      ],
-      [
-        {
-          id: "report_type::Climate council report",
-          type: "report_type",
-          value: "Climate council report",
-        },
-        {
-          id: "category::Report",
-          type: "category",
-          value: "Report",
-        },
-      ],
+      [label("author_type", "Corporate"), label("category", "Report")],
+      [label("report_type", "Climate council report"), label("category", "Report")],
     ],
-    searchQueryGroup: {
-      op: "and",
-      filters: [
-        {
-          field: "labels.value.id",
-          op: "contains",
-          value: "category::Report",
-        },
-        {
-          op: "and",
-          filters: [
-            {
-              field: "labels.value.id",
-              op: "contains",
-              value: "author_type::Corporate",
-              checked: true,
-            },
-            {
-              field: "labels.value.id",
-              op: "contains",
-              value: "report_type::Climate council report",
-              checked: true,
-            },
-          ],
-        },
-      ],
-    },
+    searchQueryGroup: and(
+      id_contains("category::Report"),
+      and(id_contains_checked("author_type::Corporate"), id_contains_checked("report_type::Climate council report"))
+    ),
   },
   {
     name: "multiple second level filters, siblings + different types (2+1)",
     filterPathLabels: [
-      [
-        {
-          id: "author_type::Corporate",
-          type: "author_type",
-          value: "Corporate",
-        },
-        {
-          id: "category::Report",
-          type: "category",
-          value: "Report",
-        },
-      ],
-      [
-        {
-          id: "author_type::Industry body",
-          type: "author_type",
-          value: "Industry body",
-        },
-        {
-          id: "category::Report",
-          type: "category",
-          value: "Report",
-        },
-      ],
-      [
-        {
-          id: "report_type::Climate council report",
-          type: "report_type",
-          value: "Climate council report",
-        },
-        {
-          id: "category::Report",
-          type: "category",
-          value: "Report",
-        },
-      ],
+      [label("author_type", "Corporate"), label("category", "Report")],
+      [label("author_type", "Industry body"), label("category", "Report")],
+      [label("report_type", "Climate council report"), label("category", "Report")],
     ],
-    searchQueryGroup: {
-      op: "and",
-      filters: [
-        {
-          field: "labels.value.id",
-          op: "contains",
-          value: "category::Report",
-        },
-        {
-          op: "and",
-          filters: [
-            {
-              op: "or",
-              filters: [
-                {
-                  field: "labels.value.id",
-                  op: "contains",
-                  value: "author_type::Corporate",
-                  checked: true,
-                },
-                {
-                  field: "labels.value.id",
-                  op: "contains",
-                  value: "author_type::Industry body",
-                  checked: true,
-                },
-              ],
-            },
-            {
-              field: "labels.value.id",
-              op: "contains",
-              value: "report_type::Climate council report",
-              checked: true,
-            },
-          ],
-        },
-      ],
-    },
+    searchQueryGroup: and(
+      id_contains("category::Report"),
+      and(
+        or(id_contains_checked("author_type::Corporate"), id_contains_checked("author_type::Industry body")),
+        id_contains_checked("report_type::Climate council report")
+      )
+    ),
   },
   {
     name: "multiple filters, siblings + different geography types",
+    filterPathLabels: [[label("country", "GBR"), label("region", "Europe & Central Asia")], [label("country", "XAB")]],
+    searchQueryGroup: or(
+      and(id_contains("region::Europe & Central Asia"), or(id_contains_checked("country::GBR"))),
+      id_contains_checked("country::XAB")
+    ),
+  },
+  {
+    name: "multiple filters, siblings + document type and entity type",
     filterPathLabels: [
-      [
-        {
-          id: "country::GBR",
-          type: "country",
-          value: "GBR",
-        },
-        {
-          id: "region::Europe & Central Asia",
-          type: "region",
-          value: "Europe & Central Asia",
-        },
-      ],
-      [
-        {
-          id: "country::XAB",
-          type: "country",
-          value: "XAB",
-        },
-      ],
+      [label("entity_type", "Nationally Determined Contribution (NDC)")],
+      [label("document_type", "Submission to the Global Stocktake")],
     ],
-    searchQueryGroup: {
-      op: "or",
-      filters: [
-        {
-          op: "and",
-          filters: [
-            {
-              field: "labels.value.id",
-              op: "contains",
-              value: "region::Europe & Central Asia",
-            },
-            {
-              op: "or",
-              filters: [
-                {
-                  field: "labels.value.id",
-                  op: "contains",
-                  value: "country::GBR",
-                  checked: true,
-                },
-              ],
-            },
-          ],
-        },
-        {
-          field: "labels.value.id",
-          op: "contains",
-          value: "country::XAB",
-          checked: true,
-        },
-      ],
-    },
+    searchQueryGroup: or(
+      id_contains_checked("entity_type::Nationally Determined Contribution (NDC)"),
+      id_contains_checked("document_type::Submission to the Global Stocktake")
+    ),
   },
   {
     name: "one third level filter",
-    filterPathLabels: [
-      [
-        {
-          id: "document_type::Country Report (CR)",
-          type: "document_type",
-          value: "Country Report (CR)",
-        },
-        {
-          id: "un_convention::UNCCD",
-          type: "un_convention",
-          value: "UNCCD",
-        },
-        {
-          id: "category::UN submission",
-          type: "category",
-          value: "UN submission",
-        },
-      ],
-    ],
-    searchQueryGroup: {
-      op: "and",
-      filters: [
-        {
-          field: "labels.value.id",
-          op: "contains",
-          value: "category::UN submission",
-        },
-        {
-          op: "and",
-          filters: [
-            {
-              field: "labels.value.id",
-              op: "contains",
-              value: "un_convention::UNCCD",
-            },
-            {
-              op: "or",
-              filters: [
-                {
-                  field: "labels.value.id",
-                  op: "contains",
-                  value: "document_type::Country Report (CR)",
-                  checked: true,
-                },
-              ],
-            },
-          ],
-        },
-      ],
-    },
+    filterPathLabels: [[label("document_type", "Country Report (CR)"), label("un_convention", "UNCCD"), label("category", "UN submission")]],
+    searchQueryGroup: and(
+      id_contains("category::UN submission"),
+      and(id_contains("un_convention::UNCCD"), or(id_contains_checked("document_type::Country Report (CR)")))
+    ),
   },
   {
     name: "one third level filter and its parent",
     filterPathLabels: [
-      [
-        {
-          id: "un_convention::UNCCD",
-          type: "un_convention",
-          value: "UNCCD",
-        },
-        {
-          id: "category::UN submission",
-          type: "category",
-          value: "UN submission",
-        },
-      ],
-      [
-        {
-          id: "document_type::Country Report (CR)",
-          type: "document_type",
-          value: "Country Report (CR)",
-        },
-        {
-          id: "un_convention::UNCCD",
-          type: "un_convention",
-          value: "UNCCD",
-        },
-        {
-          id: "category::UN submission",
-          type: "category",
-          value: "UN submission",
-        },
-      ],
+      [label("un_convention", "UNCCD"), label("category", "UN submission")],
+      [label("document_type", "Country Report (CR)"), label("un_convention", "UNCCD"), label("category", "UN submission")],
     ],
-    searchQueryGroup: {
-      op: "and",
-      filters: [
-        {
-          field: "labels.value.id",
-          op: "contains",
-          value: "category::UN submission",
-        },
-        {
-          op: "and",
-          filters: [
-            {
-              field: "labels.value.id",
-              op: "contains",
-              value: "un_convention::UNCCD",
-              checked: true,
-            },
-            {
-              op: "or",
-              filters: [
-                {
-                  field: "labels.value.id",
-                  op: "contains",
-                  value: "document_type::Country Report (CR)",
-                  checked: true,
-                },
-              ],
-            },
-          ],
-        },
-      ],
-    },
+    searchQueryGroup: and(
+      id_contains("category::UN submission"),
+      and(id_contains_checked("un_convention::UNCCD"), or(id_contains_checked("document_type::Country Report (CR)")))
+    ),
   },
   {
     name: "two third level filters with different parents",
     filterPathLabels: [
-      [
-        {
-          id: "document_type::Country Report (CR)",
-          type: "document_type",
-          value: "Country Report (CR)",
-        },
-        {
-          id: "un_convention::UNCCD",
-          type: "un_convention",
-          value: "UNCCD",
-        },
-        {
-          id: "category::UN submission",
-          type: "category",
-          value: "UN submission",
-        },
-      ],
-      [
-        {
-          id: "entity_type::Adaptation Communication (AC)",
-          type: "entity_type",
-          value: "Adaptation Communication (AC)",
-        },
-        {
-          id: "un_convention::CBD",
-          type: "un_convention",
-          value: "CBD",
-        },
-        {
-          id: "category::UN submission",
-          type: "category",
-          value: "UN submission",
-        },
-      ],
+      [label("document_type", "Country Report (CR)"), label("un_convention", "UNCCD"), label("category", "UN submission")],
+      [label("entity_type", "Adaptation Communication (AC)"), label("un_convention", "CBD"), label("category", "UN submission")],
     ],
-    searchQueryGroup: {
-      op: "and",
-      filters: [
-        {
-          field: "labels.value.id",
-          op: "contains",
-          value: "category::UN submission",
-        },
-        {
-          op: "or",
-          filters: [
-            {
-              op: "and",
-              filters: [
-                {
-                  field: "labels.value.id",
-                  op: "contains",
-                  value: "un_convention::UNCCD",
-                },
-                {
-                  op: "or",
-                  filters: [
-                    {
-                      field: "labels.value.id",
-                      op: "contains",
-                      value: "document_type::Country Report (CR)",
-                      checked: true,
-                    },
-                  ],
-                },
-              ],
-            },
-            {
-              op: "and",
-              filters: [
-                {
-                  field: "labels.value.id",
-                  op: "contains",
-                  value: "un_convention::CBD",
-                },
-                {
-                  op: "or",
-                  filters: [
-                    {
-                      field: "labels.value.id",
-                      op: "contains",
-                      value: "entity_type::Adaptation Communication (AC)",
-                      checked: true,
-                    },
-                  ],
-                },
-              ],
-            },
-          ],
-        },
-      ],
-    },
+    searchQueryGroup: and(
+      id_contains("category::UN submission"),
+      or(
+        and(id_contains("un_convention::UNCCD"), or(id_contains_checked("document_type::Country Report (CR)"))),
+        and(id_contains("un_convention::CBD"), or(id_contains_checked("entity_type::Adaptation Communication (AC)")))
+      )
+    ),
   },
   {
     name: "second and third level filters with the same sibling types",
     filterPathLabels: [
-      [
-        {
-          id: "jurisdiction::Argentina",
-          type: "jurisdiction",
-          value: "Argentina",
-        },
-        {
-          id: "category::Litigation",
-          type: "category",
-          value: "Litigation",
-        },
-      ],
-      [
-        {
-          id: "jurisdiction::Australian Capital Territory",
-          type: "jurisdiction",
-          value: "Australian Capital Territory",
-        },
-        {
-          id: "jurisdiction::Australia",
-          type: "jurisdiction",
-          value: "Australia",
-        },
-        {
-          id: "category::Litigation",
-          type: "category",
-          value: "Litigation",
-        },
-      ],
+      [label("jurisdiction", "Argentina"), label("category", "Litigation")],
+      [label("jurisdiction", "Australian Capital Territory"), label("jurisdiction", "Australia"), label("category", "Litigation")],
     ],
-    searchQueryGroup: {
-      op: "and",
-      filters: [
-        {
-          field: "labels.value.id",
-          op: "contains",
-          value: "category::Litigation",
-        },
-        {
-          op: "or",
-          filters: [
-            {
-              field: "labels.value.id",
-              op: "contains",
-              value: "jurisdiction::Argentina",
-              checked: true,
-            },
-            {
-              op: "and",
-              filters: [
-                {
-                  field: "labels.value.id",
-                  op: "contains",
-                  value: "jurisdiction::Australia",
-                },
-                {
-                  op: "or",
-                  filters: [
-                    {
-                      field: "labels.value.id",
-                      op: "contains",
-                      value: "jurisdiction::Australian Capital Territory",
-                      checked: true,
-                    },
-                  ],
-                },
-              ],
-            },
-          ],
-        },
-      ],
-    },
+    searchQueryGroup: and(
+      id_contains("category::Litigation"),
+      or(
+        id_contains_checked("jurisdiction::Argentina"),
+        and(id_contains("jurisdiction::Australia"), or(id_contains_checked("jurisdiction::Australian Capital Territory")))
+      )
+    ),
   },
   {
     name: "second and third level filters with different sibling types",
     filterPathLabels: [
+      [label("case_category", "Adaptation (US)"), label("category", "Litigation")],
       [
-        {
-          id: "case_category::Adaptation (US)",
-          type: "case_category",
-          value: "Adaptation (US)",
-        },
-        {
-          id: "category::Litigation",
-          type: "category",
-          value: "Litigation",
-        },
-      ],
-      [
-        {
-          id: "jurisdiction::Massachusetts District Court (Mass. Dist. Ct.)",
-          type: "jurisdiction",
-          value: "Massachusetts District Court (Mass. Dist. Ct.)",
-        },
-        {
-          id: "jurisdiction::United States",
-          type: "jurisdiction",
-          value: "United States",
-        },
-        {
-          id: "category::Litigation",
-          type: "category",
-          value: "Litigation",
-        },
+        label("jurisdiction", "Massachusetts District Court (Mass. Dist. Ct.)"),
+        label("jurisdiction", "United States"),
+        label("category", "Litigation"),
       ],
     ],
-    searchQueryGroup: {
-      op: "and",
-      filters: [
-        {
-          field: "labels.value.id",
-          op: "contains",
-          value: "category::Litigation",
-        },
-        {
-          op: "and",
-          filters: [
-            {
-              field: "labels.value.id",
-              op: "contains",
-              value: "case_category::Adaptation (US)",
-              checked: true,
-            },
-            {
-              op: "and",
-              filters: [
-                {
-                  field: "labels.value.id",
-                  op: "contains",
-                  value: "jurisdiction::United States",
-                },
-                {
-                  op: "or",
-                  filters: [
-                    {
-                      field: "labels.value.id",
-                      op: "contains",
-                      value: "jurisdiction::Massachusetts District Court (Mass. Dist. Ct.)",
-                      checked: true,
-                    },
-                  ],
-                },
-              ],
-            },
-          ],
-        },
-      ],
-    },
+    searchQueryGroup: and(
+      id_contains("category::Litigation"),
+      and(
+        id_contains_checked("case_category::Adaptation (US)"),
+        and(id_contains("jurisdiction::United States"), or(id_contains_checked("jurisdiction::Massachusetts District Court (Mass. Dist. Ct.)")))
+      )
+    ),
   },
   {
-    /*
-     * Three unrelated root labels, none of which is a parent of any other: one of type "country"
-     * (standing in for International) and two sharing a second type (the subnational levels).
-     *
-     * The two same-type labels are OR'd into one bucket, which previously left the lone checked
-     * rule leading an AND group - the same shape the parent/child cases above produce. Round
-     * tripping that through queryGroupToFilterPaths re-parented the levels under the country,
-     * unticking their checkboxes and merging their pills. Each bucket is therefore wrapped in its
-     * own group so the three stay siblings, while the API still receives `country AND (a OR b)`.
-     */
     name: "a checked root filter beside a group of same-type siblings",
-    filterPathLabels: [
-      [
-        {
-          id: "country::XAB",
-          type: "country",
-          value: "XAB",
-        },
-      ],
-      [
-        {
-          id: "test_level::Country",
-          type: "test_level",
-          value: "Country",
-        },
-      ],
-      [
-        {
-          id: "test_level::Subdivision",
-          type: "test_level",
-          value: "Subdivision",
-        },
-      ],
-    ],
-    searchQueryGroup: {
-      op: "and",
-      filters: [
-        {
-          op: "or",
-          filters: [
-            {
-              field: "labels.value.id",
-              op: "contains",
-              value: "country::XAB",
-              checked: true,
-            },
-          ],
-        },
-        {
-          op: "or",
-          filters: [
-            {
-              field: "labels.value.id",
-              op: "contains",
-              value: "test_level::Country",
-              checked: true,
-            },
-            {
-              field: "labels.value.id",
-              op: "contains",
-              value: "test_level::Subdivision",
-              checked: true,
-            },
-          ],
-        },
-      ],
-    },
+    filterPathLabels: [[label("country", "XAB")], [label("test_level", "Country")], [label("test_level", "Subdivision")]],
+    searchQueryGroup: and(
+      or(id_contains_checked("country::XAB")),
+      or(id_contains_checked("test_level::Country"), id_contains_checked("test_level::Subdivision"))
+    ),
   },
 ];
 

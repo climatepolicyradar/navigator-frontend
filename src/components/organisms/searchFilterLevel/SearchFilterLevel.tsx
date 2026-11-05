@@ -7,6 +7,7 @@ import { SearchFilters } from "@/components/molecules/searchFilters/SearchFilter
 import { FiltersLookupContext } from "@/context/FiltersLookupContext";
 import { TFilterPathLabel, TNestedSearchLabel } from "@/types";
 import { sortLabelsByValue } from "@/utils/filters/sortLabelsByValue";
+import { getTypeCategory } from "@/utils/search/filterPathsToQueryGroup";
 import { joinTailwindClasses } from "@/utils/tailwind";
 
 const LOOKUP_THRESHOLD = 16;
@@ -24,18 +25,12 @@ interface IProps {
   topLevelDefaultOpen?: boolean;
 }
 
-// document type and entity type are _basically_ the same
-// so we don't want to split them out in the filter list
-const logicalLabelType = (labelType: string): string => {
-  return labelType === "document_type" ? "entity_type" : labelType;
-};
-
 // Render a set of label peers depending on content and composition
 export const SearchFilterLevel = ({ ancestorPath, emptyStateRender, indented, labels, level, renderParents, topLevelDefaultOpen }: IProps) => {
   const { inUse: isLookupAtHigherLevel } = useContext(FiltersLookupContext);
 
   const indentedClasses = indented && "ml-8 mt-2 not-last:mb-2";
-  const labelTypes = new Set(labels.map((label) => logicalLabelType(label.type)));
+  const labelTypes = new Set(labels.map((label) => getTypeCategory(label.type)));
 
   // This shouldn't be possible without an empty state being provided
   if (level === 1 && labels.length === 0) {

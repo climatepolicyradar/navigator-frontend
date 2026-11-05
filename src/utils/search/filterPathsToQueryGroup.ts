@@ -3,8 +3,19 @@ import { TFilterPathLabel, TSearchQueryGroup, TSearchQueryRule } from "@/types";
 
 export const DEFAULT_SEARCH_QUERY_GROUP: TSearchQueryGroup = { op: "and", filters: [{ field: "labels.value.id", op: "contains", value: "" }] };
 
-// map country + region to geography, so are OR'd together (same type) rather than AND'd
-const getTypeCategory = (type: string): string => (type === "country" || type === "region" ? "geography" : type);
+// Types that are logically one group: OR'd together rather than AND'd,
+// and rendered as one flat list in the filter side panel rather than grouped
+export const getTypeCategory = (type: string): string => {
+  switch (type) {
+    case "country":
+    case "region":
+      return "geography";
+    case "document_type":
+      return "entity_type";
+    default:
+      return type;
+  }
+};
 
 const makeRule = (value: string, checked?: true): TSearchQueryRule => ({
   field: "labels.value.id",
