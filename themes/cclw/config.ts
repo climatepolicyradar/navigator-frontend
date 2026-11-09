@@ -1,4 +1,7 @@
 import { TThemeConfig } from "@/types";
+import getThemeDomain from "@/utils/getThemeDomain";
+
+const cprAppUrl = `https://${getThemeDomain("cpr")}`;
 
 const config: TThemeConfig = {
   documentTypeLabels: [],
@@ -152,7 +155,7 @@ const config: TThemeConfig = {
     },
   ],
   searchCategories: ["UN submission", "Law", "Policy"],
-  searchExcludeLabels: ["author_type::Non-Party"],
+  searchExcludeLabels: [{ id: "author_type::Non-Party", onDirectLink: { action: "redirect", to: `${cprAppUrl}/document/{id}` } }],
   downloadColumns: ["ID", "TITLE", "DESCRIPTION", "GEOGRAPHIES", "PUBLISHED_DATE", "ENTITY_TYPE", "CATEGORY", "PROVIDER", "COLLECTION_TITLE"],
   labelVariations: {},
   links: {

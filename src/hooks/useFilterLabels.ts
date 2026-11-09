@@ -71,10 +71,10 @@ export const useFilterLabels = ({ features, themeConfig }: IProps) => {
       );
     }
 
-    const excludeLabelRules: TSearchQueryGroup["filters"] = searchExcludeLabels.map((id) => ({
+    const excludeLabelRules: TSearchQueryGroup["filters"] = searchExcludeLabels.map(({ id: labelId }) => ({
       field: "id",
       op: "not_contains",
-      value: id,
+      value: labelId,
     }));
 
     const filterGroup: TSearchQueryGroup = excludeLabelRules.length
