@@ -31,3 +31,7 @@ config:
   frontend:otel_resource_attributes: service.namespace=frontend
   frontend:apprunner_frontend_vcpu_count: 1 vCPU
   frontend:apprunner_frontend_memory_gb: 2 GB
+  aws:defaultTags:
+    tags:
+      Team: fusion
+      Environment: sandbox

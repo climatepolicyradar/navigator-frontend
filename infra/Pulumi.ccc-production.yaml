@@ -32,5 +32,9 @@ config:
   frontend:apprunner_frontend_vcpu_count: 4 vCPU
   frontend:apprunner_frontend_memory_gb: 8 GB
   frontend:next_static_enabled: "true"
+  aws:defaultTags:
+    tags:
+      Team: fusion
+      Environment: production
 environment:
   - frontend/ccc-production

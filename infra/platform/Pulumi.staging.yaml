@@ -1,4 +1,8 @@
 config:
   aws:region: eu-west-1
+  aws:defaultTags:
+    tags:
+      Team: fusion
+      Environment: staging
 environment:
   - frontend/aws-creds-staging
