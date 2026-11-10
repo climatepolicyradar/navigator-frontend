@@ -447,6 +447,33 @@ const TermsOfUse = () => {
                     </td>
                   </tr>
                   <tr>
+                    <td>
+                      <ExternalLink url="https://data.usclimatealliance.org/">United States Climate Alliance Policy Database</ExternalLink>
+                    </td>
+                    <td>US State-level Policy data</td>
+                    <td>November 2026</td>
+                    <td>
+                      <em>
+                        If you want to reference this document, please see{" "}
+                        <a href="#data-from-third-party-sources:~:text=Data%20from%20Third%20Party%20Sources">the terms of use</a> for citation and
+                        licensing of third party data.
+                      </em>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td>
+                      <ExternalLink url="https://polea.org.mx/">POLEA</ExternalLink>
+                    </td>
+                    <td>Mexican state-level policy data</td>
+                    <td>November 2026</td>
+                    <td>
+                      <em>
+                        If you want to reference this document, please refer to the original publication source before citing the document or using it
+                        in any other way.
+                      </em>
+                    </td>
+                  </tr>
+                  <tr>
                     <td>Additional data sources will be added here as they are added to the CPR database and app</td>
                     <td></td>
                     <td></td>
