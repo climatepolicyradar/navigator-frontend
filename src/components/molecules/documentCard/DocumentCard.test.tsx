@@ -11,7 +11,7 @@ const baseDocument: ISearchDocument = {
   labels: [{ type: "category", value: { id: "cat-1", type: "category", value: "Policy" }, count: null, timestamp: null }],
   documents: [],
   items: [],
-  attributes: { published_date: "2023-06-15" },
+  attributes: { published_date: "2023-06-15", deprecated_slug: "national-climate-strategy" },
 };
 
 describe("DocumentCard", () => {
@@ -81,7 +81,7 @@ describe("DocumentCard", () => {
       ],
     };
     render(<DocumentCard document={doc} onClick={() => {}} />);
-    expect(screen.getByRole("button")).toHaveTextContent("🇫🇷 France");
+    expect(screen.getByRole("link")).toHaveTextContent("🇫🇷 France");
   });
 
   it("shows a count of geographies beyond the display limit", () => {
@@ -95,7 +95,7 @@ describe("DocumentCard", () => {
       ],
     };
     render(<DocumentCard document={doc} onClick={() => {}} />);
-    expect(screen.getByRole("button")).toHaveTextContent("France, Germany +1");
+    expect(screen.getByRole("link")).toHaveTextContent("France, Germany +1");
     expect(screen.queryByText("Spain", { exact: false })).not.toBeInTheDocument();
   });
 
@@ -109,7 +109,7 @@ describe("DocumentCard", () => {
       ],
     };
     render(<DocumentCard document={doc} onClick={() => {}} />);
-    expect(screen.getByRole("button")).toHaveTextContent("🇺🇸 United States → California");
+    expect(screen.getByRole("link")).toHaveTextContent("🇺🇸 United States → California");
   });
 
   it("falls back to region geographies when no country or subdivision label is present", () => {
@@ -127,19 +127,40 @@ describe("DocumentCard", () => {
   it("calls onClick with the document when the card is clicked", () => {
     const handleClick = vi.fn();
     render(<DocumentCard document={baseDocument} onClick={handleClick} />);
-    fireEvent.click(screen.getByRole("button"));
+    fireEvent.click(screen.getByRole("link"));
     expect(handleClick).toHaveBeenCalledTimes(1);
     expect(handleClick).toHaveBeenCalledWith(baseDocument, expect.anything());
   });
 
-  it("sets analytics data attributes on the button", () => {
+  it("links to the family page", () => {
+    render(<DocumentCard document={baseDocument} onClick={() => {}} />);
+    expect(screen.getByRole("link")).toHaveAttribute("href", "/document/national-climate-strategy");
+  });
+
+  it("prevents navigation on a plain click", () => {
+    render(<DocumentCard document={baseDocument} onClick={() => {}} />);
+    const notCancelled = fireEvent.click(screen.getByRole("link"));
+    expect(notCancelled).toBe(false);
+  });
+
+  it.each(["metaKey", "ctrlKey", "shiftKey"])("lets the browser handle a click with %s held", (modifier) => {
+    const handleClick = vi.fn();
+    render(<DocumentCard document={baseDocument} onClick={handleClick} />);
+    const link = screen.getByRole("link");
+    // Stop jsdom attempting navigation once our handler has run
+    link.addEventListener("click", (event) => event.preventDefault());
+    fireEvent.click(link, { [modifier]: true });
+    expect(handleClick).not.toHaveBeenCalled();
+  });
+
+  it("sets analytics data attributes on the link", () => {
     const analytics = { context: "search-results", positionInPage: 2, positionInResults: 12, resultsTotal: 43 };
     render(<DocumentCard document={baseDocument} onClick={() => {}} analytics={analytics} />);
-    const button = screen.getByRole("button");
-    expect(button).toHaveAttribute("data-ph-capture-attribute-link-purpose", "search-results");
-    expect(button).toHaveAttribute("data-ph-capture-attribute-position-page", "2");
-    expect(button).toHaveAttribute("data-ph-capture-attribute-position-total", "12");
-    expect(button).toHaveAttribute("data-ph-capture-attribute-results-total", "43");
-    expect(button).toHaveAttribute("data-ph-capture-attribute-result-id", baseDocument.id);
+    const link = screen.getByRole("link");
+    expect(link).toHaveAttribute("data-ph-capture-attribute-link-purpose", "search-results");
+    expect(link).toHaveAttribute("data-ph-capture-attribute-position-page", "2");
+    expect(link).toHaveAttribute("data-ph-capture-attribute-position-total", "12");
+    expect(link).toHaveAttribute("data-ph-capture-attribute-results-total", "43");
+    expect(link).toHaveAttribute("data-ph-capture-attribute-result-id", baseDocument.id);
   });
 });

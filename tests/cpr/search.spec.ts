@@ -25,7 +25,7 @@ test.describe("Search", () => {
 
     /** A result opens a drawer over the results rather than navigating away */
     const firstSearchResult = searchResults.getByRole("listitem").nth(0);
-    await firstSearchResult.getByRole("button").click();
+    await firstSearchResult.getByRole("link").click();
 
     const drawer = page.getByRole("dialog");
     await expect(drawer).toBeVisible();
