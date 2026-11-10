@@ -20,6 +20,7 @@ on:
 permissions:
   id-token: write
   contents: read
+  actions: read
 
 jobs:
   deploy-production:
@@ -36,6 +37,16 @@ jobs:
           echo "This workflow can only be run from main."
           exit 1
       - uses: actions/checkout@v7
+      # Gate before the build instead of after, per theme, so a
+      # theme that's staging deploy is red is removed from the
+      # matrix while the others still ship. @related: FUS-705
+      - name: Require a green staging deploy for this commit
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: >
+          .github/workflows/scripts/assert_staging_green.sh
+          ${{ github.sha }} ${{ inputs.theme }}
+
       - name: Configure AWS credentials
         uses: aws-actions/configure-aws-credentials@v6.3.0
         with:
