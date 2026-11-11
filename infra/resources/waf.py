@@ -136,9 +136,19 @@ class FrontendWebAcl(pulumi.ComponentResource):
                     ),
                 ),
                 statement=aws.wafv2.WebAclRuleStatementArgs(
-                    label_match_statement=aws.wafv2.WebAclRuleStatementLabelMatchStatementArgs(
-                        scope="NAMESPACE",
-                        key="awswaf:managed:aws:bot-control:",
+                    or_statement=aws.wafv2.WebAclRuleStatementOrStatementArgs(
+                        statements=[
+                            aws.wafv2.WebAclRuleStatementArgs(
+                                label_match_statement=aws.wafv2.WebAclRuleStatementLabelMatchStatementArgs(
+                                    scope="NAMESPACE",
+                                    key=namespace,
+                                ),
+                            )
+                            for namespace in [
+                                "awswaf:managed:aws:bot-control:bot:",
+                                "awswaf:managed:aws:bot-control:signal:",
+                            ]
+                        ],
                     ),
                 ),
                 # Label bot requests so logging can filter to them (see logging_filter).
