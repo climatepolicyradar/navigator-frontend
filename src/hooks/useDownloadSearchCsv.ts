@@ -4,9 +4,10 @@ import { configureDocumentsFilters, SEARCH_DOCUMENTS_MIN_SHOULD_MATCH } from "@/
 import { isFilterGroupEmpty } from "@/components/_experiment/advancedFilters/AdvancedFilters";
 import { SORT_PARAMS_LOOKUP } from "@/constants/sort";
 import { useEnvConfig } from "@/context/EnvConfig";
-import { TApiLoadingStatus, TSearchQueryGroup, TSearchQueryRule, TSortValue, TThemeConfig } from "@/types";
+import { TApiLoadingStatus, TSearchQueryGroup, TSearchQueryRule, TSortValue, TTheme, TThemeConfig } from "@/types";
 import { sanitiseSearchQueryGroup } from "@/utils/filters/advancedFilters";
 import { deflateFilters } from "@/utils/filters/deflate";
+import getThemeDomain from "@/utils/getThemeDomain";
 
 const DOWNLOAD_MAX_RESULTS = 500;
 
@@ -20,6 +21,7 @@ const PRINCIPAL_DOCUMENTS_FILTER: TSearchQueryRule = {
 
 interface IDownloadSearchCsvParams {
   query?: string;
+  theme: TTheme;
   themeConfig: TThemeConfig;
   filters?: TSearchQueryGroup;
   sort: TSortValue;
@@ -27,6 +29,10 @@ interface IDownloadSearchCsvParams {
 
 function downloadSearchCsvUrl(apiUrl: string): string {
   return `${apiUrl.replace(/\/$/, "")}/search/documents:download`;
+}
+
+function downloadBaseUrl(theme: TTheme): string {
+  return `https://${getThemeDomain(theme)}`;
 }
 
 export function buildDownloadSearchCsvUrl(params: IDownloadSearchCsvParams & { apiUrl: string }): URL {
@@ -59,6 +65,8 @@ export function buildDownloadSearchCsvUrl(params: IDownloadSearchCsvParams & { a
   // A theme with no columns configured appends nothing, leaving
   // the API to fall back to its own default set rather than failing the download.
   (params.themeConfig.downloadColumns ?? []).forEach((column) => url.searchParams.append("columns", column));
+
+  url.searchParams.set("base_url", downloadBaseUrl(params.theme));
 
   return url;
 }
