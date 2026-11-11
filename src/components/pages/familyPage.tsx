@@ -116,7 +116,7 @@ export const FamilyPage = ({ collections, debug, errors, family, familyTopics, f
   const blocksToRender = getFamilyBlocks(themeConfig.pageBlocks.family, features, theme);
   const blockDefinitions: TBlockDefinitions<TFamilyPageBlock> = {
     collections: {
-      render: () => <CollectionsBlock key="collections" collections={collections} />,
+      render: () => <CollectionsBlock key="collections" collections={collections} family={family} />,
       sideBarItem: { display: pluralise(collections.length, ["Collection", "Collections"]) },
     },
     debug: {
