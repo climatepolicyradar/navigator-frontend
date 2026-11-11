@@ -24,7 +24,7 @@ export const FamilyAttributesSchema = v.object({
   project_url: v.optional(v.string()),
   project_co_financing_usd: v.optional(v.number()),
   project_fund_spend_usd: v.optional(v.number()),
-  published_date: v.string(),
+  published_date: v.optional(v.string()),
 });
 export type TDataInFamilyAttributes = v.InferOutput<typeof FamilyAttributesSchema>;
 export const validateFamilyAttributes = (attributes: TDataInAttributes): TDataInFamilyAttributes => v.parse(FamilyAttributesSchema, attributes);
