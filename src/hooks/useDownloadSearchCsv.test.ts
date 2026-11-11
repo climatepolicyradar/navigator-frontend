@@ -4,12 +4,13 @@ import { createElement, ReactNode } from "react";
 import { configureDocumentsFilters } from "@/api/search";
 import { DEFAULT_THEME_CONFIG } from "@/constants/themeConfig";
 import { EnvConfigContext, TPublicEnvConfig } from "@/context/EnvConfig";
-import { TLabelCategoryValue, TSearchQueryGroup, TThemeConfig } from "@/types";
+import { TLabelCategoryValue, TSearchQueryGroup, TTheme, TThemeConfig } from "@/types";
 import { inflateFilters } from "@/utils/filters/deflate";
 
 import { buildDownloadSearchCsvUrl, useDownloadSearchCsv } from "./useDownloadSearchCsv";
 
 const TEST_API_URL = "https://api.example.org";
+const TEST_THEME: TTheme = "ccc";
 
 const themeConfigWithCategories = (searchCategories: TLabelCategoryValue[]): TThemeConfig => ({
   ...DEFAULT_THEME_CONFIG,
@@ -22,6 +23,7 @@ describe("buildDownloadSearchCsvUrl", () => {
   it("builds the download endpoint with query, order_by, and max_results", () => {
     const url = buildDownloadSearchCsvUrl({
       apiUrl: TEST_API_URL,
+      theme: TEST_THEME,
       query: "flood risk",
       themeConfig: NO_CATEGORIES,
       sort: "relevance",
@@ -37,6 +39,7 @@ describe("buildDownloadSearchCsvUrl", () => {
   it("requests the theme's download columns, one param each, in configured order", () => {
     const url = buildDownloadSearchCsvUrl({
       apiUrl: TEST_API_URL,
+      theme: TEST_THEME,
       themeConfig: { ...DEFAULT_THEME_CONFIG, downloadColumns: ["ID", "TITLE", "GEOGRAPHIES"] },
       sort: "relevance",
     });
@@ -44,9 +47,21 @@ describe("buildDownloadSearchCsvUrl", () => {
     expect(url.searchParams.getAll("columns")).toEqual(["ID", "TITLE", "GEOGRAPHIES"]);
   });
 
+  it("sends the theme's public origin as base_url, which the API builds the URL columns from", () => {
+    const url = buildDownloadSearchCsvUrl({
+      apiUrl: TEST_API_URL,
+      theme: TEST_THEME,
+      themeConfig: NO_CATEGORIES,
+      sort: "relevance",
+    });
+
+    expect(url.searchParams.get("base_url")).toBe("https://www.climatecasechart.com");
+  });
+
   it("omits columns when the theme configures none, leaving the API's default set", () => {
     const url = buildDownloadSearchCsvUrl({
       apiUrl: TEST_API_URL,
+      theme: TEST_THEME,
       themeConfig: { ...DEFAULT_THEME_CONFIG, downloadColumns: [] },
       sort: "relevance",
     });
@@ -57,6 +72,7 @@ describe("buildDownloadSearchCsvUrl", () => {
   it("omits columns when the theme config predates the field, rather than failing the download", () => {
     const url = buildDownloadSearchCsvUrl({
       apiUrl: TEST_API_URL,
+      theme: TEST_THEME,
       // Themes reach the hook from an API payload, which may be served by a
       // deployment older than `downloadColumns`.
       themeConfig: { ...DEFAULT_THEME_CONFIG, downloadColumns: undefined } as unknown as TThemeConfig,
@@ -70,6 +86,7 @@ describe("buildDownloadSearchCsvUrl", () => {
     const forSort = (sort: "recent" | "oldest" | "title_asc" | "title_desc") =>
       buildDownloadSearchCsvUrl({
         apiUrl: TEST_API_URL,
+        theme: TEST_THEME,
         themeConfig: NO_CATEGORIES,
         sort,
       }).searchParams.get("order_by");
@@ -83,6 +100,7 @@ describe("buildDownloadSearchCsvUrl", () => {
   it("omits query when not provided", () => {
     const url = buildDownloadSearchCsvUrl({
       apiUrl: TEST_API_URL,
+      theme: TEST_THEME,
       themeConfig: NO_CATEGORIES,
       sort: "relevance",
     });
@@ -94,6 +112,7 @@ describe("buildDownloadSearchCsvUrl", () => {
   it("strips a trailing slash from the search API URL", () => {
     const url = buildDownloadSearchCsvUrl({
       apiUrl: "https://api.example.org/",
+      theme: TEST_THEME,
       themeConfig: NO_CATEGORIES,
       sort: "relevance",
     });
@@ -104,6 +123,7 @@ describe("buildDownloadSearchCsvUrl", () => {
   it("includes filters, restricted to principal documents, when given a non-empty filter tree", () => {
     const url = buildDownloadSearchCsvUrl({
       apiUrl: TEST_API_URL,
+      theme: TEST_THEME,
       themeConfig: NO_CATEGORIES,
       sort: "relevance",
       filters: {
@@ -136,6 +156,7 @@ describe("buildDownloadSearchCsvUrl", () => {
   it("omits the caller's empty filter tree, keeping only the always-on principal filter", () => {
     const url = buildDownloadSearchCsvUrl({
       apiUrl: TEST_API_URL,
+      theme: TEST_THEME,
       themeConfig: NO_CATEGORIES,
       sort: "relevance",
       filters: {
@@ -160,6 +181,7 @@ describe("buildDownloadSearchCsvUrl", () => {
   it("restricts the download to the theme's search categories, so CCC only gets litigation", () => {
     const url = buildDownloadSearchCsvUrl({
       apiUrl: TEST_API_URL,
+      theme: TEST_THEME,
       query: "bananas",
       themeConfig: themeConfigWithCategories(["Litigation"]),
       sort: "relevance",
@@ -181,6 +203,7 @@ describe("buildDownloadSearchCsvUrl", () => {
   it("does not restrict categories when the theme has none", () => {
     const url = buildDownloadSearchCsvUrl({
       apiUrl: TEST_API_URL,
+      theme: TEST_THEME,
       themeConfig: NO_CATEGORIES,
       sort: "relevance",
     });
@@ -209,6 +232,7 @@ describe("buildDownloadSearchCsvUrl", () => {
       inflateFilters(
         buildDownloadSearchCsvUrl({
           apiUrl: TEST_API_URL,
+          theme: TEST_THEME,
           query: "bananas",
           themeConfig,
           filters,
@@ -278,6 +302,7 @@ describe("useDownloadSearchCsv", () => {
     act(() => {
       result.current.download({
         query: "flood",
+        theme: TEST_THEME,
         themeConfig: NO_CATEGORIES,
         sort: "relevance",
       });
@@ -299,6 +324,7 @@ describe("useDownloadSearchCsv", () => {
     act(() => {
       result.current.download({
         query: "flood",
+        theme: TEST_THEME,
         themeConfig: NO_CATEGORIES,
         sort: "relevance",
       });
@@ -315,6 +341,7 @@ describe("useDownloadSearchCsv", () => {
     act(() => {
       result.current.download({
         query: "flood",
+        theme: TEST_THEME,
         themeConfig: NO_CATEGORIES,
         sort: "relevance",
       });
@@ -330,6 +357,7 @@ describe("useDownloadSearchCsv", () => {
     act(() => {
       result.current.download({
         query: "flood",
+        theme: TEST_THEME,
         themeConfig: NO_CATEGORIES,
         sort: "relevance",
       });

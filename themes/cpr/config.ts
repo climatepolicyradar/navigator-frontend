@@ -431,7 +431,19 @@ const config: TThemeConfig = {
   ],
   searchCategories: ["Global Stocktake", "Law", "Multilateral Climate Fund project", "Policy", "Report", "UN submission"],
   searchExcludeLabels: [],
-  downloadColumns: ["ID", "TITLE", "DESCRIPTION", "GEOGRAPHIES", "PUBLISHED_DATE", "ENTITY_TYPE", "CATEGORY", "PROVIDER", "COLLECTION_TITLE"],
+  downloadColumns: [
+    "ID",
+    "TITLE",
+    "DESCRIPTION",
+    "URL",
+    "GEOGRAPHIES",
+    "PUBLISHED_DATE",
+    "ENTITY_TYPE",
+    "CATEGORY",
+    "PROVIDER",
+    "COLLECTION_TITLE",
+    "COLLECTION_DESCRIPTION",
+  ],
   labelVariations: {
     date: {
       label: "First published",
