@@ -60,7 +60,7 @@ const config: TThemeConfig = {
     family: ["metadata", "documents", "summary", "topics"],
     geography: ["recents", "subdivisions"],
   },
-  tutorials: ["climateLitigationDatabase", "knowledgeGraph"],
+  tutorials: ["climateLitigationDatabase", "newSearch"],
   features: {
     familyConceptsSearch: true,
     // Deliberately off while subdivisions is on: ~95% of US federal cases also carry a state
