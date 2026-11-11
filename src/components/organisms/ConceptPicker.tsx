@@ -8,18 +8,13 @@ import { Badge } from "@/components/atoms/badge/Badge";
 import { Input } from "@/components/atoms/input/Input";
 import { Select } from "@/components/atoms/select/Select";
 import { InputCheck } from "@/components/forms/Checkbox";
-import { TutorialCard } from "@/components/molecules/tutorials/TutorialCard";
 import { QUERY_PARAMS } from "@/constants/queryParams";
-import { TUTORIALS } from "@/constants/tutorials";
-import { FeaturesContext } from "@/context/FeaturesContext";
 import { ThemeContext } from "@/context/ThemeContext";
 import { TopicsContext } from "@/context/TopicsContext";
-import { TutorialContext } from "@/context/TutorialContext";
 import { TTopic, TTheme } from "@/types";
 import { CleanRouterQuery } from "@/utils/cleanRouterQuery";
 import { groupByRootConcept } from "@/utils/conceptsGroupedbyRootConcept";
 import { firstCase } from "@/utils/text/firstCase";
-import { getIncompleteTutorialNames } from "@/utils/tutorials";
 
 interface IProps {
   containerClasses?: string;
@@ -94,9 +89,7 @@ const onConceptChange = (router: NextRouter, concept: TTopic) => {
 export const ConceptPicker = ({ containerClasses = "", startingSort = "Grouped", showBadge = false, showSearch = true, title }: IProps) => {
   const router = useRouter();
 
-  const { completedTutorials } = useContext(TutorialContext);
-  const { theme, themeConfig } = useContext(ThemeContext);
-  const features = useContext(FeaturesContext);
+  const { theme } = useContext(ThemeContext);
   const { rootTopics: allRootTopics, topics: allTopics } = useContext(TopicsContext);
 
   const [search, setSearch] = useState("");
@@ -112,28 +105,23 @@ export const ConceptPicker = ({ containerClasses = "", startingSort = "Grouped",
     label: option,
   }));
 
-  const showKnowledgeGraphTutorial = getIncompleteTutorialNames(completedTutorials, themeConfig, features).includes("knowledgeGraph");
-
   return (
     <div className={`relative flex flex-col gap-5 max-h-full pb-5 ${containerClasses}`}>
       {/* HEADER */}
-      {showKnowledgeGraphTutorial && <TutorialCard name="knowledgeGraph" card={TUTORIALS.knowledgeGraph.card} />}
       <span className="text-base font-semibold text-text-primary">
         <TextSearch size={20} className="inline mr-2 text-[#0038a9] align-text-bottom" />
         {title}
-        {!showKnowledgeGraphTutorial && showBadge && <Badge className="ml-2">Beta</Badge>}
+        {showBadge && <Badge className="ml-2">Beta</Badge>}
       </span>
 
       {/* SCROLL AREA */}
       <div className="flex-1 flex flex-col gap-5 overflow-y-auto scrollbar-thumb-scrollbar scrollbar-thin scrollbar-track-white scrollbar-thumb-rounded-full hover:scrollbar-thumb-scrollbar-darker">
-        {!showKnowledgeGraphTutorial && (
-          <p className="text-sm text-text-tertiary">
-            Choose a topic to see precisely where it appears. Combine topics to see where they appear together. Accuracy is not 100%.{" "}
-            <ExternalLink url="/faq#topics-faqs" className="underline inline-block">
-              Learn more
-            </ExternalLink>
-          </p>
-        )}
+        <p className="text-sm text-text-tertiary">
+          Choose a topic to see precisely where it appears. Combine topics to see where they appear together. Accuracy is not 100%.{" "}
+          <ExternalLink url="/faq#topics-faqs" className="underline inline-block">
+            Learn more
+          </ExternalLink>
+        </p>
         <div className="flex gap-2 items-center justify-between">
           {showSearch && (
             <Input

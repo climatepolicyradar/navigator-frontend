@@ -151,7 +151,7 @@ const config: TThemeConfig = {
     family: ["summary", "documents", "metadata", "topics", "collections", "note"],
     geography: ["recents"],
   },
-  tutorials: ["knowledgeGraph"],
+  tutorials: ["newSearch"],
   features: {
     familyConceptsSearch: false,
     "geography-type-filters": false,
