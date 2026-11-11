@@ -83,7 +83,7 @@ const principalResult = (id: string): ISearchDocument => ({
   ],
   documents: [],
   items: [],
-  attributes: {},
+  attributes: { deprecated_slug: id },
 });
 
 describe("SearchContainer", () => {
@@ -183,7 +183,7 @@ describe("SearchContainer", () => {
 
     renderWith(<SearchContainer sort="relevance" query="climate" />);
 
-    const [firstResult, secondResult] = await screen.findAllByRole("button");
+    const [firstResult, secondResult] = await screen.findAllByRole("link");
     expect(firstResult).toHaveAttribute("data-ph-capture-attribute-position-page", "1");
     expect(firstResult).toHaveAttribute("data-ph-capture-attribute-position-total", "21");
     expect(firstResult).toHaveAttribute("data-ph-capture-attribute-results-total", "43");

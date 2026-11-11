@@ -164,17 +164,7 @@ const ShadowSearch = ({ theme, themeConfig, features }: TProps) => {
               sort={sortValue}
               onTotalResultsChange={setTotalNoOfResults}
               onSearchingChange={setIsSearching}
-              onResultClicked={(document, event) => {
-                // If command or ctrl is clicked open document new tab
-                if (event.metaKey || event.ctrlKey) {
-                  const slug = document.attributes.deprecated_slug;
-                  if (slug) {
-                    const isPrincipal = document.labels.some((label) => label.value.value === "Principal");
-                    window.open(isPrincipal ? `/document/${slug}` : `/documents/${slug}`, "_blank", "noopener,noreferrer");
-                  }
-                  return;
-                }
-                // otherwise open document in drawer, carrying over what a passage search can use
+              onResultClicked={(document) => {
                 setSelectedDocument(document);
                 principalLevel.open(document.attributes.deprecated_slug as string, seedPassageLevel({ query, filters }));
               }}

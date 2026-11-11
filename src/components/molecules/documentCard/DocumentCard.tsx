@@ -1,4 +1,5 @@
-import { MouseEventHandler, ReactNode, useMemo } from "react";
+import Link from "next/link";
+import { MouseEvent, MouseEventHandler, ReactNode, useMemo } from "react";
 
 import { getDocumentTypeLabel } from "@/bff/methods/getDocumentTypeLabel";
 import { Geographies } from "@/components/molecules/geographies/Geographies";
@@ -14,6 +15,10 @@ const getDocumentPublishedYear = (doc: ISearchDocument): ReactNode => {
   return doc.attributes.published_date ? formatDate(doc.attributes.published_date as string)[0] : undefined;
 };
 
+// Clicks the browser should handle natively, e.g. opening the link in a new tab
+const isModifiedClick = (event: MouseEvent<HTMLAnchorElement>): boolean =>
+  event.button !== 0 || event.metaKey || event.ctrlKey || event.shiftKey || event.altKey;
+
 type TDocumentAnalytics = {
   context?: string;
   positionInPage?: number;
@@ -23,17 +28,19 @@ type TDocumentAnalytics = {
 
 type TProps = {
   document: ISearchDocument;
-  onClick?: (document: ISearchDocument, event: React.MouseEvent<HTMLButtonElement>) => void;
+  onClick?: (document: ISearchDocument, event: MouseEvent<HTMLAnchorElement>) => void;
   analytics?: TDocumentAnalytics;
 };
 
 export function DocumentCard({ document, onClick, analytics }: TProps) {
   const { context, positionInPage, positionInResults, resultsTotal } = analytics || {};
 
-  const onClickCard: MouseEventHandler<HTMLButtonElement> = (event) => {
+  const onClickCard: MouseEventHandler<HTMLAnchorElement> = (event) => {
+    if (!onClick || isModifiedClick(event)) return;
+
     event.currentTarget.blur();
     event.preventDefault();
-    onClick?.(document, event);
+    onClick(document, event);
   };
 
   const typeLabel: string | null = useMemo(() => {
@@ -48,8 +55,8 @@ export function DocumentCard({ document, onClick, analytics }: TProps) {
   ];
 
   return (
-    <button
-      type="button"
+    <Link
+      href={`/document/${document.attributes.deprecated_slug}`}
       onClick={onClickCard}
       data-ph-capture-attribute-link-purpose={context ?? "document-card"}
       data-ph-capture-attribute-position-page={positionInPage}
@@ -70,6 +77,6 @@ export function DocumentCard({ document, onClick, analytics }: TProps) {
           </div>
         ))}
       </div>
-    </button>
+    </Link>
   );
 }

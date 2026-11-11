@@ -32,7 +32,7 @@ function SearchResults({
   onResultClicked,
 }: {
   data: ISearchDocumentsResponse;
-  onResultClicked?: (document: ISearchDocument, event: React.MouseEvent<HTMLButtonElement>) => void;
+  onResultClicked?: (document: ISearchDocument, event: React.MouseEvent<HTMLAnchorElement>) => void;
 }) {
   // Number of results on the pages before this one
   const positionOffset = (data.page - 1) * data.page_size;
@@ -71,7 +71,7 @@ function SearchResults({
 
 interface ISearchContainerProps {
   filters?: TSearchQueryGroup;
-  onResultClicked?: (document: ISearchDocument, event: React.MouseEvent<HTMLButtonElement>) => void;
+  onResultClicked?: (document: ISearchDocument, event: React.MouseEvent<HTMLAnchorElement>) => void;
   onSearchingChange?: (isSearching: boolean) => void;
   onTotalResultsChange?: (total: number | null) => void;
   page_token?: string;
