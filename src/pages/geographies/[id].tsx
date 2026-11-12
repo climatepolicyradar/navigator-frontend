@@ -6,7 +6,7 @@ import { GeographyPage } from "@/components/pages/geographyPage";
 import { SYSTEM_GEO_NAMES } from "@/constants/systemGeos";
 import { withEnvConfig } from "@/context/EnvConfig";
 import { getCountryCode, getCountryName } from "@/helpers/getCountryFields";
-import { loadGeographyTaxonomy } from "@/hooks/useLabelSearch";
+import { loadTaxonomy } from "@/hooks/useLabelSearch";
 import {
   TApiItemResponse,
   GeographyV2,
@@ -15,6 +15,8 @@ import {
   TGeography,
   TFilterPathLabel,
   TSearchLabel,
+  TSearchLabelRelation,
+  TNestedSearchLabel,
   TThemeConfig,
   GeographyTypeV2,
 } from "@/types";
@@ -27,6 +29,21 @@ import { filterPathsToQueryGroup } from "@/utils/search/filterPathsToQueryGroup"
 
 // The geography page shows a short, horizontally scrolling list of recent principals.
 const GEOGRAPHY_PRINCIPALS_PAGE_SIZE = 4;
+
+const toSearchLabel = ({ id, type, value, alternative_labels }: TNestedSearchLabel, labels: TSearchLabelRelation[] = []): TSearchLabel => ({
+  id,
+  type,
+  value,
+  alternative_labels,
+  labels,
+});
+
+const asSearchLabel = (parents: TNestedSearchLabel[], id: string): TSearchLabel | null => {
+  const parent = parents.find((candidate) => candidate.children.some((child) => child.id === id));
+  const label = parent?.children.find((child) => child.id === id);
+  if (!label) return null;
+  return toSearchLabel(label, [{ type: "subconcept_of", value: toSearchLabel(parent), timestamp: null, passages_id: null, count: null }]);
+};
 
 /**
  * Count and list the most recent principals for a geography.
@@ -79,7 +96,6 @@ export const getServerSideProps = (async (context) => {
     const response_geo = extractNestedData<TGeography>(config.geographies || []);
     geographies = [...response_geo[1], ...response_geo[2]];
     const geography = getCountryCode(id as string, geographies);
-
     if (geography) {
       countryNameFromConfig = getCountryName(id as string, geographies);
     }
@@ -94,7 +110,6 @@ export const getServerSideProps = (async (context) => {
     const slug = Array.isArray(id) ? id[0] : id;
     const geographyV2Data = await apiClient.get<TApiItemResponse<GeographyV2>>(`/geographies/${slug}`);
     geographyV2 = geographyV2Data.data.data;
-
     if (geographyV2.subconcept_of[0]) {
       const parentGeographyV2Data = await apiClient.get<TApiItemResponse<GeographyV2>>(`/geographies/${geographyV2.subconcept_of[0].slug}`);
       parentGeographyV2 = parentGeographyV2Data.data.data;
@@ -119,18 +134,9 @@ export const getServerSideProps = (async (context) => {
     const isSubdivision = geographyV2.type === "subdivision";
     const labelType = isSubdivision ? "subdivision" : "country";
     const parentType = isSubdivision ? "country" : "region";
-
-    // The taxonomy is where the geo hierarchy lives until dynamic labels and their relationships
-    // come in, so it carries every geography and its parent.
-    const geographyTaxonomy = await loadGeographyTaxonomy(process.env.API_URL, [labelType]);
-
-    // Ensure there is a label for this geography that includes a parent as we need it to build a search query
+    const taxonomy = await loadTaxonomy(process.env.API_URL, { types: [parentType] });
     const expectedId = `${labelType}::${geographyV2.id}`;
-    geographyLabel =
-      geographyTaxonomy.find(
-        (label) => label.id === expectedId && label.labels.some((subLabel) => subLabel.type === "subconcept_of" && subLabel.value.type === parentType)
-      ) ?? null;
-
+    geographyLabel = asSearchLabel(taxonomy, expectedId);
     if (!geographyLabel) return { notFound: true };
   }
 

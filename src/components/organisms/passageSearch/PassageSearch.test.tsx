@@ -29,7 +29,7 @@ vi.mock("posthog-js/react", () => ({ usePostHog: () => ({ capture: mockCapture }
 
 // The label lookup only populates the Topic filter's options, which belong to SearchControls.
 // Stubbed so the suite makes no network calls of its own.
-vi.mock("@/hooks/useLabelSearch", () => ({ loadFilteredLabels: () => Promise.resolve([]) }));
+vi.mock("@/hooks/useLabelSearch", () => ({ loadTaxonomy: () => Promise.resolve([]) }));
 
 /*
   The URL as the tests drive it. nuqs' own testing adapter backs this: `searchParams` is the

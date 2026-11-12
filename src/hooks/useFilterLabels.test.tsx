@@ -1,29 +1,25 @@
 import { renderHook, waitFor } from "@testing-library/react";
 import React from "react";
 
+import { configureDocumentsFilters } from "@/api/search";
 import { DEFAULT_FEATURES } from "@/constants/features";
 import { DEFAULT_THEME_CONFIG } from "@/constants/themeConfig";
 import { EnvConfigContext } from "@/context/EnvConfig";
-import { TFeatures, TSearchLabel, TThemeConfig } from "@/types";
+import { TFeatures, TNestedSearchLabel, TThemeConfig } from "@/types";
 
 import { useFilterLabels } from "./useFilterLabels";
 
-const mockLoadFilteredLabels = vi.hoisted(() => vi.fn());
-const mockLoadLabelTaxonomy = vi.hoisted(() => vi.fn());
-const mockLoadGeographyTaxonomy = vi.hoisted(() => vi.fn());
-vi.mock("@/hooks/useLabelSearch", () => ({
-  loadFilteredLabels: mockLoadFilteredLabels,
-  loadLabelTaxonomy: mockLoadLabelTaxonomy,
-  loadGeographyTaxonomy: mockLoadGeographyTaxonomy,
-}));
+const mockLoadTaxonomy = vi.hoisted(() => vi.fn());
+vi.mock("@/hooks/useLabelSearch", () => ({ loadTaxonomy: mockLoadTaxonomy }));
 
-const mockFetchGeographiesAggregate = vi.hoisted(() => vi.fn());
-vi.mock("@/api/search", () => ({
-  fetchGeographiesAggregate: mockFetchGeographiesAggregate,
-}));
-
-const label = (id: string): TSearchLabel => ({ id }) as TSearchLabel;
-const geographyLabel = (id: string, type: string): TSearchLabel => ({ id, type }) as TSearchLabel;
+const label = (id: string, count = 1, children: TNestedSearchLabel[] = []): TNestedSearchLabel => ({
+  id,
+  type: id.split("::")[0],
+  value: id.split("::")[1],
+  alternative_labels: [],
+  count,
+  children,
+});
 
 const wrapper = ({ children }: { children: React.ReactNode }) => (
   // @ts-expect-error - partial EnvConfig value is fine for this test
@@ -35,150 +31,68 @@ const renderUseFilterLabels = (features: TFeatures, themeConfig: TThemeConfig) =
 
 describe("useFilterLabels", () => {
   beforeEach(() => {
-    mockLoadFilteredLabels.mockReset().mockResolvedValue([]);
-    mockLoadLabelTaxonomy.mockReset().mockResolvedValue([]);
-    mockLoadGeographyTaxonomy.mockReset().mockResolvedValue([]);
-    mockFetchGeographiesAggregate.mockReset().mockResolvedValue([]);
+    mockLoadTaxonomy.mockReset().mockResolvedValue([]);
   });
 
-  it("always requests concept and author labels for the sidebar", async () => {
+  it("requests the subtrees the filter groups are rooted on", async () => {
     renderUseFilterLabels(DEFAULT_FEATURES, DEFAULT_THEME_CONFIG);
-
-    await waitFor(() => expect(mockLoadFilteredLabels).toHaveBeenCalled());
-
-    expect(mockLoadFilteredLabels.mock.calls[0][1]).toEqual({
-      op: "or",
-      filters: [
-        { field: "type", op: "contains", value: "concept" },
-        { field: "type", op: "contains", value: "author" },
-      ],
-    });
+    await waitFor(() => expect(mockLoadTaxonomy).toHaveBeenCalled());
+    expect(mockLoadTaxonomy.mock.calls[0][1].types).toEqual(["domain", "region", "concept"]);
   });
 
-  it("requests the region and country geography taxonomy by default", async () => {
-    renderUseFilterLabels(DEFAULT_FEATURES, DEFAULT_THEME_CONFIG);
-
-    await waitFor(() => expect(mockLoadGeographyTaxonomy).toHaveBeenCalled());
-
-    expect(mockLoadGeographyTaxonomy.mock.calls[0][1]).toEqual(["region", "country"]);
+  it("asks for the theme's categories by id rather than for every category", async () => {
+    renderUseFilterLabels(DEFAULT_FEATURES, { ...DEFAULT_THEME_CONFIG, searchCategories: ["Law", "Policy"] });
+    await waitFor(() => expect(mockLoadTaxonomy).toHaveBeenCalled());
+    expect(mockLoadTaxonomy.mock.calls[0][1].ids).toEqual(["category::Law", "category::Policy"]);
   });
 
-  it("additionally requests subdivision geography taxonomy when the subdivisions feature is on", async () => {
-    renderUseFilterLabels({ ...DEFAULT_FEATURES, subdivisions: true }, DEFAULT_THEME_CONFIG);
-
-    await waitFor(() => expect(mockLoadGeographyTaxonomy).toHaveBeenCalled());
-
-    expect(mockLoadGeographyTaxonomy.mock.calls[0][1]).toEqual(["region", "country", "subdivision"]);
-  });
-
-  it("additionally requests litigation label types for themes with the Litigation search category", async () => {
-    renderUseFilterLabels(DEFAULT_FEATURES, {
-      ...DEFAULT_THEME_CONFIG,
-      searchCategories: ["Litigation"],
-    });
-
-    await waitFor(() => expect(mockLoadFilteredLabels).toHaveBeenCalled());
-
-    expect(mockLoadFilteredLabels.mock.calls[0][1].filters).toEqual(
-      expect.arrayContaining([
-        { field: "type", op: "contains", value: "jurisdiction" },
-        { field: "type", op: "contains", value: "case_category" },
-        { field: "type", op: "contains", value: "principal_law" },
-      ])
+  it("counts against the documents a search of this app would return", async () => {
+    const themeConfig = { ...DEFAULT_THEME_CONFIG, searchCategories: ["Law" as const], searchExcludeLabels: ["author_type::Non-Party"] };
+    renderUseFilterLabels(DEFAULT_FEATURES, themeConfig);
+    await waitFor(() => expect(mockLoadTaxonomy).toHaveBeenCalled());
+    expect(mockLoadTaxonomy.mock.calls[0][1].filters).toEqual(
+      configureDocumentsFilters(undefined, themeConfig.searchCategories, themeConfig.searchExcludeLabels)
     );
   });
 
-  it("excludes configured searchExcludeLabels from the filter query", async () => {
-    renderUseFilterLabels(DEFAULT_FEATURES, {
-      ...DEFAULT_THEME_CONFIG,
-      searchExcludeLabels: ["author_type::Non-Party"],
-    });
-
-    await waitFor(() => expect(mockLoadFilteredLabels).toHaveBeenCalled());
-
-    expect(mockLoadFilteredLabels.mock.calls[0][1]).toEqual({
-      op: "and",
-      filters: [
-        {
-          op: "or",
-          filters: [
-            { field: "type", op: "contains", value: "concept" },
-            { field: "type", op: "contains", value: "author" },
-          ],
-        },
-        { field: "id", op: "not_contains", value: "author_type::Non-Party" },
-      ],
-    });
-  });
-
-  it("combines the filtered labels with the label taxonomy", async () => {
-    mockLoadFilteredLabels.mockResolvedValue([label("concept::Q1")]);
-    mockLoadLabelTaxonomy.mockResolvedValue([label("category::Law")]);
-
+  it("drops labels no document in this app carries", async () => {
+    mockLoadTaxonomy.mockResolvedValue([label("concept::Q1", 4), label("concept::Q2", 0)]);
     const { result } = renderUseFilterLabels(DEFAULT_FEATURES, DEFAULT_THEME_CONFIG);
-
-    await waitFor(() => expect(result.current.filters).toEqual([label("concept::Q1"), label("category::Law")]));
-  });
-
-  it("drops subdivisions the app has no documents for", async () => {
-    mockLoadGeographyTaxonomy.mockResolvedValue([
-      geographyLabel("subdivision::AT-3", "subdivision"),
-      geographyLabel("subdivision::GB-NIR", "subdivision"),
-    ]);
-    mockFetchGeographiesAggregate.mockResolvedValue([
-      {
-        id: "subdivision::GB-NIR",
-        name: "Northern Ireland",
-        type: "subdivision",
-        count: 4,
-      },
-    ]);
-
-    const { result } = renderUseFilterLabels({ ...DEFAULT_FEATURES, subdivisions: true }, DEFAULT_THEME_CONFIG);
-
     await waitFor(() => expect(result.current.loaded).toBe(true));
-    expect(result.current.filters.map((filterLabel) => filterLabel.id)).toEqual(["subdivision::GB-NIR"]);
+    expect(result.current.filters.map((filter) => filter.id)).toEqual(["concept::Q1"]);
   });
 
-  it("keeps regions and countries regardless of the aggregate", async () => {
-    mockLoadGeographyTaxonomy.mockResolvedValue([geographyLabel("region::ECS", "region"), geographyLabel("country::AUT", "country")]);
-    mockFetchGeographiesAggregate.mockResolvedValue([]);
-
-    const { result } = renderUseFilterLabels({ ...DEFAULT_FEATURES, subdivisions: true }, DEFAULT_THEME_CONFIG);
-
-    await waitFor(() => expect(result.current.loaded).toBe(true));
-    expect(result.current.filters.map((filterLabel) => filterLabel.id)).toEqual(["region::ECS", "country::AUT"]);
-  });
-
-  it("does not request the aggregate when the subdivisions feature is off", async () => {
-    renderUseFilterLabels(DEFAULT_FEATURES, DEFAULT_THEME_CONFIG);
-
-    await waitFor(() => expect(mockLoadGeographyTaxonomy).toHaveBeenCalled());
-
-    expect(mockFetchGeographiesAggregate).not.toHaveBeenCalled();
-  });
-
-  it("keeps every subdivision when the aggregate request fails", async () => {
-    mockLoadGeographyTaxonomy.mockResolvedValue([geographyLabel("subdivision::AT-3", "subdivision")]);
-    mockFetchGeographiesAggregate.mockRejectedValue(new Error("Search API error: 503"));
-
-    const { result } = renderUseFilterLabels({ ...DEFAULT_FEATURES, subdivisions: true }, DEFAULT_THEME_CONFIG);
-
-    await waitFor(() => expect(result.current.loaded).toBe(true));
-    expect(result.current.filters.map((filterLabel) => filterLabel.id)).toEqual(["subdivision::AT-3"]);
-  });
-
-  it("is not loaded until all filter labels have resolved", async () => {
-    let resolveGeographyTaxonomy: (labels: TSearchLabel[]) => void = () => {};
-    mockLoadGeographyTaxonomy.mockReturnValue(new Promise((resolve) => (resolveGeographyTaxonomy = resolve)));
-
+  it("drops subdivisions when the subdivisions feature is off", async () => {
+    mockLoadTaxonomy.mockResolvedValue([label("region::ECS", 0, [label("country::AUT", 2, [label("subdivision::AT-3", 1)])])]);
     const { result } = renderUseFilterLabels(DEFAULT_FEATURES, DEFAULT_THEME_CONFIG);
+    await waitFor(() => expect(result.current.loaded).toBe(true));
+    expect(result.current.filters[0].children[0].children).toEqual([]);
+  });
 
+  it("drops a country whose only documents are held by hidden subdivisions", async () => {
+    mockLoadTaxonomy.mockResolvedValue([
+      label("region::ECS", 0, [label("country::AUT", 0, [label("subdivision::AT-3", 7)])]),
+      label("concept::Q1", 3),
+    ]);
+    const { result } = renderUseFilterLabels(DEFAULT_FEATURES, DEFAULT_THEME_CONFIG);
+    await waitFor(() => expect(result.current.loaded).toBe(true));
+    expect(result.current.filters.map((filter) => filter.id)).toEqual(["concept::Q1"]);
+  });
+
+  it("keeps subdivisions when the subdivisions feature is on", async () => {
+    mockLoadTaxonomy.mockResolvedValue([label("region::ECS", 0, [label("country::AUT", 2, [label("subdivision::AT-3", 1)])])]);
+    const { result } = renderUseFilterLabels({ ...DEFAULT_FEATURES, subdivisions: true }, DEFAULT_THEME_CONFIG);
+    await waitFor(() => expect(result.current.loaded).toBe(true));
+    expect(result.current.filters[0].children[0].children.map((child) => child.id)).toEqual(["subdivision::AT-3"]);
+  });
+
+  it("is not loaded until the taxonomy has resolved", async () => {
+    let resolveTaxonomy: (labels: TNestedSearchLabel[]) => void = () => {};
+    mockLoadTaxonomy.mockReturnValue(new Promise((resolve) => (resolveTaxonomy = resolve)));
+    const { result } = renderUseFilterLabels(DEFAULT_FEATURES, DEFAULT_THEME_CONFIG);
     expect(result.current.loaded).toBe(false);
-
-    resolveGeographyTaxonomy([label("geography::GBR")]);
-
+    resolveTaxonomy([label("concept::Q1", 2)]);
     await waitFor(() => expect(result.current.loaded).toBe(true));
-    expect(result.current.filters).toEqual([label("geography::GBR")]);
+    expect(result.current.filters).toEqual([label("concept::Q1", 2)]);
   });
 });

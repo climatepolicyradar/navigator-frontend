@@ -19,4 +19,5 @@ export type TSearchLabelRelation = {
 export type TNestedSearchLabel = Omit<TSearchLabel, "labels"> & {
   children: TNestedSearchLabel[];
   parentPath?: TFilterPathLabel[];
+  count?: number;
 };
