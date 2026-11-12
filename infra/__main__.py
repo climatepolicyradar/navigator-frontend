@@ -254,6 +254,8 @@ if not is_review_template:
         name=name_prefix,
         config=ExpressGatewayConfig(
             health_check_path="/",
+            cpu=config.require("ecs_frontend_cpu"),
+            memory=config.require("ecs_frontend_memory"),
             min_task_count=3 if env == "production" else 1,
             max_task_count=8 if env == "production" else 4,
         ),
