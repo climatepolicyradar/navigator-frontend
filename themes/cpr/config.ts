@@ -1,3 +1,4 @@
+import { SHARED_LABEL_PATTERNS } from "@/constants/labels";
 import { TThemeConfig } from "@/types";
 import { and } from "@/utils/data-in/labelConditions";
 
@@ -431,6 +432,16 @@ const config: TThemeConfig = {
   ],
   searchCategories: ["Global Stocktake", "Law", "Multilateral Climate Fund project", "Policy", "Report", "UN submission"],
   searchExcludeLabels: [],
+  searchLabelPatterns: [
+    ...SHARED_LABEL_PATTERNS,
+    "category::Global Stocktake/**",
+    "category::Law/**",
+    "category::Policy/**",
+    "category::Report/**",
+    "category::UN submission/**",
+    "category::Multilateral Climate Fund project/agent::*",
+    "category::Multilateral Climate Fund project/entity_type::*",
+  ],
   downloadColumns: [
     "ID",
     "TITLE",

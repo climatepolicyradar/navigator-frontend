@@ -134,7 +134,7 @@ export const getServerSideProps = (async (context) => {
     const isSubdivision = geographyV2.type === "subdivision";
     const labelType = isSubdivision ? "subdivision" : "country";
     const parentType = isSubdivision ? "country" : "region";
-    const taxonomy = await loadTaxonomy(process.env.API_URL, { types: [parentType] });
+    const taxonomy = await loadTaxonomy(process.env.API_URL, { patterns: [`${parentType}::*/${labelType}::*`] });
     const expectedId = `${labelType}::${geographyV2.id}`;
     geographyLabel = asSearchLabel(taxonomy, expectedId);
     if (!geographyLabel) return { notFound: true };

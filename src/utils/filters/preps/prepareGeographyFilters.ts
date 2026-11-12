@@ -1,4 +1,3 @@
-import { ID_SEPARATOR } from "@/constants/chars";
 import { SUBNATIONAL_LABEL_TYPE } from "@/constants/labels";
 import { TFiltersGroupPrep, TNestedSearchLabel } from "@/types";
 import { createGroupLabel, createLabel } from "@/utils/filters/createGroupLabel";
@@ -12,6 +11,7 @@ export const prepareGeographyFilters =
   (showSubnationalTypes: boolean): TFiltersGroupPrep =>
   (rootLabels) => {
     const validRootLabels = rootLabels.filter((rootLabel) => rootLabel.type === "region");
+    const rootCountryLabels = rootLabels.filter((rootLabel) => rootLabel.type === "country");
 
     const geographyLabels = validRootLabels.flatMap((regionLabel) =>
       regionLabel.children
@@ -24,12 +24,6 @@ export const prepareGeographyFilters =
       ...(showSubnationalTypes ? [createGroupLabel("type", SUBNATIONAL_LABELS)] : []),
       createGroupLabel("region", regionLabels),
       createGroupLabel("geography", geographyLabels),
-      {
-        id: ["country", "XAB"].join(ID_SEPARATOR),
-        type: "country",
-        value: "International",
-        alternative_labels: [],
-        children: [],
-      },
+      ...rootCountryLabels,
     ];
   };

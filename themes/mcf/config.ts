@@ -1,3 +1,4 @@
+import { SHARED_LABEL_PATTERNS } from "@/constants/labels";
 import { TThemeConfig } from "@/types";
 
 const config: TThemeConfig = {
@@ -103,6 +104,11 @@ const config: TThemeConfig = {
   ],
   searchCategories: ["Multilateral Climate Fund project"],
   searchExcludeLabels: [],
+  searchLabelPatterns: [
+    ...SHARED_LABEL_PATTERNS,
+    "category::Multilateral Climate Fund project/agent::*",
+    "category::Multilateral Climate Fund project/entity_type::*",
+  ],
   downloadColumns: [
     "ID",
     "TITLE",

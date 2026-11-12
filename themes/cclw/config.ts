@@ -1,3 +1,4 @@
+import { SHARED_LABEL_PATTERNS } from "@/constants/labels";
 import { TThemeConfig } from "@/types";
 
 const config: TThemeConfig = {
@@ -153,6 +154,7 @@ const config: TThemeConfig = {
   ],
   searchCategories: ["UN submission", "Law", "Policy"],
   searchExcludeLabels: ["author_type::Non-Party"],
+  searchLabelPatterns: [...SHARED_LABEL_PATTERNS, "category::Law/**", "category::Policy/**", "category::UN submission/**"],
   downloadColumns: [
     "ID",
     "TITLE",

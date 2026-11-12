@@ -162,3 +162,6 @@ export const LABEL_SEARCH_REPLACEMENTS: TLabelSearchReplacement[] = [
     },
   },
 ];
+
+export const SHARED_LABEL_PATTERNS = ["domain::*", "**/concept::*", "region::*/country::*", "country::*"];
+export const SUBDIVISION_LABEL_PATTERN = "region::*/country::*/subdivision::*";

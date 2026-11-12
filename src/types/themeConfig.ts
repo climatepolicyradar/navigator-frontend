@@ -135,6 +135,7 @@ export type TThemeConfig = {
   searchCategories: TLabelCategoryValue[];
   // Label IDs (e.g. "author_type::Non-Party") to always exclude from document search results for this theme.
   searchExcludeLabels: string[];
+  searchLabelPatterns: string[];
   // Columns to request for "download this search", in the order they appear in the CSV.
   downloadColumns: TDownloadColumn[];
   labelVariations: TPartialRecord<TLabelVariationKey, TLabelVariation>;
