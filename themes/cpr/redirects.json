@@ -14228,5 +14228,355 @@
     "source": "/document/belgium-2026-national-inventory-document-nid_47a0",
     "destination": "/document/belgium-national-inventory-report-nir-2026_5423",
     "permanent": true
+  },
+  {
+    "source": "/document/basic-views-on-the-elements-for-consideration-of-the-outputs-component-of-the-first-global-stocktake_8090",
+    "destination": "/document/brazil-basic-views-on-the-elements-for-consideration-of-the-outputs-component-of-the-first-global-stocktake_fe2f56",
+    "permanent": true
+  },
+  {
+    "source": "/document/g77-and-china-submission-on-the-elements-for-the-consideration-of-outputs-of-the-gst_c289",
+    "destination": "/document/basic-views-on-the-elements-for-consideration-of-the-outputs-component-of-the-first-global-stocktake_c1bb5f",
+    "permanent": true
+  },
+  {
+    "source": "/document/agn-views-on-elements-for-the-consideration-of-outputs-of-the-global-stocktake_9867",
+    "destination": "/document/g77-and-china-submission-on-the-elements-for-the-consideration-of-outputs-of-the-gst_5bfcea",
+    "permanent": true
+  },
+  {
+    "source": "/document/new-zealand-submission-on-the-output-of-the-first-global-stocktake_166f",
+    "destination": "/document/agn-views-on-elements-for-the-consideration-of-outputs-of-the-global-stocktake_74c472",
+    "permanent": true
+  },
+  {
+    "source": "/document/the-united-kingdom-of-great-britain-and-northern-irelands-submission-to-the-united-nations-framework-convention-on-climate-change-on-elements-for-the-consideration-of-outputs-of-the-first-global-stocktake_2247",
+    "destination": "/document/new-zealand-submission-on-the-output-of-the-first-global-stocktake_2b5ec4",
+    "permanent": true
+  },
+  {
+    "source": "/document/submission-by-the-republic-of-turkiye-on-views-on-elements-for-the-consideration-of-outputs-of-the-global-stocktake-gst1_7ea5",
+    "destination": "/document/the-united-kingdom-of-great-britain-and-northern-ireland-s-submission-to-the-united-nations-framework-convention-on-climate-change-on-elements-for-the-consideration-of-outputs-of-the-first-global-stocktake_1dade9",
+    "permanent": true
+  },
+  {
+    "source": "/document/environmental-integrity-group-submission-on-the-global-stocktake-consideration-of-outputs-component_d4cf",
+    "destination": "/document/submission-by-the-republic-of-turkiye-on-views-on-elements-for-the-consideration-of-outputs-of-the-global-stocktake-gst1_64e350",
+    "permanent": true
+  },
+  {
+    "source": "/document/submission-by-the-republic-of-senegal-on-behalf-of-the-least-developed-countries-group-ldcs-on-matters-relating-to-the-global-stocktake_edd7",
+    "destination": "/document/environmental-integrity-group-submission-on-the-global-stocktake-consideration-of-outputs-component_35c594",
+    "permanent": true
+  },
+  {
+    "source": "/document/group-of-arab-states-views-on-elements-for-the-consideration-of-outputs-of-the-global-stocktake_023b",
+    "destination": "/document/submission-by-the-republic-of-senegal-on-behalf-of-the-least-developed-countries-group-ldcs-on-matters-relating-to-the-global-stocktake_d5881d",
+    "permanent": true
+  },
+  {
+    "source": "/document/australia-submission-on-elements-for-the-consideration-of-outputs-component-of-the-first-global-stocktake_5206",
+    "destination": "/document/group-of-arab-states-views-on-elements-for-the-consideration-of-outputs-of-the-global-stocktake_29b3e9",
+    "permanent": true
+  },
+  {
+    "source": "/document/ailac-views-on-the-consideration-of-outputs-of-the-global-stocktake_2b13",
+    "destination": "/document/australia-submission-on-elements-for-the-consideration-of-outputs-component-of-the-first-global-stocktake_f05d63",
+    "permanent": true
+  },
+  {
+    "source": "/document/submission-by-nepal-on-matters-relating-to-the-first-global-stocktake_78da",
+    "destination": "/document/ailac-views-on-the-consideration-of-outputs-of-the-global-stocktake_3c79b4",
+    "permanent": true
+  },
+  {
+    "source": "/document/submission-on-the-importance-of-including-the-ocean-in-the-global-stocktake_123a",
+    "destination": "/document/submission-by-nepal-on-matters-relating-to-the-first-global-stocktake_63d6ed",
+    "permanent": true
+  },
+  {
+    "source": "/document/chinas-submission-on-the-elements-for-the-considerationof-outputs-component-of-global-stocktake_181d",
+    "destination": "/document/submission-on-the-importance-of-including-the-ocean-in-the-global-stocktake_eaa0f4",
+    "permanent": true
+  },
+  {
+    "source": "/document/aosis-submission-on-consideration-of-outputs-on-the-global-stocktake_697d",
+    "destination": "/document/china-s-submission-on-the-elements-for-the-considerationof-outputs-component-of-global-stocktake_f8385d",
+    "permanent": true
+  },
+  {
+    "source": "/document/lmdc-submission-elements-for-the-consideration-of-outputs-component-of-the-global-stocktake_4c4c",
+    "destination": "/document/aosis-submission-on-consideration-of-outputs-on-the-global-stocktake_24b6da",
+    "permanent": true
+  },
+  {
+    "source": "/document/eu-views-from-parties-and-non-party-stakeholders-on-the-elements-for-the-consideration-of-outputs-component-taking-into-account-the-informal-note-by-the-co-chairs_c05e",
+    "destination": "/document/lmdc-submission-elements-for-the-consideration-of-outputs-component-of-the-global-stocktake_f33ca8",
+    "permanent": true
+  },
+  {
+    "source": "/document/norway-the-consideration-of-outputs-component-of-the-first-global-stocktake_9373",
+    "destination": "/document/eu-views-from-parties-and-non-party-stakeholders-on-the-elements-for-the-consideration-of-outputs-component-taking-into-account-the-informal-note-by-the-co-chairs_1fb6c0",
+    "permanent": true
+  },
+  {
+    "source": "/document/submission-by-the-russian-federation-on-the-outputs-component-of-the-first-global-stocktake-gst_8a4d",
+    "destination": "/document/submission-by-the-russian-federation-on-the-outputs-component-of-the-first-global-stocktake-gst_5b33c7",
+    "permanent": true
+  },
+  {
+    "source": "/document/submission-by-the-russian-federation-on-the-outputs-component-of-the-first-global-stocktake-gst_02a4",
+    "destination": "/document/submission-by-the-russian-federation-on-the-outputs-component-of-the-first-global-stocktake-gst_5b33c7",
+    "permanent": true
+  },
+  {
+    "source": "/document/submission-of-the-united-states-elements-for-the-consideration-of-outputs-component-of-the-first-global-stocktake_6522",
+    "destination": "/document/submission-of-the-united-states-elements-for-the-consideration-of-outputs-component-of-the-first-global-stocktake_b74138",
+    "permanent": true
+  },
+  {
+    "source": "/document/submission-of-the-united-states-on-the-elements-for-the-consideration-of-outputs-component-of-the-first-global-stocktake_b243",
+    "destination": "/document/submission-of-the-united-states-elements-for-the-consideration-of-outputs-component-of-the-first-global-stocktake_b74138",
+    "permanent": true
+  },
+  {
+    "source": "/document/submission-of-indonesia-on-the-elements-for-the-consideration-of-outputs-component-of-the-first-global-stocktake_7243",
+    "destination": "/document/submission-of-indonesia-on-the-elements-for-the-consideration-of-outputs-component-of-the-first-global-stocktake_ab1098",
+    "permanent": true
+  },
+  {
+    "source": "/document/indonesia-views-on-elements-for-the-consideration-of-outputs-of-the-global-stocktake_73e6",
+    "destination": "/document/submission-of-indonesia-on-the-elements-for-the-consideration-of-outputs-component-of-the-first-global-stocktake_ab1098",
+    "permanent": true
+  },
+  {
+    "source": "/document/india-submission-on-consideration-of-outputs-of-the-first-global-stocktake_ce53",
+    "destination": "/document/indonesia-views-on-elements-for-the-consideration-of-outputs-of-the-global-stocktake_2c1c35",
+    "permanent": true
+  },
+  {
+    "source": "/document/submission-of-the-united-nations-industrial-development-organization-for-the-consideration-of-outputs-component-of-the-first-global-stocktake-of-the-paris-agreement_12e2",
+    "destination": "/document/japan-views-on-elements-for-the-consideration-of-outputs-of-the-global-stocktake_d73178",
+    "permanent": true
+  },
+  {
+    "source": "/document/un-oceans-submission-on-the-elements-for-the-consideration-of-the-global-stocktake-outputs-component_9180",
+    "destination": "/document/submission-of-the-united-nations-industrial-development-organization-for-the-consideration-of-outputs-component-of-the-first-global-stocktake-of-the-paris-agreement_9be744",
+    "permanent": true
+  },
+  {
+    "source": "/document/submission-by-unicef-views-from-parties-and-non-party-stakeholders-on-the-elements-for-the-consideration-of-outputs-component-taking-into-account-the-informal-note-by-the-co-chairs_4382",
+    "destination": "/document/un-oceans-submission-on-the-elements-for-the-consideration-of-the-global-stocktake-outputs-component_91a682",
+    "permanent": true
+  },
+  {
+    "source": "/document/submission-of-the-international-maritime-organization-to-the-first-global-stocktake_da72",
+    "destination": "/document/submission-by-unicef-views-from-parties-and-non-party-stakeholders-on-the-elements-for-the-consideration-of-outputs-component-taking-into-account-the-informal-note-by-the-co-chairs_22b4ac",
+    "permanent": true
+  },
+  {
+    "source": "/document/ioc-submission-on-the-elements-for-the-consideration-of-the-gst-outputs-component_a55d",
+    "destination": "/document/submission-of-the-international-maritime-organization-to-the-first-global-stocktake_c14ccb",
+    "permanent": true
+  },
+  {
+    "source": "/document/iucn-submission-on-elements-for-the-consideration-of-outputs-component-of-the-first-global-stocktake_4617",
+    "destination": "/document/ioc-submission-on-the-elements-for-the-consideration-of-the-gst-outputs-component_347dce",
+    "permanent": true
+  },
+  {
+    "source": "/document/youngo-views-from-parties-and-non-party-stakeholders-on-the-elements-for-the-consideration-of-outputs-component-taking-into-account-the-informal-note-by-the-co-chairs_a3a8",
+    "destination": "/document/youngo-views-from-parties-and-non-party-stakeholders-on-the-elements-for-the-consideration-of-outputs-component-taking-into-account-the-informal-note-by-the-co-chairs_72736c",
+    "permanent": true
+  },
+  {
+    "source": "/document/loss-and-damage-collaboration-views-from-parties-and-non-party-stakeholders-on-the-elements-for-the-consideration-of-outputs-component-taking-into-account-the-informal-note-by-the-co-chairs_5b22",
+    "destination": "/document/youngo-views-from-parties-and-non-party-stakeholders-on-the-elements-for-the-consideration-of-outputs-component-taking-into-account-the-informal-note-by-the-co-chairs_5bd145",
+    "permanent": true
+  },
+  {
+    "source": "/document/women-gender-constituency-submission-on-the-paris-agreements-first-global-stocktake_656f",
+    "destination": "/document/loss-and-damage-collaboration-views-from-parties-and-non-party-stakeholders-on-the-elements-for-the-consideration-of-outputs-component-taking-into-account-the-informal-note-by-the-co-chairs_c67f52",
+    "permanent": true
+  },
+  {
+    "source": "/document/submission-on-matters-of-the-global-stocktake-gst_1091",
+    "destination": "/document/women-gender-constituency-submission-on-the-paris-agreement-s-first-global-stocktake_5265c6",
+    "permanent": true
+  },
+  {
+    "source": "/document/submission-by-the-friends-world-committee-for-consultation-fwcc-elements-for-a-global-stocktake-decision-grounded-in-ipcc-findings-6th-assessment-report-ar6-findings-for-urgent-real-feasible-equitable-and-rights-based-near-term-climate-options-already-available-at-scale-to-address-climate-change-and-improve-human-well-being-and-planetary-heath_a24b",
+    "destination": "/document/submission-on-matters-of-the-global-stocktake-gst_e4cfe7",
+    "permanent": true
+  },
+  {
+    "source": "/document/elements-for-a-global-stocktake-decision-that-enhances-human-rights-based-climate-action_f249",
+    "destination": "/document/submission-by-the-friends-world-committee-for-consultation-fwcc-elements-for-a-global-stocktake-decision-grounded-in-ipcc-findings-6th-assessment-report-ar6-findings-for-urgent-real-feasible-equitable-and-rights-based-near-term-climate-options-already-available-at-scale-to-address-climate-change-and-improve-human-well-being-and-planetary-heath_2f4bf9",
+    "permanent": true
+  },
+  {
+    "source": "/document/climate-action-network-submission-views-on-the-elements-for-the-consideration-of-outputs-component-of-the-first-global-stocktake_c8ff",
+    "destination": "/document/elements-for-a-global-stocktake-decision-that-enhances-human-rights-based-climate-action_981cab",
+    "permanent": true
+  },
+  {
+    "source": "/document/joint-submission-views-from-parties-and-non-party-stakeholders-on-the-elements-for-the-consideration-of-outputs-component-taking-into-account-the-informal-note-by-the-co-chairs_af85",
+    "destination": "/document/climate-action-network-submission-views-on-the-elements-for-the-consideration-of-outputs-component-of-the-first-global-stocktake_5d5930",
+    "permanent": true
+  },
+  {
+    "source": "/document/gccsi-submission-for-the-consideration-of-outputs-component-of-the-first-global-stocktake_8034",
+    "destination": "/document/joint-submission-views-from-parties-and-non-party-stakeholders-on-the-elements-for-the-consideration-of-outputs-component-taking-into-account-the-informal-note-by-the-co-chairs_14ac16",
+    "permanent": true
+  },
+  {
+    "source": "/document/latin-american-perspectives-on-the-expected-outcomes-of-the-global-stocktake-gst-s_f0d2",
+    "destination": "/document/gccsi-submission-for-the-consideration-of-outputs-component-of-the-first-global-stocktake_bb1815",
+    "permanent": true
+  },
+  {
+    "source": "/document/submission-by-the-world-economic-forum-relating-to-the-consideration-of-outputs-component-of-the-global-stocktake_9bc4",
+    "destination": "/document/latin-american-perspectives-on-the-expected-outcomes-of-the-global-stocktake-gst-s_5e6f87",
+    "permanent": true
+  },
+  {
+    "source": "/document/igst-early-career-scholars-for-an-inclusive-stocktake-ecsis-on-suggestions-for-the-outcomes-of-the-first-global-stocktake_d750",
+    "destination": "/document/submission-by-the-world-economic-forum-relating-to-the-consideration-of-outputs-component-of-the-global-stocktake_0581b6",
+    "permanent": true
+  },
+  {
+    "source": "/document/n4c-joint-submission-on-recommended-outcomes-on-nature-based-solutions-for-the-global-stocktake_4d10",
+    "destination": "/document/igst-early-career-scholars-for-an-inclusive-stocktake-ecsis-on-suggestions-for-the-outcomes-of-the-first-global-stocktake_fc4a6e",
+    "permanent": true
+  },
+  {
+    "source": "/document/joint-response-of-local-governments-and-municipal-authorities-lgma-constituency-on-elements-for-the-consideration-of-outputs-component-of-the-first-global-stocktake_4255",
+    "destination": "/document/n4c-joint-submission-on-recommended-outcomes-on-nature-based-solutions-for-the-global-stocktake_ea17bc",
+    "permanent": true
+  },
+  {
+    "source": "/document/icci-wwf-pml-joint-global-stocktake-submission-elements-for-consideration-of-outputs_56a8",
+    "destination": "/document/joint-response-of-local-governments-and-municipal-authorities-lgma-constituency-on-elements-for-the-consideration-of-outputs-component-of-the-first-global-stocktake_8f32ba",
+    "permanent": true
+  },
+  {
+    "source": "/document/inputs-on-the-views-on-the-elements-for-the-consideration-of-outputs-component-for-the-first-global-stocktake_39bb",
+    "destination": "/document/icci-wwf-pml-joint-global-stocktake-submission-elements-for-consideration-of-outputs_e7d757",
+    "permanent": true
+  },
+  {
+    "source": "/document/consideration-of-outputs-component-of-the-first-global-stocktake-2_ea7f",
+    "destination": "/document/inputs-on-the-views-on-the-elements-for-the-consideration-of-outputs-component-for-the-first-global-stocktake_ad874c",
+    "permanent": true
+  },
+  {
+    "source": "/document/elements-for-the-consideration-of-outputs-component-of-the-gst-submission-to-the-unfccc_0c3a",
+    "destination": "/document/consideration-of-outputs-component-of-the-first-global-stocktake-2_39a2d7",
+    "permanent": true
+  },
+  {
+    "source": "/document/joint-submission-proposals-to-include-food-systems-in-the-outcome-of-the-first-global-stocktake_b86c",
+    "destination": "/document/elements-for-the-consideration-of-outputs-component-of-the-gst-submission-to-the-unfccc_add397",
+    "permanent": true
+  },
+  {
+    "source": "/document/submission-by-the-stockholm-environment-institute-on-behalf-of-the-adaptation-without-borders-global-partnership-relating-to-the-call-for-views-from-parties-and-non-party-stakeholders-on-the-elements-for-the-consideration-of-outputs-component-regarding-the-first-global-stocktake_cd6b",
+    "destination": "/document/joint-submission-proposals-to-include-food-systems-in-the-outcome-of-the-first-global-stocktake_ea8001",
+    "permanent": true
+  },
+  {
+    "source": "/document/submission-by-iddri-and-tempus-analitica-for-the-consideration-of-outputs-component-of-the-first-global-stocktake-addressing-international-cooperation-in-the-context-of-the-implementation-of-the-paris-agreement-based-on-the-experiences-and-needs-of-the-latin-american-and-caribbean-region_b802",
+    "destination": "/document/submission-by-the-stockholm-environment-institute-on-behalf-of-the-adaptation-without-borders-global-partnership-relating-to-the-call-for-views-from-parties-and-non-party-stakeholders-on-the-elements-for-the-consideration-of-outputs-component-regarding-the-first-global-stocktake_4d10d1",
+    "permanent": true
+  },
+  {
+    "source": "/document/iisd-views-on-the-elements-for-the-consideration-of-outputs-component-of-the-first-global-stocktake_1c2e",
+    "destination": "/document/submission-by-iddri-and-tempus-anal-tica-for-the-consideration-of-outputs-component-of-the-first-global-stocktake-addressing-international-cooperation-in-the-context-of-the-implementation-of-the-paris-agreement-based-on-the-experiences-and-needs-of-the-latin-american-and-caribbean-region_10b1a4",
+    "permanent": true
+  },
+  {
+    "source": "/document/ocean-climate-platform-view-on-the-approach-to-the-the-consideration-of-outputs-component-of-the-first-global-stocktake_a6d2",
+    "destination": "/document/iisd-views-on-the-elements-for-the-consideration-of-outputs-component-of-the-first-global-stocktake_bb58ff",
+    "permanent": true
+  },
+  {
+    "source": "/document/policy-recommendations-for-engaging-regional-non-state-actors-in-the-follow-up-period-of-the-first-global-stocktake-insights-from-the-independent-global-stocktake-southeast-asia-hub_81e4",
+    "destination": "/document/ocean-climate-platform-view-on-the-approach-to-the-the-consideration-of-outputs-component-of-the-first-global-stocktake_b1147c",
+    "permanent": true
+  },
+  {
+    "source": "/document/include-sufficiency-in-the-global-stocktake-decision-at-cma5-cop28_bd08",
+    "destination": "/document/policy-recommendations-for-engaging-regional-non-state-actors-in-the-follow-up-period-of-the-first-global-stocktake-insights-from-the-independent-global-stocktake-southeast-asia-hub_76230c",
+    "permanent": true
+  },
+  {
+    "source": "/document/wri-elements-for-the-first-global-stocktake-outcome_4f51",
+    "destination": "/document/include-sufficiency-in-the-global-stocktake-decision-at-cma5-cop28_1b6b5a",
+    "permanent": true
+  },
+  {
+    "source": "/document/a-fwg-perspective-on-what-moves-us-forward-the-finance-messages-the-gst-should-deliver-from-its-political-phase_7366",
+    "destination": "/document/wri-elements-for-the-first-global-stocktake-outcome_576127",
+    "permanent": true
+  },
+  {
+    "source": "/document/adaptation-working-group-views-on-the-elements-to-the-consideration-for-the-outputs-component-of-the-first-global-stocktake_a547",
+    "destination": "/document/a-fwg-perspective-on-what-moves-us-forward-the-finance-messages-the-gst-should-deliver-from-its-political-phase_fa2033",
+    "permanent": true
+  },
+  {
+    "source": "/document/priority-gst-outcome-elements-views-from-the-independent-global-stocktake-network_e79e",
+    "destination": "/document/adaptation-working-group-views-on-the-elements-to-the-consideration-for-the-outputs-component-of-the-first-global-stocktake_a9bd87",
+    "permanent": true
+  },
+  {
+    "source": "/document/views-on-the-elements-for-the-consideration-of-outputs-component-of-the-first-global-stocktake-farmers-constituency_e0b9",
+    "destination": "/document/priority-gst-outcome-elements-views-from-the-independent-global-stocktake-network_007a54",
+    "permanent": true
+  },
+  {
+    "source": "/document/plymouth-marine-laboratory-pml-submission-to-the-first-global-stocktake-on-the-elements-for-the-consideration-of-outputs-component-taking-into-account-the-informal-note-by-the-cochairs_1e96",
+    "destination": "/document/views-on-the-elements-for-the-consideration-of-outputs-component-of-the-first-global-stocktake-farmers-constituency_1f2208",
+    "permanent": true
+  },
+  {
+    "source": "/document/cidse-submission-on-the-outcome-component-of-the-global-stocktake_218e",
+    "destination": "/document/plymouth-marine-laboratory-pml-submission-to-the-first-global-stocktake-on-the-elements-for-the-consideration-of-outputs-component-taking-into-account-the-informal-note-by-the-cochairs_06d793",
+    "permanent": true
+  },
+  {
+    "source": "/document/ocean-conservancy-views-on-the-approach-to-the-consideration-of-outputs-component-of-the-first-global-stocktake_8252",
+    "destination": "/document/cidse-submission-on-the-outcome-component-of-the-global-stocktake_47b196",
+    "permanent": true
+  },
+  {
+    "source": "/document/global-stocktake-gst-intersessional-in-person-workshop-abu-dhabi-letter-by-the-co-facilitators-of-the-ocean-and-climate-change-dialogue-2023_206b",
+    "destination": "/document/ocean-conservancy-views-on-the-approach-to-the-consideration-of-outputs-component-of-the-first-global-stocktake_cd5195",
+    "permanent": true
+  },
+  {
+    "source": "/document/high-level-champions-submission-to-the-first-gst-with-views-on-the-elements-for-the-consideration-of-outputs-component_e07c",
+    "destination": "/document/global-stocktake-gst-intersessional-in-person-workshop-abu-dhabi-letter-by-the-co-facilitators-of-the-ocean-and-climate-change-dialogue-2023_86579e",
+    "permanent": true
+  },
+  {
+    "source": "/document/we-mean-business-coalition-unfccc-submission-to-the-global-stocktake-consideration-of-output_ed85",
+    "destination": "/document/high-level-champions-submission-to-the-first-gst-with-views-on-the-elements-for-the-consideration-of-outputs-component_fd2d07",
+    "permanent": true
+  },
+  {
+    "source": "/document/accounting-for-ocean-within-the-unfccc-global-stocktake-first-global-stocktake-consideration-of-outputs-component_6e5e",
+    "destination": "/document/we-mean-business-coalition-unfccc-submission-to-the-global-stocktake-consideration-of-output_01d00f",
+    "permanent": true
+  },
+  {
+    "source": "/document/aviva-investors-views-from-parties-and-non-party-stakeholders-on-the-elements-for-the-consideration-of-outputs-component-taking-into-account-the-informal-note-by-the-co-chairs-available-a_3abb",
+    "destination": "/document/accounting-for-ocean-within-the-unfccc-global-stocktake-first-global-stocktake-consideration-of-outputs-component_e2b0f2",
+    "permanent": true
+  },
+  {
+    "source": "/document/oecd-iea-climate-change-expert-group-submission-to-the-first-global-stocktake_0aeb",
+    "destination": "/document/oecd-iea-climate-change-expert-group-submission-to-the-first-global-stocktake_740113",
+    "permanent": true
   }
 ]
