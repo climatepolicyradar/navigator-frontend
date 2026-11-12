@@ -15,8 +15,7 @@ type TTaxonomyResponse = {
 };
 
 interface ITaxonomyParams {
-  types?: string[];
-  ids?: string[];
+  patterns: string[];
   filters?: TSearchQueryGroup;
 }
 
@@ -105,11 +104,10 @@ export const loadLabels = async (apiUrl: string, query: string): Promise<TSearch
   return response.data.results || [];
 };
 
-export async function loadTaxonomy(apiUrl: string, { types = [], ids = [], filters }: ITaxonomyParams): Promise<TNestedSearchLabel[]> {
+export async function loadTaxonomy(apiUrl: string, { patterns, filters }: ITaxonomyParams): Promise<TNestedSearchLabel[]> {
   const client = new ApiClient(apiUrl);
   const searchParams = new URLSearchParams();
-  types.forEach((type) => searchParams.append("type", type));
-  ids.forEach((id) => searchParams.append("id", id));
+  patterns.forEach((pattern) => searchParams.append("include", pattern));
   if (filters) {
     searchParams.set("filters", deflateFilters(filters));
     searchParams.set("encoding", "deflate");

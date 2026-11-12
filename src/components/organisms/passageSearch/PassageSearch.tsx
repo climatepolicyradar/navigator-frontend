@@ -161,7 +161,7 @@ export const PassageSearch = ({ changeTab, concepts, documents, documentsLabel, 
   }
 
   useEffect(() => {
-    loadTaxonomy(API_URL, { types: ["concept"] })
+    loadTaxonomy(API_URL, { patterns: ["**/concept::*"] })
       .then(setAvailableConcepts)
       .finally(() => setLoadedConcepts(true));
   }, [API_URL]);

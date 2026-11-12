@@ -3,6 +3,7 @@ import { GetServerSideProps, InferGetServerSidePropsType } from "next";
 import { ApiClient } from "@/api/http-common";
 import { fetchSearchPrincipalDocuments } from "@/api/search";
 import { GeographyPage } from "@/components/pages/geographyPage";
+import { COUNTRY_LABEL_PATTERN, SUBDIVISION_LABEL_PATTERN } from "@/constants/labels";
 import { SYSTEM_GEO_NAMES } from "@/constants/systemGeos";
 import { withEnvConfig } from "@/context/EnvConfig";
 import { getCountryCode, getCountryName } from "@/helpers/getCountryFields";
@@ -38,11 +39,18 @@ const toSearchLabel = ({ id, type, value, alternative_labels }: TNestedSearchLab
   labels,
 });
 
-const asSearchLabel = (parents: TNestedSearchLabel[], id: string): TSearchLabel | null => {
-  const parent = parents.find((candidate) => candidate.children.some((child) => child.id === id));
-  const label = parent?.children.find((child) => child.id === id);
-  if (!label) return null;
-  return toSearchLabel(label, [{ type: "subconcept_of", value: toSearchLabel(parent), timestamp: null, passages_id: null, count: null }]);
+const asSearchLabel = (labels: TNestedSearchLabel[], id: string, parent?: TNestedSearchLabel): TSearchLabel | null => {
+  for (const label of labels) {
+    if (label.id === id) {
+      const relations: TSearchLabelRelation[] = parent
+        ? [{ type: "subconcept_of", value: toSearchLabel(parent), timestamp: null, passages_id: null, count: null }]
+        : [];
+      return toSearchLabel(label, relations);
+    }
+    const nested = asSearchLabel(label.children, id, label);
+    if (nested) return nested;
+  }
+  return null;
 };
 
 /**
@@ -133,8 +141,8 @@ export const getServerSideProps = (async (context) => {
   if (features["new-search"]) {
     const isSubdivision = geographyV2.type === "subdivision";
     const labelType = isSubdivision ? "subdivision" : "country";
-    const parentType = isSubdivision ? "country" : "region";
-    const taxonomy = await loadTaxonomy(process.env.API_URL, { types: [parentType] });
+    const pattern = isSubdivision ? SUBDIVISION_LABEL_PATTERN : COUNTRY_LABEL_PATTERN;
+    const taxonomy = await loadTaxonomy(process.env.API_URL, { patterns: [pattern] });
     const expectedId = `${labelType}::${geographyV2.id}`;
     geographyLabel = asSearchLabel(taxonomy, expectedId);
     if (!geographyLabel) return { notFound: true };
