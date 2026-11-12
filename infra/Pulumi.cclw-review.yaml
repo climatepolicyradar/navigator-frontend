@@ -3,15 +3,11 @@ config:
   frontend:adobe_api_key:
     secure: AAABAMkMXFacxmtP0WHrNHfJDYPtfQTZ2uKN4m6O6/rSBayZGFJTV9pO1MHybqM0LoerSpvoNSCdOLItbrnsfQ==
   frontend:app_url: https://climate-laws.org/
-  frontend:auto_scaling_config_arn:
-    secure: AAABALGcbA5BvVxw3EwvgQaX8u64IoMjc3XRyhzToMhlikA7EXASTtk5CBf+P2FXW+NzCLmm5I8BLEZWew6N9R24K55J+ipp1XcOWs/ihO74+4awEyz0rHmuNursP0d+fjaSjE3coNxx7mzI9pgzEC6ZvTfaaD3Mg05IQjHOujqIblV9kwYtEaWMYj0n1eDBddpz9yrAPtLZSy0=
   frontend:backend_api_token:
     secure: AAABAHPQgn2GfovCSI4HtaOC2HWD6hwDJhd00soXpJ1B+ve1hf8lm295+BjMjWdkAxdPd2ks+6Quc1wXHQFPrInr4bzLX97uWBu7SdkzF6Abq/xL6DQTtuXDWJ88Yx1I3EfgKjSRr1OzJstf2HLL0uYqg3tN7Rc8DFicKAEV/xmyYiUh8Z841D95UEVI/io2PiB0BlkocISl1mAglgYJ+3JX2eCObMTIelX366e2dmaKRxZKdMRfhIeeYvvBxDkuCX27XpMHktMA8HXvkWAdSjtoXS97qLWCn/iGuUrU1XJRHMu7uSBfdynGsnui22Iwj4xkkfg4unOFuLgLHG6T5vmPI295qt1/LTFwnUCDsLRiPARGV7maMyYhkZqaEkFYq4q2b7PfH4LcCvUwS4DrfZ9zezOtoK9llgh3l8lnZT1IpcQ4o++i70s2INob65gbqAdsJH+1lYr99Dh6rdVNxeG4e/9RU9ss73ln2a6P7MrwZVg0atvXFqofIWuLufVu99xXBfbK5P33pWfJrR9L8m7Utj2IkblsBX+SB2w5pq0njuR0etB/QKTJQowYmoPniUXN6EVA5fFAIVU0o9p0ds0mIY0zwtHr8DdIiJJen7Zn0n31mQHLoGGfGrr0tDFz/Di3TvrcXr0JhZa/J2w6SIDgLd8bsuw0ISaZIvV7ro0I/NulcZri9jXazXa3u/234GzVeEXyzPCyEh3FbwUebLjdCbf7aaeMUlg0ChFjI+dMF6YS+8Mu/MLbwIhiAMAwj7AOsxQsLeescxMOxA==
   frontend:backend_api_url: https://app.climatepolicyradar.org/api/v1
   frontend:cdn_url: https://cdn.climatepolicyradar.org
   frontend:concepts_api_url: https://api.climatepolicyradar.org
-  frontend:ecr_uri:
-    secure: AAABABCDW9g3AlRFf6nwHIGq8lw9QbxA7yF3nu5TIL/Viw3+ymwRvuum0EIxFmKok4gagerkIGsypqH/N1up41KucInZuptQvucthIgEwnLm1FdqI+ElgTjE/iavaGPtM37MEg==
   frontend:next_public_faro_app_name: cclw-review-frontend
   frontend:next_public_faro_app_namespace: frontend
   frontend:otel_exporter_otlp_endpoint: https://otel.prod.climatepolicyradar.org/

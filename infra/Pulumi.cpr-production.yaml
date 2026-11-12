@@ -8,8 +8,6 @@ config:
   frontend:apprunner_frontend_max_concurrency: "50"
   frontend:apprunner_frontend_max_instance_count: "10"
   frontend:apprunner_frontend_min_instance_count: "3"
-  frontend:ecr_uri:
-    secure: AAABAN+5OXYAifqQ9hO6Ko/qNNbnIs3k2FEqSwAB7ZDcdRR15bs9TfVloAOilaTHKOKOUcmwl57hKcwPCRO1tBkpI6Ewsckn+hOBICmsYAmO3kAVjkWct/bHvpQUUz55PBKs
   frontend:app_url: https://app.climatepolicyradar.org
   frontend:cname: app.climatepolicyradar.org
   frontend:redirect_file: default.json
