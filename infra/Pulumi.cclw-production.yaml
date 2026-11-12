@@ -28,8 +28,8 @@ config:
   frontend:otel_exporter_otlp_protocol: http/protobuf
   frontend:otel_service_name: frontend-server
   frontend:otel_resource_attributes: service.namespace=frontend,environment=production
-  frontend:apprunner_frontend_vcpu_count: 4 vCPU
-  frontend:apprunner_frontend_memory_gb: 8 GB
+  frontend:ecs_frontend_cpu: "2048"
+  frontend:ecs_frontend_memory: "4096"
   frontend:next_static_enabled: "true"
   aws:defaultTags:
     tags:
