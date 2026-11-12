@@ -29,8 +29,8 @@ config:
     secure: AAABADlaqxzs1q1mw9O94vXRfSPd4ls2AOApUnj5+N51ht2QocH02ToYNws=
   frontend:auto_scaling_config_arn:
     secure: AAABAMaACKo+TYbkmVU000GHeLYFLAujP5Zb4HaBJmtHQJFjk2pOFspl8xsBnU7uYwcFCt1p83sSfDJfS+VDBWAZFfXHznimWlVXPi2wVWKgiq2N3TG2plO16RwExFKnJmkF0wY2uFG9PKJ4y8jUZ1n1SYbpV6MTwYICZx6TATCGWKKvyjbdUoV1jqc6GWc91YVV+I/GQYZFHX4=
-  frontend:apprunner_frontend_vcpu_count: 1 vCPU
-  frontend:apprunner_frontend_memory_gb: 2 GB
+  frontend:ecs_frontend_cpu: "512"
+  frontend:ecs_frontend_memory: "1024"
   frontend:next_static_enabled: "false"
   frontend:api_url: https://api.climatepolicyradar.org
   aws:defaultTags:
