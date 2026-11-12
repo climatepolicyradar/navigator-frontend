@@ -28,6 +28,9 @@ config:
     secure: AAABAL+RYiGFRbFAlFoXuqcDSURZnm0RgIZPCJ2JNhLfevnIG0HszBQhHyI=
   frontend:ecs_frontend_cpu: "512"
   frontend:ecs_frontend_memory: "1024"
+  frontend:ecs_frontend_min_task_count: "1"
+  frontend:ecs_frontend_max_task_count: "4"
+  frontend:ecs_frontend_scaling_target_value: "500"
   frontend:next_static_enabled: "false"
   frontend:api_url: https://api.climatepolicyradar.org
   aws:defaultTags:
