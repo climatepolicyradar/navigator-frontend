@@ -9,8 +9,6 @@ config:
   frontend:apprunner_frontend_max_instance_count: "10"
   frontend:apprunner_frontend_min_instance_count: "1"
   frontend:docker_tag: 1.0.5-beta
-  frontend:ecr_uri:
-    secure: AAABAAsyrEUal4aaHLroRq3LwOn7ozzcz/2hmBJ3ErVyeCDb0SIG9CuVvy86xDuR7Esx8bGf9OTIY8sNFvFbSYcFhonVg3DPnT+XoL8Z61cFuBsWHMD1Vcu/Fbgh5PU=
   frontend:app_url:
     secure: AAABAPaTtiZZQZrrKk6MOjDmC53cyLM0zy2ZT1p+U5OEi/PR2gkgogdAE9vrAlO3VB/f/jpwyFXBsMGqik/O5Ibex60ULFNdioc=
   frontend:redirect_file: default.json

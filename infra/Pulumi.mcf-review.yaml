@@ -3,15 +3,11 @@ config:
   frontend:adobe_api_key:
     secure: AAABANyRtOdgON/v0xMBnLsNFSEMIa1ff/GI6mMIUsLYqeB185V9Ao76IZ8XGJCDP5q7MR28PTdpbxJa8iMMeg==
   frontend:app_url: https://climateprojectexplorer.org/
-  frontend:auto_scaling_config_arn:
-    secure: AAABADqWIYiuINx0ZYFvuhU2ajySHoKyMygsetc1w05ma6OyQ4fIwrF2VR4RPaOwHd8wlnN9smp405hBSasZy8LkyLbGjvmZZP10oIqf48c8vSVgSHCNM3O6IlkdvN9isxXOwbvXuxwuQcaRKBe0xaLSeUWxQeoBG+2QSFZeP/rc/lDdhB0UM7TPuJR0kjY/0GXyTXFLgxRJx8c=
   frontend:backend_api_token:
     secure: AAABALGzzo1LBSE2/a97y+6IyA/pvHnZGdPsiCCerNYxMMO7CkkOxXER/2PrE5K2hObOT28IFH4dP1HyJ/9wpEQn++7LfLPQEL9Ap9EIdomXx41zUr+G8Bt9M2xNwN0dnmLl5gzFNVfNZyp5aePs2BvJ+a2YSSWeANItXYfLEoy3cjOzgZ86UrUd8C2jBu6LkKf7m1cs8j2e1+11UUeq3fZWyS+Wpd0gxsictMgKi8vGrIe3nvEHno0Al1tPDdf8waD9OEZmDlekyxocnw9M+YlfnmTu7Ok+PPCRzQIJppFcFYpF4BZ1a+RuWHq1Kwf8kBGqAsYNQDQbKyX37AeO3K3t4oqBpXf6L5kp/ZxEZzi6IRbH9Naq7c3rPBQczR2TDLlE6nRgkK/AlyXumcTNFs4C4LUWGnD7GBGQ3i19evu52Ofi3SnEqLbial3Lbpw+iU03VxEvEJIwHxZ7VMWmlDFy1YGqStsfqGP9qZsHVJFVYkdiX7NXS6mKEsquiexmhTms5dclYRGlS3lSVyr5Pm0Ncu2/d0pPyydEjOjD4SpG9/m7X5fS1esydmQlRfM0DLlFNSCQyiOpQQsohii49ZAUNldUp1GNjayvPEdaMvD+iSzbfh369PPMW+UaSfGnPhSEdmFdChWogftqY5otb7L/VOSOhCM98cNHsFnIGL4PYmiq68AUgKFl7a6ZcOyfmIYCEVw95LAHIGY8X1+eHwPL2LaeT3iiWatX
   frontend:backend_api_url: https://app.climatepolicyradar.org/api/v1
   frontend:cdn_url: https://cdn.climatepolicyradar.org
   frontend:concepts_api_url: https://api.climatepolicyradar.org
-  frontend:ecr_uri:
-    secure: AAABAHQYwY7XDZC7myPyGxlhLuCUdj0xMGiNC4wyj0r8QpatUZ3tMWOjVO/W4SYSffvWwmTu7VNgMUUWNIhZypOZkMSCNzmboHroSRXGBtLJB3NEShYC3MuoqEMtyQH5HPPd
   frontend:next_public_faro_app_name: mcf-review-frontend
   frontend:next_public_faro_app_namespace: frontend
   frontend:otel_exporter_otlp_endpoint: https://otel.prod.climatepolicyradar.org/

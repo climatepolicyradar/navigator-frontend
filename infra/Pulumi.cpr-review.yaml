@@ -11,8 +11,6 @@ config:
   frontend:backend_api_url: https://app.climatepolicyradar.org/api/v1
   frontend:cdn_url: https://cdn.climatepolicyradar.org
   frontend:concepts_api_url: https://api.climatepolicyradar.org
-  frontend:ecr_uri:
-    secure: AAABADDjtmoNtgqV00jpPD4L7ZX6qq3/oeInKnqED2mFYBXI/0biwVA00k7LVS5wkATmnwlzgto4A1HD5LNQ36aqmd7jTL3GczoqnZOJB1D8tiRjgYely0Wu20iN2UyylapF
   frontend:next_public_faro_app_name: cpr-review-frontend
   frontend:next_public_faro_app_namespace: frontend
   frontend:otel_exporter_otlp_endpoint: https://otel.prod.climatepolicyradar.org/
@@ -27,8 +25,6 @@ config:
   frontend:theme: cpr
   frontend:validation_account_id:
     secure: AAABADlaqxzs1q1mw9O94vXRfSPd4ls2AOApUnj5+N51ht2QocH02ToYNws=
-  frontend:auto_scaling_config_arn:
-    secure: AAABAMaACKo+TYbkmVU000GHeLYFLAujP5Zb4HaBJmtHQJFjk2pOFspl8xsBnU7uYwcFCt1p83sSfDJfS+VDBWAZFfXHznimWlVXPi2wVWKgiq2N3TG2plO16RwExFKnJmkF0wY2uFG9PKJ4y8jUZ1n1SYbpV6MTwYICZx6TATCGWKKvyjbdUoV1jqc6GWc91YVV+I/GQYZFHX4=
   frontend:ecs_frontend_cpu: "512"
   frontend:ecs_frontend_memory: "1024"
   frontend:ecs_frontend_min_task_count: "1"
