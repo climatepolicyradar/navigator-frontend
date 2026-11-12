@@ -22,8 +22,8 @@ import { PASSAGE_SORT_OPTIONS, PASSAGE_SORT_VALUES } from "@/constants/sort";
 import { useEnvConfig } from "@/context/EnvConfig";
 import { posthogEventName } from "@/context/PostHogProvider";
 import { SearchLevelContext } from "@/context/SearchLevelContext";
-import { loadFilteredLabels } from "@/hooks/useLabelSearch";
-import { ISearchPassage, TFamilyDocumentPublic, TPassagesScope, TPrincipalDrawerTab, TSearchLabel, TSortValue, TTopic } from "@/types";
+import { loadTaxonomy } from "@/hooks/useLabelSearch";
+import { ISearchPassage, TFamilyDocumentPublic, TNestedSearchLabel, TPassagesScope, TPrincipalDrawerTab, TSortValue, TTopic } from "@/types";
 import { parseAsDeflatedFilters } from "@/utils/filters/deflate";
 import { queryGroupToFilterPaths } from "@/utils/search/queryGroupToFilterPaths";
 import { conceptFiltersOnly, flattenLevelToBaseQuery, levelParamKeys } from "@/utils/search/searchLevels";
@@ -135,7 +135,7 @@ export const PassageSearch = ({ changeTab, concepts, documents, documentsLabel, 
   );
   const [documentsParam, setDocumentsParam] = useQueryState(paramKeys.documents, parseAsArrayOf(parseAsString).withDefault([]));
   const [pageNumber, setPageNumber] = useState<number | null>(null);
-  const [availableConcepts, setAvailableConcepts] = useState<TSearchLabel[]>([]);
+  const [availableConcepts, setAvailableConcepts] = useState<TNestedSearchLabel[]>([]);
   const [loadedConcepts, setLoadedConcepts] = useState(false);
 
   // Only concept filters are offered here, and a level is seeded with only those, so anything else
@@ -161,16 +161,7 @@ export const PassageSearch = ({ changeTab, concepts, documents, documentsLabel, 
   }
 
   useEffect(() => {
-    loadFilteredLabels(API_URL, {
-      op: "or",
-      filters: [
-        {
-          field: "type",
-          op: "contains",
-          value: "concept",
-        },
-      ],
-    })
+    loadTaxonomy(API_URL, { types: ["concept"] })
       .then(setAvailableConcepts)
       .finally(() => setLoadedConcepts(true));
   }, [API_URL]);
@@ -211,7 +202,6 @@ export const PassageSearch = ({ changeTab, concepts, documents, documentsLabel, 
               pageToken: pageParam,
               signal,
             });
-
             // Reported from the fetcher so each page is reported once, rather than on every render.
             // `search_index` 1 is the search the view opened with; `page` above 1 is loading more of it
             if (pageParam === 1) searchIndex.current += 1;
@@ -223,7 +213,6 @@ export const PassageSearch = ({ changeTab, concepts, documents, documentsLabel, 
               results_total: response.total_size ?? 0,
               documents_total: selectedDocumentIds.length,
             });
-
             return response;
           },
     initialPageParam: 1,
@@ -291,7 +280,12 @@ export const PassageSearch = ({ changeTab, concepts, documents, documentsLabel, 
   // Only offer concept filters the scope actually has passages for
   const conceptFilters = useMemo(() => {
     const rankedIds = new Set(concepts.map((concept) => concept.wikibase_id));
-    return availableConcepts.filter((label) => label.type === "concept" && rankedIds.has(label.id.split(ID_SEPARATOR)[1]));
+    const ranked = (labels: TNestedSearchLabel[]): TNestedSearchLabel[] =>
+      labels.flatMap((label) => [
+        ...(label.type === "concept" && rankedIds.has(label.id.split(ID_SEPARATOR)[1]) ? [{ ...label, children: [] }] : []),
+        ...ranked(label.children),
+      ]);
+    return ranked(availableConcepts);
   }, [availableConcepts, concepts]);
 
   const handleClear = () => {
@@ -310,14 +304,12 @@ export const PassageSearch = ({ changeTab, concepts, documents, documentsLabel, 
     (passage: TPassageBlock) => {
       const slug = documentsById.get(passage.document_id)?.slug;
       if (!slug) return null;
-
       const baseQuery = flattenLevelToBaseQuery({
         documents: null,
         filters: conceptFilterParam,
         query: queryParam,
       });
       const query = Object.fromEntries(Object.entries(baseQuery).filter(([, value]) => value !== null)) as Record<string, string>;
-
       return { pathname: `/documents/${slug}`, query };
     },
     [conceptFilterParam, documentsById, queryParam]
@@ -327,7 +319,6 @@ export const PassageSearch = ({ changeTab, concepts, documents, documentsLabel, 
     (passage: TPassageBlock) => {
       const href = documentHref(passage);
       if (!href) return;
-
       const search = new URLSearchParams(href.query).toString();
       window.open(search ? `${href.pathname}?${search}` : href.pathname, "_blank");
     },
@@ -343,7 +334,6 @@ export const PassageSearch = ({ changeTab, concepts, documents, documentsLabel, 
         setPageNumber(page + 1);
         return;
       }
-
       const href = documentHref(passage);
       if (href) router.push(href);
     },
@@ -440,7 +430,6 @@ export const PassageSearch = ({ changeTab, concepts, documents, documentsLabel, 
       <FiveColumns>
         <div className="col-start-1 -col-end-1 py-4 flex flex-col gap-y-4">{controls}</div>
       </FiveColumns>
-
       <div className="flex flex-col border-t border-border-light lg:flex-row lg:h-[80vh]">
         <div
           id="passage-results"
@@ -448,7 +437,6 @@ export const PassageSearch = ({ changeTab, concepts, documents, documentsLabel, 
         >
           {results}
         </div>
-
         <div id="document-preview" className="w-full h-[600px] border-t border-border-light lg:w-1/2 lg:h-full lg:border-t-0 lg:border-l">
           {canPreview ? <DocumentPreview document={previewDocument} pageNumber={pageNumber} passages={searchPassages} /> : <EmptyDocument />}
         </div>
