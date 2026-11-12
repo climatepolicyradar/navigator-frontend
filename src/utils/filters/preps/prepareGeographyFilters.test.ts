@@ -111,4 +111,17 @@ describe("prepareGeographyFilters", () => {
       expect(withTypeFilters.children).toEqual(withoutTypeFilters.children);
     });
   });
+
+  it("carries a top-level country through rather than inventing one", () => {
+    const international: TNestedSearchLabel = {
+      id: "country::XAB",
+      type: "country",
+      value: "International",
+      alternative_labels: [],
+      count: 12,
+      children: [],
+    };
+    const prepared = prepareGeographyFilters(false)([international]);
+    expect(prepared.at(-1)).toEqual(international);
+  });
 });

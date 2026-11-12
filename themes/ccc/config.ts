@@ -1,3 +1,4 @@
+import { SHARED_LABEL_PATTERNS } from "@/constants/labels";
 import { TThemeConfig } from "@/types";
 
 const config: TThemeConfig = {
@@ -6,6 +7,12 @@ const config: TThemeConfig = {
   deprecatedFilters: [],
   searchCategories: ["Litigation"],
   searchExcludeLabels: [],
+  searchLabelPatterns: [
+    ...SHARED_LABEL_PATTERNS,
+    "category::Litigation/jurisdiction::*/**",
+    "category::Litigation/case_category::*/**",
+    "category::Litigation/principal_law::*/**",
+  ],
   downloadColumns: [
     "ID",
     "TITLE",

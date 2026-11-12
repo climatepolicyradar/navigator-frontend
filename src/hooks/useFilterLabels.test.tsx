@@ -3,6 +3,7 @@ import React from "react";
 
 import { configureDocumentsFilters } from "@/api/search";
 import { DEFAULT_FEATURES } from "@/constants/features";
+import { SUBDIVISION_LABEL_PATTERN } from "@/constants/labels";
 import { DEFAULT_THEME_CONFIG } from "@/constants/themeConfig";
 import { EnvConfigContext } from "@/context/EnvConfig";
 import { TFeatures, TNestedSearchLabel, TThemeConfig } from "@/types";
@@ -34,16 +35,18 @@ describe("useFilterLabels", () => {
     mockLoadTaxonomy.mockReset().mockResolvedValue([]);
   });
 
-  it("requests the subtrees the filter groups are rooted on", async () => {
-    renderUseFilterLabels(DEFAULT_FEATURES, DEFAULT_THEME_CONFIG);
+  it("asks for the label trees the theme configures", async () => {
+    const searchLabelPatterns = ["domain::*", "category::Law/**"];
+    renderUseFilterLabels(DEFAULT_FEATURES, { ...DEFAULT_THEME_CONFIG, searchLabelPatterns });
     await waitFor(() => expect(mockLoadTaxonomy).toHaveBeenCalled());
-    expect(mockLoadTaxonomy.mock.calls[0][1].types).toEqual(["domain", "region", "concept"]);
+    expect(mockLoadTaxonomy.mock.calls[0][1].patterns).toEqual(searchLabelPatterns);
   });
 
-  it("asks for the theme's categories by id rather than for every category", async () => {
-    renderUseFilterLabels(DEFAULT_FEATURES, { ...DEFAULT_THEME_CONFIG, searchCategories: ["Law", "Policy"] });
+  it("asks for the level below a country only where subdivisions are offered", async () => {
+    const searchLabelPatterns = ["region::*/country::*"];
+    renderUseFilterLabels({ ...DEFAULT_FEATURES, subdivisions: true }, { ...DEFAULT_THEME_CONFIG, searchLabelPatterns });
     await waitFor(() => expect(mockLoadTaxonomy).toHaveBeenCalled());
-    expect(mockLoadTaxonomy.mock.calls[0][1].ids).toEqual(["category::Law", "category::Policy"]);
+    expect(mockLoadTaxonomy.mock.calls[0][1].patterns).toEqual([...searchLabelPatterns, SUBDIVISION_LABEL_PATTERN]);
   });
 
   it("counts against the documents a search of this app would return", async () => {
@@ -60,30 +63,6 @@ describe("useFilterLabels", () => {
     const { result } = renderUseFilterLabels(DEFAULT_FEATURES, DEFAULT_THEME_CONFIG);
     await waitFor(() => expect(result.current.loaded).toBe(true));
     expect(result.current.filters.map((filter) => filter.id)).toEqual(["concept::Q1"]);
-  });
-
-  it("drops subdivisions when the subdivisions feature is off", async () => {
-    mockLoadTaxonomy.mockResolvedValue([label("region::ECS", 0, [label("country::AUT", 2, [label("subdivision::AT-3", 1)])])]);
-    const { result } = renderUseFilterLabels(DEFAULT_FEATURES, DEFAULT_THEME_CONFIG);
-    await waitFor(() => expect(result.current.loaded).toBe(true));
-    expect(result.current.filters[0].children[0].children).toEqual([]);
-  });
-
-  it("drops a country whose only documents are held by hidden subdivisions", async () => {
-    mockLoadTaxonomy.mockResolvedValue([
-      label("region::ECS", 0, [label("country::AUT", 0, [label("subdivision::AT-3", 7)])]),
-      label("concept::Q1", 3),
-    ]);
-    const { result } = renderUseFilterLabels(DEFAULT_FEATURES, DEFAULT_THEME_CONFIG);
-    await waitFor(() => expect(result.current.loaded).toBe(true));
-    expect(result.current.filters.map((filter) => filter.id)).toEqual(["concept::Q1"]);
-  });
-
-  it("keeps subdivisions when the subdivisions feature is on", async () => {
-    mockLoadTaxonomy.mockResolvedValue([label("region::ECS", 0, [label("country::AUT", 2, [label("subdivision::AT-3", 1)])])]);
-    const { result } = renderUseFilterLabels({ ...DEFAULT_FEATURES, subdivisions: true }, DEFAULT_THEME_CONFIG);
-    await waitFor(() => expect(result.current.loaded).toBe(true));
-    expect(result.current.filters[0].children[0].children.map((child) => child.id)).toEqual(["subdivision::AT-3"]);
   });
 
   it("is not loaded until the taxonomy has resolved", async () => {
