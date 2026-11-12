@@ -28,7 +28,7 @@ export const transformFamily = (document: TDataInDocument): TFamilyPublic => {
     import_id: document.id,
     last_updated_date: familyAttributes.last_updated_date ?? null,
     metadata: transformFamilyMetadata(familyAttributes, groupedLabels, attribution.category),
-    published_date: familyAttributes.published_date,
+    published_date: familyAttributes.published_date ?? null,
     slug: familyAttributes.deprecated_slug,
     summary: document.description,
     title: document.title || DEFAULT_DOCUMENT_TITLE,
