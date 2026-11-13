@@ -21,7 +21,6 @@ import { PassageSearch } from "@/components/organisms/passageSearch/PassageSearc
 import { MAX_PASSAGES } from "@/constants/paging";
 import { QUERY_PARAMS } from "@/constants/queryParams";
 import { FeaturesContext } from "@/context/FeaturesContext";
-import useConfig from "@/hooks/useConfig";
 import { useDocumentTopics } from "@/hooks/useDocumentTopics";
 import { useFamilyPageHeaderData } from "@/hooks/useFamilyPageHeaderData";
 import useSearch from "@/hooks/useSearch";
@@ -61,8 +60,6 @@ export interface IProps {
 }
 
 export const FamilyPage = ({ collections, debug, errors, family, familyTopics, features, theme, themeConfig }: IProps) => {
-  const configQuery = useConfig();
-  const { data: { languages = {} } = {} } = configQuery;
   const [activeTab, setActiveTab] = useState<TPrincipalDrawerTab>("about");
   const [noOfResults, setNumberOfResults] = useState<number>(0);
   const { getCategoryTextLookup } = useText();
@@ -143,10 +140,9 @@ export const FamilyPage = ({ collections, debug, errors, family, familyTopics, f
             matchesFamily={matchesFamily}
             matchesStatus={matchesStatus}
             showMatches={hasSearch}
-            languages={languages}
           />
         ),
-        [family, familyTopics, features, getCategoryText, hasSearch, matchesFamily, matchesStatus, languages]
+        [family, familyTopics, features, getCategoryText, hasSearch, matchesFamily, matchesStatus]
       ),
     },
     metadata: {

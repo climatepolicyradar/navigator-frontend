@@ -261,10 +261,6 @@ export type TSearch = {
 
 export type TLoadingStatus = "idle" | "loading" | "success" | "error";
 
-export type TLanguages = {
-  [key: string]: string;
-};
-
 type TCorpusWithStats = {
   corpus_import_id: string;
   title: string;

@@ -1,3 +1,4 @@
+import { ID_SEPARATOR } from "@/constants/chars";
 import { DEFAULT_DOCUMENT_TITLE } from "@/constants/document";
 import {
   ITEM_TYPES,
@@ -25,7 +26,7 @@ export const transformDocument = (document: TDataInDocument, events: TFamilyEven
   const itemsMandatory = documentAttributes.status === "awaiting_source_file" ? [] : MANDATORY_ITEM_TYPES;
   const groupedItems = groupByType<TDataInItem, TDataInItemType>(document.items ?? [], ITEM_TYPES, itemsMandatory);
 
-  const languages = groupedLabels.language.map((label) => label.value.value);
+  const languages = groupedLabels.language.map((label) => label.value.id.split(ID_SEPARATOR)[1]);
 
   return {
     cdn_object: groupedItems.cdn[0]?.url || "",

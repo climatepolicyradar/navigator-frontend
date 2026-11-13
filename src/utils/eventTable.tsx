@@ -18,7 +18,6 @@ import {
   TFamilyEventPublic,
   TFamilyPublic,
   TFeatures,
-  TLanguages,
   TLoadingStatus,
   TMatchedFamily,
   TTableColumn,
@@ -169,7 +168,6 @@ export const getDocumentLink = (
 const getDocumentCell = (
   isLitigation: boolean,
   isMainDocument: boolean,
-  languages: TLanguages,
   hasMatches: boolean,
   document?: TFamilyDocumentPublic,
   event?: TFamilyEventPublic,
@@ -199,7 +197,7 @@ const getDocumentCell = (
           {document.document_type && <div className="italic">{document.document_type}</div>}
           {document.language && (
             <div>
-              {getLanguage(document.language, languages)} {document.variant && `(${document.variant})`}
+              {getLanguage(document.language)} {document.variant && `(${document.variant})`}
             </div>
           )}
         </>
@@ -217,7 +215,6 @@ export const getEventTableRows = ({
   matchesFamily,
   matchesStatus = "success",
   language,
-  languages,
   isLitigation,
   search,
 }: {
@@ -229,7 +226,6 @@ export const getEventTableRows = ({
   matchesFamily?: TMatchedFamily;
   matchesStatus?: TLoadingStatus;
   language?: string;
-  languages?: TLanguages;
   isLitigation: boolean;
   // The search to carry to the document page, when the table sits inside one
   search?: TQueryOverrides;
@@ -349,7 +345,7 @@ export const getEventTableRows = ({
               }
             : null,
         document: {
-          label: getDocumentCell(isLitigation, isMainDocument, languages, matches > 0, document, event, search),
+          label: getDocumentCell(isLitigation, isMainDocument, matches > 0, document, event, search),
           value: isMainDocument,
         },
         topics: { label: topicsDisplay, value: "" },

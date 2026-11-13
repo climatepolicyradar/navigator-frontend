@@ -11,7 +11,7 @@ import { SearchLevelContext } from "@/context/SearchLevelContext";
 import { getLanguage } from "@/helpers/getLanguage";
 import { useDocumentTopics } from "@/hooks/useDocumentTopics";
 import { useSearchLevelValues } from "@/hooks/useSearchLevel";
-import { IFamilyDocumentTopics, IMetadata, TFamilyDocumentPublic, TFamilyEventPublic, TFamilyPublic, TLanguages } from "@/types";
+import { IFamilyDocumentTopics, IMetadata, TFamilyDocumentPublic, TFamilyEventPublic, TFamilyPublic } from "@/types";
 import { getEventTableRowsData } from "@/utils/eventTable";
 import { flattenLevelToBaseQuery } from "@/utils/search/searchLevels";
 import { DOCUMENT_DRAWER_TOPICS_TABLE_COLUMNS, getDocumentDrawerTopicTableRows } from "@/utils/tables/topic/documentDrawerTopicTable";
@@ -23,12 +23,11 @@ interface IProps {
   documentSlug: string | null;
   family: TFamilyPublic;
   familyTopics?: IFamilyDocumentTopics | null;
-  languages: TLanguages;
   onOpenChange: (open: boolean) => void;
   open: boolean;
 }
 
-export const DocumentDrawer = ({ documentSlug, family, familyTopics, languages, onOpenChange, open }: IProps) => {
+export const DocumentDrawer = ({ documentSlug, family, familyTopics, onOpenChange, open }: IProps) => {
   const features = useContext(FeaturesContext);
   // The drawer's own search, flattened onto the base params of the document page it links to
   const [documentSearch] = useSearchLevelValues("document");
@@ -92,7 +91,7 @@ export const DocumentDrawer = ({ documentSlug, family, familyTopics, languages, 
     if (document.language) {
       metadata.push({
         label: "Language",
-        value: getLanguage(document.language, languages) + (document.variant ? ` (${document.variant})` : ""),
+        value: getLanguage(document.language) + (document.variant ? ` (${document.variant})` : ""),
       });
     }
   }
