@@ -35,16 +35,18 @@ export const useFamilyPageHeaderData = (family: TFamilyPublic): FamilyPageHeader
         // Must have at least a country to have breadcrumbs
         const country = groupedGeographies.country[0];
 
-        if (features.subdivisions && groupedGeographies.subdivision?.length > 0) {
-          // Includes a subdivision
-          const subdivision = groupedGeographies.subdivision[0];
+        const countrySlug = getGeographySlug(country);
+        const subdivision = features.subdivisions ? groupedGeographies.subdivision?.[0] : undefined;
+        const subdivisionSlug = subdivision ? getGeographySlug(subdivision) : null;
 
-          breadcrumbGeography = { label: subdivision.value, href: `/geographies/${getGeographySlug(subdivision)}` };
-          breadcrumbParentGeography = { label: country.value, href: `/geographies/${getGeographySlug(country)}` };
+        if (subdivision && subdivisionSlug && countrySlug) {
+          // Includes a subdivision
+          breadcrumbGeography = { label: subdivision.value, href: `/geographies/${subdivisionSlug}` };
+          breadcrumbParentGeography = { label: country.value, href: `/geographies/${countrySlug}` };
         } else {
           // Countries only
-          if (!isSystemGeo(country.id.split(ID_SEPARATOR)[1]))
-            breadcrumbGeography = { label: country.value, href: `/geographies/${getGeographySlug(country)}` };
+          if (countrySlug && !isSystemGeo(country.id.split(ID_SEPARATOR)[1]))
+            breadcrumbGeography = { label: country.value, href: `/geographies/${countrySlug}` };
         }
       }
     }

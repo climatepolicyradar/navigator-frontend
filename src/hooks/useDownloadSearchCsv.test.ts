@@ -252,7 +252,7 @@ describe("buildDownloadSearchCsvUrl", () => {
           filters,
         ],
       },
-      themeConfig.searchCategories
+      themeConfig
     );
 
     expect(downloadFilters).toEqual(JSON.parse(JSON.stringify(listFilters)));

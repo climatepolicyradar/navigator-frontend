@@ -8,7 +8,7 @@ config:
   frontend:cdn_url: https://cdn.dev.climatepolicyradar.org
   frontend:app_url: https://ccc.staging.climatepolicyradar.org
   frontend:redirect_file: default.json
-  frontend:robots: "true"
+  frontend:robots: "false"
   frontend:s3-path:
     secure: AAABACFeXbjzBtChBc+5oHCC28e82GtwwexPDZMiYvIhahDH2pza/xABfYPoXCijKcqTyWcygSvgpKWd1Vw/R79EbeUi3B+IfaXkqRpMUxymz8aTUzOPde8PbIYnVuF31w==
   frontend:targets_url: https://cpr-staging-targets-json-store.s3.eu-west-1.amazonaws.com

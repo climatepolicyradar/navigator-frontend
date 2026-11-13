@@ -17,13 +17,10 @@ const BASE = "__BASE__";
 const SITEMAP = "__SITEMAP__";
 const SSR_MARKER = "__SSR_MARKER__";
 
-// How many urls to try per section before calling it an outage. Needed because
-// the sitemaps currently list families the deployment cannot serve: ccc's is
-// built from every corpus id in its theme config while the running app's token
-// allows only one, so 4 of its first 6 /document/ urls are 404s. Asserting on a
-// single entry would hold this check red for a content bug rather than an
-// outage. Once the sitemaps only list servable urls this costs nothing -- the
-// first candidate answers and the loop stops.
+// How many urls to try per section before calling it an outage. The sitemap is
+// now built from the theme's own default search filters, so every url in it
+// should be servable and the first candidate should answer. Kept above 1 so a
+// single unservable entry reads as a content bug rather than an outage.
 const CANDIDATES = 8;
 
 // The edge caches for 24h by default and keys on all query strings, so an
@@ -49,7 +46,8 @@ function assertOneRenders(paths, kind) {
 }
 
 export default function () {
-  const sitemap = http.get(bust(SITEMAP));
+  // Not busted: a cached sitemap still yields live urls, and the page fetches are.
+  const sitemap = http.get(SITEMAP);
   if (sitemap.status !== 200) fail("sitemap returned " + sitemap.status);
 
   // <loc> entries are absolute production urls. Stripping the host and
