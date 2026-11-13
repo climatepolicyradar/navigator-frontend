@@ -12,7 +12,7 @@ config:
     secure: AAABAI+YapHHn15SEmeTFXswl9Xakpw6r3SqmXgmPf5uL178cqdP+dQyzw+RRkLWDxbHOrf8FJeHWOTV7Rop/b4rmdNez5d3dL40JgCCQl3cozlVRGcxUf0MpAg25OY6To3r
   frontend:app_url: https://ccc.staging.climatepolicyradar.org
   frontend:redirect_file: default.json
-  frontend:robots: "true"
+  frontend:robots: "false"
   frontend:s3-path:
     secure: AAABACFeXbjzBtChBc+5oHCC28e82GtwwexPDZMiYvIhahDH2pza/xABfYPoXCijKcqTyWcygSvgpKWd1Vw/R79EbeUi3B+IfaXkqRpMUxymz8aTUzOPde8PbIYnVuF31w==
   frontend:targets_url: https://cpr-staging-targets-json-store.s3.eu-west-1.amazonaws.com

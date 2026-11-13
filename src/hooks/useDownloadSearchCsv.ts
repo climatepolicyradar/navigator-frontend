@@ -52,11 +52,7 @@ export function buildDownloadSearchCsvUrl(params: IDownloadSearchCsvParams & { a
     filtersToApply.push(sanitisedFilters);
   }
 
-  const combinedFilters = configureDocumentsFilters(
-    { op: "and", filters: filtersToApply },
-    params.themeConfig.searchCategories,
-    params.themeConfig.searchExcludeLabels
-  );
+  const combinedFilters = configureDocumentsFilters({ op: "and", filters: filtersToApply }, params.themeConfig);
   url.searchParams.set("filters", deflateFilters(combinedFilters));
   url.searchParams.set("encoding", "deflate");
   url.searchParams.set("order_by", SORT_PARAMS_LOOKUP[params.sort]);

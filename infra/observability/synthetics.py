@@ -158,8 +158,6 @@ class FrontendSynthetics(pulumi.ComponentResource):
         # Origin: Test against ECS containers directly
         origin_paths = ["/", "/search?q=climate", "/robots.txt", "/api/health"]
         sitemap_path = config.sitemap_path
-        if sitemap_path:
-            origin_paths.append(sitemap_path)
 
         self.origin_routes = grafana.syntheticmonitoring.Check(
             f"{prefix}-origin-routes",
@@ -264,9 +262,9 @@ class FrontendSynthetics(pulumi.ComponentResource):
                 value="200",
             )
         ]
-        # robots.txt and the sitemap are not Next pages, so neither marker
-        # applies -- a 200 is the whole assertion.
-        if path not in ("/robots.txt",) and not path.endswith("sitemap.xml"):
+        # robots.txt is not a Next page, so neither marker applies -- a 200 is the
+        # whole assertion.
+        if path != "/robots.txt":
             assertions.append(
                 grafana.syntheticmonitoring.CheckSettingsMultihttpEntryAssertionArgs(
                     type="TEXT",

@@ -1,5 +1,10 @@
 [
   {
+    "source": "/ccc/sitemap.xml",
+    "destination": "/sitemap.xml",
+    "permanent": true
+  },
+  {
     "source": "/document/opg-annex-5-project-review-criteria-and-project-proposal-template_e95a",
     "destination": "/document/opg-annex-5-project-review-criteria-and-project-proposal-template-english_73c2",
     "permanent": true

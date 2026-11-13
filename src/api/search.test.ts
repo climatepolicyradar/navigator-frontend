@@ -190,8 +190,8 @@ describe("configureDocumentsFilters", () => {
   it("bounds published_date to the end of the day so the request can be cached", () => {
     vi.useFakeTimers();
     vi.setSystemTime(new Date("2026-11-12T09:00:00.000Z"));
-    const morning = configureDocumentsFilters(undefined, ["Law"], []);
+    const morning = configureDocumentsFilters(undefined, themeConfigWithCategories(["Law"]));
     vi.setSystemTime(new Date("2026-11-12T17:30:00.000Z"));
-    expect(configureDocumentsFilters(undefined, ["Law"], [])).toEqual(morning);
+    expect(configureDocumentsFilters(undefined, themeConfigWithCategories(["Law"]))).toEqual(morning);
   });
 });

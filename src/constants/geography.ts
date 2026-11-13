@@ -1,6 +1,16 @@
 export const EXCLUDED_ISO_CODES = ["EUR", "XAA", "XAB"];
 export const INCLUDED_GEO_TYPES = ["ISO-3166", "ISO-3166-2"];
 
+/**
+ * Temporary. Subdivisions the geographies API has no page for, so every link to one 404s.
+ *
+ * Both this and GEOGRAPHY_SLUG_CONVERSIONS exist only because a geography's page slug is
+ * derived from a display name that comes from a different source than the page itself.
+ * Delete both, and the derivation in getGeographySlug, once the two geography sources are
+ * consolidated and a label carries its own slug.
+ */
+export const SUBDIVISIONS_WITHOUT_PAGES = ["ES-19572", "ES-19574", "IN-TG", "IN-UT", "ZA-NL"];
+
 // Maps the kebab-cased slug computed from a geography's display name to the slug its page actually resolves at
 export const GEOGRAPHY_SLUG_CONVERSIONS: Record<string, string> = {
   bahamas: "bahamas-the",
@@ -12,6 +22,7 @@ export const GEOGRAPHY_SLUG_CONVERSIONS: Record<string, string> = {
   laos: "lao-people-s-democratic-republic",
   "micronesia-federated-states-of": "micronesia",
   "moldova-republic-of": "moldova",
+  "north-korea": "korea-north",
   "north-macedonia": "north-macedonia-republic-of-north-macedonia",
   "palestine-state-of": "palestine",
   "russian-federation": "russia",
