@@ -12,7 +12,6 @@ import { FiltersContext, TDateRange, TToggleFilterCallback } from "@/context/Fil
 import { TFilterPathLabel, TFiltersGroupConfig, TNestedSearchLabel, TSortOptionConfig, TSortValue } from "@/types";
 import { parseAsDeflatedFilters } from "@/utils/filters/deflate";
 import { sortFilterPathLabels } from "@/utils/filters/filterPaths";
-import { getSearchLabelValues } from "@/utils/filters/getSearchLabelValues";
 import { groupSearchLabels } from "@/utils/filters/groupSearchLabels";
 import { updateCheckedLabelPaths } from "@/utils/filters/updateCheckedLabelPaths";
 import { filterGroupFilters } from "@/utils/search/filterGroupFilters";
@@ -35,7 +34,7 @@ interface IProps {
   filtersSlot?: ReactNode;
   labels: TNestedSearchLabel[];
   labelsLoaded: boolean;
-  nameLabels?: TNestedSearchLabel[];
+  labelNames: Record<string, string>;
   pageParamKey?: string;
   queryParamKey: string;
   resultsNode?: ReactNode;
@@ -53,7 +52,7 @@ export const SearchControls = ({
   filtersSlot,
   labels,
   labelsLoaded,
-  nameLabels,
+  labelNames,
   pageParamKey = PAGE_TOKEN_PARAM_KEY,
   queryParamKey,
   resultsNode,
@@ -105,12 +104,6 @@ export const SearchControls = ({
     setSearchInput(queryParam);
   }
 
-  // Chips for already-checked filters must resolve to a name even if that label falls outside the (possibly narrower) set offered in the menu, so fall back to `nameLabels`.
-  const labelValues = useMemo(() => {
-    const extra = (nameLabels ?? []).filter((label) => !labels.some((l) => l.id === label.id));
-    return getSearchLabelValues([...labels, ...extra]);
-  }, [labels, nameLabels]);
-
   const { appliedDateRange, checkedLabelPaths } = useMemo(() => {
     return {
       appliedDateRange: fromFilterParam.dateRange,
@@ -146,7 +139,9 @@ export const SearchControls = ({
   };
 
   return (
-    <FiltersContext.Provider value={{ appliedDateRange, checkedLabelPaths, clearFilters, labelValues, setDateRange: onSetDateRange, toggleFilter }}>
+    <FiltersContext.Provider
+      value={{ appliedDateRange, checkedLabelPaths, clearFilters, labelValues: labelNames, setDateRange: onSetDateRange, toggleFilter }}
+    >
       <div className="col-start-1 -col-end-1 cols-5:col-start-2 cols-5:-col-end-2 flex flex-col gap-y-4">
         <form onSubmit={onQuerySubmit}>
           <Input

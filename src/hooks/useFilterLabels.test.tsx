@@ -1,3 +1,4 @@
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { renderHook, waitFor } from "@testing-library/react";
 import React from "react";
 
@@ -22,13 +23,16 @@ const label = (id: string, count = 1, children: TNestedSearchLabel[] = []): TNes
   children,
 });
 
-const wrapper = ({ children }: { children: React.ReactNode }) => (
-  // @ts-expect-error - partial EnvConfig value is fine for this test
-  <EnvConfigContext.Provider value={{}}>{children}</EnvConfigContext.Provider>
-);
-
-const renderUseFilterLabels = (features: TFeatures, themeConfig: TThemeConfig) =>
-  renderHook(() => useFilterLabels({ features, themeConfig }), { wrapper });
+const renderUseFilterLabels = (features: TFeatures, themeConfig: TThemeConfig) => {
+  const queryClient = new QueryClient({ defaultOptions: { queries: { retry: false } } });
+  const wrapper = ({ children }: { children: React.ReactNode }) => (
+    <QueryClientProvider client={queryClient}>
+      {/* @ts-expect-error - partial EnvConfig value is fine for this test */}
+      <EnvConfigContext.Provider value={{}}>{children}</EnvConfigContext.Provider>
+    </QueryClientProvider>
+  );
+  return renderHook(() => useFilterLabels({ features, themeConfig }), { wrapper });
+};
 
 describe("useFilterLabels", () => {
   beforeEach(() => {

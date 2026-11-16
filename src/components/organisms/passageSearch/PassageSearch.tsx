@@ -1,4 +1,4 @@
-import { skipToken, useInfiniteQuery, useQuery } from "@tanstack/react-query";
+import { skipToken, useInfiniteQuery } from "@tanstack/react-query";
 import { useRouter } from "next/router";
 import { parseAsArrayOf, parseAsString, parseAsStringLiteral, useQueryState } from "nuqs";
 import { usePostHog } from "posthog-js/react";
@@ -21,7 +21,7 @@ import { PASSAGE_SORT_OPTIONS, PASSAGE_SORT_VALUES } from "@/constants/sort";
 import { useEnvConfig } from "@/context/EnvConfig";
 import { posthogEventName } from "@/context/PostHogProvider";
 import { SearchLevelContext } from "@/context/SearchLevelContext";
-import { loadTaxonomy } from "@/hooks/useLabelSearch";
+import { useTaxonomy } from "@/hooks/useTaxonomy";
 import {
   ISearchPassage,
   TFamilyDocumentPublic,
@@ -192,11 +192,11 @@ export const PassageSearch = ({ changeTab, documents, documentsLabel, enablePrev
     setHasNavigatedForSearch(false);
   }
 
-  const { data: conceptLabels, isFetched: conceptsFetched } = useQuery({
-    queryKey: ["passage-concepts", documentIdsKey, API_URL],
-    queryFn: () => loadTaxonomy(API_URL, { patterns: ["**/concept::*"], filters: documentIdsFilter(documentIdsKey) }),
-    enabled: documentIdsKey.length > 0,
-  });
+  const {
+    labels: conceptLabels,
+    labelNames: conceptNames,
+    loaded: conceptsFetched,
+  } = useTaxonomy({ patterns: ["**/concept::*"], filters: documentIdsFilter(documentIdsKey) }, { enabled: documentIdsKey.length > 0 });
 
   const documentsById = useMemo(() => new Map(documents.map((document) => [document.import_id, document])), [documents]);
   const allDocumentIds = useMemo(() => documents.map((document) => document.import_id), [documents]);
@@ -311,7 +311,7 @@ export const PassageSearch = ({ changeTab, documents, documentsLabel, enablePrev
 
   // Only offer concept filters the scope actually has passages for
   const conceptsLoaded = !documentIdsKey || conceptsFetched;
-  const conceptFilters = useMemo(() => withPassages(conceptLabels ?? []), [conceptLabels]);
+  const conceptFilters = useMemo(() => withPassages(conceptLabels), [conceptLabels]);
 
   const handleClear = () => {
     setQueryParam("");
@@ -382,7 +382,7 @@ export const PassageSearch = ({ changeTab, documents, documentsLabel, enablePrev
       }
       labels={conceptFilters}
       labelsLoaded={conceptsLoaded}
-      nameLabels={conceptLabels ?? []}
+      labelNames={conceptNames}
       pageParamKey={paramKeys.pageToken}
       queryParamKey={paramKeys.query}
       sortOptions={PASSAGE_SORT_OPTIONS}
