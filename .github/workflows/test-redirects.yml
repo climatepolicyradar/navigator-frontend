@@ -57,7 +57,9 @@ jobs:
 
   check:
     needs: [changed-theme, deploy-review-stack]
-    if: fromJSON(needs.changed-theme.outputs.themes)[0] != null
+    if: >-
+      always() && fromJSON(needs.changed-theme.outputs.themes)[0] != null
+      && needs.deploy-review-stack.result != 'cancelled'
     runs-on: ubuntu-latest
     strategy:
       fail-fast: false
@@ -68,6 +70,7 @@ jobs:
       FILE: themes/${{ matrix.theme }}/redirects.json
     steps:
       - uses: actions/checkout@v7
+        with: { fetch-depth: 0 }
 
       - uses: actions/setup-node@v7
         with:
@@ -81,16 +84,26 @@ jobs:
           STACK_NAME: pr-${{ matrix.theme }}-navigator-frontend-${{ github.event.pull_request.number }}
         run: |
           review_url=$(pulumi stack output ecs_service_url --stack "${ORG}/${PROJECT}/${STACK_NAME}")
-          echo "review_url=$review_url" >> "$GITHUB_OUTPUT"
+          echo "review_url=${review_url:?is empty - ${STACK_NAME} did not deploy}" >> "$GITHUB_OUTPUT"
 
       - name: Find redirects added or changed in this PR
         env:
           BASE_SHA: ${{ github.event.pull_request.base.sha }}
         run: |
-          git fetch --depth=1 origin "$BASE_SHA"
-          git show "$BASE_SHA:$FILE" > base.json || echo '[]' > base.json
+          base=$(git merge-base HEAD "$BASE_SHA")
+          git show "$base:$FILE" > base.json
           jq -s '.[0] - .[1]' "$FILE" base.json > changed.json
           echo "Checking $(jq length changed.json) of $(jq length "$FILE") redirects"
+
+      - name: Fail if a source maps to conflicting destinations
+        run: |
+          conflicts=$(jq -r '
+            map(select(has("has") or has("missing") or (.source | contains(":")) | not))
+            | group_by(.source)[]
+            | select(unique_by(.destination) | length > 1)
+            | .[0].source
+          ' "$FILE")
+          [ -z "$conflicts" ] || { echo "A source maps to more than one destination:"; echo "$conflicts"; exit 1; }
 
       - run: |
           node scripts/check-redirects.mjs \
