@@ -133,7 +133,7 @@ def validate_stack_and_branch() -> None:
                 f"it.\n\n "
             )
 
-    elif stack in ["staging", "production"]:
+    elif "staging" in stack or "production" in stack:
         if deploy_from_main_branch_only and branch != deployment_branch:
             raise RuntimeError(
                 f"The stack '{stack}' is only deployable from the '{deployment_branch}'. Set the environment "
