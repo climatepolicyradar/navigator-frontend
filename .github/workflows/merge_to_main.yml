@@ -3,7 +3,6 @@ on:
   push:
     branches:
       - main
-      - push-to-ecrt
 
 # trunk-ignore(checkov/CKV2_GHA_1)
 permissions: write-all
@@ -99,7 +98,7 @@ jobs:
           token: ${{ secrets.TRUNK_TOKEN }}
           org-slug: ${{ secrets.TRUNK_ORG_SLUG }}
 
-  # Deploy to staging (per-theme build, push, and ECS deploy)
+  # Deploy to staging (per-theme pulumi up,build, push, and ECS deploy)
   deploy-staging:
     # Needs pulumi-up-faro: it reads frontend-faro/production's stack output,
     # so a push that changes the frontend stack needs to land first or it
@@ -127,7 +126,6 @@ jobs:
       # Grafana only - no AWS resources in this project, so no role to assume.
       aws-role: ""
 
-  # Deploy Storybook
   storybook:
     runs-on: ubuntu-latest
     env:
