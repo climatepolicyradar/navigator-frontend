@@ -115,13 +115,14 @@ export const fetchSearchDocuments = async (params: ISearchDocumentsParams): Prom
   return res.json() as Promise<ISearchDocumentsResponse>;
 };
 
+export const PRINCIPAL_DOCUMENTS_FILTER: TSearchQueryRule = {
+  field: "labels.value.id",
+  op: "contains",
+  value: "status::Principal",
+};
+
 export const fetchSearchPrincipalDocuments = (params: ISearchDocumentsParams): Promise<ISearchDocumentsResponse> => {
-  const principalDocumentsFilter: TSearchQueryRule = {
-    field: "labels.value.id",
-    op: "contains",
-    value: "status::Principal",
-  };
-  const filters: (TSearchQueryGroup | TSearchQueryRule)[] = [principalDocumentsFilter];
+  const filters: (TSearchQueryGroup | TSearchQueryRule)[] = [PRINCIPAL_DOCUMENTS_FILTER];
   if (params.filters) filters.push(params.filters);
 
   return fetchSearchDocuments({

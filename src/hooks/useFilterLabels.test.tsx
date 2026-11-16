@@ -1,7 +1,7 @@
 import { renderHook, waitFor } from "@testing-library/react";
 import React from "react";
 
-import { configureDocumentsFilters } from "@/api/search";
+import { configureDocumentsFilters, PRINCIPAL_DOCUMENTS_FILTER } from "@/api/search";
 import { DEFAULT_FEATURES } from "@/constants/features";
 import { SUBDIVISION_LABEL_PATTERN } from "@/constants/labels";
 import { DEFAULT_THEME_CONFIG } from "@/constants/themeConfig";
@@ -54,7 +54,7 @@ describe("useFilterLabels", () => {
     renderUseFilterLabels(DEFAULT_FEATURES, themeConfig);
     await waitFor(() => expect(mockLoadTaxonomy).toHaveBeenCalled());
     expect(mockLoadTaxonomy.mock.calls[0][1].filters).toEqual(
-      configureDocumentsFilters(undefined, themeConfig.searchCategories, themeConfig.searchExcludeLabels)
+      configureDocumentsFilters({ op: "and", filters: [PRINCIPAL_DOCUMENTS_FILTER] }, themeConfig.searchCategories, themeConfig.searchExcludeLabels)
     );
   });
 
