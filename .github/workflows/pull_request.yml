@@ -334,6 +334,12 @@ jobs:
               - 'infra/observability/**'
               - 'infra/observability/pyproject.toml'
               - 'infra/observability/uv.lock'
+
+            production-faro:
+              - 'infra/faro/**'
+              - 'infra/faro/pyproject.toml'
+              - 'infra/faro/uv.lock'
+
       - id: parse
         run: |
           CHANGES='${{ steps.filter.outputs.changes }}'
