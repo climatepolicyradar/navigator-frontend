@@ -2,7 +2,7 @@ import { DEFAULT_THEME_CONFIG } from "@/constants/themeConfig";
 import { TLabelCategoryValue, TThemeConfig } from "@/types";
 import { inflateFilters } from "@/utils/filters/deflate";
 
-import { fetchGeographiesAggregate, fetchSearchDocuments } from "./search";
+import { configureDocumentsFilters, fetchGeographiesAggregate, fetchSearchDocuments } from "./search";
 
 const TEST_API_URL = "https://api.climatepolicyradar.org";
 
@@ -181,5 +181,17 @@ describe("fetchGeographiesAggregate", () => {
         count: 5,
       },
     ]);
+  });
+});
+
+describe("configureDocumentsFilters", () => {
+  afterEach(() => vi.useRealTimers());
+
+  it("bounds published_date to the end of the day so the request can be cached", () => {
+    vi.useFakeTimers();
+    vi.setSystemTime(new Date("2026-11-12T09:00:00.000Z"));
+    const morning = configureDocumentsFilters(undefined, ["Law"], []);
+    vi.setSystemTime(new Date("2026-11-12T17:30:00.000Z"));
+    expect(configureDocumentsFilters(undefined, ["Law"], [])).toEqual(morning);
   });
 });

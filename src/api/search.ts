@@ -34,6 +34,12 @@ export const SEARCH_DOCUMENTS_MIN_SHOULD_MATCH = 0.7;
 
 const searchDocumentsUrl = (apiUrl: string): string => `${apiUrl.replace(/\/$/, "")}/search/documents`;
 
+const endOfDay = (): string => {
+  const date = new Date();
+  date.setUTCHours(23, 59, 59, 999);
+  return date.toISOString();
+};
+
 // Add default filters exclusive of search parameters to ensure they are always applied
 export function configureDocumentsFilters(
   filters: TSearchQueryGroup | undefined,
@@ -53,7 +59,7 @@ export function configureDocumentsFilters(
         field: "attributes.published_date",
         key: "published_date",
         op: "lte",
-        value: new Date().toISOString(),
+        value: endOfDay(),
       },
     ],
   };
