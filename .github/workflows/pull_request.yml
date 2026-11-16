@@ -293,11 +293,14 @@ jobs:
 
             staging-shared-resources:
               - 'infra/platform/**'
+              - 'infra/platform/pyproject.toml'
+              - 'infra/platform/uv.lock'
 
-            # We have removed these for now as
-            # we need environment: production to get the AWS creds for that environment
-            # but that environment has GitHub protection rules, so we get stuck
-            # TODO: Iron out a strategy and implement it here
+            staging-observability:
+              - 'infra/observability/**'
+              - 'infra/observability/pyproject.toml'
+              - 'infra/observability/uv.lock'
+
             production-frontend-cpr:
               - 'infra/Pulumi.cpr-production.yaml'
               - 'infra/__main__.py'
