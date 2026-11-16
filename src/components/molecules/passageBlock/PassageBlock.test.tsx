@@ -9,6 +9,7 @@ import { PassageBlock, TPassage } from "./PassageBlock";
 // Colours are assigned by the caller, so any class names will do
 const TOPIC_A = "topic-a";
 const TOPIC_B = "topic-b";
+const TOPIC_C = "topic-c";
 
 const makeLabel = (value: string): IPassageLabel => ({
   classifier_id: `classifier-${value}`,
@@ -228,18 +229,52 @@ describe("PassageBlock", () => {
       expect(screen.getByText("Climate").parentElement).toHaveTextContent(boldingPassage.content);
     });
 
-    it("gives an earlier topic the text it shares with a later one", () => {
-      const passage: TPassage = {
-        ...basePassage,
-        // Both spans want characters 8-18; the first label listed claims them
-        labels: [makeSpanLabel("Ecology", 8, 18), makeSpanLabel("Geohazards", 0, 22)],
-      };
-
-      render(<PassageBlock passage={passage} topicColours={topicColours} />);
+    it.each([
+      ["nested topic first", [makeSpanLabel("Ecology", 8, 18), makeSpanLabel("Geohazards", 0, 22)]],
+      ["surrounding topic first", [makeSpanLabel("Geohazards", 0, 22), makeSpanLabel("Ecology", 8, 18)]],
+    ])("gives a nested topic the text it shares with the topic around it (%s)", (_, labels) => {
+      render(<PassageBlock passage={{ ...basePassage, labels }} topicColours={topicColours} />);
 
       expect(screen.getByText("ecological")).toHaveClass(TOPIC_A);
       expect(screen.getByText("Certain")).toHaveClass(TOPIC_B);
       expect(screen.getByText("and")).toHaveClass(TOPIC_B);
+    });
+
+    it("gives the shorter of two overlapping topics the text they share", () => {
+      const passage: TPassage = {
+        ...basePassage,
+        labels: [makeSpanLabel("Geohazards", 8, 28), makeSpanLabel("Ecology", 0, 18)],
+      };
+
+      render(<PassageBlock passage={passage} topicColours={topicColours} />);
+
+      expect(screen.getByText("Certain ecological")).toHaveClass(TOPIC_A);
+      expect(screen.getByText("and other")).toHaveClass(TOPIC_B);
+    });
+
+    it("gives the earlier of two overlapping topics of equal length the text they share", () => {
+      const passage: TPassage = {
+        ...basePassage,
+        labels: [makeSpanLabel("Geohazards", 8, 26), makeSpanLabel("Ecology", 0, 18)],
+      };
+
+      render(<PassageBlock passage={passage} topicColours={topicColours} />);
+
+      expect(screen.getByText("Certain ecological")).toHaveClass(TOPIC_A);
+      expect(screen.getByText("and oth")).toHaveClass(TOPIC_B);
+    });
+
+    it("gives a nested topic priority over a shorter topic that is not nested", () => {
+      const passage: TPassage = {
+        ...basePassage,
+        labels: [makeSpanLabel("Geohazards", 16, 25), makeSpanLabel("Hazards", 0, 22), makeSpanLabel("Ecology", 8, 18)],
+      };
+
+      render(<PassageBlock passage={passage} topicColours={new Map([...topicColours, ["concept-Hazards", TOPIC_C]])} />);
+
+      expect(screen.getByText("ecological")).toHaveClass(TOPIC_A);
+      expect(screen.getByText("and ot")).toHaveClass(TOPIC_B); // trunk-ignore(typos)
+      expect(screen.getByText("Certain")).toHaveClass(TOPIC_C);
     });
 
     it("highlights the content when the passage is not clickable", () => {
@@ -255,6 +290,18 @@ describe("PassageBlock", () => {
       expect(screen.getByText("Ecology")).toHaveClass(TOPIC_A);
       // The inactive topic is excluded from the list entirely
       expect(screen.queryByText("Geohazards")).not.toBeInTheDocument();
+    });
+
+    it("lists topics in the order they first appear in the passage", () => {
+      const passage: TPassage = {
+        ...basePassage,
+        // Ecology is listed first, but Geohazards has a later-listed span that starts earlier
+        labels: [makeSpanLabel("Ecology", 8, 18), makeSpanLabel("Geohazards", 46, 56), makeSpanLabel("Geohazards", 0, 7)],
+      };
+
+      render(<PassageBlock passage={passage} topicColours={topicColours} />);
+
+      expect(screen.getByText(/^Contains:/)).toHaveTextContent("Contains: Geohazards, Ecology");
     });
 
     it("matches each topic in the list to the colour used for it in the passage", () => {
