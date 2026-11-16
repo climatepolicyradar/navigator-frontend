@@ -1,0 +1,73 @@
+# Which Pulumi stack a change affects, used by the `changes` job in
+# pull_request.yml so the paths are defined once.
+#
+# A filter name matches the `project` key of an entry in
+# .github/projects.json. Only the stacks whose filter matched are previewed.
+#
+# The anchors are the files that can change the outcome of every stack in a
+# Pulumi project: its program and its dependencies. They are not stacks of
+# their own, so they never appear in projects.json and are ignored.
+
+frontend: &frontend
+  - infra/__main__.py
+  - infra/pyproject.toml
+  - infra/uv.lock
+
+platform: &platform
+  - infra/platform/**
+
+observability: &observability
+  - infra/observability/**
+
+faro: &faro
+  - infra/faro/**
+
+# The per-theme Pulumi.<theme>-<environment>.yaml is the only theme-specific
+# input, so a theme's stack is previewed only when its own config changes.
+staging-frontend-cpr:
+  - infra/Pulumi.cpr-staging.yaml
+  - *frontend
+
+staging-frontend-mcf:
+  - infra/Pulumi.mcf-staging.yaml
+  - *frontend
+
+staging-frontend-cclw:
+  - infra/Pulumi.cclw-staging.yaml
+  - *frontend
+
+staging-frontend-ccc:
+  - infra/Pulumi.ccc-staging.yaml
+  - *frontend
+
+staging-shared-resources:
+  - *platform
+
+staging-observability:
+  - *observability
+
+production-frontend-cpr:
+  - infra/Pulumi.cpr-production.yaml
+  - *frontend
+
+production-frontend-mcf:
+  - infra/Pulumi.mcf-production.yaml
+  - *frontend
+
+production-frontend-cclw:
+  - infra/Pulumi.cclw-production.yaml
+  - *frontend
+
+production-frontend-ccc:
+  - infra/Pulumi.ccc-production.yaml
+  - *frontend
+
+production-shared-resources:
+  - *platform
+
+production-observability:
+  - *observability
+
+# Faro apps aren't per-environment, so there is a single production stack.
+production-faro:
+  - *faro
