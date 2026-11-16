@@ -1,3 +1,4 @@
+import sortBy from "lodash/sortBy";
 import { Check, Copy, ExternalLink, File, LocateFixed } from "lucide-react";
 import { useEffect, useState } from "react";
 
@@ -57,6 +58,20 @@ const formatPageRange = (pageNumbers: number[]): string => {
   return [sortedPageNumbers[0], sortedPageNumbers[sortedPageNumbers.length - 1]].join(EN_DASH);
 };
 
+// A range is surrounded if another range covers all of its characters
+const isSurrounded = (range: THighlightRange, index: number, ranges: THighlightRange[]) =>
+  ranges.some((otherRange, otherIndex) => otherIndex !== index && otherRange.start <= range.start && otherRange.end >= range.end);
+
+const sortTopicRanges = (ranges: THighlightRange[]): THighlightRange[] =>
+  sortBy(
+    ranges.map((range, index) => ({ range, surrounded: isSurrounded(range, index, ranges) })),
+    [
+      ({ surrounded }) => !surrounded, // Show surrounded ranges first so they don't disappear
+      ({ range }) => range.end - range.start,
+      ({ range }) => range.start,
+    ]
+  ).map(({ range }) => range);
+
 // Define the highlight ranges - highlights are applied later, we just nede their positions and colour
 const getHighlightRanges = ({
   activeTopics,
@@ -73,11 +88,13 @@ const getHighlightRanges = ({
     end: end_index,
     className: QUERY_HIGHLIGHT_COLOUR,
   })),
-  ...activeTopics.map(({ start_index, end_index, value }) => ({
-    start: start_index,
-    end: end_index,
-    className: topicColours.get(value.id) ?? "",
-  })),
+  ...sortTopicRanges(
+    activeTopics.map(({ start_index, end_index, value }) => ({
+      start: start_index,
+      end: end_index,
+      className: topicColours.get(value.id) ?? "",
+    }))
+  ),
 ];
 
 export const PassageBlock = ({
@@ -108,8 +125,8 @@ export const PassageBlock = ({
     passage.content,
     resolveHighlightRanges(passage.content, getHighlightRanges({ boldings: passage.boldings, activeTopics, topicColours }))
   );
-  // A passage can contain multiple spans of the same highlighted topic
-  const topics = [...new Map(activeTopics.map(({ value }) => [value.value, value.id]))];
+  // A passage can contain multiple spans of the same highlighted topic. List each by its first span
+  const topics = [...new Map(sortBy(activeTopics, "start_index").map(({ value }) => [value.value, value.id]))];
   const topicsList = joinNodes(
     topics.map(([value, id]) => (
       <span key={id} className={topicColours.get(id)}>
