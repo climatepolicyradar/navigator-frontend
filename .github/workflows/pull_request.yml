@@ -393,11 +393,12 @@ jobs:
       - name: Pulumi preview
         uses: pulumi/actions@v7
         with:
-          command: preview --suppress-outputs
+          command: preview
           stack-name: climatepolicyradar/${{ steps.stack.outputs.value }}
           work-dir: ${{ steps.project_dir.outputs.value }}
           diff: true
           always-include-summary: true
+          suppress-outputs: true
         env:
           PULUMI_ACCESS_TOKEN: ${{ secrets.PULUMI_ACCESS_TOKEN }}
           DEPLOY_FROM_MAIN_BRANCH_ONLY: false
