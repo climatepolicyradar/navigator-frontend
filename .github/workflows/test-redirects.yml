@@ -4,7 +4,7 @@ name: Test redirects
 # Runs whenever a theme's redirects.json changes: deploys (or refreshes) that
 # theme's review stack directly via deploy-review-stack.yml's workflow_call
 # entry point - independent of whether the PR carries the deploy:dev label -
-# then live-checks every redirect in the file against it.
+# then live-checks the redirects this PR added or changed against it.
 #
 # Note: this means touching themes/*/redirects.json causes a real Pulumi
 # deployment on every push to the PR, even without deploy:dev applied.
@@ -14,13 +14,17 @@ on:
     paths:
       - themes/*/redirects.json
 
+env:
+  ORG: climatepolicyradar
+  PROJECT: frontend
+
 jobs:
   changed-theme:
     runs-on: ubuntu-latest
     permissions:
       pull-requests: read
     outputs:
-      theme: ${{ steps.filter.outputs.changes }}
+      themes: ${{ steps.filter.outputs.changes }}
     steps:
       - uses: dorny/paths-filter@v4
         id: filter
@@ -35,31 +39,33 @@ jobs:
             ccc:
               - 'themes/ccc/redirects.json'
 
-      # The complexity of adding multiple redirect changes thus spinning up multiple review stacks
-      # and the risk of introducing errors at the edge has lead to allowing only 1 theme at a time
-      - name: Fail if multiple themes' redirects.json changed in one PR
-        if: fromJSON(steps.filter.outputs.changes)[1] != null
-        run: |
-          echo "Multiple themes' redirects.json changed in one PR: ${{ steps.filter.outputs.changes }}"
-          echo "This workflow only checks one theme at a time - split the change into separate PRs."
-          exit 1
-
   deploy-review-stack:
     needs: changed-theme
-    if: fromJSON(needs.changed-theme.outputs.theme)[0] != null
+    if: fromJSON(needs.changed-theme.outputs.themes)[0] != null
     permissions:
       pull-requests: write
       actions: read
+    strategy:
+      fail-fast: false
+      matrix:
+        theme: ${{ fromJSON(needs.changed-theme.outputs.themes) }}
     uses: ./.github/workflows/deploy-review-stack.yml
     with:
       pr_number: ${{ github.event.pull_request.number }}
-      theme: ${{ fromJSON(needs.changed-theme.outputs.theme)[0] }}
+      theme: ${{ matrix.theme }}
     secrets: inherit
 
   check:
     needs: [changed-theme, deploy-review-stack]
-    if: fromJSON(needs.changed-theme.outputs.theme)[0] != null
+    if: fromJSON(needs.changed-theme.outputs.themes)[0] != null
     runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        theme: ${{ fromJSON(needs.changed-theme.outputs.themes) }}
+    env:
+      PULUMI_ACCESS_TOKEN: ${{ secrets.PULUMI_ACCESS_TOKEN }}
+      FILE: themes/${{ matrix.theme }}/redirects.json
     steps:
       - uses: actions/checkout@v7
 
@@ -67,10 +73,29 @@ jobs:
         with:
           node-version-file: .nvmrc
 
+      - uses: pulumi/actions@v7
+
+      - name: Fetch ${{ matrix.theme }} review stack URL
+        id: url
+        env:
+          STACK_NAME: pr-${{ matrix.theme }}-navigator-frontend-${{ github.event.pull_request.number }}
+        run: |
+          review_url=$(pulumi stack output ecs_service_url --stack "${ORG}/${PROJECT}/${STACK_NAME}")
+          echo "review_url=$review_url" >> "$GITHUB_OUTPUT"
+
+      - name: Find redirects added or changed in this PR
+        env:
+          BASE_SHA: ${{ github.event.pull_request.base.sha }}
+        run: |
+          git fetch --depth=1 origin "$BASE_SHA"
+          git show "$BASE_SHA:$FILE" > base.json || echo '[]' > base.json
+          jq -s '.[0] - .[1]' "$FILE" base.json > changed.json
+          echo "Checking $(jq length changed.json) of $(jq length "$FILE") redirects"
+
       - run: |
           node scripts/check-redirects.mjs \
-            --base-url "${{ needs.deploy-review-stack.outputs.review_url }}" \
-            --file "themes/${{ fromJSON(needs.changed-theme.outputs.theme)[0] }}/redirects.json"
+            --base-url "${{ steps.url.outputs.review_url }}" \
+            --file changed.json
 
   teardown:
     needs: [changed-theme, deploy-review-stack, check]
@@ -83,16 +108,18 @@ jobs:
     # reached via the `closed` pull_request event, whereas this stack is
     # created through workflow_call, where `is_workflow_call` short-circuits
     # the action to `update` so will never reach the destroy branch.
-    if: always() && fromJSON(needs.changed-theme.outputs.theme)[0] != null
+    if: always() && fromJSON(needs.changed-theme.outputs.themes)[0] != null
     runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        theme: ${{ fromJSON(needs.changed-theme.outputs.themes) }}
     env:
       PULUMI_ACCESS_TOKEN: ${{ secrets.PULUMI_ACCESS_TOKEN }}
-      ORG: climatepolicyradar
-      PROJECT: frontend
     steps:
       - name: Trigger destroy deployment
         env:
-          STACK_NAME: pr-${{ fromJSON(needs.changed-theme.outputs.theme)[0] }}-navigator-frontend-${{ github.event.pull_request.number }}
+          STACK_NAME: pr-${{ matrix.theme }}-navigator-frontend-${{ github.event.pull_request.number }}
         run: |
           # Check if the stack exists before attempting destroy - the deploy
           # job may have failed before creating it.
