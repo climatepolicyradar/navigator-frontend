@@ -9,7 +9,7 @@ import { TOPIC_HIGHLIGHT_COLOURS } from "@/constants/highlights";
 import { EnvConfigContext } from "@/context/EnvConfig";
 import { SearchLevelContext } from "@/context/SearchLevelContext";
 import { envConfig } from "@/mocks/envConfig";
-import { IPassageLabel, ISearchPassage, TFamilyDocumentPublic, TSearchQueryGroup } from "@/types";
+import { IPassageLabel, ISearchPassage, TFamilyDocumentPublic, TNestedSearchLabel, TSearchQueryGroup } from "@/types";
 import { deflateFilters } from "@/utils/filters/deflate";
 
 import { PassageSearch } from "./PassageSearch";
@@ -29,7 +29,7 @@ vi.mock("posthog-js/react", () => ({ usePostHog: () => ({ capture: mockCapture }
 
 // The label lookup only populates the Topic filter's options, which belong to SearchControls.
 // Stubbed so the suite makes no network calls of its own.
-vi.mock("@/hooks/useLabelSearch", () => ({ loadTaxonomy: () => Promise.resolve([]) }));
+vi.mock("@/hooks/useTaxonomy", () => ({ useTaxonomy: () => ({ labels: [] as TNestedSearchLabel[], labelNames: {}, loaded: true }) }));
 
 /*
   The URL as the tests drive it. nuqs' own testing adapter backs this: `searchParams` is the

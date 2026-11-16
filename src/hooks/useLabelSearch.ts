@@ -14,7 +14,7 @@ type TTaxonomyResponse = {
   data: TNestedSearchLabel[];
 };
 
-interface ITaxonomyParams {
+export interface ITaxonomyParams {
   patterns: string[];
   filters?: TSearchQueryGroup;
 }

@@ -1,3 +1,4 @@
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { renderHook, waitFor } from "@testing-library/react";
 import React from "react";
 
@@ -5,7 +6,7 @@ import { configureDocumentsFilters, PRINCIPAL_DOCUMENTS_FILTER } from "@/api/sea
 import { DEFAULT_FEATURES } from "@/constants/features";
 import { SUBDIVISION_LABEL_PATTERN } from "@/constants/labels";
 import { DEFAULT_THEME_CONFIG } from "@/constants/themeConfig";
-import { EnvConfigContext } from "@/context/EnvConfig";
+import { EnvConfigContext, TPublicEnvConfig } from "@/context/EnvConfig";
 import { TFeatures, TNestedSearchLabel, TThemeConfig } from "@/types";
 
 import { useFilterLabels } from "./useFilterLabels";
@@ -22,13 +23,15 @@ const label = (id: string, count = 1, children: TNestedSearchLabel[] = []): TNes
   children,
 });
 
-const wrapper = ({ children }: { children: React.ReactNode }) => (
-  // @ts-expect-error - partial EnvConfig value is fine for this test
-  <EnvConfigContext.Provider value={{}}>{children}</EnvConfigContext.Provider>
-);
-
-const renderUseFilterLabels = (features: TFeatures, themeConfig: TThemeConfig) =>
-  renderHook(() => useFilterLabels({ features, themeConfig }), { wrapper });
+const renderUseFilterLabels = (features: TFeatures, themeConfig: TThemeConfig) => {
+  const queryClient = new QueryClient({ defaultOptions: { queries: { retry: false } } });
+  const wrapper = ({ children }: { children: React.ReactNode }) => (
+    <QueryClientProvider client={queryClient}>
+      <EnvConfigContext.Provider value={{} as TPublicEnvConfig}>{children}</EnvConfigContext.Provider>
+    </QueryClientProvider>
+  );
+  return renderHook(() => useFilterLabels({ features, themeConfig }), { wrapper });
+};
 
 describe("useFilterLabels", () => {
   beforeEach(() => {
