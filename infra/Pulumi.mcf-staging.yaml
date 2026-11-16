@@ -2,14 +2,10 @@ config:
   aws:region: eu-west-1
   frontend:adobe_api_key:
     secure: AAABAEYtB/jafju+i0ihsaNrnt4uMRQK9AmVcvvS+3VoNFJ15UvCgyQ7M+gjZP9daPFoIirVsTv1JqiQUK11MA==
-  frontend:auto_scaling_config_arn:
-    secure: AAABANp2+MsBWZohjHXJCCAP1rQdlu4TxyyU5RXRUD1NXHjDNSbTCm5sOF5Riwk7nAT1asvrzz+DAs4bvNn7flReZJ0REzNIOkkLiVFjd3Kz0zqefZyRy0C7vfGOh/FgHnp60E3DINtistBUwiKoDjxoM1/NWXur4OGRVd+V4vFCBY3TYJvU1H1QJ9Rwfu75dtp8FhW/0b0=
   frontend:backend_api_token:
     secure: AAABAK5UCTaTx0D119SZ9k0Kniay8qx5FN/OSlgMu41DW94BStrFjIS/OwqEhzY1e9tWZHQWglrmL+qsd7zgk1ommOQB4eYVeLUPbQ8uekaAhvjN6CN4t65DmWnc03mSkHJ9aLNV3VGiTPytanYr7tYibP3VgJ0xWcCVLG8lCOWA1WSQ08jCUnWOTPH9hX2KP/32s0t8/UHbwx+ZnP9tcOxCNTkAQlY04zFwLquNG6l+YUheco/zosRO3TdL/YipHPGsbnrawxB120k1YCxI1AcwNekvEsjc0ao2I4IEOJviAxlYvgvBCrYFsLwfHoiuuAvnP31bZPHRTm/3MvcdxzH8I/7+bNnYf9Se+VprT1vifXyjx4aDZ7qGNnG2MH/kGsgnEJ6fVP4dzCJNSaFBsnjRiG+630ZN2wtcVC7wneeo7eirjM//gDGx6HVQ1dEOlAxEqmw5a/rGXuGN+OTHpcCHiJn9slI1QQxBdirmpWE/IGa2t3d+k/46svgWishz40v9ETttVMx/YXJ987WTT/p7d4svi4gOwXLjiz4X4m8oAJpJxT9tXoUkxTks7LQt1PO1D+mgWMpLDUAyVUV8ZI4vngwWvGIf6/DjYhZ6rxU4ExH89iPWTyHTInlwxY2hKZkjQjP/mPztgw3nofRGJUMCgWUJ+7pvpVfAGMSJBYGH6Q2tcbwm0/XcI1L7jkTra+y9F/NOggOTOjZofE+oNDHh1AcMPVWX5BR9
   frontend:backend_api_url: https://app.climatepolicyradar.org/api/v1
   frontend:cdn_url: https://cdn.dev.climatepolicyradar.org
-  frontend:ecr_uri:
-    secure: AAABAAirsNpwLRxG3Lns/7197aZkhsVamEurPXbEZbbCcs9+rrUyIxHK/g0Z2/NW2AC97B8/jTsUjOlwZ4rVjYgU7IO3L9lzPkk1QXjLc8vfgIP0f+3ESz5RkjfDroytGSC4
   frontend:app_url: https://mcf.staging.climatepolicyradar.org
   frontend:redirect_file: default.json
   frontend:robots: "false"

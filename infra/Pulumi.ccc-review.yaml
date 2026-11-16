@@ -3,15 +3,11 @@ config:
   frontend:adobe_api_key:
     secure: AAABACtwzOlFVqCCfINt1z++cFen+jI9Qi7W3QCFiBmnzo7G7TpUr0/sV0ciJj+43mNhVF4yJPA2B9j3R7HrtQ==
   frontend:app_url: https://www.climatecasechart.com
-  frontend:auto_scaling_config_arn:
-    secure: AAABAEhGYn8tjVFsl550VTYGADzn2yn5QbH55AcExhj2r22dwZ5S8Toikm2WftkhlTtegMGYNjP/y+XICJ09yEogZqYySNA1U2HTMxL8QNSH44S/hwd1DgIEYntX5aSNxJSOaRbXT5FEDuCDIbRM6xqOt6nAkBHzpL8OAa9Aq2elqTyGfT8s5Xq44tCsyUirsaQaZ8FrmzRZTJM=
   frontend:backend_api_token:
     secure: AAABAJwPFMVhOZ3UL7E+3C2NAzHGl6GkCNnjZ+U3M5aGCK/F7S2jQ+x66o2F8GI4KzIMaNYBTAdsAVR9qO9AkLlQJxv5+XeyUmxg4m3AhySyIqvvwvQqRhN+XEiuZm0i/IUkLl0gMt2JLaf2C00QdiU2AuVyogANP2y7NLq2NMU16klpiGpFOdPXRWVv0BI1UJdH1R/KD8fRwymAkM6TLtR7LrSqnG97vdTcgnDMO3KrNHSFMuI8XJ2F7v1uOu0c27z4Cee4IhDjmnb39rnqD3FyAGGSOzREebYLeOHp0wu3N8ZD0MG4Bet34aPiCQBYmtUzPH9KqDOoaab6EpKyHjIpiK+c9VZePhabrsbFlXe7RbNM+JNchAEMqteQk7kQdTzjGDdb0PnPOW+slnPccTGdvR/Sl4UNPwbFLtkEFznvbXFHLYE9o9FBVzuaSyGbR7BY0Q==
   frontend:backend_api_url: https://app.climatepolicyradar.org/api/v1
   frontend:cdn_url: https://cdn.climatepolicyradar.org
   frontend:concepts_api_url: https://api.climatepolicyradar.org
-  frontend:ecr_uri:
-    secure: AAABAJnsBnddY7lJBGCX+zZw0GPVTv69M4Xnc6zI46WF72l86i2J0yY3OeZpsMZ71f80ltheIcGY0e1k/MBegRWNJrovZbKclQOuzMtoya2GbZ2pIP0alnjtIoR/9B0Q6TP/
   frontend:next_public_faro_app_name: ccc-review-frontend
   frontend:next_public_faro_app_namespace: frontend
   frontend:otel_exporter_otlp_endpoint: https://otel.prod.climatepolicyradar.org/
