@@ -335,6 +335,7 @@ jobs:
       id-token: write
       contents: read
     strategy:
+      fail-fast: false
       matrix:
         project: ${{ fromJSON(needs.changes.outputs.pulumi_projects) }}
     environment: ${{ (startsWith(matrix.project, 'production-') && 'production') || 'staging' }}
