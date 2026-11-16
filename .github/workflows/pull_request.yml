@@ -339,9 +339,7 @@ jobs:
         project: ${{ fromJSON(needs.changes.outputs.pulumi_projects) }}
     environment: ${{ (startsWith(matrix.project, 'production-') && 'production') || 'staging' }}
     env:
-      DEPLOY_FROM_MAIN_BRANCH_ONLY: false
       AWS_REGION: eu-west-1
-      DEPLOY_TO_PROD_STACK_ALLOWED: true
     steps:
       - uses: actions/checkout@v7
 
@@ -351,6 +349,9 @@ jobs:
           role-to-assume: arn:aws:iam::${{ secrets.AWS_ACCOUNT_ID }}:role/navigator-infra-github-actions
           role-session-name: GitHub_to_AWS_via_FederatedOIDC
           aws-region: ${{ env.AWS_REGION }}
+          # Off by default, so the account id and the assumed ARN would
+          # otherwise appear in this step's log.
+          mask-aws-account-id: true
 
       - uses: astral-sh/setup-uv@v7
 
@@ -390,7 +391,14 @@ jobs:
         run: uv sync
 
       - name: Pulumi preview
-        working-directory: ${{ steps.project_dir.outputs.value }}
-        run: uv run pulumi preview --stack climatepolicyradar/${{ steps.stack.outputs.value }} --suppress-outputs
+        uses: pulumi/actions@v7
+        with:
+          command: preview --suppress-outputs
+          stack-name: climatepolicyradar/${{ steps.stack.outputs.value }}
+          work-dir: ${{ steps.project_dir.outputs.value }}
+          diff: true
+          always-include-summary: true
         env:
           PULUMI_ACCESS_TOKEN: ${{ secrets.PULUMI_ACCESS_TOKEN }}
+          DEPLOY_FROM_MAIN_BRANCH_ONLY: false
+          DEPLOY_TO_PROD_STACK_ALLOWED: true
