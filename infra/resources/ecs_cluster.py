@@ -17,9 +17,9 @@ class EcsClusterConfig:
 
 
 class EcsCluster(pulumi.ComponentResource):
-    """Shared ECS platform for all frontend services: one 'frontend' cluster,
+    """Shared ECS platform for frontend services: one 'frontend' cluster,
     shared execution + infrastructure + default task roles, and a shared
-    CloudFront-locked ALB SG. Instantiate ONCE, in the platform stack."""
+    CloudFront-locked ALB SG. Instantiate once per cluster."""
 
     def __init__(
         self,
@@ -44,6 +44,11 @@ class EcsCluster(pulumi.ComponentResource):
 
         self.tags = default_tags | (tags or {})
 
+        # ARNs carry the AWS account ID, so keep them secret in state.
+        self._secret_arn_opts = pulumi.ResourceOptions(
+            additional_secret_outputs=["arn"]
+        )
+
         cluster = aws.ecs.Cluster(
             f"{config.cluster_name}-{config.environment}-ecs-cluster",
             name=f"{config.cluster_name}-{config.environment}",
@@ -54,6 +59,7 @@ class EcsCluster(pulumi.ComponentResource):
                 )
             ],
             tags=self.tags,
+            opts=self._secret_arn_opts,
         )
 
         # Execution role: pulls images, injects secrets, writes logs
@@ -78,6 +84,7 @@ class EcsCluster(pulumi.ComponentResource):
                 "arn:aws:iam::aws:policy/service-role/AmazonECSTaskExecutionRolePolicy",
             ],
             tags=self.tags,
+            opts=self._secret_arn_opts,
         )
 
         # Infrastructure role: manages ALB registrations and networking
@@ -103,6 +110,7 @@ class EcsCluster(pulumi.ComponentResource):
                 "AmazonECSInfrastructureRoleforExpressGatewayServices",
             ],
             tags=self.tags,
+            opts=self._secret_arn_opts,
         )
 
         self.alb_security_group = aws.ec2.SecurityGroup(

@@ -4,5 +4,3 @@ config:
     tags:
       Team: fusion
       Environment: staging
-environment:
-  - frontend/aws-creds-staging

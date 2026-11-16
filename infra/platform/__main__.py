@@ -24,7 +24,6 @@ org_name = "climatepolicyradar"
 project_name = "frontend"
 aws_account = aws.get_caller_identity()
 stack = pulumi.get_stack()
-is_staging = stack == "staging"
 is_production = stack == "production"
 
 # ---------------------------------------------------------------------------
@@ -171,20 +170,6 @@ aws_creds_yaml = deployment_role.arn.apply(
         "    AWS_REGION: eu-west-1\n"
     )
 )
-
-# ---------------------------------------------------------------------------
-# Staging-only resources
-# ---------------------------------------------------------------------------
-# The staging stack owns its own credentials environment. It is the only one
-# pointing at the staging AWS account, and Pulumi.staging.yaml imports it.
-if is_staging:
-    aws_creds_staging_env = pulumiservice.Environment(
-        "aws-creds-staging",
-        organization=org_name,
-        project=project_name,
-        name="aws-creds-staging",
-        yaml=aws_creds_yaml.apply(pulumi.StringAsset),
-    )
 
 # ---------------------------------------------------------------------------
 # Production-only resources
@@ -359,11 +344,11 @@ cloudfront_origin_prefix_list_id = aws_env_stack.get_output(
 )
 
 frontend_ecs_cluster = EcsCluster(
-    name=project_name,
+    name="frontend-review",
     config=EcsClusterConfig(
         vpc_id=vpc_id,
         cloudfront_origin_prefix_list_id=cloudfront_origin_prefix_list_id,
-        environment=stack,
+        environment="review",
     ),
 )
 

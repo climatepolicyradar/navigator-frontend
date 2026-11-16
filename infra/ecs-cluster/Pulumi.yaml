@@ -1,0 +1,7 @@
+name: frontend-ecs-cluster
+description: Owns the ECS cluster that the long-lived (staging and production) frontend services run in
+runtime:
+  name: python
+  options:
+    toolchain: uv
+    virtualenv: .venv
