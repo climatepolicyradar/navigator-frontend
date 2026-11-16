@@ -9,4 +9,4 @@ dependencies = [
 ]
 
 [tool.uv.sources]
-resources = { path = "../resources" }
+resources = { path = "../resources", editable = true }

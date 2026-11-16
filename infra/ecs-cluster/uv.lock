@@ -38,7 +38,7 @@ dependencies = [
 requires-dist = [
     { name = "pulumi", specifier = ">=3.0.0,<4.0.0" },
     { name = "pulumi-aws", specifier = ">=7.0.0,<8.0.0" },
-    { name = "resources", directory = "../resources" },
+    { name = "resources", editable = "../resources" },
 ]
 
 [[package]]
@@ -279,7 +279,7 @@ wheels = [
 [[package]]
 name = "resources"
 version = "1.0.0"
-source = { directory = "../resources" }
+source = { editable = "../resources" }
 dependencies = [
     { name = "pulumi" },
     { name = "pulumi-aws" },
