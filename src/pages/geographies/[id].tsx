@@ -144,11 +144,7 @@ export const getServerSideProps = (async (context) => {
     const pattern = isSubdivision ? SUBDIVISION_LABEL_PATTERN : COUNTRY_LABEL_PATTERN;
     const taxonomy = await loadTaxonomy(process.env.API_URL, { patterns: [pattern] });
     const expectedId = `${labelType}::${geographyV2.id}`;
-<<<<<<< HEAD
-    geographyLabel = asSearchLabel(taxonomy, expectedId);
-=======
     geographyLabel = findLabelInTaxonomy(taxonomy, expectedId);
->>>>>>> main
     if (!geographyLabel) return { notFound: true };
   }
 
