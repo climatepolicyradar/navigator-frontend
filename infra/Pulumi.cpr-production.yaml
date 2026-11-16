@@ -31,6 +31,9 @@ config:
   frontend:otel_resource_attributes: service.namespace=frontend,environment=production
   frontend:ecs_frontend_cpu: "2048"
   frontend:ecs_frontend_memory: "4096"
+  frontend:ecs_frontend_min_task_count: "3"
+  frontend:ecs_frontend_max_task_count: "8"
+  frontend:ecs_frontend_scaling_target_value: "500"
   frontend:next_static_enabled: "true"
   aws:defaultTags:
     tags:

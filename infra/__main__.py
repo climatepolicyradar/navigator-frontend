@@ -256,8 +256,11 @@ if not is_review_template:
             health_check_path="/",
             cpu=config.require("ecs_frontend_cpu"),
             memory=config.require("ecs_frontend_memory"),
-            min_task_count=3 if env == "production" else 1,
-            max_task_count=8 if env == "production" else 4,
+            min_task_count=config.require_int("ecs_frontend_min_task_count"),
+            max_task_count=config.require_int("ecs_frontend_max_task_count"),
+            scaling_target_value=config.require_int(
+                "ecs_frontend_scaling_target_value"
+            ),
         ),
         image_identifier=cast(str, image_identifier),
         cluster_arn=shared_resources_stack.get_output("frontend_ecs_cluster_arn"),

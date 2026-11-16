@@ -31,6 +31,9 @@ config:
     secure: AAABAMaACKo+TYbkmVU000GHeLYFLAujP5Zb4HaBJmtHQJFjk2pOFspl8xsBnU7uYwcFCt1p83sSfDJfS+VDBWAZFfXHznimWlVXPi2wVWKgiq2N3TG2plO16RwExFKnJmkF0wY2uFG9PKJ4y8jUZ1n1SYbpV6MTwYICZx6TATCGWKKvyjbdUoV1jqc6GWc91YVV+I/GQYZFHX4=
   frontend:ecs_frontend_cpu: "512"
   frontend:ecs_frontend_memory: "1024"
+  frontend:ecs_frontend_min_task_count: "1"
+  frontend:ecs_frontend_max_task_count: "4"
+  frontend:ecs_frontend_scaling_target_value: "500"
   frontend:next_static_enabled: "false"
   frontend:api_url: https://api.climatepolicyradar.org
   aws:defaultTags:
