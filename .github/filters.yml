@@ -4,9 +4,9 @@
 # A filter name matches the `project` key of an entry in
 # .github/projects.json. Only the stacks whose filter matched are previewed.
 #
-# `frontend`, `platform` and `observability` are anchors, not stacks: the program
-# and dependencies shared by every environment's stack of that project. They
-# never appear in projects.json, so they are ignored.
+# `frontend`, `platform`, `ecs-cluster` and `observability` are anchors, not
+# stacks: the program and dependencies shared by every environment's stack of
+# that project. They never appear in projects.json, so they are ignored.
 
 frontend: &frontend
   - infra/__main__.py
@@ -18,6 +18,12 @@ platform: &platform
   - infra/platform/__main__.py
   - infra/platform/pyproject.toml
   - infra/platform/uv.lock
+
+ecs-cluster: &ecs-cluster
+  - infra/ecs-cluster/Pulumi.yaml
+  - infra/ecs-cluster/__main__.py
+  - infra/ecs-cluster/pyproject.toml
+  - infra/ecs-cluster/uv.lock
 
 observability: &observability
   - infra/observability/Pulumi.yaml
@@ -45,9 +51,9 @@ staging-frontend-ccc:
   - infra/Pulumi.ccc-staging.yaml
   - *frontend
 
-staging-shared-resources:
-  - infra/platform/Pulumi.staging.yaml
-  - *platform
+staging-ecs-cluster:
+  - infra/ecs-cluster/Pulumi.staging.yaml
+  - *ecs-cluster
 
 staging-observability:
   - infra/observability/Pulumi.staging.yaml
@@ -72,6 +78,10 @@ production-frontend-ccc:
 production-shared-resources:
   - infra/platform/Pulumi.production.yaml
   - *platform
+
+production-ecs-cluster:
+  - infra/ecs-cluster/Pulumi.production.yaml
+  - *ecs-cluster
 
 production-observability:
   - infra/observability/Pulumi.production.yaml

@@ -145,6 +145,17 @@ jobs:
       stack: climatepolicyradar/frontend-platform/production
       aws-role: navigator-infra-github-actions
 
+  ecs-cluster-pulumi-up-production:
+    uses: ./.github/workflows/pulumi_up.yml
+    secrets: inherit
+    needs: [changes]
+    if: contains(fromJSON(needs.changes.outputs.stacks), 'production-ecs-cluster')
+    with:
+      environment: production
+      working-directory: ./infra/ecs-cluster
+      stack: climatepolicyradar/frontend-ecs-cluster/production
+      aws-role: navigator-infra-github-actions
+
   storybook:
     runs-on: ubuntu-latest
     env:
