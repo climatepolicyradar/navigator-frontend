@@ -39,7 +39,7 @@ const toSearchLabel = ({ id, type, value, alternative_labels }: TNestedSearchLab
   labels,
 });
 
-const asSearchLabel = (labels: TNestedSearchLabel[], id: string, parent?: TNestedSearchLabel): TSearchLabel | null => {
+const findLabelInTaxonomy = (labels: TNestedSearchLabel[], id: string, parent?: TNestedSearchLabel): TSearchLabel | null => {
   for (const label of labels) {
     if (label.id === id) {
       const relations: TSearchLabelRelation[] = parent
@@ -47,7 +47,7 @@ const asSearchLabel = (labels: TNestedSearchLabel[], id: string, parent?: TNeste
         : [];
       return toSearchLabel(label, relations);
     }
-    const nested = asSearchLabel(label.children, id, label);
+    const nested = findLabelInTaxonomy(label.children, id, label);
     if (nested) return nested;
   }
   return null;
@@ -144,7 +144,7 @@ export const getServerSideProps = (async (context) => {
     const pattern = isSubdivision ? SUBDIVISION_LABEL_PATTERN : COUNTRY_LABEL_PATTERN;
     const taxonomy = await loadTaxonomy(process.env.API_URL, { patterns: [pattern] });
     const expectedId = `${labelType}::${geographyV2.id}`;
-    geographyLabel = asSearchLabel(taxonomy, expectedId);
+    geographyLabel = findLabelInTaxonomy(taxonomy, expectedId);
     if (!geographyLabel) return { notFound: true };
   }
 

@@ -12,6 +12,10 @@ const pruneLabel = (label: TNestedSearchLabel): TPrunedLabel => {
   return { label: { ...label, children: kept }, total };
 };
 
+/**
+ * Drop any taxonomy nodes that don't have any documents associated with them,
+ * as their checkboxes in the UI are essentially dead / pointless links
+ */
 export const pruneTaxonomy = (labels: TNestedSearchLabel[]): TNestedSearchLabel[] => {
   const counted = labels.map(pruneLabel).filter((node) => node.total > 0);
   return counted.length > 0 ? counted.map((node) => node.label) : labels;
