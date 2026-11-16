@@ -112,7 +112,9 @@ if is_review_stack:
     # Extract PR number from stack name like "pr-climatepolicyradar-navigator-frontend-1139"
     match = re.search(r"(\d+)$", stack)
     pr_number = match.group(1) if match else stack[-8:]  # fallback to last 8 chars
-    review_name = f"review-{theme}-frontend-{pr_number}"
+    # The pr- prefix is what the ECS status notifier (internal-tools) matches
+    # to route deploy notifications to the ephemeral Slack channel.
+    review_name = f"pr-{theme}-frontend-{pr_number}"
 else:
     review_name = None
 
@@ -177,9 +179,13 @@ if not is_review_stack_or_template:
     # Export the repository URL for use in CI/CD pipelines
     pulumi.export("ecr_repository_url", repository_url)
 
-# Review stack: use the shared ECR repo from frontend-platform.
+# Different clusters so a review deploy can never touch a cluster serving production
+# traffic.
+shared_resources_project = (
+    "frontend-platform" if is_review_stack_or_template else "frontend-ecs-cluster"
+)
 shared_resources_stack = pulumi.StackReference(
-    f"climatepolicyradar/frontend-platform/{shared_resources_env}"
+    f"climatepolicyradar/{shared_resources_project}/{shared_resources_env}"
 )
 
 review_ecr_url = None
