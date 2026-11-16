@@ -74,6 +74,29 @@ describe("fetchSearchDocuments", () => {
     expect(url.searchParams.has("msm")).toBe(false);
   });
 
+  it("orders by the sort option's clause", async () => {
+    await fetchSearchDocuments({
+      apiUrl: TEST_API_URL,
+      themeConfig: themeConfigWithCategories([]),
+      sort: "recent",
+    });
+
+    const url = vi.mocked(global.fetch).mock.calls[0][0] as URL;
+    expect(url.searchParams.get("order_by")).toBe("attributes.published_date desc");
+  });
+
+  it("orders by an explicit clause in place of the sort option", async () => {
+    await fetchSearchDocuments({
+      apiUrl: TEST_API_URL,
+      themeConfig: themeConfigWithCategories([]),
+      sort: "recent",
+      orderBy: "attributes.created_at desc",
+    });
+
+    const url = vi.mocked(global.fetch).mock.calls[0][0] as URL;
+    expect(url.searchParams.get("order_by")).toBe("attributes.created_at desc");
+  });
+
   it("excludes the theme's excluded labels from results", async () => {
     await fetchSearchDocuments({
       apiUrl: TEST_API_URL,
