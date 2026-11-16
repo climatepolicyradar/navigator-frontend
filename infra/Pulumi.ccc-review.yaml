@@ -26,8 +26,8 @@ config:
   frontend:theme: ccc
   frontend:validation_account_id:
     secure: AAABAObvsYXeJ63WV/F4XiG7Wc0g2DPTzGDRgBZ+3Z3mkNINZrpTOjIPMmc=
-  frontend:apprunner_frontend_vcpu_count: 1 vCPU
-  frontend:apprunner_frontend_memory_gb: 2 GB
+  frontend:ecs_frontend_cpu: "512"
+  frontend:ecs_frontend_memory: "1024"
   frontend:next_static_enabled: "false"
   frontend:api_url: https://api.climatepolicyradar.org
   aws:defaultTags:

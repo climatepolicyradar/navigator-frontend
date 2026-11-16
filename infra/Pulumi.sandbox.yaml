@@ -29,8 +29,8 @@ config:
   frontend:otel_exporter_otlp_protocol: http/protobuf
   frontend:otel_service_name: frontend-server
   frontend:otel_resource_attributes: service.namespace=frontend
-  frontend:apprunner_frontend_vcpu_count: 1 vCPU
-  frontend:apprunner_frontend_memory_gb: 2 GB
+  frontend:ecs_frontend_cpu: "512"
+  frontend:ecs_frontend_memory: "1024"
   aws:defaultTags:
     tags:
       Team: fusion
