@@ -3,11 +3,21 @@ import { useEffect, useMemo, useState } from "react";
 
 import { ApiClient } from "@/api/http-common";
 import { useEnvConfig } from "@/context/EnvConfig";
-import { GeographyTypeV2, TSearchLabel, TSearchQueryGroup } from "@/types";
+import { TNestedSearchLabel, TSearchLabel, TSearchQueryGroup } from "@/types";
+import { deflateFilters } from "@/utils/filters/deflate";
 
 type TLabelsResponse = {
   results: TSearchLabel[];
 };
+
+type TTaxonomyResponse = {
+  data: TNestedSearchLabel[];
+};
+
+interface ITaxonomyParams {
+  patterns: string[];
+  filters?: TSearchQueryGroup;
+}
 
 interface UseLabelSearchOptions {
   /** Debounce delay in milliseconds @default 300 */
@@ -94,32 +104,16 @@ export const loadLabels = async (apiUrl: string, query: string): Promise<TSearch
   return response.data.results || [];
 };
 
-export async function loadFilteredLabels(apiUrl: string, filters: TSearchQueryGroup) {
+export async function loadTaxonomy(apiUrl: string, { patterns, filters }: ITaxonomyParams): Promise<TNestedSearchLabel[]> {
   const client = new ApiClient(apiUrl);
-  const response = await client.get<TLabelsResponse>(`/search/labels?page_size=10000&filters=${encodeURIComponent(JSON.stringify(filters))}`, null);
-  return response.data.results || [];
-}
-
-export async function loadLabelTaxonomy(apiUrl: string) {
-  /**
-   * This is temporary fix until the categories taxonomy data contains label -> label relationships
-   * @see: https://linear.app/climate-policy-radar/issue/FUS-823/write-up-the-current-state-of-play-of-label-label-relationships
-   */
-  const client = new ApiClient(apiUrl);
-  const response = await client.get<TLabelsResponse>(`/search/labels-taxonomy`, null);
-  return response.data.results || [];
-}
-
-export async function loadGeographyTaxonomy(apiUrl: string, geographyTypes: GeographyTypeV2[]) {
-  /**
-   * This is temporary fix until the geographies taxonomy data contains label -> label relationships
-   * @see: https://linear.app/climate-policy-radar/issue/FUS-823/write-up-the-current-state-of-play-of-label-label-relationships
-   */
-  const client = new ApiClient(apiUrl);
-  const urlSearchParams = new URLSearchParams();
-  geographyTypes.forEach((type) => urlSearchParams.append("type", type));
-  const response = await client.get<TLabelsResponse>(`/search/geographies-taxonomy?${urlSearchParams.toString()}`, null);
-  return response.data.results || [];
+  const searchParams = new URLSearchParams();
+  patterns.forEach((pattern) => searchParams.append("include", pattern));
+  if (filters) {
+    searchParams.set("filters", deflateFilters(filters));
+    searchParams.set("encoding", "deflate");
+  }
+  const response = await client.get<TTaxonomyResponse>(`/search/labels:taxonomy?${searchParams.toString()}`, null);
+  return response.data.data || [];
 }
 
 /**
@@ -147,7 +141,6 @@ export function useLabelSearch(query: string, options: UseLabelSearchOptions = {
           setResults([]);
           return;
         }
-
         setIsLoading(true);
         try {
           const response = await loadLabels(API_URL, q);

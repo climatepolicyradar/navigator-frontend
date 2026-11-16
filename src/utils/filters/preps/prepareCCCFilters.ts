@@ -1,12 +1,10 @@
 import groupBy from "lodash/groupBy";
 
-import themeConfig from "@/ccc/config";
 import { TFiltersGroupPrep } from "@/types";
 import { createGroupLabel } from "@/utils/filters/createGroupLabel";
-import { filterLabelCategories } from "@/utils/filters/preps/filterLabelCategories";
 
 export const prepareCCCFilters: TFiltersGroupPrep = (rootLabels) => {
-  const litigationCategory = filterLabelCategories(rootLabels, themeConfig)[0];
+  const litigationCategory = rootLabels[0];
   if (!litigationCategory) return [];
 
   const litigationLabelsByType = groupBy(litigationCategory.children, "type");

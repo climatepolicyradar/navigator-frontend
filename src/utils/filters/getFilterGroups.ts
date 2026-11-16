@@ -63,7 +63,7 @@ export const getFilterGroups = ({ features, getAppText, theme }: IProps): TFilte
     container: "drawer",
     Icon: LucideEarth,
     prepareRootLabels: prepareGeographyFilters(features["geography-type-filters"]),
-    rootLabelTypes: ["region"],
+    rootLabelTypes: ["region", "country"],
     title: "Geography",
     topLevelDefaultOpen: true,
   });

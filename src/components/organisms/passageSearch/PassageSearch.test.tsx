@@ -9,7 +9,7 @@ import { TOPIC_HIGHLIGHT_COLOURS } from "@/constants/highlights";
 import { EnvConfigContext } from "@/context/EnvConfig";
 import { SearchLevelContext } from "@/context/SearchLevelContext";
 import { envConfig } from "@/mocks/envConfig";
-import { IPassageLabel, ISearchPassage, TFamilyDocumentPublic, TSearchQueryGroup, TTopic } from "@/types";
+import { IPassageLabel, ISearchPassage, TFamilyDocumentPublic, TSearchQueryGroup } from "@/types";
 import { deflateFilters } from "@/utils/filters/deflate";
 
 import { PassageSearch } from "./PassageSearch";
@@ -29,7 +29,7 @@ vi.mock("posthog-js/react", () => ({ usePostHog: () => ({ capture: mockCapture }
 
 // The label lookup only populates the Topic filter's options, which belong to SearchControls.
 // Stubbed so the suite makes no network calls of its own.
-vi.mock("@/hooks/useLabelSearch", () => ({ loadFilteredLabels: () => Promise.resolve([]) }));
+vi.mock("@/hooks/useLabelSearch", () => ({ loadTaxonomy: () => Promise.resolve([]) }));
 
 /*
   The URL as the tests drive it. nuqs' own testing adapter backs this: `searchParams` is the
@@ -144,11 +144,6 @@ const principalDocuments = [
   { import_id: "CCLW.document.1.3", slug: "a-decree", title: "Decree on renewable energy sources" },
 ] as TFamilyDocumentPublic[];
 
-const concepts = [
-  { wikibase_id: "Q1", preferred_label: "Extreme weather" },
-  { wikibase_id: "Q2", preferred_label: "Air pollution risk" },
-] as TTopic[];
-
 const renderWith = (ui: React.ReactElement) => {
   const queryClient = new QueryClient({ defaultOptions: { queries: { retry: false } } });
   // The adapter is re-rendered with a new querystring whenever a test drives the url, which is
@@ -168,26 +163,20 @@ const renderWith = (ui: React.ReactElement) => {
 // The document page: one document, with the PDF preview alongside the results.
 const renderWithPreview = (initialParams: Record<string, unknown> = {}) => {
   Object.entries(initialParams).forEach(([key, value]) => url.seed(key, value));
-  return renderWith(<PassageSearch documents={[mainDocument]} concepts={concepts} enablePreview />);
+  return renderWith(<PassageSearch documents={[mainDocument]} enablePreview />);
 };
 
 // The principal page: several documents, full width, no preview.
 const renderPrincipal = (initialParams: Record<string, unknown> = {}, documents = principalDocuments) => {
   Object.entries(initialParams).forEach(([key, value]) => url.seed(key, value));
-  return renderWith(<PassageSearch documents={documents} concepts={concepts} documentsLabel="Documents in this Law" subject="these documents" />);
+  return renderWith(<PassageSearch documents={documents} documentsLabel="Documents in this Law" subject="these documents" />);
 };
 
 // The principal-scoped panel as it is actually mounted, with the principal id it belongs to.
 const renderWithPrincipalId = (initialParams: Record<string, unknown> = {}, documents = principalDocuments) => {
   Object.entries(initialParams).forEach(([key, value]) => url.seed(key, value));
   return renderWith(
-    <PassageSearch
-      documents={documents}
-      principalId="CCLW.family.1.0"
-      concepts={concepts}
-      documentsLabel="Documents in this Law"
-      subject="these documents"
-    />
+    <PassageSearch documents={documents} principalId="CCLW.family.1.0" documentsLabel="Documents in this Law" subject="these documents" />
   );
 };
 
@@ -475,7 +464,7 @@ describe("PassageSearch", () => {
       Object.entries(initialParams).forEach(([key, value]) => url.seed(key, value));
       return renderWith(
         <SearchLevelContext value="principal">
-          <PassageSearch documents={principalDocuments} concepts={concepts} subject="these documents" />
+          <PassageSearch documents={principalDocuments} subject="these documents" />
         </SearchLevelContext>
       );
     };
@@ -673,9 +662,7 @@ describe("PassageSearch", () => {
     });
 
     it("offers no preview when the document is not a PDF", async () => {
-      renderWith(
-        <PassageSearch documents={[{ ...mainDocument, cdn_object: "https://cdn.example.org/document.html" }]} concepts={concepts} enablePreview />
-      );
+      renderWith(<PassageSearch documents={[{ ...mainDocument, cdn_object: "https://cdn.example.org/document.html" }]} enablePreview />);
 
       await screen.findByText("Search passages");
       expect(screen.queryByText(/^page:/)).not.toBeInTheDocument();
