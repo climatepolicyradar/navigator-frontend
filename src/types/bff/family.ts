@@ -2,6 +2,7 @@ import { TDataInDocument } from "@/schemas";
 
 import { IApiFamilyDocumentTopics } from "../api";
 import { IFamilyDocumentTopics } from "../tables/familyDocumentTopics";
+import { TOnDirectLinkPolicy } from "../themeConfig";
 import { TCollectionPublicWithFamilies, TFamilyPublic } from "../types";
 
 export type TFamilyApiData = {
@@ -14,6 +15,7 @@ export type TFamilyPresentationalData = {
   collections: TCollectionPublicWithFamilies[];
   family: TFamilyPublic;
   familyTopics: IFamilyDocumentTopics | null;
+  directLinkPolicy: TOnDirectLinkPolicy | null;
   debug?: {
     dataInDocument: TDataInDocument;
   };

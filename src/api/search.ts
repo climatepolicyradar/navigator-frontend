@@ -1,6 +1,14 @@
 import { ID_SEPARATOR } from "@/constants/chars";
 import { SORT_PARAMS_LOOKUP } from "@/constants/sort";
-import { ISearchDocumentsResponse, TLabelCategoryValue, TSearchQueryGroup, TSearchQueryRule, TSortValue, TThemeConfig } from "@/types";
+import {
+  ISearchDocumentsResponse,
+  TLabelCategoryValue,
+  TSearchExcludeLabel,
+  TSearchQueryGroup,
+  TSearchQueryRule,
+  TSortValue,
+  TThemeConfig,
+} from "@/types";
 import { DATE_RANGE_MIN_YEAR, hasPublishedDateRule } from "@/utils/_experiment/dateRangeFilters";
 import { deflateFilters } from "@/utils/filters/deflate";
 
@@ -35,7 +43,7 @@ const endOfDay = (): string => {
 export function configureDocumentsFilters(
   filters: TSearchQueryGroup | undefined,
   searchCategories: TLabelCategoryValue[],
-  searchExcludeLabels: string[] = []
+  searchExcludeLabels: TSearchExcludeLabel[] = []
 ): TSearchQueryGroup {
   const publishedDateBoundsFilter: TSearchQueryGroup = {
     op: "and",
@@ -71,11 +79,11 @@ export function configureDocumentsFilters(
   if (searchCategories.length > 0) {
     filtersWithConditionals.push(categoriesFilter);
   }
-  searchExcludeLabels.forEach((id) => {
+  searchExcludeLabels.forEach(({ id: labelId }) => {
     filtersWithConditionals.push({
       op: "not_contains",
       field: "labels.value.id",
-      value: id,
+      value: labelId,
     });
   });
   if (filters) {
