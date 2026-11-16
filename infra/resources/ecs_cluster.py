@@ -17,9 +17,9 @@ class EcsClusterConfig:
 
 
 class EcsCluster(pulumi.ComponentResource):
-    """Shared ECS platform for all frontend services: one 'frontend' cluster,
+    """Shared ECS platform for frontend services: one 'frontend' cluster,
     shared execution + infrastructure + default task roles, and a shared
-    CloudFront-locked ALB SG. Instantiate ONCE, in the platform stack."""
+    CloudFront-locked ALB SG. Instantiate once per cluster."""
 
     def __init__(
         self,
