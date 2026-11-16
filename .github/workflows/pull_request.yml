@@ -270,18 +270,26 @@ jobs:
             staging-frontend-cpr:
               - 'infra/Pulumi.cpr-staging.yaml'
               - 'infra/__main__.py'
+              - 'infra/pyproject.toml'
+              - 'infra/uv.lock'
 
             staging-frontend-mcf:
               - 'infra/Pulumi.mcf-staging.yaml'
               - 'infra/__main__.py'
+              - 'infra/pyproject.toml'
+              - 'infra/uv.lock'
 
             staging-frontend-cclw:
               - 'infra/Pulumi.cclw-staging.yaml'
               - 'infra/__main__.py'
+              - 'infra/pyproject.toml'
+              - 'infra/uv.lock'
 
             staging-frontend-ccc:
               - 'infra/Pulumi.ccc-staging.yaml'
               - 'infra/__main__.py'
+              - 'infra/pyproject.toml'
+              - 'infra/uv.lock'
 
             staging-shared-resources:
               - 'infra/platform/**'
@@ -293,18 +301,26 @@ jobs:
             production-frontend-cpr:
               - 'infra/Pulumi.cpr-production.yaml'
               - 'infra/__main__.py'
+              - 'infra/pyproject.toml'
+              - 'infra/uv.lock'
 
             production-frontend-mcf:
               - 'infra/Pulumi.mcf-production.yaml'
               - 'infra/__main__.py'
+              - 'infra/pyproject.toml'
+              - 'infra/uv.lock'
 
             production-frontend-cclw:
               - 'infra/Pulumi.cclw-production.yaml'
               - 'infra/__main__.py'
+              - 'infra/pyproject.toml'
+              - 'infra/uv.lock'
 
             production-frontend-ccc:
               - 'infra/Pulumi.ccc-production.yaml'
               - 'infra/__main__.py'
+              - 'infra/pyproject.toml'
+              - 'infra/uv.lock'
       - id: parse
         run: |
           CHANGES='${{ steps.filter.outputs.changes }}'
