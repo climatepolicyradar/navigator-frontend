@@ -273,7 +273,7 @@ describe("PassageBlock", () => {
       render(<PassageBlock passage={passage} topicColours={new Map([...topicColours, ["concept-Hazards", TOPIC_C]])} />);
 
       expect(screen.getByText("ecological")).toHaveClass(TOPIC_A);
-      expect(screen.getByText("and ot")).toHaveClass(TOPIC_B);
+      expect(screen.getByText("and ot")).toHaveClass(TOPIC_B); // trunk-ignore(typos)
       expect(screen.getByText("Certain")).toHaveClass(TOPIC_C);
     });
 
