@@ -4,23 +4,13 @@
 # A filter name matches the `project` key of an entry in
 # .github/projects.json. Only the stacks whose filter matched are previewed.
 #
-# The anchors are the files that can change the outcome of every stack in a
-# Pulumi project: its program and its dependencies. They are not stacks of
-# their own, so they never appear in projects.json and are ignored.
+# `frontend` is an anchor, not a stack: the program and dependencies shared by
+# every theme's stack. It never appears in projects.json, so it is ignored.
 
 frontend: &frontend
   - infra/__main__.py
   - infra/pyproject.toml
   - infra/uv.lock
-
-platform: &platform
-  - infra/platform/**
-
-observability: &observability
-  - infra/observability/**
-
-faro: &faro
-  - infra/faro/**
 
 # The per-theme Pulumi.<theme>-<environment>.yaml is the only theme-specific
 # input, so a theme's stack is previewed only when its own config changes.
@@ -41,10 +31,10 @@ staging-frontend-ccc:
   - *frontend
 
 staging-shared-resources:
-  - *platform
+  - infra/platform/**
 
 staging-observability:
-  - *observability
+  - infra/observability/**
 
 production-frontend-cpr:
   - infra/Pulumi.cpr-production.yaml
@@ -63,11 +53,11 @@ production-frontend-ccc:
   - *frontend
 
 production-shared-resources:
-  - *platform
+  - infra/platform/**
 
 production-observability:
-  - *observability
+  - infra/observability/**
 
 # Faro apps aren't per-environment, so there is a single production stack.
 production-faro:
-  - *faro
+  - infra/faro/**
