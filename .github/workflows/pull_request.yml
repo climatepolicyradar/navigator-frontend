@@ -381,6 +381,10 @@ jobs:
           project="${{ matrix.project }}"
           if [[ "$project" == staging-frontend-* || "$project" == production-frontend-* ]]; then
             echo "value=infra" >> "$GITHUB_OUTPUT"
+          elif [[ "$project" == *-observability ]]; then
+            echo "value=infra/observability" >> "$GITHUB_OUTPUT"
+          elif [[ "$project" == *-faro ]]; then
+            echo "value=infra/faro" >> "$GITHUB_OUTPUT"
           else
             echo "value=infra/platform" >> "$GITHUB_OUTPUT"
           fi
@@ -396,6 +400,11 @@ jobs:
           elif [[ "$project" =~ ^(staging|production)-shared-resources$ ]]; then
             environment="${BASH_REMATCH[1]}"
             echo "value=frontend-platform/${environment}" >> "$GITHUB_OUTPUT"
+          elif [[ "$project" =~ ^(staging|production)-observability$ ]]; then
+            environment="${BASH_REMATCH[1]}"
+            echo "value=frontend-observability/${environment}" >> "$GITHUB_OUTPUT"
+          elif [[ "$project" == "production-faro" ]]; then
+            echo "value=frontend-faro/production" >> "$GITHUB_OUTPUT"
           else
             echo "Unsupported project format: ${project}" >&2
             exit 1
