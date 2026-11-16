@@ -324,6 +324,16 @@ jobs:
               - 'infra/__main__.py'
               - 'infra/pyproject.toml'
               - 'infra/uv.lock'
+
+            production-shared-resources:
+              - 'infra/platform/**'
+              - 'infra/platform/pyproject.toml'
+              - 'infra/platform/uv.lock'
+
+            production-observability:
+              - 'infra/observability/**'
+              - 'infra/observability/pyproject.toml'
+              - 'infra/observability/uv.lock'
       - id: parse
         run: |
           CHANGES='${{ steps.filter.outputs.changes }}'
