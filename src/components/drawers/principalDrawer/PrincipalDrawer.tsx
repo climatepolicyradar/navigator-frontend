@@ -14,7 +14,6 @@ import { IconHighlights } from "@/components/fragments/icons/IconHighlights";
 import { PassageSearch } from "@/components/organisms/passageSearch/PassageSearch";
 import { SearchLevelContext } from "@/context/SearchLevelContext";
 import useConfig from "@/hooks/useConfig";
-import { useDocumentTopics } from "@/hooks/useDocumentTopics";
 import { useSearchLevelValues } from "@/hooks/useSearchLevel";
 import { useText } from "@/hooks/useText";
 import { ISearchDocument, TFamilyPresentationalData, TFeatures, TPrincipalDrawerTab } from "@/types";
@@ -106,11 +105,6 @@ export function PrincipalDrawer({ document, slug, open, onOpenChange, tab, onTab
     enabled: !!slug,
   });
 
-  // We use the `familyData` here as `document` is not always available, specifically when the page is refreshed.
-  // We should try decouple from this endpoint, but given this method is highly coupled to it currently, this felt
-  // like it would be decoupled when we do it throughout this component.
-  const conceptTopics = useDocumentTopics(familyData?.family.documents.map((doc) => doc.import_id) ?? []);
-
   const getCategoryText = getCategoryTextLookup(familyData?.family.attribution.category);
 
   const outboundQuery = flattenLevelToBaseQuery(principalSearch);
@@ -190,7 +184,6 @@ export function PrincipalDrawer({ document, slug, open, onOpenChange, tab, onTab
                     <PassageSearch
                       documents={familyData.family.documents}
                       principalId={familyData.family.import_id}
-                      concepts={conceptTopics}
                       documentsLabel={`Documents in this ${firstCase(getCategoryText("familySingular"))}`}
                       subject="these documents"
                       changeTab={onTabChange}

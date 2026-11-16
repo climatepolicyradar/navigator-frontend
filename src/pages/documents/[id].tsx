@@ -20,7 +20,6 @@ import { ROBOTS_BLOCKED_SLUGS, X_ROBOTS_TAG_NOINDEX_VALUE } from "@/constants/ro
 import { withEnvConfig } from "@/context/EnvConfig";
 import { FeaturesContext } from "@/context/FeaturesContext";
 import { TopicsContext } from "@/context/TopicsContext";
-import { useDocumentTopics } from "@/hooks/useDocumentTopics";
 import useSearch from "@/hooks/useSearch";
 import { TTheme } from "@/types";
 import { CleanRouterQuery } from "@/utils/cleanRouterQuery";
@@ -109,9 +108,6 @@ const DocumentPage = ({
     [conceptFiltersQuery]
   );
 
-  // The topics offered as passage search filters come from the document's concepts in `search-api`.
-  const passageConcepts = useDocumentTopics([document.import_id], { enabled: isNewSearch });
-
   return (
     <FeaturesContext.Provider value={features}>
       <Layout
@@ -137,7 +133,7 @@ const DocumentPage = ({
             />
 
             {isNewSearch ? (
-              <PassageSearch documents={[document]} concepts={passageConcepts} enablePreview />
+              <PassageSearch documents={[document]} enablePreview />
             ) : (
               <ConceptsDocumentViewer
                 initialQueryTerm={qsSearchString}
