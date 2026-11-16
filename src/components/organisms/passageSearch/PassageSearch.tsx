@@ -1,4 +1,4 @@
-import { skipToken, useInfiniteQuery } from "@tanstack/react-query";
+import { skipToken, useInfiniteQuery, useQuery } from "@tanstack/react-query";
 import { useRouter } from "next/router";
 import { parseAsArrayOf, parseAsString, parseAsStringLiteral, useQueryState } from "nuqs";
 import { usePostHog } from "posthog-js/react";
@@ -14,7 +14,6 @@ import { DocumentsFilter, TFilterableDocument } from "@/components/molecules/doc
 import { PassageBlock, TPassage as TPassageBlock } from "@/components/molecules/passageBlock/PassageBlock";
 import { SearchControls } from "@/components/organisms/searchControls/SearchControls";
 import { ZeroStatePassages } from "@/components/organisms/zeroStates/ZeroStatePassages";
-import { ID_SEPARATOR } from "@/constants/chars";
 import { PASSAGE_FILTER_GROUPS } from "@/constants/filters";
 import { TOPIC_HIGHLIGHT_COLOURS } from "@/constants/highlights";
 import { RESULTS_PER_PAGE } from "@/constants/paging";
@@ -23,14 +22,21 @@ import { useEnvConfig } from "@/context/EnvConfig";
 import { posthogEventName } from "@/context/PostHogProvider";
 import { SearchLevelContext } from "@/context/SearchLevelContext";
 import { loadTaxonomy } from "@/hooks/useLabelSearch";
-import { ISearchPassage, TFamilyDocumentPublic, TNestedSearchLabel, TPassagesScope, TPrincipalDrawerTab, TSortValue, TTopic } from "@/types";
+import {
+  ISearchPassage,
+  TFamilyDocumentPublic,
+  TNestedSearchLabel,
+  TPassagesScope,
+  TPrincipalDrawerTab,
+  TSearchQueryGroup,
+  TSortValue,
+} from "@/types";
 import { parseAsDeflatedFilters } from "@/utils/filters/deflate";
 import { queryGroupToFilterPaths } from "@/utils/search/queryGroupToFilterPaths";
 import { conceptFiltersOnly, flattenLevelToBaseQuery, levelParamKeys } from "@/utils/search/searchLevels";
 
 type TProps = {
   changeTab?: (tab: TPrincipalDrawerTab) => void;
-  concepts: TTopic[];
   documents: TFamilyDocumentPublic[];
   documentsLabel?: string;
   // The principal the documents belong to. Scopes a principal-wide search on its own, so the
@@ -120,7 +126,25 @@ const DocumentPreview = memo(({ document, pageNumber, passages }: TDocumentPrevi
 ));
 DocumentPreview.displayName = "DocumentPreview";
 
-export const PassageSearch = ({ changeTab, concepts, documents, documentsLabel, enablePreview = false, onSearch, principalId, subject }: TProps) => {
+const DOCUMENT_IDS_SEPARATOR = "|";
+
+const documentIdsFilter = (documentIdsKey: string): TSearchQueryGroup => ({
+  op: "and",
+  filters: [
+    {
+      op: "or",
+      filters: documentIdsKey
+        .split(DOCUMENT_IDS_SEPARATOR)
+        .filter(Boolean)
+        .map((id) => ({ field: "id", op: "contains" as const, value: id })),
+    },
+  ],
+});
+
+const withPassages = (labels: TNestedSearchLabel[]): TNestedSearchLabel[] =>
+  labels.flatMap((label) => [...((label.count ?? 0) > 0 ? [{ ...label, children: [] }] : []), ...withPassages(label.children)]);
+
+export const PassageSearch = ({ changeTab, documents, documentsLabel, enablePreview = false, onSearch, principalId, subject }: TProps) => {
   const router = useRouter();
   const posthog = usePostHog();
   const { API_URL } = useEnvConfig();
@@ -135,8 +159,7 @@ export const PassageSearch = ({ changeTab, concepts, documents, documentsLabel, 
   );
   const [documentsParam, setDocumentsParam] = useQueryState(paramKeys.documents, parseAsArrayOf(parseAsString).withDefault([]));
   const [pageNumber, setPageNumber] = useState<number | null>(null);
-  const [availableConcepts, setAvailableConcepts] = useState<TNestedSearchLabel[]>([]);
-  const [loadedConcepts, setLoadedConcepts] = useState(false);
+  const documentIdsKey = documents.map((document) => document.import_id).join(DOCUMENT_IDS_SEPARATOR);
 
   // Only concept filters are offered here, and a level is seeded with only those, so anything else
   // in the parameter came from a hand-edited or shared URL and is not this search's to apply.
@@ -160,11 +183,11 @@ export const PassageSearch = ({ changeTab, concepts, documents, documentsLabel, 
     setHasNavigatedForSearch(false);
   }
 
-  useEffect(() => {
-    loadTaxonomy(API_URL, { patterns: ["**/concept::*"] })
-      .then(setAvailableConcepts)
-      .finally(() => setLoadedConcepts(true));
-  }, [API_URL]);
+  const { data: conceptLabels, isFetched: conceptsFetched } = useQuery({
+    queryKey: ["passage-concepts", documentIdsKey, API_URL],
+    queryFn: () => loadTaxonomy(API_URL, { patterns: ["**/concept::*"], filters: documentIdsFilter(documentIdsKey) }),
+    enabled: documentIdsKey.length > 0,
+  });
 
   const documentsById = useMemo(() => new Map(documents.map((document) => [document.import_id, document])), [documents]);
   const allDocumentIds = useMemo(() => documents.map((document) => document.import_id), [documents]);
@@ -278,15 +301,8 @@ export const PassageSearch = ({ changeTab, concepts, documents, documentsLabel, 
   );
 
   // Only offer concept filters the scope actually has passages for
-  const conceptFilters = useMemo(() => {
-    const rankedIds = new Set(concepts.map((concept) => concept.wikibase_id));
-    const ranked = (labels: TNestedSearchLabel[]): TNestedSearchLabel[] =>
-      labels.flatMap((label) => [
-        ...(label.type === "concept" && rankedIds.has(label.id.split(ID_SEPARATOR)[1]) ? [{ ...label, children: [] }] : []),
-        ...ranked(label.children),
-      ]);
-    return ranked(availableConcepts);
-  }, [availableConcepts, concepts]);
+  const conceptsLoaded = !documentIdsKey || conceptsFetched;
+  const conceptFilters = useMemo(() => withPassages(conceptLabels ?? []), [conceptLabels]);
 
   const handleClear = () => {
     setQueryParam("");
@@ -356,8 +372,8 @@ export const PassageSearch = ({ changeTab, concepts, documents, documentsLabel, 
         )
       }
       labels={conceptFilters}
-      labelsLoaded={loadedConcepts}
-      nameLabels={availableConcepts}
+      labelsLoaded={conceptsLoaded}
+      nameLabels={conceptLabels ?? []}
       pageParamKey={paramKeys.pageToken}
       queryParamKey={paramKeys.query}
       sortOptions={PASSAGE_SORT_OPTIONS}

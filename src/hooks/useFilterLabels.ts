@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 
-import { configureDocumentsFilters } from "@/api/search";
+import { configureDocumentsFilters, PRINCIPAL_DOCUMENTS_FILTER } from "@/api/search";
 import { SUBDIVISION_LABEL_PATTERN } from "@/constants/labels";
 import { useEnvConfig } from "@/context/EnvConfig";
 import { loadTaxonomy } from "@/hooks/useLabelSearch";
@@ -22,7 +22,7 @@ export const useFilterLabels = ({ features, themeConfig }: IProps) => {
     const patterns = features.subdivisions ? [...searchLabelPatterns, SUBDIVISION_LABEL_PATTERN] : searchLabelPatterns;
     loadTaxonomy(API_URL, {
       patterns,
-      filters: configureDocumentsFilters(undefined, searchCategories, searchExcludeLabels),
+      filters: configureDocumentsFilters({ op: "and", filters: [PRINCIPAL_DOCUMENTS_FILTER] }, searchCategories, searchExcludeLabels),
     })
       .then((labels) => setFilters(pruneTaxonomy(labels)))
       .finally(() => setLoaded(true));

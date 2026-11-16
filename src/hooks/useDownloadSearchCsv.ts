@@ -1,6 +1,6 @@
 import { useState } from "react";
 
-import { configureDocumentsFilters, SEARCH_DOCUMENTS_MIN_SHOULD_MATCH } from "@/api/search";
+import { configureDocumentsFilters, PRINCIPAL_DOCUMENTS_FILTER, SEARCH_DOCUMENTS_MIN_SHOULD_MATCH } from "@/api/search";
 import { isFilterGroupEmpty } from "@/components/_experiment/advancedFilters/AdvancedFilters";
 import { SORT_PARAMS_LOOKUP } from "@/constants/sort";
 import { useEnvConfig } from "@/context/EnvConfig";
@@ -10,14 +10,6 @@ import { deflateFilters } from "@/utils/filters/deflate";
 import getThemeDomain from "@/utils/getThemeDomain";
 
 const DOWNLOAD_MAX_RESULTS = 500;
-
-// Mirrors fetchSearchPrincipalDocuments's principal-only filter in src/api/search.ts,
-// so the download matches what the user sees on the results list.
-const PRINCIPAL_DOCUMENTS_FILTER: TSearchQueryRule = {
-  field: "labels.value.id",
-  op: "contains",
-  value: "status::Principal",
-};
 
 interface IDownloadSearchCsvParams {
   query?: string;
