@@ -157,7 +157,7 @@ const config: TThemeConfig = {
   ],
   searchCategories: ["UN submission", "Law", "Policy"],
   searchExcludeLabels: [{ id: "author_type::Non-Party", onDirectLink: { action: "redirect", to: `${cprAppUrl}/document/{id}` } }],
-  searchLabelPatterns: [...SHARED_LABEL_PATTERNS, "category::Law/**", "category::Policy/**", "category::UN submission/**"],
+  searchLabelPatterns: [...SHARED_LABEL_PATTERNS, "category::Law/**", "category::Policy/**", "category::UN submission/un_convention::UNFCCC/**"],
   downloadColumns: [
     "ID",
     "TITLE",
