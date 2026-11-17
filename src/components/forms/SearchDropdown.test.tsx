@@ -1,39 +1,27 @@
 import { screen, fireEvent } from "@testing-library/react";
 import { vi, it } from "vitest";
 
+import { TCountryOption } from "@/hooks/useCountryOptions";
 import { renderWithAppContext } from "@/mocks/renderWithAppContext";
-import { TGeography } from "@/types";
 
 import { SearchDropdown } from "../../components/forms/SearchDropdown";
 
 type TQueryResponse = {
-  data: {
-    countries: TGeography[];
-  };
+  data: TCountryOption[];
   isLoading: boolean;
   error: unknown;
 };
 
-// Mock useConfig hook
-vi.mock("@/hooks/useConfig", () => ({
+vi.mock("@/hooks/useCountryOptions", () => ({
   default: (): TQueryResponse => ({
-    data: {
-      countries: [
-        { id: 1, slug: "spain", display_value: "Spain", value: "spain", type: "country", parent_id: null },
-        { id: 2, slug: "france", display_value: "France", value: "france", type: "country", parent_id: null },
-        { id: 3, slug: "south-africa", display_value: "South Africa", value: "south-africa", type: "country", parent_id: null },
-        {
-          id: 4,
-          slug: "central-african-republic",
-          display_value: "Central African Republic",
-          value: "central-african-republic",
-          type: "country",
-          parent_id: null,
-        },
-        { id: 5, slug: "sudan", display_value: "Sudan", value: "sudan", type: "country", parent_id: null },
-        { id: 6, slug: "south-sudan", display_value: "South Sudan", value: "south-sudan", type: "country", parent_id: null },
-      ],
-    },
+    data: [
+      { id: "ESP", slug: "spain", display_value: "Spain" },
+      { id: "FRA", slug: "france", display_value: "France" },
+      { id: "ZAF", slug: "south-africa", display_value: "South Africa" },
+      { id: "CAF", slug: "central-african-republic", display_value: "Central African Republic" }, // trunk-ignore(typos)
+      { id: "SDN", slug: "sudan", display_value: "Sudan" },
+      { id: "SSD", slug: "south-sudan", display_value: "South Sudan" },
+    ],
     isLoading: false,
     error: {},
   }),
