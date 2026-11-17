@@ -1,13 +1,10 @@
 import { getChildDocuments } from "@/bff/methods/getRelations";
 import { transformCollection } from "@/bff/transformers/partials/transformCollection";
 import { transformFamily } from "@/bff/transformers/partials/transformFamily";
-import { TFamilyApiData, TFamilyPresentationalResponse, TOnDirectLinkPolicy } from "@/types";
+import { TFamilyApiData, TFamilyPresentationalResponse } from "@/types";
+import { toThemeCriteria } from "@/utils/getDocumentSites";
 
-export const familyTransformer = (
-  familyApiData: TFamilyApiData,
-  directLinkPolicy: TOnDirectLinkPolicy | null,
-  errors: Error[]
-): TFamilyPresentationalResponse => {
+export const familyTransformer = (familyApiData: TFamilyApiData, errors: Error[]): TFamilyPresentationalResponse => {
   try {
     return {
       data: {
@@ -21,7 +18,7 @@ export const familyTransformer = (
         ),
         family: transformFamily(familyApiData.family),
         familyTopics: familyApiData.familyTopics,
-        directLinkPolicy,
+        themeCriteria: toThemeCriteria(familyApiData.family.labels),
         debug: {
           dataInDocument: familyApiData.family,
         },

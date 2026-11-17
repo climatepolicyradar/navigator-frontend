@@ -17,10 +17,10 @@ interface IProps {
   theme?: TTheme;
   themeConfig?: TThemeConfig;
   children?: ReactNode;
-  attributionUrl?: string;
+  canonicalUrl?: string;
 }
 
-const Layout: FC<IProps> = ({ children, title, description, metadataKey, text, attributionUrl, themeConfig, theme }) => {
+const Layout: FC<IProps> = ({ children, title, description, metadataKey, text, canonicalUrl, themeConfig, theme }) => {
   const router = useRouter();
   const { themeConfig: contextThemeConfig } = useContext(ThemeContext);
 
@@ -34,7 +34,7 @@ const Layout: FC<IProps> = ({ children, title, description, metadataKey, text, a
         <meta property="og:title" content={`${title ?? getPageTitle(themeConfigToUse, metadataKey, text)} - ${appTitle}`} />
         <meta name="description" content={description ?? getPageDescription(themeConfigToUse, metadataKey, text)} key="desc" />
         <meta property="og:description" content={description ?? getPageDescription(themeConfigToUse, metadataKey, text)} />
-        <link rel="canonical" href={getCanonicalUrl(router, theme, attributionUrl)} />
+        <link rel="canonical" href={canonicalUrl ?? getCanonicalUrl(router, theme)} />
         <meta charSet="utf-8" />
         <meta name="viewport" content="initial-scale=1.0, width=device-width" />
       </Head>

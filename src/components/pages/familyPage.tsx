@@ -47,6 +47,7 @@ import { firstCase } from "@/utils/text/firstCase";
 import { familyTopicsHasTopics } from "@/utils/topics/processFamilyTopics";
 
 export interface IProps {
+  canonicalUrl: string;
   collections: TCollectionPublicWithFamilies[];
   errors: string[];
   family: TFamilyPublic;
@@ -59,7 +60,7 @@ export interface IProps {
   };
 }
 
-export const FamilyPage = ({ collections, debug, errors, family, familyTopics, features, theme, themeConfig }: IProps) => {
+export const FamilyPage = ({ canonicalUrl, collections, debug, errors, family, familyTopics, features, theme, themeConfig }: IProps) => {
   const configQuery = useConfig();
   const { data: { languages = {} } = {} } = configQuery;
   const [activeTab, setActiveTab] = useState<TPrincipalDrawerTab>("about");
@@ -185,7 +186,7 @@ export const FamilyPage = ({ collections, debug, errors, family, familyTopics, f
         )}
         theme={theme as TTheme}
         themeConfig={themeConfig}
-        attributionUrl={family.attribution.url}
+        canonicalUrl={canonicalUrl}
       >
         <BreadCrumbs
           geography={breadcrumbGeography}

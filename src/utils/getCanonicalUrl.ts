@@ -5,8 +5,7 @@ import getThemeDomain from "@/utils/getThemeDomain";
 
 // Get the canonical URL for the current page
 // This is used to tell search engines the preferred URL for the current page
-export const getCanonicalUrl = (router: NextRouter, theme: TTheme, attributionUrl?: string): string => {
-  const themeDomain = attributionUrl || getThemeDomain(theme);
+export const getCanonicalUrl = (router: NextRouter, theme: TTheme): string => {
   /** We're only interested in the pathname so use an explicit placeholder url */
   const url = new URL(router.asPath, "https://placeholder");
 
@@ -22,12 +21,7 @@ export const getCanonicalUrl = (router: NextRouter, theme: TTheme, attributionUr
     pathname = url.pathname;
   }
 
-  let canonicalUrl: string;
-  if (themeDomain.includes("https://")) {
-    canonicalUrl = `${themeDomain}${pathname}`;
-  } else {
-    canonicalUrl = `https://${themeDomain}${pathname}`;
-  }
+  const canonicalUrl = `https://${getThemeDomain(theme)}${pathname}`;
 
   // Remove trailing slash to avoid duplicate content being indexed
   if (canonicalUrl.endsWith("/")) {

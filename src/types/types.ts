@@ -1,7 +1,9 @@
 import { TSingularAndPlural } from "./display";
 import { TLabel } from "./label";
 
-export type TTheme = "cpr" | "cclw" | "mcf" | "ccc";
+export const THEMES = ["cpr", "cclw", "mcf", "ccc"] as const;
+
+export type TTheme = (typeof THEMES)[number];
 
 export type TSearchKeywordFilters = {
   categories?: string[];
