@@ -863,16 +863,16 @@ if not is_review_stack_or_template:
 
     is_ccc_stack = stack in ["ccc-production"]
     if is_ccc_stack:
-        # This certificate was imported, and the DNS validation was setup by our tech contact at Climate Case Chart
+        # The climatecasechart.com DNS zone is owned by Climate Case Chart (Sabin), not us,
+        # so we can't create the ACM DNS validation records ourselves. The certificate was
+        # requested manually and their tech contact added the validation CNAMEs; ACM renews
+        # it automatically as long as those records stay in place.
+        # We therefore read the certificate rather than manage it.
+        # Covers climatecasechart.com, cpr.climatecasechart.com and *.climatecasechart.com.
         east_provider = aws.Provider("east", region="us-east-1")
-        climatecasechart_com_cert = aws.acm.Certificate(
-            "climatecasechart.com",
-            domain_name="climatecasechart.com",
-            subject_alternative_names=[
-                "cpr.climatecasechart.com",
-                "*.climatecasechart.com",
-            ],
-            validation_method="DNS",
+        climatecasechart_com_cert = aws.acm.Certificate.get(
+            "climatecasechart.com-cert",
+            id="arn:aws:acm:us-east-1:532586131621:certificate/2bcf9acb-5ca7-41cd-9e10-3a6007944169",
             opts=pulumi.ResourceOptions(
                 provider=east_provider,
             ),
