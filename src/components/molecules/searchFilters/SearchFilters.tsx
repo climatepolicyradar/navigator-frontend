@@ -21,6 +21,7 @@ export const SearchFilters = ({ ancestorPath, indented, labels, level }: IProps)
 
   const isOverflowing = searchTerm === "" && level === 3 && labels.length > LABELS_OVERFLOWING_THRESHOLD;
   const shownLabels = isExpanded || !isOverflowing ? labels : labels.slice(0, MAX_LABELS);
+  const defaultExpanded = labels.length === 1;
 
   const listClasses = joinTailwindClasses("flex flex-col gap-2 list-none", indented && "ml-8 has-[>li]:mt-2 not-last:mb-2");
 
@@ -28,7 +29,7 @@ export const SearchFilters = ({ ancestorPath, indented, labels, level }: IProps)
     <>
       <ul className={listClasses}>
         {shownLabels.map((label) => (
-          <SearchFilter key={label.id} ancestorPath={ancestorPath} label={label} level={level} />
+          <SearchFilter key={label.id} ancestorPath={ancestorPath} defaultExpanded={defaultExpanded} label={label} level={level} />
         ))}
       </ul>
       {isOverflowing && (

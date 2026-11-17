@@ -16,14 +16,15 @@ import { addSubStringHighlights } from "@/utils/text/addSubStringHighlights";
 
 interface IProps {
   ancestorPath: TFilterPathLabel[];
+  defaultExpanded?: boolean;
   label: TNestedSearchLabel;
   level: number;
 }
 
-export const SearchFilter = ({ ancestorPath, label, level }: IProps) => {
+export const SearchFilter = ({ ancestorPath, defaultExpanded, label, level }: IProps) => {
   const { checkedLabelPaths, toggleFilter } = useContext(FiltersContext);
   const { searchTerm, matchingLabelPathSignatures } = useContext(FiltersLookupContext);
-  const [isExpanded, setIsExpanded] = useState(false);
+  const [isExpanded, setIsExpanded] = useState(Boolean(defaultExpanded));
 
   const pathLabels = useMemo(() => getFilterPathLabels(label, ancestorPath), [ancestorPath, label]);
   const checked = getFilterStatus(pathLabels, checkedLabelPaths);
