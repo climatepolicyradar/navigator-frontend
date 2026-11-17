@@ -3,7 +3,13 @@ import { ErrorBoundary } from "react-error-boundary";
 import { ComposableMap, Geographies, Geography, Graticule, Marker, Sphere, ZoomableGroup, Point as TPoint } from "react-simple-maps";
 import { Tooltip, TooltipRefProps } from "react-tooltip";
 
+import { ExternalLink } from "@/components/ExternalLink";
 import { LinkWithQuery } from "@/components/LinkWithQuery";
+import { Loading } from "@/components/atoms/loading/Loading";
+import GeographySelect from "@/components/map/GeographySelect";
+import { Legend } from "@/components/map/Legend";
+import { ZoomControls } from "@/components/map/ZoomControls";
+import { Heading } from "@/components/typography/Heading";
 import { EXCLUDED_ISO_CODES } from "@/constants/geography";
 import { GEO_CENTER_POINTS } from "@/constants/mapCentres";
 import { GEO_EU_COUNTRIES } from "@/constants/mapEUCountries";
@@ -12,13 +18,10 @@ import useGeographies from "@/hooks/useGeographies";
 import { useMcfData } from "@/hooks/useMcfData";
 import { TGeography, TTheme } from "@/types";
 
-import GeographySelect from "./GeographySelect";
-import { Legend } from "./Legend";
-import { ZoomControls } from "./ZoomControls";
-import { ExternalLink } from "../ExternalLink";
-import { Heading } from "../typography/Heading";
-
 const geoUrl = "/data/map/world-countries-50m.json";
+
+const MAP_HEIGHT = 340;
+const MAP_WIDTH = 800;
 
 type TSvgGeo = {
   geometry: { type: string; coordinates: TPoint[] };
@@ -350,51 +353,51 @@ export default function WorldMap({ showLitigation = false, showCategorySelect = 
       </div>
 
       <div ref={mapRef} className="map-container relative" data-cy="world-map">
-        <ComposableMap projection="geoEqualEarth" projectionConfig={{ scale: 125 }} height={340}>
-          <ZoomableGroup
-            maxZoom={MAX_ZOOM}
-            minZoom={MIN_ZOOM}
-            center={mapCenter}
-            zoom={mapZoom}
-            translateExtent={[
-              [-400, -200],
-              [1000, 600],
-            ]}
-            onMoveStart={() => {
-              geographyInfoTooltipRef.current?.close();
-              setActiveGeography("");
-            }}
-            onMoveEnd={(e) => {
-              setMapZoom(e.zoom);
-              setMapCenter(e.coordinates);
-            }}
-          >
-            <Sphere id="1" stroke="#E4E5E6" strokeWidth={0.2} fill="none" />
-            <Graticule stroke="#E4E5E6" strokeWidth={0.2} />
-            <Geographies geography={geoUrl}>
-              {({ geographies }) =>
-                geographies.map((geo, i) => {
-                  const geoData = mapData.geographies[geo.properties.name];
-                  return (
-                    <Geography
-                      key={geo.rsmKey}
-                      geography={geo}
-                      style={geoStyle(activeGeography === geo.properties.name, geoData?.familyCounts.LITIGATION || 0, mapData.maxLitigation)}
-                      onClick={(e) => {
-                        e.preventDefault();
-                        e.stopPropagation();
-                        handleGeoClick(e, geo);
-                      }}
-                      onMouseOver={(e) => {
-                        handleGeoHover(e, geo.properties.name);
-                      }}
-                    />
-                  );
-                })
-              }
-            </Geographies>
-            {mapDataStatus === "success" && (
-              <>
+        {mapDataStatus === "success" ? (
+          <>
+            <ComposableMap projection="geoEqualEarth" projectionConfig={{ scale: 125 }} height={MAP_HEIGHT} width={MAP_WIDTH}>
+              <ZoomableGroup
+                maxZoom={MAX_ZOOM}
+                minZoom={MIN_ZOOM}
+                center={mapCenter}
+                zoom={mapZoom}
+                translateExtent={[
+                  [-400, -200],
+                  [1000, 600],
+                ]}
+                onMoveStart={() => {
+                  geographyInfoTooltipRef.current?.close();
+                  setActiveGeography("");
+                }}
+                onMoveEnd={(e) => {
+                  setMapZoom(e.zoom);
+                  setMapCenter(e.coordinates);
+                }}
+              >
+                <Sphere id="1" stroke="#E4E5E6" strokeWidth={0.2} fill="none" />
+                <Graticule stroke="#E4E5E6" strokeWidth={0.2} />
+                <Geographies geography={geoUrl}>
+                  {({ geographies }) =>
+                    geographies.map((geo) => {
+                      const geoData = mapData.geographies[geo.properties.name];
+                      return (
+                        <Geography
+                          key={geo.rsmKey}
+                          geography={geo}
+                          style={geoStyle(activeGeography === geo.properties.name, geoData?.familyCounts.LITIGATION || 0, mapData.maxLitigation)}
+                          onClick={(e) => {
+                            e.preventDefault();
+                            e.stopPropagation();
+                            handleGeoClick(e, geo);
+                          }}
+                          onMouseOver={(e) => {
+                            handleGeoHover(e, geo.properties.name);
+                          }}
+                        />
+                      );
+                    })
+                  }
+                </Geographies>
                 {Object.keys(mapData.geographies).map((i) => {
                   const geo = mapData.geographies[i];
                   if (!geo.coords) return null;
@@ -425,36 +428,40 @@ export default function WorldMap({ showLitigation = false, showCategorySelect = 
                     </Marker>
                   );
                 })}
-              </>
+              </ZoomableGroup>
+            </ComposableMap>
+            <Tooltip id="mapToolTip" ref={geographyInfoTooltipRef} afterHide={() => setActiveGeography("")} imperativeModeOnly clickable />
+            <ZoomControls
+              mapZoom={mapZoom}
+              maxZoom={MAX_ZOOM}
+              minZoom={MIN_ZOOM}
+              handleZoomIn={() => setMapZoom(mapZoom + 1)}
+              handleZoomOut={() => setMapZoom(mapZoom - 1)}
+              handleReset={handleResetMapClick}
+            />
+            {showEUCheckbox && (
+              <div className="absolute top-0 right-0 p-4">
+                <label
+                  className="checkbox-input flex items-center p-2 px-4 rounded-full cursor-pointer border border-[#d1d5db] bg-white"
+                  htmlFor="show_eu_aggregated"
+                >
+                  <input
+                    className="border-[#d1d5db] cursor-pointer"
+                    id="show_eu_aggregated"
+                    type="checkbox"
+                    name="exact_match"
+                    value={0}
+                    checked={showUnifiedEU}
+                    onChange={() => setShowUnifiedEU(!showUnifiedEU)}
+                  />
+                  <span className="px-2 text-sm">Show aggregated EU data</span>
+                </label>
+              </div>
             )}
-          </ZoomableGroup>
-        </ComposableMap>
-        <Tooltip id="mapToolTip" ref={geographyInfoTooltipRef} afterHide={() => setActiveGeography("")} imperativeModeOnly clickable />
-        <ZoomControls
-          mapZoom={mapZoom}
-          maxZoom={MAX_ZOOM}
-          minZoom={MIN_ZOOM}
-          handleZoomIn={() => setMapZoom(mapZoom + 1)}
-          handleZoomOut={() => setMapZoom(mapZoom - 1)}
-          handleReset={handleResetMapClick}
-        />
-        {showEUCheckbox && (
-          <div className="absolute top-0 right-0 p-4">
-            <label
-              className="checkbox-input flex items-center p-2 px-4 rounded-full cursor-pointer border border-[#d1d5db] bg-white"
-              htmlFor="show_eu_aggregated"
-            >
-              <input
-                className="border-[#d1d5db] cursor-pointer"
-                id="show_eu_aggregated"
-                type="checkbox"
-                name="exact_match"
-                value={0}
-                checked={showUnifiedEU}
-                onChange={() => setShowUnifiedEU(!showUnifiedEU)}
-              />
-              <span className="px-2 text-sm">Show aggregated EU data</span>
-            </label>
+          </>
+        ) : (
+          <div className="w-full flex items-center justify-center" style={{ aspectRatio: `${MAP_WIDTH} / ${MAP_HEIGHT}` }}>
+            {mapDataStatus === "pending" ? <Loading /> : <p>There was an error loading the data for the map.</p>}
           </div>
         )}
       </div>
