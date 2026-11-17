@@ -106,6 +106,15 @@ describe("useCountryOptions with new search on", () => {
 });
 
 describe("useCountryOptions with new search off", () => {
+  // CI's "new features" run sets this, which forces every feature flag on regardless of the theme config
+  beforeEach(() => {
+    vi.stubEnv("E2E_TEST_FEATURE_FLAGS", "false");
+  });
+
+  afterEach(() => {
+    vi.unstubAllEnvs();
+  });
+
   it("uses the countries from /config in the same shape, without calling the taxonomy endpoint", async () => {
     const requests = mockTaxonomy();
 
