@@ -156,7 +156,11 @@ const config: TThemeConfig = {
     },
   ],
   searchCategories: ["UN submission", "Law", "Policy"],
-  searchExcludeLabels: [{ id: "author_type::Non-Party", onDirectLink: { action: "redirect", to: `${cprAppUrl}/document/{id}` } }],
+  searchExcludeLabels: [
+    { id: "author_type::Non-Party", onDirectLink: { action: "redirect", to: `${cprAppUrl}/document/{id}` } },
+    { id: "un_convention::CBD", onDirectLink: { action: "redirect", to: `${cprAppUrl}/document/{id}` } },
+    { id: "author_type::UNCCD", onDirectLink: { action: "redirect", to: `${cprAppUrl}/document/{id}` } },
+  ],
   searchLabelPatterns: [...SHARED_LABEL_PATTERNS, "category::Law/**", "category::Policy/**", "category::UN submission/un_convention::UNFCCC/**"],
   downloadColumns: [
     "ID",
