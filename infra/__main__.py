@@ -544,6 +544,27 @@ if not is_review_stack_or_template:
             ),
         )
 
+        # deploy_ecs_express.sh also switches the service from Express Mode's
+        # default canary to one-step blue/green with no bake, by calling
+        # update-service on its deploymentConfiguration. Scoped to this one
+        # service.
+        aws.iam.RolePolicy(
+            f"{theme}-{env}-ecs-deployment-strategy",
+            role=DEPLOY_ROLE_NAME,
+            policy=json.dumps(
+                {
+                    "Version": "2012-10-17",
+                    "Statement": [
+                        {
+                            "Effect": "Allow",
+                            "Action": ["ecs:UpdateService"],
+                            "Resource": f"arn:aws:ecs:{aws.get_region().region}:{aws_account.account_id}:service/frontend-{env}/{theme}-frontend-{env}",
+                        }
+                    ],
+                }
+            ),
+        )
+
     ########################################################################
     # Create the CloudFront access log bucket
     ########################################################################
