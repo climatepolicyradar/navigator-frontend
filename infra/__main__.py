@@ -872,7 +872,7 @@ if not is_review_stack_or_template:
         east_provider = aws.Provider("east", region="us-east-1")
         climatecasechart_com_cert = aws.acm.Certificate.get(
             "climatecasechart.com-cert",
-            id="arn:aws:acm:us-east-1:532586131621:certificate/2bcf9acb-5ca7-41cd-9e10-3a6007944169",
+            id=f"arn:aws:acm:us-east-1:{aws_account.account_id}:certificate/2bcf9acb-5ca7-41cd-9e10-3a6007944169",
             opts=pulumi.ResourceOptions(
                 provider=east_provider,
             ),
