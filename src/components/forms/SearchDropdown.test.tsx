@@ -18,7 +18,7 @@ vi.mock("@/hooks/useCountryOptions", () => ({
       { id: "ESP", slug: "spain", display_value: "Spain" },
       { id: "FRA", slug: "france", display_value: "France" },
       { id: "ZAF", slug: "south-africa", display_value: "South Africa" },
-      { id: "CAF", slug: "central-african-republic", display_value: "Central African Republic" },
+      { id: "CAF", slug: "central-african-republic", display_value: "Central African Republic" }, // trunk-ignore(typos)
       { id: "SDN", slug: "sudan", display_value: "Sudan" },
       { id: "SSD", slug: "south-sudan", display_value: "South Sudan" },
     ],
