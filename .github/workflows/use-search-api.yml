@@ -189,17 +189,30 @@ jobs:
           fi
 
       # --suppress-stream-logs=false makes this block until the job finishes
-      # and exit non-zero if it failed. Never add --pre-run-command here: it
-      # replaces the saved list rather than appending, stripping `config cp`.
+      # and exit non-zero if it failed.
       - name: Redeploy ${{ matrix.theme }}
         id: deploy
         env:
           STACK_NAME: ${{ steps.stack.outputs.stack_name }}
           LOG: /tmp/deploy-${{ matrix.theme }}.log
         run: |
+          # `deployment run` always sends an empty preRunCommands array, which
+          # replaces the saved list rather than inheriting it, so the stack
+          # would deploy without the `config cp` that gives it its config.
+          mapfile -t PRE_RUN < <(
+            pulumi deployment settings get \
+              --stack "${ORG}/${PROJECT}/${STACK_NAME}" \
+              --output json | jq -r '.preRunCommands[]'
+          )
+          PRE_RUN_ARGS=()
+          for cmd in "${PRE_RUN[@]}"; do
+            PRE_RUN_ARGS+=(--pre-run-command "$cmd")
+          done
+
           set +e
           pulumi deployment run update \
             --stack "${ORG}/${PROJECT}/${STACK_NAME}" \
+            "${PRE_RUN_ARGS[@]}" \
             --suppress-stream-logs=false \
             --color never 2>&1 | tee "$LOG"
           status=${PIPESTATUS[0]}
