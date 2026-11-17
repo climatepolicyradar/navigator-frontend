@@ -27,7 +27,7 @@ const LandingPageLinks = () => {
               href="#"
               onClick={(e) => {
                 e.preventDefault();
-                handleQuickSearch(suggestedSearch.params);
+                handleQuickSearch(suggestedSearch.newParams);
               }}
               data-cy={`quick-search-${searchIndex}`}
             >

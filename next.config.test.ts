@@ -81,16 +81,10 @@ describe("next.config.js", () => {
       expect(rewrites).toMatchObject({ afterFiles: [], fallback: [] });
     });
 
-    it("serves the v2 search page at /search for cpr", async () => {
-      const { beforeFiles } = await rewritesFor("cpr");
-
-      expect(beforeFiles).toEqual([{ source: "/search", destination: "/_search" }]);
-    });
-
-    it.each(["ccc", "cclw", "mcf"])("leaves /search on the v1 page for the %s theme", async (theme) => {
+    it.each(["cpr", "ccc", "cclw", "mcf"])("serves the v2 search page at /search for the %s theme", async (theme) => {
       const { beforeFiles } = await rewritesFor(theme);
 
-      expect(beforeFiles).toEqual([]);
+      expect(beforeFiles).toEqual([{ source: "/search", destination: "/_search" }]);
     });
   });
 });
