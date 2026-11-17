@@ -1,13 +1,10 @@
 # trunk-ignore-all(checkov/CKV2_GHA_1)
 name: Test redirects
 
-# Runs whenever a theme's redirects.json changes: deploys (or refreshes) that
-# theme's review stack directly via deploy-review-stack.yml's workflow_call
-# entry point - independent of whether the PR carries the deploy:dev label -
-# then live-checks the redirects this PR added or changed against it.
-#
-# Note: this means touching themes/*/redirects.json causes a real Pulumi
-# deployment on every push to the PR, even without deploy:dev applied.
+# Runs whenever a theme's redirects.json changes and live-checks the redirects
+# this PR added or changed. Uses the PR's review stack if deploy:dev happened to
+# create one, otherwise builds and serves the frontend in the job. Never creates
+# or destroys infrastructure.
 on:
   pull_request:
     types: [opened, synchronize, reopened]
@@ -39,27 +36,10 @@ jobs:
             ccc:
               - 'themes/ccc/redirects.json'
 
-  deploy-review-stack:
+  check:
     needs: changed-theme
     if: fromJSON(needs.changed-theme.outputs.themes)[0] != null
-    permissions:
-      pull-requests: write
-      actions: read
-    strategy:
-      fail-fast: false
-      matrix:
-        theme: ${{ fromJSON(needs.changed-theme.outputs.themes) }}
-    uses: ./.github/workflows/deploy-review-stack.yml
-    with:
-      pr_number: ${{ github.event.pull_request.number }}
-      theme: ${{ matrix.theme }}
-    secrets: inherit
-
-  check:
-    needs: [changed-theme, deploy-review-stack]
-    if: >-
-      always() && fromJSON(needs.changed-theme.outputs.themes)[0] != null
-      && needs.deploy-review-stack.result != 'cancelled'
+    timeout-minutes: 15
     runs-on: ubuntu-latest
     strategy:
       fail-fast: false
@@ -75,25 +55,19 @@ jobs:
       - uses: actions/setup-node@v7
         with:
           node-version-file: .nvmrc
-
-      - uses: pulumi/actions@v7
-
-      - name: Fetch ${{ matrix.theme }} review stack URL
-        id: url
-        env:
-          STACK_NAME: pr-${{ matrix.theme }}-navigator-frontend-${{ github.event.pull_request.number }}
-        run: |
-          review_url=$(pulumi stack output ecs_service_url --stack "${ORG}/${PROJECT}/${STACK_NAME}")
-          echo "review_url=${review_url:?is empty - ${STACK_NAME} did not deploy}" >> "$GITHUB_OUTPUT"
+          cache: npm
 
       - name: Find redirects added or changed in this PR
+        id: changed
         env:
           BASE_SHA: ${{ github.event.pull_request.base.sha }}
         run: |
           base=$(git merge-base HEAD "$BASE_SHA")
           git show "$base:$FILE" > base.json
           jq -s '.[0] - .[1]' "$FILE" base.json > changed.json
-          echo "Checking $(jq length changed.json) of $(jq length "$FILE") redirects"
+          checkable=$(jq '[.[] | select(has("has") or has("missing") or (.source | contains(":")) | not)] | length' changed.json)
+          echo "Checking ${checkable} of $(jq length changed.json) changed redirects"
+          echo "checkable=${checkable}" >> "$GITHUB_OUTPUT"
 
       - name: Fail if a source maps to conflicting destinations
         run: |
@@ -105,61 +79,76 @@ jobs:
           ' "$FILE")
           [ -z "$conflicts" ] || { echo "A source maps to more than one destination:"; echo "$conflicts"; exit 1; }
 
-      - run: |
-          node scripts/check-redirects.mjs \
-            --base-url "${{ steps.url.outputs.review_url }}" \
-            --file changed.json
+      - uses: pulumi/actions@v7
+        if: steps.changed.outputs.checkable != '0'
 
-  teardown:
-    needs: [changed-theme, deploy-review-stack, check]
-    # The review stack this workflow creates exists only as a fixture for the
-    # check above, so it is destroyed as soon as the check is done rather than
-    # lingering until the PR closes. `always()` matters here as a failing check
-    # means a PR sits open for days, so the teardown must not be skipped.
-    #
-    # deploy-review-stack.yml's own destroy path can't cover this. It is
-    # reached via the `closed` pull_request event, whereas this stack is
-    # created through workflow_call, where `is_workflow_call` short-circuits
-    # the action to `update` so will never reach the destroy branch.
-    if: always() && fromJSON(needs.changed-theme.outputs.themes)[0] != null
-    runs-on: ubuntu-latest
-    strategy:
-      fail-fast: false
-      matrix:
-        theme: ${{ fromJSON(needs.changed-theme.outputs.themes) }}
-    env:
-      PULUMI_ACCESS_TOKEN: ${{ secrets.PULUMI_ACCESS_TOKEN }}
-    steps:
-      - name: Trigger destroy deployment
+      - name: Resolve base URL
+        id: base
+        if: steps.changed.outputs.checkable != '0'
         env:
           STACK_NAME: pr-${{ matrix.theme }}-navigator-frontend-${{ github.event.pull_request.number }}
         run: |
-          # Check if the stack exists before attempting destroy - the deploy
-          # job may have failed before creating it.
-          stack_status=$(curl -s -o /dev/null -w "%{http_code}" \
-            -H "Authorization: token ${PULUMI_ACCESS_TOKEN}" \
-            "https://api.pulumi.com/api/stacks/${ORG}/${PROJECT}/${STACK_NAME}")
-
-          if [ "$stack_status" -eq 404 ]; then
-            echo "Stack ${STACK_NAME} does not exist, nothing to destroy"
-            exit 0
+          # Both "no such stack" and "stack has no ecs_service_url" leave stdout
+          # empty, so empty is the single signal to serve the frontend locally.
+          url=$(pulumi stack output ecs_service_url --stack "${ORG}/${PROJECT}/${STACK_NAME}" 2>/dev/null || true)
+          if [ -n "$url" ]; then
+            echo "Using review stack ${url}"
+            echo "serve_locally=false" >> "$GITHUB_OUTPUT"
+          else
+            echo "No review stack for ${STACK_NAME}, serving locally"
+            url=http://localhost:3000
+            echo "serve_locally=true" >> "$GITHUB_OUTPUT"
           fi
+          echo "url=${url}" >> "$GITHUB_OUTPUT"
 
-          response=$(curl -fsSL -w "\n%{http_code}" -X POST \
-            -H "Authorization: token ${PULUMI_ACCESS_TOKEN}" \
-            -H "Content-Type: application/json" \
-            "https://api.pulumi.com/api/stacks/${ORG}/${PROJECT}/${STACK_NAME}/deployments" \
-            -d "{
-              \"operation\": \"destroy\",
-              \"inheritSettings\": true,
-              \"operationContext\": {
-                \"options\": {
-                  \"deleteAfterDestroy\": true
-                }
-              }
-            }")
+      - if: steps.base.outputs.serve_locally == 'true'
+        run: npm i
 
-          body=$(echo "$response" | head -n -1)
-          status=$(echo "$response" | tail -n1)
-          echo "Destroy triggered: HTTP $status"
-          echo "$body" | jq .
+      - if: steps.base.outputs.serve_locally == 'true'
+        run: cp .env.example .env
+
+      - name: Generate tsconfig.json
+        if: steps.base.outputs.serve_locally == 'true'
+        run: |
+          cp tsconfig.base.json tsconfig.json
+          sed -i "s/__THEME__/${{ matrix.theme }}/g" tsconfig.json
+
+      - name: Cache Next.js build
+        if: steps.base.outputs.serve_locally == 'true'
+        uses: actions/cache@v6
+        with:
+          path: .next/cache
+          key: ${{ runner.os }}-nextjs-${{ matrix.theme }}-${{ hashFiles('**/package-lock.json') }}-${{ hashFiles('src/**') }}
+          restore-keys: |
+            ${{ runner.os }}-nextjs-${{ matrix.theme }}-${{ hashFiles('**/package-lock.json') }}-
+
+      - if: steps.base.outputs.serve_locally == 'true'
+        run: THEME=${{ matrix.theme }} npm run build
+        env:
+          NODE_ENV: production
+
+      - name: Copy static assets to standalone
+        if: steps.base.outputs.serve_locally == 'true'
+        run: |
+          cp -r public .next/standalone/public
+          cp -r .next/static .next/standalone/.next/static
+
+      - name: Start the frontend
+        if: steps.base.outputs.serve_locally == 'true'
+        run: |
+          # THEME has to be passed explicitly - .env hardcodes cpr and the
+          # standalone server reads it at runtime.
+          HOSTNAME=0.0.0.0 PORT=3000 THEME=${{ matrix.theme }} \
+            node .next/standalone/server.js &
+          for _ in $(seq 1 60); do
+            curl -sf http://localhost:3000/ > /dev/null && exit 0
+            sleep 1
+          done
+          echo "frontend did not become ready"
+          exit 1
+
+      - if: steps.changed.outputs.checkable != '0'
+        run: |
+          node scripts/check-redirects.mjs \
+            --base-url "${{ steps.base.outputs.url }}" \
+            --file changed.json
