@@ -85,6 +85,13 @@ export type TGeography = {
   slug: string;
 };
 
+export type TCountryOption = {
+  // The country's ISO 3166-1 alpha-3 code when from the taxonomy (e.g. "AUS"), or its /config id
+  id: string;
+  slug: string;
+  display_value: string;
+};
+
 export type TGeographySubdivision = {
   code: string;
   name: string;

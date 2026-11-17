@@ -3,7 +3,8 @@ import { useRouter } from "next/router";
 
 import { QUERY_PARAMS } from "@/constants/queryParams";
 import { SYSTEM_GEO_CODES } from "@/constants/systemGeos";
-import useCountryOptions, { TCountryOption } from "@/hooks/useCountryOptions";
+import useCountryOptions from "@/hooks/useCountryOptions";
+import { TCountryOption } from "@/types";
 
 interface IProps {
   show: boolean;
