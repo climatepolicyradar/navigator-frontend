@@ -242,9 +242,20 @@ jobs:
         env:
           STACK_NAME: ${{ steps.decide.outputs.stack_name }}
         run: |
+          mapfile -t PRE_RUN < <(
+            pulumi deployment settings get \
+              --stack "${ORG}/${PROJECT}/${STACK_NAME}" \
+              --output json | jq -r '.preRunCommands[]'
+          )
+          PRE_RUN_ARGS=()
+          for cmd in "${PRE_RUN[@]}"; do
+            PRE_RUN_ARGS+=(--pre-run-command "$cmd")
+          done
+
           set +e
           pulumi deployment run destroy \
             --stack "${ORG}/${PROJECT}/${STACK_NAME}" \
+            "${PRE_RUN_ARGS[@]}" \
             --git-branch main \
             --suppress-stream-logs=false \
             --color never 2>&1 | tee /tmp/destroy.log
