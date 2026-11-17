@@ -68,7 +68,7 @@ deployment_configuration() {
 }
 
 remove_canary() {
-	local current patched
+	local current patched from
 	current=$(deployment_configuration)
 	if jq -e "${STRATEGY}" <<<"${current}" >/dev/null; then
 		echo "${SERVICE} already deploys blue/green with no bake"
@@ -81,7 +81,8 @@ remove_canary() {
 		| del(.canaryConfiguration, .linearConfiguration)' <<<"${current}")
 	aws ecs update-service --cluster "${CLUSTER}" --service "${SERVICE}" \
 		--deployment-configuration "${patched}" >/dev/null
-	echo "switched ${SERVICE} from $(jq -r .strategy <<<"${current}") to blue/green, no bake"
+	from=$(jq -r .strategy <<<"${current}")
+	echo "switched ${SERVICE} from ${from} to blue/green, no bake"
 }
 
 correct_alarm
@@ -111,7 +112,8 @@ done
 # Express may re-apply its canary when the deployment starts, as it does the
 # alarm. If it has, this deployment runs the canary; say so rather than
 # failing, since the deploy itself is still fine.
-deployment_configuration | jq -e "${STRATEGY}" >/dev/null ||
+LIVE_CONFIG=$(deployment_configuration)
+jq -e "${STRATEGY}" <<<"${LIVE_CONFIG}" >/dev/null ||
 	echo "::warning::Express reset the deployment strategy; this deploy runs the canary"
 
 # Wait on the deployment. status, not rolloutState: a finished rollback
