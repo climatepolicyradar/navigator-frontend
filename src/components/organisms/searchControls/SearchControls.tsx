@@ -9,12 +9,10 @@ import { SearchFiltersDrawer } from "@/components/molecules/searchFiltersDrawer/
 import { SearchFiltersPopover } from "@/components/molecules/searchFiltersPopover/SearchFiltersPopover";
 import { Sort } from "@/components/molecules/sort/Sort";
 import { FiltersContext, TDateRange, TToggleFilterCallback } from "@/context/FiltersContext";
-import { TFilterPathLabel, TFiltersGroupConfig, TSearchLabel, TSortOptionConfig, TSortValue } from "@/types";
+import { TFilterPathLabel, TFiltersGroupConfig, TNestedSearchLabel, TSortOptionConfig, TSortValue } from "@/types";
 import { parseAsDeflatedFilters } from "@/utils/filters/deflate";
 import { sortFilterPathLabels } from "@/utils/filters/filterPaths";
-import { getSearchLabelValues } from "@/utils/filters/getSearchLabelValues";
 import { groupSearchLabels } from "@/utils/filters/groupSearchLabels";
-import { nestSearchLabels } from "@/utils/filters/nestSearchLabels";
 import { updateCheckedLabelPaths } from "@/utils/filters/updateCheckedLabelPaths";
 import { filterGroupFilters } from "@/utils/search/filterGroupFilters";
 import { DEFAULT_SEARCH_QUERY_GROUP, filterPathsToQueryGroup } from "@/utils/search/filterPathsToQueryGroup";
@@ -34,9 +32,9 @@ interface IProps {
   filterGroups: TFiltersGroupConfig[];
   filterParamKey: string;
   filtersSlot?: ReactNode;
-  labels: TSearchLabel[];
+  labels: TNestedSearchLabel[];
   labelsLoaded: boolean;
-  nameLabels?: TSearchLabel[];
+  labelNames: Record<string, string>;
   pageParamKey?: string;
   queryParamKey: string;
   resultsNode?: ReactNode;
@@ -54,7 +52,7 @@ export const SearchControls = ({
   filtersSlot,
   labels,
   labelsLoaded,
-  nameLabels,
+  labelNames,
   pageParamKey = PAGE_TOKEN_PARAM_KEY,
   queryParamKey,
   resultsNode,
@@ -68,8 +66,7 @@ export const SearchControls = ({
   const [, setCurrentPage] = useQueryState(pageParamKey, parseAsString.withDefault("1"));
 
   // The labels each group offers, which say which filter types these controls can apply
-  const nestedLabels = useMemo(() => nestSearchLabels(labels), [labels]);
-  const filterGroupsWithLabels = useMemo(() => groupSearchLabels(nestedLabels, filterGroups), [filterGroups, nestedLabels]);
+  const filterGroupsWithLabels = useMemo(() => groupSearchLabels(labels, filterGroups), [filterGroups, labels]);
 
   /*
     The param is shared between searches, so it can hold filters these controls do not offer -
@@ -77,7 +74,6 @@ export const SearchControls = ({
     on topics. Read against the groups on show, so a filter that is not applied is not drawn as a
     chip: the chip would do nothing when removed, and names the raw id, as the labels behind the
     other filter types are never loaded here.
-
     Read against the prepared groups rather than the config: a group's declared root types leave
     out the types nested beneath them (Geography is rooted on regions but offers their countries
     too), and a rule dropped here is erased from the url by the next toggle.
@@ -107,14 +103,6 @@ export const SearchControls = ({
     setLastQueryParam(queryParam);
     setSearchInput(queryParam);
   }
-
-  // Chips for already-checked filters must resolve to a name even if that label falls outside the (possibly narrower) set offered in the menu, so fall back to `nameLabels`.
-  const nestedNameLabels = useMemo(() => {
-    const extra = (nameLabels ?? []).filter((label) => !labels.some((l) => l.id === label.id));
-    return nestSearchLabels([...labels, ...extra]);
-  }, [labels, nameLabels]);
-
-  const labelValues = useMemo(() => getSearchLabelValues(nestedNameLabels), [nestedNameLabels]);
 
   const { appliedDateRange, checkedLabelPaths } = useMemo(() => {
     return {
@@ -151,7 +139,9 @@ export const SearchControls = ({
   };
 
   return (
-    <FiltersContext.Provider value={{ appliedDateRange, checkedLabelPaths, clearFilters, labelValues, setDateRange: onSetDateRange, toggleFilter }}>
+    <FiltersContext.Provider
+      value={{ appliedDateRange, checkedLabelPaths, clearFilters, labelValues: labelNames, setDateRange: onSetDateRange, toggleFilter }}
+    >
       <div className="col-start-1 -col-end-1 cols-5:col-start-2 cols-5:-col-end-2 flex flex-col gap-y-4">
         <form onSubmit={onQuerySubmit}>
           <Input
@@ -173,7 +163,6 @@ export const SearchControls = ({
             {filtersSlot}
             {filterGroupsWithLabels.map((group) => {
               const SearchFilters = SEARCH_FILTERS_LOOKUP[group.container] ?? SearchFiltersPopover;
-
               return (
                 <Fragment key={group.title}>
                   {group.afterPartition && <div className="w-px h-6 mx-3 bg-border-normal hidden sm:block" />}

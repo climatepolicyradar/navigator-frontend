@@ -3,10 +3,11 @@ import { GetServerSideProps, InferGetServerSidePropsType } from "next";
 import { ApiClient } from "@/api/http-common";
 import { fetchSearchPrincipalDocuments } from "@/api/search";
 import { GeographyPage } from "@/components/pages/geographyPage";
+import { COUNTRY_LABEL_PATTERN, SUBDIVISION_LABEL_PATTERN } from "@/constants/labels";
 import { SYSTEM_GEO_NAMES } from "@/constants/systemGeos";
 import { withEnvConfig } from "@/context/EnvConfig";
 import { getCountryCode, getCountryName } from "@/helpers/getCountryFields";
-import { loadGeographyTaxonomy } from "@/hooks/useLabelSearch";
+import { loadTaxonomy } from "@/hooks/useLabelSearch";
 import {
   TApiItemResponse,
   GeographyV2,
@@ -15,6 +16,8 @@ import {
   TGeography,
   TFilterPathLabel,
   TSearchLabel,
+  TSearchLabelRelation,
+  TNestedSearchLabel,
   TThemeConfig,
   GeographyTypeV2,
 } from "@/types";
@@ -27,6 +30,28 @@ import { filterPathsToQueryGroup } from "@/utils/search/filterPathsToQueryGroup"
 
 // The geography page shows a short, horizontally scrolling list of recent principals.
 const GEOGRAPHY_PRINCIPALS_PAGE_SIZE = 4;
+
+const toSearchLabel = ({ id, type, value, alternative_labels }: TNestedSearchLabel, labels: TSearchLabelRelation[] = []): TSearchLabel => ({
+  id,
+  type,
+  value,
+  alternative_labels,
+  labels,
+});
+
+const findLabelInTaxonomy = (labels: TNestedSearchLabel[], id: string, parent?: TNestedSearchLabel): TSearchLabel | null => {
+  for (const label of labels) {
+    if (label.id === id) {
+      const relations: TSearchLabelRelation[] = parent
+        ? [{ type: "subconcept_of", value: toSearchLabel(parent), timestamp: null, passages_id: null, count: null }]
+        : [];
+      return toSearchLabel(label, relations);
+    }
+    const nested = findLabelInTaxonomy(label.children, id, label);
+    if (nested) return nested;
+  }
+  return null;
+};
 
 /**
  * Count and list the most recent principals for a geography.
@@ -79,7 +104,6 @@ export const getServerSideProps = (async (context) => {
     const response_geo = extractNestedData<TGeography>(config.geographies || []);
     geographies = [...response_geo[1], ...response_geo[2]];
     const geography = getCountryCode(id as string, geographies);
-
     if (geography) {
       countryNameFromConfig = getCountryName(id as string, geographies);
     }
@@ -94,7 +118,6 @@ export const getServerSideProps = (async (context) => {
     const slug = Array.isArray(id) ? id[0] : id;
     const geographyV2Data = await apiClient.get<TApiItemResponse<GeographyV2>>(`/geographies/${slug}`);
     geographyV2 = geographyV2Data.data.data;
-
     if (geographyV2.subconcept_of[0]) {
       const parentGeographyV2Data = await apiClient.get<TApiItemResponse<GeographyV2>>(`/geographies/${geographyV2.subconcept_of[0].slug}`);
       parentGeographyV2 = parentGeographyV2Data.data.data;
@@ -118,19 +141,10 @@ export const getServerSideProps = (async (context) => {
   if (features["new-search"]) {
     const isSubdivision = geographyV2.type === "subdivision";
     const labelType = isSubdivision ? "subdivision" : "country";
-    const parentType = isSubdivision ? "country" : "region";
-
-    // The taxonomy is where the geo hierarchy lives until dynamic labels and their relationships
-    // come in, so it carries every geography and its parent.
-    const geographyTaxonomy = await loadGeographyTaxonomy(process.env.API_URL, [labelType]);
-
-    // Ensure there is a label for this geography that includes a parent as we need it to build a search query
+    const pattern = isSubdivision ? SUBDIVISION_LABEL_PATTERN : COUNTRY_LABEL_PATTERN;
+    const taxonomy = await loadTaxonomy(process.env.API_URL, { patterns: [pattern] });
     const expectedId = `${labelType}::${geographyV2.id}`;
-    geographyLabel =
-      geographyTaxonomy.find(
-        (label) => label.id === expectedId && label.labels.some((subLabel) => subLabel.type === "subconcept_of" && subLabel.value.type === parentType)
-      ) ?? null;
-
+    geographyLabel = findLabelInTaxonomy(taxonomy, expectedId);
     if (!geographyLabel) return { notFound: true };
   }
 

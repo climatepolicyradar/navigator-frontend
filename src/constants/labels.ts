@@ -83,6 +83,11 @@ export const LABEL_DISPLAY_REPLACEMENTS: TLabelDisplayReplacement[] = [
     idMatch: `author_type${SEP}`,
     type: "Type",
   },
+  {
+    parentId: ["entity_type", "Project"].join(SEP),
+    idMatch: `agent${SEP}`,
+    type: "Implementing agency",
+  },
 ];
 
 type TLabelSearchReplacement = {
@@ -162,3 +167,7 @@ export const LABEL_SEARCH_REPLACEMENTS: TLabelSearchReplacement[] = [
     },
   },
 ];
+
+export const COUNTRY_LABEL_PATTERN = "region::*/country::*";
+export const SUBDIVISION_LABEL_PATTERN = "region::*/country::*/subdivision::*";
+export const SHARED_LABEL_PATTERNS = ["domain::*", "**/concept::*", COUNTRY_LABEL_PATTERN, "country::XAB"];

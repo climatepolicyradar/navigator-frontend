@@ -1,6 +1,7 @@
 import { TDataInDocument } from "@/schemas";
 
 import { ISearchDocument } from "../search/api";
+import { TOnDirectLinkPolicy } from "../themeConfig";
 import { TTopics } from "../topics";
 import { TFamilyDocumentPublic, TFamilyPublic } from "../types";
 
@@ -15,6 +16,7 @@ export type TDocumentPresentationalData = {
   family: TFamilyPublic;
   topicsData?: TTopics;
   searchDocument?: ISearchDocument;
+  directLinkPolicy: TOnDirectLinkPolicy | null;
   debug?: {
     dataInDocument: TDataInDocument;
   };

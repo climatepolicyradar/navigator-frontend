@@ -43,8 +43,8 @@ jobs:
               - 'infra/Pulumi.ccc-staging.yaml'
               - 'infra/__main__.py'
 
-            staging-shared-resources:
-              - 'infra/platform/**'
+            staging-ecs-cluster:
+              - 'infra/ecs-cluster/**'
 
             staging-observability:
               - 'infra/observability/**'
@@ -55,11 +55,13 @@ jobs:
           CHANGES=${CHANGES:-[]}
           echo "projects=$(echo "$CHANGES" | jq -c '.')" >> "$GITHUB_OUTPUT"
 
-  # infra/platform/** has no per-theme deploy step to run alongside, so it
+  # infra/ecs-cluster/** has no per-theme deploy step to run alongside, so it
   # keeps its own pulumi up here rather than joining the matrix below.
-  pulumi-up-shared-resources:
+  # frontend-platform has no staging stack: review stacks only run in the
+  # production account.
+  pulumi-up-ecs-cluster:
     needs: changes
-    if: contains(fromJSON(needs.changes.outputs.projects), 'staging-shared-resources')
+    if: contains(fromJSON(needs.changes.outputs.projects), 'staging-ecs-cluster')
     runs-on: ubuntu-latest
     permissions:
       id-token: write
@@ -75,13 +77,13 @@ jobs:
           role-session-name: GitHub_to_AWS_via_FederatedOIDC_staging
           aws-region: eu-west-1
       - name: Install dependencies
-        working-directory: infra/platform
+        working-directory: infra/ecs-cluster
         run: uv sync
       - name: Install pulumi
         uses: pulumi/actions@v7
       - name: Pulumi up
-        working-directory: infra/platform
-        run: pulumi up --yes --skip-preview --stack climatepolicyradar/frontend-platform/staging
+        working-directory: infra/ecs-cluster
+        run: pulumi up --yes --skip-preview --stack climatepolicyradar/frontend-ecs-cluster/staging
         env:
           PULUMI_ACCESS_TOKEN: ${{ secrets.PULUMI_ACCESS_TOKEN }}
 
@@ -278,7 +280,7 @@ jobs:
   notify-failure:
     needs:
       - changes
-      - pulumi-up-shared-resources
+      - pulumi-up-ecs-cluster
       - observability-pulumi-up
       - deploy-staging
     if: failure()

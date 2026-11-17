@@ -9,7 +9,6 @@ import { PassageSearch } from "@/components/organisms/passageSearch/PassageSearc
 import { FeaturesContext } from "@/context/FeaturesContext";
 import { SearchLevelContext } from "@/context/SearchLevelContext";
 import { getLanguage } from "@/helpers/getLanguage";
-import { useDocumentTopics } from "@/hooks/useDocumentTopics";
 import { useSearchLevelValues } from "@/hooks/useSearchLevel";
 import { IFamilyDocumentTopics, IMetadata, TFamilyDocumentPublic, TFamilyEventPublic, TFamilyPublic, TLanguages } from "@/types";
 import { getEventTableRowsData } from "@/utils/eventTable";
@@ -37,7 +36,6 @@ export const DocumentDrawer = ({ documentSlug, family, familyTopics, languages, 
   // Fetched up here as the drawer returns early below when the document is missing.
   // The drawer is addressed by slug, but the topics data is keyed by import id
   const documentImportId = family.documents.find((doc) => doc.slug === documentSlug)?.import_id ?? null;
-  const conceptTopics = useDocumentTopics(documentImportId ? [documentImportId] : [], { enabled: features["new-search"] });
 
   const isLitigation = family.attribution.category === "Litigation";
 
@@ -138,7 +136,7 @@ export const DocumentDrawer = ({ documentSlug, family, familyTopics, languages, 
     >
       {features["new-search"] ? (
         <SearchLevelContext value="document">
-          <PassageSearch documents={[document]} concepts={conceptTopics} subject="this document" />
+          <PassageSearch documents={[document]} subject="this document" />
         </SearchLevelContext>
       ) : (
         <>

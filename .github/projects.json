@@ -24,9 +24,9 @@
     "environment": "staging"
   },
   {
-    "project": "staging-shared-resources",
-    "work-dir": "infra/platform",
-    "stack-name": "climatepolicyradar/frontend-platform/staging",
+    "project": "staging-ecs-cluster",
+    "work-dir": "infra/ecs-cluster",
+    "stack-name": "climatepolicyradar/frontend-ecs-cluster/staging",
     "environment": "staging"
   },
   {
@@ -63,6 +63,12 @@
     "project": "production-shared-resources",
     "work-dir": "infra/platform",
     "stack-name": "climatepolicyradar/frontend-platform/production",
+    "environment": "production"
+  },
+  {
+    "project": "production-ecs-cluster",
+    "work-dir": "infra/ecs-cluster",
+    "stack-name": "climatepolicyradar/frontend-ecs-cluster/production",
     "environment": "production"
   },
   {

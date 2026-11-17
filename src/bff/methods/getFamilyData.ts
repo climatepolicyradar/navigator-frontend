@@ -3,6 +3,7 @@ import { getParentDocuments } from "@/bff/methods/getRelations";
 import { familyTransformer } from "@/bff/transformers/familyTransformer";
 import { TDataInDocument, validateDataInDocument } from "@/schemas";
 import { IApiFamilyDocumentTopics, ISearchDocumentResponse, TApiItemResponse, TFamilyPresentationalResponse } from "@/types";
+import { getDirectLinkPolicy } from "@/utils/getDirectLinkPolicy";
 import { processSearchDocumentTopics } from "@/utils/topics/processSearchDocumentTopics";
 
 export const getFamilyData = async (slug: string): Promise<TFamilyPresentationalResponse> => {
@@ -51,12 +52,7 @@ export const getFamilyData = async (slug: string): Promise<TFamilyPresentational
 
   /* Transform API data for presentation */
 
-  return familyTransformer(
-    {
-      collections,
-      family,
-      familyTopics: familyTopics || null,
-    },
-    errors
-  );
+  const directLinkPolicy = getDirectLinkPolicy(family.labels);
+
+  return familyTransformer({ collections, family, familyTopics: familyTopics || null }, directLinkPolicy, errors);
 };
