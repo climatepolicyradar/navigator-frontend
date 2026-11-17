@@ -3,8 +3,7 @@ import { useRouter } from "next/router";
 
 import { QUERY_PARAMS } from "@/constants/queryParams";
 import { SYSTEM_GEO_CODES } from "@/constants/systemGeos";
-import useConfig from "@/hooks/useConfig";
-import { TGeography } from "@/types";
+import useCountryOptions, { TCountryOption } from "@/hooks/useCountryOptions";
 
 interface IProps {
   show: boolean;
@@ -15,8 +14,8 @@ interface IProps {
 
 export const SearchDropdown = ({ show = false, term, handleSearchClick, largeSpacing }: IProps) => {
   const router = useRouter();
-  const configQuery = useConfig();
-  const geographies = configQuery.data?.countries || [];
+  const countryOptionsQuery = useCountryOptions();
+  const geographies = countryOptionsQuery.data || [];
 
   const geographiesFiltered = geographies.filter(
     (geography) =>
@@ -39,7 +38,7 @@ export const SearchDropdown = ({ show = false, term, handleSearchClick, largeSpa
     router.push({ pathname: url, query: router.query });
   };
 
-  const handleSuggestionClick = (e: React.MouseEvent<HTMLAnchorElement>, geography: TGeography) => {
+  const handleSuggestionClick = (e: React.MouseEvent<HTMLAnchorElement>, geography: TCountryOption) => {
     e.preventDefault();
     handleSearchClick(termWithoutGeography(geography.display_value), QUERY_PARAMS.country, geography.slug);
   };
@@ -49,12 +48,12 @@ export const SearchDropdown = ({ show = false, term, handleSearchClick, largeSpa
       last ? "rounded-b-lg" : ""
     }`;
 
-  const renderSearchSuggestion = (geographies: TGeography[]) => {
+  const renderSearchSuggestion = (geographies: TCountryOption[]) => {
     if (!geographies || geographies === null || geographies.length === 0) return;
 
     // When multiple geography matches are found e.g., Sudan and South Sudan, select the geography with the longest
     // display name.
-    let geography: TGeography;
+    let geography: TCountryOption;
     if (geographies.length > 1) {
       geography = geographies.reduce(function (prev, current) {
         return prev && prev.display_value.length > current.display_value.length ? prev : current;
