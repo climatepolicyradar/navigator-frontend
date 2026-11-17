@@ -101,49 +101,17 @@ jobs:
           fi
           echo "url=${url}" >> "$GITHUB_OUTPUT"
 
-      - if: steps.base.outputs.serve_locally == 'true'
-        run: npm i
-
-      - if: steps.base.outputs.serve_locally == 'true'
-        run: cp .env.example .env
-
-      - name: Generate tsconfig.json
+      - name: Serve the frontend
         if: steps.base.outputs.serve_locally == 'true'
         run: |
-          cp tsconfig.base.json tsconfig.json
-          sed -i "s/__THEME__/${{ matrix.theme }}/g" tsconfig.json
-
-      - name: Cache Next.js build
-        if: steps.base.outputs.serve_locally == 'true'
-        uses: actions/cache@v6
-        with:
-          path: .next/cache
-          key: ${{ runner.os }}-nextjs-${{ matrix.theme }}-${{ hashFiles('**/package-lock.json') }}-${{ hashFiles('src/**') }}
-          restore-keys: |
-            ${{ runner.os }}-nextjs-${{ matrix.theme }}-${{ hashFiles('**/package-lock.json') }}-
-
-      - if: steps.base.outputs.serve_locally == 'true'
-        run: THEME=${{ matrix.theme }} npm run build
-        env:
-          NODE_ENV: production
-
-      - name: Copy static assets to standalone
-        if: steps.base.outputs.serve_locally == 'true'
-        run: |
-          cp -r public .next/standalone/public
-          cp -r .next/static .next/standalone/.next/static
-
-      - name: Start the frontend
-        if: steps.base.outputs.serve_locally == 'true'
-        run: |
-          # THEME has to be passed explicitly - .env hardcodes cpr and the
-          # standalone server reads it at runtime.
-          HOSTNAME=0.0.0.0 PORT=3000 THEME=${{ matrix.theme }} \
-            node .next/standalone/server.js &
+          docker build --build-arg THEME=${{ matrix.theme }} -t frontend .
+          docker run -d -p 3000:8080 --env-file .env.example \
+            -e THEME=${{ matrix.theme }} --name frontend frontend
           for _ in $(seq 1 60); do
             curl -sf http://localhost:3000/ > /dev/null && exit 0
             sleep 1
           done
+          docker logs frontend
           echo "frontend did not become ready"
           exit 1
 
