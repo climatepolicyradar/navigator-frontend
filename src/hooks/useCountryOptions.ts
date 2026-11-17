@@ -6,36 +6,21 @@ import { dayInMilliseconds } from "@/constants/dayInMilleseconds";
 import { useEnvConfig } from "@/context/EnvConfig";
 import { ThemeContext } from "@/context/ThemeContext";
 import useConfig from "@/hooks/useConfig";
-import { TApiItemResponse, TGeography } from "@/types";
+import { TApiItemResponse, TCountryOption, TGeography, TNestedSearchLabel } from "@/types";
 import { getCookie } from "@/utils/cookies";
 import { getFeatureFlags } from "@/utils/featureFlags";
 import { getFeatures } from "@/utils/features";
 import { getGeographySlug } from "@/utils/geography";
+import { flattenNestedLabels } from "@/utils/labels/flattenNestedLabels";
 
 import { ApiClient } from "../api/http-common";
-
-export type TCountryOption = {
-  // The country's ISO 3166-1 alpha-3 code when from the taxonomy (e.g. "AUS"), or its /config id
-  id: string;
-  slug: string;
-  display_value: string;
-};
-
-type TTaxonomyNode = {
-  id: string;
-  type: string;
-  value: string;
-  children: TTaxonomyNode[];
-};
 
 const COUNTRY_TAXONOMY_PATTERN = "**/country::*";
 
 // The search API returns each match with its ancestors, so countries arrive nested under their region
-const flattenCountries = (nodes: TTaxonomyNode[]): TTaxonomyNode[] =>
-  nodes.flatMap((node) => [...(node.type === "country" ? [node] : []), ...flattenCountries(node.children ?? [])]);
-
-export const toCountryOptions = (taxonomy: TTaxonomyNode[]): TCountryOption[] =>
-  flattenCountries(taxonomy)
+export const toCountryOptions = (taxonomy: TNestedSearchLabel[]): TCountryOption[] =>
+  flattenNestedLabels(taxonomy)
+    .filter((label) => label.type === "country")
     .flatMap((country) => {
       const slug = getGeographySlug(country);
       // No slug means a system geography (e.g. International) with no geography page
@@ -70,7 +55,7 @@ export default function useCountryOptions(): { data: TCountryOption[]; isLoading
     queryKey: ["country-options"],
     queryFn: async () => {
       const client = new ApiClient(API_URL);
-      const response = await client.get<TApiItemResponse<TTaxonomyNode[]>>("/search/labels:taxonomy", { include: COUNTRY_TAXONOMY_PATTERN });
+      const response = await client.get<TApiItemResponse<TNestedSearchLabel[]>>("/search/labels:taxonomy", { include: COUNTRY_TAXONOMY_PATTERN });
 
       return toCountryOptions(response.data.data);
     },

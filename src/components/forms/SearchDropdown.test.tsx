@@ -1,8 +1,8 @@
 import { screen, fireEvent } from "@testing-library/react";
 import { vi, it } from "vitest";
 
-import { TCountryOption } from "@/hooks/useCountryOptions";
 import { renderWithAppContext } from "@/mocks/renderWithAppContext";
+import { TCountryOption } from "@/types";
 
 import { SearchDropdown } from "../../components/forms/SearchDropdown";
 
