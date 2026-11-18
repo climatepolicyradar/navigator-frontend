@@ -153,8 +153,8 @@ const config: TThemeConfig = {
     },
   ],
   searchCategories: ["UN submission", "Law", "Policy"],
-  searchExcludeLabels: [{ id: "author_type::Non-Party" }],
-  searchLabelPatterns: [...SHARED_LABEL_PATTERNS, "category::Law/**", "category::Policy/**", "category::UN submission/**"],
+  searchExcludeLabels: [{ id: "author_type::Non-Party" }, { id: "un_convention::CBD" }, { id: "author_type::UNCCD" }],
+  searchLabelPatterns: [...SHARED_LABEL_PATTERNS, "category::Law/**", "category::Policy/**", "category::UN submission/un_convention::UNFCCC/**"],
   downloadColumns: [
     "ID",
     "TITLE",
