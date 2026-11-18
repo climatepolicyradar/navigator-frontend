@@ -20,7 +20,7 @@ export const Header = () => {
   const features = useContext(FeaturesContext);
 
   const isHomePage = router.pathname === "/";
-  const showSearch = router.pathname !== "/_search" && !features["new-search"] && !isHomePage;
+  const showSearch = router.pathname !== "/search" && !features["new-search"] && !isHomePage;
 
   return (
     <NavBar

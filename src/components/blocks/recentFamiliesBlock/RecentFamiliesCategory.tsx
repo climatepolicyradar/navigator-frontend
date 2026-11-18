@@ -30,7 +30,7 @@ export const RecentFamiliesCategory = ({
   geography,
   geographyLabel,
 }: IProps) => {
-  const { theme, themeConfig } = useContext(ThemeContext);
+  const { theme } = useContext(ThemeContext);
   const features = useContext(FeaturesContext);
 
   const clickAccordion = () => {
@@ -39,7 +39,7 @@ export const RecentFamiliesCategory = ({
 
   const accordionIconClasses = joinTailwindClasses("text-[#002ca3]", isExpanded && "rotate-180");
 
-  const viewAllProps = getGeoSearchLink({ categoryId: id, features, geography, geographyLabel, themeConfig });
+  const viewAllProps = getGeoSearchLink({ categoryId: id, features, geography, geographyLabel });
 
   // Provides a way to set a redirection note to data in one of our other apps
   let placeholder: ReactNode = null;

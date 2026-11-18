@@ -21,7 +21,7 @@ export const Header = () => {
   const features = useContext(FeaturesContext);
 
   const isHomePage = router.pathname === "/";
-  const showSearch = router.pathname !== "/_search" && !features["new-search"] && !isHomePage;
+  const showSearch = router.pathname !== "/search" && !features["new-search"] && !isHomePage;
 
   const headerClasses = joinTailwindClasses("bg-white", !isHomePage && "!bg-[#677787]");
   const menuIconClasses = router.pathname === "/" ? "text-gray-950" : "text-white";

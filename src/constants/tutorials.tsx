@@ -107,7 +107,7 @@ export const TUTORIALS: TTutorials = {
     featureKey: "new-search",
     modal: {
       defaultOpen: true,
-      pages: ["/search", "/_search"],
+      pages: ["/search"],
       getModalProps: ({ actions, name }) => ({
         cardClasses: "max-w-90! sm:max-w-180! px-10! py-10!",
         children: (

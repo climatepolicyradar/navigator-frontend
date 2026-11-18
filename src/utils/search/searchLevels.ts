@@ -65,7 +65,7 @@ export const levelIdParamKey = (level: TNestedSearchLevel): string => level;
 const groupToOr = (node: TSearchQueryGroup | TSearchQueryRule): TSearchQueryGroup | TSearchQueryRule =>
   isRule(node) ? node : { ...node, op: "or", filters: node.filters.map(groupToOr) };
 
-export const SEARCH_PATH = "_search";
+export const SEARCH_PATH = "search";
 
 /**
  * The level a page view is looking at, for analytics. Left undefined away from the results page, so

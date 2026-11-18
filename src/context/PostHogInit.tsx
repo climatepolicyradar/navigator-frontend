@@ -22,14 +22,7 @@ function PostHogPageView({ consent, pageViewProps }: TPostHogPageViewProps): nul
   const pathname = usePathname();
   const searchParams = useSearchParams();
   const posthog = usePostHog();
-  /**
-   * The page route, as opposed to `pathname` above. usePathname reads router.asPath, so on themes
-   * where /search is rewritten to /_search (themes/THEME/rewrites.json) it reports the URL the user
-   * sees. Search levels belong to the page, so they have to be read off the route.
-   *
-   * pathname above is "/search" but the route below is "/_search" for CPR
-   * searchpath in searchLevelFromParams needs the "/_search" route
-   */
+  // The page route, as opposed to the URL in `pathname` above. Search levels belong to the page, so they're read off the route.
   const { pathname: route } = useRouter();
 
   useEffect(() => {

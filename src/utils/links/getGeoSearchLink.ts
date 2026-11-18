@@ -1,7 +1,7 @@
 import { TQueryOverrides } from "@/components/atoms/pageLink/PageLink";
 import { ID_SEPARATOR } from "@/constants/chars";
 import { QUERY_PARAMS } from "@/constants/queryParams";
-import { GeographyV2, TFeatures, TFilterPathLabel, TSearchLabel, TThemeConfig } from "@/types";
+import { GeographyV2, TFeatures, TFilterPathLabel, TSearchLabel } from "@/types";
 import { deflateFilters } from "@/utils/filters/deflate";
 import { filterPathsToQueryGroup } from "@/utils/search/filterPathsToQueryGroup";
 
@@ -27,16 +27,9 @@ interface IArgs {
   features: TFeatures;
   geography: GeographyV2;
   geographyLabel: TSearchLabel | null;
-  themeConfig: TThemeConfig;
 }
 
-export const getGeoSearchLink = ({
-  categoryId,
-  features,
-  geography,
-  geographyLabel,
-  themeConfig,
-}: IArgs): { href: string; query: TQueryOverrides } => {
+export const getGeoSearchLink = ({ categoryId, features, geography, geographyLabel }: IArgs): { href: string; query: TQueryOverrides } => {
   // Old search
 
   if (!features["new-search"] || !geographyLabel) {
@@ -58,7 +51,7 @@ export const getGeoSearchLink = ({
   }
 
   return {
-    href: themeConfig.features["new-search"] ? "/search" : "/_search", // Shadow search page if config feature off but feature flag on
+    href: "/search",
     query: {
       [QUERY_PARAMS.filters]: deflateFilters(filterPathsToQueryGroup(checkedLabelPaths, null, "and")),
     },

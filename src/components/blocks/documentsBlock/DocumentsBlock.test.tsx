@@ -66,7 +66,7 @@ const renderIn = (search: string) => {
 
 describe("DocumentsBlock", () => {
   beforeEach(() => {
-    nextRouterMock.default.setCurrentUrl("/_search");
+    nextRouterMock.default.setCurrentUrl("/search");
   });
 
   it("carries only the topic filters to the document page", () => {

@@ -19,7 +19,7 @@ const DATE_RANGE_PRESETS: Array<{ value: TDateRangePreset; label: string }> = [
   { value: "last_5_years", label: "Last 5 years" },
 ];
 
-/** Preset and custom year-range UI for published-date filtering in shadow search. */
+// Preset and custom year-range UI for published-date filtering in search
 export function PublishedDateFilterSection({ value, onChange }: TProps) {
   const currentYear = new Date().getFullYear();
   const selectedDateRange = parseYearRange(value ?? "") ?? resolveYearRangeForPreset("all_time", currentYear);
