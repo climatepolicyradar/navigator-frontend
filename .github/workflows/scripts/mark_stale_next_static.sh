@@ -72,4 +72,4 @@ if [ "$COUNT" -gt 0 ]; then
 		--key {} \
 		--tagging "$TAGGING" >/dev/null
 fi
-echo "tagged ${COUNT} superseded object(s) stale in ${BUCKET}"
+echo "tagged ${COUNT} superseded object(s) stale in ${BUCKET_NAME}"
