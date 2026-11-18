@@ -11,6 +11,7 @@ const LANGUAGE_NAME_OVERRIDES: Record<string, string> = {
   mgt: "Mongol",
   pes: "Iranian Persian",
   psr: "Portuguese Sign Language",
+  tgl: "Tagalog",
   zsm: "Standard Malay",
 };
 
