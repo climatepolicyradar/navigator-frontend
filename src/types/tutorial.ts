@@ -47,7 +47,7 @@ export type TTutorialModal = {
 };
 
 type TTutorial = {
-  featureKey: TFeature;
+  featureKey?: TFeature;
   banner?: TTutorialBanner;
   card?: TTutorialCard;
   modal?: TTutorialModal;
