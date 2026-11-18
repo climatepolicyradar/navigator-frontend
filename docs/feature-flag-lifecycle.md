@@ -48,7 +48,7 @@ Add the key to `FEATURE_FLAG_KEYS` in `src/types/features.ts`:
 ```ts
 export const FEATURE_FLAG_KEYS = [
   "debug",
-  "new-search",
+  "subdivisions",
   "themes",
   "your-flag-key",
 ] as const;
@@ -193,7 +193,7 @@ feature keys to booleans:
 features: {
   familyConceptsSearch: false,
   knowledgeGraph: true,
-  "new-search": true,
+  subdivisions: true,
   // ...
 },
 ```

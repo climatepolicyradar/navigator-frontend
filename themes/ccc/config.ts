@@ -78,7 +78,6 @@ const config: TThemeConfig = {
     "geography-type-filters": false,
     knowledgeGraph: true,
     litigation: true,
-    "new-search": true,
     searchFamilySummary: true,
     subdivisions: true,
     themes: false,
