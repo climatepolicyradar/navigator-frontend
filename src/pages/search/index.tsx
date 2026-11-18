@@ -38,7 +38,7 @@ const columnLayoutCss = "col-start-1 -col-end-1 cols-5:col-start-2 cols-5:-col-e
 
 type TProps = InferGetServerSidePropsType<typeof getServerSideProps>;
 
-const ShadowSearch = ({ theme, themeConfig, features }: TProps) => {
+const SearchPage = ({ theme, themeConfig, features }: TProps) => {
   const { removeCompletedTutorial } = useContext(TutorialContext);
   const { getAppText } = useText();
   const { filters: availableFilters, labelNames: filterLabelNames, loaded: filtersLoaded } = useFilterLabels({ features, themeConfig });
@@ -202,7 +202,7 @@ const ShadowSearch = ({ theme, themeConfig, features }: TProps) => {
   );
 };
 
-export default ShadowSearch;
+export default SearchPage;
 
 export const getServerSideProps = (async (context) => {
   context.res.setHeader("Cache-Control", "public, max-age=3600, immutable");

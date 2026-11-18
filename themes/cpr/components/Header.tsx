@@ -101,7 +101,7 @@ export const Header = ({ landingPage = false, landingPageWithHero = false, logo 
   const newSearch = features["new-search"];
 
   const isHomePage = router.pathname === "/";
-  const showSearch = !landingPage && router.pathname !== "/_search" && !newSearch && !isHomePage;
+  const showSearch = !landingPage && router.pathname !== "/search" && !newSearch && !isHomePage;
 
   // The homepage and any landing page with a hero run the hero to the top of the
   // page and float the header over it, so the header leaves the flow entirely --

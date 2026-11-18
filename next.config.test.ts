@@ -6,7 +6,7 @@ const THEMES = ["ccc", "cclw", "cpr", "mcf"];
 
 /**
  * A bare array is read as afterFiles, which Next only reaches after checking the filesystem, so a
- * rule shadowing a real page (/search -> /_search) would silently never fire. Guard the shape.
+ * rule shadowing a real page would silently never fire. Guard the shape.
  */
 const rewritesFor = async (theme: string) => {
   process.env.THEME = theme;

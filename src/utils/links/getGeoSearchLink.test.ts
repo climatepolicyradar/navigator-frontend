@@ -1,7 +1,6 @@
 import { DEFAULT_FEATURES } from "@/constants/features";
 import { QUERY_PARAMS } from "@/constants/queryParams";
-import { DEFAULT_THEME_CONFIG } from "@/constants/themeConfig";
-import { GeographyV2, TFeatures, TSearchLabel, TThemeConfig } from "@/types";
+import { GeographyV2, TFeatures, TSearchLabel } from "@/types";
 import { deflateFilters } from "@/utils/filters/deflate";
 import { filterPathsToQueryGroup } from "@/utils/search/filterPathsToQueryGroup";
 
@@ -52,16 +51,6 @@ const subdivisionLabel: TSearchLabel = {
 const oldSearchFeatures: TFeatures = { ...DEFAULT_FEATURES, "new-search": false };
 const newSearchFeatures: TFeatures = { ...DEFAULT_FEATURES, "new-search": true };
 
-const themeConfigWithNewSearch: TThemeConfig = {
-  ...DEFAULT_THEME_CONFIG,
-  features: { ...DEFAULT_THEME_CONFIG.features, "new-search": true },
-};
-
-const themeConfigWithoutNewSearch: TThemeConfig = {
-  ...DEFAULT_THEME_CONFIG,
-  features: { ...DEFAULT_THEME_CONFIG.features, "new-search": false },
-};
-
 describe("getGeoSearchLink", () => {
   it("builds a country/category query when the new-search feature flag is off", () => {
     const result = getGeoSearchLink({
@@ -69,7 +58,6 @@ describe("getGeoSearchLink", () => {
       features: oldSearchFeatures,
       geography,
       geographyLabel,
-      themeConfig: themeConfigWithNewSearch,
     });
 
     expect(result.query).toEqual({ [QUERY_PARAMS.country]: "kenya", [QUERY_PARAMS.category]: "laws" });
@@ -81,7 +69,6 @@ describe("getGeoSearchLink", () => {
       features: newSearchFeatures,
       geography,
       geographyLabel: null,
-      themeConfig: themeConfigWithNewSearch,
     });
 
     expect(result.query).toEqual({ [QUERY_PARAMS.country]: "kenya", [QUERY_PARAMS.category]: "laws" });
@@ -93,7 +80,6 @@ describe("getGeoSearchLink", () => {
       features: newSearchFeatures,
       geography,
       geographyLabel,
-      themeConfig: themeConfigWithNewSearch,
     });
 
     const expectedFilters = filterPathsToQueryGroup(
@@ -111,34 +97,20 @@ describe("getGeoSearchLink", () => {
       features: oldSearchFeatures,
       geography,
       geographyLabel,
-      themeConfig: themeConfigWithoutNewSearch,
     });
 
     expect(result.href).toBe("/search");
   });
 
-  it("links to /search when new search is on and the theme config also has new-search enabled", () => {
+  it("links to /search for new search", () => {
     const result = getGeoSearchLink({
       categoryId: "All",
       features: newSearchFeatures,
       geography,
       geographyLabel,
-      themeConfig: themeConfigWithNewSearch,
     });
 
     expect(result.href).toBe("/search");
-  });
-
-  it("links to /_search when new search is on but the theme config has new-search disabled (shadow page)", () => {
-    const result = getGeoSearchLink({
-      categoryId: "All",
-      features: newSearchFeatures,
-      geography,
-      geographyLabel,
-      themeConfig: themeConfigWithoutNewSearch,
-    });
-
-    expect(result.href).toBe("/_search");
   });
 
   it("omits the category query param for old search", () => {
@@ -147,7 +119,6 @@ describe("getGeoSearchLink", () => {
       features: oldSearchFeatures,
       geography,
       geographyLabel,
-      themeConfig: themeConfigWithNewSearch,
     });
 
     expect(result.query).toEqual({ [QUERY_PARAMS.country]: "kenya" });
@@ -159,7 +130,6 @@ describe("getGeoSearchLink", () => {
       features: newSearchFeatures,
       geography,
       geographyLabel,
-      themeConfig: themeConfigWithNewSearch,
     });
 
     const expectedFilters = filterPathsToQueryGroup([[geographyLabel, region]], null, "and");
@@ -173,7 +143,6 @@ describe("getGeoSearchLink", () => {
       features: oldSearchFeatures,
       geography,
       geographyLabel,
-      themeConfig: themeConfigWithNewSearch,
     });
 
     expect(result.query).toEqual({ [QUERY_PARAMS.country]: "kenya", [QUERY_PARAMS.category]: "policies" });
@@ -185,7 +154,6 @@ describe("getGeoSearchLink", () => {
       features: newSearchFeatures,
       geography,
       geographyLabel,
-      themeConfig: themeConfigWithNewSearch,
     });
 
     const expectedFilters = filterPathsToQueryGroup(
@@ -203,7 +171,6 @@ describe("getGeoSearchLink", () => {
       features: newSearchFeatures,
       geography: subdivisionGeography,
       geographyLabel: subdivisionLabel,
-      themeConfig: themeConfigWithNewSearch,
     });
 
     const expectedFilters = filterPathsToQueryGroup([[subdivisionLabel, country]], null, "and");
@@ -217,7 +184,6 @@ describe("getGeoSearchLink", () => {
       features: newSearchFeatures,
       geography: subdivisionGeography,
       geographyLabel: subdivisionLabel,
-      themeConfig: themeConfigWithNewSearch,
     });
 
     const expectedFilters = filterPathsToQueryGroup(
@@ -235,7 +201,6 @@ describe("getGeoSearchLink", () => {
       features: newSearchFeatures,
       geography,
       geographyLabel,
-      themeConfig: themeConfigWithNewSearch,
     });
 
     const expectedFilters = filterPathsToQueryGroup([[geographyLabel, region]], null, "and");

@@ -261,7 +261,7 @@ describe("getDocumentLink", () => {
       title: "Document 1",
       cdn_object: "https://example.com/doc.pdf",
     } as TFamilyDocumentPublic;
-    mockRouter.setCurrentUrl("/_search?q=electrification&filters=%7B%22op%22%3A%22and%22%7D&sort=date%3Adesc");
+    mockRouter.setCurrentUrl("/search?q=electrification&filters=%7B%22op%22%3A%22and%22%7D&sort=date%3Adesc");
 
     render(<>{getDocumentLink(documentWithSlug, false, false, false, { q: "electrification", filters: null, sort: null })}</>);
 
