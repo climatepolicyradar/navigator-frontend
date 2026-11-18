@@ -56,7 +56,7 @@ describe("useFilterLabels", () => {
     const themeConfig = {
       ...DEFAULT_THEME_CONFIG,
       searchCategories: ["Law" as const],
-      searchExcludeLabels: [{ id: "author_type::Non-Party", onDirectLink: { action: "not_found" as const } }],
+      searchExcludeLabels: [{ id: "author_type::Non-Party" }],
     };
     renderUseFilterLabels(DEFAULT_FEATURES, themeConfig);
     await waitFor(() => expect(mockLoadTaxonomy).toHaveBeenCalled());

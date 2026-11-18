@@ -102,7 +102,7 @@ describe("fetchSearchDocuments", () => {
       apiUrl: TEST_API_URL,
       themeConfig: {
         ...themeConfigWithCategories([]),
-        searchExcludeLabels: [{ id: "author_type::Non-Party", onDirectLink: { action: "not_found" } }],
+        searchExcludeLabels: [{ id: "author_type::Non-Party" }],
       },
     });
 
