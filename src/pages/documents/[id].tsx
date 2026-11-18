@@ -25,7 +25,7 @@ import { TTheme } from "@/types";
 import { CleanRouterQuery } from "@/utils/cleanRouterQuery";
 import { getFeatureFlags } from "@/utils/featureFlags";
 import { getFeatures } from "@/utils/features";
-import { getDirectLinkRedirect } from "@/utils/getDirectLinkRedirect";
+import { getSiteDecision } from "@/utils/getDocumentSites";
 import { getLitigationDocumentJSONLD } from "@/utils/json-ld/getLitigationDocumentJSONLD";
 import { readConfigFile } from "@/utils/readConfigFile";
 
@@ -43,6 +43,7 @@ const isEmptySearch = (query: ParsedUrlQuery) => {
 */
 
 const DocumentPage = ({
+  canonicalUrl,
   debug,
   document,
   errors,
@@ -116,7 +117,7 @@ const DocumentPage = ({
         description={getDocumentDescription(document.title)}
         theme={theme as TTheme}
         themeConfig={themeConfig}
-        attributionUrl={family.attribution.url}
+        canonicalUrl={canonicalUrl}
       >
         <TopicsContext.Provider value={topicsData ?? { rootTopics: [], topics: [] }}>
           <section
@@ -193,13 +194,21 @@ export const getServerSideProps = (async (context) => {
     console.error(`[documents.getServerSideProps]: url: ${context.req.url}, params: ${context.params}`);
     console.error(err);
   });
-  const directLinkRedirect = getDirectLinkRedirect(documentData, slug, features);
-  if (directLinkRedirect) return directLinkRedirect;
   if (documentData === null) return { notFound: true };
+
+  const siteDecision = getSiteDecision(documentData.themeCriteria, theme, `/documents/${slug}`);
+
+  if (siteDecision.action === "not_found") {
+    return { notFound: true };
+  }
+  if (siteDecision.action === "redirect") {
+    return { redirect: { destination: siteDecision.destination, permanent: true } };
+  }
 
   return {
     props: withEnvConfig({
       ...documentData,
+      canonicalUrl: siteDecision.canonicalUrl,
       errors: errors.map((error) => JSON.stringify(error, Object.getOwnPropertyNames(error))),
       features,
       theme,

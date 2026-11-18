@@ -25,6 +25,8 @@ interface ISearchDocumentsParams {
   page_size?: string;
   page_token?: string;
   sort?: TSortValue;
+  /** An `order_by` clause to use in place of `sort`, for orderings not offered to users as a sort option. */
+  orderBy?: string;
   signal?: AbortSignal;
 }
 
@@ -113,7 +115,7 @@ export const fetchSearchDocuments = async (params: ISearchDocumentsParams): Prom
   if (params.page_size !== undefined) url.searchParams.set("page_size", params.page_size);
   if (params.page_token !== undefined) url.searchParams.set("page_token", params.page_token);
   const sortKey = params.sort ?? "relevance";
-  url.searchParams.set("order_by", SORT_PARAMS_LOOKUP[sortKey]);
+  url.searchParams.set("order_by", params.orderBy ?? SORT_PARAMS_LOOKUP[sortKey]);
 
   const res = await fetch(url, { signal: params.signal });
   if (!res.ok)
