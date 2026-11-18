@@ -4,7 +4,6 @@ import { ReactNode, useContext } from "react";
 import { PageLink } from "@/components/atoms/pageLink/PageLink";
 import { EntityCard } from "@/components/molecules/entityCard/EntityCard";
 import { ARROW_RIGHT } from "@/constants/chars";
-import { FeaturesContext } from "@/context/FeaturesContext";
 import { ThemeContext } from "@/context/ThemeContext";
 import { GeographyV2, TCategorySummary, TSearchLabel } from "@/types";
 import { getGeoSearchLink } from "@/utils/links/getGeoSearchLink";
@@ -27,11 +26,9 @@ export const RecentFamiliesCategory = ({
   showAccordion = false,
   isExpanded = true,
   onAccordionClick,
-  geography,
   geographyLabel,
 }: IProps) => {
   const { theme } = useContext(ThemeContext);
-  const features = useContext(FeaturesContext);
 
   const clickAccordion = () => {
     onAccordionClick?.();
@@ -39,7 +36,7 @@ export const RecentFamiliesCategory = ({
 
   const accordionIconClasses = joinTailwindClasses("text-[#002ca3]", isExpanded && "rotate-180");
 
-  const viewAllProps = getGeoSearchLink({ categoryId: id, features, geography, geographyLabel });
+  const viewAllProps = getGeoSearchLink({ categoryId: id, geographyLabel });
 
   // Provides a way to set a redirection note to data in one of our other apps
   let placeholder: ReactNode = null;

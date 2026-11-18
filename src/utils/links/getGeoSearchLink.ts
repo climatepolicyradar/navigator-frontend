@@ -1,7 +1,7 @@
 import { TQueryOverrides } from "@/components/atoms/pageLink/PageLink";
 import { ID_SEPARATOR } from "@/constants/chars";
 import { QUERY_PARAMS } from "@/constants/queryParams";
-import { GeographyV2, TFeatures, TFilterPathLabel, TSearchLabel } from "@/types";
+import { TFilterPathLabel, TSearchLabel } from "@/types";
 import { deflateFilters } from "@/utils/filters/deflate";
 import { filterPathsToQueryGroup } from "@/utils/search/filterPathsToQueryGroup";
 
@@ -24,22 +24,10 @@ export const createLabel = (id: string): TFilterPathLabel => {
 
 interface IArgs {
   categoryId: string;
-  features: TFeatures;
-  geography: GeographyV2;
-  geographyLabel: TSearchLabel | null;
+  geographyLabel: TSearchLabel;
 }
 
-export const getGeoSearchLink = ({ categoryId, features, geography, geographyLabel }: IArgs): { href: string; query: TQueryOverrides } => {
-  // Old search
-
-  if (!features["new-search"] || !geographyLabel) {
-    const query = { [QUERY_PARAMS.country]: geography.slug };
-    if (categoryId !== "All") query[QUERY_PARAMS.category] = categoryId;
-    return { href: "/search", query };
-  }
-
-  // New search
-
+export const getGeoSearchLink = ({ categoryId, geographyLabel }: IArgs): { href: string; query: TQueryOverrides } => {
   const checkedLabelPaths: TFilterPathLabel[][] = [];
   const parentType = geographyLabel.type === "subdivision" ? "country" : "region";
   const parentLabel = geographyLabel.labels.find((label) => label.type === "subconcept_of" && label.value.type === parentType);
