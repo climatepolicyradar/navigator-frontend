@@ -3,7 +3,7 @@ import { testDocumentDataIn, testDocumentImportId } from "@/mocks/api/documentDa
 import { testFamilyImportId } from "@/mocks/api/familyDataHandlers";
 import { TDataInDocument } from "@/schemas";
 
-const transform = (document: TDataInDocument) => documentTransformer({ document, topicsData: undefined, vespaDocumentData: undefined }, []);
+const transform = (document: TDataInDocument) => documentTransformer({ document, topicsData: undefined, searchDocument: undefined }, []);
 
 describe("documentTransformer", () => {
   it("returns transformed data for a published document with a parent family", () => {

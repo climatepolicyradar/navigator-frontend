@@ -10,7 +10,7 @@ export type TDataInItemType = v.InferOutput<typeof ItemTypeSchema>;
 export const MANDATORY_ITEM_TYPES: TDataInItemType[] = ["cdn"];
 
 export const ItemSchema = v.object({
-  url: v.string(),
+  url: v.nullable(v.string()),
   type: ItemTypeSchema,
   content_type: v.nullable(v.string()),
 });

@@ -19,6 +19,7 @@ const publicRuntimeEnvConfig = [
   "TARGETS_URL",
   "CDN_URL",
   "CONCEPTS_API_URL",
+  "API_URL",
   "ADOBE_API_KEY",
   "REDIRECT_FILE",
   "APP_URL",

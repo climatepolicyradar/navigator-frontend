@@ -1,0 +1,127 @@
+import { DEFAULT_THEME_CONFIG } from "@/constants/themeConfig";
+import { TLabelCategoryValue, TThemeConfig } from "@/types";
+import { inflateFilters } from "@/utils/filters/deflate";
+
+import { configureDocumentsFilters, fetchSearchDocuments } from "./search";
+
+const TEST_API_URL = "https://api.climatepolicyradar.org";
+
+const themeConfigWithCategories = (searchCategories: TLabelCategoryValue[]): TThemeConfig => ({
+  ...DEFAULT_THEME_CONFIG,
+  searchCategories,
+});
+
+const requestedFilters = (): string => {
+  const url = vi.mocked(global.fetch).mock.calls[0][0] as URL;
+  expect(url.searchParams.get("encoding")).toBe("deflate");
+  return inflateFilters(url.searchParams.get("filters") ?? "");
+};
+
+describe("fetchSearchDocuments", () => {
+  beforeEach(() => {
+    vi.spyOn(global, "fetch").mockResolvedValue({
+      ok: true,
+      json: async () => ({}),
+    } as Response);
+  });
+
+  afterEach(() => {
+    vi.restoreAllMocks();
+  });
+
+  it("does not restrict categories when the theme has no search categories", async () => {
+    await fetchSearchDocuments({
+      apiUrl: TEST_API_URL,
+      themeConfig: themeConfigWithCategories([]),
+    });
+
+    expect(requestedFilters()).not.toContain("category::");
+  });
+
+  it("restricts results to any of the theme's search categories", async () => {
+    await fetchSearchDocuments({
+      apiUrl: TEST_API_URL,
+      themeConfig: themeConfigWithCategories(["Law", "Policy"]),
+    });
+
+    expect(JSON.parse(requestedFilters()).filters).toContainEqual({
+      op: "or",
+      filters: [
+        { op: "contains", field: "labels.value.id", value: "category::Law" },
+        { op: "contains", field: "labels.value.id", value: "category::Policy" },
+      ],
+    });
+  });
+
+  it("requires a minimum fraction of the query's terms to match", async () => {
+    await fetchSearchDocuments({
+      apiUrl: TEST_API_URL,
+      themeConfig: themeConfigWithCategories([]),
+      query: "adaptation strategy",
+    });
+
+    const url = vi.mocked(global.fetch).mock.calls[0][0] as URL;
+    expect(url.searchParams.get("msm")).toBe("0.7");
+  });
+
+  it("does not send a minimum match when there is no query", async () => {
+    await fetchSearchDocuments({
+      apiUrl: TEST_API_URL,
+      themeConfig: themeConfigWithCategories([]),
+    });
+
+    const url = vi.mocked(global.fetch).mock.calls[0][0] as URL;
+    expect(url.searchParams.has("msm")).toBe(false);
+  });
+
+  it("orders by the sort option's clause", async () => {
+    await fetchSearchDocuments({
+      apiUrl: TEST_API_URL,
+      themeConfig: themeConfigWithCategories([]),
+      sort: "recent",
+    });
+
+    const url = vi.mocked(global.fetch).mock.calls[0][0] as URL;
+    expect(url.searchParams.get("order_by")).toBe("attributes.published_date desc");
+  });
+
+  it("orders by an explicit clause in place of the sort option", async () => {
+    await fetchSearchDocuments({
+      apiUrl: TEST_API_URL,
+      themeConfig: themeConfigWithCategories([]),
+      sort: "recent",
+      orderBy: "attributes.created_at desc",
+    });
+
+    const url = vi.mocked(global.fetch).mock.calls[0][0] as URL;
+    expect(url.searchParams.get("order_by")).toBe("attributes.created_at desc");
+  });
+
+  it("excludes the theme's excluded labels from results", async () => {
+    await fetchSearchDocuments({
+      apiUrl: TEST_API_URL,
+      themeConfig: {
+        ...themeConfigWithCategories([]),
+        searchExcludeLabels: [{ id: "author_type::Non-Party" }],
+      },
+    });
+
+    expect(JSON.parse(requestedFilters()).filters).toContainEqual({
+      op: "not_contains",
+      field: "labels.value.id",
+      value: "author_type::Non-Party",
+    });
+  });
+});
+
+describe("configureDocumentsFilters", () => {
+  afterEach(() => vi.useRealTimers());
+
+  it("bounds published_date to the end of the day so the request can be cached", () => {
+    vi.useFakeTimers();
+    vi.setSystemTime(new Date("2026-11-12T09:00:00.000Z"));
+    const morning = configureDocumentsFilters(undefined, ["Law"], []);
+    vi.setSystemTime(new Date("2026-11-12T17:30:00.000Z"));
+    expect(configureDocumentsFilters(undefined, ["Law"], [])).toEqual(morning);
+  });
+});

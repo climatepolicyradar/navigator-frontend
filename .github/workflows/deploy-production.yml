@@ -20,10 +20,14 @@ on:
 permissions:
   id-token: write
   contents: read
+  actions: read
 
 jobs:
   deploy-production:
     name: Deploy ${{ github.sha }} to ${{ inputs.theme }} production
+    concurrency:
+      group: deploy-production-${{ inputs.theme }}
+      cancel-in-progress: false
     runs-on: ubuntu-latest
     environment:
       name: production
@@ -33,6 +37,16 @@ jobs:
           echo "This workflow can only be run from main."
           exit 1
       - uses: actions/checkout@v7
+      # Gate before the build instead of after, per theme, so a
+      # theme that's staging deploy is red is removed from the
+      # matrix while the others still ship. @related: FUS-705
+      - name: Require a green staging deploy for this commit
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: >
+          .github/workflows/scripts/assert_staging_green.sh
+          ${{ github.sha }} ${{ inputs.theme }}
+
       - name: Configure AWS credentials
         uses: aws-actions/configure-aws-credentials@v6.3.0
         with:
@@ -72,7 +86,7 @@ jobs:
         run: |
           echo "app_id=$(echo "$APP_IDS" | jq -r '.["${{ inputs.theme }}"]')" >> "$GITHUB_OUTPUT"
 
-      - name: Build, tag, and push to ECR with 'latest' tag
+      - name: Build, tag, and push to ECR with 'latest' and commit SHA tags
         id: build-image
         env:
           ECR_REGISTRY: ${{ secrets.DOCKER_REGISTRY }}
@@ -82,14 +96,17 @@ jobs:
           THEME: ${{ inputs.theme }}
         # @related: GITHUB_SHA_ENV_VAR
         run: |
+          SHA_TAG=$(git rev-parse HEAD)
           docker build --build-arg THEME=${THEME} --build-arg NEXT_STATIC_ENABLED=true --build-arg NEXT_PUBLIC_FARO_ENVIRONMENT=production --build-arg GITHUB_SHA=$(git rev-parse HEAD) \
             --build-arg NEXT_PUBLIC_FARO_URL=${{ steps.faro.outputs.collector_endpoint }} \
-            --build-arg FARO_SOURCEMAP_API_KEY=${{ secrets.FARO_SOURCEMAP_API_KEY }} \
-            --build-arg FARO_SOURCEMAP_APP_ID=${{ steps.faro-sourcemap.outputs.app_id }} \
-            --build-arg FARO_SOURCEMAP_STACK_ID=${{ secrets.FARO_SOURCEMAP_STACK_ID }} \
-            -t $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG .
+            -t $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG -t $ECR_REGISTRY/$ECR_REPOSITORY:$SHA_TAG .
           docker push $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
-          echo "image=$ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG" >> $GITHUB_OUTPUT
+          docker push $ECR_REGISTRY/$ECR_REPOSITORY:$SHA_TAG
+          # Deploy by SHA, not by 'latest': the tag that goes live is the one
+          # a rollback can name later, and it pins this exact build even if a
+          # concurrent run moves 'latest'.
+          echo "image=$ECR_REGISTRY/$ECR_REPOSITORY:$SHA_TAG" >> $GITHUB_OUTPUT
+          echo "sha_tag=$SHA_TAG" >> $GITHUB_OUTPUT
 
       # Serve this build's JS/CSS from S3 so a client mid-session on the old
       # build can still fetch its chunks after the deploy below replaces the
@@ -105,6 +122,12 @@ jobs:
           # cp nests under ./next-static/static when the target already exists,
           # which would publish every asset one level too deep.
           docker cp "$CONTAINER_ID":/app/.next/static/. ./next-static
+          # Source maps ride along in the image at /app/sourcemaps (outside
+          # .next/static, so never served). Pulled out here for the Faro
+          # upload after the deploy; ./next-sourcemaps is not synced to S3.
+          # @related: FUS-761
+          mkdir -p ./next-sourcemaps
+          docker cp "$CONTAINER_ID":/app/sourcemaps/. ./next-sourcemaps
           docker rm "$CONTAINER_ID"
           if [ -z "$(find ./next-static -type f -print -quit)" ]; then
             echo "::error::No static assets extracted from $IMAGE; refusing to deploy"
@@ -180,3 +203,24 @@ jobs:
         run: >
           .github/workflows/scripts/mark_stale_next_static.sh
           "$BUCKET_NAME" "$UPLOADED_STATIC_ASSETS_AT"
+
+      # Runs last and never blocks the release: source maps only make Faro
+      # stack traces readable, so a Grafana outage degrades observability
+      # rather than stopping a deploy (FUS-761).
+      - name: Upload source maps to Faro
+        continue-on-error: true
+        uses: ./.github/actions/upload-source-maps
+        with:
+          theme: ${{ inputs.theme }}
+          bundle-id: ${{ steps.build-image.outputs.sha_tag }}
+          api-key: ${{ secrets.FARO_SOURCEMAP_API_KEY }}
+          app-id: ${{ steps.faro-sourcemap.outputs.app_id }}
+          stack-id: ${{ secrets.FARO_SOURCEMAP_STACK_ID }}
+  notify-failure:
+    needs: deploy-production
+    if: failure()
+    uses: ./.github/workflows/notify-deploy-failure.yml
+    secrets: inherit
+    with:
+      environment: production
+      heading: production deploy of ${{ inputs.theme }} failed

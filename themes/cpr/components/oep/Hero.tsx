@@ -10,9 +10,10 @@ import { SiteWidth } from "@/components/panels/SiteWidth";
 import { QUERY_PARAMS } from "@/constants/queryParams";
 import { ThemeContext } from "@/context/ThemeContext";
 import { TLandingPageSearchConfig } from "@/types";
+import { deflateFilters } from "@/utils/filters/deflate";
 import { getSuggestionParams } from "@/utils/getSuggestionParams";
 
-const OFFSHORE_WIND_REPORT_FILTERS = JSON.stringify({
+const OFFSHORE_WIND_REPORT_FILTERS = deflateFilters({
   op: "and",
   filters: [
     { field: "labels.value.id", op: "contains", value: "category::Report" },
@@ -30,6 +31,7 @@ const SEARCH_CONFIG: TLandingPageSearchConfig = {
   button: {
     label: "",
     params: {
+      [QUERY_PARAMS.sort_order]: "desc",
       [QUERY_PARAMS.category]: "offshore-wind-reports",
     },
     newParams: {
@@ -38,14 +40,14 @@ const SEARCH_CONFIG: TLandingPageSearchConfig = {
   },
   suggestions: [
     {
-      label: "Offshore wind development",
+      label: "Grid connection",
       params: {
         [QUERY_PARAMS.category]: "offshore-wind-reports",
-        [QUERY_PARAMS.query_string]: "Offshore wind development",
+        [QUERY_PARAMS.query_string]: "Grid connection",
       },
       newParams: {
         [QUERY_PARAMS.filters]: OFFSHORE_WIND_REPORT_FILTERS,
-        [QUERY_PARAMS.query_string]: "Offshore wind development",
+        [QUERY_PARAMS.query_string]: "Grid connection",
       },
     },
     {
@@ -66,7 +68,7 @@ const SEARCH_CONFIG: TLandingPageSearchConfig = {
         [QUERY_PARAMS.concept_name]: "zoning and spatial planning",
       },
       newParams: {
-        [QUERY_PARAMS.filters]: JSON.stringify({
+        [QUERY_PARAMS.filters]: deflateFilters({
           op: "and",
           filters: [
             {
@@ -83,6 +85,33 @@ const SEARCH_CONFIG: TLandingPageSearchConfig = {
               ],
             },
             { field: "labels.value.id", op: "contains", value: "concept::Q1282", checked: true },
+          ],
+        }),
+      },
+    },
+    {
+      label: "Social inclusion",
+      params: {
+        [QUERY_PARAMS.category]: "offshore-wind-reports",
+      },
+      newParams: {
+        [QUERY_PARAMS.filters]: deflateFilters({
+          op: "and",
+          filters: [
+            {
+              op: "and",
+              filters: [
+                { field: "labels.value.id", op: "contains", value: "category::Report" },
+                {
+                  op: "and",
+                  filters: [
+                    { field: "labels.value.id", op: "contains", value: "report_type::Industry report" },
+                    { op: "or", filters: [{ field: "labels.value.id", op: "contains", value: "entity_type::Offshore wind report", checked: true }] },
+                  ],
+                },
+              ],
+            },
+            { field: "labels.value.id", op: "contains", value: "concept::Q58", checked: true },
           ],
         }),
       },

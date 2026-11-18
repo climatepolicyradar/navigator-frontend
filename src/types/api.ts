@@ -65,6 +65,15 @@ export type TApiGeographyWithDocumentCounts = {
   count: number;
 };
 
+/* As returned by data-in-api, which identifies geographies by prefixed label id
+ * (e.g. "subdivision::MX-TAB") rather than a bare ISO code. */
+export type TApiGeographyLabelCount = {
+  id: string;
+  name: string;
+  type: string;
+  count: number;
+};
+
 export type TApiTarget = {
   ID: string;
   "Target type": string;
@@ -355,14 +364,6 @@ export type TApiFamilyPublic = {
 };
 
 export type TApiDocumentPublic = Omit<TApiFamilyDocumentPublic, "events"> & { family: TApiFamilyPublic };
-
-export type TApiSlugResponse = {
-  name: string;
-  family_import_id: string | null;
-  family_document_import_id: string | null;
-  collection_import_id: string | null;
-  created: string;
-};
 
 export interface IApiFamilyDocumentTopics {
   documents: {

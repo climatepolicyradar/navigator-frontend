@@ -1,7 +1,9 @@
 import { TSingularAndPlural } from "./display";
 import { TLabel } from "./label";
 
-export type TTheme = "cpr" | "cclw" | "mcf" | "ccc";
+export const THEMES = ["cpr", "cclw", "mcf", "ccc"] as const;
+
+export type TTheme = (typeof THEMES)[number];
 
 export type TSearchKeywordFilters = {
   categories?: string[];
@@ -85,6 +87,13 @@ export type TGeography = {
   slug: string;
 };
 
+export type TCountryOption = {
+  // The country's ISO 3166-1 alpha-3 code when from the taxonomy (e.g. "AUS"), or its /config id
+  id: string;
+  slug: string;
+  display_value: string;
+};
+
 export type TGeographySubdivision = {
   code: string;
   name: string;
@@ -138,7 +147,14 @@ export type TCategory =
   | "UNFCCC";
 export type TCorpusTypeSubCategory = "AF" | "CIF" | "GCF" | "GEF" | "Laws and Policies" | "Intl. agreements" | "Litigation" | "Reports";
 
-export type TAttributionCategory = "Law" | "Litigation" | "Multilateral Climate Fund project" | "Policy" | "Report" | "UN submission";
+export type TAttributionCategory =
+  | "Global Stocktake"
+  | "Law"
+  | "Litigation"
+  | "Multilateral Climate Fund project"
+  | "Policy"
+  | "Report"
+  | "UN submission";
 
 export type TEvent = {
   title: string;
@@ -253,10 +269,6 @@ export type TSearch = {
 };
 
 export type TLoadingStatus = "idle" | "loading" | "success" | "error";
-
-export type TLanguages = {
-  [key: string]: string;
-};
 
 type TCorpusWithStats = {
   corpus_import_id: string;
@@ -410,7 +422,13 @@ export type TFamilyPublic = {
 export type TCategorySummary = {
   id: string;
   count: number;
-  families: TFamily[];
+  families: TFamilySummary[];
   title: string;
   singularAndPlural: TSingularAndPlural;
+};
+
+export type TFamilySummary = {
+  href: string;
+  metadata: string[];
+  title: string;
 };

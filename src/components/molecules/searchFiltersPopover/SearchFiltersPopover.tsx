@@ -1,14 +1,11 @@
 import { Popover as BasePopover } from "@base-ui/react/popover";
 import { ChevronDown } from "lucide-react";
 
+import { Loading } from "@/components/atoms/loading/Loading";
 import { SearchFilterLevel } from "@/components/organisms/searchFilterLevel/SearchFilterLevel";
-import { TFiltersGroup } from "@/types";
+import { IFilterGroupComponentProps } from "@/types";
 
-interface IProps {
-  filterGroup: TFiltersGroup;
-}
-
-export const SearchFiltersPopover = ({ filterGroup }: IProps) => {
+export const SearchFiltersPopover = ({ filterGroup, loading }: IFilterGroupComponentProps) => {
   if (filterGroup.container !== "popover") return null;
   const { nestedLabels, title } = filterGroup;
 
@@ -22,13 +19,17 @@ export const SearchFiltersPopover = ({ filterGroup }: IProps) => {
         <BasePopover.Positioner positionMethod="fixed" side="bottom" sideOffset={8} align="start" className="">
           <BasePopover.Popup className="w-83 max-h-[50dvh] px-6 py-5 bg-bg-primary border border-border-normal rounded-xl shadow-2xl overflow-y-auto">
             {filterGroup.header}
-            <SearchFilterLevel
-              ancestorPath={[]}
-              labels={nestedLabels}
-              level={1}
-              emptyStateRender={filterGroup.emptyStateRender}
-              topLevelDefaultOpen={filterGroup.topLevelDefaultOpen}
-            />
+            {loading ? (
+              <Loading />
+            ) : (
+              <SearchFilterLevel
+                ancestorPath={[]}
+                labels={nestedLabels}
+                level={1}
+                emptyStateRender={filterGroup.emptyStateRender}
+                topLevelDefaultOpen={filterGroup.topLevelDefaultOpen}
+              />
+            )}
           </BasePopover.Popup>
         </BasePopover.Positioner>
       </BasePopover.Portal>

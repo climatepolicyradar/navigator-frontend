@@ -25,9 +25,7 @@ export const getDocumentDrawerTopicTableRows = (familyTopics: IFamilyDocumentTop
   const document = familyTopics.documents.find((doc) => doc.importId === documentImportId);
   if (!document) return [];
 
-  const wikibaseIds = Object.keys(document.conceptCounts)
-    .map((key) => key.split(":")[0])
-    .filter((key) => key);
+  const wikibaseIds = Object.keys(document.conceptCounts);
   if (wikibaseIds.length === 0) return [];
 
   const rows: TTopicTableRow[] = [];

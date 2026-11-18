@@ -3,6 +3,7 @@ import userEvent from "@testing-library/user-event";
 import { withNuqsTestingAdapter } from "nuqs/adapters/testing";
 
 import { TSearchQueryGroup } from "@/types";
+import { inflateFilters } from "@/utils/filters/deflate";
 import { seedPassageLevel } from "@/utils/search/searchLevels";
 
 import { useNestedSearchLevel, useSearchLevelValues } from "./useSearchLevel";
@@ -50,7 +51,7 @@ describe("useNestedSearchLevel", () => {
     expect(options.history).toBe("push");
     expect(searchParams.get("principal")).toBe("CCLW.family.1.0");
     expect(searchParams.get("principal_q")).toBe("flood risk");
-    expect(JSON.parse(searchParams.get("principal_filters") ?? "null")).toEqual({ op: "or", filters: [conceptRule] });
+    expect(JSON.parse(inflateFilters(searchParams.get("principal_filters") ?? ""))).toEqual({ op: "or", filters: [conceptRule] });
     expect(await screen.findByText("showing: CCLW.family.1.0")).toBeInTheDocument();
   });
 

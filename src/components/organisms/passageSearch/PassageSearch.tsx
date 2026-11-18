@@ -1,45 +1,47 @@
-import { useInfiniteQuery } from "@tanstack/react-query";
+import { skipToken, useInfiniteQuery } from "@tanstack/react-query";
 import { useRouter } from "next/router";
-import { parseAsArrayOf, parseAsJson, parseAsString, useQueryState } from "nuqs";
+import { parseAsArrayOf, parseAsString, parseAsStringLiteral, useQueryState } from "nuqs";
 import { usePostHog } from "posthog-js/react";
 import { memo, useCallback, useContext, useEffect, useMemo, useRef, useState } from "react";
 
 import { fetchSearchPassages } from "@/api/passages";
 import EmbeddedPDF from "@/components/EmbeddedPDF";
-import Loader from "@/components/Loader";
 import { Button } from "@/components/atoms/button/Button";
 import { FiveColumns } from "@/components/atoms/columns/FiveColumns";
+import { Loading } from "@/components/atoms/loading/Loading";
 import { EmptyDocument } from "@/components/documents/EmptyDocument";
-import { TPrincipalDrawerTab } from "@/components/drawers/principalDrawer/PrincipalDrawer";
 import { DocumentsFilter, TFilterableDocument } from "@/components/molecules/documentsFilter/DocumentsFilter";
 import { PassageBlock, TPassage as TPassageBlock } from "@/components/molecules/passageBlock/PassageBlock";
 import { SearchControls } from "@/components/organisms/searchControls/SearchControls";
 import { ZeroStatePassages } from "@/components/organisms/zeroStates/ZeroStatePassages";
-import { ID_SEPARATOR } from "@/constants/chars";
 import { PASSAGE_FILTER_GROUPS } from "@/constants/filters";
+import { TOPIC_HIGHLIGHT_COLOURS } from "@/constants/highlights";
 import { RESULTS_PER_PAGE } from "@/constants/paging";
-import { PASSAGE_SORT_OPTIONS } from "@/constants/sort";
+import { PASSAGE_SORT_OPTIONS, PASSAGE_SORT_VALUES } from "@/constants/sort";
+import { useEnvConfig } from "@/context/EnvConfig";
 import { posthogEventName } from "@/context/PostHogProvider";
 import { SearchLevelContext } from "@/context/SearchLevelContext";
-import { loadFilteredLabels } from "@/hooks/useLabelSearch";
-import { FilterGroupSchema } from "@/schemas";
-import { ISearchPassage, TFamilyDocumentPublic, TSearchLabel, TSearchQueryGroup, TTopic } from "@/types";
+import { useTaxonomy } from "@/hooks/useTaxonomy";
+import {
+  ISearchPassage,
+  TFamilyDocumentPublic,
+  TNestedSearchLabel,
+  TPassagesScope,
+  TPrincipalDrawerTab,
+  TSearchQueryGroup,
+  TSortValue,
+} from "@/types";
+import { parseAsDeflatedFilters } from "@/utils/filters/deflate";
 import { queryGroupToFilterPaths } from "@/utils/search/queryGroupToFilterPaths";
 import { conceptFiltersOnly, flattenLevelToBaseQuery, levelParamKeys } from "@/utils/search/searchLevels";
 
-export const TOPIC_HIGHLIGHT_COLOURS = [
-  "bg-cyan-200 text-text-primary",
-  "bg-purple-200 text-text-primary",
-  "bg-pink-200 text-text-primary",
-  "bg-lime-200 text-text-primary",
-  "bg-orange-200 text-text-primary",
-];
-
 type TProps = {
   changeTab?: (tab: TPrincipalDrawerTab) => void;
-  concepts: TTopic[];
   documents: TFamilyDocumentPublic[];
   documentsLabel?: string;
+  // The principal the documents belong to. Scopes a principal-wide search on its own, so the
+  // panel still searches the right principal when the principal reports no documents to enumerate.
+  principalId?: string;
   enablePreview?: boolean;
   onSearch?: (numberOfResults: number) => void;
   subject?: string;
@@ -60,6 +62,22 @@ const toPassageBlock = (passage: ISearchPassage, documentTitle: string): TPassag
   pages: passage.pages?.map((pageNumber) => ({ page_number: pageNumber })),
 });
 
+const getPassagesScope = (selectedDocumentIds: string[], allDocumentCount: number, principalId?: string): TPassagesScope | null => {
+  const isNarrowedToSubset = selectedDocumentIds.length > 0 && selectedDocumentIds.length < allDocumentCount;
+
+  if (principalId && !isNarrowedToSubset) {
+    return { kind: "principal", principalId };
+  }
+
+  const [firstDocumentId, ...otherDocumentIds] = selectedDocumentIds;
+
+  if (firstDocumentId === undefined) {
+    return null;
+  }
+
+  return { kind: "documents", documentIds: [firstDocumentId, ...otherDocumentIds] };
+};
+
 // Colours are assigned from the selected topics rather than per passage, so a topic keeps one colour across every result
 const getTopicColours = (topicIds: string[]) =>
   new Map(topicIds.map((id, index) => [id, TOPIC_HIGHLIGHT_COLOURS[index % TOPIC_HIGHLIGHT_COLOURS.length]]));
@@ -70,7 +88,7 @@ type TPassageResultsProps = {
   passages: TPassageBlock[];
   topicColours?: Map<string, string>;
   showDocument: boolean;
-  sort?: string;
+  sort?: TSortValue;
   total?: number;
 };
 
@@ -108,18 +126,49 @@ const DocumentPreview = memo(({ document, pageNumber, passages }: TDocumentPrevi
 ));
 DocumentPreview.displayName = "DocumentPreview";
 
-export const PassageSearch = ({ changeTab, concepts, documents, documentsLabel, enablePreview = false, onSearch, subject }: TProps) => {
+const DOCUMENT_IDS_SEPARATOR = "|";
+
+const documentIdsFilter = (documentIdsKey: string): TSearchQueryGroup => ({
+  op: "and",
+  filters: [
+    {
+      op: "or",
+      filters: documentIdsKey
+        .split(DOCUMENT_IDS_SEPARATOR)
+        .filter(Boolean)
+        .map((id) => ({ field: "id", op: "contains" as const, value: id })),
+    },
+  ],
+});
+
+const withPassages = (labels: TNestedSearchLabel[]): TNestedSearchLabel[] => {
+  const byId = new Map<string, TNestedSearchLabel>();
+  const collect = (nodes: TNestedSearchLabel[]): void => {
+    for (const label of nodes) {
+      if ((label.count ?? 0) > 0 && !byId.has(label.id)) byId.set(label.id, { ...label, children: [] });
+      collect(label.children);
+    }
+  };
+  collect(labels);
+  return [...byId.values()];
+};
+
+export const PassageSearch = ({ changeTab, documents, documentsLabel, enablePreview = false, onSearch, principalId, subject }: TProps) => {
   const router = useRouter();
   const posthog = usePostHog();
+  const { API_URL } = useEnvConfig();
   const searchIndex = useRef(0);
   const searchLevel = useContext(SearchLevelContext);
   const paramKeys = useMemo(() => levelParamKeys(searchLevel), [searchLevel]);
   const [queryParam, setQueryParam] = useQueryState(paramKeys.query, parseAsString.withDefault(""));
-  const [filterParam, setFilterParams] = useQueryState(paramKeys.filters, parseAsJson<TSearchQueryGroup>(FilterGroupSchema));
-  const [sort] = useQueryState(paramKeys.sort, parseAsString.withDefault(PASSAGE_SORT_OPTIONS[0].paramValue));
+  const [filterParam, setFilterParams] = useQueryState(paramKeys.filters, parseAsDeflatedFilters);
+  const [sortParam] = useQueryState<TSortValue>(
+    paramKeys.sort,
+    parseAsStringLiteral(PASSAGE_SORT_VALUES).withDefault(PASSAGE_SORT_OPTIONS[0].paramValue).withOptions({ clearOnDefault: false })
+  );
   const [documentsParam, setDocumentsParam] = useQueryState(paramKeys.documents, parseAsArrayOf(parseAsString).withDefault([]));
   const [pageNumber, setPageNumber] = useState<number | null>(null);
-  const [availableConcepts, setAvailableConcepts] = useState<TSearchLabel[]>([]);
+  const documentIdsKey = documents.map((document) => document.import_id).join(DOCUMENT_IDS_SEPARATOR);
 
   // Only concept filters are offered here, and a level is seeded with only those, so anything else
   // in the parameter came from a hand-edited or shared URL and is not this search's to apply.
@@ -132,25 +181,22 @@ export const PassageSearch = ({ changeTab, concepts, documents, documentsLabel, 
   // Adjusting during render rather than in an effect avoids a second render pass with a stale value.
   // The filter group is compared serialised, so the check does not rest on the parser returning a stable object.
   const filterKey = JSON.stringify(conceptFilterParam);
-  const [previousSearch, setPreviousSearch] = useState({ queryParam, filterKey, sort });
+  const [previousSearch, setPreviousSearch] = useState({
+    queryParam,
+    filterKey,
+    sort: sortParam,
+  });
   const [hasNavigatedForSearch, setHasNavigatedForSearch] = useState(false);
-  if (queryParam !== previousSearch.queryParam || filterKey !== previousSearch.filterKey || sort !== previousSearch.sort) {
-    setPreviousSearch({ queryParam, filterKey, sort });
+  if (queryParam !== previousSearch.queryParam || filterKey !== previousSearch.filterKey || sortParam !== previousSearch.sort) {
+    setPreviousSearch({ queryParam, filterKey, sort: sortParam });
     setHasNavigatedForSearch(false);
   }
 
-  useEffect(() => {
-    loadFilteredLabels({
-      op: "or",
-      filters: [
-        {
-          field: "type",
-          op: "contains",
-          value: "concept",
-        },
-      ],
-    }).then(setAvailableConcepts);
-  }, []);
+  const {
+    labels: conceptLabels,
+    labelNames: conceptNames,
+    loaded: conceptsFetched,
+  } = useTaxonomy({ patterns: ["**/concept::*"], filters: documentIdsFilter(documentIdsKey) }, { enabled: documentIdsKey.length > 0 });
 
   const documentsById = useMemo(() => new Map(documents.map((document) => [document.import_id, document])), [documents]);
   const allDocumentIds = useMemo(() => documents.map((document) => document.import_id), [documents]);
@@ -161,35 +207,46 @@ export const PassageSearch = ({ changeTab, concepts, documents, documentsLabel, 
     return known.length > 0 ? known : allDocumentIds;
   }, [documentsParam, documentsById, allDocumentIds]);
 
-  const hasSearch = queryParam.length > 0 || !!conceptFilterParam;
+  // A full-principal scope is sent as the principal id rather than as every member id: the member
+  // list is empty for a principal whose documents are all deleted, and an empty scope group is
+  // dropped by the API, which would widen the search to the whole corpus. Narrowing to a subset
+  // still enumerates ids, as that is the only way to express it.
+  const scope = useMemo(
+    () => getPassagesScope(selectedDocumentIds, allDocumentIds.length, principalId),
+    [selectedDocumentIds, allDocumentIds.length, principalId]
+  );
+
+  const hasSearch = (queryParam.length > 0 || !!conceptFilterParam) && scope !== null;
 
   const { data, isError, isFetching, isPending, fetchNextPage, hasNextPage, isFetchingNextPage } = useInfiniteQuery({
-    queryKey: ["passages", selectedDocumentIds, queryParam, conceptFilterParam, sort],
-    queryFn: async ({ pageParam, signal }) => {
-      const response = await fetchSearchPassages({
-        query: queryParam,
-        documents: selectedDocumentIds,
-        filters: conceptFilterParam,
-        pageSize: RESULTS_PER_PAGE,
-        sort,
-        pageToken: pageParam,
-        signal,
-      });
-
-      // Reported from the fetcher so each page is reported once, rather than on every render.
-      // `search_index` 1 is the search the view opened with; `page` above 1 is loading more of it
-      if (pageParam === 1) searchIndex.current += 1;
-      posthog?.capture(posthogEventName("search", "results", "fetch"), {
-        search_level: searchLevel,
-        search_query: queryParam || undefined,
-        search_index: searchIndex.current,
-        page: pageParam,
-        results_total: response.total_size ?? 0,
-        documents_total: selectedDocumentIds.length,
-      });
-
-      return response;
-    },
+    queryKey: ["passages", scope, queryParam, conceptFilterParam, sortParam, API_URL],
+    queryFn:
+      scope === null
+        ? skipToken
+        : async ({ pageParam, signal }) => {
+            const response = await fetchSearchPassages({
+              apiUrl: API_URL,
+              query: queryParam,
+              scope,
+              filters: conceptFilterParam,
+              pageSize: RESULTS_PER_PAGE,
+              sort: sortParam,
+              pageToken: pageParam,
+              signal,
+            });
+            // Reported from the fetcher so each page is reported once, rather than on every render.
+            // `search_index` 1 is the search the view opened with; `page` above 1 is loading more of it
+            if (pageParam === 1) searchIndex.current += 1;
+            posthog?.capture(posthogEventName("search", "results", "fetch"), {
+              search_level: searchLevel,
+              search_query: queryParam || undefined,
+              search_index: searchIndex.current,
+              page: pageParam,
+              results_total: response.total_size ?? 0,
+              documents_total: selectedDocumentIds.length,
+            });
+            return response;
+          },
     initialPageParam: 1,
     // The API leaves `next_page` and `total_pages` unpopulated, so there is no cursor to
     // follow. Paging is driven by the running result count against the reported total.
@@ -213,7 +270,11 @@ export const PassageSearch = ({ changeTab, concepts, documents, documentsLabel, 
   const canPreview = enablePreview && !!previewDocument?.cdn_object && previewDocument.cdn_object.toLowerCase().endsWith(".pdf");
 
   const filterableDocuments: TFilterableDocument[] = useMemo(
-    () => documents.map((document) => ({ importId: document.import_id, title: document.title })),
+    () =>
+      documents.map((document) => ({
+        importId: document.import_id,
+        title: document.title,
+      })),
     [documents]
   );
 
@@ -249,10 +310,8 @@ export const PassageSearch = ({ changeTab, concepts, documents, documentsLabel, 
   );
 
   // Only offer concept filters the scope actually has passages for
-  const conceptFilters = useMemo(() => {
-    const rankedIds = new Set(concepts.map((concept) => concept.wikibase_id));
-    return availableConcepts.filter((label) => label.type === "concept" && rankedIds.has(label.id.split(ID_SEPARATOR)[1]));
-  }, [availableConcepts, concepts]);
+  const conceptsLoaded = !documentIdsKey || conceptsFetched;
+  const conceptFilters = useMemo(() => withPassages(conceptLabels), [conceptLabels]);
 
   const handleClear = () => {
     setQueryParam("");
@@ -270,10 +329,12 @@ export const PassageSearch = ({ changeTab, concepts, documents, documentsLabel, 
     (passage: TPassageBlock) => {
       const slug = documentsById.get(passage.document_id)?.slug;
       if (!slug) return null;
-
-      const baseQuery = flattenLevelToBaseQuery({ documents: null, filters: conceptFilterParam, query: queryParam });
+      const baseQuery = flattenLevelToBaseQuery({
+        documents: null,
+        filters: conceptFilterParam,
+        query: queryParam,
+      });
       const query = Object.fromEntries(Object.entries(baseQuery).filter(([, value]) => value !== null)) as Record<string, string>;
-
       return { pathname: `/documents/${slug}`, query };
     },
     [conceptFilterParam, documentsById, queryParam]
@@ -283,7 +344,6 @@ export const PassageSearch = ({ changeTab, concepts, documents, documentsLabel, 
     (passage: TPassageBlock) => {
       const href = documentHref(passage);
       if (!href) return;
-
       const search = new URLSearchParams(href.query).toString();
       window.open(search ? `${href.pathname}?${search}` : href.pathname, "_blank");
     },
@@ -299,7 +359,6 @@ export const PassageSearch = ({ changeTab, concepts, documents, documentsLabel, 
         setPageNumber(page + 1);
         return;
       }
-
       const href = documentHref(passage);
       if (href) router.push(href);
     },
@@ -322,7 +381,8 @@ export const PassageSearch = ({ changeTab, concepts, documents, documentsLabel, 
         )
       }
       labels={conceptFilters}
-      nameLabels={availableConcepts}
+      labelsLoaded={conceptsLoaded}
+      labelNames={conceptNames}
       pageParamKey={paramKeys.pageToken}
       queryParamKey={paramKeys.query}
       sortOptions={PASSAGE_SORT_OPTIONS}
@@ -339,7 +399,7 @@ export const PassageSearch = ({ changeTab, concepts, documents, documentsLabel, 
     <>
       {isLoading && (
         <div className="flex justify-center">
-          <Loader />
+          <Loading />
         </div>
       )}
       {!isLoading && isError && (
@@ -350,7 +410,7 @@ export const PassageSearch = ({ changeTab, concepts, documents, documentsLabel, 
           <PassageResults
             passages={passages}
             showDocument={!enablePreview}
-            sort={sort}
+            sort={sortParam}
             total={totalMatches}
             onDocumentLinkClick={enablePreview ? undefined : handleDocumentLinkClick}
             onPassageClick={handlePassageClick}
@@ -395,7 +455,6 @@ export const PassageSearch = ({ changeTab, concepts, documents, documentsLabel, 
       <FiveColumns>
         <div className="col-start-1 -col-end-1 py-4 flex flex-col gap-y-4">{controls}</div>
       </FiveColumns>
-
       <div className="flex flex-col border-t border-border-light lg:flex-row lg:h-[80vh]">
         <div
           id="passage-results"
@@ -403,7 +462,6 @@ export const PassageSearch = ({ changeTab, concepts, documents, documentsLabel, 
         >
           {results}
         </div>
-
         <div id="document-preview" className="w-full h-[600px] border-t border-border-light lg:w-1/2 lg:h-full lg:border-t-0 lg:border-l">
           {canPreview ? <DocumentPreview document={previewDocument} pageNumber={pageNumber} passages={searchPassages} /> : <EmptyDocument />}
         </div>

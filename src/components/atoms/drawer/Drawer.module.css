@@ -23,6 +23,8 @@
 }
 
 .DrawerContent {
+  outline: 0;
+
   /* Stacking animation variables — consumed by transform/scale below.
      --drawer-swipe-* and --nested-drawers are injected by Base UI at runtime. */
 

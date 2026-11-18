@@ -3,7 +3,6 @@ on:
   push:
     branches:
       - main
-      - push-to-ecrt
 
 # trunk-ignore(checkov/CKV2_GHA_1)
 permissions: write-all
@@ -12,6 +11,8 @@ jobs:
     runs-on: ubuntu-latest
     outputs:
       run-observability-pulumi-up: ${{ steps.filter.outputs.run-observability-pulumi-up }}
+      # Names of the stacks in .github/filters.yml that this push changed.
+      stacks: ${{ steps.stacks.outputs.changes }}
     steps:
       - uses: actions/checkout@v7
       - uses: dorny/paths-filter@v4
@@ -20,6 +21,12 @@ jobs:
           filters: |
             run-observability-pulumi-up:
               - 'infra/observability/**'
+      # Same path definitions pull_request.yml previews with, so a stack is
+      # applied on exactly the changes that were previewed.
+      - uses: dorny/paths-filter@v4
+        id: stacks
+        with:
+          filters: .github/filters.yml
   # Faro apps aren't per-environment (see infra/faro/__main__.py's allowed_origins),
   # so there's a single production stack shared by staging, production, and review
   # deploys alike, rather than a staging/production pair like the other infra
@@ -35,6 +42,8 @@ jobs:
       - name: Install dependencies
         working-directory: infra/faro
         run: uv sync
+      - name: Install pulumi
+        uses: pulumi/actions@v7
       - name: Pulumi up
         working-directory: infra/faro
         run: pulumi up --yes --skip-preview --stack climatepolicyradar/frontend-faro/production
@@ -43,6 +52,8 @@ jobs:
 
   code-quality:
     runs-on: ubuntu-latest
+    env:
+      THEME: cpr
     steps:
       - uses: actions/checkout@v7
       - uses: actions/setup-node@v7
@@ -95,7 +106,7 @@ jobs:
           token: ${{ secrets.TRUNK_TOKEN }}
           org-slug: ${{ secrets.TRUNK_ORG_SLUG }}
 
-  # Deploy to staging (per-theme build, push, and ECS deploy)
+  # Deploy to staging (per-theme pulumi up,build, push, and ECS deploy)
   deploy-staging:
     # Needs pulumi-up-faro: it reads frontend-faro/production's stack output,
     # so a push that changes the frontend stack needs to land first or it
@@ -123,7 +134,28 @@ jobs:
       # Grafana only - no AWS resources in this project, so no role to assume.
       aws-role: ""
 
-  # Deploy Storybook
+  platform-pulumi-up-production:
+    uses: ./.github/workflows/pulumi_up.yml
+    secrets: inherit
+    needs: [changes]
+    if: contains(fromJSON(needs.changes.outputs.stacks), 'production-shared-resources')
+    with:
+      environment: production
+      working-directory: ./infra/platform
+      stack: climatepolicyradar/frontend-platform/production
+      aws-role: navigator-infra-github-actions
+
+  ecs-cluster-pulumi-up-production:
+    uses: ./.github/workflows/pulumi_up.yml
+    secrets: inherit
+    needs: [changes]
+    if: contains(fromJSON(needs.changes.outputs.stacks), 'production-ecs-cluster')
+    with:
+      environment: production
+      working-directory: ./infra/ecs-cluster
+      stack: climatepolicyradar/frontend-ecs-cluster/production
+      aws-role: navigator-infra-github-actions
+
   storybook:
     runs-on: ubuntu-latest
     env:

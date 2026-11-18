@@ -10,6 +10,7 @@ import { NavBar } from "@/components/organisms/navBar/NavBar";
 import { FeaturesContext } from "@/context/FeaturesContext";
 import { MenuButtons } from "@/cpr/components/MenuButtons";
 import { MENU_LINKS } from "@/cpr/constants/menuLinks";
+import { TLandingPageConfig } from "@/types";
 import { joinTailwindClasses } from "@/utils/tailwind";
 
 type TTheme = "light" | "dark";
@@ -18,13 +19,22 @@ type TThemedProps = {
   theme?: TTheme;
 };
 
-export const CPRLogo = ({ theme = "light" }: TThemedProps) => (
+const CPR_LOGO: NonNullable<IProps["logo"]> = {
+  alt: "Climate Policy Radar logo",
+  darkSrc: "/images/cpr-logo-horizontal-new-dark.svg",
+  lightSrc: "/images/cpr-logo-horizontal-new.svg",
+  width: 228,
+  height: 35,
+};
+
+export const CPRLogo = ({ theme = "light", logo = CPR_LOGO }: TThemedProps & Pick<IProps, "logo">) => (
   <PageLink href="/" data-cy="cpr-logo">
     <Image
-      src={theme === "dark" ? "/images/cpr-logo-horizontal-new-dark.svg" : "/images/cpr-logo-horizontal-new.svg"}
-      width={228}
-      height={35}
-      alt="Climate Policy Radar logo"
+      src={theme === "dark" ? logo.darkSrc : logo.lightSrc}
+      width={logo.width}
+      height={logo.height}
+      alt={logo.alt}
+      className="w-auto h-[35px]"
       data-cy="cpr-logo"
       loading="eager"
     />
@@ -49,6 +59,7 @@ export const CPRMenuButton = ({ theme = "light" }: TThemedProps) => {
 interface IProps {
   landingPage?: boolean;
   landingPageWithHero?: boolean;
+  logo?: TLandingPageConfig["headerLogo"];
 }
 
 const OTHER_APPS = [
@@ -84,7 +95,7 @@ const OtherAppsBar = () => (
   </div>
 );
 
-export const Header = ({ landingPage = false, landingPageWithHero = false }: IProps) => {
+export const Header = ({ landingPage = false, landingPageWithHero = false, logo }: IProps) => {
   const router = useRouter();
   const features = useContext(FeaturesContext);
   const newSearch = features["new-search"];
@@ -105,7 +116,7 @@ export const Header = ({ landingPage = false, landingPageWithHero = false }: IPr
   return (
     <NavBar
       headerClasses={navBarClasses}
-      logo={<CPRLogo theme={theme} />}
+      logo={<CPRLogo theme={theme} logo={logo} />}
       menu={newSearch ? <MenuButtons theme={theme} /> : <MainMenu icon={menuIcon} links={MENU_LINKS} />}
       showLogo={!isHomePage}
       showSearch={showSearch}

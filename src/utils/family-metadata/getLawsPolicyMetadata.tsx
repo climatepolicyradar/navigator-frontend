@@ -5,18 +5,18 @@ import { EN_DASH } from "@/constants/chars";
 import { months } from "@/constants/timedate";
 import { IFamilyDocumentTopics, IMetadata, TFamilyPublic } from "@/types";
 import { getTopicsMetadataItem } from "@/utils/family-metadata/getTopicsMetadataItem";
-import { convertDate, formatDate, padNumber } from "@/utils/timedate";
+import { formatDate, getYear, padNumber } from "@/utils/timedate";
 import { familyTopicsHasTopics } from "@/utils/topics/processFamilyTopics";
 
 export function getLawsPolicyMetadata(family: TFamilyPublic, familyTopics: IFamilyDocumentTopics | null): IMetadata[] {
   const metadata = [];
 
-  const [year] = convertDate(family.published_date);
+  const year = getYear(family.published_date);
 
   /* Year */
   metadata.push({
     label: "Year",
-    value: year || EN_DASH,
+    value: year ?? EN_DASH,
   });
 
   /* Most recent update */

@@ -132,9 +132,11 @@ def validate_stack_and_branch() -> None:
                 f"Set the environment variable 'DEPLOY_TO_PROD_STACK_ALLOWED' to 'True' in the pulumi command to allow "
                 f"it.\n\n "
             )
-        if branch != deployment_branch:
+
+        if deploy_from_main_branch_only and branch != deployment_branch:
             raise RuntimeError(
-                f"The stack '{stack}' is only deployable from the '{deployment_branch}' branch.\n\n"
+                f"The stack '{stack}' is only deployable from the '{deployment_branch}'. Set the environment "
+                f"variable 'DEPLOY_FROM_MAIN_BRANCH_ONLY' to 'False' in the pulumi command to allow it.\n\n"
             )
 
     elif "staging" in stack:

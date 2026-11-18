@@ -1,22 +1,18 @@
 import { Select } from "@base-ui/react/select";
 import { LucideCheck, LucideChevronDown } from "lucide-react";
 
-import { TSortOptionConfig } from "@/types";
+import { TSortOptionConfig, TSortValue } from "@/types";
 
 interface IProps {
   label?: string;
-  onChange: (value: string) => void;
+  onChange: (value: TSortValue) => void;
   sortOptions: TSortOptionConfig[];
-  value: string;
+  value: TSortValue;
 }
 
 export const Sort = ({ label = "Sort", onChange, sortOptions, value }: IProps) => {
   const selectedOption = sortOptions.find((option) => option.paramValue === value);
-  // The label alone reads as a prompt to sort; only name the option once the user has moved off the default.
-  const triggerLabel =
-    !selectedOption || sortOptions.length === 0 || selectedOption.paramValue === sortOptions[0].paramValue
-      ? label
-      : `${label}: ${selectedOption.label}`;
+  const triggerLabel = selectedOption ? `${label}: ${selectedOption.label}` : label;
 
   return (
     <Select.Root value={value} onValueChange={(newValue) => onChange(newValue)}>

@@ -34,10 +34,14 @@ const eslintConfig = [
       ".size-limit.js",
       "lighthouserc.*.js",
       "snapshots.js",
+      // CloudFront Lambdas run JavaScript runtime 2.0 - which this file does not support
       "infra/lambda_code/*.js",
+      "infra/redirects/**/*.js",
       // k6 scripts uploaded to Grafana Synthetic Monitoring; they import from
       // k6/*, which resolves only inside the k6 runtime.
       "infra/observability/*.js",
+      // standalone CLI scripts run directly with node, not part of the Next.js/TS program
+      "scripts/*.mjs",
     ],
   },
   {

@@ -1,9 +1,8 @@
 import { Copy } from "lucide-react";
 import { useEffect, useState } from "react";
 
+import { Loading } from "@/components/atoms/loading/Loading";
 import { TPassage } from "@/types";
-
-import Loader from "./Loader";
 
 interface IProps {
   passages: TPassage[];
@@ -42,7 +41,7 @@ const PassageMatches = ({ passages, onClick, pageColour = "[#202020]", position,
     <>
       {!passages ? (
         <div className="w-full flex justify-center h-96">
-          <Loader />
+          <Loading />
         </div>
       ) : (
         <ul className="my-5" id="passage-matches" aria-label="Passage matches">

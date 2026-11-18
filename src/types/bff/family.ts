@@ -1,21 +1,21 @@
 import { TDataInDocument } from "@/schemas";
 
-import { IApiFamilyDocumentTopics, TApiSearchResponse } from "../api";
+import { IApiFamilyDocumentTopics } from "../api";
 import { IFamilyDocumentTopics } from "../tables/familyDocumentTopics";
-import { TCollectionPublicWithFamilies, TFamilyPublic, TSearchResponse } from "../types";
+import { TThemeCriteria } from "../theme";
+import { TCollectionPublicWithFamilies, TFamilyPublic } from "../types";
 
 export type TFamilyApiData = {
   collections: TDataInDocument[];
   family: TDataInDocument;
   familyTopics: IApiFamilyDocumentTopics | null;
-  vespaFamilyData: TApiSearchResponse | null;
 };
 
 export type TFamilyPresentationalData = {
   collections: TCollectionPublicWithFamilies[];
   family: TFamilyPublic;
   familyTopics: IFamilyDocumentTopics | null;
-  vespaFamilyData: TSearchResponse | null;
+  themeCriteria: TThemeCriteria;
   debug?: {
     dataInDocument: TDataInDocument;
   };

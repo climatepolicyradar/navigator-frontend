@@ -68,7 +68,7 @@ export const GeographyPicker = ({
   let subdivisions: TGeographyWithDocumentCounts[] = [];
   let alphabetisedFilteredSubdivisions: (TGeographySubdivision | TGeographyWithDocumentCounts)[] = [];
 
-  if (features.litigation) {
+  if (features.subdivisions) {
     countrySubdivisions = countrySubdivisionsData;
     subdivisions = subdivisionsData;
 

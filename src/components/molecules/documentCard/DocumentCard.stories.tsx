@@ -1,6 +1,6 @@
 import { Meta, StoryObj } from "@storybook/nextjs-vite";
 
-import { SearchDocument } from "@/api/search";
+import { ISearchDocument } from "@/types";
 
 import { DocumentCard } from "./DocumentCard";
 
@@ -14,14 +14,14 @@ type TStory = StoryObj<typeof DocumentCard>;
 
 export default meta;
 
-const baseDocument: SearchDocument = {
+const baseDocument: ISearchDocument = {
   id: "doc-1",
   title: "National Climate Change Adaptation Strategy",
   description: null,
   labels: [{ type: "category", value: { id: "cat-1", type: "category", value: "Policy" }, count: null, timestamp: null }],
   documents: [],
   items: [],
-  attributes: { published_date: "2023-06-15" },
+  attributes: { published_date: "2023-06-15", deprecated_slug: "national-climate-change-adaptation-strategy" },
 };
 
 export const Default: TStory = {

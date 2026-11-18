@@ -1,0 +1,4 @@
+config:
+  aws:region: eu-west-1
+  frontend-redirects:lambda_js: cclw.js
+  frontend-redirects:kv_list_json: cclw.json

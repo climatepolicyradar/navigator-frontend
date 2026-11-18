@@ -2,11 +2,9 @@ import { render, screen, waitFor } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { vi } from "vitest";
 
-import { TSortOptionConfig } from "@/types";
+import { TSortOptionConfig, TSortValue } from "@/types";
 
 import { Sort } from "./Sort";
-
-type TSortId = "relevance" | "recent" | "oldest";
 
 const OPTIONS: TSortOptionConfig[] = [
   { paramValue: "relevance", label: "Relevance" },
@@ -37,13 +35,12 @@ describe("Sort", () => {
     expect(getTrigger()).toBeInTheDocument();
   });
 
-  it("shows the label alone while the default option is selected", () => {
+  it("names the selected option while the default option is selected", () => {
     renderSort();
-    expect(getTrigger()).toHaveTextContent("Sort");
-    expect(getTrigger()).not.toHaveTextContent("Relevance");
+    expect(getTrigger()).toHaveTextContent("Sort: Relevance");
   });
 
-  it("names the selected option once the selection moves off the default", () => {
+  it("names the selected option", () => {
     renderSort({ value: "oldest" });
     expect(getTrigger()).toHaveTextContent("Sort: Oldest");
   });
@@ -54,7 +51,7 @@ describe("Sort", () => {
   });
 
   it("shows the label alone when the value matches no option", () => {
-    renderSort({ value: "unknown" as TSortId });
+    renderSort({ value: "unknown" as TSortValue });
     expect(getTrigger()).toHaveTextContent("Sort");
   });
 

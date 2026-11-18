@@ -70,6 +70,19 @@ describe("getLabelDisplay", () => {
     expect(getLabelDisplay(entityTypeLabel, ancestorPath).type).toBe("Document Type");
   });
 
+  it("renames the author type group to Type under the Global Stocktake category", () => {
+    const ancestorPath = [createPathLabel("category::Global Stocktake")];
+    const authorTypeLabel = createLabel({ id: "author_type::Party", type: "author_type", value: "Party" });
+
+    expect(getLabelDisplay(authorTypeLabel, ancestorPath).type).toBe("Type");
+  });
+
+  it("does not rename the author type group outside the Global Stocktake category", () => {
+    const authorTypeLabel = createLabel({ id: "author_type::Individual", type: "author_type", value: "Individual" });
+
+    expect(getLabelDisplay(authorTypeLabel).type).toBe("Author Type");
+  });
+
   it("returns a null subtitle when the matched replacement has none", () => {
     const label = createLabel({ id: "category::Law::act", type: "category", value: "act" });
 

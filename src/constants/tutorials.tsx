@@ -8,6 +8,7 @@ import { TTutorials } from "@/types";
 import { EN_DASH } from "./chars";
 
 export const TUTORIALS: TTutorials = {
+  // Only kept at this point as an example for how to build tutorial banners and cards
   knowledgeGraph: {
     featureKey: "knowledgeGraph",
     banner: {

@@ -23,8 +23,13 @@ export type TSearchQueryRule =
       value: string;
     }
   | {
-      field: "id";
+      field: "principal_id";
       op: "contains";
+      value: string;
+    }
+  | {
+      field: "id";
+      op: "contains" | "not_contains";
       value: string;
     };
 

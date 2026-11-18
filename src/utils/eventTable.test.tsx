@@ -1,4 +1,5 @@
 import { render, screen } from "@testing-library/react";
+import mockRouter from "next-router-mock";
 import * as nextRouterMock from "next-router-mock";
 import { vi } from "vitest";
 
@@ -246,5 +247,27 @@ describe("getDocumentLink", () => {
     render(<>{getDocumentLink(documentWithSlug, false, false, false)}</>);
 
     expect(screen.getByRole("link")).toHaveAttribute("href", expect.stringContaining("/documents/document-1"));
+  });
+
+  /*
+    The destination searches passages, which only filters on topics. Left to inherit the page's
+    query, the link would hand it the results page's whole filter tree, which it draws as chips
+    but never applies.
+  */
+  it("passes on only the search given to it", () => {
+    const documentWithSlug = {
+      import_id: "Document 1",
+      slug: "document-1",
+      title: "Document 1",
+      cdn_object: "https://example.com/doc.pdf",
+    } as TFamilyDocumentPublic;
+    mockRouter.setCurrentUrl("/_search?q=electrification&filters=%7B%22op%22%3A%22and%22%7D&sort=date%3Adesc");
+
+    render(<>{getDocumentLink(documentWithSlug, false, false, false, { q: "electrification", filters: null, sort: null })}</>);
+
+    const href = screen.getByRole("link").getAttribute("href");
+    expect(href).toContain("q=electrification");
+    expect(href).not.toContain("filters=");
+    expect(href).not.toContain("sort=");
   });
 });

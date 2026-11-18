@@ -1,7 +1,7 @@
 import { LucideFileText, LucideSearch } from "lucide-react";
 import Head from "next/head";
 import { useRouter } from "next/router";
-import { useCallback, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 
 import { FiveColumns } from "@/components/atoms/columns/FiveColumns";
 import { Debug } from "@/components/atoms/debug/Debug";
@@ -21,8 +21,6 @@ import { PassageSearch } from "@/components/organisms/passageSearch/PassageSearc
 import { MAX_PASSAGES } from "@/constants/paging";
 import { QUERY_PARAMS } from "@/constants/queryParams";
 import { FeaturesContext } from "@/context/FeaturesContext";
-import useConfig from "@/hooks/useConfig";
-import { useDocumentTopics } from "@/hooks/useDocumentTopics";
 import { useFamilyPageHeaderData } from "@/hooks/useFamilyPageHeaderData";
 import useSearch from "@/hooks/useSearch";
 import { useText } from "@/hooks/useText";
@@ -33,7 +31,7 @@ import {
   TMatchedFamily,
   TFamilyPageBlock,
   TFamilyPublic,
-  TSearchResponse,
+  TPrincipalDrawerTab,
   TTheme,
   TThemeConfig,
   TFeatures,
@@ -43,10 +41,12 @@ import { getFamilyMetadata } from "@/utils/family-metadata/getFamilyMetadata";
 import { getFamilyMetaDescription } from "@/utils/getFamilyMetaDescription";
 import { getLitigationCaseJSONLD } from "@/utils/json-ld/getLitigationCaseJSONLD";
 import { pluralise } from "@/utils/pluralise";
+import { getPersistedPrincipalDrawerTab, persistPrincipalDrawerTab } from "@/utils/principal/principalTabs";
 import { firstCase } from "@/utils/text/firstCase";
 import { familyTopicsHasTopics } from "@/utils/topics/processFamilyTopics";
 
 export interface IProps {
+  canonicalUrl: string;
   collections: TCollectionPublicWithFamilies[];
   errors: string[];
   family: TFamilyPublic;
@@ -54,21 +54,27 @@ export interface IProps {
   features: TFeatures;
   theme: TTheme;
   themeConfig: TThemeConfig;
-  vespaFamilyData?: TSearchResponse | null;
   debug?: {
     dataInDocument: TDataInDocument;
   };
 }
 
-export const FamilyPage = ({ collections, debug, errors, family, familyTopics, features, theme, themeConfig }: IProps) => {
-  const configQuery = useConfig();
-  const { data: { languages = {} } = {} } = configQuery;
-  const [activeTab, setActiveTab] = useState<string>("about");
+export const FamilyPage = ({ canonicalUrl, collections, debug, errors, family, familyTopics, features, theme, themeConfig }: IProps) => {
+  const [activeTab, setActiveTab] = useState<TPrincipalDrawerTab>("about");
   const [noOfResults, setNumberOfResults] = useState<number>(0);
   const { getCategoryTextLookup } = useText();
   const getCategoryText = getCategoryTextLookup(family.attribution.category);
 
-  const changeTab = (newValue: string) => setActiveTab(newValue);
+  // The cookie can only be read on the client, so restore the persisted tab after mount.
+  useEffect(() => {
+    // eslint-disable-next-line react-hooks/set-state-in-effect
+    setActiveTab(getPersistedPrincipalDrawerTab());
+  }, []);
+
+  const changeTab = (tab: TPrincipalDrawerTab) => {
+    setActiveTab(tab);
+    persistPrincipalDrawerTab(tab);
+  };
 
   /* Search matches */
 
@@ -94,12 +100,6 @@ export const FamilyPage = ({ collections, debug, errors, family, familyTopics, f
     });
   }
 
-  // The topics offered as passage search filters come from the documents' concepts in `search-api`.
-  const conceptTopics = useDocumentTopics(
-    family.documents.map((document) => document.import_id),
-    { enabled: isNewSearch }
-  );
-
   const { pageHeaderMetadata, breadcrumbGeography, breadcrumbParentGeography } = useFamilyPageHeaderData(family);
 
   /* Blocks */
@@ -107,7 +107,7 @@ export const FamilyPage = ({ collections, debug, errors, family, familyTopics, f
   const blocksToRender = getFamilyBlocks(themeConfig.pageBlocks.family, features, theme);
   const blockDefinitions: TBlockDefinitions<TFamilyPageBlock> = {
     collections: {
-      render: () => <CollectionsBlock key="collections" collections={collections} />,
+      render: () => <CollectionsBlock key="collections" collections={collections} family={family} />,
       sideBarItem: { display: pluralise(collections.length, ["Collection", "Collections"]) },
     },
     debug: {
@@ -134,10 +134,9 @@ export const FamilyPage = ({ collections, debug, errors, family, familyTopics, f
             matchesFamily={matchesFamily}
             matchesStatus={matchesStatus}
             showMatches={hasSearch}
-            languages={languages}
           />
         ),
-        [family, familyTopics, features, getCategoryText, hasSearch, matchesFamily, matchesStatus, languages]
+        [family, familyTopics, features, getCategoryText, hasSearch, matchesFamily, matchesStatus]
       ),
     },
     metadata: {
@@ -183,7 +182,7 @@ export const FamilyPage = ({ collections, debug, errors, family, familyTopics, f
         )}
         theme={theme as TTheme}
         themeConfig={themeConfig}
-        attributionUrl={family.attribution.url}
+        canonicalUrl={canonicalUrl}
       >
         <BreadCrumbs
           geography={breadcrumbGeography}
@@ -193,11 +192,10 @@ export const FamilyPage = ({ collections, debug, errors, family, familyTopics, f
         />
         <PageHeader title={family.title} metadata={pageHeaderMetadata} />
         {isNewSearch ? (
-          <Tabs
+          <Tabs<TPrincipalDrawerTab>
             analytics={{ context: "family-page" }}
             onValueChange={changeTab}
             value={activeTab}
-            className=""
             panelClassName="pt-8"
             tabs={[
               {
@@ -224,7 +222,7 @@ export const FamilyPage = ({ collections, debug, errors, family, familyTopics, f
                       <PassageSearch
                         changeTab={changeTab}
                         documents={family.documents}
-                        concepts={conceptTopics}
+                        principalId={family.import_id}
                         documentsLabel={`Documents in this ${firstCase(getCategoryText("familySingular"))}`}
                         subject="these documents"
                         onSearch={setNumberOfResults}

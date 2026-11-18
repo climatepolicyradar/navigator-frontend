@@ -3,7 +3,7 @@ import { useContext } from "react";
 
 import { PageLink } from "@/components/atoms/pageLink/PageLink";
 import { ThemeContext } from "@/context/ThemeContext";
-import { SUGGESTED_SEARCHES } from "@/cpr/constants/suggestedSearches";
+import { SUGGESTED_SEARCHES } from "@/themes/constants/suggestedSearches";
 
 interface IProps {
   onClearSearch: () => void;

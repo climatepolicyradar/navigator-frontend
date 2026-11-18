@@ -1,13 +1,12 @@
 import { GetServerSideProps, InferGetServerSidePropsType } from "next";
-import { useQueryState, parseAsString, parseAsJson } from "nuqs";
-import { useCallback, useContext, useMemo, useState, type SetStateAction } from "react";
+import { useQueryState, parseAsString, parseAsStringLiteral } from "nuqs";
+import { useContext, useEffect, useMemo, useState } from "react";
 
-import { normaliseSearchDocumentsSortKey, SearchDocument } from "@/api/search";
-import { createGroup, isFilterGroupEmpty, AdvancedFilters } from "@/components/_experiment/advancedFilters/AdvancedFilters";
+import { createGroup, isFilterGroupEmpty } from "@/components/_experiment/advancedFilters/AdvancedFilters";
 import { SEARCH_RESULTS_PAGE_SIZE, SearchContainer } from "@/components/_experiment/searchResults/SearchResults";
 import { FiveColumns } from "@/components/atoms/columns/FiveColumns";
 import { PageLink } from "@/components/atoms/pageLink/PageLink";
-import { PrincipalDrawer, TPrincipalDrawerTab } from "@/components/drawers/principalDrawer/PrincipalDrawer";
+import { PrincipalDrawer } from "@/components/drawers/principalDrawer/PrincipalDrawer";
 import Layout from "@/components/layouts/Main";
 import { DownloadSearch } from "@/components/molecules/downloadSearch/DownloadSearch";
 import { Pagination } from "@/components/molecules/pagination/Pagination";
@@ -21,14 +20,18 @@ import { TutorialContext } from "@/context/TutorialContext";
 import { useFilterLabels } from "@/hooks/useFilterLabels";
 import { useNestedSearchLevel } from "@/hooks/useSearchLevel";
 import { useText } from "@/hooks/useText";
-import { FilterGroupSchema } from "@/schemas";
-import { TSearchQueryGroup, TTheme } from "@/types";
+import { ISearchDocument, SORT_VALUES, TPrincipalDrawerTab, TSortValue, TTheme } from "@/types";
 import { getFeatureFlags } from "@/utils/featureFlags";
 import { getFeatures } from "@/utils/features";
+import { parseAsDeflatedFilters } from "@/utils/filters/deflate";
 import { getFilterGroups } from "@/utils/filters/getFilterGroups";
 import { pluralise } from "@/utils/pluralise";
+import { getPersistedPrincipalDrawerTab, persistPrincipalDrawerTab } from "@/utils/principal/principalTabs";
 import { readConfigFile } from "@/utils/readConfigFile";
-import { conceptFiltersOnly, seedPassageLevel } from "@/utils/search/searchLevels";
+import { getSearchSortDefault } from "@/utils/search/getSearchSortDefault";
+import { queryGroupToAPIFilters } from "@/utils/search/queryGroupToAPIFilters";
+import { queryGroupToFilterPaths } from "@/utils/search/queryGroupToFilterPaths";
+import { seedPassageLevel } from "@/utils/search/searchLevels";
 import { joinTailwindClasses } from "@/utils/tailwind";
 
 const columnLayoutCss = "col-start-1 -col-end-1 cols-5:col-start-2 cols-5:-col-end-2";
@@ -38,36 +41,25 @@ type TProps = InferGetServerSidePropsType<typeof getServerSideProps>;
 const ShadowSearch = ({ theme, themeConfig, features }: TProps) => {
   const { removeCompletedTutorial } = useContext(TutorialContext);
   const { getAppText } = useText();
-  const availableFilters = useFilterLabels({ features });
+  const { filters: availableFilters, labelNames: filterLabelNames, loaded: filtersLoaded } = useFilterLabels({ features, themeConfig });
 
   // search query that is typed into the search box
   const [query, setQuery] = useQueryState("q", parseAsString.withDefault(""));
   // structured filters built in QueryBuilder
-  const [filters, setFiltersInUrl] = useQueryState("filters", parseAsJson<TSearchQueryGroup>(FilterGroupSchema).withDefault(createGroup()));
+  const [filters, setFiltersInUrl] = useQueryState("filters", parseAsDeflatedFilters.withDefault(createGroup()));
   // pagination state
   const [currentPage, setCurrentPage] = useQueryState("page_token", parseAsString.withDefault("1"));
-  const [sortParam, setSortParam] = useQueryState("sort", parseAsString.withDefault("relevance"));
-  const sortKey = normaliseSearchDocumentsSortKey(sortParam);
+  const [sortParam, setSortParam] = useQueryState<TSortValue>("sort", parseAsStringLiteral(SORT_VALUES).withOptions({ clearOnDefault: false }));
   const [totalNoOfResults, setTotalNoOfResults] = useState<number | null>(null);
   const [isSearching, setIsSearching] = useState(false);
 
-  const searchFilterGroups = useMemo(() => getFilterGroups({ features, getAppText, theme }), [features, getAppText, theme]);
+  const sortValue: TSortValue = useMemo(() => {
+    if (sortParam) return sortParam;
+    return getSearchSortDefault(queryGroupToFilterPaths(filters).filterPathLabels, query);
+  }, [filters, query, sortParam]);
 
-  /**
-   * Drops aggregations only when the filter tree becomes empty so greyed options
-   * from an old response are not kept with no filters. If at least one filter
-   * stays active, previous aggregations are retained until the new search returns.
-   * Skips no-op updates. Done here instead of an effect for set-state-in-effect.
-   */
-  const setFilters = useCallback(
-    (updater: SetStateAction<TSearchQueryGroup>) => {
-      setFiltersInUrl((prev) => {
-        const nextFilters = typeof updater === "function" ? (updater as (p: TSearchQueryGroup) => TSearchQueryGroup)(prev) : updater;
-        return nextFilters;
-      });
-    },
-    [setFiltersInUrl]
-  );
+  const searchReadyFilters = queryGroupToAPIFilters(filters);
+  const searchFilterGroups = useMemo(() => getFilterGroups({ features, getAppText, theme }), [features, getAppText, theme]);
 
   // Manage the nested search levels: SERP -> Principal Drawer -> Document Drawer
   const principalLevel = useNestedSearchLevel("principal");
@@ -75,20 +67,21 @@ const ShadowSearch = ({ theme, themeConfig, features }: TProps) => {
 
   // The clicked result names the drawer without waiting on a fetch. It is kept while the drawer
   // animates closed, and is absent when the level arrives from a shared link.
-  const [selectedDocument, setSelectedDocument] = useState<SearchDocument | null>(null);
+  const [selectedDocument, setSelectedDocument] = useState<ISearchDocument | null>(null);
   const principalSlug = principalLevel.id ?? (selectedDocument?.attributes.deprecated_slug as string) ?? null;
-  const principalHasSearch = !!principalLevel.search.query || !!conceptFiltersOnly(principalLevel.search.filters);
-  const documentHasSearch = !!documentLevel.search.query || !!conceptFiltersOnly(documentLevel.search.filters);
 
-  // If we have a document search also active, start on "about" as that is where the document drawer lives
-  const [drawerTab, setDrawerTab] = useState<TPrincipalDrawerTab>(principalHasSearch && !documentHasSearch ? "search" : "about");
-  const [openedPrincipalId, setOpenedPrincipalId] = useState(principalLevel.id);
+  const [drawerTab, setDrawerTab] = useState<TPrincipalDrawerTab>("about");
 
-  // Land on the passages tab whenever a drawer opens onto a search, whether from a click or a link.
-  if (principalLevel.id !== openedPrincipalId) {
-    setOpenedPrincipalId(principalLevel.id);
-    if (principalLevel.id) setDrawerTab(principalHasSearch ? "search" : "about");
-  }
+  // The cookie can only be read on the client, so restore the persisted tab after mount.
+  useEffect(() => {
+    // eslint-disable-next-line react-hooks/set-state-in-effect
+    setDrawerTab(getPersistedPrincipalDrawerTab());
+  }, []);
+
+  const onDrawerTabChange = (tab: TPrincipalDrawerTab) => {
+    setDrawerTab(tab);
+    persistPrincipalDrawerTab(tab);
+  };
 
   // Closing a level closes the levels nested inside it.
   const closePrincipalDrawer = () => {
@@ -96,10 +89,7 @@ const ShadowSearch = ({ theme, themeConfig, features }: TProps) => {
     documentLevel.close();
   };
 
-  // Control Advanced Filters view
-  const [advancedFiltersOpen, setAdvancedFiltersOpen] = useState(false);
-
-  const hasSearch = !!query || !isFilterGroupEmpty(filters);
+  const hasSearch = !!query || !isFilterGroupEmpty(searchReadyFilters);
 
   const resultsSummary = isSearching
     ? "Searching…"
@@ -143,7 +133,7 @@ const ShadowSearch = ({ theme, themeConfig, features }: TProps) => {
                 </PageLink>
               )}
             </span>
-            <DownloadSearch hasSearch={hasSearch} query={query} filters={filters} sort={sortKey} totalResults={totalNoOfResults} />
+            <DownloadSearch hasSearch={hasSearch} query={query} filters={searchReadyFilters} sort={sortValue} totalResults={totalNoOfResults} />
           </div>
           {/* CONTROLS - FILTERS, SORT, etc */}
           {/* TODO add most recent date from search results */}
@@ -158,31 +148,24 @@ const ShadowSearch = ({ theme, themeConfig, features }: TProps) => {
             filterGroups={searchFilterGroups}
             filterParamKey="filters"
             labels={availableFilters}
+            labelNames={filterLabelNames}
+            labelsLoaded={filtersLoaded}
             queryParamKey="q"
             resultsNode={resultsSummary ? <div aria-live="polite">{resultsSummary}</div> : null}
             sortOptions={SEARCH_SORT_OPTIONS}
             sortParamKey="sort"
+            sortDefault={getSearchSortDefault}
           />
           {/* SEARCH RESULTS */}
           <div className={columnLayoutCss}>
             <SearchContainer
               query={query}
-              filters={filters}
+              filters={searchReadyFilters}
               page_token={currentPage}
-              sort={sortKey}
+              sort={sortValue}
               onTotalResultsChange={setTotalNoOfResults}
               onSearchingChange={setIsSearching}
-              onResultClicked={(document, event) => {
-                // If command or ctrl is clicked open document new tab
-                if (event.metaKey || event.ctrlKey) {
-                  const slug = document.attributes.deprecated_slug;
-                  if (slug) {
-                    const isPrincipal = document.labels.some((label) => label.value.value === "Principal");
-                    window.open(isPrincipal ? `/document/${slug}` : `/documents/${slug}`, "_blank", "noopener,noreferrer");
-                  }
-                  return;
-                }
-                // otherwise open document in drawer, carrying over what a passage search can use
+              onResultClicked={(document) => {
                 setSelectedDocument(document);
                 principalLevel.open(document.attributes.deprecated_slug as string, seedPassageLevel({ query, filters }));
               }}
@@ -202,16 +185,6 @@ const ShadowSearch = ({ theme, themeConfig, features }: TProps) => {
             </div>
           )}
         </FiveColumns>
-        {/* ADVANCED FILTERS */}
-        <AdvancedFilters
-          filters={filters}
-          setFilters={(filters) => {
-            setFilters(filters);
-            setCurrentPage("1");
-          }}
-          open={advancedFiltersOpen}
-          onOpenChange={setAdvancedFiltersOpen}
-        />
         {/* DRAWER */}
         <PrincipalDrawer
           document={selectedDocument?.attributes.deprecated_slug === principalSlug ? selectedDocument : null}
@@ -220,7 +193,7 @@ const ShadowSearch = ({ theme, themeConfig, features }: TProps) => {
           onOpenChange={(open) => {
             if (!open) closePrincipalDrawer();
           }}
-          onTabChange={setDrawerTab}
+          onTabChange={onDrawerTabChange}
           open={!!principalLevel.id}
           tab={drawerTab}
         />

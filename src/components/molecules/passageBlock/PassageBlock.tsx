@@ -1,16 +1,16 @@
+import sortBy from "lodash/sortBy";
 import { Check, Copy, ExternalLink, File, LocateFixed } from "lucide-react";
 import { useEffect, useState } from "react";
 
 import { ProductSupport } from "@/components/molecules/productSupport/ProductSupport";
 import { EN_DASH } from "@/constants/chars";
+import { QUERY_HIGHLIGHT_COLOUR } from "@/constants/highlights";
 import { IPassageBolding, IPassageLabel } from "@/types";
 import { joinNodes } from "@/utils/reactNode";
 import { THighlightRange, addHighlights } from "@/utils/text/addHighlights";
 import { resolveHighlightRanges } from "@/utils/text/resolveHighlightRanges";
 
 const COPY_FEEDBACK_TIMEOUT = 1000;
-
-export const QUERY_HIGHLIGHT_COLOUR = "bg-yellow-200 text-text-primary";
 
 type TPassagePage = {
   page_number: number;
@@ -52,11 +52,25 @@ type TProps = {
 };
 
 const formatPageRange = (pageNumbers: number[]): string => {
-  if (pageNumbers.length <= 1) return pageNumbers[0].toString() ?? "";
+  if (pageNumbers.length <= 1) return pageNumbers[0]?.toString() ?? "";
 
-  const sortedPageNumbers = [...pageNumbers].sort();
+  const sortedPageNumbers = [...pageNumbers].sort((a, b) => a - b);
   return [sortedPageNumbers[0], sortedPageNumbers[sortedPageNumbers.length - 1]].join(EN_DASH);
 };
+
+// A range is surrounded if another range covers all of its characters
+const isSurrounded = (range: THighlightRange, index: number, ranges: THighlightRange[]) =>
+  ranges.some((otherRange, otherIndex) => otherIndex !== index && otherRange.start <= range.start && otherRange.end >= range.end);
+
+const sortTopicRanges = (ranges: THighlightRange[]): THighlightRange[] =>
+  sortBy(
+    ranges.map((range, index) => ({ range, surrounded: isSurrounded(range, index, ranges) })),
+    [
+      ({ surrounded }) => !surrounded, // Show surrounded ranges first so they don't disappear
+      ({ range }) => range.end - range.start,
+      ({ range }) => range.start,
+    ]
+  ).map(({ range }) => range);
 
 // Define the highlight ranges - highlights are applied later, we just nede their positions and colour
 const getHighlightRanges = ({
@@ -74,11 +88,13 @@ const getHighlightRanges = ({
     end: end_index,
     className: QUERY_HIGHLIGHT_COLOUR,
   })),
-  ...activeTopics.map(({ start_index, end_index, value }) => ({
-    start: start_index,
-    end: end_index,
-    className: topicColours.get(value.id) ?? "",
-  })),
+  ...sortTopicRanges(
+    activeTopics.map(({ start_index, end_index, value }) => ({
+      start: start_index,
+      end: end_index,
+      className: topicColours.get(value.id) ?? "",
+    }))
+  ),
 ];
 
 export const PassageBlock = ({
@@ -109,8 +125,8 @@ export const PassageBlock = ({
     passage.content,
     resolveHighlightRanges(passage.content, getHighlightRanges({ boldings: passage.boldings, activeTopics, topicColours }))
   );
-  // A passage can contain multiple spans of the same highlighted topic
-  const topics = [...new Map(activeTopics.map(({ value }) => [value.value, value.id]))];
+  // A passage can contain multiple spans of the same highlighted topic. List each by its first span
+  const topics = [...new Map(sortBy(activeTopics, "start_index").map(({ value }) => [value.value, value.id]))];
   const topicsList = joinNodes(
     topics.map(([value, id]) => (
       <span key={id} className={topicColours.get(id)}>

@@ -7,6 +7,7 @@ import { withEnvConfig } from "@/context/EnvConfig";
 import { TTheme } from "@/types";
 import { getFeatureFlags } from "@/utils/featureFlags";
 import { getFeatures } from "@/utils/features";
+import { getSiteDecision } from "@/utils/getDocumentSites";
 import { readConfigFile } from "@/utils/readConfigFile";
 
 /*
@@ -43,9 +44,19 @@ export const getServerSideProps = (async (context) => {
   if (familyData === null) return { notFound: true };
   if (!features.debug) delete familyData.debug;
 
+  const siteDecision = getSiteDecision(familyData.themeCriteria, theme, `/document/${slug}`);
+
+  if (siteDecision.action === "not_found") {
+    return { notFound: true };
+  }
+  if (siteDecision.action === "redirect") {
+    return { redirect: { destination: siteDecision.destination, permanent: true } };
+  }
+
   return {
     props: withEnvConfig({
       ...familyData,
+      canonicalUrl: siteDecision.canonicalUrl,
       errors: errors.map((error) => JSON.stringify(error, Object.getOwnPropertyNames(error))),
       features,
       theme,

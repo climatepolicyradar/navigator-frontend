@@ -65,3 +65,8 @@ tsconfig.json
 
 # git worktrees
 .worktrees
+
+# Deploy-time artefacts extracted from the built image (.github/workflows/deploy-*.yml).
+# next-sourcemaps holds our original TypeScript and must never be committed.
+/next-static/
+/next-sourcemaps/

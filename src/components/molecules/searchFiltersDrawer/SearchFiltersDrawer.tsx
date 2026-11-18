@@ -1,14 +1,11 @@
 import { useState } from "react";
 
 import { Drawer } from "@/components/atoms/drawer/Drawer";
+import { Loading } from "@/components/atoms/loading/Loading";
 import { SearchFilterLevel } from "@/components/organisms/searchFilterLevel/SearchFilterLevel";
-import { TFiltersGroup } from "@/types";
+import { IFilterGroupComponentProps } from "@/types";
 
-interface IProps {
-  filterGroup: TFiltersGroup;
-}
-
-export const SearchFiltersDrawer = ({ filterGroup }: IProps) => {
+export const SearchFiltersDrawer = ({ filterGroup, loading }: IFilterGroupComponentProps) => {
   const [isOpen, setIsOpen] = useState(false);
 
   if (filterGroup.container !== "drawer") return null;
@@ -21,7 +18,7 @@ export const SearchFiltersDrawer = ({ filterGroup }: IProps) => {
         className="flex gap-2 items-center px-3 py-2 bg-bg-primary text-sm text-text-primary font-medium leading-5 border border-border-normal rounded-full"
         onClick={() => setIsOpen((current) => !current)}
       >
-        {Icon && <Icon size={16} className="text-elem-icon" />}
+        {Icon && <Icon size={16} className="text-text-brand" />}
         <span>{title}</span>
       </button>
       <Drawer
@@ -35,7 +32,11 @@ export const SearchFiltersDrawer = ({ filterGroup }: IProps) => {
           </>
         }
       >
-        <SearchFilterLevel ancestorPath={[]} labels={nestedLabels} level={1} topLevelDefaultOpen={filterGroup.topLevelDefaultOpen} renderParents />
+        {loading ? (
+          <Loading />
+        ) : (
+          <SearchFilterLevel ancestorPath={[]} labels={nestedLabels} level={1} topLevelDefaultOpen={filterGroup.topLevelDefaultOpen} renderParents />
+        )}
       </Drawer>
     </>
   );

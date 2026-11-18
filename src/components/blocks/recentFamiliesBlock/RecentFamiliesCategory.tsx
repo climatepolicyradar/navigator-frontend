@@ -1,28 +1,17 @@
-import sortBy from "lodash/sortBy";
 import { LucideChevronDownCircle } from "lucide-react";
-import { ReactNode, useContext, useMemo } from "react";
+import { ReactNode, useContext } from "react";
 
-import { getTaxonomyFromV1 } from "@/bff/methods/getTaxonomy";
 import { PageLink } from "@/components/atoms/pageLink/PageLink";
-import { EntityCard, IProps as IEntityCardProps } from "@/components/molecules/entityCard/EntityCard";
+import { EntityCard } from "@/components/molecules/entityCard/EntityCard";
 import { ARROW_RIGHT } from "@/constants/chars";
 import { FeaturesContext } from "@/context/FeaturesContext";
-import { GeographiesContext } from "@/context/GeographiesContext";
 import { ThemeContext } from "@/context/ThemeContext";
-import { GeographyTypeV2, GeographyV2, TCategorySummary, TSearchLabel } from "@/types";
+import { GeographyV2, TCategorySummary, TSearchLabel } from "@/types";
 import { getGeoSearchLink } from "@/utils/links/getGeoSearchLink";
 import { pluralise } from "@/utils/pluralise";
 import { joinTailwindClasses } from "@/utils/tailwind";
-import { formatDate } from "@/utils/timedate";
 
 const MAX_CARDS = 4;
-
-const getMostSpecificGeography = (geographies: GeographyV2[]): GeographyV2 => {
-  if (!geographies.length) return null;
-
-  const GEOGRAPHY_TYPE_WEIGHTING: GeographyTypeV2[] = ["subdivision", "country", "region"];
-  return sortBy(geographies, (geo) => GEOGRAPHY_TYPE_WEIGHTING.indexOf(geo.type))[0];
-};
 
 interface IProps {
   categorySummary: TCategorySummary | null;
@@ -41,29 +30,8 @@ export const RecentFamiliesCategory = ({
   geography,
   geographyLabel,
 }: IProps) => {
-  const allGeographies = useContext(GeographiesContext);
   const { theme, themeConfig } = useContext(ThemeContext);
   const features = useContext(FeaturesContext);
-
-  const cards: IEntityCardProps[] = useMemo(
-    () =>
-      families.slice(0, MAX_CARDS).map((family) => {
-        const geographies = family.family_geographies.map((familyGeo) => allGeographies.find((geo) => geo.id === familyGeo)).filter((geo) => geo);
-
-        const metadata = [
-          getTaxonomyFromV1(family.family_category, family.corpus_type_name, family.family_source, family.corpus_import_id),
-          getMostSpecificGeography(geographies)?.name,
-          formatDate(family.family_date)[0].toString(),
-        ].filter((line) => Boolean(line));
-
-        return {
-          href: `/document/${family.family_slug}`,
-          title: family.family_name,
-          metadata,
-        };
-      }),
-    [allGeographies, families]
-  );
 
   const clickAccordion = () => {
     onAccordionClick?.();
@@ -114,7 +82,7 @@ export const RecentFamiliesCategory = ({
             <>
               {families.length > 0 && (
                 <div className="flex gap-5 items-stretch overflow-x-auto pb-2">
-                  {cards.map((card) => (
+                  {families.slice(0, MAX_CARDS).map((card) => (
                     <EntityCard key={card.href} {...card} />
                   ))}
                   <PageLink

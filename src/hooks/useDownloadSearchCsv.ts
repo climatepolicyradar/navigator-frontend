@@ -1,40 +1,64 @@
 import { useState } from "react";
 
-import { SEARCH_DOCUMENT_SORT_PARAMS, SearchDocumentsSortKey } from "@/api/search";
+import { configureDocumentsFilters, PRINCIPAL_DOCUMENTS_FILTER, SEARCH_DOCUMENTS_MIN_SHOULD_MATCH } from "@/api/search";
 import { isFilterGroupEmpty } from "@/components/_experiment/advancedFilters/AdvancedFilters";
-import { TApiLoadingStatus, TSearchQueryGroup } from "@/types";
+import { SORT_PARAMS_LOOKUP } from "@/constants/sort";
+import { useEnvConfig } from "@/context/EnvConfig";
+import { TApiLoadingStatus, TSearchQueryGroup, TSearchQueryRule, TSortValue, TTheme, TThemeConfig } from "@/types";
 import { sanitiseSearchQueryGroup } from "@/utils/filters/advancedFilters";
+import { deflateFilters } from "@/utils/filters/deflate";
+import getThemeDomain from "@/utils/getThemeDomain";
 
 const DOWNLOAD_MAX_RESULTS = 500;
 
-// Mirrors fetchSearchPrincipalDocuments's principal-only filter in src/api/search.ts,
-// so the download matches what the user sees on the results list.
-const PRINCIPAL_DOCUMENTS_FILTER: TSearchQueryGroup = {
-  op: "and",
-  filters: [{ field: "labels.value.id", op: "contains", value: "status::Principal" }],
-};
-
-function downloadSearchCsvUrl(): string {
-  const origin = (process.env.NEXT_PUBLIC_API_URL || "https://api.climatepolicyradar.org").replace(/\/$/, "");
-  return `${origin}/search/documents:download`;
+interface IDownloadSearchCsvParams {
+  query?: string;
+  theme: TTheme;
+  themeConfig: TThemeConfig;
+  filters?: TSearchQueryGroup;
+  sort: TSortValue;
 }
 
-export function buildDownloadSearchCsvUrl(params: { query?: string; filters?: TSearchQueryGroup; sort: SearchDocumentsSortKey }): URL {
-  const url = new URL(downloadSearchCsvUrl());
+function downloadSearchCsvUrl(apiUrl: string): string {
+  return `${apiUrl.replace(/\/$/, "")}/search/documents:download`;
+}
 
-  if (params.query) url.searchParams.set("query", params.query);
+function downloadBaseUrl(theme: TTheme): string {
+  return `https://${getThemeDomain(theme)}`;
+}
 
-  const filtersToApply: TSearchQueryGroup[] = [PRINCIPAL_DOCUMENTS_FILTER];
+export function buildDownloadSearchCsvUrl(params: IDownloadSearchCsvParams & { apiUrl: string }): URL {
+  const url = new URL(downloadSearchCsvUrl(params.apiUrl));
+
+  if (params.query) {
+    url.searchParams.set("query", params.query);
+    url.searchParams.set("msm", String(SEARCH_DOCUMENTS_MIN_SHOULD_MATCH));
+  }
+
+  // Build the same filter tree the results list requests, so the CSV contains exactly
+  // the rows on screen. configureDocumentsFilters adds the theme's search categories
+  // (e.g. category::Litigation on CCC) and the published-date bounds.
+  const filtersToApply: (TSearchQueryGroup | TSearchQueryRule)[] = [PRINCIPAL_DOCUMENTS_FILTER];
   const sanitisedFilters = params.filters ? sanitiseSearchQueryGroup(params.filters) : null;
   if (sanitisedFilters && !isFilterGroupEmpty(sanitisedFilters)) {
     filtersToApply.push(sanitisedFilters);
   }
 
-  const combinedFilters: TSearchQueryGroup = { op: "and", filters: filtersToApply };
-  url.searchParams.set("filters", JSON.stringify(combinedFilters));
-
-  url.searchParams.set("order_by", SEARCH_DOCUMENT_SORT_PARAMS[params.sort]);
+  const combinedFilters = configureDocumentsFilters(
+    { op: "and", filters: filtersToApply },
+    params.themeConfig.searchCategories,
+    params.themeConfig.searchExcludeLabels
+  );
+  url.searchParams.set("filters", deflateFilters(combinedFilters));
+  url.searchParams.set("encoding", "deflate");
+  url.searchParams.set("order_by", SORT_PARAMS_LOOKUP[params.sort]);
   url.searchParams.set("max_results", DOWNLOAD_MAX_RESULTS.toString());
+
+  // A theme with no columns configured appends nothing, leaving
+  // the API to fall back to its own default set rather than failing the download.
+  (params.themeConfig.downloadColumns ?? []).forEach((column) => url.searchParams.append("columns", column));
+
+  url.searchParams.set("base_url", downloadBaseUrl(params.theme));
 
   return url;
 }
@@ -48,13 +72,14 @@ function triggerBlobDownload(blob: Blob, fileName: string) {
 }
 
 export function useDownloadSearchCsv() {
+  const { API_URL } = useEnvConfig();
   const [status, setStatus] = useState<TApiLoadingStatus>("idle");
 
-  const download = async (params: { query?: string; filters?: TSearchQueryGroup; sort: SearchDocumentsSortKey }) => {
+  const download = async (params: IDownloadSearchCsvParams) => {
     setStatus("loading");
 
     try {
-      const url = buildDownloadSearchCsvUrl(params);
+      const url = buildDownloadSearchCsvUrl({ ...params, apiUrl: API_URL });
       const response = await fetch(url);
       if (!response.ok) {
         setStatus("error");

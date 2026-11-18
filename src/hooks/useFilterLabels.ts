@@ -1,53 +1,24 @@
-import { useEffect, useState } from "react";
+import { useMemo } from "react";
 
-import { loadFilteredLabels, loadLabelTaxonomy } from "@/hooks/useLabelSearch";
-import { TFeatures, TSearchLabel, TSearchQueryGroup } from "@/types";
+import { configureDocumentsFilters, PRINCIPAL_DOCUMENTS_FILTER } from "@/api/search";
+import { SUBDIVISION_LABEL_PATTERN } from "@/constants/labels";
+import { useTaxonomy } from "@/hooks/useTaxonomy";
+import { TFeatures, TThemeConfig } from "@/types";
+import { pruneTaxonomy } from "@/utils/filters/pruneTaxonomy";
 
 interface IProps {
   features: TFeatures;
+  themeConfig: TThemeConfig;
 }
 
-export const useFilterLabels = ({ features }: IProps): TSearchLabel[] => {
-  const [availableFilters, setAvailableFilters] = useState<TSearchLabel[]>([]);
+export const useFilterLabels = ({ features, themeConfig }: IProps) => {
+  const { searchCategories, searchExcludeLabels, searchLabelPatterns } = themeConfig;
 
-  useEffect(() => {
-    const searchQueryGroup: TSearchQueryGroup = {
-      op: "or",
-      filters: [
-        {
-          field: "type",
-          op: "contains",
-          value: "concept",
-        },
-        {
-          field: "type",
-          op: "contains",
-          value: "region",
-        },
-        {
-          field: "type",
-          op: "contains",
-          value: "country",
-        },
-      ],
-    };
-    if (features.subdivisions) {
-      searchQueryGroup.filters.push({
-        field: "type",
-        op: "contains",
-        value: "subdivision",
-      });
-    }
+  const { labels, labelNames, loaded } = useTaxonomy({
+    patterns: features.subdivisions ? [...searchLabelPatterns, SUBDIVISION_LABEL_PATTERN] : searchLabelPatterns,
+    filters: configureDocumentsFilters({ op: "and", filters: [PRINCIPAL_DOCUMENTS_FILTER] }, searchCategories, searchExcludeLabels),
+  });
 
-    const loadedFilteredLabels = loadFilteredLabels(searchQueryGroup);
-
-    // We have to append this data until the categories taxonomy data source data is fixed
-    // @see: https://linear.app/climate-policy-radar/issue/APP-2266/fusion-enrichment-fleshing-out-the-publishedcanonicallabels
-    const loadedLabelTaxonomy = loadLabelTaxonomy();
-    const allFilterLabels = Promise.all([loadedFilteredLabels, loadedLabelTaxonomy]);
-
-    allFilterLabels.then(([filteredLabels, labelTaxonomy]) => setAvailableFilters([...filteredLabels, ...labelTaxonomy]));
-  }, [features.subdivisions]);
-
-  return availableFilters;
+  const filters = useMemo(() => pruneTaxonomy(labels), [labels]);
+  return { filters, labelNames, loaded };
 };

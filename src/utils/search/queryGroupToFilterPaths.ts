@@ -1,12 +1,11 @@
 import { TDateRange } from "@/context/FiltersContext";
 import { TFilterPathLabel, TSearchQueryGroup, TSearchQueryRule, isRule } from "@/types";
+import { getYear } from "@/utils/timedate";
 
 type TLabelRule = TSearchQueryRule & { field: "labels.value.id" };
 type TDateRule = TSearchQueryRule & { field: "attributes.published_date" };
 
 const isDateRule = (node: TSearchQueryGroup | TSearchQueryRule): node is TDateRule => isRule(node) && node.field === "attributes.published_date";
-
-const getYear = (value: string): number => new Date(value).getFullYear();
 
 const extractDateRange = (node: TSearchQueryGroup): TDateRange => {
   if (node.op !== "and") return null;
@@ -15,8 +14,11 @@ const extractDateRange = (node: TSearchQueryGroup): TDateRange => {
   const gteRule = dateRules.find((rule) => rule.op === "gte");
   const lteRule = dateRules.find((rule) => rule.op === "lte");
 
-  if (gteRule && lteRule) return [getYear(gteRule.value), getYear(lteRule.value)];
-  if (gteRule) return [getYear(gteRule.value), new Date().getFullYear()];
+  const gteYear = gteRule ? getYear(gteRule.value) : null;
+  const lteYear = lteRule ? getYear(lteRule.value) : null;
+
+  if (gteYear !== null && lteYear !== null) return [gteYear, lteYear];
+  if (gteYear !== null) return [gteYear, new Date().getFullYear()];
   return null;
 };
 

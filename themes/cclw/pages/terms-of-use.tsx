@@ -58,7 +58,7 @@ const TermsOfUse = () => {
               <ul>
                 <li>
                   Climate Policy Radar is pleased to make the content of the CPR Database available as open data under the Creative Commons
-                  Attribution Licence 
+                  Attribution Licence
                   <ExternalLink url="https://creativecommons.org/licenses/by/4.0/">(CC-BY)</ExternalLink>. Under this Creative Commons licence you are
                   free to:
                   <ul>
@@ -209,7 +209,9 @@ const TermsOfUse = () => {
                 </thead>
                 <tbody>
                   <tr>
-                    <td>Grantham Research Institute, LSE</td>
+                    <td>
+                      <ExternalLink url="https://www.lse.ac.uk/granthaminstitute/">Grantham Research Institute, LSE</ExternalLink>
+                    </td>
                     <td>Law and policy document summaries; selected document metadata</td>
                     <td>October 2022</td>
                     <td>

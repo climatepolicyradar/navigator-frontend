@@ -59,11 +59,112 @@ jobs:
           pipx install rust-just
           pipx install uv
           uv sync
-      - name: Update pulumi docker_tag
+      # Record the tag in Pulumi config so state matches what is running, but
+      # do not let `pulumi up` perform the deploy: the RollbackAlarm correction
+      # has to land between starting the deployment and waiting on it, which is
+      # only possible from the script below. Without it a rollback is judged by
+      # ECS's stock alarm, which counts 4xx -- mostly crawler noise -- and can
+      # auto-roll-back the very deploy that is meant to restore service.
+      - name: Record docker_tag in pulumi config
         working-directory: infra
         run: |
           pulumi stack select climatepolicyradar/${{ github.event.inputs.stack }}
           pulumi env set climatepolicyradar/${{ github.event.inputs.stack }} docker_tag ${{ github.event.inputs.docker-tag }}
-          pulumi up --yes
         env:
           PULUMI_ACCESS_TOKEN: ${{ secrets.PULUMI_ACCESS_TOKEN }}
+
+      # The ECS deploy needs the frontend deploy role, not the infra role used
+      # for pulumi above.
+      - name: Configure AWS credentials (frontend deploy)
+        uses: aws-actions/configure-aws-credentials@v6.3.0
+        with:
+          role-to-assume: arn:aws:iam::${{ secrets.AWS_ACCOUNT_ID
+            }}:role/navigator-new-frontend-github-actions
+          role-session-name: GitHub_to_AWS_via_FederatedOIDC
+          aws-region: ${{ env.AWS_REGION }}
+
+      # Derive the ECS cluster and service from the stack, matching
+      # prefix_name() in infra/resources/ecs_express_service.py:
+      # "frontend/cpr-production" -> cluster frontend-production,
+      # service cpr-frontend-production.
+      - name: Resolve ECS target and image
+        id: target
+        env:
+          STACK: ${{ github.event.inputs.stack }}
+          DOCKER_TAG: ${{ github.event.inputs.docker-tag }}
+          ECR_REGISTRY: ${{ secrets.DOCKER_REGISTRY }}
+        run: |
+          set -euo pipefail
+          THEME_ENV="${STACK#frontend/}"
+          THEME="${THEME_ENV%-*}"
+          ENVIRONMENT="${THEME_ENV##*-}"
+          echo "cluster=frontend-${ENVIRONMENT}" >> "$GITHUB_OUTPUT"
+          echo "service=${THEME}-frontend-${ENVIRONMENT}" >> "$GITHUB_OUTPUT"
+          echo "image=${ECR_REGISTRY}/navigator-frontend-${THEME}:${DOCKER_TAG}" >> "$GITHUB_OUTPUT"
+          echo "theme=${THEME}" >> "$GITHUB_OUTPUT"
+          echo "environment=${ENVIRONMENT}" >> "$GITHUB_OUTPUT"
+
+      # Fail with a clear message rather than letting ECS fail to pull. Builds
+      # from before SHA tagging was introduced only pushed 'latest'.
+      - name: Verify image exists in ECR
+        env:
+          THEME_TAG: ${{ github.event.inputs.docker-tag }}
+          STACK: ${{ github.event.inputs.stack }}
+        run: |
+          set -euo pipefail
+          THEME_ENV="${STACK#frontend/}"
+          THEME="${THEME_ENV%-*}"
+          if ! aws ecr describe-images --region "${AWS_REGION}" \
+            --repository-name "navigator-frontend-${THEME}" \
+            --image-ids "imageTag=${THEME_TAG}" >/dev/null 2>&1; then
+            echo "::error::No image tagged '${THEME_TAG}' in navigator-frontend-${THEME}."
+            exit 1
+          fi
+
+      # Announce in #prod-updates before the deploy starts, so the team can
+      # correlate it with whatever incident prompted it. Staging stacks are
+      # deliberately not announced -- a staging rollback is not an incident signal.
+      - name: Compose Slack message
+        if: steps.target.outputs.environment == 'production'
+        env:
+          DOCKER_TAG: ${{ github.event.inputs.docker-tag }}
+          THEME: ${{ steps.target.outputs.theme }}
+        run: |
+          set -euo pipefail
+          COMMIT_URL="https://github.com/${{ github.repository }}/commit/${DOCKER_TAG}"
+          RUN_URL="https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}"
+          MESSAGE="⏪ Skipping staging verification and deploying straight to production: hotfixing *${THEME}* to <${COMMIT_URL}|${DOCKER_TAG:0:7}> (<${RUN_URL}|logs>)"
+          jq -n --arg msg "$MESSAGE" '{text: $msg, mrkdwn: true}' > slack-payload.json
+
+      - uses: slackapi/slack-github-action@v4.0.0
+        if: steps.target.outputs.environment == 'production'
+        with:
+          webhook: ${{ secrets.SLACK_WEBHOOK_URL_PRODUCTION_UPDATES_CHANNEL }}
+          webhook-type: incoming-webhook
+          payload-file-path: slack-payload.json
+
+      - name: Deploy to ECS
+        run: >
+          .github/workflows/scripts/deploy_ecs_express.sh
+          ${{ steps.target.outputs.cluster }} ${{ steps.target.outputs.service }}
+          ${{ steps.target.outputs.image }}
+
+      # A silently failed rollback is the worst case during an incident: the
+      # team would otherwise assume the hotfix landed.
+      - name: Compose Slack failure message
+        if: failure() && steps.target.outputs.environment == 'production'
+        env:
+          DOCKER_TAG: ${{ github.event.inputs.docker-tag }}
+          THEME: ${{ steps.target.outputs.theme }}
+        run: |
+          set -euo pipefail
+          RUN_URL="https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}"
+          MESSAGE="❌ Hotfix of production *${THEME}* to ${DOCKER_TAG:0:7} failed (<${RUN_URL}|logs>)"
+          jq -n --arg msg "$MESSAGE" '{text: $msg, mrkdwn: true}' > slack-payload.json
+
+      - uses: slackapi/slack-github-action@v4.0.0
+        if: failure() && steps.target.outputs.environment == 'production'
+        with:
+          webhook: ${{ secrets.SLACK_WEBHOOK_URL_PRODUCTION_UPDATES_CHANNEL }}
+          webhook-type: incoming-webhook
+          payload-file-path: slack-payload.json

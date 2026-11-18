@@ -1,6 +1,8 @@
+import { SHARED_LABEL_PATTERNS } from "@/constants/labels";
 import { TThemeConfig } from "@/types";
 
 const config: TThemeConfig = {
+  documentTypeLabels: [],
   defaultCorpora: [
     "MCF.corpus.GCF.n0000",
     "MCF.corpus.GEF.n0000",
@@ -101,6 +103,27 @@ const config: TThemeConfig = {
     },
   ],
   searchCategories: ["Multilateral Climate Fund project"],
+  searchExcludeLabels: [],
+  searchLabelPatterns: [
+    ...SHARED_LABEL_PATTERNS,
+    "category::Multilateral Climate Fund project/agent::*",
+    "category::Multilateral Climate Fund project/entity_type::*",
+    "category::Multilateral Climate Fund project/entity_type::*/activity_status::*",
+    "category::Multilateral Climate Fund project/entity_type::Project/agent::*",
+  ],
+  downloadColumns: [
+    "ID",
+    "TITLE",
+    "DESCRIPTION",
+    "URL",
+    "GEOGRAPHIES",
+    "PUBLISHED_DATE",
+    "ENTITY_TYPE",
+    "CATEGORY",
+    "PROVIDER",
+    "COLLECTION_TITLE",
+    "COLLECTION_DESCRIPTION",
+  ],
   labelVariations: {
     date: {
       label: "Approval FY",
@@ -136,14 +159,16 @@ const config: TThemeConfig = {
     family: ["summary", "documents", "metadata", "topics", "collections", "note"],
     geography: ["recents"],
   },
-  tutorials: ["knowledgeGraph"],
+  tutorials: ["newSearch"],
   features: {
     familyConceptsSearch: false,
+    "geography-type-filters": false,
     knowledgeGraph: true,
     litigation: false,
-    "new-search": false,
+    "new-search": true,
     searchFamilySummary: true,
     subdivisions: false,
+    themes: false,
   },
 };
 

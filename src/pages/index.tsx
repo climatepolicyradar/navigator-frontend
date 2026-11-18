@@ -5,18 +5,22 @@ import React, { useEffect } from "react";
 import { Homepage } from "@/components/Themed";
 import { QUERY_PARAMS } from "@/constants/queryParams";
 import { withEnvConfig } from "@/context/EnvConfig";
+import { FeaturesContext } from "@/context/FeaturesContext";
 import useConfig from "@/hooks/useConfig";
 import useUpdateCountries from "@/hooks/useUpdateCountries";
-import { TTheme, TThemeConfig } from "@/types";
+import { TFeatures, TTheme, TThemeConfig } from "@/types";
+import { getFeatureFlags } from "@/utils/featureFlags";
+import { getFeatures } from "@/utils/features";
 import { readConfigFile } from "@/utils/readConfigFile";
 import { triggerNewSearch } from "@/utils/triggerNewSearch";
 
 interface IProps {
+  features: TFeatures;
   theme: TTheme;
   themeConfig: TThemeConfig;
 }
 
-const IndexPage = ({ theme, themeConfig }: IProps) => {
+const IndexPage = ({ features, theme, themeConfig }: IProps) => {
   const router = useRouter();
   const { mutate: updateCountries } = useUpdateCountries();
 
@@ -50,7 +54,7 @@ const IndexPage = ({ theme, themeConfig }: IProps) => {
   }, [updateCountries, regions, countries]);
 
   return (
-    <>
+    <FeaturesContext.Provider value={features}>
       <Homepage
         handleSearchInput={handleSearchInput}
         handleSearchChange={handleSearchChange}
@@ -59,7 +63,7 @@ const IndexPage = ({ theme, themeConfig }: IProps) => {
         theme={theme}
         themeConfig={themeConfig}
       />
-    </>
+    </FeaturesContext.Provider>
   );
 };
 
@@ -70,9 +74,12 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
 
   const theme = process.env.THEME;
   const themeConfig = await readConfigFile(theme);
+  const featureFlags = getFeatureFlags(context.req.cookies);
+  const features = getFeatures(themeConfig, featureFlags);
 
   return {
     props: withEnvConfig({
+      features,
       theme,
       themeConfig,
     }),

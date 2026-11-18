@@ -59,20 +59,39 @@ jobs:
     runs-on: ubuntu-latest
     environment: ${{ inputs.environment }}
     steps:
-      - uses: actions/checkout@v7
-      - if: inputs.aws-role != ''
+      - name: Checkout
+        uses: actions/checkout@v7
+
+      - name: Configure AWS credentials
+        if: inputs.aws-role != ''
         uses: aws-actions/configure-aws-credentials@v6.3.0
         with:
           role-to-assume: arn:aws:iam::${{ secrets.AWS_ACCOUNT_ID }}:role/${{ inputs.aws-role }}
           role-session-name: GitHub_Pulumi_up_${{ inputs.environment }}
           aws-region: eu-west-1
-      - uses: astral-sh/setup-uv@v7
-      - uses: pulumi/actions@v7
+          # Off by default, so the account id and the assumed ARN would
+          # otherwise appear in this step's log.
+          mask-aws-account-id: true
+
+      - name: Setup uv
+        uses: astral-sh/setup-uv@v7
+
+      - name: Install pulumi
+        uses: pulumi/actions@v7
         env:
           PULUMI_ACCESS_TOKEN: ${{ secrets.PULUMI_ACCESS_TOKEN }}
-      - working-directory: ${{ inputs.working-directory }}
+
+      - name: Install dependencies
+        working-directory: ${{ inputs.working-directory }}
         run: uv sync
-      - working-directory: ${{ inputs.working-directory }}
-        run: pulumi up --stack ${{ inputs.stack }} --yes --skip-preview
+
+      - name: Pulumi up
+        uses: pulumi/actions@v7
+        with:
+          command: up
+          stack-name: ${{ inputs.stack }}
+          work-dir: ${{ inputs.working-directory }}
         env:
           PULUMI_ACCESS_TOKEN: ${{ secrets.PULUMI_ACCESS_TOKEN }}
+          DEPLOY_FROM_MAIN_BRANCH_ONLY: false
+          DEPLOY_TO_PROD_STACK_ALLOWED: true

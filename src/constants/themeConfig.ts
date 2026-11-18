@@ -6,8 +6,12 @@ const DEFAULT_PAGE_METADATA = { title: "", description: "" };
 
 export const DEFAULT_THEME_CONFIG: TThemeConfig = {
   deprecatedFilters: [],
+  documentTypeLabels: [],
   labelVariations: {},
   searchCategories: [],
+  searchExcludeLabels: [],
+  searchLabelPatterns: [],
+  downloadColumns: [],
   links: {},
   pageMetadata: {
     default: DEFAULT_PAGE_METADATA,

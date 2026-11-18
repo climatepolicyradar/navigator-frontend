@@ -19,6 +19,13 @@ const FILTER_PREP_DICTIONARY: Record<TTheme, TFiltersGroupPrep | null> = {
   mcf: prepareMCFFilters,
 };
 
+const EXCLUDED_TOPICS_DICTIONARY: Record<TTheme, string[]> = {
+  ccc: ["Q1277", "Q32", "Q911", "Q912"],
+  cclw: [],
+  cpr: [],
+  mcf: [],
+};
+
 interface IProps {
   features: TFeatures;
   getAppText: (textKey: TAppDictionaryKey) => string;
@@ -27,6 +34,7 @@ interface IProps {
 
 export const getFilterGroups = ({ features, getAppText, theme }: IProps): TFiltersGroupConfig[] => {
   const filterGroups: TFiltersGroupConfig[] = [];
+
   // Filters
   filterGroups.push({
     container: "drawer",
@@ -43,7 +51,7 @@ export const getFilterGroups = ({ features, getAppText, theme }: IProps): TFilte
     // Theme
     filterGroups.push({
       title: "Theme",
-      subtitle: "Narrow results to documents focused on specific topics",
+      subtitle: "Refine your search by core policy area",
       Icon: LucideBook,
       container: "drawer",
       rootLabelTypes: ["domain"],
@@ -54,9 +62,8 @@ export const getFilterGroups = ({ features, getAppText, theme }: IProps): TFilte
   filterGroups.push({
     container: "drawer",
     Icon: LucideEarth,
-    prepareRootLabels: prepareGeographyFilters,
-    rootLabelTypes: ["region"],
-    subtitle: "Publish location of main document",
+    prepareRootLabels: prepareGeographyFilters(features["geography-type-filters"]),
+    rootLabelTypes: ["region", "country"],
     title: "Geography",
     topLevelDefaultOpen: true,
   });
@@ -65,7 +72,7 @@ export const getFilterGroups = ({ features, getAppText, theme }: IProps): TFilte
   filterGroups.push({
     container: "popover",
     header: FilterHeaderTopics,
-    prepareRootLabels: prepareTopicFilters,
+    prepareRootLabels: prepareTopicFilters(EXCLUDED_TOPICS_DICTIONARY[theme]),
     rootLabelTypes: ["concept"],
     title: "Topic",
     afterPartition: true,

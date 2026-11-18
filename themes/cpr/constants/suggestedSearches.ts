@@ -1,5 +1,8 @@
 import { QUERY_PARAMS } from "@/constants/queryParams";
 import { TSearchSuggestion } from "@/types";
+import { deflateFilters } from "@/utils/filters/deflate";
+
+const year = new Date().getUTCFullYear();
 
 export const SUGGESTED_SEARCHES: TSearchSuggestion[] = [
   {
@@ -8,9 +11,11 @@ export const SUGGESTED_SEARCHES: TSearchSuggestion[] = [
       [QUERY_PARAMS.category]: "UN-submissions",
       [QUERY_PARAMS["_document.type"]]: "Nationally Determined Contribution",
       [QUERY_PARAMS.author_type]: "Party",
+      [QUERY_PARAMS.sort_field]: "date",
+      [QUERY_PARAMS.sort_order]: "desc",
     },
     newParams: {
-      [QUERY_PARAMS.filters]: JSON.stringify({
+      [QUERY_PARAMS.filters]: deflateFilters({
         op: "and",
         filters: [
           { field: "labels.value.id", op: "contains", value: "category::UN submission" },
@@ -28,29 +33,28 @@ export const SUGGESTED_SEARCHES: TSearchSuggestion[] = [
           },
         ],
       }),
-      [QUERY_PARAMS.sort]: "recent",
     },
   },
   {
-    label: "Indigenous people + Brazil + Laws",
+    label: "Just transition + Türkiye + Laws",
     params: {
-      [QUERY_PARAMS.country]: "brazil",
+      [QUERY_PARAMS.country]: "turkey",
       [QUERY_PARAMS.category]: "laws",
-      [QUERY_PARAMS.concept_name]: "indigenous people",
+      [QUERY_PARAMS.concept_name]: "just transition",
     },
     newParams: {
-      [QUERY_PARAMS.filters]: JSON.stringify({
+      [QUERY_PARAMS.filters]: deflateFilters({
         op: "and",
         filters: [
           { field: "labels.value.id", op: "contains", value: "category::Law", checked: true },
           {
             op: "and",
             filters: [
-              { field: "labels.value.id", op: "contains", value: "region::LCN" },
-              { op: "or", filters: [{ field: "labels.value.id", op: "contains", value: "country::BRA", checked: true }] },
+              { field: "labels.value.id", op: "contains", value: "region::ECS" },
+              { op: "or", filters: [{ field: "labels.value.id", op: "contains", value: "country::TUR", checked: true }] },
             ],
           },
-          { field: "labels.value.id", op: "contains", value: "concept::Q684", checked: true },
+          { field: "labels.value.id", op: "contains", value: "concept::Q47", checked: true },
         ],
       }),
     },
@@ -64,24 +68,22 @@ export const SUGGESTED_SEARCHES: TSearchSuggestion[] = [
     },
     newParams: {
       [QUERY_PARAMS.query_string]: "marine",
-      [QUERY_PARAMS.filters]: JSON.stringify({
+      [QUERY_PARAMS.filters]: deflateFilters({
         op: "or",
         filters: [{ field: "labels.value.id", op: "contains", value: "concept::Q1282", checked: true }],
       }),
     },
   },
   {
-    label: "Climate framework laws",
-    params: {
-      [QUERY_PARAMS.category]: "laws",
-      [QUERY_PARAMS.framework_laws]: "true",
-    },
+    label: "Emissions reduction target",
+    params: {},
     newParams: {
-      [QUERY_PARAMS.filters]: JSON.stringify({
+      [QUERY_PARAMS.filters]: deflateFilters({
         op: "and",
         filters: [
-          { field: "labels.value.id", op: "contains", value: "category::Law" },
-          { op: "or", filters: [{ field: "labels.value.id", op: "contains", value: "law_type::Framework law", checked: true }] },
+          { op: "or", filters: [{ field: "labels.value.id", op: "contains", value: "concept::Q1652", checked: true }] },
+          { field: "attributes.published_date", key: "published_date", op: "gte", value: `${year - 1}-01-01T00:00:00.000Z` },
+          { field: "attributes.published_date", key: "published_date", op: "lte", value: `${year}-12-31T23:59:59.999Z` },
         ],
       }),
     },

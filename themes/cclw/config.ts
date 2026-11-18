@@ -1,6 +1,8 @@
+import { SHARED_LABEL_PATTERNS } from "@/constants/labels";
 import { TThemeConfig } from "@/types";
 
 const config: TThemeConfig = {
+  documentTypeLabels: [],
   deprecatedCategories: {
     label: "Category",
     options: [
@@ -151,6 +153,21 @@ const config: TThemeConfig = {
     },
   ],
   searchCategories: ["UN submission", "Law", "Policy"],
+  searchExcludeLabels: [{ id: "author_type::Non-Party" }, { id: "un_convention::CBD" }, { id: "author_type::UNCCD" }],
+  searchLabelPatterns: [...SHARED_LABEL_PATTERNS, "category::Law/**", "category::Policy/**", "category::UN submission/un_convention::UNFCCC/**"],
+  downloadColumns: [
+    "ID",
+    "TITLE",
+    "DESCRIPTION",
+    "URL",
+    "GEOGRAPHIES",
+    "PUBLISHED_DATE",
+    "ENTITY_TYPE",
+    "CATEGORY",
+    "PROVIDER",
+    "COLLECTION_TITLE",
+    "COLLECTION_DESCRIPTION",
+  ],
   labelVariations: {},
   links: {
     downloadDatabase: "https://form.jotform.com/233131638610347",
@@ -183,14 +200,16 @@ const config: TThemeConfig = {
     family: ["summary", "documents", "metadata", "topics", "collections", "note"],
     geography: ["recents", "statistics", "legislativeProcess"],
   },
-  tutorials: ["knowledgeGraph"],
+  tutorials: ["newSearch"],
   features: {
     familyConceptsSearch: false,
+    "geography-type-filters": false,
     knowledgeGraph: true,
     litigation: false,
-    "new-search": false,
+    "new-search": true,
     searchFamilySummary: true,
     subdivisions: false,
+    themes: false,
   },
 };
 

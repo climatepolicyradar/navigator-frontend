@@ -7,9 +7,9 @@ import { InteractiveTable } from "@/components/organisms/interactiveTable/Intera
 import { TCategoryDictionaryKey } from "@/constants/text";
 import { SearchLevelContext } from "@/context/SearchLevelContext";
 import { useNestedSearchLevel, useSearchLevelValues } from "@/hooks/useSearchLevel";
-import { IFamilyDocumentTopics, TFamilyPublic, TFeatures, TLanguages, TLoadingStatus, TMatchedFamily } from "@/types";
+import { IFamilyDocumentTopics, TFamilyPublic, TFeatures, TLoadingStatus, TMatchedFamily } from "@/types";
 import { getEventTableColumns, getEventTableRows, TEventTableColumnId, TEventTableRow } from "@/utils/eventTable";
-import { seedPassageLevel } from "@/utils/search/searchLevels";
+import { conceptFiltersOnly, flattenLevelToBaseQuery, seedPassageLevel } from "@/utils/search/searchLevels";
 import { familyTopicsHasTopics } from "@/utils/topics/processFamilyTopics";
 
 interface IProps {
@@ -17,26 +17,23 @@ interface IProps {
   familyTopics?: IFamilyDocumentTopics | null;
   features: TFeatures;
   getCategoryText: (textKey: TCategoryDictionaryKey) => string;
-  languages: TLanguages;
   matchesFamily?: TMatchedFamily; // The relevant search result family
   matchesStatus?: TLoadingStatus; // The status of the search
   showMatches?: boolean; // Whether to show matches from the search result
 }
 
-export const DocumentsBlock = ({
-  family,
-  familyTopics,
-  features,
-  getCategoryText,
-  languages,
-  matchesFamily,
-  matchesStatus,
-  showMatches = false,
-}: IProps) => {
+export const DocumentsBlock = ({ family, familyTopics, features, getCategoryText, matchesFamily, matchesStatus, showMatches = false }: IProps) => {
   const [updatedRowsWithLocalisedDates, setUpdatedRowsWithLocalisedDates] = useState<TEventTableRow[]>(null);
   // Ensure we have the latest search controls when opening the drawer
   const enclosingLevel = useContext(SearchLevelContext);
   const [enclosingSearch] = useSearchLevelValues(enclosingLevel);
+  // The document page searches passages at its own base level, so the table's links carry the
+  // enclosing search flattened onto those params, narrowed to the filters that search can apply.
+  // Inherited whole, the rest of the tree only draws chips there that filter nothing.
+  const outboundSearch = useMemo(
+    () => flattenLevelToBaseQuery({ ...enclosingSearch, filters: conceptFiltersOnly(enclosingSearch.filters) }),
+    [enclosingSearch]
+  );
   const { close: closeDocumentLevel, id: documentLevelId, open: openDocumentLevel } = useNestedSearchLevel("document");
   const [lastDocumentDrawerId, setLastDocumentDrawerId] = useState<string | null>(null); // Keeps the document in the drawer while it closes
 
@@ -78,11 +75,11 @@ export const DocumentsBlock = ({
         familyTopics,
         features,
         isLitigation,
-        languages,
         matchesFamily,
         matchesStatus,
+        search: outboundSearch,
       }),
-    [family, familyTopics, features, isLitigation, languages, matchesFamily, matchesStatus, onRowClick]
+    [family, familyTopics, features, isLitigation, matchesFamily, matchesStatus, onRowClick, outboundSearch]
   );
 
   // If the case is new, there can be one placeholder document with no events. Handle this interim state
@@ -101,12 +98,12 @@ export const DocumentsBlock = ({
         features,
         isLitigation,
         language,
-        languages,
         matchesFamily,
         matchesStatus,
+        search: outboundSearch,
       })
     );
-  }, [family, familyTopics, features, isLitigation, languages, matchesFamily, matchesStatus, onRowClick]);
+  }, [family, familyTopics, features, isLitigation, matchesFamily, matchesStatus, onRowClick, outboundSearch]);
 
   return (
     <Section block="documents" title="Documents" wide>
@@ -132,7 +129,6 @@ export const DocumentsBlock = ({
         documentSlug={documentLevelId ?? lastDocumentDrawerId}
         family={family}
         familyTopics={familyTopics}
-        languages={languages}
         onOpenChange={onDocumentDrawerOpenChange}
         open={!!documentLevelId}
       />

@@ -20,12 +20,12 @@ import { ROBOTS_BLOCKED_SLUGS, X_ROBOTS_TAG_NOINDEX_VALUE } from "@/constants/ro
 import { withEnvConfig } from "@/context/EnvConfig";
 import { FeaturesContext } from "@/context/FeaturesContext";
 import { TopicsContext } from "@/context/TopicsContext";
-import { useDocumentTopics } from "@/hooks/useDocumentTopics";
 import useSearch from "@/hooks/useSearch";
 import { TTheme } from "@/types";
 import { CleanRouterQuery } from "@/utils/cleanRouterQuery";
 import { getFeatureFlags } from "@/utils/featureFlags";
 import { getFeatures } from "@/utils/features";
+import { getSiteDecision } from "@/utils/getDocumentSites";
 import { getLitigationDocumentJSONLD } from "@/utils/json-ld/getLitigationDocumentJSONLD";
 import { readConfigFile } from "@/utils/readConfigFile";
 
@@ -43,6 +43,7 @@ const isEmptySearch = (query: ParsedUrlQuery) => {
 */
 
 const DocumentPage = ({
+  canonicalUrl,
   debug,
   document,
   errors,
@@ -51,7 +52,7 @@ const DocumentPage = ({
   theme,
   themeConfig,
   topicsData,
-  vespaDocumentData,
+  searchDocument,
 }: InferGetServerSidePropsType<typeof getServerSideProps>) => {
   const router = useRouter();
   const qsSearchString = router.query[QUERY_PARAMS.query_string];
@@ -109,9 +110,6 @@ const DocumentPage = ({
     [conceptFiltersQuery]
   );
 
-  // The topics offered as passage search filters come from the document's concepts in `search-api`.
-  const passageConcepts = useDocumentTopics([document.import_id], { enabled: isNewSearch });
-
   return (
     <FeaturesContext.Provider value={features}>
       <Layout
@@ -119,9 +117,9 @@ const DocumentPage = ({
         description={getDocumentDescription(document.title)}
         theme={theme as TTheme}
         themeConfig={themeConfig}
-        attributionUrl={family.attribution.url}
+        canonicalUrl={canonicalUrl}
       >
-        <TopicsContext.Provider value={topicsData}>
+        <TopicsContext.Provider value={topicsData ?? { rootTopics: [], topics: [] }}>
           <section
             className="pb-8 flex-1 flex flex-col"
             data-analytics-date={family.published_date}
@@ -137,14 +135,14 @@ const DocumentPage = ({
             />
 
             {isNewSearch ? (
-              <PassageSearch documents={[document]} concepts={passageConcepts} enablePreview />
+              <PassageSearch documents={[document]} enablePreview />
             ) : (
               <ConceptsDocumentViewer
                 initialQueryTerm={qsSearchString}
                 initialExactMatch={exactMatchQuery}
                 initialPageNumber={startingPageNumber}
                 initialConceptFilters={conceptFilters}
-                vespaDocumentData={vespaDocumentData}
+                labels={searchDocument?.labels}
                 document={document}
                 searchStatus={status}
                 searchResultFamilies={isEmptySearch(router.query) ? [] : families}
@@ -198,9 +196,19 @@ export const getServerSideProps = (async (context) => {
   });
   if (documentData === null) return { notFound: true };
 
+  const siteDecision = getSiteDecision(documentData.themeCriteria, theme, `/documents/${slug}`);
+
+  if (siteDecision.action === "not_found") {
+    return { notFound: true };
+  }
+  if (siteDecision.action === "redirect") {
+    return { redirect: { destination: siteDecision.destination, permanent: true } };
+  }
+
   return {
     props: withEnvConfig({
       ...documentData,
+      canonicalUrl: siteDecision.canonicalUrl,
       errors: errors.map((error) => JSON.stringify(error, Object.getOwnPropertyNames(error))),
       features,
       theme,

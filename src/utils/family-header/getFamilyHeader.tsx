@@ -5,7 +5,7 @@ import { getSumUSD } from "@/helpers/getSumUSD";
 import { IMetadata, TFamilyPublic } from "@/types";
 import { scrollToBlock } from "@/utils/blocks/scrollToBlock";
 import { joinNodes } from "@/utils/reactNode";
-import { convertDate } from "@/utils/timedate";
+import { getYear } from "@/utils/timedate";
 
 type TProps = {
   family: TFamilyPublic;
@@ -13,7 +13,7 @@ type TProps = {
 };
 
 export const getFamilyHeader = ({ family, getCategoryText }: TProps): IMetadata[] => {
-  const [year] = convertDate(family.published_date);
+  const year = getYear(family.published_date);
   const isLitigation = family.attribution.category === "Litigation";
   const isMCF = family.attribution.category === "Multilateral Climate Fund project";
 
@@ -26,7 +26,7 @@ export const getFamilyHeader = ({ family, getCategoryText }: TProps): IMetadata[
       label: "Geography",
       value: geographiesNode,
     },
-    { label: `${getCategoryText("familyDate")}`, value: isNaN(year) ? "" : year },
+    { label: `${getCategoryText("familyDate")}`, value: year ?? "" },
     {
       label: getCategoryText("familyType"),
       value: family.attribution.taxonomy,

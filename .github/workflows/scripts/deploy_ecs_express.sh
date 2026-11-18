@@ -12,7 +12,7 @@
 # The stock alarm is live for seconds at most.
 #
 # Usage: deploy_ecs_express.sh <cluster> <service> <image>
-#   e.g. deploy_ecs_express.sh frontend-production review-cpr-frontend-1506 <image>
+#   e.g. deploy_ecs_express.sh frontend-production cpr-frontend-production <image>
 
 set -euo pipefail
 

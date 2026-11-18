@@ -12,6 +12,7 @@ import { ThemeContext } from "@/context/ThemeContext";
 import { Header } from "@/cpr/components/Header";
 import { NavBarGradient } from "@/cpr/components/NavBarGradient";
 import { TLandingPageSearchConfig } from "@/types";
+import { deflateFilters } from "@/utils/filters/deflate";
 import { getSuggestionParams } from "@/utils/getSuggestionParams";
 
 const SEARCH_CONFIG: TLandingPageSearchConfig = {
@@ -20,9 +21,11 @@ const SEARCH_CONFIG: TLandingPageSearchConfig = {
     params: {
       [QUERY_PARAMS.category]: "UN-submissions",
       [QUERY_PARAMS.author_type]: "Party",
+      [QUERY_PARAMS.sort_field]: "date",
+      [QUERY_PARAMS.sort_order]: "desc",
     },
     newParams: {
-      [QUERY_PARAMS.filters]: JSON.stringify({
+      [QUERY_PARAMS.filters]: deflateFilters({
         op: "or",
         filters: [{ field: "labels.value.id", op: "contains", value: "category::UN submission", checked: true }],
       }),
@@ -36,9 +39,11 @@ const SEARCH_CONFIG: TLandingPageSearchConfig = {
         [QUERY_PARAMS.author_type]: "Party",
         [QUERY_PARAMS["_document.type"]]: "National Biodiversity Strategy and Action Plan (NBSAP)",
         [QUERY_PARAMS.concept_name]: "target",
+        [QUERY_PARAMS.sort_field]: "date",
+        [QUERY_PARAMS.sort_order]: "desc",
       },
       newParams: {
-        [QUERY_PARAMS.filters]: JSON.stringify({
+        [QUERY_PARAMS.filters]: deflateFilters({
           op: "and",
           filters: [
             {
@@ -67,27 +72,53 @@ const SEARCH_CONFIG: TLandingPageSearchConfig = {
             { field: "labels.value.id", op: "contains", value: "concept::Q1651", checked: true },
           ],
         }),
+        [QUERY_PARAMS.sort]: "recent",
       },
     },
     {
-      label: "Mongolia's submissions to the Rio Conventions",
+      label: "Türkiye's submissions to the Rio Conventions",
       params: {
         [QUERY_PARAMS.category]: "UN-submissions",
         [QUERY_PARAMS.author_type]: "Party",
         [QUERY_PARAMS.country]: "mongolia",
       },
       newParams: {
-        [QUERY_PARAMS.filters]: JSON.stringify({
+        [QUERY_PARAMS.filters]: deflateFilters({
           op: "and",
           filters: [
             { field: "labels.value.id", op: "contains", value: "category::UN submission", checked: true },
             {
               op: "and",
               filters: [
-                { field: "labels.value.id", op: "contains", value: "region::EAS" },
-                { op: "or", filters: [{ field: "labels.value.id", op: "contains", value: "country::MNG", checked: true }] },
+                { field: "labels.value.id", op: "contains", value: "region::ECS" },
+                { op: "or", filters: [{ field: "labels.value.id", op: "contains", value: "country::TUR", checked: true }] },
               ],
             },
+          ],
+        }),
+      },
+    },
+    {
+      label: "Indigenous Peoples in Canada",
+      params: {
+        [QUERY_PARAMS.category]: "UN-submissions",
+        [QUERY_PARAMS.author_type]: "Party",
+        [QUERY_PARAMS.country]: "canada",
+        [QUERY_PARAMS.concept_name]: "indigenous people",
+      },
+      newParams: {
+        [QUERY_PARAMS.filters]: deflateFilters({
+          op: "and",
+          filters: [
+            { field: "labels.value.id", op: "contains", value: "category::UN submission", checked: true },
+            {
+              op: "and",
+              filters: [
+                { field: "labels.value.id", op: "contains", value: "region::NAC" },
+                { op: "or", filters: [{ field: "labels.value.id", op: "contains", value: "country::CAN", checked: true }] },
+              ],
+            },
+            { field: "labels.value.id", op: "contains", value: "concept::Q684", checked: true },
           ],
         }),
       },
@@ -101,7 +132,7 @@ const SEARCH_CONFIG: TLandingPageSearchConfig = {
         [QUERY_PARAMS.concept_name]: "subsidy",
       },
       newParams: {
-        [QUERY_PARAMS.filters]: JSON.stringify({
+        [QUERY_PARAMS.filters]: deflateFilters({
           op: "and",
           filters: [
             {

@@ -1,9 +1,10 @@
-import { Fragment, useEffect } from "react";
+import { Fragment, useContext, useEffect } from "react";
 
 import { Accordion } from "@/components/accordion/Accordion";
 import { SingleCol } from "@/components/panels/SingleCol";
 import { Heading } from "@/components/typography/Heading";
 import { VerticalSpacing } from "@/components/utility/VerticalSpacing";
+import { FeaturesContext } from "@/context/FeaturesContext";
 import { TFAQ } from "@/types";
 
 import { PageLink } from "./atoms/pageLink/PageLink";
@@ -19,6 +20,9 @@ interface IProps {
 }
 
 export const FaqSection = ({ title, faqs, accordionMaxHeight = "464px", sectionId, showMore = false, openFirstOnLoad = true, bare }: IProps) => {
+  const features = useContext(FeaturesContext);
+  const visibleFaqs = faqs.filter((faq) => !faq.featureKey || features[faq.featureKey]);
+
   useEffect(() => {
     // Only run if this component has an ID (meaning it's the target component)
     if (!sectionId) return;
@@ -48,7 +52,7 @@ export const FaqSection = ({ title, faqs, accordionMaxHeight = "464px", sectionI
         </>
       )}
       <div className="text-content mb-14">
-        {faqs.map((faq, index) => (
+        {visibleFaqs.map((faq, index) => (
           <Fragment key={faq.title}>
             <Accordion title={faq.title} headContent={faq.headContent ?? null} open={openFirstOnLoad && index === 0} fixedHeight={accordionMaxHeight}>
               {faq.content}

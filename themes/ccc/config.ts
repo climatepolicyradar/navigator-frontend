@@ -1,9 +1,36 @@
+import { SHARED_LABEL_PATTERNS } from "@/constants/labels";
 import { TThemeConfig } from "@/types";
 
 const config: TThemeConfig = {
+  documentTypeLabels: [],
   defaultCorpora: ["Academic.corpus.Litigation.n0000"],
   deprecatedFilters: [],
   searchCategories: ["Litigation"],
+  searchExcludeLabels: [],
+  searchLabelPatterns: [
+    ...SHARED_LABEL_PATTERNS,
+    "category::Litigation/jurisdiction::*/**",
+    "category::Litigation/case_category::*/**",
+    "category::Litigation/principal_law::*/**",
+  ],
+  downloadColumns: [
+    "ID",
+    "TITLE",
+    "DESCRIPTION",
+    "URL",
+    "BUNDLE_ID",
+    "BUNDLE_TITLE",
+    "BUNDLE_URL",
+    "GEOGRAPHIES",
+    "PUBLISHED_DATE",
+    "CASE_STATUS",
+    "CASE_NUMBER",
+    "AT_ISSUE",
+    "ORIGINAL_CASE_NAME",
+    "PRINCIPAL_LAWS",
+    "CASE_CATEGORIES",
+    "JURISDICTIONS",
+  ],
   labelVariations: {
     date: {
       label: "Filing year",
@@ -42,14 +69,19 @@ const config: TThemeConfig = {
     family: ["metadata", "documents", "summary", "topics"],
     geography: ["recents", "subdivisions"],
   },
-  tutorials: ["climateLitigationDatabase", "knowledgeGraph"],
+  tutorials: ["climateLitigationDatabase", "newSearch"],
   features: {
     familyConceptsSearch: true,
+    // Deliberately off while subdivisions is on: ~95% of US federal cases also carry a state
+    // subdivision tag, so "Type: Country" would hide almost all of them. Needs the litigation
+    // geography data resolving (court level vs geography) before this can go live here.
+    "geography-type-filters": false,
     knowledgeGraph: true,
     litigation: true,
-    "new-search": false,
+    "new-search": true,
     searchFamilySummary: true,
     subdivisions: true,
+    themes: false,
   },
 };
 

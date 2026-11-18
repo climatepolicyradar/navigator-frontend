@@ -118,7 +118,8 @@ export const APP_FAQS: TFAQ[] = [
           in our database is to download a csv of our data. Our{" "}
           <PageLink
             external
-            href="https://www.notion.so/climatepolicyradar/Readme-for-document-data-download-f2d55b7e238941b59559b9b1c4cc52c5?source=copy_link#51d3bd224efb4b9baac045d3fe87ef06"
+            href="https://www.notion.so/climatepolicyradar/Readme-for-document-data-download-f2d55b7e238941b59559b9b1c4cc52c5?source=copy_link"
+            hash="51d3bd224efb4b9baac045d3fe87ef06"
           >
             data download readme
           </PageLink>{" "}
@@ -130,7 +131,8 @@ export const APP_FAQS: TFAQ[] = [
             number of entries (e.g. laws, policies, litigation cases). Our{" "}
             <PageLink
               external
-              href="https://www.notion.so/climatepolicyradar/Readme-for-document-data-download-f2d55b7e238941b59559b9b1c4cc52c5?source=copy_link#51d3bd224efb4b9baac045d3fe87ef06"
+              href="https://www.notion.so/climatepolicyradar/Readme-for-document-data-download-f2d55b7e238941b59559b9b1c4cc52c5?source=copy_link"
+              hash="51d3bd224efb4b9baac045d3fe87ef06"
             >
               data download readme
             </PageLink>{" "}

@@ -55,5 +55,26 @@ describe("queryGroupToFilterPaths", () => {
 
       expect(queryGroupToFilterPaths(searchQueryGroup).dateRange).toBeNull();
     });
+
+    it("reads the year as written rather than in the local time zone", () => {
+      const offsetGteFilter: TSearchQueryRule = { ...gteFilter, value: "2020-01-01T00:00:00.000+05:00" };
+      const searchQueryGroup: TSearchQueryGroup = { op: "and", filters: [offsetGteFilter, lteFilter] };
+
+      expect(queryGroupToFilterPaths(searchQueryGroup).dateRange).toEqual([2020, 2024]);
+    });
+
+    it("returns null when gte is unparsable", () => {
+      const badGteFilter: TSearchQueryRule = { ...gteFilter, value: "not a date" };
+      const searchQueryGroup: TSearchQueryGroup = { op: "and", filters: [badGteFilter, lteFilter] };
+
+      expect(queryGroupToFilterPaths(searchQueryGroup).dateRange).toBeNull();
+    });
+
+    it("assumes the current year as the end date when lte is unparsable", () => {
+      const badLteFilter: TSearchQueryRule = { ...lteFilter, value: "not a date" };
+      const searchQueryGroup: TSearchQueryGroup = { op: "and", filters: [gteFilter, badLteFilter] };
+
+      expect(queryGroupToFilterPaths(searchQueryGroup).dateRange).toEqual([2020, currentYear]);
+    });
   });
 });

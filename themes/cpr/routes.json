@@ -28,5 +28,15 @@
     "title": "Nature Policy Library",
     "path": "nature",
     "contentPath": "nature"
+  },
+  {
+    "title": "Subnational Policy Library",
+    "path": "subnational",
+    "contentPath": "subnational"
+  },
+  {
+    "title": "Global Stocktake",
+    "path": "gst1",
+    "contentPath": "gst1"
   }
 ]

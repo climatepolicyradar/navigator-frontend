@@ -1,6 +1,7 @@
 import { TQueryParams } from "@/constants/queryParams";
 
 import { TConfigFeatures } from "./features";
+import { TLabel, TLabelId } from "./label";
 import { TTutorialName } from "./tutorial";
 
 type TPartialRecord<Key extends string, Value> = Partial<Record<Key, Value>>;
@@ -33,6 +34,29 @@ export type TLabelCategoryValue =
   | "Policy"
   | "Report"
   | "UN submission";
+
+export type TDownloadColumn =
+  | "ID"
+  | "TITLE"
+  | "DESCRIPTION"
+  | "URL"
+  | "GEOGRAPHIES"
+  | "PUBLISHED_DATE"
+  | "ENTITY_TYPE"
+  | "CATEGORY"
+  | "PROVIDER"
+  | "COLLECTION_TITLE"
+  | "COLLECTION_DESCRIPTION"
+  | "BUNDLE_ID"
+  | "BUNDLE_TITLE"
+  | "BUNDLE_URL"
+  | "CASE_STATUS"
+  | "CASE_NUMBER"
+  | "AT_ISSUE"
+  | "ORIGINAL_CASE_NAME"
+  | "PRINCIPAL_LAWS"
+  | "CASE_CATEGORIES"
+  | "JURISDICTIONS";
 
 export type TLabelVariationKey = "country" | "date" | "region";
 type TLabelVariation = {
@@ -94,11 +118,33 @@ type TThemePageMetadata = {
   description: string;
 };
 
+export type TLabelMatch = Partial<Pick<TLabel, "type" | "value"> & { id: TLabelId }>;
+
+export type TLabelCondition = { and: ReadonlyArray<TLabelCondition> } | { or: ReadonlyArray<TLabelCondition> } | TLabelMatch;
+
+export type TLabelPattern = {
+  match: TLabelCondition;
+  pattern: string;
+};
+
+export type TSearchExcludeLabel = {
+  id: string;
+};
+
+/**
+ * If you're putting anything in here that narrows which documents a theme serves
+ * you almost certainly need to go and update src/utils/getDocumentSites.ts
+ */
 export type TThemeConfig = {
   defaultCorpora?: string[];
   deprecatedCategories?: TThemeConfigCategory;
   deprecatedFilters: TThemeConfigFilter[];
+  documentTypeLabels: TLabelPattern[];
   searchCategories: TLabelCategoryValue[];
+  searchExcludeLabels: TSearchExcludeLabel[];
+  searchLabelPatterns: string[];
+  // Columns to request for "download this search", in the order they appear in the CSV.
+  downloadColumns: TDownloadColumn[];
   labelVariations: TPartialRecord<TLabelVariationKey, TLabelVariation>;
   links: TPartialRecord<TThemeLinkKey, string>;
   pageMetadata: Record<TThemePageMetadataKey, TThemePageMetadata>;

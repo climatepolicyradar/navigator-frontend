@@ -106,7 +106,7 @@ describe("GeographyPicker", () => {
           },
         },
       },
-      features: { litigation: true },
+      features: { subdivisions: true },
     });
 
     expect(await screen.findByText("Subdivision")).toBeInTheDocument();
@@ -115,6 +115,25 @@ describe("GeographyPicker", () => {
     expect(screen.getByRole("checkbox", { name: "Subdivision 2" })).toBeInTheDocument();
     expect(screen.getByRole("checkbox", { name: "Subdivision 3" })).toBeInTheDocument();
     expect(screen.queryByRole("checkbox", { name: "Subdivision 4" })).not.toBeInTheDocument();
+  });
+
+  it("shows subdivisions when the subdivisions feature is on, independently of litigation", async () => {
+    renderWithAppContext(GeographyPicker, {
+      pageProps: {
+        ...geoPickerProps,
+        searchQuery: {
+          keyword_filters: {
+            regions: [],
+            countries: [],
+            subdivisions: [],
+          },
+        },
+      },
+      features: { litigation: false, subdivisions: true },
+    });
+
+    expect(await screen.findByText("Subdivision")).toBeInTheDocument();
+    expect(screen.getByRole("checkbox", { name: "Subdivision 1" })).toBeInTheDocument();
   });
 
   it("only shows a list of subdivisions related to the selected country", async () => {
@@ -129,7 +148,7 @@ describe("GeographyPicker", () => {
           },
         },
       },
-      features: { litigation: true },
+      features: { subdivisions: true },
     });
 
     expect(await screen.findByText("Published jurisdiction")).toBeInTheDocument();
@@ -153,7 +172,7 @@ describe("GeographyPicker", () => {
           },
         },
       },
-      features: { litigation: true },
+      features: { subdivisions: true },
     });
 
     expect(await screen.findByText("Published jurisdiction")).toBeInTheDocument();
@@ -179,7 +198,7 @@ describe("GeographyPicker", () => {
           },
         },
       },
-      features: { litigation: true },
+      features: { subdivisions: true },
     });
 
     expect(await screen.findByText("Region")).toBeInTheDocument();
@@ -204,7 +223,7 @@ describe("GeographyPicker", () => {
           },
         },
       },
-      features: { litigation: true },
+      features: { subdivisions: true },
     });
 
     expect(await screen.findByText("Region")).toBeInTheDocument();
@@ -252,7 +271,7 @@ describe("GeographyPicker", () => {
           },
         },
       },
-      features: { litigation: true },
+      features: { subdivisions: true },
     });
 
     expect(await screen.findByText("Subdivision")).toBeInTheDocument();

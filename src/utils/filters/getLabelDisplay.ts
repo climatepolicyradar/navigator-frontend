@@ -1,10 +1,10 @@
 import startCase from "lodash/startCase";
 
 import { LABEL_DISPLAY_REPLACEMENTS } from "@/constants/labels";
-import { TFilterPathLabel, TNestedSearchLabel } from "@/types";
+import { TFilterPathLabel } from "@/types";
 import { firstCase } from "@/utils/text/firstCase";
 
-export const getLabelDisplay = (label: TNestedSearchLabel, ancestorPath: TFilterPathLabel[] = []) => {
+export const getLabelDisplay = (label: TFilterPathLabel, ancestorPath: TFilterPathLabel[] = []) => {
   const parentLabelId = ancestorPath[0]?.id ?? null;
   const displayReplacement = LABEL_DISPLAY_REPLACEMENTS.find(
     (replacement) =>

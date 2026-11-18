@@ -3,7 +3,7 @@ import { Loader } from "lucide-react";
 import { ReactNode } from "react";
 
 import { LabelButton } from "@/components/atoms/labelButton/LabelButton";
-import { PageLink } from "@/components/atoms/pageLink/PageLink";
+import { PageLink, TQueryOverrides } from "@/components/atoms/pageLink/PageLink";
 import { ViewMore } from "@/components/molecules/viewMore/ViewMore";
 import { ARROW_UP_RIGHT } from "@/constants/chars";
 import { DEFAULT_DOCUMENT_TITLE } from "@/constants/document";
@@ -18,7 +18,6 @@ import {
   TFamilyEventPublic,
   TFamilyPublic,
   TFeatures,
-  TLanguages,
   TLoadingStatus,
   TMatchedFamily,
   TTableColumn,
@@ -123,7 +122,11 @@ export const getDocumentLink = (
   document: TFamilyDocumentPublic,
   hasMatches: boolean,
   isMainDocument: boolean,
-  isLitigation: boolean
+  isLitigation: boolean,
+  // The search to hand the document page, as its own base params. The destination searches
+  // passages, so a table inside a search passes what that search can apply rather than letting
+  // the whole page query be inherited.
+  search?: TQueryOverrides
 ): React.ReactNode => {
   const canPreview = !!document.slug && (hasMatches || (!!document.cdn_object && document.cdn_object.toLowerCase().endsWith(".pdf")));
   const canViewSource = !canPreview && !!document.source_url;
@@ -133,6 +136,7 @@ export const getDocumentLink = (
       <PageLink
         aria-label="Document link"
         keepQuery
+        query={search}
         href={`/documents/${document.slug}`}
         className={joinTailwindClasses(linkClasses, (isMainDocument || isLitigation) && "font-medium")}
       >
@@ -164,16 +168,16 @@ export const getDocumentLink = (
 const getDocumentCell = (
   isLitigation: boolean,
   isMainDocument: boolean,
-  languages: TLanguages,
   hasMatches: boolean,
   document?: TFamilyDocumentPublic,
-  event?: TFamilyEventPublic
+  event?: TFamilyEventPublic,
+  search?: TQueryOverrides
 ): ReactNode => {
   return (
     <div className="flex flex-col gap-2">
       {isLitigation && (
         <>
-          {document && <div>{getDocumentLink(document, hasMatches, isMainDocument, isLitigation)}</div>}
+          {document && <div>{getDocumentLink(document, hasMatches, isMainDocument, isLitigation, search)}</div>}
           {event?.metadata.action_taken?.[0] && <div className="italic">{event.metadata.action_taken[0]}</div>}
           {event?.metadata.description?.[0] && (
             <ViewMore context="event-table-document-cell" maxHeight={80}>
@@ -184,7 +188,7 @@ const getDocumentCell = (
       )}
       {!isLitigation && (
         <>
-          <div>{getDocumentLink(document, hasMatches, isMainDocument, isLitigation)}</div>
+          <div>{getDocumentLink(document, hasMatches, isMainDocument, isLitigation, search)}</div>
           {document.document_role && (
             <span className={`${document.document_role.toLowerCase().includes("main") ? "font-medium" : ""}`}>
               {firstCase(document.document_role.toLowerCase()) + (document.document_role.toLowerCase().includes("main") ? " document" : "")}
@@ -193,7 +197,7 @@ const getDocumentCell = (
           {document.document_type && <div className="italic">{document.document_type}</div>}
           {document.language && (
             <div>
-              {getLanguage(document.language, languages)} {document.variant && `(${document.variant})`}
+              {getLanguage(document.language)} {document.variant && `(${document.variant})`}
             </div>
           )}
         </>
@@ -211,8 +215,8 @@ export const getEventTableRows = ({
   matchesFamily,
   matchesStatus = "success",
   language,
-  languages,
   isLitigation,
+  search,
 }: {
   families: TFamilyPublic[];
   familyTopics?: IFamilyDocumentTopics | null;
@@ -222,8 +226,9 @@ export const getEventTableRows = ({
   matchesFamily?: TMatchedFamily;
   matchesStatus?: TLoadingStatus;
   language?: string;
-  languages?: TLanguages;
   isLitigation: boolean;
+  // The search to carry to the document page, when the table sits inside one
+  search?: TQueryOverrides;
 }): TEventTableRow[] => {
   const rows: TEventTableRow[] = [];
   const topicsData = familyTopics ? Object.values(familyTopics.conceptsGrouped).flat() : [];
@@ -340,7 +345,7 @@ export const getEventTableRows = ({
               }
             : null,
         document: {
-          label: getDocumentCell(isLitigation, isMainDocument, languages, matches > 0, document, event),
+          label: getDocumentCell(isLitigation, isMainDocument, matches > 0, document, event, search),
           value: isMainDocument,
         },
         topics: { label: topicsDisplay, value: "" },
