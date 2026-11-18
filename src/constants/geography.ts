@@ -12,6 +12,7 @@ export const GEOGRAPHY_SLUG_CONVERSIONS: Record<string, string> = {
   laos: "lao-people-s-democratic-republic",
   "micronesia-federated-states-of": "micronesia",
   "moldova-republic-of": "moldova",
+  "north-korea": "korea-north",
   "north-macedonia": "north-macedonia-republic-of-north-macedonia",
   "palestine-state-of": "palestine",
   "russian-federation": "russia",

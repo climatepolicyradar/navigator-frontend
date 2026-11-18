@@ -127,13 +127,14 @@ export type TLabelPattern = {
   pattern: string;
 };
 
-export type TOnDirectLinkPolicy = { action: "not_found" } | { action: "redirect"; to: string };
-
 export type TSearchExcludeLabel = {
   id: string;
-  onDirectLink: TOnDirectLinkPolicy;
 };
 
+/**
+ * If you're putting anything in here that narrows which documents a theme serves
+ * you almost certainly need to go and update src/utils/getDocumentSites.ts
+ */
 export type TThemeConfig = {
   defaultCorpora?: string[];
   deprecatedCategories?: TThemeConfigCategory;

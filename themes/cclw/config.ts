@@ -1,8 +1,5 @@
 import { SHARED_LABEL_PATTERNS } from "@/constants/labels";
 import { TThemeConfig } from "@/types";
-import getThemeDomain from "@/utils/getThemeDomain";
-
-const cprAppUrl = `https://${getThemeDomain("cpr")}`;
 
 const config: TThemeConfig = {
   documentTypeLabels: [],
@@ -156,7 +153,7 @@ const config: TThemeConfig = {
     },
   ],
   searchCategories: ["UN submission", "Law", "Policy"],
-  searchExcludeLabels: [{ id: "author_type::Non-Party", onDirectLink: { action: "redirect", to: `${cprAppUrl}/document/{id}` } }],
+  searchExcludeLabels: [{ id: "author_type::Non-Party" }],
   searchLabelPatterns: [...SHARED_LABEL_PATTERNS, "category::Law/**", "category::Policy/**", "category::UN submission/**"],
   downloadColumns: [
     "ID",
@@ -209,7 +206,7 @@ const config: TThemeConfig = {
     "geography-type-filters": false,
     knowledgeGraph: true,
     litigation: false,
-    "new-search": false,
+    "new-search": true,
     searchFamilySummary: true,
     subdivisions: false,
     themes: false,

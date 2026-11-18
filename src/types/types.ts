@@ -1,7 +1,9 @@
 import { TSingularAndPlural } from "./display";
 import { TLabel } from "./label";
 
-export type TTheme = "cpr" | "cclw" | "mcf" | "ccc";
+export const THEMES = ["cpr", "cclw", "mcf", "ccc"] as const;
+
+export type TTheme = (typeof THEMES)[number];
 
 export type TSearchKeywordFilters = {
   categories?: string[];
@@ -83,6 +85,13 @@ export type TGeography = {
   type: string;
   parent_id: number | null;
   slug: string;
+};
+
+export type TCountryOption = {
+  // The country's ISO 3166-1 alpha-3 code when from the taxonomy (e.g. "AUS"), or its /config id
+  id: string;
+  slug: string;
+  display_value: string;
 };
 
 export type TGeographySubdivision = {
