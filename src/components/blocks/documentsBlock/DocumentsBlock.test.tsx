@@ -56,7 +56,7 @@ const renderIn = (search: string) => {
       <QueryClientProvider client={queryClient}>
         <EnvConfigContext.Provider value={envConfig}>
           <SearchLevelContext value="principal">
-            <DocumentsBlock family={family} features={DEFAULT_FEATURES} getCategoryText={() => "law"} languages={{}} />
+            <DocumentsBlock family={family} features={DEFAULT_FEATURES} getCategoryText={() => "law"} />
           </SearchLevelContext>
         </EnvConfigContext.Provider>
       </QueryClientProvider>
