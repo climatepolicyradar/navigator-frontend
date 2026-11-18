@@ -1,17 +1,15 @@
 import { Search } from "lucide-react";
 import Image from "next/image";
 import { useRouter } from "next/router";
-import { useContext, useState } from "react";
+import { useState } from "react";
 
 import { ExternalLink } from "@/components/ExternalLink";
 import { PageLink } from "@/components/atoms/pageLink/PageLink";
 import { SingleCol } from "@/components/panels/SingleCol";
 import { SiteWidth } from "@/components/panels/SiteWidth";
 import { QUERY_PARAMS } from "@/constants/queryParams";
-import { ThemeContext } from "@/context/ThemeContext";
 import { TLandingPageSearchConfig } from "@/types";
 import { deflateFilters } from "@/utils/filters/deflate";
-import { getSuggestionParams } from "@/utils/getSuggestionParams";
 
 const OFFSHORE_WIND_REPORT_FILTERS = deflateFilters({
   op: "and",
@@ -31,10 +29,6 @@ const SEARCH_CONFIG: TLandingPageSearchConfig = {
   button: {
     label: "",
     params: {
-      [QUERY_PARAMS.sort_order]: "desc",
-      [QUERY_PARAMS.category]: "offshore-wind-reports",
-    },
-    newParams: {
       [QUERY_PARAMS.filters]: OFFSHORE_WIND_REPORT_FILTERS,
     },
   },
@@ -42,10 +36,6 @@ const SEARCH_CONFIG: TLandingPageSearchConfig = {
     {
       label: "Grid connection",
       params: {
-        [QUERY_PARAMS.category]: "offshore-wind-reports",
-        [QUERY_PARAMS.query_string]: "Grid connection",
-      },
-      newParams: {
         [QUERY_PARAMS.filters]: OFFSHORE_WIND_REPORT_FILTERS,
         [QUERY_PARAMS.query_string]: "Grid connection",
       },
@@ -53,10 +43,6 @@ const SEARCH_CONFIG: TLandingPageSearchConfig = {
     {
       label: "Floating offshore wind",
       params: {
-        [QUERY_PARAMS.category]: "offshore-wind-reports",
-        [QUERY_PARAMS.query_string]: "Floating offshore wind",
-      },
-      newParams: {
         [QUERY_PARAMS.filters]: OFFSHORE_WIND_REPORT_FILTERS,
         [QUERY_PARAMS.query_string]: "Floating offshore wind",
       },
@@ -64,10 +50,6 @@ const SEARCH_CONFIG: TLandingPageSearchConfig = {
     {
       label: "Zoning and spatial planning",
       params: {
-        [QUERY_PARAMS.category]: "offshore-wind-reports",
-        [QUERY_PARAMS.concept_name]: "zoning and spatial planning",
-      },
-      newParams: {
         [QUERY_PARAMS.filters]: deflateFilters({
           op: "and",
           filters: [
@@ -92,9 +74,6 @@ const SEARCH_CONFIG: TLandingPageSearchConfig = {
     {
       label: "Social inclusion",
       params: {
-        [QUERY_PARAMS.category]: "offshore-wind-reports",
-      },
-      newParams: {
         [QUERY_PARAMS.filters]: deflateFilters({
           op: "and",
           filters: [
@@ -121,7 +100,6 @@ const SEARCH_CONFIG: TLandingPageSearchConfig = {
 
 export const Hero = () => {
   const router = useRouter();
-  const { themeConfig } = useContext(ThemeContext);
   const [term, setTerm] = useState("");
 
   const handleKeydown = (e: React.KeyboardEvent<HTMLInputElement>) => {
@@ -135,7 +113,7 @@ export const Hero = () => {
       pathname: "/search",
       query: {
         [QUERY_PARAMS.query_string]: query ?? term,
-        ...getSuggestionParams(SEARCH_CONFIG.button, themeConfig),
+        ...SEARCH_CONFIG.button.params,
       },
     });
   };
@@ -182,11 +160,7 @@ export const Hero = () => {
                 <ul className="flex flex-col md:flex-row gap-2 md:gap-4">
                   {SEARCH_CONFIG.suggestions.map((suggestion, index) => (
                     <li key={index}>
-                      <PageLink
-                        href="/search"
-                        query={getSuggestionParams(suggestion, themeConfig)}
-                        className="text-textDark opacity-60 hover:opacity-100"
-                      >
+                      <PageLink href="/search" query={suggestion.params} className="text-textDark opacity-60 hover:opacity-100">
                         {suggestion.label}
                       </PageLink>
                     </li>

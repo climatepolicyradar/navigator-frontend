@@ -86,7 +86,7 @@ const LandingSearchForm = ({ placeholder, input, handleSearchInput }: IProps) =>
             key={searchIndex}
             rounded
             className="!bg-cclw-light hover:!bg-gray-700 border !border-gray-500"
-            onClick={() => handleSuggestedSearch(suggestedSearch.newParams)}
+            onClick={() => handleSuggestedSearch(suggestedSearch.params)}
             data-cy={`quick-search-${searchIndex}`}
           >
             {suggestedSearch.label}

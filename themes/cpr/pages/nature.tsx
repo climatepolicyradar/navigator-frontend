@@ -29,12 +29,7 @@ export default function NatureLandingPage() {
     search: {
       button: {
         label: "Search nature laws and policies",
-        // TODO: Remove this, old search does not support domain::Nature
         params: {
-          [QUERY_PARAMS.sort_order]: "desc",
-          [QUERY_PARAMS.query_string]: "Nature",
-        },
-        newParams: {
           [QUERY_PARAMS.filters]: deflateFilters({
             op: "and",
             filters: [{ field: "labels.value.id", op: "contains", value: "domain::Nature", checked: true }],
@@ -45,9 +40,6 @@ export default function NatureLandingPage() {
         {
           label: "Deforestation targets",
           params: {
-            [QUERY_PARAMS.query_string]: "deforestation",
-          },
-          newParams: {
             [QUERY_PARAMS.filters]: deflateFilters({
               op: "and",
               filters: [
@@ -61,9 +53,6 @@ export default function NatureLandingPage() {
         {
           label: "Marine spatial planning policies",
           params: {
-            [QUERY_PARAMS.query_string]: "marine",
-          },
-          newParams: {
             [QUERY_PARAMS.filters]: deflateFilters({
               op: "and",
               filters: [
@@ -78,9 +67,6 @@ export default function NatureLandingPage() {
         {
           label: "Agricultural subsidies in Europe & Central Asia",
           params: {
-            [QUERY_PARAMS.query_string]: "Agricultural subsidies in Europe & Central Asia",
-          },
-          newParams: {
             [QUERY_PARAMS.filters]: deflateFilters({
               op: "and",
               filters: [

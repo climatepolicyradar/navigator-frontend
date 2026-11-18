@@ -75,9 +75,6 @@ export const GeographyPage = ({
   const isCountry = geographyV2.type === "country";
   const subdivisionsTitle = isCountry ? "Geographic sub-divisions" : "Related geographic sub-divisions";
 
-  const allGeographies = [geographyV2, ...(geographyV2.has_subconcept || [])];
-  if (parentGeographyV2) allGeographies.push(parentGeographyV2);
-
   /* Page header */
 
   const pageHeaderMetadata: IMetadata[] = [];
@@ -138,8 +135,7 @@ export const GeographyPage = ({
     recents: {
       render: useCallback(() => {
         const fetchFamiliesByCategory = async (category: string) => {
-          // New search reads the search API, the same store the search page reads. The legacy
-          // `/searches` call holds none of the new Nature data documents.
+          // Reads the search API, the same store the search page reads
           const results = toCategoryResults(
             await fetchSearchPrincipalDocuments({
               apiUrl: envConfig.API_URL,
@@ -184,11 +180,10 @@ export const GeographyPage = ({
               };
             })}
             onAccordionClick={(id) => fetchFamiliesByCategory(id)}
-            geography={geographyV2}
             geographyLabel={geographyLabel}
           />
         );
-      }, [envConfig, geographyLabel, geographyV2, getAppText, summariesByCategory, themeConfig]),
+      }, [envConfig, geographyLabel, getAppText, summariesByCategory, themeConfig]),
       sideBarItem: { display: "Recent " + getAppText("familyPlural") },
     },
     statistics: {

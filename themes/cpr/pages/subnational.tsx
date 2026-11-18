@@ -46,10 +46,6 @@ export default function SubnationalLandingPage() {
       button: {
         label: "Search subnational laws and policies",
         params: {
-          [QUERY_PARAMS.sort_order]: "desc",
-          [QUERY_PARAMS.query_string]: "",
-        },
-        newParams: {
           [QUERY_PARAMS.filters]: deflateFilters({
             op: "and",
             filters: [SUBNATIONAL_FILTER],
@@ -60,9 +56,6 @@ export default function SubnationalLandingPage() {
         {
           label: "See the latest",
           params: {
-            [QUERY_PARAMS.sort_order]: "desc",
-          },
-          newParams: {
             [QUERY_PARAMS.sort]: "recent",
             [QUERY_PARAMS.filters]: deflateFilters({
               op: "and",
@@ -73,10 +66,6 @@ export default function SubnationalLandingPage() {
         {
           label: "Indigenous Peoples in Brazilian states",
           params: {
-            [QUERY_PARAMS.country]: "brazil",
-            [QUERY_PARAMS.concept_name]: "indigenous people",
-          },
-          newParams: {
             [QUERY_PARAMS.filters]: deflateFilters({
               op: "and",
               filters: [
@@ -102,9 +91,6 @@ export default function SubnationalLandingPage() {
         {
           label: "Infrastructure & settlements adaptation",
           params: {
-            [QUERY_PARAMS.concept_name]: "infrastructure and settlements adaptation",
-          },
-          newParams: {
             [QUERY_PARAMS.filters]: deflateFilters({
               op: "and",
               filters: [

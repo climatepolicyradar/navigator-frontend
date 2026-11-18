@@ -3,9 +3,7 @@ import { renderHook, waitFor } from "@testing-library/react";
 import { http, HttpResponse } from "msw";
 import React from "react";
 
-import { DEFAULT_THEME_CONFIG } from "@/constants/themeConfig";
 import { EnvConfigContext } from "@/context/EnvConfig";
-import { ThemeContext } from "@/context/ThemeContext";
 import { server } from "@/mocks/server";
 
 import useCountryOptions from "./useCountryOptions";
@@ -28,16 +26,13 @@ const taxonomy = [
   node("region::XAB", "International", [node("country::XAB", "International")]),
 ];
 
-const renderUseCountryOptions = ({ newSearchInThemeConfig = false }: { newSearchInThemeConfig?: boolean } = {}) => {
+const renderUseCountryOptions = () => {
   const queryClient = new QueryClient({ defaultOptions: { queries: { retry: false } } });
-  const themeConfig = { ...DEFAULT_THEME_CONFIG, features: { ...DEFAULT_THEME_CONFIG.features, "new-search": newSearchInThemeConfig } };
 
   const wrapper = ({ children }: { children: React.ReactNode }) => (
     <QueryClientProvider client={queryClient}>
-      <ThemeContext.Provider value={{ theme: "cpr", themeConfig, loaded: true }}>
-        {/* @ts-expect-error - a partial env config is sufficient for this hook */}
-        <EnvConfigContext.Provider value={{ API_URL }}>{children}</EnvConfigContext.Provider>
-      </ThemeContext.Provider>
+      {/* @ts-expect-error - a partial env config is sufficient for this hook */}
+      <EnvConfigContext.Provider value={{ API_URL }}>{children}</EnvConfigContext.Provider>
     </QueryClientProvider>
   );
 
@@ -55,15 +50,11 @@ const mockTaxonomy = () => {
   return requests;
 };
 
-afterEach(() => {
-  document.cookie = "feature_flags=; expires=Thu, 01 Jan 1970 00:00:00 GMT; path=/;";
-});
-
-describe("useCountryOptions with new search on", () => {
+describe("useCountryOptions", () => {
   it("requests only countries from the taxonomy endpoint", async () => {
     const requests = mockTaxonomy();
 
-    const { result } = renderUseCountryOptions({ newSearchInThemeConfig: true });
+    const { result } = renderUseCountryOptions();
     await waitFor(() => expect(result.current.data.length).toBeGreaterThan(0));
 
     expect(requests).toHaveLength(1);
@@ -73,7 +64,7 @@ describe("useCountryOptions with new search on", () => {
   it("flattens countries out of their regions, with the ISO code, slug and name", async () => {
     mockTaxonomy();
 
-    const { result } = renderUseCountryOptions({ newSearchInThemeConfig: true });
+    const { result } = renderUseCountryOptions();
     await waitFor(() => expect(result.current.data.length).toBeGreaterThan(0));
 
     expect(result.current.data).toEqual([
@@ -86,47 +77,10 @@ describe("useCountryOptions with new search on", () => {
   it("leaves out system geographies that have no geography page", async () => {
     mockTaxonomy();
 
-    const { result } = renderUseCountryOptions({ newSearchInThemeConfig: true });
+    const { result } = renderUseCountryOptions();
     await waitFor(() => expect(result.current.data.length).toBeGreaterThan(0));
 
     expect(result.current.data.map((country) => country.id)).not.toContain("EUR");
     expect(result.current.data.map((country) => country.id)).not.toContain("XAB");
-  });
-
-  it("is turned on by the new-search PostHog feature flag cookie when the theme config has it off", async () => {
-    const requests = mockTaxonomy();
-    document.cookie = `feature_flags=${JSON.stringify({ "new-search": true })}; path=/;`;
-
-    const { result } = renderUseCountryOptions({ newSearchInThemeConfig: false });
-    await waitFor(() => expect(result.current.data.length).toBeGreaterThan(0));
-
-    expect(requests).toHaveLength(1);
-    expect(result.current.data.map((country) => country.id)).toContain("AUS");
-  });
-});
-
-describe("useCountryOptions with new search off", () => {
-  // CI's "new features" run sets this, which forces every feature flag on regardless of the theme config
-  beforeEach(() => {
-    vi.stubEnv("E2E_TEST_FEATURE_FLAGS", "false");
-  });
-
-  afterEach(() => {
-    vi.unstubAllEnvs();
-  });
-
-  it("uses the countries from /config in the same shape, without calling the taxonomy endpoint", async () => {
-    const requests = mockTaxonomy();
-
-    const { result } = renderUseCountryOptions({ newSearchInThemeConfig: false });
-    await waitFor(() => expect(result.current.data.length).toBeGreaterThan(0));
-
-    expect(result.current.data).toEqual(
-      expect.arrayContaining([
-        { id: "2", slug: "france", display_value: "France" },
-        { id: "3", slug: "spain", display_value: "Spain" },
-      ])
-    );
-    expect(requests).toHaveLength(0);
   });
 });

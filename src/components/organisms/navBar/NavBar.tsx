@@ -22,7 +22,7 @@ export const NavBar = ({ headerClasses = "", logo, logoPartner, menu, showLogo =
   }, []);
 
   const allHeaderClasses = joinTailwindClasses(
-    "sticky top-0 z-60 w-full min-h-[72px] cols-4:min-h-[72px] flex flex-col justify-center",
+    "sticky top-0 z-60 w-full min-h-[72px] flex flex-col justify-center",
     isScrolled && "shadow-md",
     headerClasses
   );

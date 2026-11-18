@@ -1,6 +1,5 @@
 import { LucideFileText, LucideSearch } from "lucide-react";
 import Head from "next/head";
-import { useRouter } from "next/router";
 import { useCallback, useEffect, useState } from "react";
 
 import { FiveColumns } from "@/components/atoms/columns/FiveColumns";
@@ -18,17 +17,13 @@ import { Section } from "@/components/molecules/section/Section";
 import { BlocksLayout, TBlockDefinitions } from "@/components/organisms/blocksLayout/BlocksLayout";
 import { PageHeader } from "@/components/organisms/pageHeader/PageHeader";
 import { PassageSearch } from "@/components/organisms/passageSearch/PassageSearch";
-import { MAX_PASSAGES } from "@/constants/paging";
-import { QUERY_PARAMS } from "@/constants/queryParams";
 import { FeaturesContext } from "@/context/FeaturesContext";
 import { useFamilyPageHeaderData } from "@/hooks/useFamilyPageHeaderData";
-import useSearch from "@/hooks/useSearch";
 import { useText } from "@/hooks/useText";
 import { TDataInDocument } from "@/schemas";
 import {
   IFamilyDocumentTopics,
   TCollectionPublicWithFamilies,
-  TMatchedFamily,
   TFamilyPageBlock,
   TFamilyPublic,
   TPrincipalDrawerTab,
@@ -76,29 +71,6 @@ export const FamilyPage = ({ canonicalUrl, collections, debug, errors, family, f
     persistPrincipalDrawerTab(tab);
   };
 
-  /* Search matches */
-
-  const router = useRouter();
-  const hasSearch = Boolean(
-    router.query[QUERY_PARAMS.query_string] || router.query[QUERY_PARAMS.concept_id] || router.query[QUERY_PARAMS.concept_name]
-  );
-
-  let matchesFamily: TMatchedFamily = null;
-  const { status: matchesStatus, families: searchFamilyResults } = useSearch(
-    router.query,
-    family.import_id,
-    null,
-    !isNewSearch && hasSearch,
-    MAX_PASSAGES
-  );
-  if (hasSearch) {
-    searchFamilyResults.forEach((searchFamilyResult) => {
-      if (family.slug === searchFamilyResult.family_slug) {
-        matchesFamily = searchFamilyResult;
-      }
-    });
-  }
-
   const { pageHeaderMetadata, breadcrumbGeography, breadcrumbParentGeography } = useFamilyPageHeaderData(family);
 
   /* Blocks */
@@ -123,19 +95,8 @@ export const FamilyPage = ({ canonicalUrl, collections, debug, errors, family, f
     },
     documents: {
       render: useCallback(
-        () => (
-          <DocumentsBlock
-            key="documents"
-            family={family}
-            familyTopics={familyTopics}
-            features={features}
-            getCategoryText={getCategoryText}
-            matchesFamily={matchesFamily}
-            matchesStatus={matchesStatus}
-            showMatches={hasSearch}
-          />
-        ),
-        [family, familyTopics, features, getCategoryText, hasSearch, matchesFamily, matchesStatus]
+        () => <DocumentsBlock key="documents" family={family} familyTopics={familyTopics} getCategoryText={getCategoryText} />,
+        [family, familyTopics, getCategoryText]
       ),
     },
     metadata: {
@@ -164,8 +125,8 @@ export const FamilyPage = ({ canonicalUrl, collections, debug, errors, family, f
     topics: {
       render: useCallback(() => {
         if (!familyTopicsHasTopics(familyTopics)) return null;
-        return <TopicsBlock key="topics" family={family} familyTopics={familyTopics} features={features} getCategoryText={getCategoryText} />;
-      }, [family, familyTopics, features, getCategoryText]),
+        return <TopicsBlock key="topics" family={family} familyTopics={familyTopics} getCategoryText={getCategoryText} />;
+      }, [family, familyTopics, getCategoryText]),
     },
   };
 

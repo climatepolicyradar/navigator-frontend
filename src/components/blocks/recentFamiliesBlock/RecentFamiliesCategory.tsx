@@ -5,7 +5,7 @@ import { PageLink } from "@/components/atoms/pageLink/PageLink";
 import { EntityCard } from "@/components/molecules/entityCard/EntityCard";
 import { ARROW_RIGHT } from "@/constants/chars";
 import { ThemeContext } from "@/context/ThemeContext";
-import { GeographyV2, TCategorySummary, TSearchLabel } from "@/types";
+import { TCategorySummary, TSearchLabel } from "@/types";
 import { getGeoSearchLink } from "@/utils/links/getGeoSearchLink";
 import { pluralise } from "@/utils/pluralise";
 import { joinTailwindClasses } from "@/utils/tailwind";
@@ -17,8 +17,7 @@ interface IProps {
   showAccordion?: boolean;
   isExpanded?: boolean;
   onAccordionClick?: () => void;
-  geography: GeographyV2;
-  geographyLabel: TSearchLabel | null;
+  geographyLabel: TSearchLabel;
 }
 
 export const RecentFamiliesCategory = ({

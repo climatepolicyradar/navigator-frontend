@@ -1,7 +1,7 @@
 import { Meta, StoryObj } from "@storybook/nextjs-vite";
 
 import { CATEGORY_SUMMARY_STUB } from "@/stubs/categorySummaryStub";
-import { GeographyV2 } from "@/types";
+import { TSearchLabel } from "@/types";
 
 import { RecentFamiliesBlock } from "./RecentFamiliesBlock";
 
@@ -14,20 +14,25 @@ type TStory = StoryObj<typeof RecentFamiliesBlock>;
 
 export default meta;
 
-const useGeographiesContext = ({ ...props }: React.ComponentProps<typeof RecentFamiliesBlock>) => <RecentFamiliesBlock {...props} />;
+const REGION_LABEL: TSearchLabel = { id: "region::ECS", type: "region", value: "Europe & Central Asia", labels: [] };
+
+const GEOGRAPHY_LABEL: TSearchLabel = {
+  id: "country::GBR",
+  type: "country",
+  value: "United Kingdom",
+  labels: [{ type: "subconcept_of", value: REGION_LABEL, timestamp: null, passages_id: null, count: null }],
+};
 
 export const MultipleCategories: TStory = {
   args: {
     categorySummaries: CATEGORY_SUMMARY_STUB,
-    geography: { slug: "united-kingdom" } as GeographyV2,
+    geographyLabel: GEOGRAPHY_LABEL,
   },
-  render: useGeographiesContext,
 };
 
 export const SingleCategory: TStory = {
   args: {
     categorySummaries: [CATEGORY_SUMMARY_STUB[0]],
-    geography: { slug: "united-kingdom" } as GeographyV2,
+    geographyLabel: GEOGRAPHY_LABEL,
   },
-  render: useGeographiesContext,
 };

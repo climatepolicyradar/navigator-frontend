@@ -1,6 +1,5 @@
 import Image from "next/image";
 import Link from "next/link";
-import { useContext } from "react";
 
 import { ExternalLink } from "@/components/ExternalLink";
 import { FiveColumns } from "@/components/atoms/columns/FiveColumns";
@@ -8,23 +7,15 @@ import { PageLink } from "@/components/atoms/pageLink/PageLink";
 import Footer from "@/components/footer/Footer";
 import Layout from "@/components/layouts/LandingPage";
 import { QUERY_PARAMS } from "@/constants/queryParams";
-import { ThemeContext } from "@/context/ThemeContext";
 import { Header } from "@/cpr/components/Header";
 import { NavBarGradient } from "@/cpr/components/NavBarGradient";
 import { TLandingPageSearchConfig } from "@/types";
 import { deflateFilters } from "@/utils/filters/deflate";
-import { getSuggestionParams } from "@/utils/getSuggestionParams";
 
 const SEARCH_CONFIG: TLandingPageSearchConfig = {
   button: {
     label: "Get started",
     params: {
-      [QUERY_PARAMS.category]: "UN-submissions",
-      [QUERY_PARAMS.author_type]: "Party",
-      [QUERY_PARAMS.sort_field]: "date",
-      [QUERY_PARAMS.sort_order]: "desc",
-    },
-    newParams: {
       [QUERY_PARAMS.filters]: deflateFilters({
         op: "or",
         filters: [{ field: "labels.value.id", op: "contains", value: "category::UN submission", checked: true }],
@@ -35,14 +26,6 @@ const SEARCH_CONFIG: TLandingPageSearchConfig = {
     {
       label: "Targets in latest NBSAPs",
       params: {
-        [QUERY_PARAMS.category]: "UN-submissions",
-        [QUERY_PARAMS.author_type]: "Party",
-        [QUERY_PARAMS["_document.type"]]: "National Biodiversity Strategy and Action Plan (NBSAP)",
-        [QUERY_PARAMS.concept_name]: "target",
-        [QUERY_PARAMS.sort_field]: "date",
-        [QUERY_PARAMS.sort_order]: "desc",
-      },
-      newParams: {
         [QUERY_PARAMS.filters]: deflateFilters({
           op: "and",
           filters: [
@@ -78,11 +61,6 @@ const SEARCH_CONFIG: TLandingPageSearchConfig = {
     {
       label: "Türkiye's submissions to the Rio Conventions",
       params: {
-        [QUERY_PARAMS.category]: "UN-submissions",
-        [QUERY_PARAMS.author_type]: "Party",
-        [QUERY_PARAMS.country]: "mongolia",
-      },
-      newParams: {
         [QUERY_PARAMS.filters]: deflateFilters({
           op: "and",
           filters: [
@@ -101,12 +79,6 @@ const SEARCH_CONFIG: TLandingPageSearchConfig = {
     {
       label: "Indigenous Peoples in Canada",
       params: {
-        [QUERY_PARAMS.category]: "UN-submissions",
-        [QUERY_PARAMS.author_type]: "Party",
-        [QUERY_PARAMS.country]: "canada",
-        [QUERY_PARAMS.concept_name]: "indigenous people",
-      },
-      newParams: {
         [QUERY_PARAMS.filters]: deflateFilters({
           op: "and",
           filters: [
@@ -126,12 +98,6 @@ const SEARCH_CONFIG: TLandingPageSearchConfig = {
     {
       label: "Subsidies in Land Degradation Neutrality Targets",
       params: {
-        [QUERY_PARAMS.category]: "UN-submissions",
-        [QUERY_PARAMS.author_type]: "Party",
-        [QUERY_PARAMS.convention]: "unccd",
-        [QUERY_PARAMS.concept_name]: "subsidy",
-      },
-      newParams: {
         [QUERY_PARAMS.filters]: deflateFilters({
           op: "and",
           filters: [
@@ -151,8 +117,6 @@ const SEARCH_CONFIG: TLandingPageSearchConfig = {
 };
 
 const RioSubmissions = () => {
-  const { themeConfig } = useContext(ThemeContext);
-
   return (
     <Layout title="Rio Submissions" description="Rio Policy Radar - a shared tool for climate, nature and land" theme="cpr">
       <Header landingPage />
@@ -169,7 +133,7 @@ const RioSubmissions = () => {
           <div className="flex gap-2">
             <PageLink
               href="/search"
-              query={getSuggestionParams(SEARCH_CONFIG.button, themeConfig)}
+              query={SEARCH_CONFIG.button.params}
               className="px-4 py-3 bg-inky-blue rounded-md text-white font-medium leading-tight hover:bg-inky-blue/90"
             >
               Get started
@@ -228,7 +192,7 @@ const RioSubmissions = () => {
               <PageLink
                 key={index}
                 href="/search"
-                query={getSuggestionParams(suggestion, themeConfig)}
+                query={suggestion.params}
                 className="flex-1 flex items-center justify-center px-4 py-6 border border-[#d1d5db] rounded-md hover:bg-[#f3f4f6]"
               >
                 {suggestion.label}

@@ -8,11 +8,9 @@ import { PageLink } from "@/components/atoms/pageLink/PageLink";
 import Footer from "@/components/footer/Footer";
 import Layout from "@/components/layouts/LandingPage";
 import { FeaturesContext } from "@/context/FeaturesContext";
-import { ThemeContext } from "@/context/ThemeContext";
 import { Header } from "@/cpr/components/Header";
 import NotFound from "@/pages/404";
 import { TLandingPageConfig } from "@/types";
-import { getSuggestionParams } from "@/utils/getSuggestionParams";
 import { joinTailwindClasses } from "@/utils/tailwind";
 
 type TProps = {
@@ -49,8 +47,6 @@ const PartnerLogos = ({ partners }: TPartnerLogosProps) => (
 );
 
 export const LandingPage = ({ config }: TProps) => {
-  const { themeConfig } = useContext(ThemeContext);
-
   // Technically this page will still 200 on `!isAvailable`, but render the 404 page.
   // This is because if we were to render 404 at the server level, we would need access
   // to `request.cookies`, which we don't have as these are rendered at build time.
@@ -99,7 +95,7 @@ export const LandingPage = ({ config }: TProps) => {
             </FiveColumns>
             <FiveColumns className={searchSectionClass}>
               <div className={joinTailwindClasses(searchColumnsClass, searchSpacingClass)}>
-                <PageLink href="/search" query={getSuggestionParams(config.search.button, themeConfig)}>
+                <PageLink href="/search" query={config.search.button.params}>
                   <Button className="w-full mb-6 p-4! bg-[#005296]!">
                     <LucideSearch size={16} />
                     <span className="ml-1 text-base text-white font-medium leading-5">{config.search.button.label}</span>
@@ -111,7 +107,7 @@ export const LandingPage = ({ config }: TProps) => {
                     <li key={suggestionIndex}>
                       <PageLink
                         href="/search"
-                        query={getSuggestionParams(suggestion, themeConfig)}
+                        query={suggestion.params}
                         className={joinTailwindClasses("inline-flex flex-row items-center gap-1", suggestionLinkClass)}
                       >
                         <LucideSearch size={16} />

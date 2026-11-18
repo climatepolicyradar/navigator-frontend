@@ -59,10 +59,6 @@ export default function GST1LandingPage() {
       button: {
         label: "Search submissions to the first Global Stocktake",
         params: {
-          [QUERY_PARAMS.sort_order]: "desc",
-          [QUERY_PARAMS.query_string]: "",
-        },
-        newParams: {
           [QUERY_PARAMS.filters]: deflateFilters({
             op: "and",
             filters: [GST_FILTER, GST1_GROUP],
@@ -73,9 +69,6 @@ export default function GST1LandingPage() {
         {
           label: "Submissions on renewable energy",
           params: {
-            [QUERY_PARAMS.concept_name]: "renewable energy",
-          },
-          newParams: {
             [QUERY_PARAMS.filters]: deflateFilters({
               op: "and",
               filters: [
@@ -92,10 +85,6 @@ export default function GST1LandingPage() {
         {
           label: "Europe and Central Asia submissions on fossil fuel subsidy removals",
           params: {
-            [QUERY_PARAMS.region]: "europe-central-asia",
-            [QUERY_PARAMS.concept_name]: "subsidy removal",
-          },
-          newParams: {
             [QUERY_PARAMS.filters]: deflateFilters({
               op: "and",
               filters: [
@@ -116,10 +105,6 @@ export default function GST1LandingPage() {
         {
           label: "Adapting health systems to extreme weather in South Asia",
           params: {
-            [QUERY_PARAMS.region]: "south-asia",
-            [QUERY_PARAMS.concept_name]: "health adaptation",
-          },
-          newParams: {
             [QUERY_PARAMS.filters]: deflateFilters({
               op: "and",
               filters: [
