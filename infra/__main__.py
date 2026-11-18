@@ -1003,6 +1003,10 @@ if not is_review_stack_or_template:
             logging_bucket=cast(str, cloudfront_log_bucket.bucket_regional_domain_name),
             logging_prefix="ccc-redirect/",
             # These are used for cache invalidations
-            tags={"CUSTOM_APP_THEME": "ccc", "Environment": "production"},
+            tags={
+                "CUSTOM_APP_THEME": "ccc",
+                "Environment": "production",
+                "Domain_Visibility": DomainVisibility.EXTERNAL.value,
+            },
             opts=pulumi.ResourceOptions(depends_on=[cloudfront_log_bucket_acl]),
         )
