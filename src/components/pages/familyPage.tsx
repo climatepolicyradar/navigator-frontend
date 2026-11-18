@@ -79,7 +79,6 @@ export const FamilyPage = ({ canonicalUrl, collections, debug, errors, family, f
   /* Search matches */
 
   const router = useRouter();
-  const isNewSearch = features["new-search"];
   const hasSearch = Boolean(
     router.query[QUERY_PARAMS.query_string] || router.query[QUERY_PARAMS.concept_id] || router.query[QUERY_PARAMS.concept_name]
   );
@@ -191,56 +190,52 @@ export const FamilyPage = ({ canonicalUrl, collections, debug, errors, family, f
           label={family.title}
         />
         <PageHeader title={family.title} metadata={pageHeaderMetadata} />
-        {isNewSearch ? (
-          <Tabs<TPrincipalDrawerTab>
-            analytics={{ context: "family-page" }}
-            onValueChange={changeTab}
-            value={activeTab}
-            panelClassName="pt-8"
-            tabs={[
-              {
-                id: "about",
-                label: (
-                  <>
-                    <LucideFileText size={20} className="text-elem-icon!" /> About
-                  </>
-                ),
-                panel: <BlocksLayout blockDefinitions={blockDefinitions} blocksToRender={blocksToRender} />,
-              },
-              {
-                id: "search",
-                count: noOfResults > 0 ? noOfResults : undefined,
-                label: (
-                  <>
-                    <LucideSearch size={20} className="text-elem-icon!" />
-                    Search in documents
-                  </>
-                ),
-                panel: (
-                  <FiveColumns>
-                    <main className="pb-8 col-start-1 -col-end-1 cols-4:col-start-3 cols-4:col-end-10">
-                      <PassageSearch
-                        changeTab={changeTab}
-                        documents={family.documents}
-                        principalId={family.import_id}
-                        documentsLabel={`Documents in this ${firstCase(getCategoryText("familySingular"))}`}
-                        subject="these documents"
-                        onSearch={setNumberOfResults}
-                      />
-                    </main>
-                  </FiveColumns>
-                ),
-              },
-            ]}
-            tabsContainer={(tabsList) => (
-              <FiveColumns>
-                <div className="col-start-1 -col-end-1 cols-4:col-start-3">{tabsList}</div>
-              </FiveColumns>
-            )}
-          />
-        ) : (
-          <BlocksLayout blockDefinitions={blockDefinitions} blocksToRender={blocksToRender} />
-        )}
+        <Tabs<TPrincipalDrawerTab>
+          analytics={{ context: "family-page" }}
+          onValueChange={changeTab}
+          value={activeTab}
+          panelClassName="pt-8"
+          tabs={[
+            {
+              id: "about",
+              label: (
+                <>
+                  <LucideFileText size={20} className="text-elem-icon!" /> About
+                </>
+              ),
+              panel: <BlocksLayout blockDefinitions={blockDefinitions} blocksToRender={blocksToRender} />,
+            },
+            {
+              id: "search",
+              count: noOfResults > 0 ? noOfResults : undefined,
+              label: (
+                <>
+                  <LucideSearch size={20} className="text-elem-icon!" />
+                  Search in documents
+                </>
+              ),
+              panel: (
+                <FiveColumns>
+                  <main className="pb-8 col-start-1 -col-end-1 cols-4:col-start-3 cols-4:col-end-10">
+                    <PassageSearch
+                      changeTab={changeTab}
+                      documents={family.documents}
+                      principalId={family.import_id}
+                      documentsLabel={`Documents in this ${firstCase(getCategoryText("familySingular"))}`}
+                      subject="these documents"
+                      onSearch={setNumberOfResults}
+                    />
+                  </main>
+                </FiveColumns>
+              ),
+            },
+          ]}
+          tabsContainer={(tabsList) => (
+            <FiveColumns>
+              <div className="col-start-1 -col-end-1 cols-4:col-start-3">{tabsList}</div>
+            </FiveColumns>
+          )}
+        />
         <Head>
           <script
             type="application/ld+json"

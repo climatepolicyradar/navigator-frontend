@@ -15,7 +15,7 @@ import { PassageSearch } from "@/components/organisms/passageSearch/PassageSearc
 import { SearchLevelContext } from "@/context/SearchLevelContext";
 import { useSearchLevelValues } from "@/hooks/useSearchLevel";
 import { useText } from "@/hooks/useText";
-import { ISearchDocument, TFamilyPresentationalData, TFeatures, TPrincipalDrawerTab } from "@/types";
+import { ISearchDocument, TFamilyPresentationalData, TPrincipalDrawerTab } from "@/types";
 import { getFamilyHeader } from "@/utils/family-header/getFamilyHeader";
 import { getFamilyMetadata } from "@/utils/family-metadata/getFamilyMetadata";
 import { flattenLevelToBaseQuery } from "@/utils/search/searchLevels";
@@ -36,7 +36,6 @@ const panelScrollClasses = "h-full px-4 pt-4 pb-8 md:px-8 md:pt-8";
 type TDocumentDrawerProps = {
   document: ISearchDocument | null; // The clicked search result, absent when the drawer is opened from a link
   slug: string | null;
-  features: TFeatures;
   onOpenChange: (open: boolean) => void;
   onTabChange: (tab: TPrincipalDrawerTab) => void;
   open: boolean;
@@ -45,10 +44,9 @@ type TDocumentDrawerProps = {
 
 type TDrawerContentProps = {
   familyData: TFamilyPresentationalData;
-  features: TFeatures;
 };
 
-const DrawerContent = ({ familyData, features }: TDrawerContentProps) => {
+const DrawerContent = ({ familyData }: TDrawerContentProps) => {
   const { family, familyTopics } = familyData;
   const { getCategoryTextLookup } = useText();
   const getCategoryText = getCategoryTextLookup(family.attribution.category);
@@ -80,17 +78,17 @@ const DrawerContent = ({ familyData, features }: TDrawerContentProps) => {
         </div>
       )}
       <div className="grid grid-cols-1">
-        <DocumentsBlock family={family} familyTopics={familyTopics} features={features} getCategoryText={getCategoryText} />
+        <DocumentsBlock family={family} familyTopics={familyTopics} getCategoryText={getCategoryText} />
       </div>
       {familyTopicsHasTopics(familyTopics) && (
-        <TopicsBlock key="topics" family={family} familyTopics={familyTopics} getCategoryText={getCategoryText} features={features} />
+        <TopicsBlock key="topics" family={family} familyTopics={familyTopics} getCategoryText={getCategoryText} />
       )}
       <NoteBlock key="note" attribution={family.attribution} />
     </div>
   );
 };
 
-export function PrincipalDrawer({ document, slug, open, onOpenChange, tab, onTabChange, features }: TDocumentDrawerProps) {
+export function PrincipalDrawer({ document, slug, open, onOpenChange, tab, onTabChange }: TDocumentDrawerProps) {
   const { getCategoryTextLookup } = useText();
   const [noOfResults, setNumberOfResults] = useState<number>(0);
   // The drawer's own search, flattened onto the base params of whatever page a link leads to
@@ -163,7 +161,7 @@ export function PrincipalDrawer({ document, slug, open, onOpenChange, tab, onTab
                 ),
                 panel: (
                   <DrawerScrollArea className={panelScrollClasses}>
-                    <DrawerContent familyData={familyData} features={features} />
+                    <DrawerContent familyData={familyData} />
                   </DrawerScrollArea>
                 ),
               },

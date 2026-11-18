@@ -1,40 +1,29 @@
 import { Loader, LucideExternalLink } from "lucide-react";
-import { Fragment, useContext } from "react";
 
 import { Drawer } from "@/components/atoms/drawer/Drawer";
 import { PageLink } from "@/components/atoms/pageLink/PageLink";
 import { ViewMore } from "@/components/molecules/viewMore/ViewMore";
-import { InteractiveTable } from "@/components/organisms/interactiveTable/InteractiveTable";
 import { PassageSearch } from "@/components/organisms/passageSearch/PassageSearch";
-import { FeaturesContext } from "@/context/FeaturesContext";
 import { SearchLevelContext } from "@/context/SearchLevelContext";
 import { getLanguage } from "@/helpers/getLanguage";
 import { useSearchLevelValues } from "@/hooks/useSearchLevel";
-import { IFamilyDocumentTopics, IMetadata, TFamilyDocumentPublic, TFamilyEventPublic, TFamilyPublic } from "@/types";
+import { IMetadata, TFamilyDocumentPublic, TFamilyEventPublic, TFamilyPublic } from "@/types";
 import { getEventTableRowsData } from "@/utils/eventTable";
 import { flattenLevelToBaseQuery } from "@/utils/search/searchLevels";
-import { DOCUMENT_DRAWER_TOPICS_TABLE_COLUMNS, getDocumentDrawerTopicTableRows } from "@/utils/tables/topic/documentDrawerTopicTable";
-import { TTopicTableColumnId, TTopicTableRow } from "@/utils/tables/topic/topicTable";
 import { firstCase } from "@/utils/text/firstCase";
 import { formatDateShort } from "@/utils/timedate";
 
 interface IProps {
   documentSlug: string | null;
   family: TFamilyPublic;
-  familyTopics?: IFamilyDocumentTopics | null;
   onOpenChange: (open: boolean) => void;
   open: boolean;
 }
 
-export const DocumentDrawer = ({ documentSlug, family, familyTopics, onOpenChange, open }: IProps) => {
-  const features = useContext(FeaturesContext);
+export const DocumentDrawer = ({ documentSlug, family, onOpenChange, open }: IProps) => {
   // The drawer's own search, flattened onto the base params of the document page it links to
   const [documentSearch] = useSearchLevelValues("document");
   const outboundQuery = flattenLevelToBaseQuery(documentSearch);
-  // The topics offered as passage search filters come from the document's concepts in `search-api`.
-  // Fetched up here as the drawer returns early below when the document is missing.
-  // The drawer is addressed by slug, but the topics data is keyed by import id
-  const documentImportId = family.documents.find((doc) => doc.slug === documentSlug)?.import_id ?? null;
 
   const isLitigation = family.attribution.category === "Litigation";
 
@@ -94,9 +83,6 @@ export const DocumentDrawer = ({ documentSlug, family, familyTopics, onOpenChang
     }
   }
 
-  let topicRows: TTopicTableRow[] = [];
-  if (familyTopics) topicRows = getDocumentDrawerTopicTableRows(familyTopics, documentImportId);
-
   return (
     <Drawer
       open={open}
@@ -133,32 +119,9 @@ export const DocumentDrawer = ({ documentSlug, family, familyTopics, onOpenChang
       trackScroll
       wide
     >
-      {features["new-search"] ? (
-        <SearchLevelContext value="document">
-          <PassageSearch documents={[document]} subject="this document" />
-        </SearchLevelContext>
-      ) : (
-        <>
-          {metadata.length > 0 && (
-            <div className="grid grid-cols-[120px_auto] gap-x-3 gap-y-2 mb-6 text-sm text-text-secondary leading-5">
-              {metadata.map((item, itemIndex) => (
-                <Fragment key={itemIndex}>
-                  <div className="font-medium">{item.label}</div>
-                  <div className="select-text">{item.value}</div>
-                </Fragment>
-              ))}
-            </div>
-          )}
-
-          {topicRows.length > 0 && (
-            <div className="mt-9">
-              <h3 className="mt-6 mb-2 text-lg text-text-primary font-heavy leading-6">Topics mentioned</h3>
-              <p className="mb-4">See exactly where a topic is mentioned in this document.</p>
-              <InteractiveTable<TTopicTableColumnId> columns={DOCUMENT_DRAWER_TOPICS_TABLE_COLUMNS} rows={topicRows} />
-            </div>
-          )}
-        </>
-      )}
+      <SearchLevelContext value="document">
+        <PassageSearch documents={[document]} subject="this document" />
+      </SearchLevelContext>
     </Drawer>
   );
 };

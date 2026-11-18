@@ -189,7 +189,6 @@ const SearchPage = ({ theme, themeConfig, features }: TProps) => {
         <PrincipalDrawer
           document={selectedDocument?.attributes.deprecated_slug === principalSlug ? selectedDocument : null}
           slug={principalSlug}
-          features={features}
           onOpenChange={(open) => {
             if (!open) closePrincipalDrawer();
           }}
