@@ -1,9 +1,7 @@
 import { ApiClient } from "@/api/http-common";
 import { documentTransformer } from "@/bff/transformers/documentTransformer";
 import { TDataInDocument, validateDataInDocument } from "@/schemas";
-import { ISearchDocument, ISearchDocumentResponse, TApiItemResponse, TDocumentPresentationalResponse, TTopics } from "@/types";
-import { extractTopicIds } from "@/utils/extractTopicIds";
-import { fetchAndProcessTopics } from "@/utils/fetchAndProcessTopics";
+import { TApiItemResponse, TDocumentPresentationalResponse } from "@/types";
 
 export const getDocumentData = async (slug: string): Promise<TDocumentPresentationalResponse> => {
   /* Make API requests */
@@ -20,23 +18,7 @@ export const getDocumentData = async (slug: string): Promise<TDocumentPresentati
     return { data: null, errors };
   }
 
-  let topicsData: TTopics;
-  let searchDocument: ISearchDocument;
-  try {
-    const documentApiResponse = await apiClient.get<ISearchDocumentResponse>(`/search/documents/${document.id}`);
-    // http-common's get() returns error.response rather than throwing for Axios errors,
-    // so we must check the status explicitly rather than relying on catch for non-2xx responses.
-    if (documentApiResponse?.status === 200) {
-      searchDocument = documentApiResponse.data.data;
-      topicsData = await fetchAndProcessTopics(extractTopicIds(documentApiResponse.data));
-    } else if (documentApiResponse?.status === 500) {
-      errors.push(new Error("Failed to fetch document topics data"));
-    }
-  } catch (error) {
-    errors.push(new Error("Failed to fetch document topics data", error));
-  }
-
   /* Transform API data for presentation */
 
-  return documentTransformer({ document, topicsData, searchDocument }, errors);
+  return documentTransformer({ document }, errors);
 };
