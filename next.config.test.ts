@@ -1,3 +1,5 @@
+import fs from "fs";
+
 import config from "./next.config.js";
 
 const THEMES = ["ccc", "cclw", "cpr", "mcf"];
@@ -81,10 +83,24 @@ describe("next.config.js", () => {
       expect(rewrites).toMatchObject({ afterFiles: [], fallback: [] });
     });
 
-    it.each(["cpr", "ccc", "cclw", "mcf"])("serves the v2 search page at /search for the %s theme", async (theme) => {
-      const { beforeFiles } = await rewritesFor(theme);
+    it("serves the theme's rewrite rules in beforeFiles", async () => {
+      const rule = { source: "/about-us", destination: "/faq" };
+      const readFileSync = fs.readFileSync;
+      const spy = vi
+        .spyOn(fs, "readFileSync")
+        .mockImplementation(((path: fs.PathOrFileDescriptor, ...args: unknown[]) =>
+          path === "./themes/cpr/rewrites.json"
+            ? JSON.stringify([rule])
+            : (readFileSync as (...a: unknown[]) => unknown)(path, ...args)) as typeof fs.readFileSync);
 
-      expect(beforeFiles).toEqual([{ source: "/search", destination: "/_search" }]);
+      try {
+        const { beforeFiles } = await rewritesFor("cpr");
+
+        expect(spy).toHaveBeenCalledWith("./themes/cpr/rewrites.json", "utf-8");
+        expect(beforeFiles).toEqual([rule]);
+      } finally {
+        spy.mockRestore();
+      }
     });
   });
 });
