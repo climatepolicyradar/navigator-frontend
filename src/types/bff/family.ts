@@ -1,8 +1,8 @@
 import { TDataInDocument } from "@/schemas";
-import { TThemeCriteria } from "@/utils/getDocumentSites";
 
 import { IApiFamilyDocumentTopics } from "../api";
 import { IFamilyDocumentTopics } from "../tables/familyDocumentTopics";
+import { TThemeCriteria } from "../theme";
 import { TCollectionPublicWithFamilies, TFamilyPublic } from "../types";
 
 export type TFamilyApiData = {

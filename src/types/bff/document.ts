@@ -1,7 +1,7 @@
 import { TDataInDocument } from "@/schemas";
-import { TThemeCriteria } from "@/utils/getDocumentSites";
 
 import { ISearchDocument } from "../search/api";
+import { TThemeCriteria } from "../theme";
 import { TTopics } from "../topics";
 import { TFamilyDocumentPublic, TFamilyPublic } from "../types";
 

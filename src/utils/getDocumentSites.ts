@@ -1,13 +1,8 @@
 import { TDataInLabel } from "@/schemas";
-import { THEMES, TTheme, TThemeConfig } from "@/types";
+import { THEMES, TSiteDecision, TTheme, TThemeConfig, TThemeCriteria } from "@/types";
 import getThemeDomain from "@/utils/getThemeDomain";
 
 import themes from "../../themes";
-
-export type TThemeCriteria = {
-  categories: string[];
-  labelIds: string[];
-};
 
 export const toThemeCriteria = (labels: TDataInLabel[]): TThemeCriteria => {
   return {
@@ -15,11 +10,6 @@ export const toThemeCriteria = (labels: TDataInLabel[]): TThemeCriteria => {
     labelIds: labels.map((label) => label.value.id),
   };
 };
-
-type TNotFoundDecision = { action: "not_found" };
-type TServeDecision = { action: "serve"; canonicalUrl: string };
-type TRedirectDecision = { action: "redirect"; destination: string };
-export type TSiteDecision = TServeDecision | TRedirectDecision | TNotFoundDecision;
 
 /*
  * Order of preference for canonical links: Lower numbers win
