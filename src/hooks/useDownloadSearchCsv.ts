@@ -4,8 +4,8 @@ import { configureDocumentsFilters, PRINCIPAL_DOCUMENTS_FILTER, SEARCH_DOCUMENTS
 import { SORT_PARAMS_LOOKUP } from "@/constants/sort";
 import { useEnvConfig } from "@/context/EnvConfig";
 import { TApiLoadingStatus, TSearchQueryGroup, TSearchQueryRule, TSortValue, TTheme, TThemeConfig } from "@/types";
-import { sanitiseSearchQueryGroup } from "@/utils/filters/advancedFilters";
 import { deflateFilters } from "@/utils/filters/deflate";
+import { sanitiseSearchQueryGroup } from "@/utils/filters/sanitiseSearchQueryGroup";
 import getThemeDomain from "@/utils/getThemeDomain";
 import { isQueryGroupEmpty } from "@/utils/search/searchQuery/isQueryGroupEmpty";
 

@@ -12,7 +12,7 @@ import { TFeatures, TNestedSearchLabel, TThemeConfig } from "@/types";
 import { useFilterLabels } from "./useFilterLabels";
 
 const mockLoadTaxonomy = vi.hoisted(() => vi.fn());
-vi.mock("@/hooks/useLabelSearch", () => ({ loadTaxonomy: mockLoadTaxonomy }));
+vi.mock("@/api/taxonomy", () => ({ loadTaxonomy: mockLoadTaxonomy }));
 
 const label = (id: string, count = 1, children: TNestedSearchLabel[] = []): TNestedSearchLabel => ({
   id,
