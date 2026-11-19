@@ -1,5 +1,10 @@
 [
   {
+    "source": "/cpr/sitemap.xml",
+    "destination": "/sitemap.xml",
+    "permanent": true
+  },
+  {
     "source": "/auth/:id*",
     "destination": "/",
     "permanent": true

@@ -61,7 +61,7 @@ describe("useFilterLabels", () => {
     renderUseFilterLabels(DEFAULT_FEATURES, themeConfig);
     await waitFor(() => expect(mockLoadTaxonomy).toHaveBeenCalled());
     expect(mockLoadTaxonomy.mock.calls[0][1].filters).toEqual(
-      configureDocumentsFilters({ op: "and", filters: [PRINCIPAL_DOCUMENTS_FILTER] }, themeConfig.searchCategories, themeConfig.searchExcludeLabels)
+      configureDocumentsFilters({ op: "and", filters: [PRINCIPAL_DOCUMENTS_FILTER] }, themeConfig)
     );
   });
 
