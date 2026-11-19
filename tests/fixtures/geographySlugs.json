@@ -1,0 +1,1017 @@
+[
+  {
+    "id": "country::AFG",
+    "value": "Afghanistan",
+    "slug": "afghanistan"
+  },
+  {
+    "id": "country::AGO",
+    "value": "Angola",
+    "slug": "angola"
+  },
+  {
+    "id": "country::ALB",
+    "value": "Albania",
+    "slug": "albania"
+  },
+  {
+    "id": "country::AND",
+    "value": "Andorra",
+    "slug": "andorra"
+  },
+  {
+    "id": "country::ARE",
+    "value": "United Arab Emirates",
+    "slug": "united-arab-emirates"
+  },
+  {
+    "id": "country::ARG",
+    "value": "Argentina",
+    "slug": "argentina"
+  },
+  {
+    "id": "country::ARM",
+    "value": "Armenia",
+    "slug": "armenia"
+  },
+  {
+    "id": "country::ATG",
+    "value": "Antigua and Barbuda",
+    "slug": "antigua-and-barbuda"
+  },
+  {
+    "id": "country::AUS",
+    "value": "Australia",
+    "slug": "australia"
+  },
+  {
+    "id": "country::AUT",
+    "value": "Austria",
+    "slug": "austria"
+  },
+  {
+    "id": "country::AZE",
+    "value": "Azerbaijan",
+    "slug": "azerbaijan"
+  },
+  {
+    "id": "country::BDI",
+    "value": "Burundi",
+    "slug": "burundi"
+  },
+  {
+    "id": "country::BEL",
+    "value": "Belgium",
+    "slug": "belgium"
+  },
+  {
+    "id": "country::BEN",
+    "value": "Benin",
+    "slug": "benin"
+  },
+  {
+    "id": "country::BFA",
+    "value": "Burkina Faso",
+    "slug": "burkina-faso"
+  },
+  {
+    "id": "country::BGD",
+    "value": "Bangladesh",
+    "slug": "bangladesh"
+  },
+  {
+    "id": "country::BGR",
+    "value": "Bulgaria",
+    "slug": "bulgaria"
+  },
+  {
+    "id": "country::BHR",
+    "value": "Bahrain",
+    "slug": "bahrain"
+  },
+  {
+    "id": "country::BHS",
+    "value": "Bahamas",
+    "slug": "bahamas-the"
+  },
+  {
+    "id": "country::BIH",
+    "value": "Bosnia and Herzegovina",
+    "slug": "bosnia-and-herzegovina"
+  },
+  {
+    "id": "country::BLR",
+    "value": "Belarus",
+    "slug": "belarus"
+  },
+  {
+    "id": "country::BLZ",
+    "value": "Belize",
+    "slug": "belize"
+  },
+  {
+    "id": "country::BOL",
+    "value": "Bolivia",
+    "slug": "bolivia"
+  },
+  {
+    "id": "country::BRA",
+    "value": "Brazil",
+    "slug": "brazil"
+  },
+  {
+    "id": "country::BRB",
+    "value": "Barbados",
+    "slug": "barbados"
+  },
+  {
+    "id": "country::BRN",
+    "value": "Brunei Darussalam",
+    "slug": "brunei-darussalam"
+  },
+  {
+    "id": "country::BTN",
+    "value": "Bhutan",
+    "slug": "bhutan"
+  },
+  {
+    "id": "country::BWA",
+    "value": "Botswana",
+    "slug": "botswana"
+  },
+  {
+    "id": "country::CAF",
+    "value": "Central African Republic",
+    "slug": "central-african-republic"
+  },
+  {
+    "id": "country::CAN",
+    "value": "Canada",
+    "slug": "canada"
+  },
+  {
+    "id": "country::CHE",
+    "value": "Switzerland",
+    "slug": "switzerland"
+  },
+  {
+    "id": "country::CHL",
+    "value": "Chile",
+    "slug": "chile"
+  },
+  {
+    "id": "country::CHN",
+    "value": "China",
+    "slug": "china"
+  },
+  {
+    "id": "country::CIV",
+    "value": "Côte d'Ivoire",
+    "slug": "cote-d-ivoire"
+  },
+  {
+    "id": "country::CMR",
+    "value": "Cameroon",
+    "slug": "cameroon"
+  },
+  {
+    "id": "country::COD",
+    "value": "Congo, Democratic Republic of the",
+    "slug": "democratic-republic-of-congo"
+  },
+  {
+    "id": "country::COG",
+    "value": "Congo",
+    "slug": "congo"
+  },
+  {
+    "id": "country::COK",
+    "value": "Cook Islands",
+    "slug": "cook-islands"
+  },
+  {
+    "id": "country::COL",
+    "value": "Colombia",
+    "slug": "colombia"
+  },
+  {
+    "id": "country::COM",
+    "value": "Comoros",
+    "slug": "comoros"
+  },
+  {
+    "id": "country::CPV",
+    "value": "Cabo Verde",
+    "slug": "cabo-verde"
+  },
+  {
+    "id": "country::CRI",
+    "value": "Costa Rica",
+    "slug": "costa-rica"
+  },
+  {
+    "id": "country::CUB",
+    "value": "Cuba",
+    "slug": "cuba"
+  },
+  {
+    "id": "country::CYM",
+    "value": "Cayman Islands",
+    "slug": "cayman-islands"
+  },
+  {
+    "id": "country::CYP",
+    "value": "Cyprus",
+    "slug": "cyprus"
+  },
+  {
+    "id": "country::CZE",
+    "value": "Czechia",
+    "slug": "czechia"
+  },
+  {
+    "id": "country::DEU",
+    "value": "Germany",
+    "slug": "germany"
+  },
+  {
+    "id": "country::DJI",
+    "value": "Djibouti",
+    "slug": "djibouti"
+  },
+  {
+    "id": "country::DMA",
+    "value": "Dominica",
+    "slug": "dominica"
+  },
+  {
+    "id": "country::DNK",
+    "value": "Denmark",
+    "slug": "denmark"
+  },
+  {
+    "id": "country::DOM",
+    "value": "Dominican Republic",
+    "slug": "dominican-republic"
+  },
+  {
+    "id": "country::DZA",
+    "value": "Algeria",
+    "slug": "algeria"
+  },
+  {
+    "id": "country::ECU",
+    "value": "Ecuador",
+    "slug": "ecuador"
+  },
+  {
+    "id": "country::EGY",
+    "value": "Egypt",
+    "slug": "egypt"
+  },
+  {
+    "id": "country::ERI",
+    "value": "Eritrea",
+    "slug": "eritrea"
+  },
+  {
+    "id": "country::ESP",
+    "value": "Spain",
+    "slug": "spain"
+  },
+  {
+    "id": "country::EST",
+    "value": "Estonia",
+    "slug": "estonia"
+  },
+  {
+    "id": "country::ETH",
+    "value": "Ethiopia",
+    "slug": "ethiopia"
+  },
+  {
+    "id": "country::FIN",
+    "value": "Finland",
+    "slug": "finland"
+  },
+  {
+    "id": "country::FJI",
+    "value": "Fiji",
+    "slug": "fiji"
+  },
+  {
+    "id": "country::FRA",
+    "value": "France",
+    "slug": "france"
+  },
+  {
+    "id": "country::FSM",
+    "value": "Micronesia",
+    "slug": "micronesia"
+  },
+  {
+    "id": "country::GAB",
+    "value": "Gabon",
+    "slug": "gabon"
+  },
+  {
+    "id": "country::GBR",
+    "value": "United Kingdom",
+    "slug": "united-kingdom"
+  },
+  {
+    "id": "country::GEO",
+    "value": "Georgia",
+    "slug": "georgia"
+  },
+  {
+    "id": "country::GHA",
+    "value": "Ghana",
+    "slug": "ghana"
+  },
+  {
+    "id": "country::GIN",
+    "value": "Guinea",
+    "slug": "guinea"
+  },
+  {
+    "id": "country::GMB",
+    "value": "Gambia",
+    "slug": "gambia"
+  },
+  {
+    "id": "country::GNB",
+    "value": "Guinea-Bissau",
+    "slug": "guinea-bissau"
+  },
+  {
+    "id": "country::GNQ",
+    "value": "Equatorial Guinea",
+    "slug": "equatorial-guinea"
+  },
+  {
+    "id": "country::GRC",
+    "value": "Greece",
+    "slug": "greece"
+  },
+  {
+    "id": "country::GRD",
+    "value": "Grenada",
+    "slug": "grenada"
+  },
+  {
+    "id": "country::GRL",
+    "value": "Greenland",
+    "slug": "greenland"
+  },
+  {
+    "id": "country::GTM",
+    "value": "Guatemala",
+    "slug": "guatemala"
+  },
+  {
+    "id": "country::GUY",
+    "value": "Guyana",
+    "slug": "guyana"
+  },
+  {
+    "id": "country::HKG",
+    "value": "Hong Kong",
+    "slug": "hong-kong"
+  },
+  {
+    "id": "country::HND",
+    "value": "Honduras",
+    "slug": "honduras"
+  },
+  {
+    "id": "country::HRV",
+    "value": "Croatia",
+    "slug": "croatia"
+  },
+  {
+    "id": "country::HTI",
+    "value": "Haiti",
+    "slug": "haiti"
+  },
+  {
+    "id": "country::HUN",
+    "value": "Hungary",
+    "slug": "hungary"
+  },
+  {
+    "id": "country::IDN",
+    "value": "Indonesia",
+    "slug": "indonesia"
+  },
+  {
+    "id": "country::IMN",
+    "value": "Isle of Man",
+    "slug": "isle-of-man"
+  },
+  {
+    "id": "country::IND",
+    "value": "India",
+    "slug": "india"
+  },
+  {
+    "id": "country::IRL",
+    "value": "Ireland",
+    "slug": "ireland"
+  },
+  {
+    "id": "country::IRN",
+    "value": "Iran",
+    "slug": "iran"
+  },
+  {
+    "id": "country::IRQ",
+    "value": "Iraq",
+    "slug": "iraq"
+  },
+  {
+    "id": "country::ISL",
+    "value": "Iceland",
+    "slug": "iceland"
+  },
+  {
+    "id": "country::ISR",
+    "value": "Israel",
+    "slug": "israel"
+  },
+  {
+    "id": "country::ITA",
+    "value": "Italy",
+    "slug": "italy"
+  },
+  {
+    "id": "country::JAM",
+    "value": "Jamaica",
+    "slug": "jamaica"
+  },
+  {
+    "id": "country::JOR",
+    "value": "Jordan",
+    "slug": "jordan"
+  },
+  {
+    "id": "country::JPN",
+    "value": "Japan",
+    "slug": "japan"
+  },
+  {
+    "id": "country::KAZ",
+    "value": "Kazakhstan",
+    "slug": "kazakhstan"
+  },
+  {
+    "id": "country::KEN",
+    "value": "Kenya",
+    "slug": "kenya"
+  },
+  {
+    "id": "country::KGZ",
+    "value": "Kyrgyzstan",
+    "slug": "kyrgyzstan"
+  },
+  {
+    "id": "country::KHM",
+    "value": "Cambodia",
+    "slug": "cambodia"
+  },
+  {
+    "id": "country::KIR",
+    "value": "Kiribati",
+    "slug": "kiribati"
+  },
+  {
+    "id": "country::KNA",
+    "value": "Saint Kitts and Nevis",
+    "slug": "saint-kitts-and-nevis"
+  },
+  {
+    "id": "country::KOR",
+    "value": "South Korea",
+    "slug": "south-korea"
+  },
+  {
+    "id": "country::KWT",
+    "value": "Kuwait",
+    "slug": "kuwait"
+  },
+  {
+    "id": "country::LAO",
+    "value": "Laos",
+    "slug": "lao-people-s-democratic-republic"
+  },
+  {
+    "id": "country::LBN",
+    "value": "Lebanon",
+    "slug": "lebanon"
+  },
+  {
+    "id": "country::LBR",
+    "value": "Liberia",
+    "slug": "liberia"
+  },
+  {
+    "id": "country::LBY",
+    "value": "Libya",
+    "slug": "libya"
+  },
+  {
+    "id": "country::LCA",
+    "value": "Saint Lucia",
+    "slug": "saint-lucia"
+  },
+  {
+    "id": "country::LIE",
+    "value": "Liechtenstein",
+    "slug": "liechtenstein"
+  },
+  {
+    "id": "country::LKA",
+    "value": "Sri Lanka",
+    "slug": "sri-lanka"
+  },
+  {
+    "id": "country::LSO",
+    "value": "Lesotho",
+    "slug": "lesotho"
+  },
+  {
+    "id": "country::LTU",
+    "value": "Lithuania",
+    "slug": "lithuania"
+  },
+  {
+    "id": "country::LUX",
+    "value": "Luxembourg",
+    "slug": "luxembourg"
+  },
+  {
+    "id": "country::LVA",
+    "value": "Latvia",
+    "slug": "latvia"
+  },
+  {
+    "id": "country::MAR",
+    "value": "Morocco",
+    "slug": "morocco"
+  },
+  {
+    "id": "country::MCO",
+    "value": "Monaco",
+    "slug": "monaco"
+  },
+  {
+    "id": "country::MDA",
+    "value": "Moldova",
+    "slug": "moldova"
+  },
+  {
+    "id": "country::MDG",
+    "value": "Madagascar",
+    "slug": "madagascar"
+  },
+  {
+    "id": "country::MDV",
+    "value": "Maldives",
+    "slug": "maldives"
+  },
+  {
+    "id": "country::MEX",
+    "value": "Mexico",
+    "slug": "mexico"
+  },
+  {
+    "id": "country::MHL",
+    "value": "Marshall Islands",
+    "slug": "marshall-islands"
+  },
+  {
+    "id": "country::MKD",
+    "value": "North Macedonia",
+    "slug": "north-macedonia-republic-of-north-macedonia"
+  },
+  {
+    "id": "country::MLI",
+    "value": "Mali",
+    "slug": "mali"
+  },
+  {
+    "id": "country::MLT",
+    "value": "Malta",
+    "slug": "malta"
+  },
+  {
+    "id": "country::MMR",
+    "value": "Myanmar",
+    "slug": "myanmar"
+  },
+  {
+    "id": "country::MNE",
+    "value": "Montenegro",
+    "slug": "montenegro"
+  },
+  {
+    "id": "country::MNG",
+    "value": "Mongolia",
+    "slug": "mongolia"
+  },
+  {
+    "id": "country::MOZ",
+    "value": "Mozambique",
+    "slug": "mozambique"
+  },
+  {
+    "id": "country::MRT",
+    "value": "Mauritania",
+    "slug": "mauritania"
+  },
+  {
+    "id": "country::MUS",
+    "value": "Mauritius",
+    "slug": "mauritius"
+  },
+  {
+    "id": "country::MWI",
+    "value": "Malawi",
+    "slug": "malawi"
+  },
+  {
+    "id": "country::MYS",
+    "value": "Malaysia",
+    "slug": "malaysia"
+  },
+  {
+    "id": "country::NAM",
+    "value": "Namibia",
+    "slug": "namibia"
+  },
+  {
+    "id": "country::NER",
+    "value": "Niger",
+    "slug": "niger"
+  },
+  {
+    "id": "country::NGA",
+    "value": "Nigeria",
+    "slug": "nigeria"
+  },
+  {
+    "id": "country::NIC",
+    "value": "Nicaragua",
+    "slug": "nicaragua"
+  },
+  {
+    "id": "country::NIU",
+    "value": "Niue",
+    "slug": "niue"
+  },
+  {
+    "id": "country::NLD",
+    "value": "Netherlands",
+    "slug": "netherlands"
+  },
+  {
+    "id": "country::NOR",
+    "value": "Norway",
+    "slug": "norway"
+  },
+  {
+    "id": "country::NPL",
+    "value": "Nepal",
+    "slug": "nepal"
+  },
+  {
+    "id": "country::NRU",
+    "value": "Nauru",
+    "slug": "nauru"
+  },
+  {
+    "id": "country::NZL",
+    "value": "New Zealand",
+    "slug": "new-zealand"
+  },
+  {
+    "id": "country::OMN",
+    "value": "Oman",
+    "slug": "oman"
+  },
+  {
+    "id": "country::PAK",
+    "value": "Pakistan",
+    "slug": "pakistan"
+  },
+  {
+    "id": "country::PAN",
+    "value": "Panama",
+    "slug": "panama"
+  },
+  {
+    "id": "country::PER",
+    "value": "Peru",
+    "slug": "peru"
+  },
+  {
+    "id": "country::PHL",
+    "value": "Philippines",
+    "slug": "philippines"
+  },
+  {
+    "id": "country::PLW",
+    "value": "Palau",
+    "slug": "palau"
+  },
+  {
+    "id": "country::PNG",
+    "value": "Papua New Guinea",
+    "slug": "papua-new-guinea"
+  },
+  {
+    "id": "country::POL",
+    "value": "Poland",
+    "slug": "poland"
+  },
+  {
+    "id": "country::PRK",
+    "value": "North Korea",
+    "slug": "korea-north"
+  },
+  {
+    "id": "country::PRT",
+    "value": "Portugal",
+    "slug": "portugal"
+  },
+  {
+    "id": "country::PRY",
+    "value": "Paraguay",
+    "slug": "paraguay"
+  },
+  {
+    "id": "country::PSE",
+    "value": "Palestine, State of",
+    "slug": "palestine"
+  },
+  {
+    "id": "country::QAT",
+    "value": "Qatar",
+    "slug": "qatar"
+  },
+  {
+    "id": "country::ROU",
+    "value": "Romania",
+    "slug": "romania"
+  },
+  {
+    "id": "country::RUS",
+    "value": "Russian Federation",
+    "slug": "russia"
+  },
+  {
+    "id": "country::RWA",
+    "value": "Rwanda",
+    "slug": "rwanda"
+  },
+  {
+    "id": "country::SAU",
+    "value": "Saudi Arabia",
+    "slug": "saudi-arabia"
+  },
+  {
+    "id": "country::SDN",
+    "value": "Sudan",
+    "slug": "sudan"
+  },
+  {
+    "id": "country::SEN",
+    "value": "Senegal",
+    "slug": "senegal"
+  },
+  {
+    "id": "country::SGP",
+    "value": "Singapore",
+    "slug": "singapore"
+  },
+  {
+    "id": "country::SLB",
+    "value": "Solomon Islands",
+    "slug": "solomon-islands"
+  },
+  {
+    "id": "country::SLE",
+    "value": "Sierra Leone",
+    "slug": "sierra-leone"
+  },
+  {
+    "id": "country::SLV",
+    "value": "El Salvador",
+    "slug": "el-salvador"
+  },
+  {
+    "id": "country::SMR",
+    "value": "San Marino",
+    "slug": "san-marino"
+  },
+  {
+    "id": "country::SOM",
+    "value": "Somalia",
+    "slug": "somalia"
+  },
+  {
+    "id": "country::SRB",
+    "value": "Serbia",
+    "slug": "serbia"
+  },
+  {
+    "id": "country::SSD",
+    "value": "South Sudan",
+    "slug": "south-sudan"
+  },
+  {
+    "id": "country::STP",
+    "value": "Sao Tome and Principe",
+    "slug": "sao-tome-and-principe"
+  },
+  {
+    "id": "country::SUR",
+    "value": "Suriname",
+    "slug": "suriname"
+  },
+  {
+    "id": "country::SVK",
+    "value": "Slovakia",
+    "slug": "slovakia"
+  },
+  {
+    "id": "country::SVN",
+    "value": "Slovenia",
+    "slug": "slovenia"
+  },
+  {
+    "id": "country::SWE",
+    "value": "Sweden",
+    "slug": "sweden"
+  },
+  {
+    "id": "country::SWZ",
+    "value": "Eswatini",
+    "slug": "eswatini"
+  },
+  {
+    "id": "country::SYC",
+    "value": "Seychelles",
+    "slug": "seychelles"
+  },
+  {
+    "id": "country::SYR",
+    "value": "Syria",
+    "slug": "syria"
+  },
+  {
+    "id": "country::TCD",
+    "value": "Chad",
+    "slug": "chad"
+  },
+  {
+    "id": "country::TGO",
+    "value": "Togo",
+    "slug": "togo"
+  },
+  {
+    "id": "country::THA",
+    "value": "Thailand",
+    "slug": "thailand"
+  },
+  {
+    "id": "country::TJK",
+    "value": "Tajikistan",
+    "slug": "tajikistan"
+  },
+  {
+    "id": "country::TKM",
+    "value": "Turkmenistan",
+    "slug": "turkmenistan"
+  },
+  {
+    "id": "country::TLS",
+    "value": "Timor-Leste",
+    "slug": "timor-leste"
+  },
+  {
+    "id": "country::TON",
+    "value": "Tonga",
+    "slug": "tonga"
+  },
+  {
+    "id": "country::TTO",
+    "value": "Trinidad and Tobago",
+    "slug": "trinidad-and-tobago"
+  },
+  {
+    "id": "country::TUN",
+    "value": "Tunisia",
+    "slug": "tunisia"
+  },
+  {
+    "id": "country::TUR",
+    "value": "Türkiye",
+    "slug": "turkey"
+  },
+  {
+    "id": "country::TUV",
+    "value": "Tuvalu",
+    "slug": "tuvalu"
+  },
+  {
+    "id": "country::TWN",
+    "value": "Taiwan",
+    "slug": "taiwan"
+  },
+  {
+    "id": "country::TZA",
+    "value": "Tanzania",
+    "slug": "tanzania"
+  },
+  {
+    "id": "country::UGA",
+    "value": "Uganda",
+    "slug": "uganda"
+  },
+  {
+    "id": "country::UKR",
+    "value": "Ukraine",
+    "slug": "ukraine"
+  },
+  {
+    "id": "country::URY",
+    "value": "Uruguay",
+    "slug": "uruguay"
+  },
+  {
+    "id": "country::USA",
+    "value": "United States of America",
+    "slug": "united-states-of-america"
+  },
+  {
+    "id": "country::UZB",
+    "value": "Uzbekistan",
+    "slug": "uzbekistan"
+  },
+  {
+    "id": "country::VAT",
+    "value": "Holy See (Vatican City State)",
+    "slug": "holy-see-vatican-city-state"
+  },
+  {
+    "id": "country::VCT",
+    "value": "Saint Vincent and the Grenadines",
+    "slug": "saint-vincent-and-the-grenadines"
+  },
+  {
+    "id": "country::VEN",
+    "value": "Venezuela, Bolivarian Republic of",
+    "slug": "venezuela"
+  },
+  {
+    "id": "country::VNM",
+    "value": "Viet Nam",
+    "slug": "vietnam"
+  },
+  {
+    "id": "country::VUT",
+    "value": "Vanuatu",
+    "slug": "vanuatu"
+  },
+  {
+    "id": "country::WSM",
+    "value": "Samoa",
+    "slug": "samoa"
+  },
+  {
+    "id": "country::XKX",
+    "value": "Kosovo",
+    "slug": "kosovo"
+  },
+  {
+    "id": "country::YEM",
+    "value": "Yemen",
+    "slug": "yemen"
+  },
+  {
+    "id": "country::ZAF",
+    "value": "South Africa",
+    "slug": "south-africa"
+  },
+  {
+    "id": "country::ZMB",
+    "value": "Zambia",
+    "slug": "zambia"
+  },
+  {
+    "id": "country::ZWE",
+    "value": "Zimbabwe",
+    "slug": "zimbabwe"
+  }
+]
