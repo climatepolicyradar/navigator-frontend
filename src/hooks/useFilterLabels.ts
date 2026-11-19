@@ -12,11 +12,11 @@ interface IProps {
 }
 
 export const useFilterLabels = ({ features, themeConfig }: IProps) => {
-  const { searchCategories, searchExcludeLabels, searchLabelPatterns } = themeConfig;
+  const { searchLabelPatterns } = themeConfig;
 
   const { labels, labelNames, loaded } = useTaxonomy({
     patterns: features.subdivisions ? [...searchLabelPatterns, SUBDIVISION_LABEL_PATTERN] : searchLabelPatterns,
-    filters: configureDocumentsFilters({ op: "and", filters: [PRINCIPAL_DOCUMENTS_FILTER] }, searchCategories, searchExcludeLabels),
+    filters: configureDocumentsFilters({ op: "and", filters: [PRINCIPAL_DOCUMENTS_FILTER] }, themeConfig),
   });
 
   const filters = useMemo(() => pruneTaxonomy(labels), [labels]);

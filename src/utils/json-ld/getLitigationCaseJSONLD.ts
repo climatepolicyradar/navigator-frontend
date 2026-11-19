@@ -52,10 +52,13 @@ export const getLitigationCaseJSONLD = (familyCase: TFamilyPublic) => {
   if (familyCase.geographies.length > 0) {
     const spatialCoverage: any[] = []; // TODO: improve typing using schema-dts
     familyCase.geographies.forEach((geo) => {
+      const slug = getGeographySlug(geo);
+      if (!slug) return;
+
       spatialCoverage.push({
         "@type": "Place",
         name: geo.value,
-        url: `${appUrl}/geographies/${getGeographySlug(geo)}`,
+        url: `${appUrl}/geographies/${slug}`,
       });
     });
     if (spatialCoverage.length > 0) {

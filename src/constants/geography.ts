@@ -1,7 +1,11 @@
 export const EXCLUDED_ISO_CODES = ["EUR", "XAA", "XAB"];
 export const INCLUDED_GEO_TYPES = ["ISO-3166", "ISO-3166-2"];
 
-// Maps the kebab-cased slug computed from a geography's display name to the slug its page actually resolves at
+/**
+ * Maps the kebab-cased slug computed from a geography's display name to the slug its page actually resolves at.
+ * This exists because we don't have label slugs right now and need to preserve the old-search geography slugs as-written,
+ * which are _almost_ a pure function from name -> slug, but not quite:
+ */
 export const GEOGRAPHY_SLUG_CONVERSIONS: Record<string, string> = {
   bahamas: "bahamas-the",
   "bolivia-plurinational-state-of": "bolivia",
