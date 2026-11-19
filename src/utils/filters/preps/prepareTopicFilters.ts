@@ -12,5 +12,5 @@ export const prepareTopicFilters =
   (conceptIds: string[]): TFiltersGroupPrep =>
   (rootLabels) => {
     const allTopics = sortedUniqBy(sortBy(flattenTopicFilters(rootLabels), "id"), "value");
-    return allTopics.filter((topic) => !conceptIds.includes(topic.id.split(ID_SEPARATOR)[1]));
+    return allTopics.filter((topic) => (topic.count ?? 0) > 0 && !conceptIds.includes(topic.id.split(ID_SEPARATOR)[1]));
   };
