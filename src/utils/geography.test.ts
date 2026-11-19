@@ -22,10 +22,6 @@ describe("getGeographySlug", () => {
     expect(getGeographySlug(label("subdivision::US-CA", "subdivision", "California"))).toBe("us-ca");
   });
 
-  it("gives no slug to a subdivision the geographies API has no page for", () => {
-    expect(getGeographySlug(label("subdivision::IN-TG", "subdivision", "Telangana"))).toBeNull();
-  });
-
   it("gives no slug to an excluded iso code", () => {
     expect(getGeographySlug(label("country::EUR", "country", "Europe"))).toBeNull();
     expect(getGeographySlug(label("country::XAB", "country", "International"))).toBeNull();
