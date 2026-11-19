@@ -7,7 +7,7 @@ export type TCollectionApiData = {
   families: TDataInDocument[];
 };
 
-export type TCollectionPresentationalData = {
+type TCollectionPresentationalData = {
   collection: TCollectionPublicWithFamilies;
   debug?: {
     dataInDocument: TDataInDocument;

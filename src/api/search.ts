@@ -2,7 +2,6 @@ import { ID_SEPARATOR } from "@/constants/chars";
 import { SORT_PARAMS_LOOKUP } from "@/constants/sort";
 import themeConfig from "@/themes/config";
 import { ISearchDocumentsResponse, TSearchQueryGroup, TSearchQueryRule, TSortValue, TThemeConfig } from "@/types";
-import { DATE_RANGE_MIN_YEAR, hasPublishedDateRule } from "@/utils/_experiment/dateRangeFilters";
 import { deflateFilters } from "@/utils/filters/deflate";
 
 export const getSearchApiStatus = (error: unknown): number | undefined => {
@@ -25,6 +24,16 @@ interface ISearchDocumentsParams {
 
 // Fraction of query terms a document must match, so extra words narrow the results
 export const SEARCH_DOCUMENTS_MIN_SHOULD_MATCH = 0.7;
+
+const DATE_RANGE_MIN_YEAR = 1900;
+
+const hasPublishedDateRule = (group: TSearchQueryGroup | null | undefined): boolean => {
+  if (!group) return false;
+  return group.filters.some((filter) => {
+    if ("field" in filter) return filter.field === "attributes.published_date";
+    return hasPublishedDateRule(filter);
+  });
+};
 
 interface ISearchApiRequest {
   apiUrl: string;

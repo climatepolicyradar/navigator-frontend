@@ -3,8 +3,6 @@ import orderBy from "lodash/orderBy";
 import { ORDERED_ROOT_TOPIC_IDS } from "@/constants/topics";
 import { TTopic } from "@/types";
 
-export type TSortFuncType = (data: any, prop: any) => any;
-
 export const sortData = <T>(data: T[], prop: keyof T): T[] => {
   const myData = data.sort((a, b) => {
     if (a[prop] < b[prop]) {

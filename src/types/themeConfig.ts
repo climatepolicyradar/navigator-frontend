@@ -24,7 +24,7 @@ type TThemePageBlocks = {
 
 /* Everything else */
 
-export type TDocumentCategory = "All" | "UN Submissions" | "Laws" | "Policies" | "Litigation" | "Climate Finance Projects" | "Offshore Wind Reports";
+type TDocumentCategory = "All" | "UN Submissions" | "Laws" | "Policies" | "Litigation" | "Climate Finance Projects" | "Offshore Wind Reports";
 export type TLabelCategoryValue =
   | "Corporate Disclosure"
   | "Global Stocktake"
@@ -35,7 +35,7 @@ export type TLabelCategoryValue =
   | "Report"
   | "UN submission";
 
-export type TDownloadColumn =
+type TDownloadColumn =
   | "ID"
   | "TITLE"
   | "DESCRIPTION"
@@ -58,13 +58,13 @@ export type TDownloadColumn =
   | "CASE_CATEGORIES"
   | "JURISDICTIONS";
 
-export type TLabelVariationKey = "country" | "date" | "region";
+type TLabelVariationKey = "country" | "date" | "region";
 type TLabelVariation = {
   category: string[];
   label: string;
 };
 
-export type TThemeConfigOption<Value> = {
+type TThemeConfigOption<Value> = {
   additionalInfo?: string;
   alias?: string;
   category?: string[];
@@ -107,7 +107,7 @@ interface IThemeConfigFilterFilterRadio extends IThemeConfigFilterType {
   options?: TThemeConfigOption<string | string[]>[];
 }
 
-export type TThemeConfigFilter = IThemeConfigFilterCheckbox | IThemeConfigFilterFilterRadio;
+type TThemeConfigFilter = IThemeConfigFilterCheckbox | IThemeConfigFilterFilterRadio;
 
 type TThemeLinkKey = "cookiePolicy" | "downloadDatabase" | "emailAlerts" | "privacyPolicy" | "targetDomain" | "leaveFeedback";
 

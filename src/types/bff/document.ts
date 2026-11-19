@@ -7,7 +7,7 @@ export type TDocumentApiData = {
   document: TDataInDocument;
 };
 
-export type TDocumentPresentationalData = {
+type TDocumentPresentationalData = {
   document: TFamilyDocumentPublic;
   family: TFamilyPublic;
   themeCriteria: TThemeCriteria;

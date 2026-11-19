@@ -5,7 +5,7 @@ import { getApprovedYearFromEvents } from "@/helpers/getApprovedYearFromEvents";
 import { getSumUSD } from "@/helpers/getSumUSD";
 import { IFamilyDocumentTopics, IMetadata, TFamilyPublic } from "@/types";
 import { getTopicsMetadataItem } from "@/utils/family-metadata/getTopicsMetadataItem";
-import { familyTopicsHasTopics } from "@/utils/topics/processFamilyTopics";
+import { familyTopicsHasTopics } from "@/utils/topics/familyTopicsHasTopics";
 
 export function getMCFMetadata(family: TFamilyPublic, familyTopics: IFamilyDocumentTopics | null): IMetadata[] {
   const metadata = [];

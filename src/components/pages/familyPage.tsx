@@ -38,9 +38,9 @@ import { getLitigationCaseJSONLD } from "@/utils/json-ld/getLitigationCaseJSONLD
 import { pluralise } from "@/utils/pluralise";
 import { getPersistedPrincipalDrawerTab, persistPrincipalDrawerTab } from "@/utils/principal/principalTabs";
 import { firstCase } from "@/utils/text/firstCase";
-import { familyTopicsHasTopics } from "@/utils/topics/processFamilyTopics";
+import { familyTopicsHasTopics } from "@/utils/topics/familyTopicsHasTopics";
 
-export interface IProps {
+interface IProps {
   canonicalUrl: string;
   collections: TCollectionPublicWithFamilies[];
   errors: string[];

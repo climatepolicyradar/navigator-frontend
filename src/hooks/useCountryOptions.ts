@@ -12,7 +12,7 @@ import { ApiClient } from "../api/http-common";
 const COUNTRY_TAXONOMY_PATTERN = "**/country::*";
 
 // The search API returns each match with its ancestors, so countries arrive nested under their region
-export const toCountryOptions = (taxonomy: TNestedSearchLabel[]): TCountryOption[] =>
+const toCountryOptions = (taxonomy: TNestedSearchLabel[]): TCountryOption[] =>
   flattenNestedLabels(taxonomy)
     .filter((label) => label.type === "country")
     .flatMap((country) => {

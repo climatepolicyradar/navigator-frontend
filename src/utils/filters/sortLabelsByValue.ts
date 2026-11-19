@@ -5,7 +5,7 @@ import { TNestedSearchLabel } from "@/types";
 // sort into their alphabetical position instead of ahead of every mixed-case peer.
 const collator = new Intl.Collator(undefined, { numeric: true, sensitivity: "base" });
 
-export const compareLabelValues = (a: string, b: string) => collator.compare(a, b);
+const compareLabelValues = (a: string, b: string) => collator.compare(a, b);
 
 export const sortLabelsByValue = <T extends Pick<TNestedSearchLabel, "value">>(labels: T[]): T[] =>
   [...labels].sort((a, b) => compareLabelValues(a.value, b.value));
