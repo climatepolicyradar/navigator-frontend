@@ -2,6 +2,16 @@ import { QUERY_PARAMS } from "@/constants/queryParams";
 import { TSearchSuggestion } from "@/types";
 import { deflateFilters } from "@/utils/filters/deflate";
 
+export const FRAMEWORK_LAWS_SEARCH_PARAMS = {
+  [QUERY_PARAMS.filters]: deflateFilters({
+    op: "and",
+    filters: [
+      { field: "labels.value.id", op: "contains", value: "category::Law" },
+      { op: "or", filters: [{ field: "labels.value.id", op: "contains", value: "law_type::Framework law", checked: true }] },
+    ],
+  }),
+};
+
 export const SUGGESTED_SEARCHES: TSearchSuggestion[] = [
   {
     label: "Latest NDCs",
@@ -57,14 +67,6 @@ export const SUGGESTED_SEARCHES: TSearchSuggestion[] = [
   },
   {
     label: "Climate framework laws",
-    params: {
-      [QUERY_PARAMS.filters]: deflateFilters({
-        op: "and",
-        filters: [
-          { field: "labels.value.id", op: "contains", value: "category::Law" },
-          { op: "or", filters: [{ field: "labels.value.id", op: "contains", value: "law_type::Framework law", checked: true }] },
-        ],
-      }),
-    },
+    params: FRAMEWORK_LAWS_SEARCH_PARAMS,
   },
 ];
