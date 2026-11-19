@@ -1,12 +1,9 @@
 import { Meta, StoryObj } from "@storybook/nextjs-vite";
-import { LucideMenu } from "lucide-react";
 
 import { Header as CCCHeader } from "@/ccc/components/Header";
 import { default as CCLWHeader } from "@/cclw/components/Header";
-import MainMenu from "@/components/molecules/mainMenu/MainMenu";
-import { CPRLogo } from "@/cpr/components/Header";
+import { Header as CPRHeader } from "@/cpr/components/Header";
 import { Header as MCFHeader } from "@/mcf/components/Header";
-import { TMenuLink } from "@/types";
 
 import { NavBar } from "./NavBar";
 
@@ -22,68 +19,12 @@ type TStory = StoryObj<typeof NavBar>;
 
 export default meta;
 
-const CPR_MENU_LINKS: TMenuLink[] = [
-  { text: "About us", href: "https://climatepolicyradar.org", external: true, cy: "about" },
-  { text: "Methodology", href: "https://github.com/climatepolicyradar/methodology/blob/main/METHODOLOGY.md", external: true, cy: "methodology" },
-  { text: "FAQ", href: "/faq", external: false, cy: "faq" },
-];
-
-const CPRMenuButton = () => (
-  <div className="flex items-center gap-1 px-2 py-1 rounded-md font-medium group-data-popup-open:bg-gray-100 text-gray-950">
-    <LucideMenu size={16} className="text-text-brand" /> Menu
-  </div>
-);
-
-const CPRArgs = {
-  headerClasses: "",
-  logo: <CPRLogo />,
-  menu: <MainMenu icon={<CPRMenuButton />} links={CPR_MENU_LINKS} />,
-  showLogo: true,
-};
-
-export const SearchPage: TStory = {
-  args: CPRArgs,
-  parameters: {
-    nextjs: {
-      router: {
-        asPath: "/search?q=Adaptation+strategy",
-        pathname: "/search",
-        query: {
-          q: "Adaptation strategy",
-        },
-      },
-    },
-  },
-};
-
-export const GeographyPage: TStory = {
-  args: CPRArgs,
-  parameters: {
-    nextjs: {
-      router: {
-        asPath: "/geographies/saint-kitts-and-nevis?q=Adaptation+strategy",
-        pathname: "/geographies/[id]",
-        query: {
-          id: "saint-kitts-and-nevis",
-          q: "Adaptation strategy",
-        },
-      },
-    },
-  },
-};
-
-export const FamilyPage: TStory = {
-  args: CPRArgs,
-  parameters: {
-    nextjs: {
-      router: {
-        asPath: "/document/national-adaptation-strategy-to-climate-change_3bf7?q=Adaptation+strategy",
-        pathname: "/document/[id]",
-        query: {
-          id: "national-adaptation-strategy-to-climate-change_3bf7",
-          q: "Adaptation strategy",
-        },
-      },
+const homePageParameters = {
+  nextjs: {
+    router: {
+      asPath: "/",
+      pathname: "/",
+      query: {},
     },
   },
 };
@@ -102,9 +43,26 @@ const documentPageParameters = {
   },
 };
 
-export const DocumentPage: TStory = {
-  args: CPRArgs,
+export const CPR: TStory = {
+  render: () => <CPRHeader />,
   parameters: documentPageParameters,
+};
+
+export const CPRHomepage: TStory = {
+  render: () => <CPRHeader />,
+  parameters: homePageParameters,
+};
+
+export const CPRLandingPageWithHero: TStory = {
+  render: () => <CPRHeader landingPageWithHero />,
+  parameters: documentPageParameters,
+  decorators: [
+    (Story) => (
+      <div className="relative min-h-[200px] bg-inky-blue">
+        <Story />
+      </div>
+    ),
+  ],
 };
 
 export const CCLW: TStory = {
