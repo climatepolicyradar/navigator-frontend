@@ -6,7 +6,14 @@ import useConfig from "@/hooks/useConfig";
 
 const ANIMATION_DELAY = 3000;
 
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+const scrollToMap = () => {
+  const worldMap = document.getElementById("world-map");
+  worldMap?.scrollIntoView({ behavior: "smooth" });
+};
+
 const Instructions = () => {
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const [isAnimated, setIsAnimated] = useState(false);
   const configQuery = useConfig();
   const { data: { corpus_types } = {} } = configQuery;
