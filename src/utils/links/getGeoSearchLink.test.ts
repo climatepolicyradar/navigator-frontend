@@ -1,17 +1,9 @@
-import { DEFAULT_FEATURES } from "@/constants/features";
 import { QUERY_PARAMS } from "@/constants/queryParams";
-import { GeographyV2, TFeatures, TSearchLabel } from "@/types";
+import { TSearchLabel } from "@/types";
 import { deflateFilters } from "@/utils/filters/deflate";
 import { filterPathsToQueryGroup } from "@/utils/search/filterPathsToQueryGroup";
 
 import { getGeoSearchLink } from "./getGeoSearchLink";
-
-const geography: GeographyV2 = {
-  id: "geography-id",
-  type: "country",
-  slug: "kenya",
-  name: "Kenya",
-};
 
 const region: TSearchLabel = {
   id: "region::Africa",
@@ -25,13 +17,6 @@ const geographyLabel: TSearchLabel = {
   type: "country",
   value: "Kenya",
   labels: [{ type: "subconcept_of", value: region, timestamp: null, passages_id: null, count: null }],
-};
-
-const subdivisionGeography: GeographyV2 = {
-  id: "AU-NSW",
-  type: "subdivision",
-  slug: "au-nsw",
-  name: "New South Wales",
 };
 
 const country: TSearchLabel = {
@@ -48,37 +33,10 @@ const subdivisionLabel: TSearchLabel = {
   labels: [{ type: "subconcept_of", value: country, timestamp: null, passages_id: null, count: null }],
 };
 
-const oldSearchFeatures: TFeatures = { ...DEFAULT_FEATURES, "new-search": false };
-const newSearchFeatures: TFeatures = { ...DEFAULT_FEATURES, "new-search": true };
-
 describe("getGeoSearchLink", () => {
-  it("builds a country/category query when the new-search feature flag is off", () => {
+  it("builds a filters query from a geography label, its parent region and the mapped category", () => {
     const result = getGeoSearchLink({
       categoryId: "laws",
-      features: oldSearchFeatures,
-      geography,
-      geographyLabel,
-    });
-
-    expect(result.query).toEqual({ [QUERY_PARAMS.country]: "kenya", [QUERY_PARAMS.category]: "laws" });
-  });
-
-  it("builds a country/category query when there is no geography label, even if the feature flag is on", () => {
-    const result = getGeoSearchLink({
-      categoryId: "laws",
-      features: newSearchFeatures,
-      geography,
-      geographyLabel: null,
-    });
-
-    expect(result.query).toEqual({ [QUERY_PARAMS.country]: "kenya", [QUERY_PARAMS.category]: "laws" });
-  });
-
-  it("builds a filters query when the new-search feature flag is on and a geography label is provided", () => {
-    const result = getGeoSearchLink({
-      categoryId: "laws",
-      features: newSearchFeatures,
-      geography,
       geographyLabel,
     });
 
@@ -91,44 +49,18 @@ describe("getGeoSearchLink", () => {
     expect(result.query).toEqual({ [QUERY_PARAMS.filters]: deflateFilters(expectedFilters) });
   });
 
-  it("links to /search for old search", () => {
+  it("links to /search", () => {
     const result = getGeoSearchLink({
       categoryId: "All",
-      features: oldSearchFeatures,
-      geography,
       geographyLabel,
     });
 
     expect(result.href).toBe("/search");
   });
 
-  it("links to /search for new search", () => {
+  it("only filters by geography", () => {
     const result = getGeoSearchLink({
       categoryId: "All",
-      features: newSearchFeatures,
-      geography,
-      geographyLabel,
-    });
-
-    expect(result.href).toBe("/search");
-  });
-
-  it("omits the category query param for old search", () => {
-    const result = getGeoSearchLink({
-      categoryId: "All",
-      features: oldSearchFeatures,
-      geography,
-      geographyLabel,
-    });
-
-    expect(result.query).toEqual({ [QUERY_PARAMS.country]: "kenya" });
-  });
-
-  it("only filters by geography for new search", () => {
-    const result = getGeoSearchLink({
-      categoryId: "All",
-      features: newSearchFeatures,
-      geography,
       geographyLabel,
     });
 
@@ -137,22 +69,9 @@ describe("getGeoSearchLink", () => {
     expect(result.query).toEqual({ [QUERY_PARAMS.filters]: deflateFilters(expectedFilters) });
   });
 
-  it("includes the category query param for old search", () => {
+  it("adds the mapped category filter when the category is recognised", () => {
     const result = getGeoSearchLink({
       categoryId: "policies",
-      features: oldSearchFeatures,
-      geography,
-      geographyLabel,
-    });
-
-    expect(result.query).toEqual({ [QUERY_PARAMS.country]: "kenya", [QUERY_PARAMS.category]: "policies" });
-  });
-
-  it("adds the mapped category filter for new search when the category is recognised", () => {
-    const result = getGeoSearchLink({
-      categoryId: "policies",
-      features: newSearchFeatures,
-      geography,
       geographyLabel,
     });
 
@@ -165,11 +84,9 @@ describe("getGeoSearchLink", () => {
     expect(result.query).toEqual({ [QUERY_PARAMS.filters]: deflateFilters(expectedFilters) });
   });
 
-  it("builds a filters query from a subdivision label and its parent country for new search", () => {
+  it("builds a filters query from a subdivision label and its parent country", () => {
     const result = getGeoSearchLink({
       categoryId: "All",
-      features: newSearchFeatures,
-      geography: subdivisionGeography,
       geographyLabel: subdivisionLabel,
     });
 
@@ -178,11 +95,9 @@ describe("getGeoSearchLink", () => {
     expect(result.query).toEqual({ [QUERY_PARAMS.filters]: deflateFilters(expectedFilters) });
   });
 
-  it("adds the mapped category filter for a subdivision for new search", () => {
+  it("adds the mapped category filter for a subdivision", () => {
     const result = getGeoSearchLink({
       categoryId: "laws",
-      features: newSearchFeatures,
-      geography: subdivisionGeography,
       geographyLabel: subdivisionLabel,
     });
 
@@ -195,11 +110,9 @@ describe("getGeoSearchLink", () => {
     expect(result.query).toEqual({ [QUERY_PARAMS.filters]: deflateFilters(expectedFilters) });
   });
 
-  it("only filters by geography for new search when the category has no known mapping", () => {
+  it("only filters by geography when the category has no known mapping", () => {
     const result = getGeoSearchLink({
       categoryId: "unmapped-category",
-      features: newSearchFeatures,
-      geography,
       geographyLabel,
     });
 

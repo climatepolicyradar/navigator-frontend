@@ -104,7 +104,6 @@ export const TUTORIALS: TTutorials = {
     },
   },
   newSearch: {
-    featureKey: "new-search",
     modal: {
       defaultOpen: true,
       pages: ["/search"],

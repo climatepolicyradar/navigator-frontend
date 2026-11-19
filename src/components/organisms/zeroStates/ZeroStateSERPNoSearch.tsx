@@ -17,7 +17,7 @@ export const ZeroStateSERPNoSearch = () => (
         <li key={suggestion.label}>
           <PageLink
             href="/search"
-            query={suggestion.newParams}
+            query={suggestion.params}
             className="block px-3 py-1.5 border border-border-normal rounded-full text-base text-text-brand font-medium leading-5"
           >
             {suggestion.label}

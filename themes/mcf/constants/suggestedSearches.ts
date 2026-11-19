@@ -6,9 +6,6 @@ export const SUGGESTED_SEARCHES: TSearchSuggestion[] = [
   {
     label: "Adaptation",
     params: {
-      [QUERY_PARAMS.query_string]: "Adaptation",
-    },
-    newParams: {
       [QUERY_PARAMS.filters]: deflateFilters({
         op: "or",
         filters: [{ field: "labels.value.id", op: "contains", value: "concept::Q557", checked: true }],
@@ -18,9 +15,6 @@ export const SUGGESTED_SEARCHES: TSearchSuggestion[] = [
   {
     label: "Extreme Weather",
     params: {
-      [QUERY_PARAMS.query_string]: "Extreme Weather",
-    },
-    newParams: {
       [QUERY_PARAMS.filters]: deflateFilters({
         op: "or",
         filters: [{ field: "labels.value.id", op: "contains", value: "concept::Q374", checked: true }],
@@ -30,9 +24,6 @@ export const SUGGESTED_SEARCHES: TSearchSuggestion[] = [
   {
     label: "Philippines",
     params: {
-      [QUERY_PARAMS.country]: "philippines",
-    },
-    newParams: {
       [QUERY_PARAMS.filters]: deflateFilters({
         op: "and",
         filters: [

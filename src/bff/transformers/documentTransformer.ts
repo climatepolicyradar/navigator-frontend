@@ -6,7 +6,7 @@ import { toThemeCriteria } from "@/utils/getDocumentSites";
 
 export const documentTransformer = (documentApiData: TDocumentApiData, errors: Error[]): TDocumentPresentationalResponse => {
   try {
-    const { document, topicsData, searchDocument } = documentApiData;
+    const { document } = documentApiData;
 
     const documentPublic = transformDocument(document, []);
     const parentDocument = getParentDocuments(document.documents || [])[0];
@@ -18,8 +18,6 @@ export const documentTransformer = (documentApiData: TDocumentApiData, errors: E
       data: {
         document: documentPublic,
         family,
-        topicsData,
-        searchDocument,
         themeCriteria: toThemeCriteria(parentDocument.value.labels),
         debug: {
           dataInDocument: document,

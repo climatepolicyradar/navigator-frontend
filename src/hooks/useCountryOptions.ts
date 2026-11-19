@@ -1,15 +1,9 @@
 import { useQuery } from "@tanstack/react-query";
-import { useContext } from "react";
 
 import { ID_SEPARATOR } from "@/constants/chars";
 import { dayInMilliseconds } from "@/constants/dayInMilleseconds";
 import { useEnvConfig } from "@/context/EnvConfig";
-import { ThemeContext } from "@/context/ThemeContext";
-import useConfig from "@/hooks/useConfig";
-import { TApiItemResponse, TCountryOption, TGeography, TNestedSearchLabel } from "@/types";
-import { getCookie } from "@/utils/cookies";
-import { getFeatureFlags } from "@/utils/featureFlags";
-import { getFeatures } from "@/utils/features";
+import { TApiItemResponse, TCountryOption, TNestedSearchLabel } from "@/types";
 import { getGeographySlug } from "@/utils/geography";
 import { flattenNestedLabels } from "@/utils/labels/flattenNestedLabels";
 
@@ -28,28 +22,12 @@ export const toCountryOptions = (taxonomy: TNestedSearchLabel[]): TCountryOption
     })
     .sort((a, b) => a.display_value.localeCompare(b.display_value));
 
-const configGeographyToCountryOption = (geography: TGeography): TCountryOption => ({
-  id: String(geography.id),
-  slug: geography.slug,
-  display_value: geography.display_value,
-});
-
-// Pages using this hook are cached publicly, so PostHog flags can't be read from cookies on the server. Evaluate on the client instead.
-const useIsNewSearch = (): boolean => {
-  const { themeConfig } = useContext(ThemeContext);
-  const featureFlagsCookie = typeof document === "undefined" ? "" : getCookie("feature_flags");
-
-  return getFeatures(themeConfig, getFeatureFlags({ feature_flags: featureFlagsCookie }))["new-search"];
-};
-
 /**
- * Countries for geography pickers. With new search on these come from the search API's label taxonomy, otherwise from /config.
+ * Countries for geography pickers, from the search API's label taxonomy.
  * @see: https://linear.app/climate-policy-radar/issue/FUS-960
  */
 export default function useCountryOptions(): { data: TCountryOption[]; isLoading: boolean } {
   const { API_URL } = useEnvConfig();
-  const isNewSearch = useIsNewSearch();
-  const configQuery = useConfig();
 
   const taxonomyQuery = useQuery({
     queryKey: ["country-options"],
@@ -59,13 +37,10 @@ export default function useCountryOptions(): { data: TCountryOption[]; isLoading
 
       return toCountryOptions(response.data.data);
     },
-    enabled: isNewSearch,
     refetchOnWindowFocus: false,
     refetchOnMount: false,
     gcTime: dayInMilliseconds,
   });
 
-  if (isNewSearch) return { data: taxonomyQuery.data ?? [], isLoading: taxonomyQuery.isLoading };
-
-  return { data: (configQuery.data?.countries ?? []).map(configGeographyToCountryOption), isLoading: configQuery.isLoading };
+  return { data: taxonomyQuery.data ?? [], isLoading: taxonomyQuery.isLoading };
 }

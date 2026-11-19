@@ -1,30 +1,5 @@
-import sortBy from "lodash/sortBy";
-
-import { getTaxonomyFromV1 } from "@/bff/methods/getTaxonomy";
-import { GeographyTypeV2, GeographyV2, ISearchDocument, ISearchDocumentsResponse, TFamilySummary, TMatchedFamily, TSearch } from "@/types";
+import { ISearchDocument, ISearchDocumentsResponse, TFamilySummary } from "@/types";
 import { formatDate } from "@/utils/timedate";
-
-const getMostSpecificGeography = (geographies: GeographyV2[]): GeographyV2 => {
-  if (!geographies.length) return null;
-
-  const GEOGRAPHY_TYPE_WEIGHTING: GeographyTypeV2[] = ["subdivision", "country", "region"];
-  return sortBy(geographies, (geo) => GEOGRAPHY_TYPE_WEIGHTING.indexOf(geo.type))[0];
-};
-
-export const familyToSummary = (family: TMatchedFamily, allGeographies: GeographyV2[]): TFamilySummary => {
-  const geographies = family.family_geographies.map((familyGeo) => allGeographies.find((geo) => geo.id === familyGeo)).filter((geo) => geo);
-
-  // Build a card from a legacy search family.
-  return {
-    href: `/document/${family.family_slug}`,
-    title: family.family_name,
-    metadata: [
-      getTaxonomyFromV1(family.family_category, family.corpus_type_name, family.family_source, family.corpus_import_id),
-      getMostSpecificGeography(geographies)?.name,
-      formatDate(family.family_date)[0].toString(),
-    ].filter((line) => Boolean(line)),
-  };
-};
 
 export const principalToSummary = (principal: ISearchDocument): TFamilySummary => {
   const labelValue = (type: string): string | undefined => principal.labels.find((label) => label.value.type === type)?.value.value;
@@ -47,23 +22,7 @@ export type TCategoryResults = {
   count: number;
 };
 
-const isSearchDocumentsResponse = (results: ISearchDocumentsResponse | TSearch): results is ISearchDocumentsResponse =>
-  Array.isArray((results as ISearchDocumentsResponse).results);
-
-/**
- * Normalise either search's response into the cards and count the recents block renders.
- *
- * The two searches return different shapes, so this is the one place that knows about both.
- * The shape itself decides how to read the response, so a stale `new-search` flag renders
- * nothing rather than throwing.
- */
-export const toCategoryResults = (results: ISearchDocumentsResponse | TSearch | undefined, allGeographies: GeographyV2[]): TCategoryResults => {
+export const toCategoryResults = (results: ISearchDocumentsResponse | undefined): TCategoryResults => {
   if (!results) return { families: [], count: 0 };
-
-  if (isSearchDocumentsResponse(results)) {
-    return { families: results.results.map(principalToSummary), count: results.total_size ?? 0 };
-  }
-
-  const { families, total_family_hits } = results;
-  return { families: (families || []).map((family) => familyToSummary(family, allGeographies)), count: total_family_hits ?? 0 };
+  return { families: results.results.map(principalToSummary), count: results.total_size ?? 0 };
 };

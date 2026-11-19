@@ -1,50 +1,34 @@
 import orderBy from "lodash/orderBy";
-import { Loader } from "lucide-react";
 import { ReactNode } from "react";
 
-import { LabelButton } from "@/components/atoms/labelButton/LabelButton";
 import { PageLink, TQueryOverrides } from "@/components/atoms/pageLink/PageLink";
 import { ViewMore } from "@/components/molecules/viewMore/ViewMore";
 import { ARROW_UP_RIGHT } from "@/constants/chars";
 import { DEFAULT_DOCUMENT_TITLE } from "@/constants/document";
 import { FILING_DATE_EVENT_TYPES } from "@/constants/events";
-import { QUERY_PARAMS } from "@/constants/queryParams";
 import { getLanguage } from "@/helpers/getLanguage";
 import { getMainDocuments } from "@/helpers/getMainDocuments";
 import { DISPLAY_ALLOWED_STATUSES } from "@/schemas";
-import {
-  IFamilyDocumentTopics,
-  TFamilyDocumentPublic,
-  TFamilyEventPublic,
-  TFamilyPublic,
-  TFeatures,
-  TLoadingStatus,
-  TMatchedFamily,
-  TTableColumn,
-  TTableRow,
-} from "@/types";
+import { IFamilyDocumentTopics, TFamilyDocumentPublic, TFamilyEventPublic, TFamilyPublic, TTableColumn, TTableRow } from "@/types";
 
 import { getMostSpecificCourts } from "./getMostSpecificCourts";
-import { pluralise } from "./pluralise";
 import { joinTailwindClasses } from "./tailwind";
 import { firstCase } from "./text/firstCase";
 import { formatDateShort } from "./timedate";
 
 /* Columns */
 
-export type TEventTableColumnId = "caseNumber" | "caseTitle" | "court" | "date" | "searchResults" | "document" | "topics" | "type";
+export type TEventTableColumnId = "caseNumber" | "caseTitle" | "court" | "date" | "document" | "topics" | "type";
 type TEventTableColumn = TTableColumn<TEventTableColumnId>;
 
 export const getEventTableColumns = ({
   hasTopics = false,
   isLitigation,
   showFamilyColumns = false,
-  showMatches = false,
 }: {
   hasTopics?: boolean;
   isLitigation: boolean;
   showFamilyColumns?: boolean;
-  showMatches?: boolean;
 }) => {
   const columns: TEventTableColumn[] = [
     { id: "date", name: "Filing Date", sortable: true, fraction: 2 },
@@ -54,7 +38,6 @@ export const getEventTableColumns = ({
     { id: "caseNumber", name: "Case Number", fraction: 2 },
     { id: "court" },
     { id: "caseTitle", name: "Case", fraction: 2 },
-    { id: "searchResults", name: "Search results", fraction: 2 },
   ];
 
   // Remove columns based on context of the document or family
@@ -65,7 +48,6 @@ export const getEventTableColumns = ({
   if (!isLitigation) {
     columnsToRemove.push("date", "type");
   }
-  if (!showMatches) columnsToRemove.push("searchResults");
 
   return columns.filter((column) => !columnsToRemove.includes(column.id));
 };
@@ -120,7 +102,6 @@ const linkClasses = "block text-[#0038a9] underline underline-offset-4 decoratio
 
 export const getDocumentLink = (
   document: TFamilyDocumentPublic,
-  hasMatches: boolean,
   isMainDocument: boolean,
   isLitigation: boolean,
   // The search to hand the document page, as its own base params. The destination searches
@@ -128,10 +109,10 @@ export const getDocumentLink = (
   // the whole page query be inherited.
   search?: TQueryOverrides
 ): React.ReactNode => {
-  const canPreview = !!document.slug && (hasMatches || (!!document.cdn_object && document.cdn_object.toLowerCase().endsWith(".pdf")));
+  const canPreview = !!document.slug && !!document.cdn_object && document.cdn_object.toLowerCase().endsWith(".pdf");
   const canViewSource = !canPreview && !!document.source_url;
 
-  if (canPreview)
+  if (canPreview) {
     return (
       <PageLink
         aria-label="Document link"
@@ -143,12 +124,16 @@ export const getDocumentLink = (
         {document.title || DEFAULT_DOCUMENT_TITLE}
       </PageLink>
     );
-  if (canViewSource)
+  }
+
+  if (canViewSource) {
     return (
       <PageLink external href={document.source_url} className={joinTailwindClasses(linkClasses, (isMainDocument || isLitigation) && "font-medium")}>
         {document.title} (External page {ARROW_UP_RIGHT})
       </PageLink>
     );
+  }
+
   return (
     <>
       {document.title} <br />{" "}
@@ -168,7 +153,6 @@ export const getDocumentLink = (
 const getDocumentCell = (
   isLitigation: boolean,
   isMainDocument: boolean,
-  hasMatches: boolean,
   document?: TFamilyDocumentPublic,
   event?: TFamilyEventPublic,
   search?: TQueryOverrides
@@ -177,7 +161,7 @@ const getDocumentCell = (
     <div className="flex flex-col gap-2">
       {isLitigation && (
         <>
-          {document && <div>{getDocumentLink(document, hasMatches, isMainDocument, isLitigation, search)}</div>}
+          {document && <div>{getDocumentLink(document, isMainDocument, isLitigation, search)}</div>}
           {event?.metadata.action_taken?.[0] && <div className="italic">{event.metadata.action_taken[0]}</div>}
           {event?.metadata.description?.[0] && (
             <ViewMore context="event-table-document-cell" maxHeight={80}>
@@ -188,7 +172,7 @@ const getDocumentCell = (
       )}
       {!isLitigation && (
         <>
-          <div>{getDocumentLink(document, hasMatches, isMainDocument, isLitigation, search)}</div>
+          <div>{getDocumentLink(document, isMainDocument, isLitigation, search)}</div>
           {document.document_role && (
             <span className={`${document.document_role.toLowerCase().includes("main") ? "font-medium" : ""}`}>
               {firstCase(document.document_role.toLowerCase()) + (document.document_role.toLowerCase().includes("main") ? " document" : "")}
@@ -209,22 +193,16 @@ const getDocumentCell = (
 export const getEventTableRows = ({
   families,
   familyTopics,
-  features,
   documentEventsOnly = false,
   documentRowClick,
-  matchesFamily,
-  matchesStatus = "success",
   language,
   isLitigation,
   search,
 }: {
   families: TFamilyPublic[];
   familyTopics?: IFamilyDocumentTopics | null;
-  features: TFeatures;
   documentEventsOnly?: boolean;
   documentRowClick?: (rowId: string) => void;
-  matchesFamily?: TMatchedFamily;
-  matchesStatus?: TLoadingStatus;
   language?: string;
   isLitigation: boolean;
   // The search to carry to the document page, when the table sits inside one
@@ -261,62 +239,14 @@ export const getEventTableRows = ({
         // TODO investigate references to topics not in API response
         if (!topic) return null;
 
-        if (features["new-search"]) {
-          return <span key={topicId}>{firstCase(topic?.preferred_label || fallbackLabel)}</span>;
-        }
-
-        return (
-          <PageLink
-            key={topicId}
-            href={`/documents/${document.slug}`}
-            query={{ [QUERY_PARAMS.concept_name]: topic.preferred_label }}
-            className={linkClasses}
-          >
-            <LabelButton>{firstCase(topic?.preferred_label || fallbackLabel)}</LabelButton>
-          </PageLink>
-        );
+        return <span key={topicId}>{firstCase(topic?.preferred_label || fallbackLabel)}</span>;
       });
 
       topicsDisplay = (
         <div className="flex flex-col gap-1 items-start">
           {topicLinks}
-          {someTopicsHidden && (
-            <>
-              {features["new-search"] ? (
-                <span>+ {sortedTopics.length - MAX_TOPICS_PER_DOCUMENT} more</span>
-              ) : (
-                <button
-                  type="button"
-                  role="link"
-                  className="p-2 hover:bg-[#f9fafb] active:bg-[#f3f4f6] border border-[#d1d5db] rounded-md text-sm text-[#374151] leading-4 font-medium"
-                >
-                  + {sortedTopics.length - MAX_TOPICS_PER_DOCUMENT} more
-                </button>
-              )}
-            </>
-          )}
+          {someTopicsHidden && <span>+ {sortedTopics.length - MAX_TOPICS_PER_DOCUMENT} more</span>}
         </div>
-      );
-    }
-
-    /* Matches */
-
-    let matches = 0;
-    if (matchesFamily && document) {
-      const matchesDocument = matchesFamily.family_documents.find((doc) => doc.document_slug === document.slug);
-      if (matchesDocument) {
-        matches = matchesDocument.document_passage_matches.length;
-      }
-    }
-
-    let matchesDisplay: ReactNode = null;
-    if (matchesStatus === "loading") {
-      matchesDisplay = <Loader height={20} width={20} className="animate-spin" />;
-    } else if (document && matches > 0) {
-      matchesDisplay = (
-        <PageLink keepQuery href={`/documents/${document.slug}`} className={linkClasses}>
-          {matches} {pluralise(matches, ["match", "matches"])}
-        </PageLink>
       );
     }
 
@@ -335,17 +265,8 @@ export const getEventTableRows = ({
               value: `${date.getTime()}-${FILING_DATE_EVENT_TYPES.includes(event?.event_type) ? "0" : "1"}`,
             }
           : null,
-        searchResults:
-          document && matchesDisplay
-            ? {
-                // TODO: improve the messaging here to include context about the search
-                // import { getPassageResultsContext } from "@/utils/getPassageResultsContext";
-                label: <div className="flex flex-col gap-2 items-start">{matchesDisplay}</div>,
-                value: `${document.slug}:${matches}`,
-              }
-            : null,
         document: {
-          label: getDocumentCell(isLitigation, isMainDocument, matches > 0, document, event, search),
+          label: getDocumentCell(isLitigation, isMainDocument, document, event, search),
           value: isMainDocument,
         },
         topics: { label: topicsDisplay, value: "" },

@@ -13,7 +13,6 @@ import {
   TApiItemResponse,
   GeographyV2,
   ISearchDocumentsResponse,
-  TSearch,
   TGeography,
   TFilterPathLabel,
   TSearchLabel,
@@ -22,7 +21,6 @@ import {
   TThemeConfig,
   GeographyTypeV2,
 } from "@/types";
-import buildSearchQuery from "@/utils/buildSearchQuery";
 import { extractNestedData } from "@/utils/extractNestedData";
 import { getFeatureFlags } from "@/utils/featureFlags";
 import { getFeatures } from "@/utils/features";
@@ -138,35 +136,14 @@ export const getServerSideProps = (async (context) => {
     geographyV2.name = countryNameFromConfig;
   }
 
-  const geographyLabel: TSearchLabel = features["new-search"] ? toGeographySearchLabel(lookup) : null;
+  const geographyLabel = toGeographySearchLabel(lookup);
 
-  // New search reads the search API, the same store the search page reads. The legacy `/searches`
-  // call cannot answer for a subdivision. `l` is the country param, and some documents including nature
-  // are missing from the legacy RDS store and only in the new system (@see FUS-815).
-  let vespaSearchResults: TSearch | ISearchDocumentsResponse = null;
-  if (geographyLabel) {
-    vespaSearchResults = await fetchGeographyPrincipals(process.env.API_URL, geographyLabel, themeConfig).catch((err): ISearchDocumentsResponse => {
+  const vespaSearchResults = await fetchGeographyPrincipals(process.env.API_URL, geographyLabel, themeConfig).catch(
+    (err): ISearchDocumentsResponse => {
       console.error(`Could not find search results for geography ${geographyV2.slug}:`, err);
       return null;
-    });
-  } else {
-    const searchQuery = buildSearchQuery(
-      {
-        l: geographyV2.slug,
-        page_size: "4",
-      },
-      themeConfig
-    );
-    vespaSearchResults = await backendApiClient
-      .post<TSearch>("/searches", searchQuery, {
-        headers: {
-          accept: "application/json",
-          "Content-Type": "application/json",
-        },
-      })
-      .then((response) => response.data)
-      .catch((err) => console.error(`Could not find search results for geography ${geographyV2.slug}:`, err));
-  }
+    }
+  );
 
   if (!vespaSearchResults) {
     return { notFound: true };
@@ -180,7 +157,7 @@ export const getServerSideProps = (async (context) => {
       geographyLabel,
       theme,
       themeConfig,
-      vespaSearchResults: vespaSearchResults,
+      vespaSearchResults,
     }),
   };
 }) satisfies GetServerSideProps;

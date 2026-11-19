@@ -1,15 +1,11 @@
 import { LucideMenu } from "lucide-react";
 import Image from "next/image";
 import { useRouter } from "next/router";
-import { useContext } from "react";
 
 import { FiveColumns } from "@/components/atoms/columns/FiveColumns";
 import { PageLink } from "@/components/atoms/pageLink/PageLink";
-import MainMenu from "@/components/molecules/mainMenu/MainMenu";
 import { NavBar } from "@/components/organisms/navBar/NavBar";
-import { FeaturesContext } from "@/context/FeaturesContext";
 import { MenuButtons } from "@/cpr/components/MenuButtons";
-import { MENU_LINKS } from "@/cpr/constants/menuLinks";
 import { TLandingPageConfig } from "@/types";
 import { joinTailwindClasses } from "@/utils/tailwind";
 
@@ -97,11 +93,8 @@ const OtherAppsBar = () => (
 
 export const Header = ({ landingPage = false, landingPageWithHero = false, logo }: IProps) => {
   const router = useRouter();
-  const features = useContext(FeaturesContext);
-  const newSearch = features["new-search"];
 
   const isHomePage = router.pathname === "/";
-  const showSearch = !landingPage && router.pathname !== "/search" && !newSearch && !isHomePage;
 
   // The homepage and any landing page with a hero run the hero to the top of the
   // page and float the header over it, so the header leaves the flow entirely --
@@ -111,16 +104,14 @@ export const Header = ({ landingPage = false, landingPageWithHero = false, logo 
   const navBarClasses = joinTailwindClasses(isOverlay ? "!absolute top-0" : "bg-white", landingPage && !isOverlay && "!static");
 
   const theme: TTheme = landingPageWithHero ? "dark" : "light";
-  const menuIcon = isHomePage ? undefined : <CPRMenuButton theme={theme} />;
 
   return (
     <NavBar
       headerClasses={navBarClasses}
       logo={<CPRLogo theme={theme} logo={logo} />}
-      menu={newSearch ? <MenuButtons theme={theme} /> : <MainMenu icon={menuIcon} links={MENU_LINKS} />}
+      menu={<MenuButtons theme={theme} />}
       showLogo={!isHomePage}
-      showSearch={showSearch}
-      topContent={newSearch ? <OtherAppsBar /> : undefined}
+      topContent={<OtherAppsBar />}
     />
   );
 };

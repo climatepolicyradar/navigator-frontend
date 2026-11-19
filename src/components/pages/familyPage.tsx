@@ -1,6 +1,5 @@
 import { LucideFileText, LucideSearch } from "lucide-react";
 import Head from "next/head";
-import { useRouter } from "next/router";
 import { useCallback, useEffect, useState } from "react";
 
 import { FiveColumns } from "@/components/atoms/columns/FiveColumns";
@@ -18,17 +17,13 @@ import { Section } from "@/components/molecules/section/Section";
 import { BlocksLayout, TBlockDefinitions } from "@/components/organisms/blocksLayout/BlocksLayout";
 import { PageHeader } from "@/components/organisms/pageHeader/PageHeader";
 import { PassageSearch } from "@/components/organisms/passageSearch/PassageSearch";
-import { MAX_PASSAGES } from "@/constants/paging";
-import { QUERY_PARAMS } from "@/constants/queryParams";
 import { FeaturesContext } from "@/context/FeaturesContext";
 import { useFamilyPageHeaderData } from "@/hooks/useFamilyPageHeaderData";
-import useSearch from "@/hooks/useSearch";
 import { useText } from "@/hooks/useText";
 import { TDataInDocument } from "@/schemas";
 import {
   IFamilyDocumentTopics,
   TCollectionPublicWithFamilies,
-  TMatchedFamily,
   TFamilyPageBlock,
   TFamilyPublic,
   TPrincipalDrawerTab,
@@ -76,30 +71,6 @@ export const FamilyPage = ({ canonicalUrl, collections, debug, errors, family, f
     persistPrincipalDrawerTab(tab);
   };
 
-  /* Search matches */
-
-  const router = useRouter();
-  const isNewSearch = features["new-search"];
-  const hasSearch = Boolean(
-    router.query[QUERY_PARAMS.query_string] || router.query[QUERY_PARAMS.concept_id] || router.query[QUERY_PARAMS.concept_name]
-  );
-
-  let matchesFamily: TMatchedFamily = null;
-  const { status: matchesStatus, families: searchFamilyResults } = useSearch(
-    router.query,
-    family.import_id,
-    null,
-    !isNewSearch && hasSearch,
-    MAX_PASSAGES
-  );
-  if (hasSearch) {
-    searchFamilyResults.forEach((searchFamilyResult) => {
-      if (family.slug === searchFamilyResult.family_slug) {
-        matchesFamily = searchFamilyResult;
-      }
-    });
-  }
-
   const { pageHeaderMetadata, breadcrumbGeography, breadcrumbParentGeography } = useFamilyPageHeaderData(family);
 
   /* Blocks */
@@ -124,19 +95,8 @@ export const FamilyPage = ({ canonicalUrl, collections, debug, errors, family, f
     },
     documents: {
       render: useCallback(
-        () => (
-          <DocumentsBlock
-            key="documents"
-            family={family}
-            familyTopics={familyTopics}
-            features={features}
-            getCategoryText={getCategoryText}
-            matchesFamily={matchesFamily}
-            matchesStatus={matchesStatus}
-            showMatches={hasSearch}
-          />
-        ),
-        [family, familyTopics, features, getCategoryText, hasSearch, matchesFamily, matchesStatus]
+        () => <DocumentsBlock key="documents" family={family} familyTopics={familyTopics} getCategoryText={getCategoryText} />,
+        [family, familyTopics, getCategoryText]
       ),
     },
     metadata: {
@@ -165,8 +125,8 @@ export const FamilyPage = ({ canonicalUrl, collections, debug, errors, family, f
     topics: {
       render: useCallback(() => {
         if (!familyTopicsHasTopics(familyTopics)) return null;
-        return <TopicsBlock key="topics" family={family} familyTopics={familyTopics} features={features} getCategoryText={getCategoryText} />;
-      }, [family, familyTopics, features, getCategoryText]),
+        return <TopicsBlock key="topics" family={family} familyTopics={familyTopics} getCategoryText={getCategoryText} />;
+      }, [family, familyTopics, getCategoryText]),
     },
   };
 
@@ -191,56 +151,52 @@ export const FamilyPage = ({ canonicalUrl, collections, debug, errors, family, f
           label={family.title}
         />
         <PageHeader title={family.title} metadata={pageHeaderMetadata} />
-        {isNewSearch ? (
-          <Tabs<TPrincipalDrawerTab>
-            analytics={{ context: "family-page" }}
-            onValueChange={changeTab}
-            value={activeTab}
-            panelClassName="pt-8"
-            tabs={[
-              {
-                id: "about",
-                label: (
-                  <>
-                    <LucideFileText size={20} className="text-elem-icon!" /> About
-                  </>
-                ),
-                panel: <BlocksLayout blockDefinitions={blockDefinitions} blocksToRender={blocksToRender} />,
-              },
-              {
-                id: "search",
-                count: noOfResults > 0 ? noOfResults : undefined,
-                label: (
-                  <>
-                    <LucideSearch size={20} className="text-elem-icon!" />
-                    Search in documents
-                  </>
-                ),
-                panel: (
-                  <FiveColumns>
-                    <main className="pb-8 col-start-1 -col-end-1 cols-4:col-start-3 cols-4:col-end-10">
-                      <PassageSearch
-                        changeTab={changeTab}
-                        documents={family.documents}
-                        principalId={family.import_id}
-                        documentsLabel={`Documents in this ${firstCase(getCategoryText("familySingular"))}`}
-                        subject="these documents"
-                        onSearch={setNumberOfResults}
-                      />
-                    </main>
-                  </FiveColumns>
-                ),
-              },
-            ]}
-            tabsContainer={(tabsList) => (
-              <FiveColumns>
-                <div className="col-start-1 -col-end-1 cols-4:col-start-3">{tabsList}</div>
-              </FiveColumns>
-            )}
-          />
-        ) : (
-          <BlocksLayout blockDefinitions={blockDefinitions} blocksToRender={blocksToRender} />
-        )}
+        <Tabs<TPrincipalDrawerTab>
+          analytics={{ context: "family-page" }}
+          onValueChange={changeTab}
+          value={activeTab}
+          panelClassName="pt-8"
+          tabs={[
+            {
+              id: "about",
+              label: (
+                <>
+                  <LucideFileText size={20} className="text-elem-icon!" /> About
+                </>
+              ),
+              panel: <BlocksLayout blockDefinitions={blockDefinitions} blocksToRender={blocksToRender} />,
+            },
+            {
+              id: "search",
+              count: noOfResults > 0 ? noOfResults : undefined,
+              label: (
+                <>
+                  <LucideSearch size={20} className="text-elem-icon!" />
+                  Search in documents
+                </>
+              ),
+              panel: (
+                <FiveColumns>
+                  <main className="pb-8 col-start-1 -col-end-1 cols-4:col-start-3 cols-4:col-end-10">
+                    <PassageSearch
+                      changeTab={changeTab}
+                      documents={family.documents}
+                      principalId={family.import_id}
+                      documentsLabel={`Documents in this ${firstCase(getCategoryText("familySingular"))}`}
+                      subject="these documents"
+                      onSearch={setNumberOfResults}
+                    />
+                  </main>
+                </FiveColumns>
+              ),
+            },
+          ]}
+          tabsContainer={(tabsList) => (
+            <FiveColumns>
+              <div className="col-start-1 -col-end-1 cols-4:col-start-3">{tabsList}</div>
+            </FiveColumns>
+          )}
+        />
         <Head>
           <script
             type="application/ld+json"

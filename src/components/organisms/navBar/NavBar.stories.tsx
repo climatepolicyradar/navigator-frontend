@@ -26,7 +26,6 @@ const CPRArgs = {
   logo: <CPRLogo />,
   menu: <MainMenu icon={<CPRMenuButton />} links={MENU_LINKS} />,
   showLogo: true,
-  showSearch: true,
 };
 
 export const SearchPage: TStory = {
