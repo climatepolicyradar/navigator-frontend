@@ -1,11 +1,12 @@
 import { Meta, StoryObj } from "@storybook/nextjs-vite";
+import { LucideMenu } from "lucide-react";
 
 import { Header as CCCHeader } from "@/ccc/components/Header";
 import { default as CCLWHeader } from "@/cclw/components/Header";
 import MainMenu from "@/components/molecules/mainMenu/MainMenu";
-import { CPRLogo, CPRMenuButton } from "@/cpr/components/Header";
-import { MENU_LINKS } from "@/cpr/constants/menuLinks";
+import { CPRLogo } from "@/cpr/components/Header";
 import { Header as MCFHeader } from "@/mcf/components/Header";
+import { TMenuLink } from "@/types";
 
 import { NavBar } from "./NavBar";
 
@@ -21,10 +22,22 @@ type TStory = StoryObj<typeof NavBar>;
 
 export default meta;
 
+const CPR_MENU_LINKS: TMenuLink[] = [
+  { text: "About us", href: "https://climatepolicyradar.org", external: true, cy: "about" },
+  { text: "Methodology", href: "https://github.com/climatepolicyradar/methodology/blob/main/METHODOLOGY.md", external: true, cy: "methodology" },
+  { text: "FAQ", href: "/faq", external: false, cy: "faq" },
+];
+
+const CPRMenuButton = () => (
+  <div className="flex items-center gap-1 px-2 py-1 rounded-md font-medium group-data-popup-open:bg-gray-100 text-gray-950">
+    <LucideMenu size={16} className="text-text-brand" /> Menu
+  </div>
+);
+
 const CPRArgs = {
   headerClasses: "",
   logo: <CPRLogo />,
-  menu: <MainMenu icon={<CPRMenuButton />} links={MENU_LINKS} />,
+  menu: <MainMenu icon={<CPRMenuButton />} links={CPR_MENU_LINKS} />,
   showLogo: true,
 };
 

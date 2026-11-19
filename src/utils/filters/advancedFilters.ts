@@ -1,20 +1,6 @@
 import { createGroup } from "@/components/_experiment/advancedFilters/AdvancedFilters";
 import { TSearchQueryGroup, TSearchQueryRule } from "@/types";
 
-/** Extract all label values from "contains" rules in the filter tree. */
-export function extractLabels(group: TSearchQueryGroup | null): string[] {
-  if (!group) return [];
-  const labels: string[] = [];
-  for (const filter of group.filters) {
-    if ("field" in filter) {
-      if (filter.op === "contains" && filter.value) labels.push(filter.value);
-    } else {
-      labels.push(...extractLabels(filter));
-    }
-  }
-  return labels;
-}
-
 export function sanitiseSearchQueryGroup(group: TSearchQueryGroup): TSearchQueryGroup {
   // Recursively remove empty-value rules and empty nested groups from a filter tree.
   const stripGroup = (node: TSearchQueryGroup): TSearchQueryGroup | null => {
@@ -44,39 +30,4 @@ export function sanitiseSearchQueryGroup(group: TSearchQueryGroup): TSearchQuery
   };
 
   return stripGroup(group) ?? createGroup();
-}
-
-function groupIsEmpty(group: TSearchQueryGroup | null): boolean {
-  if (!group) return true;
-  return group.filters.length === 0 || group.filters.every((f) => "field" in f && f.op === "contains" && !f.value);
-}
-
-/** Add a label as a new "contains" rule to the root filter group. */
-export function addLabelRule(group: TSearchQueryGroup | null, label: string): TSearchQueryGroup {
-  const rule: TSearchQueryRule = { field: "labels.value.id", op: "contains", value: label };
-  if (groupIsEmpty(group)) return { op: "and", filters: [rule] };
-  return { ...group, filters: [...group.filters, rule] };
-}
-
-/** Remove the first "contains" rule matching a label value from the filter tree. */
-export function removeLabelRule(group: TSearchQueryGroup, label: string): TSearchQueryGroup | null {
-  const newFilters: (TSearchQueryGroup | TSearchQueryRule)[] = [];
-  let removed = false;
-
-  for (const filter of group.filters) {
-    if (!removed && "field" in filter && filter.op === "contains" && filter.value === label) {
-      removed = true; // skip this rule
-      continue;
-    }
-    if (!("field" in filter)) {
-      const updated = removeLabelRule(filter, label);
-      if (updated) newFilters.push(updated);
-      else removed = true; // nested group became empty
-    } else {
-      newFilters.push(filter);
-    }
-  }
-
-  if (newFilters.length === 0) return createGroup();
-  return { ...group, filters: newFilters };
 }

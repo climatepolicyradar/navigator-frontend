@@ -49,7 +49,7 @@ const geographyLabelPaths = (geographyLabel: TSearchLabel, categoryId: string): 
   return labelPaths;
 };
 
-export interface IProps {
+interface IProps {
   features: TFeatures;
   geographyV2: GeographyV2;
   parentGeographyV2?: GeographyV2;

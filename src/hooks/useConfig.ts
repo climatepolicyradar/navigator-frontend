@@ -6,7 +6,7 @@ import { extractNestedData } from "@/utils/extractNestedData";
 
 import { ApiClient, getEnvFromServer } from "../api/http-common";
 
-export type TConfigQueryResponse = {
+type TConfigQueryResponse = {
   geographies: TDataNode<TGeography>[];
   regions: TGeography[];
   countries: TGeography[];

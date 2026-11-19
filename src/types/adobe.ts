@@ -60,7 +60,7 @@ export interface IAdobeAnnotationManagerApi {
   removeAnnotationsFromPDF(): Promise<void>;
 }
 
-export interface IAdobePreviewedFile {
+interface IAdobePreviewedFile {
   getAPIs(): Promise<IAdobeViewerApi>;
   getAnnotationManager(): Promise<IAdobeAnnotationManagerApi>;
 }

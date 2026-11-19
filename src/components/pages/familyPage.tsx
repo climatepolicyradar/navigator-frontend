@@ -40,7 +40,7 @@ import { getPersistedPrincipalDrawerTab, persistPrincipalDrawerTab } from "@/uti
 import { firstCase } from "@/utils/text/firstCase";
 import { familyTopicsHasTopics } from "@/utils/topics/processFamilyTopics";
 
-export interface IProps {
+interface IProps {
   canonicalUrl: string;
   collections: TCollectionPublicWithFamilies[];
   errors: string[];

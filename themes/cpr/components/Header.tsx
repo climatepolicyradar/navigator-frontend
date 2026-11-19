@@ -1,4 +1,3 @@
-import { LucideMenu } from "lucide-react";
 import Image from "next/image";
 import { useRouter } from "next/router";
 
@@ -36,21 +35,6 @@ export const CPRLogo = ({ theme = "light", logo = CPR_LOGO }: TThemedProps & Pic
     />
   </PageLink>
 );
-
-export const CPRMenuButton = ({ theme = "light" }: TThemedProps) => {
-  const darkMenuClasses = "text-white group-hover:text-gray-950 group-data-popup-open:text-gray-950";
-  const containerClasses = joinTailwindClasses(
-    "flex items-center gap-1 px-2 py-1 rounded-md font-medium group-data-popup-open:bg-gray-100",
-    theme === "dark" ? darkMenuClasses : "text-gray-950"
-  );
-  const iconClasses = theme === "dark" ? darkMenuClasses : "text-text-brand";
-
-  return (
-    <div className={containerClasses}>
-      <LucideMenu size={16} className={iconClasses} /> Menu
-    </div>
-  );
-};
 
 interface IProps {
   landingPage?: boolean;

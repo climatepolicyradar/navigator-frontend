@@ -20,7 +20,7 @@ import { TTheme, TThemeConfig } from "@/types";
  * GOTCHA: we export this to be used in the src/pages/index.tsx file.
  * It's a generic passed to `dynamic` so we can't rely on generic type checking.
  */
-export interface IProps {
+interface IProps {
   handleSearchInput: (term: string, filter?: string, filterValue?: string) => void;
   handleSearchChange: (type: string, value: any) => void;
   searchInput: string;

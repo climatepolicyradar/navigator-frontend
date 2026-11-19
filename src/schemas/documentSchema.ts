@@ -6,7 +6,7 @@ import { LabelSchema, TDataInLabel } from "./labelSchema";
 
 // Making changes? Update both the TypeScript type and Valibot schema
 
-export const DOCUMENT_RELATION_TYPES = ["has_member", "has_version", "is_version_of", "member_of"] as const;
+const DOCUMENT_RELATION_TYPES = ["has_member", "has_version", "is_version_of", "member_of"] as const;
 export type TDataInDocumentRelationType = (typeof DOCUMENT_RELATION_TYPES)[number];
 const DocumentRelationTypeSchema = v.union(DOCUMENT_RELATION_TYPES.map((type) => v.literal(type)));
 
@@ -26,7 +26,7 @@ export type TDataInDocument = {
 };
 
 // Making changes? Update TDataInDocument to match
-export const DocumentSchema: v.GenericSchema<TDataInDocument> = v.object({
+const DocumentSchema: v.GenericSchema<TDataInDocument> = v.object({
   id: v.string(),
   title: v.string(),
   description: v.nullable(v.string()),

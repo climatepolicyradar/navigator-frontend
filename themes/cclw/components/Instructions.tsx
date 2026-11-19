@@ -6,11 +6,6 @@ import useConfig from "@/hooks/useConfig";
 
 const ANIMATION_DELAY = 3000;
 
-const scrollToMap = () => {
-  const worldMap = document.getElementById("world-map");
-  worldMap?.scrollIntoView({ behavior: "smooth" });
-};
-
 const Instructions = () => {
   const [isAnimated, setIsAnimated] = useState(false);
   const configQuery = useConfig();
