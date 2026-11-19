@@ -2,6 +2,7 @@ import { GetServerSideProps, InferGetServerSidePropsType } from "next";
 
 import { ApiClient } from "@/api/http-common";
 import { fetchSearchPrincipalDocuments } from "@/api/search";
+import { findGeographyBySlug, labelToGeographyV2 } from "@/bff/methods/getGeography";
 import { GeographyPage } from "@/components/pages/geographyPage";
 import { COUNTRY_LABEL_PATTERN, SUBDIVISION_LABEL_PATTERN } from "@/constants/labels";
 import { SYSTEM_GEO_NAMES } from "@/constants/systemGeos";
@@ -37,18 +38,11 @@ const toSearchLabel = ({ id, type, value, alternative_labels }: TNestedSearchLab
   labels,
 });
 
-const findLabelInTaxonomy = (labels: TNestedSearchLabel[], id: string, parent?: TNestedSearchLabel): TSearchLabel | null => {
-  for (const label of labels) {
-    if (label.id === id) {
-      const relations: TSearchLabelRelation[] = parent
-        ? [{ type: "subconcept_of", value: toSearchLabel(parent), timestamp: null, passages_id: null, count: null }]
-        : [];
-      return toSearchLabel(label, relations);
-    }
-    const nested = findLabelInTaxonomy(label.children, id, label);
-    if (nested) return nested;
-  }
-  return null;
+const toGeographySearchLabel = ({ label, parent }: NonNullable<ReturnType<typeof findGeographyBySlug>>): TSearchLabel => {
+  const relations: TSearchLabelRelation[] = parent
+    ? [{ type: "subconcept_of", value: toSearchLabel(parent), timestamp: null, passages_id: null, count: null }]
+    : [];
+  return toSearchLabel(label, relations);
 };
 
 /**
@@ -109,22 +103,29 @@ export const getServerSideProps = (async (context) => {
     // TODO: handle error more elegantly
   }
 
-  let geographyV2: GeographyV2;
-  let parentGeographyV2: GeographyV2 = null;
+  const slug = Array.isArray(id) ? id[0] : id;
+  const taxonomyPatterns = features.subdivisions ? [COUNTRY_LABEL_PATTERN, SUBDIVISION_LABEL_PATTERN] : [COUNTRY_LABEL_PATTERN];
+  const taxonomy = await loadTaxonomy(process.env.API_URL, { patterns: taxonomyPatterns });
 
-  try {
-    const slug = Array.isArray(id) ? id[0] : id;
-    const geographyV2Data = await apiClient.get<TApiItemResponse<GeographyV2>>(`/geographies/${slug}`);
-    geographyV2 = geographyV2Data.data.data;
-    if (geographyV2.subconcept_of[0]) {
-      const parentGeographyV2Data = await apiClient.get<TApiItemResponse<GeographyV2>>(`/geographies/${geographyV2.subconcept_of[0].slug}`);
-      parentGeographyV2 = parentGeographyV2Data.data.data;
-    }
-  } catch {
-    // Do nothing
-  }
+  const lookup = findGeographyBySlug(taxonomy, slug);
+  if (!lookup) return { notFound: true };
 
+  const geographyV2 = labelToGeographyV2(lookup.label);
   if (!geographyV2) return { notFound: true };
+  // Only subdivisions have a parent geography page (a country's parent is a region, which has no page).
+  const parentGeographyV2 = geographyV2.type === "subdivision" && lookup.parent ? labelToGeographyV2(lookup.parent) : null;
+
+  // The country that owns the subdivision list: the page's own geography for a country, its parent for a subdivision.
+  // This is the only remaining geographies-api call. It goes when the subdivision block is revisited.
+  const countryGeography = geographyV2.type === "country" ? geographyV2 : parentGeographyV2;
+  if (countryGeography) {
+    try {
+      const countryResponse = await apiClient.get<TApiItemResponse<GeographyV2>>(`/geographies/${countryGeography.slug}`);
+      countryGeography.has_subconcept = countryResponse.data.data.has_subconcept || [];
+    } catch {
+      // Without it the subdivision block does not render
+    }
+  }
 
   // Prevent rendering geography pages for types we don't support
   const disallowedGeoTypes: GeographyTypeV2[] = ["region"];
@@ -135,15 +136,7 @@ export const getServerSideProps = (async (context) => {
     geographyV2.name = countryNameFromConfig;
   }
 
-  const isSubdivision = geographyV2.type === "subdivision";
-  const labelType = isSubdivision ? "subdivision" : "country";
-  const pattern = isSubdivision ? SUBDIVISION_LABEL_PATTERN : COUNTRY_LABEL_PATTERN;
-
-  const taxonomy = await loadTaxonomy(process.env.API_URL, { patterns: [pattern] });
-  const expectedId = `${labelType}::${geographyV2.id}`;
-  const geographyLabel = findLabelInTaxonomy(taxonomy, expectedId);
-
-  if (!geographyLabel) return { notFound: true };
+  const geographyLabel = toGeographySearchLabel(lookup);
 
   const vespaSearchResults = await fetchGeographyPrincipals(process.env.API_URL, geographyLabel, themeConfig).catch(
     (err): ISearchDocumentsResponse => {
