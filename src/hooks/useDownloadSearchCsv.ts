@@ -1,13 +1,13 @@
 import { useState } from "react";
 
 import { configureDocumentsFilters, PRINCIPAL_DOCUMENTS_FILTER, SEARCH_DOCUMENTS_MIN_SHOULD_MATCH } from "@/api/search";
-import { isFilterGroupEmpty } from "@/components/_experiment/advancedFilters/AdvancedFilters";
 import { SORT_PARAMS_LOOKUP } from "@/constants/sort";
 import { useEnvConfig } from "@/context/EnvConfig";
 import { TApiLoadingStatus, TSearchQueryGroup, TSearchQueryRule, TSortValue, TTheme, TThemeConfig } from "@/types";
 import { sanitiseSearchQueryGroup } from "@/utils/filters/advancedFilters";
 import { deflateFilters } from "@/utils/filters/deflate";
 import getThemeDomain from "@/utils/getThemeDomain";
+import { isQueryGroupEmpty } from "@/utils/search/searchQuery/isQueryGroupEmpty";
 
 const DOWNLOAD_MAX_RESULTS = 500;
 
@@ -40,7 +40,7 @@ export function buildDownloadSearchCsvUrl(params: IDownloadSearchCsvParams & { a
   // (e.g. category::Litigation on CCC) and the published-date bounds.
   const filtersToApply: (TSearchQueryGroup | TSearchQueryRule)[] = [PRINCIPAL_DOCUMENTS_FILTER];
   const sanitisedFilters = params.filters ? sanitiseSearchQueryGroup(params.filters) : null;
-  if (sanitisedFilters && !isFilterGroupEmpty(sanitisedFilters)) {
+  if (sanitisedFilters && !isQueryGroupEmpty(sanitisedFilters)) {
     filtersToApply.push(sanitisedFilters);
   }
 

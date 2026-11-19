@@ -1,5 +1,5 @@
-import { createGroup } from "@/components/_experiment/advancedFilters/AdvancedFilters";
 import { TSearchQueryGroup, TSearchQueryRule } from "@/types";
+import { createQueryGroup } from "@/utils/search/searchQuery/createQueryGroup";
 
 export function sanitiseSearchQueryGroup(group: TSearchQueryGroup): TSearchQueryGroup {
   // Recursively remove empty-value rules and empty nested groups from a filter tree.
@@ -29,5 +29,5 @@ export function sanitiseSearchQueryGroup(group: TSearchQueryGroup): TSearchQuery
     return { ...node, filters };
   };
 
-  return stripGroup(group) ?? createGroup();
+  return stripGroup(group) ?? createQueryGroup();
 }

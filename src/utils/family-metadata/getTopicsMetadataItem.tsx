@@ -7,7 +7,7 @@ import { scrollToBlock } from "@/utils/blocks/scrollToBlock";
 import { pluralise } from "@/utils/pluralise";
 import { joinNodes } from "@/utils/reactNode";
 import { firstCase } from "@/utils/text/firstCase";
-import { familyTopicsHasTopics } from "@/utils/topics/processFamilyTopics";
+import { familyTopicsHasTopics } from "@/utils/topics/familyTopicsHasTopics";
 
 const MAX_SHOWN_TOPICS = 3;
 

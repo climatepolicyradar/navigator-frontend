@@ -32,12 +32,12 @@ const emptyResponse: ISearchDocumentsResponse = {
 };
 
 import { fetchSearchPrincipalDocuments } from "@/api/search";
-import { createGroup } from "@/components/_experiment/advancedFilters/AdvancedFilters";
 import { DEFAULT_THEME_CONFIG } from "@/constants/themeConfig";
 import { EnvConfigContext } from "@/context/EnvConfig";
 import { IProps as IThemeContextProps, ThemeContext } from "@/context/ThemeContext";
 import { envConfig } from "@/mocks/envConfig";
 import { ISearchDocument, ISearchDocumentsResponse, TSearchQueryGroup } from "@/types";
+import { createQueryGroup } from "@/utils/search/searchQuery/createQueryGroup";
 
 import { SearchContainer, shouldRetrySearch } from "./SearchResults";
 
@@ -87,7 +87,7 @@ const principalResult = (id: string): ISearchDocument => ({
 
 // A filter group holding only a published date range of 2020-2025.
 const dateRangeFilters = (): TSearchQueryGroup => {
-  const group = createGroup();
+  const group = createQueryGroup();
   return {
     ...group,
     filters: [
