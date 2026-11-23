@@ -28,7 +28,7 @@ export const toLatestItems = (documents: ISearchDocument[]): TLatestItem[] =>
  * not its published date.
  */
 export default function useGetLatest(limit: number) {
-  const { themeConfig, loaded } = useContext(ThemeContext);
+  const { themeConfig } = useContext(ThemeContext);
   const { API_URL } = useEnvConfig();
 
   return useQuery({
@@ -43,8 +43,6 @@ export default function useGetLatest(limit: number) {
       });
       return toLatestItems(response.results);
     },
-    // Wait for the theme config so its search categories are applied
-    enabled: loaded,
     refetchOnWindowFocus: false,
     refetchOnMount: false,
     gcTime: dayInMilliseconds,

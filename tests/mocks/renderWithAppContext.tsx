@@ -23,7 +23,7 @@ export const renderWithAppContext = (Component: React.ComponentType<any>, { page
 
   const renderResult = render(
     <QueryClientProvider client={queryClient}>
-      <ThemeContext.Provider value={{ theme: pageProps?.theme, themeConfig: pageProps?.themeConfig, loaded: Boolean(pageProps) }}>
+      <ThemeContext.Provider value={{ theme: pageProps?.theme, themeConfig: pageProps?.themeConfig }}>
         <FeaturesContext.Provider value={features || DEFAULT_FEATURES}>
           <EnvConfigContext.Provider value={pageProps?.envConfig}>
             <Component {...pageProps} />

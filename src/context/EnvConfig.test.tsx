@@ -12,7 +12,7 @@ vi.mock("next/router", () => nextRouterMock);
 const mockRouter = {} as any;
 test("should not error when component does not use useEnvConfig nor uses withEnvConfig", async () => {
   const ComponentWithNoEnvConfig = () => <div>Hello testing library</div>;
-  const WithNoUseEnvConfig = <App router={mockRouter} Component={ComponentWithNoEnvConfig} pageProps={{}} theme={""} adobeApiKey={""} />;
+  const WithNoUseEnvConfig = <App router={mockRouter} Component={ComponentWithNoEnvConfig} pageProps={{}} adobeApiKey={""} />;
 
   const rendered = render(WithNoUseEnvConfig);
   expect(rendered.getByText("Hello testing library")).toBeInTheDocument();
@@ -26,7 +26,7 @@ test("should error when component uses useEnvConfig without using withEnvConfig"
     return <div>Hello testing library</div>;
   };
 
-  const WithUseEnvConfig = <App router={mockRouter} Component={ComponentWithUseEnvConfig} pageProps={{}} theme={""} adobeApiKey={""} />;
+  const WithUseEnvConfig = <App router={mockRouter} Component={ComponentWithUseEnvConfig} pageProps={{}} adobeApiKey={""} />;
 
   const rendered = render(WithUseEnvConfig);
   expect(rendered.getByText("Sorry, the app has encountered an error")).toBeInTheDocument();
@@ -50,7 +50,7 @@ test("should not error when component uses useEnvConfig with using withEnvConfig
     return <div>Hello testing library {props.envConfig.MY_VAR}</div>;
   };
 
-  const WithNoNoEnvConfig = <App router={mockRouter} Component={ComponentWithUseEnvConfig} pageProps={pageProps.props} theme={""} adobeApiKey={""} />;
+  const WithNoNoEnvConfig = <App router={mockRouter} Component={ComponentWithUseEnvConfig} pageProps={pageProps.props} adobeApiKey={""} />;
 
   const rendered = render(WithNoNoEnvConfig);
   expect(rendered.getByText("Hello testing library my_var")).toBeInTheDocument();

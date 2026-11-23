@@ -18,18 +18,18 @@ import { ContentsSideBar, ISideBarItem } from "@/components/organisms/contentsSi
 import { PageHeader } from "@/components/organisms/pageHeader/PageHeader";
 import { withEnvConfig } from "@/context/EnvConfig";
 import { FeaturesContext } from "@/context/FeaturesContext";
+import themeConfig from "@/themes/config";
 import { TTheme } from "@/types";
 import { getCaseFirstDocumentDate, getCaseNumbers, getCourts } from "@/utils/eventTable";
 import { getFeatureFlags } from "@/utils/featureFlags";
 import { getFeatures } from "@/utils/features";
 import { getCollectionMetadata } from "@/utils/getCollectionMetadata";
 import { getLitigationCollectionJSONLD } from "@/utils/json-ld/getLitigationCollectionJSONLD";
-import { readConfigFile } from "@/utils/readConfigFile";
 
 type TCollectionTabId = "about" | "cases" | "procedural history"; // Don't rename, add a label instead (else analytics break)
 const COLLECTION_TABS: TToggleGroupToggle<TCollectionTabId>[] = [{ id: "cases" }, { id: "procedural history" }, { id: "about" }];
 
-const CollectionPage = ({ collection, debug, errors, theme, themeConfig, features }: InferGetServerSidePropsType<typeof getServerSideProps>) => {
+const CollectionPage = ({ collection, debug, errors, theme, features }: InferGetServerSidePropsType<typeof getServerSideProps>) => {
   const [currentTab, setCurrentTab] = useState<TCollectionTabId>("cases");
   const onTabChange = (tab: TCollectionTabId) => setCurrentTab(tab);
 
@@ -43,7 +43,7 @@ const CollectionPage = ({ collection, debug, errors, theme, themeConfig, feature
 
   return (
     <FeaturesContext.Provider value={features}>
-      <Layout title={collection.title} description={collection.description} theme={theme as TTheme} themeConfig={themeConfig}>
+      <Layout title={collection.title} description={collection.description} theme={theme}>
         <BreadCrumbs dark label={collection.title} />
         <PageHeader<TCollectionTabId> dark title={collection.title} tabs={COLLECTION_TABS} currentTab={currentTab} onTabChange={onTabChange} />
         <FiveColumns>
@@ -101,7 +101,6 @@ export const getServerSideProps = (async (context) => {
   const slug = context.params.id as string;
 
   const theme = process.env.THEME as TTheme;
-  const themeConfig = await readConfigFile(theme);
   const featureFlags = getFeatureFlags(context.req.cookies);
   const features = getFeatures(themeConfig, featureFlags);
 
@@ -121,7 +120,6 @@ export const getServerSideProps = (async (context) => {
       ...collectionData,
       errors: errors.map((error) => JSON.stringify(error, Object.getOwnPropertyNames(error))),
       theme,
-      themeConfig,
       features,
     }),
   };

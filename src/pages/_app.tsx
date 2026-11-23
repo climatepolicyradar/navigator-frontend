@@ -13,7 +13,6 @@ import { FrontendObservability } from "@/components/FrontendObservability";
 import ErrorBoundary from "@/components/error/ErrorBoundary";
 import { Overlays } from "@/components/organisms/overlays/Overlays";
 import { COOKIE_CONSENT_NAME, COOKIE_TUTORIALS_NAME } from "@/constants/cookies";
-import { DEFAULT_THEME_CONFIG } from "@/constants/themeConfig";
 import { AdobeContext } from "@/context/AdobeContext";
 import { EnvConfigContext } from "@/context/EnvConfig";
 import { PostHogProvider } from "@/context/PostHogProvider";
@@ -21,35 +20,27 @@ import { ThemeContext, IProps as IThemeContextProps } from "@/context/ThemeConte
 import { TutorialContext } from "@/context/TutorialContext";
 import "../styles/flag-icons.css";
 import "../styles/main.css";
+import themeConfig from "@/themes/config";
 import { TTheme, TTutorialName } from "@/types";
 import { getCookie, setCookie } from "@/utils/cookies";
 import getDomain from "@/utils/getDomain";
-import { readConfigFile } from "@/utils/readConfigFile";
 import { getCompletedTutorialNamesFromCookie } from "@/utils/tutorials";
 
 const favicon = `/images/favicon/${process.env.THEME}.png`;
 
 const queryClient = new QueryClient();
 
+const themeContext: IThemeContextProps = {
+  theme: process.env.THEME as TTheme,
+  themeConfig,
+};
+
 interface IProps extends AppProps {
-  theme?: string;
   adobeApiKey?: string;
 }
 
-function MyApp({ Component, pageProps, theme, adobeApiKey }: IProps) {
-  const [siteTheme, setSiteTheme] = useState(null);
+function MyApp({ Component, pageProps, adobeApiKey }: IProps) {
   const [adobeKey, setAdobeKey] = useState(null);
-  const [themeContext, setThemeContext] = useState<IThemeContextProps>({
-    theme: theme as TTheme,
-    themeConfig: DEFAULT_THEME_CONFIG,
-    loaded: false,
-  });
-
-  useEffect(() => {
-    if (theme && theme !== "") {
-      setSiteTheme(theme);
-    }
-  }, [theme]);
 
   useEffect(() => {
     if (adobeApiKey && adobeApiKey !== "") {
@@ -57,16 +48,7 @@ function MyApp({ Component, pageProps, theme, adobeApiKey }: IProps) {
     }
   }, [adobeApiKey]);
 
-  const dynamicTheme = theme ?? siteTheme;
   const dynamicAdobeKey = adobeApiKey ?? adobeKey;
-
-  useEffect(() => {
-    const getThemeConfig = async () => {
-      const themeConfig = await readConfigFile(dynamicTheme);
-      setThemeContext((current) => ({ ...current, themeConfig, loaded: true }));
-    };
-    if (dynamicTheme) getThemeConfig();
-  }, [dynamicTheme]);
 
   const [consent, setConsent] = useState(() => (typeof document !== "undefined" ? getCookie(COOKIE_CONSENT_NAME) === "true" : false));
   const onConsentChange = (consent: boolean) => {
@@ -80,7 +62,7 @@ function MyApp({ Component, pageProps, theme, adobeApiKey }: IProps) {
 
   useEffect(() => {
     setCompletedTutorials(getCompletedTutorialNamesFromCookie(getCookie(COOKIE_TUTORIALS_NAME)));
-  }, [dynamicTheme]);
+  }, []);
 
   const addCompletedTutorial = (tutorialName: TTutorialName) => {
     setCompletedTutorials((alreadyCompletedTutorials) => {
@@ -117,7 +99,7 @@ function MyApp({ Component, pageProps, theme, adobeApiKey }: IProps) {
                     <Head>
                       <link rel="icon" href={favicon} />
                     </Head>
-                    <div id={theme} className="root">
+                    <div id={themeContext.theme} className="root">
                       <FrontendObservability />
                       <FaroRouteTracker />
                       <Component {...pageProps} />
@@ -143,7 +125,6 @@ MyApp.getInitialProps = async () => {
 
   return {
     ...initialProps,
-    theme: process.env.THEME,
     adobeApiKey: process.env.ADOBE_API_KEY ?? "",
   };
 };

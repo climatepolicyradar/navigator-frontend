@@ -89,7 +89,7 @@ export function SearchContainer({
   query,
   sort,
 }: ISearchContainerProps) {
-  const { themeConfig, loaded } = useContext(ThemeContext);
+  const { themeConfig } = useContext(ThemeContext);
   const { API_URL } = useEnvConfig();
   const posthog = usePostHog();
   const [filterGroups] = useQueryState("filters", parseAsDeflatedFilters.withDefault(DEFAULT_SEARCH_QUERY_GROUP));
@@ -130,7 +130,7 @@ export function SearchContainer({
 
       return response;
     },
-    enabled: hasSearch && loaded,
+    enabled: hasSearch,
     retry: shouldRetrySearch,
     // A term's results do not change within a session.
     refetchOnWindowFocus: false,

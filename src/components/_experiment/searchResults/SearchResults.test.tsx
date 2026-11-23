@@ -43,14 +43,13 @@ import { SearchContainer, shouldRetrySearch } from "./SearchResults";
 
 const searchError = (status: number) => Object.assign(new Error(`Search API error: ${status}`), { status });
 
-const loadedTheme: IThemeContextProps = {
+const defaultTheme: IThemeContextProps = {
   theme: "cpr",
   themeConfig: DEFAULT_THEME_CONFIG,
-  loaded: true,
 };
 
 // The queries set their own retry policy, so the client only supplies a provider.
-const renderWith = (ui: React.ReactElement, theme: IThemeContextProps = loadedTheme) => {
+const renderWith = (ui: React.ReactElement, theme: IThemeContextProps = defaultTheme) => {
   const queryClient = new QueryClient();
   const wrap = (node: React.ReactElement, themeValue: IThemeContextProps) => (
     <NuqsTestingAdapter>
@@ -64,7 +63,7 @@ const renderWith = (ui: React.ReactElement, theme: IThemeContextProps = loadedTh
   const result = render(wrap(ui, theme));
   return {
     ...result,
-    rerenderWith: (next: React.ReactElement, nextTheme: IThemeContextProps = theme) => result.rerender(wrap(next, nextTheme)),
+    rerenderWith: (next: React.ReactElement) => result.rerender(wrap(next, theme)),
   };
 };
 
@@ -107,17 +106,12 @@ describe("SearchContainer", () => {
     await waitFor(() => expect(fetchSearchPrincipalDocuments).toHaveBeenCalled());
   });
 
-  it("waits for the theme config to load before searching, then applies its categories", async () => {
+  it("applies the theme config's search categories when searching", async () => {
     vi.mocked(fetchSearchPrincipalDocuments).mockClear();
     const filters = dateRangeFilters();
 
-    const { rerenderWith } = renderWith(<SearchContainer sort="relevance" query="climate" filters={filters} />, { ...loadedTheme, loaded: false });
-
-    expect(await screen.findByTestId("search-loading")).toBeInTheDocument();
-    expect(fetchSearchPrincipalDocuments).not.toHaveBeenCalled();
-
-    rerenderWith(<SearchContainer sort="relevance" query="climate" filters={filters} />, {
-      ...loadedTheme,
+    renderWith(<SearchContainer sort="relevance" query="climate" filters={filters} />, {
+      ...defaultTheme,
       themeConfig: {
         ...DEFAULT_THEME_CONFIG,
         searchCategories: ["Litigation"],

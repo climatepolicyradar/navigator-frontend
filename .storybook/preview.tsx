@@ -53,7 +53,7 @@ const preview: Preview = {
       return (
         <div className="root isolate">
           <QueryClientProvider client={queryClient}>
-            <ThemeContext.Provider value={{ theme, themeConfig: themeConfigs[theme], loaded: true }}>
+            <ThemeContext.Provider value={{ theme, themeConfig: themeConfigs[theme] }}>
               <FeaturesContext.Provider value={features}>
                 <Story />
               </FeaturesContext.Provider>

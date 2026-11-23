@@ -30,7 +30,7 @@ const renderUseGetLatest = () => {
   const wrapper = ({ children }: { children: React.ReactNode }) => (
     <QueryClientProvider client={queryClient}>
       <EnvConfigContext.Provider value={envConfig}>
-        <ThemeContext.Provider value={{ theme: "ccc", themeConfig: DEFAULT_THEME_CONFIG, loaded: true }}>{children}</ThemeContext.Provider>
+        <ThemeContext.Provider value={{ theme: "ccc", themeConfig: DEFAULT_THEME_CONFIG }}>{children}</ThemeContext.Provider>
       </EnvConfigContext.Provider>
     </QueryClientProvider>
   );

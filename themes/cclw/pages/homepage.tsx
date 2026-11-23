@@ -14,7 +14,7 @@ import { PoweredBy } from "@/cclw/components/PoweredBy";
 import Layout from "@/components/layouts/LandingPage";
 import { SiteWidth } from "@/components/panels/SiteWidth";
 import { Heading } from "@/components/typography/Heading";
-import { TTheme, TThemeConfig } from "@/types";
+import { TTheme } from "@/types";
 
 // TODO temporarily disabled: https://climate-policy-radar.slack.com/archives/C08Q8GD1CUT/p1745941756888349
 // const WorldMap = dynamic(() => import("@/components/map/WorldMap"), {
@@ -28,12 +28,11 @@ interface IProps {
   exactMatch: boolean;
   searchInput: string;
   theme: TTheme;
-  themeConfig: TThemeConfig;
 }
 
-const LandingPage = ({ handleSearchInput, searchInput, theme, themeConfig }: IProps) => {
+const LandingPage = ({ handleSearchInput, searchInput, theme }: IProps) => {
   return (
-    <Layout theme={theme} themeConfig={themeConfig} metadataKey="homepage">
+    <Layout theme={theme} metadataKey="homepage">
       <main id="main" className="flex flex-col flex-1">
         <div className="bg-cclw-dark">
           <BrazilImplementingNDCBanner />
