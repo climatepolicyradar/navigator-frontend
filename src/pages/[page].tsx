@@ -34,7 +34,7 @@ export default function Page({ page }: InferGetStaticPropsType<typeof getStaticP
   const [featureFlags, setFeatureFlags] = useState<TFeatureFlags>(DEFAULT_FEATURE_FLAGS);
   const { features } = useFeatures(featureFlags);
 
-  const loadFeatureFlags = async () => {
+  const loadFeatureFlags = () => {
     const allCookies = getAllCookies();
     const retrievedFeatureFlags = getFeatureFlags(allCookies);
     setFeatureFlags(retrievedFeatureFlags);
