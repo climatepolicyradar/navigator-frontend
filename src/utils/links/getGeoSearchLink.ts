@@ -42,6 +42,7 @@ export const getGeoSearchLink = ({ categoryId, geographyLabel }: IArgs): { href:
     href: "/search",
     query: {
       [QUERY_PARAMS.filters]: deflateFilters(filterPathsToQueryGroup(checkedLabelPaths, null, "and")),
+      [QUERY_PARAMS.sort]: "recent",
     },
   };
 };
