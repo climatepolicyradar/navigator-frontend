@@ -1,7 +1,8 @@
 import { ID_SEPARATOR } from "@/constants/chars";
+import { DEFAULT_FEATURES } from "@/constants/features";
 import { SORT_PARAMS_LOOKUP } from "@/constants/sort";
 import themeConfig from "@/themes/config";
-import { ISearchDocumentsResponse, TSearchQueryGroup, TSearchQueryRule, TSortValue, TThemeConfig } from "@/types";
+import { ISearchDocumentsResponse, TFeatures, TSearchQueryGroup, TSearchQueryRule, TSortValue, TThemeConfig } from "@/types";
 import { deflateFilters } from "@/utils/filters/deflate";
 
 export const getSearchApiStatus = (error: unknown): number | undefined => {
@@ -85,7 +86,11 @@ const endOfDay = (): string => {
  * The theme config is the running app's own, so a caller cannot scope a request to a
  * theme this deployment does not serve. `config` overrides it for tests only.
  */
-export function configureDocumentsFilters(filters?: TSearchQueryGroup, config: TThemeConfig = themeConfig): TSearchQueryGroup {
+export function configureDocumentsFilters(
+  filters?: TSearchQueryGroup,
+  config: TThemeConfig = themeConfig,
+  features: TFeatures = DEFAULT_FEATURES
+): TSearchQueryGroup {
   const { searchCategories = [], searchExcludeLabels = [] } = config;
   const publishedDateBoundsFilter: TSearchQueryGroup = {
     op: "and",
@@ -120,6 +125,13 @@ export function configureDocumentsFilters(filters?: TSearchQueryGroup, config: T
   }
   if (searchCategories.length > 0) {
     filtersWithConditionals.push(categoriesFilter);
+  }
+  if (!features.subdivisions) {
+    filtersWithConditionals.push({
+      op: "not_contains",
+      field: "labels.value.type",
+      value: "subdivision",
+    });
   }
   searchExcludeLabels.forEach(({ id: labelId }) => {
     filtersWithConditionals.push({
