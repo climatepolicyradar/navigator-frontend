@@ -16,20 +16,16 @@ import { TTheme, TThemeConfig } from "@/types";
 //   ssr: false,
 // });
 
-/**
- * GOTCHA: we export this to be used in the src/pages/index.tsx file.
- * It's a generic passed to `dynamic` so we can't rely on generic type checking.
- */
-export interface IProps {
+interface IProps {
   handleSearchInput: (term: string, filter?: string, filterValue?: string) => void;
-  handleSearchChange: (type: string, value: any) => void;
+  handleSearchChange: (type: string, value: unknown) => void;
   searchInput: string;
   exactMatch: boolean;
   theme: TTheme;
   themeConfig: TThemeConfig;
 }
 
-const LandingPage = ({ handleSearchInput, handleSearchChange, searchInput, exactMatch, theme, themeConfig }: IProps) => {
+const LandingPage = ({ handleSearchInput, searchInput, theme, themeConfig }: IProps) => {
   return (
     <Layout metadataKey="homepage" theme={theme} themeConfig={themeConfig}>
       <div className="relative">

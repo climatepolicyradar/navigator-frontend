@@ -1,8 +1,8 @@
-import { isFilterGroupEmpty } from "@/components/_experiment/advancedFilters/AdvancedFilters";
 import { ID_SEPARATOR } from "@/constants/chars";
 import { SUBNATIONAL_LABEL_TYPE } from "@/constants/labels";
 import { parseAsDeflatedFilters, deflateFilters } from "@/utils/filters/deflate";
 import { queryGroupToAPIFilters } from "@/utils/search/queryGroupToAPIFilters";
+import { isQueryGroupEmpty } from "@/utils/search/searchQuery/isQueryGroupEmpty";
 
 it("subnational landing page filters survive the URL parser and rewrite for the API", () => {
   const SUBNATIONAL_FILTER = {
@@ -27,7 +27,7 @@ it("subnational landing page filters survive the URL parser and rewrite for the 
   expect(parsed).not.toBeNull();
 
   // 2. hasSearch would be true -> no zero state
-  expect(isFilterGroupEmpty(parsed)).toBe(false);
+  expect(isQueryGroupEmpty(parsed)).toBe(false);
 
   // 3. rewritten into the real subdivision type rule for the API
   const apiFilters = queryGroupToAPIFilters(parsed!);

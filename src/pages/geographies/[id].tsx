@@ -2,13 +2,13 @@ import { GetServerSideProps, InferGetServerSidePropsType } from "next";
 
 import { ApiClient } from "@/api/http-common";
 import { fetchSearchPrincipalDocuments } from "@/api/search";
+import { loadTaxonomy } from "@/api/taxonomy";
 import { findGeographyBySlug, labelToGeographyV2 } from "@/bff/methods/getGeography";
 import { GeographyPage } from "@/components/pages/geographyPage";
 import { COUNTRY_LABEL_PATTERN, SUBDIVISION_LABEL_PATTERN } from "@/constants/labels";
 import { SYSTEM_GEO_NAMES } from "@/constants/systemGeos";
 import { withEnvConfig } from "@/context/EnvConfig";
 import { getCountryCode, getCountryName } from "@/helpers/getCountryFields";
-import { loadTaxonomy } from "@/hooks/useLabelSearch";
 import {
   TApiItemResponse,
   GeographyV2,

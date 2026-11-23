@@ -10,7 +10,7 @@ import { useNestedSearchLevel, useSearchLevelValues } from "@/hooks/useSearchLev
 import { IFamilyDocumentTopics, TFamilyPublic } from "@/types";
 import { getEventTableColumns, getEventTableRows, TEventTableColumnId, TEventTableRow } from "@/utils/eventTable";
 import { conceptFiltersOnly, flattenLevelToBaseQuery, seedPassageLevel } from "@/utils/search/searchLevels";
-import { familyTopicsHasTopics } from "@/utils/topics/processFamilyTopics";
+import { familyTopicsHasTopics } from "@/utils/topics/familyTopicsHasTopics";
 
 interface IProps {
   family: TFamilyPublic;

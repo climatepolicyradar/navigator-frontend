@@ -32,13 +32,12 @@ const emptyResponse: ISearchDocumentsResponse = {
 };
 
 import { fetchSearchPrincipalDocuments } from "@/api/search";
-import { createGroup } from "@/components/_experiment/advancedFilters/AdvancedFilters";
 import { DEFAULT_THEME_CONFIG } from "@/constants/themeConfig";
 import { EnvConfigContext } from "@/context/EnvConfig";
 import { IProps as IThemeContextProps, ThemeContext } from "@/context/ThemeContext";
 import { envConfig } from "@/mocks/envConfig";
-import { ISearchDocument, ISearchDocumentsResponse } from "@/types";
-import { upsertPublishedDateRangeRules } from "@/utils/_experiment/dateRangeFilters";
+import { ISearchDocument, ISearchDocumentsResponse, TSearchQueryGroup } from "@/types";
+import { createQueryGroup } from "@/utils/search/searchQuery/createQueryGroup";
 
 import { SearchContainer, shouldRetrySearch } from "./SearchResults";
 
@@ -86,9 +85,22 @@ const principalResult = (id: string): ISearchDocument => ({
   attributes: { deprecated_slug: id },
 });
 
+// A filter group holding only a published date range of 2020-2025.
+const dateRangeFilters = (): TSearchQueryGroup => {
+  const group = createQueryGroup();
+  return {
+    ...group,
+    filters: [
+      ...group.filters,
+      { field: "attributes.published_date", key: "published_date", op: "gte", value: "2020-01-01T00:00:00.000Z" },
+      { field: "attributes.published_date", key: "published_date", op: "lte", value: "2025-12-31T23:59:59.999Z" },
+    ],
+  };
+};
+
 describe("SearchContainer", () => {
   it("triggers a search when only a date filter is applied with no text query or other filters", async () => {
-    const filtersWithDate = upsertPublishedDateRangeRules(createGroup(), "2020:2025");
+    const filtersWithDate = dateRangeFilters();
 
     renderWith(<SearchContainer sort="relevance" filters={filtersWithDate} />);
 
@@ -97,7 +109,7 @@ describe("SearchContainer", () => {
 
   it("waits for the theme config to load before searching, then applies its categories", async () => {
     vi.mocked(fetchSearchPrincipalDocuments).mockClear();
-    const filters = upsertPublishedDateRangeRules(createGroup(), "2020:2025");
+    const filters = dateRangeFilters();
 
     const { rerenderWith } = renderWith(<SearchContainer sort="relevance" query="climate" filters={filters} />, { ...loadedTheme, loaded: false });
 

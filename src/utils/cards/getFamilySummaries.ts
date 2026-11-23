@@ -1,7 +1,7 @@
 import { ISearchDocument, ISearchDocumentsResponse, TFamilySummary } from "@/types";
 import { formatDate } from "@/utils/timedate";
 
-export const principalToSummary = (principal: ISearchDocument): TFamilySummary => {
+const principalToSummary = (principal: ISearchDocument): TFamilySummary => {
   const labelValue = (type: string): string | undefined => principal.labels.find((label) => label.value.type === type)?.value.value;
   const publishedDate = principal.attributes.published_date;
 

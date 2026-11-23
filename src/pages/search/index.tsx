@@ -2,7 +2,6 @@ import { GetServerSideProps, InferGetServerSidePropsType } from "next";
 import { useQueryState, parseAsString, parseAsStringLiteral } from "nuqs";
 import { useContext, useEffect, useMemo, useState } from "react";
 
-import { createGroup, isFilterGroupEmpty } from "@/components/_experiment/advancedFilters/AdvancedFilters";
 import { SEARCH_RESULTS_PAGE_SIZE, SearchContainer } from "@/components/_experiment/searchResults/SearchResults";
 import { FiveColumns } from "@/components/atoms/columns/FiveColumns";
 import { PageLink } from "@/components/atoms/pageLink/PageLink";
@@ -32,6 +31,8 @@ import { getSearchSortDefault } from "@/utils/search/getSearchSortDefault";
 import { queryGroupToAPIFilters } from "@/utils/search/queryGroupToAPIFilters";
 import { queryGroupToFilterPaths } from "@/utils/search/queryGroupToFilterPaths";
 import { seedPassageLevel } from "@/utils/search/searchLevels";
+import { createQueryGroup } from "@/utils/search/searchQuery/createQueryGroup";
+import { isQueryGroupEmpty } from "@/utils/search/searchQuery/isQueryGroupEmpty";
 import { joinTailwindClasses } from "@/utils/tailwind";
 
 const columnLayoutCss = "col-start-1 -col-end-1 cols-5:col-start-2 cols-5:-col-end-2";
@@ -46,7 +47,7 @@ const SearchPage = ({ theme, themeConfig, features }: TProps) => {
   // search query that is typed into the search box
   const [query, setQuery] = useQueryState("q", parseAsString.withDefault(""));
   // structured filters built in QueryBuilder
-  const [filters, setFiltersInUrl] = useQueryState("filters", parseAsDeflatedFilters.withDefault(createGroup()));
+  const [filters, setFiltersInUrl] = useQueryState("filters", parseAsDeflatedFilters.withDefault(createQueryGroup()));
   // pagination state
   const [currentPage, setCurrentPage] = useQueryState("page_token", parseAsString.withDefault("1"));
   const [sortParam, setSortParam] = useQueryState<TSortValue>("sort", parseAsStringLiteral(SORT_VALUES).withOptions({ clearOnDefault: false }));
@@ -89,7 +90,7 @@ const SearchPage = ({ theme, themeConfig, features }: TProps) => {
     documentLevel.close();
   };
 
-  const hasSearch = !!query || !isFilterGroupEmpty(searchReadyFilters);
+  const hasSearch = !!query || !isQueryGroupEmpty(searchReadyFilters);
 
   const resultsSummary = isSearching
     ? "Searching…"

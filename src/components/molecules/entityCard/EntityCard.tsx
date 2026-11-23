@@ -1,6 +1,6 @@
 import { PageLink } from "@/components/atoms/pageLink/PageLink";
 
-export interface IProps {
+interface IProps {
   href: string;
   metadata: string[];
   title: string;

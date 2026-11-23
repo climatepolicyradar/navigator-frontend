@@ -4,17 +4,17 @@ import { usePostHog } from "posthog-js/react";
 import React, { Fragment, useContext, useEffect, useMemo } from "react";
 
 import { fetchSearchPrincipalDocuments, getSearchApiStatus } from "@/api/search";
-import { isFilterGroupEmpty } from "@/components/_experiment/advancedFilters/AdvancedFilters";
 import { Loading } from "@/components/atoms/loading/Loading";
 import { DocumentCard } from "@/components/molecules/documentCard/DocumentCard";
 import { useEnvConfig } from "@/context/EnvConfig";
 import { posthogEventName } from "@/context/PostHogProvider";
 import { ThemeContext } from "@/context/ThemeContext";
 import { ISearchDocument, ISearchDocumentsResponse, TSearchQueryGroup, TSortValue } from "@/types";
-import { sanitiseSearchQueryGroup } from "@/utils/filters/advancedFilters";
 import { parseAsDeflatedFilters } from "@/utils/filters/deflate";
+import { sanitiseSearchQueryGroup } from "@/utils/filters/sanitiseSearchQueryGroup";
 import { DEFAULT_SEARCH_QUERY_GROUP } from "@/utils/search/filterPathsToQueryGroup";
 import { queryGroupToFilterPaths } from "@/utils/search/queryGroupToFilterPaths";
+import { isQueryGroupEmpty } from "@/utils/search/searchQuery/isQueryGroupEmpty";
 
 export const SEARCH_RESULTS_PAGE_SIZE = 10;
 
@@ -98,7 +98,7 @@ export function SearchContainer({
   const nonEmptyFilters = useMemo(() => {
     if (!filters) return undefined;
     const sanitised = sanitiseSearchQueryGroup(filters);
-    return isFilterGroupEmpty(sanitised) ? undefined : sanitised;
+    return isQueryGroupEmpty(sanitised) ? undefined : sanitised;
   }, [filters]);
 
   const hasSearch = !!query || !!nonEmptyFilters;

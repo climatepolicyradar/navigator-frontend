@@ -26,7 +26,7 @@ export const CONFIG_FEATURE_KEYS = [
 /* Types */
 
 export type TFeatureFlag = (typeof FEATURE_FLAG_KEYS)[number];
-export type TABTest = (typeof AB_TEST_KEYS)[number];
+type TABTest = (typeof AB_TEST_KEYS)[number];
 export type TFeatureFlags = Record<TFeatureFlag | TABTest, boolean>; // Treat all PostHog feature flags the same as they're sourced at the same time
 
 export type TConfigFeature = (typeof CONFIG_FEATURE_KEYS)[number];

@@ -1,8 +1,8 @@
 import { useQuery } from "@tanstack/react-query";
 import { useMemo } from "react";
 
+import { ITaxonomyParams, loadTaxonomy } from "@/api/taxonomy";
 import { useEnvConfig } from "@/context/EnvConfig";
-import { ITaxonomyParams, loadTaxonomy } from "@/hooks/useLabelSearch";
 import { TNestedSearchLabel } from "@/types";
 import { getSearchLabelValues } from "@/utils/filters/getSearchLabelValues";
 

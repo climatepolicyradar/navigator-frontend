@@ -6,7 +6,7 @@ import { months } from "@/constants/timedate";
 import { IFamilyDocumentTopics, IMetadata, TFamilyPublic } from "@/types";
 import { getTopicsMetadataItem } from "@/utils/family-metadata/getTopicsMetadataItem";
 import { formatDate, getYear, padNumber } from "@/utils/timedate";
-import { familyTopicsHasTopics } from "@/utils/topics/processFamilyTopics";
+import { familyTopicsHasTopics } from "@/utils/topics/familyTopicsHasTopics";
 
 export function getLawsPolicyMetadata(family: TFamilyPublic, familyTopics: IFamilyDocumentTopics | null): IMetadata[] {
   const metadata = [];

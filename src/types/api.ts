@@ -1,15 +1,4 @@
-type TApiPassageBlockCoords = [number, number];
-
-export type TApiPassage = {
-  block_id_sort_key?: number;
-  concepts?: unknown[];
-  text_block_coords: TApiPassageBlockCoords[];
-  text_block_id: string;
-  text_block_page: number;
-  text: string;
-};
-
-export type TApiDataNode<T> = {
+type TApiDataNode<T> = {
   node: T;
   children: TApiDataNode<T>[];
 };
@@ -18,51 +7,13 @@ export type TApiItemResponse<T = unknown> = {
   data: T;
 };
 
-export type TApiGeographyTypeV2 = "region" | "country" | "subdivision";
-
-export type TApiGeographyV2 = {
-  id: string;
-  type: TApiGeographyTypeV2;
-  slug: string;
-  subconcept_of?: TApiGeographyV2[];
-  has_subconcept?: TApiGeographyV2[];
-  name: string;
-  alpha_2?: string;
-  statistics?: {
-    name: string;
-    legislative_process: string;
-    federal: boolean;
-    federal_details: string;
-    political_groups: string;
-    global_emissions_percent: string;
-    climate_risk_index: string;
-    worldbank_income_group: string;
-    visibility_status: string;
-  };
-};
-
-export type TApiGeography = {
+type TApiGeography = {
   id: number;
   display_value: string;
   value: string;
   type: string;
   parent_id: number | null;
   slug: string;
-};
-
-export type TApiGeographySubdivision = {
-  code: string;
-  name: string;
-  type: string;
-  country_alpha_2: string;
-  country_alpha_3: string;
-};
-
-export type TApiGeographyWithDocumentCounts = {
-  code: string;
-  name: string;
-  type: string;
-  count: number;
 };
 
 /* As returned by data-in-api, which identifies geographies by prefixed label id
@@ -73,92 +24,6 @@ export type TApiGeographyLabelCount = {
   type: string;
   count: number;
 };
-
-export type TApiTarget = {
-  ID: string;
-  "Target type": string;
-  Source: string;
-  Description: string;
-  "GHG target": "TRUE" | "FALSE";
-  Year: string;
-  "Base year period": string;
-  "Single year": "TRUE" | "FALSE";
-  Geography: string;
-  "Geography ISO": string;
-  Sector: string;
-  "CCLW legislation ID": string;
-  Scopes: string;
-  "Visibility status": string;
-  "CPR family ID": string;
-  "Net zero target?": "TRUE" | "FALSE";
-  Comment: string;
-  "family-slug": string;
-  "family-name": string;
-};
-
-// TODO resolve different litigation cases depending on API endpoint used
-export type TApiCategory =
-  | "Legislative"
-  | "LEGISLATIVE"
-  | "Executive"
-  | "EXECUTIVE"
-  | "Litigation"
-  | "LITIGATION"
-  | "Policy"
-  | "Law"
-  | "UNFCCC"
-  | "MCF"
-  | "Reports"
-  | "REPORTS";
-export type TApiCorpusTypeSubCategory = "AF" | "CIF" | "GCF" | "GEF" | "Laws and Policies" | "Intl. agreements" | "Litigation" | "Reports";
-
-export const DATA_IN_CATEGORY_VALUES = ["Law", "Litigation", "Multilateral Climate Fund project", "Policy", "Report", "UN submission"] as const;
-export type TApiDataInCategory = (typeof DATA_IN_CATEGORY_VALUES)[number];
-
-export type TApiEvent = {
-  title: string;
-  date: string;
-  event_type: string;
-  status: string;
-};
-
-export type TApiFamilyDocument = {
-  document_content_type: "application/pdf";
-  document_date: string;
-  document_passage_matches: TApiPassage[];
-  document_slug: string;
-  document_source_url: string;
-  document_title: string;
-  document_type: string;
-  document_url: string;
-};
-
-/** This is the metadata that is returned via Vespa */
-export type TApiVespaMetadata = {
-  name: string;
-  value: string;
-}[];
-
-export type TApiFamily = {
-  continuation_token?: string;
-  corpus_import_id: string;
-  corpus_type_name: TApiCorpusTypeSubCategory;
-  family_category: TApiCategory;
-  family_date: string;
-  family_description_match: boolean;
-  family_description: string;
-  family_documents: TApiFamilyDocument[];
-  family_geographies: string[];
-  family_name: string;
-  family_slug: string;
-  family_source: string;
-  family_title_match: boolean;
-  prev_continuation_token?: string;
-  total_passage_hits: number;
-  metadata: TApiVespaMetadata;
-};
-
-type TApiDocumentContentType = "application/pdf" | "text/html" | "application/octet-stream";
 
 type TApiMetadata<Key extends string> = {
   [K in Key]?: string[];
@@ -194,23 +59,9 @@ export const API_FAMILY_METADATA_KEY = [
 export type TApiFamilyMetadataKey = (typeof API_FAMILY_METADATA_KEY)[number];
 export type TApiFamilyMetadata = TApiMetadata<TApiFamilyMetadataKey>;
 
-export type TApiMatchedFamily = TApiFamily & {
-  family_description_match: boolean;
-  family_title_match: boolean;
-  total_passage_hits: number;
-  continuation_token?: string; // represents a token for requesting more passage matches
-};
-
-export type TApiSearch = {
-  hits: number;
-  query_time_ms: number;
-  families: TApiMatchedFamily[];
-  total_family_hits: number;
-};
-
 export type TApiLoadingStatus = "idle" | "loading" | "success" | "error";
 
-export type TApiLanguages = {
+type TApiLanguages = {
   [key: string]: string;
 };
 
@@ -245,7 +96,7 @@ interface IApiDictionary<T> {
   [Key: string]: T;
 }
 
-export type TApiCorpusTypeDictionary = IApiDictionary<TApiCorpusType>;
+type TApiCorpusTypeDictionary = IApiDictionary<TApiCorpusType>;
 
 export type TApiConfig = {
   geographies: TApiDataNode<TApiGeography>[];
@@ -261,109 +112,6 @@ export type TApiFamilyConcept = {
   preferred_label: string;
   subconcept_of_labels: string[];
 };
-
-export type TApiSearchResponse = {
-  total_hits: number;
-  total_family_hits: number;
-  query_time_ms?: number;
-  total_time_ms?: number;
-  families: {
-    id: string;
-    hits: (TApiFamily & {
-      // Document metadata returned by Vespa
-      concept_counts?: Record<string, number>;
-      document_import_id: string;
-      document_title: string;
-      document_slug: string;
-    })[];
-  }[];
-  continuation_token?: string;
-  this_continuation_token: string;
-  prev_continuation_token: string;
-};
-
-/* /families API response types */
-
-export type TApiCollectionPublic = {
-  description: string;
-  import_id: string;
-  metadata: TApiMetadata<"event_type" | "description" | "datetime_event_name" | "id">;
-  slug: string;
-  title: string;
-};
-
-export type TApiCollectionPublicWithFamilies = TApiCollectionPublic & {
-  families: TApiFamilyPublic[];
-};
-
-export type TApiCorpusPublic = {
-  corpus_type_name: string;
-  import_id: string;
-  organisation: {
-    id: number;
-    name: string;
-  };
-  title: string;
-  attribution_url: string | null;
-};
-
-export type TApiFamilyEventPublic = TApiEvent & {
-  import_id: string;
-  metadata: TApiMetadata<
-    | "action_taken"
-    | "case_number"
-    | "concept_preferred_label"
-    | "core_object"
-    | "datetime_event_name"
-    | "description"
-    | "event_type"
-    | "id"
-    | "original_case_name"
-    | "status"
-  >;
-};
-
-export type TApiFamilyDocumentPublic = {
-  cdn_object: string;
-  content_type: TApiDocumentContentType | null;
-  document_role: string | null;
-  document_type: string | null;
-  events: TApiFamilyEventPublic[];
-  import_id: string;
-  language: string | null;
-  languages: string[];
-  md5_sum: string | null;
-  slug: string;
-  source_url: string | null;
-  title: string;
-  valid_metadata: TApiMetadata<"id">;
-  variant_name: string | null;
-  variant: string | null;
-  document_status: string | null;
-};
-
-export type TApiFamilyPublic = {
-  category: TApiCategory;
-  collections: TApiCollectionPublic[];
-  concepts: TApiFamilyConcept[];
-  corpus_id: string;
-  corpus_type_name?: TApiCorpusTypeSubCategory;
-  corpus?: TApiCorpusPublic;
-  documents: TApiFamilyDocumentPublic[];
-  events: TApiFamilyEventPublic[];
-  geographies: string[];
-  import_id: string;
-  last_updated_date: string | null;
-  metadata: TApiFamilyMetadata;
-  organisation: string;
-  organisation_attribution_url: string | null;
-  published_date: string | null;
-  slug: string;
-  summary: string;
-  title: string;
-};
-
-export type TApiDocumentPublic = Omit<TApiFamilyDocumentPublic, "events"> & { family: TApiFamilyPublic };
 
 export interface IApiFamilyDocumentTopics {
   documents: {
