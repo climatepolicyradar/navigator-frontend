@@ -44,7 +44,7 @@ jobs:
 
       - name: Login to Amazon ECR (production)
         id: login-ecr-production
-        uses: aws-actions/amazon-ecr-login@03f1aad4c6c7ffd436567f42f9384779290529bd
+        uses: aws-actions/amazon-ecr-login@7290e214a610b32bc0eef81748948b6d466a8783
 
       - uses: pulumi/actions@v7
         env:
