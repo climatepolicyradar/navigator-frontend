@@ -8,11 +8,7 @@ import { EnvConfigContext } from "@/context/EnvConfig";
 import { FeaturesContext } from "@/context/FeaturesContext";
 import { ThemeContext } from "@/context/ThemeContext";
 
-import { setUpThemeConfig } from "./api/configHandlers";
-
 export const renderWithAppContext = (Component: React.ComponentType<any>, { pageProps, features }: { pageProps?: any; features?: any }) => {
-  setUpThemeConfig(pageProps?.themeConfig);
-
   const queryClient = new QueryClient({
     defaultOptions: {
       queries: {
