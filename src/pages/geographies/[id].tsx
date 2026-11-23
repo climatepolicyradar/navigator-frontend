@@ -67,6 +67,7 @@ const fetchGeographyPrincipals = (
     features,
     filters: filterPathsToQueryGroup(labelPaths, null, "and"),
     page_size: String(GEOGRAPHY_PRINCIPALS_PAGE_SIZE),
+    sort: "recent",
   });
 };
 

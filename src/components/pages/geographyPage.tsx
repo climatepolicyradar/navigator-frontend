@@ -143,6 +143,7 @@ export const GeographyPage = ({
               features,
               filters: filterPathsToQueryGroup(geographyLabelPaths(geographyLabel, category), null, "and"),
               page_size: String(RECENT_FAMILIES_PAGE_SIZE),
+              sort: "recent",
             })
           );
 
