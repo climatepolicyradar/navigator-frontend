@@ -1,12 +1,12 @@
 import Link from "next/link";
 
+import { FRAMEWORK_LAWS_SEARCH_PARAMS } from "@/cclw/constants/suggestedSearches";
 import { ExternalLink } from "@/components/ExternalLink";
 import { BreadCrumbs } from "@/components/breadcrumbs/Breadcrumbs";
 import Layout from "@/components/layouts/Main";
 import { SingleCol } from "@/components/panels/SingleCol";
 import { SiteWidth } from "@/components/panels/SiteWidth";
 import { Heading } from "@/components/typography/Heading";
-import { QUERY_PARAMS } from "@/constants/queryParams";
 
 const FrameworkLaws = () => {
   return (
@@ -45,10 +45,7 @@ const FrameworkLaws = () => {
                 The laws are tagged to indicate the policy response area(s) to which they relate, whether mitigation, adaptation and/or disaster risk
                 management.
               </p>
-              <Link
-                className="button inline-block !text-white !no-underline"
-                href={{ pathname: "/search", query: { [QUERY_PARAMS.category]: "laws", [QUERY_PARAMS.framework_laws]: "true" } }}
-              >
+              <Link className="button inline-block !text-white !no-underline" href={{ pathname: "/search", query: FRAMEWORK_LAWS_SEARCH_PARAMS }}>
                 Click here to view the list of Framework Laws
               </Link>
               <p>

@@ -150,8 +150,13 @@ const RioSubmissions = () => {
           href={{
             pathname: "/search",
             query: {
-              [QUERY_PARAMS.category]: "UN-submissions",
-              [QUERY_PARAMS.author_type]: "Party",
+              [QUERY_PARAMS.filters]: deflateFilters({
+                op: "and",
+                filters: [
+                  { field: "labels.value.id", op: "contains", value: "category::UN submission" },
+                  { op: "or", filters: [{ field: "labels.value.id", op: "contains", value: "author_type::Party", checked: true }] },
+                ],
+              }),
             },
           }}
           className="max-w-[1200px] w-full mx-auto mt-14 mb-10 col-start-1 -col-end-1 cols-5:col-start-2 cols-5:-col-end-2"
@@ -162,7 +167,7 @@ const RioSubmissions = () => {
             alt="Climate Policy Radar's search page filtered by UN Submissions"
             width={1200}
             height={699}
-            className="w-full bg-white border border-[#d1d5db] rounded-2xl shadow-[0_20px_50px_-12px_rgba(0,0,0,0.10)]0"
+            className="w-full bg-white border border-[#d1d5db] rounded-2xl shadow-[0_20px_50px_-12px_rgba(0,0,0,0.10)]"
           />
         </Link>
         <div className="flex flex-col gap-5 items-center col-start-1 -col-end-1">
