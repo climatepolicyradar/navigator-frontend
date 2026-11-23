@@ -10,7 +10,7 @@ import { useEnvConfig } from "@/context/EnvConfig";
 import { FeaturesContext } from "@/context/FeaturesContext";
 import { posthogEventName } from "@/context/PostHogProvider";
 import { ThemeContext } from "@/context/ThemeContext";
-import { ISearchDocument, ISearchDocumentsResponse, TSearchQueryGroup, TSortValue } from "@/types";
+import { ISearchDocument, TSearchQueryGroup, TSortValue } from "@/types";
 import { parseAsDeflatedFilters } from "@/utils/filters/deflate";
 import { sanitiseSearchQueryGroup } from "@/utils/filters/sanitiseSearchQueryGroup";
 import { DEFAULT_SEARCH_QUERY_GROUP } from "@/utils/search/filterPathsToQueryGroup";
@@ -28,49 +28,7 @@ export const shouldRetrySearch = (failureCount: number, error: unknown): boolean
   return (getSearchApiStatus(error) ?? 500) >= 500 && failureCount < 3;
 };
 
-function SearchResults({
-  data,
-  onResultClicked,
-}: {
-  data: ISearchDocumentsResponse;
-  onResultClicked?: (document: ISearchDocument, event: React.MouseEvent<HTMLAnchorElement>) => void;
-}) {
-  // Number of results on the pages before this one
-  const positionOffset = (data.page - 1) * data.page_size;
-
-  return (
-    <div data-cy="search-results">
-      <ul className="flex flex-col gap-4 highlights">
-        {data.results.map((result, resultIndex) => (
-          <Fragment key={result.id}>
-            {isPrincipal(result) && (
-              <li>
-                <DocumentCard
-                  document={result}
-                  onClick={onResultClicked}
-                  analytics={{
-                    context: "search-results",
-                    positionInPage: resultIndex + 1,
-                    positionInResults: positionOffset + resultIndex + 1,
-                    resultsTotal: data.total_size ?? undefined,
-                  }}
-                />
-              </li>
-            )}
-            {/* TODO: remove non-principal results */}
-            {!isPrincipal(result) && (
-              <li className={`flex gap-2 border border-transparent rounded-md py-2 pr-6 highlights`}>
-                <p>Shouldn't be showing a non-principle doc here</p>
-              </li>
-            )}
-          </Fragment>
-        ))}
-      </ul>
-    </div>
-  );
-}
-
-interface ISearchContainerProps {
+interface IProps {
   filters?: TSearchQueryGroup;
   onResultClicked?: (document: ISearchDocument, event: React.MouseEvent<HTMLAnchorElement>) => void;
   onSearchingChange?: (isSearching: boolean) => void;
@@ -81,15 +39,7 @@ interface ISearchContainerProps {
   sort: TSortValue;
 }
 
-export function SearchContainer({
-  filters,
-  onResultClicked,
-  onSearchingChange,
-  onTotalResultsChange,
-  page_token,
-  query,
-  sort,
-}: ISearchContainerProps) {
+export const SearchResults = ({ filters, onResultClicked, onSearchingChange, onTotalResultsChange, page_token, query, sort }: IProps) => {
   const { themeConfig, loaded } = useContext(ThemeContext);
   const features = useContext(FeaturesContext);
   const { API_URL } = useEnvConfig();
@@ -163,5 +113,36 @@ export function SearchContainer({
 
   if (isError) return <p className="py-10 text-center text-sm text-text-secondary">Something went wrong with your search. Please try again.</p>;
 
-  return <SearchResults data={data} onResultClicked={onResultClicked} />;
-}
+  const positionOffset = (data.page - 1) * data.page_size;
+
+  return (
+    <div data-cy="search-results">
+      <ul className="flex flex-col gap-4 highlights">
+        {data.results.map((result, resultIndex) => (
+          <Fragment key={result.id}>
+            {isPrincipal(result) && (
+              <li>
+                <DocumentCard
+                  document={result}
+                  onClick={onResultClicked}
+                  analytics={{
+                    context: "search-results",
+                    positionInPage: resultIndex + 1,
+                    positionInResults: positionOffset + resultIndex + 1,
+                    resultsTotal: data.total_size ?? undefined,
+                  }}
+                />
+              </li>
+            )}
+            {/* TODO: remove non-principal results */}
+            {!isPrincipal(result) && (
+              <li className={`flex gap-2 border border-transparent rounded-md py-2 pr-6 highlights`}>
+                <p>Shouldn't be showing a non-principle doc here</p>
+              </li>
+            )}
+          </Fragment>
+        ))}
+      </ul>
+    </div>
+  );
+};
