@@ -140,6 +140,7 @@ export const GeographyPage = ({
             await fetchSearchPrincipalDocuments({
               apiUrl: envConfig.API_URL,
               themeConfig,
+              features,
               filters: filterPathsToQueryGroup(geographyLabelPaths(geographyLabel, category), null, "and"),
               page_size: String(RECENT_FAMILIES_PAGE_SIZE),
             })
@@ -183,7 +184,7 @@ export const GeographyPage = ({
             geographyLabel={geographyLabel}
           />
         );
-      }, [envConfig, geographyLabel, getAppText, summariesByCategory, themeConfig]),
+      }, [envConfig, features, geographyLabel, getAppText, summariesByCategory, themeConfig]),
       sideBarItem: { display: "Recent " + getAppText("familyPlural") },
     },
     statistics: {

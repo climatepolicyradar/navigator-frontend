@@ -16,7 +16,7 @@ export const useFilterLabels = ({ features, themeConfig }: IProps) => {
 
   const { labels, labelNames, loaded } = useTaxonomy({
     patterns: features.subdivisions ? [...searchLabelPatterns, SUBDIVISION_LABEL_PATTERN] : searchLabelPatterns,
-    filters: configureDocumentsFilters({ op: "and", filters: [PRINCIPAL_DOCUMENTS_FILTER] }, themeConfig),
+    filters: configureDocumentsFilters({ op: "and", filters: [PRINCIPAL_DOCUMENTS_FILTER] }, themeConfig, features),
   });
 
   const filters = useMemo(() => pruneTaxonomy(labels), [labels]);
