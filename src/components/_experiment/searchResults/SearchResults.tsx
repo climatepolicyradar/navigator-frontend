@@ -7,6 +7,7 @@ import { fetchSearchPrincipalDocuments, getSearchApiStatus } from "@/api/search"
 import { Loading } from "@/components/atoms/loading/Loading";
 import { DocumentCard } from "@/components/molecules/documentCard/DocumentCard";
 import { useEnvConfig } from "@/context/EnvConfig";
+import { FeaturesContext } from "@/context/FeaturesContext";
 import { posthogEventName } from "@/context/PostHogProvider";
 import { ThemeContext } from "@/context/ThemeContext";
 import { ISearchDocument, ISearchDocumentsResponse, TSearchQueryGroup, TSortValue } from "@/types";
@@ -90,6 +91,7 @@ export function SearchContainer({
   sort,
 }: ISearchContainerProps) {
   const { themeConfig } = useContext(ThemeContext);
+  const features = useContext(FeaturesContext);
   const { API_URL } = useEnvConfig();
   const posthog = usePostHog();
   const [filterGroups] = useQueryState("filters", parseAsDeflatedFilters.withDefault(DEFAULT_SEARCH_QUERY_GROUP));
@@ -104,7 +106,7 @@ export function SearchContainer({
   const hasSearch = !!query || !!nonEmptyFilters;
 
   const { data, isError, isPending } = useQuery({
-    queryKey: ["searchDocuments", query, nonEmptyFilters, page_token, sort, API_URL],
+    queryKey: ["searchDocuments", query, nonEmptyFilters, page_token, sort, API_URL, features],
     queryFn: async ({ signal }) => {
       const response = await fetchSearchPrincipalDocuments({
         apiUrl: API_URL,
@@ -115,6 +117,7 @@ export function SearchContainer({
         sort,
         signal,
         themeConfig,
+        features,
       });
 
       try {

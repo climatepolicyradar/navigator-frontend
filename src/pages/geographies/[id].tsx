@@ -11,17 +11,18 @@ import { withEnvConfig } from "@/context/EnvConfig";
 import { getCountryCode, getCountryName } from "@/helpers/getCountryFields";
 import themeConfig from "@/themes/config";
 import {
-  TApiItemResponse,
+  GeographyTypeV2,
   GeographyV2,
   ISearchDocumentsResponse,
-  TGeography,
+  TApiItemResponse,
+  TFeatures,
   TFilterPathLabel,
+  TGeography,
+  TNestedSearchLabel,
   TSearchLabel,
   TSearchLabelRelation,
-  TNestedSearchLabel,
-  TThemeConfig,
-  GeographyTypeV2,
   TTheme,
+  TThemeConfig,
 } from "@/types";
 import { extractNestedData } from "@/utils/extractNestedData";
 import { getFeatureFlags } from "@/utils/featureFlags";
@@ -51,7 +52,12 @@ const toGeographySearchLabel = ({ label, parent }: NonNullable<ReturnType<typeof
  *
  * Scoped the same way the search page scopes a geography filter, so both show the same documents.
  */
-const fetchGeographyPrincipals = (apiUrl: string, geographyLabel: TSearchLabel, themeConfig: TThemeConfig): Promise<ISearchDocumentsResponse> => {
+const fetchGeographyPrincipals = (
+  apiUrl: string,
+  geographyLabel: TSearchLabel,
+  themeConfig: TThemeConfig,
+  features: TFeatures
+): Promise<ISearchDocumentsResponse> => {
   const parentType = geographyLabel.type === "subdivision" ? "country" : "region";
   const parentLabel = geographyLabel.labels.find((label) => label.type === "subconcept_of" && label.value.type === parentType);
   const labelPaths: TFilterPathLabel[][] = [parentLabel ? [geographyLabel, parentLabel.value] : [geographyLabel]];
@@ -59,8 +65,10 @@ const fetchGeographyPrincipals = (apiUrl: string, geographyLabel: TSearchLabel, 
   return fetchSearchPrincipalDocuments({
     apiUrl,
     themeConfig,
+    features,
     filters: filterPathsToQueryGroup(labelPaths, null, "and"),
     page_size: String(GEOGRAPHY_PRINCIPALS_PAGE_SIZE),
+    sort: "recent",
   });
 };
 
@@ -138,7 +146,7 @@ export const getServerSideProps = (async (context) => {
 
   const geographyLabel = toGeographySearchLabel(lookup);
 
-  const vespaSearchResults = await fetchGeographyPrincipals(process.env.API_URL, geographyLabel, themeConfig).catch(
+  const vespaSearchResults = await fetchGeographyPrincipals(process.env.API_URL, geographyLabel, themeConfig, features).catch(
     (err): ISearchDocumentsResponse => {
       console.error(`Could not find search results for geography ${geographyV2.slug}:`, err);
       return null;

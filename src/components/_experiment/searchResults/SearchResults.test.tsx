@@ -32,8 +32,10 @@ const emptyResponse: ISearchDocumentsResponse = {
 };
 
 import { fetchSearchPrincipalDocuments } from "@/api/search";
+import { DEFAULT_FEATURES } from "@/constants/features";
 import { DEFAULT_THEME_CONFIG } from "@/constants/themeConfig";
 import { EnvConfigContext } from "@/context/EnvConfig";
+import { FeaturesContext } from "@/context/FeaturesContext";
 import { IProps as IThemeContextProps, ThemeContext } from "@/context/ThemeContext";
 import { envConfig } from "@/mocks/envConfig";
 import { ISearchDocument, ISearchDocumentsResponse, TSearchQueryGroup } from "@/types";
@@ -120,6 +122,19 @@ describe("SearchContainer", () => {
 
     await waitFor(() => expect(fetchSearchPrincipalDocuments).toHaveBeenCalledTimes(1));
     expect(vi.mocked(fetchSearchPrincipalDocuments).mock.calls[0][0].themeConfig.searchCategories).toEqual(["Litigation"]);
+  });
+
+  it("searches with the features from FeaturesContext", async () => {
+    vi.mocked(fetchSearchPrincipalDocuments).mockClear();
+
+    renderWith(
+      <FeaturesContext.Provider value={{ ...DEFAULT_FEATURES, subdivisions: true }}>
+        <SearchContainer sort="relevance" query="climate" />
+      </FeaturesContext.Provider>
+    );
+
+    await waitFor(() => expect(fetchSearchPrincipalDocuments).toHaveBeenCalledTimes(1));
+    expect(vi.mocked(fetchSearchPrincipalDocuments).mock.calls[0][0].features.subdivisions).toBe(true);
   });
 
   it("shows a generic message in the page for other search failures", async () => {

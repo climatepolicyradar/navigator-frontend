@@ -46,7 +46,7 @@ describe("getGeoSearchLink", () => {
       "and"
     );
 
-    expect(result.query).toEqual({ [QUERY_PARAMS.filters]: deflateFilters(expectedFilters) });
+    expect(result.query).toEqual({ [QUERY_PARAMS.filters]: deflateFilters(expectedFilters), [QUERY_PARAMS.sort]: "recent" });
   });
 
   it("links to /search", () => {
@@ -66,7 +66,7 @@ describe("getGeoSearchLink", () => {
 
     const expectedFilters = filterPathsToQueryGroup([[geographyLabel, region]], null, "and");
 
-    expect(result.query).toEqual({ [QUERY_PARAMS.filters]: deflateFilters(expectedFilters) });
+    expect(result.query).toEqual({ [QUERY_PARAMS.filters]: deflateFilters(expectedFilters), [QUERY_PARAMS.sort]: "recent" });
   });
 
   it("adds the mapped category filter when the category is recognised", () => {
@@ -81,7 +81,7 @@ describe("getGeoSearchLink", () => {
       "and"
     );
 
-    expect(result.query).toEqual({ [QUERY_PARAMS.filters]: deflateFilters(expectedFilters) });
+    expect(result.query).toEqual({ [QUERY_PARAMS.filters]: deflateFilters(expectedFilters), [QUERY_PARAMS.sort]: "recent" });
   });
 
   it("builds a filters query from a subdivision label and its parent country", () => {
@@ -92,7 +92,7 @@ describe("getGeoSearchLink", () => {
 
     const expectedFilters = filterPathsToQueryGroup([[subdivisionLabel, country]], null, "and");
 
-    expect(result.query).toEqual({ [QUERY_PARAMS.filters]: deflateFilters(expectedFilters) });
+    expect(result.query).toEqual({ [QUERY_PARAMS.filters]: deflateFilters(expectedFilters), [QUERY_PARAMS.sort]: "recent" });
   });
 
   it("adds the mapped category filter for a subdivision", () => {
@@ -107,7 +107,7 @@ describe("getGeoSearchLink", () => {
       "and"
     );
 
-    expect(result.query).toEqual({ [QUERY_PARAMS.filters]: deflateFilters(expectedFilters) });
+    expect(result.query).toEqual({ [QUERY_PARAMS.filters]: deflateFilters(expectedFilters), [QUERY_PARAMS.sort]: "recent" });
   });
 
   it("only filters by geography when the category has no known mapping", () => {
@@ -118,6 +118,6 @@ describe("getGeoSearchLink", () => {
 
     const expectedFilters = filterPathsToQueryGroup([[geographyLabel, region]], null, "and");
 
-    expect(result.query).toEqual({ [QUERY_PARAMS.filters]: deflateFilters(expectedFilters) });
+    expect(result.query).toEqual({ [QUERY_PARAMS.filters]: deflateFilters(expectedFilters), [QUERY_PARAMS.sort]: "recent" });
   });
 });
