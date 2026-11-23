@@ -4,6 +4,7 @@ import { useContext } from "react";
 import { fetchSearchPrincipalDocuments } from "@/api/search";
 import { dayInMilliseconds } from "@/constants/dayInMilleseconds";
 import { useEnvConfig } from "@/context/EnvConfig";
+import { FeaturesContext } from "@/context/FeaturesContext";
 import { ThemeContext } from "@/context/ThemeContext";
 import { ISearchDocument, TLatestItem } from "@/types";
 
@@ -29,14 +30,16 @@ export const toLatestItems = (documents: ISearchDocument[]): TLatestItem[] =>
  */
 export default function useGetLatest(limit: number) {
   const { themeConfig, loaded } = useContext(ThemeContext);
+  const features = useContext(FeaturesContext);
   const { API_URL } = useEnvConfig();
 
   return useQuery({
-    queryKey: ["latest", limit, themeConfig.searchCategories, API_URL],
+    queryKey: ["latest", limit, themeConfig.searchCategories, API_URL, features],
     queryFn: async ({ signal }) => {
       const response = await fetchSearchPrincipalDocuments({
         apiUrl: API_URL,
         themeConfig,
+        features,
         orderBy: LATEST_ADDED_ORDER_BY,
         page_size: String(limit),
         signal,

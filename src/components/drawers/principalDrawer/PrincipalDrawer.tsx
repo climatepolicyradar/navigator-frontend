@@ -5,6 +5,7 @@ import { Fragment, ReactNode, useState } from "react";
 import { Drawer, DrawerScrollArea } from "@/components/atoms/drawer/Drawer";
 import { PageLink } from "@/components/atoms/pageLink/PageLink";
 import { Tabs } from "@/components/atoms/tabs/Tabs";
+import { CollectionsBlock } from "@/components/blocks/collectionsBlock/CollectionsBlock";
 import { DocumentsBlock } from "@/components/blocks/documentsBlock/DocumentsBlock";
 import { MetadataBlock } from "@/components/blocks/metadataBlock/MetadataBlock";
 import { NoteBlock } from "@/components/blocks/noteBlock/NoteBlock";
@@ -47,7 +48,7 @@ type TDrawerContentProps = {
 };
 
 const DrawerContent = ({ familyData }: TDrawerContentProps) => {
-  const { family, familyTopics } = familyData;
+  const { collections, family, familyTopics } = familyData;
   const { getCategoryTextLookup } = useText();
   const getCategoryText = getCategoryTextLookup(family.attribution.category);
   const pageHeaderMetadata = getFamilyHeader({ family, getCategoryText });
@@ -83,6 +84,9 @@ const DrawerContent = ({ familyData }: TDrawerContentProps) => {
       {familyTopicsHasTopics(familyTopics) && (
         <TopicsBlock key="topics" family={family} familyTopics={familyTopics} getCategoryText={getCategoryText} />
       )}
+      <div className="grid grid-cols-1">
+        <CollectionsBlock key="collections" collections={collections} family={family} />
+      </div>
       <NoteBlock key="note" attribution={family.attribution} />
     </div>
   );

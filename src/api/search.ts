@@ -1,7 +1,8 @@
 import { ID_SEPARATOR } from "@/constants/chars";
+import { DEFAULT_FEATURES } from "@/constants/features";
 import { SORT_PARAMS_LOOKUP } from "@/constants/sort";
 import themeConfig from "@/themes/config";
-import { ISearchDocumentsResponse, TSearchQueryGroup, TSearchQueryRule, TSortValue, TThemeConfig } from "@/types";
+import { ISearchDocumentsResponse, TFeatures, TSearchQueryGroup, TSearchQueryRule, TSortValue, TThemeConfig } from "@/types";
 import { deflateFilters } from "@/utils/filters/deflate";
 
 export const getSearchApiStatus = (error: unknown): number | undefined => {
@@ -19,6 +20,7 @@ interface ISearchDocumentsParams {
   /** An `order_by` clause to use in place of `sort`, for orderings not offered to users as a sort option. */
   orderBy?: string;
   themeConfig?: TThemeConfig;
+  features: TFeatures;
   signal?: AbortSignal;
 }
 
@@ -85,7 +87,11 @@ const endOfDay = (): string => {
  * The theme config is the running app's own, so a caller cannot scope a request to a
  * theme this deployment does not serve. `config` overrides it for tests only.
  */
-export function configureDocumentsFilters(filters?: TSearchQueryGroup, config: TThemeConfig = themeConfig): TSearchQueryGroup {
+export function configureDocumentsFilters(
+  filters?: TSearchQueryGroup,
+  config: TThemeConfig = themeConfig,
+  features: TFeatures = DEFAULT_FEATURES
+): TSearchQueryGroup {
   const { searchCategories = [], searchExcludeLabels = [] } = config;
   const publishedDateBoundsFilter: TSearchQueryGroup = {
     op: "and",
@@ -121,6 +127,13 @@ export function configureDocumentsFilters(filters?: TSearchQueryGroup, config: T
   if (searchCategories.length > 0) {
     filtersWithConditionals.push(categoriesFilter);
   }
+  if (!features.subdivisions) {
+    filtersWithConditionals.push({
+      op: "not_contains",
+      field: "labels.value.type",
+      value: "subdivision",
+    });
+  }
   searchExcludeLabels.forEach(({ id: labelId }) => {
     filtersWithConditionals.push({
       op: "not_contains",
@@ -142,7 +155,7 @@ export const fetchSearchDocuments = (params: ISearchDocumentsParams): Promise<IS
   searchApiGet<ISearchDocumentsResponse>({
     apiUrl: params.apiUrl,
     path: "/search/documents",
-    filters: configureDocumentsFilters(params.filters, params.themeConfig),
+    filters: configureDocumentsFilters(params.filters, params.themeConfig, params.features),
     signal: params.signal,
     searchParams: {
       bolding: "true",
@@ -182,6 +195,7 @@ interface ISitemapDocumentsParams {
   /** API gateway base URL, from `useEnvConfig().API_URL` at the call site. */
   apiUrl: string;
   themeConfig?: TThemeConfig;
+  features: TFeatures;
   signal?: AbortSignal;
 }
 
@@ -202,7 +216,7 @@ export const fetchSitemapDocuments = async (params: ISitemapDocumentsParams): Pr
   const { data } = await searchApiGet<ISitemapDocumentsResponse>({
     apiUrl: params.apiUrl,
     path: "/search/documents:sitemap",
-    filters: configureDocumentsFilters({ op: "and", filters: [PRINCIPAL_DOCUMENTS_FILTER] }, params.themeConfig),
+    filters: configureDocumentsFilters({ op: "and", filters: [PRINCIPAL_DOCUMENTS_FILTER] }, params.themeConfig, params.features),
     signal: params.signal,
   });
 
@@ -224,6 +238,7 @@ interface ILabelsTaxonomyParams {
   /** Glob patterns over label paths, `/` between levels, `**` for any number of levels. */
   include: string[];
   themeConfig?: TThemeConfig;
+  features: TFeatures;
   signal?: AbortSignal;
 }
 
@@ -242,7 +257,7 @@ export const fetchLabelsTaxonomy = async (params: ILabelsTaxonomyParams): Promis
   const { data } = await searchApiGet<ILabelsTaxonomyResponse>({
     apiUrl: params.apiUrl,
     path: "/search/labels:taxonomy",
-    filters: configureDocumentsFilters(undefined, params.themeConfig),
+    filters: configureDocumentsFilters(undefined, params.themeConfig, params.features),
     signal: params.signal,
     searchParams: { include: params.include },
   });
