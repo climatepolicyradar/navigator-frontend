@@ -22,16 +22,9 @@ import { useEnvConfig } from "@/context/EnvConfig";
 import { posthogEventName } from "@/context/PostHogProvider";
 import { SearchLevelContext } from "@/context/SearchLevelContext";
 import { useTaxonomy } from "@/hooks/useTaxonomy";
-import {
-  ISearchPassage,
-  TFamilyDocumentPublic,
-  TNestedSearchLabel,
-  TPassagesScope,
-  TPrincipalDrawerTab,
-  TSearchQueryGroup,
-  TSortValue,
-} from "@/types";
+import { ISearchPassage, TFamilyDocumentPublic, TPassagesScope, TPrincipalDrawerTab, TSearchQueryGroup, TSortValue } from "@/types";
 import { parseAsDeflatedFilters } from "@/utils/filters/deflate";
+import { flattenCountedLabels } from "@/utils/labels/flattenCountedLabels";
 import { queryGroupToFilterPaths } from "@/utils/search/queryGroupToFilterPaths";
 import { conceptFiltersOnly, flattenLevelToBaseQuery, levelParamKeys } from "@/utils/search/searchLevels";
 
@@ -140,18 +133,6 @@ const documentIdsFilter = (documentIdsKey: string): TSearchQueryGroup => ({
     },
   ],
 });
-
-const withPassages = (labels: TNestedSearchLabel[]): TNestedSearchLabel[] => {
-  const byId = new Map<string, TNestedSearchLabel>();
-  const collect = (nodes: TNestedSearchLabel[]): void => {
-    for (const label of nodes) {
-      if ((label.count ?? 0) > 0 && !byId.has(label.id)) byId.set(label.id, { ...label, children: [] });
-      collect(label.children);
-    }
-  };
-  collect(labels);
-  return [...byId.values()];
-};
 
 export const PassageSearch = ({ changeTab, documents, documentsLabel, enablePreview = false, onSearch, principalId, subject }: TProps) => {
   const router = useRouter();
@@ -311,7 +292,7 @@ export const PassageSearch = ({ changeTab, documents, documentsLabel, enablePrev
 
   // Only offer concept filters the scope actually has passages for
   const conceptsLoaded = !documentIdsKey || conceptsFetched;
-  const conceptFilters = useMemo(() => withPassages(conceptLabels), [conceptLabels]);
+  const conceptFilters = useMemo(() => flattenCountedLabels(conceptLabels), [conceptLabels]);
 
   const handleClear = () => {
     setQueryParam("");

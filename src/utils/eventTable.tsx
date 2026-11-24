@@ -3,13 +3,14 @@ import { ReactNode } from "react";
 
 import { PageLink, TQueryOverrides } from "@/components/atoms/pageLink/PageLink";
 import { ViewMore } from "@/components/molecules/viewMore/ViewMore";
-import { ARROW_UP_RIGHT } from "@/constants/chars";
+import { ARROW_UP_RIGHT, ID_SEPARATOR } from "@/constants/chars";
 import { DEFAULT_DOCUMENT_TITLE } from "@/constants/document";
 import { FILING_DATE_EVENT_TYPES } from "@/constants/events";
 import { getLanguage } from "@/helpers/getLanguage";
 import { getMainDocuments } from "@/helpers/getMainDocuments";
 import { DISPLAY_ALLOWED_STATUSES } from "@/schemas";
 import { IFamilyDocumentTopics, TFamilyDocumentPublic, TFamilyEventPublic, TFamilyPublic, TTableColumn, TTableRow } from "@/types";
+import { flattenCountedLabels } from "@/utils/labels/flattenCountedLabels";
 
 import { getMostSpecificCourts } from "./getMostSpecificCourts";
 import { joinTailwindClasses } from "./tailwind";
@@ -209,7 +210,7 @@ export const getEventTableRows = ({
   search?: TQueryOverrides;
 }): TEventTableRow[] => {
   const rows: TEventTableRow[] = [];
-  const topicsData = familyTopics ? Object.values(familyTopics.conceptsGrouped).flat() : [];
+  const topicsData = familyTopics ? flattenCountedLabels(familyTopics.topics) : [];
 
   // Populate rows of data differently for litigation where we have events on documents to pull from
   const rowsData = isLitigation ? families.map(getEventTableRowsData).flat() : families.map(getFamilyDocuments).flat();
@@ -234,12 +235,12 @@ export const getEventTableRows = ({
 
       const topicLinks = sortedTopics.slice(0, MAX_TOPICS_PER_DOCUMENT).map(([topicId]) => {
         const [wikibaseId, fallbackLabel] = topicId.split(":");
-        const topic = topicsData.find((concept) => concept.wikibase_id === wikibaseId);
+        const topic = topicsData.find((concept) => concept.id === `concept${ID_SEPARATOR}${wikibaseId}`);
 
         // TODO investigate references to topics not in API response
         if (!topic) return null;
 
-        return <span key={topicId}>{firstCase(topic?.preferred_label || fallbackLabel)}</span>;
+        return <span key={topicId}>{firstCase(topic?.value || fallbackLabel)}</span>;
       });
 
       topicsDisplay = (

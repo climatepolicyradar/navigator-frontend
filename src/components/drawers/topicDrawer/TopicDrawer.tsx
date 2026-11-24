@@ -3,9 +3,10 @@ import { useMemo } from "react";
 import { Drawer } from "@/components/atoms/drawer/Drawer";
 import { PageLink } from "@/components/atoms/pageLink/PageLink";
 import { InteractiveTable } from "@/components/organisms/interactiveTable/InteractiveTable";
-import { ARROW_UP_RIGHT } from "@/constants/chars";
+import { ARROW_UP_RIGHT, ID_SEPARATOR } from "@/constants/chars";
 import { IFamilyDocumentTopics, TFamilyPublic } from "@/types";
 import { getConceptStoreLink } from "@/utils/getConceptStoreLink";
+import { flattenCountedLabels } from "@/utils/labels/flattenCountedLabels";
 import {
   getTopicDrawerDocumentTableRows,
   TDocumentMentionsTableColumnId,
@@ -23,8 +24,7 @@ interface IProps {
 
 export const TopicDrawer = ({ family, familyTopics, onOpenChange, open, topicWikibaseId }: IProps) => {
   const topic = useMemo(
-    () =>
-      [...Object.values(familyTopics.conceptsGrouped).flat(), ...familyTopics.rootConcepts].find((topic) => topic.wikibase_id === topicWikibaseId),
+    () => flattenCountedLabels(familyTopics.topics).find((topic) => topic.id === `concept${ID_SEPARATOR}${topicWikibaseId}`),
     [familyTopics, topicWikibaseId]
   );
 
@@ -37,19 +37,19 @@ export const TopicDrawer = ({ family, familyTopics, onOpenChange, open, topicWik
     );
   }
 
-  const topicName = firstCase(topic.preferred_label);
+  const topicName = firstCase(topic.value);
   const documentRows = getTopicDrawerDocumentTableRows(family, familyTopics, topic);
 
   return (
     <Drawer open={open} onOpenChange={onOpenChange} title={topicName} trackScroll>
       <div className="grid grid-cols-[120px_auto] gap-x-3 gap-y-2 text-sm text-text-secondary leading-5">
         <div className="font-medium">Definition</div>
-        <p>{firstCase(topic.description)}</p>
+        <p>{firstCase(topic.description ?? "")}</p>
         <div className="font-medium">Methodology</div>
         <div>
           <PageLink
             external
-            href={getConceptStoreLink(topic.wikibase_id)}
+            href={getConceptStoreLink(topic.id.split(ID_SEPARATOR)[1])}
             className="underline underline-offset-4 decoration-border-normal hover:decoration-inky-blue"
           >
             View source data&nbsp;<span className="text-text-tertiary">{ARROW_UP_RIGHT}</span>
