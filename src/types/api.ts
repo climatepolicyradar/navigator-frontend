@@ -103,33 +103,3 @@ export type TApiFamilyConcept = {
   preferred_label: string;
   subconcept_of_labels: string[];
 };
-
-export interface IApiFamilyDocumentTopics {
-  documents: {
-    importId: string;
-    title: string;
-    slug: string;
-    conceptCounts: Record<string, number>;
-  }[];
-  conceptCounts: Record<string, number>;
-  rootConcepts: TApiTopic[];
-  conceptsGrouped: {
-    [rootConceptId: string]: TApiTopic[];
-  };
-}
-
-export type TApiTopic = {
-  alternative_labels: string[];
-  count?: number;
-  definition?: string;
-  description: string;
-  has_subconcept: string[];
-  labelled_passages?: [];
-  negative_labels: string[];
-  preferred_label: string;
-  recursive_subconcept_of: string[];
-  related_concepts: string[];
-  subconcept_of: string[];
-  wikibase_id: string;
-  type?: "principal_law" | "jurisdiction" | "category";
-};

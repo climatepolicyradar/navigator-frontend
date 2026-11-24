@@ -1,15 +1,8 @@
-import { describe, expect, it, vi } from "vitest";
+import { describe, expect, it } from "vitest";
 
-import { IApiFamilyDocumentTopics, IDocumentLabelRelationship, IDocumentRelationship, ISearchDocument } from "@/types";
+import { IDocumentLabelRelationship, IFamilyDocumentTopics, IDocumentRelationship, ISearchDocument } from "@/types";
 
 import { processSearchDocumentTopics } from "./processSearchDocumentTopics";
-
-vi.mock("../fetchAndProcessTopics", () => ({
-  fetchAndProcessTopics: vi.fn().mockResolvedValue({ rootTopics: [], topics: [] }),
-}));
-vi.mock("../conceptsGroupedbyRootConcept", () => ({
-  groupByRootConcept: vi.fn().mockReturnValue({}),
-}));
 
 const conceptLabel = (id: string, count: number | null, documentId: string | null = null): IDocumentLabelRelationship => ({
   type: "concept",
@@ -52,8 +45,8 @@ describe("processSearchDocumentTopics", () => {
       },
     ];
 
-    it.each(testCases)("$name", async ({ labels, expected }) => {
-      const result = await processSearchDocumentTopics(makeFamilyDocument(labels));
+    it.each(testCases)("$name", ({ labels, expected }) => {
+      const result = processSearchDocumentTopics(makeFamilyDocument(labels), []);
 
       expect(result.conceptCounts).toEqual(expected);
     });
@@ -64,7 +57,7 @@ describe("processSearchDocumentTopics", () => {
       name: string;
       labels?: IDocumentLabelRelationship[];
       documents: IDocumentRelationship[];
-      expected: IApiFamilyDocumentTopics["documents"];
+      expected: IFamilyDocumentTopics["documents"];
     }[] = [
       {
         name: "maps importId, title and slug from the nested document relation",
@@ -189,8 +182,8 @@ describe("processSearchDocumentTopics", () => {
       },
     ];
 
-    it.each(testCases)("$name", async ({ labels, documents, expected }) => {
-      const result = await processSearchDocumentTopics(makeFamilyDocument(labels ?? [], documents));
+    it.each(testCases)("$name", ({ labels, documents, expected }) => {
+      const result = processSearchDocumentTopics(makeFamilyDocument(labels ?? [], documents), []);
 
       expect(result.documents).toEqual(expected);
     });

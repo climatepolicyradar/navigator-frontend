@@ -1,11 +1,8 @@
 import { ID_SEPARATOR } from "@/constants/chars";
-import { IApiFamilyDocumentTopics, ISearchDocument } from "@/types";
+import { IFamilyDocumentTopics, ISearchDocument, TNestedSearchLabel } from "@/types";
 
-import { groupByRootConcept } from "../conceptsGroupedbyRootConcept";
-import { fetchAndProcessTopics } from "../fetchAndProcessTopics";
-
-export const processSearchDocumentTopics = async (familyDocument: ISearchDocument): Promise<IApiFamilyDocumentTopics> => {
-  const documentsWithConceptCounts: IApiFamilyDocumentTopics = { documents: [], conceptCounts: {}, rootConcepts: [], conceptsGrouped: {} };
+export const processSearchDocumentTopics = (familyDocument: ISearchDocument, topics: TNestedSearchLabel[]): IFamilyDocumentTopics => {
+  const documentsWithConceptCounts: IFamilyDocumentTopics = { documents: [], conceptCounts: {}, topics };
   familyDocument.labels
     .filter((labelRel) => labelRel.value.type === "concept")
     .forEach((labelRel) => {
@@ -31,13 +28,6 @@ export const processSearchDocumentTopics = async (familyDocument: ISearchDocumen
       conceptCounts,
     });
   });
-
-  const conceptIds = Object.keys(documentsWithConceptCounts.conceptCounts);
-
-  const { rootTopics, topics } = await fetchAndProcessTopics(conceptIds);
-
-  documentsWithConceptCounts.rootConcepts = rootTopics;
-  documentsWithConceptCounts.conceptsGrouped = groupByRootConcept(topics, rootTopics);
 
   return documentsWithConceptCounts;
 };
