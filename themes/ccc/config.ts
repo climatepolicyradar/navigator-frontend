@@ -75,7 +75,6 @@ const config: TThemeConfig = {
     // subdivision tag, so "Type: Country" would hide almost all of them. Needs the litigation
     // geography data resolving (court level vs geography) before this can go live here.
     "geography-type-filters": false,
-    knowledgeGraph: true,
     litigation: true,
     searchFamilySummary: true,
     subdivisions: true,

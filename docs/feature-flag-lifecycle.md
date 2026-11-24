@@ -191,7 +191,7 @@ feature keys to booleans:
 
 ```ts
 features: {
-  knowledgeGraph: true,
+  themes: true,
   subdivisions: true,
   // ...
 },

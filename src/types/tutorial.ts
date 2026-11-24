@@ -4,7 +4,7 @@ import { IModalProps } from "@/components/molecules/modal/Modal";
 
 import { TFeature, TFeatures } from "./features";
 
-export const TUTORIAL_NAMES = ["knowledgeGraph", "climateLitigationDatabase", "newSearch"] as const;
+export const TUTORIAL_NAMES = ["climateLitigationDatabase", "newSearch"] as const;
 export type TTutorialName = (typeof TUTORIAL_NAMES)[number];
 
 export type TTutorialButtonAction = "dismiss" | "showModal" | null;
@@ -41,7 +41,7 @@ export type TTutorialModal = {
   }) => Omit<IModalProps, "isOpen" | "onClose">;
 };
 
-type TTutorial = {
+export type TTutorial = {
   featureKey?: TFeature;
   banner?: TTutorialBanner;
   card?: TTutorialCard;

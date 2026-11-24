@@ -17,7 +17,7 @@ describe("getCompletedTutorialNamesFromCookie", () => {
   });
 
   it("returns returns only valid tutorial names", () => {
-    expect(getCompletedTutorialNamesFromCookie(`["invalid","knowledgeGraph"]`)).toEqual(["knowledgeGraph"]);
+    expect(getCompletedTutorialNamesFromCookie(`["invalid","newSearch"]`)).toEqual(["newSearch"]);
   });
 });
 
@@ -32,8 +32,8 @@ describe("getIncompleteTutorialNames", () => {
   });
 
   it("returns no tutorials if the user has completed them all", () => {
-    const completedTutorials: TTutorialName[] = ["knowledgeGraph", "climateLitigationDatabase"];
-    const themeConfig = { tutorials: ["knowledgeGraph", "climateLitigationDatabase"] } as TThemeConfig;
+    const completedTutorials: TTutorialName[] = ["newSearch", "climateLitigationDatabase"];
+    const themeConfig = { tutorials: ["newSearch", "climateLitigationDatabase"] } as TThemeConfig;
 
     expect(getIncompleteTutorialNames(completedTutorials, themeConfig, allFeaturesEnabled)).toEqual([]);
   });
@@ -51,13 +51,12 @@ describe("getIncompleteTutorialNames", () => {
   it("returns unseen tutorials in the config defined order", () => {
     const completedTutorials: TTutorialName[] = [];
     const themeConfig = {
-      tutorials: ["knowledgeGraph", "climateLitigationDatabase"],
+      tutorials: ["newSearch", "climateLitigationDatabase"],
       features: {
-        knowledgeGraph: true,
         litigation: true,
       },
     } as TThemeConfig;
 
-    expect(getIncompleteTutorialNames(completedTutorials, themeConfig, allFeaturesEnabled)).toEqual(["knowledgeGraph", "climateLitigationDatabase"]);
+    expect(getIncompleteTutorialNames(completedTutorials, themeConfig, allFeaturesEnabled)).toEqual(["newSearch", "climateLitigationDatabase"]);
   });
 });
