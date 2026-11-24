@@ -2,7 +2,7 @@ import { TButtonColor, TButtonVariant } from "@/components/atoms/button/Button";
 import { IProps as IPageLinkProps } from "@/components/atoms/pageLink/PageLink";
 import { IModalProps } from "@/components/molecules/modal/Modal";
 
-import { TFeatureFlag, TFeatures } from "./features";
+import { TFeature, TFeatures } from "./features";
 
 export const TUTORIAL_NAMES = ["climateLitigationDatabase", "newSearch"] as const;
 export type TTutorialName = (typeof TUTORIAL_NAMES)[number];
@@ -42,7 +42,7 @@ export type TTutorialModal = {
 };
 
 export type TTutorial = {
-  featureKey?: TFeatureFlag;
+  featureKey?: TFeature;
   banner?: TTutorialBanner;
   card?: TTutorialCard;
   modal?: TTutorialModal;

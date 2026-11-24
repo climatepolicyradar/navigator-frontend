@@ -7,5 +7,5 @@
 
 export const FEATURE_KEYS = ["debug", "geography-type-filters", "litigation", "subdivisions", "themes"] as const;
 
-export type TFeatureFlag = (typeof FEATURE_KEYS)[number];
-export type TFeatures = Record<TFeatureFlag, boolean>;
+export type TFeature = (typeof FEATURE_KEYS)[number];
+export type TFeatures = Record<TFeature, boolean>;
