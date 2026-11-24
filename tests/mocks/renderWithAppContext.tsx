@@ -7,6 +7,7 @@ import { DEFAULT_FEATURES } from "@/constants/features";
 import { EnvConfigContext } from "@/context/EnvConfig";
 import { FeaturesContext } from "@/context/FeaturesContext";
 import { ThemeContext } from "@/context/ThemeContext";
+import themeConfig from "@/themes/config";
 
 export const renderWithAppContext = (Component: React.ComponentType<any>, { pageProps, features }: { pageProps?: any; features?: any }) => {
   const queryClient = new QueryClient({
@@ -19,7 +20,7 @@ export const renderWithAppContext = (Component: React.ComponentType<any>, { page
 
   const renderResult = render(
     <QueryClientProvider client={queryClient}>
-      <ThemeContext.Provider value={{ theme: pageProps?.theme, themeConfig: pageProps?.themeConfig }}>
+      <ThemeContext.Provider value={{ theme: pageProps?.theme, themeConfig }}>
         <FeaturesContext.Provider value={features || DEFAULT_FEATURES}>
           <EnvConfigContext.Provider value={pageProps?.envConfig}>
             <Component {...pageProps} />
