@@ -1,7 +1,7 @@
 import { MetadataRoute } from "next";
 
 import { fetchLabelsTaxonomy, fetchSitemapDocuments, TTaxonomyNode } from "@/api/search";
-import { DEFAULT_FEATURE_FLAGS } from "@/constants/features";
+import { DEFAULT_FEATURES } from "@/constants/features";
 import { ROBOTS_BLOCKED_SLUGS } from "@/constants/robots";
 import themeConfig from "@/themes/config";
 import routes from "@/themes/routes.json";
@@ -65,7 +65,7 @@ export const getSitemap = async (): Promise<TSitemapResponse> => {
   const errors: Error[] = [];
   const origin = getAppUrlForJSONLD();
   const apiUrl = process.env.API_URL;
-  const features = getFeatures(themeConfig, DEFAULT_FEATURE_FLAGS); // A crawler is anonymous, so no per-request feature flags apply
+  const features = getFeatures(themeConfig, DEFAULT_FEATURES); // A crawler is anonymous, so no per-request feature flags apply
 
   const [documentsResult, geographiesResult] = await Promise.allSettled([
     fetchSitemapDocuments({ apiUrl, features }),

@@ -43,10 +43,10 @@ so the work stays hidden until someone opts in.
 
 ### 2. Register the key in the app
 
-Add the key to `FEATURE_FLAG_KEYS` in `src/types/features.ts`:
+Add the key to `FEATURE_KEYS` in `src/types/features.ts`:
 
 ```ts
-export const FEATURE_FLAG_KEYS = [
+export const FEATURE_KEYS = [
   "debug",
   "subdivisions",
   "themes",
@@ -54,14 +54,28 @@ export const FEATURE_FLAG_KEYS = [
 ] as const;
 ```
 
-That array is the only wiring needed. `DEFAULT_FEATURE_FLAGS`
-(`src/constants/features.ts`), the `/_feature-flags` page and `useFeatures` all
-derive from it, and the flag defaults to `false`.
+Then add it to the `features` object of **every** theme config
+(`themes/<theme>/config.ts`), set to `false`:
 
-Keys are unique across all three arrays in that file, and each feature normally
-belongs to one of them. A key may appear in more than one array deliberately --
-see the overlap note in the README -- but only do that when you want both
-mechanisms (see step 4).
+```ts
+features: {
+  // Only toggle to true here when you want this to go live.
+  // Until then it stays false and the PostHog flag controls access.
+  "your-flag-key": false,
+  // ...
+},
+```
+
+`themeConfig.features` is typed as `TFeatures`, which is derived from
+`FEATURE_KEYS`, so a theme config missing the key fails `npm run type-check`.
+
+`false` changes nothing -- it means "defer to the PostHog flag". Flipping one to
+`true` is the go-live step, described under
+[Enable for everyone](#enable-for-everyone).
+
+That is all the wiring needed. `DEFAULT_FEATURES` (`src/constants/features.ts`),
+`getFeatureFlags`, `getFeatures` and `useFeatures` all derive from
+`FEATURE_KEYS`, and the feature defaults to `false`.
 
 ### 3. Gate the feature on the key
 
@@ -85,34 +99,7 @@ fine for incremental release, but it does not hide the content from anyone who
 looks at the URL or the JavaScript bundle. Do not rely on it for anything
 confidential.
 
-### 4. Optionally add a per-theme go-live switch
-
-If you want to be able to turn the feature on permanently for a given app later,
-also add the key to `CONFIG_FEATURE_KEYS` in `src/types/features.ts`, and to the
-`features` object of each theme config, set to `false`:
-
-```ts
-features: {
-  // Only toggle to true here when you want this to go live.
-  // Until then it stays false and the PostHog flag controls access.
-  "your-flag-key": false,
-  // ...
-},
-```
-
-`themeConfig.features` is typed as `TConfigFeatures`, which is derived from
-`CONFIG_FEATURE_KEYS`, so a key missing from that array will not typecheck in a
-theme config -- whether you set it to `true` or `false`.
-
-Leave every entry at `false` for now. `false` changes nothing -- it means "defer
-to the PostHog flag". Flipping one to `true` is the go-live step, and it is
-described under [Enable for everyone](#enable-for-everyone).
-
-If you do not need that switch, skip this step and leave the key in
-`FEATURE_FLAG_KEYS` alone. You can add it later, when the feature is ready to go
-live.
-
-### 5. Make the flag appear at `/_feature-flags`
+### 4. Make the flag appear at `/_feature-flags`
 
 `/_feature-flags` does not list the keys in your code. It renders a single
 button that opens PostHog's own site-app widget, which lists **early access
@@ -146,10 +133,10 @@ Two things to know when testing:
 ### Adding checklist
 
 - [ ] PostHog flag created at 0% rollout
-- [ ] Key added to `FEATURE_FLAG_KEYS`
+- [ ] Key added to `FEATURE_KEYS`
+- [ ] Key added to every theme config's `features`, set to `false`
 - [ ] Feature gated on the key
 - [ ] Route added to `routes.json`, if a new page
-- [ ] Theme config entries added, if you want a per-theme go-live switch
 - [ ] Registered as a PostHog early access feature, stage Beta
 - [ ] Verified in a browser
 
@@ -165,7 +152,7 @@ affected, and nothing is deployed. Use it to review work in a review app or in
 production before it goes live.
 
 Once the early access feature exists
-([step 5](#5-make-the-flag-appear-at-_feature-flags)), open `/_feature-flags`
+([step 4](#4-make-the-flag-appear-at-_feature-flags)), open `/_feature-flags`
 and toggle it.
 
 To test without waiting on PostHog -- useful in review apps -- set the cookie
@@ -177,8 +164,8 @@ location.reload();
 ```
 
 `getFeatureFlags` (`src/utils/featureFlags.ts`) reads the `feature_flags` cookie
-and ignores any key not in `FEATURE_FLAG_KEYS`, so the key must already be
-registered for this to work.
+and ignores any key not in `FEATURE_KEYS`, so the key must already be registered
+for this to work.
 
 ### Enable for everyone
 
@@ -201,11 +188,8 @@ features: {
 `true` is decisive. To roll the feature out, change its entry to `true`, raise a
 PR, and deploy that theme.
 
-To do this the key must be in `CONFIG_FEATURE_KEYS` as well as
-`FEATURE_FLAG_KEYS`. If you added it when you created the flag, it is already
-there. If not, add it now, along with an entry in **every** theme's `features`
-object -- `TConfigFeatures` is derived from `CONFIG_FEATURE_KEYS`, so a missing
-entry fails `npm run type-check`.
+Every theme config already has an entry for the key, added when you
+[registered it](#2-register-the-key-in-the-app), so this is a one-line change.
 
 ⚠️ **Themes are separate apps.** The four themes (`ccc`, `cclw`, `cpr`, `mcf`)
 each have their own config and deploy independently, so setting `true` in one
@@ -254,16 +238,15 @@ There are three ways a flag ends.
 
 The flag disappears entirely and the feature becomes unconditional.
 
-1. Delete the key from `FEATURE_FLAG_KEYS` in `src/types/features.ts`.
+1. Delete the key from `FEATURE_KEYS` in `src/types/features.ts`.
 2. Run `npm run type-check`. TypeScript will name every remaining reference,
-   because `TFeature` is derived from those arrays -- a `requiredFeature` or a
-   theme config entry using a removed key fails to compile, with the file and
-   line. Work through the list.
+   because `TFeatureFlag` and `TFeatures` are derived from that array -- a
+   `requiredFeature`, a `features.yourFlag` read or a theme config entry using a
+   removed key fails to compile, with the file and line. Work through the list.
 3. Delete the gating itself, not just the key. Remove the `requiredFeature`
    line, and unwrap any `features.yourFlag && ...` conditionals so the feature
    renders unconditionally. Delete whatever branch handled the flag being off.
-4. If the key is in `CONFIG_FEATURE_KEYS`, remove it from there and from every
-   theme's `features` object too.
+4. Remove the key from every theme's `features` object.
 5. Archive or delete the flag and its early access feature in PostHog, so nobody
    toggles a key the code no longer reads.
 
@@ -276,16 +259,14 @@ flag while leaving the code behind is how dead pages survive for years.
 ### Option C: the flag graduates to a theme feature
 
 Use this when a feature should be permanently on for some apps but not others.
-The key moves from `FEATURE_FLAG_KEYS` to `CONFIG_FEATURE_KEYS`, and each theme
-config sets it `true` or `false` -- see
-[Enable for everyone](#enable-for-everyone) for that config change.
-`knowledgeGraph` went through exactly this transition and is now config-only.
+Keep the key, set it `true` in the theme configs that should have it -- see
+[Enable for everyone](#enable-for-everyone) -- and leave it `false` elsewhere.
+If nobody needs to preview it on the remaining apps any more, archive the
+PostHog flag and its early access feature.
 
-⚠️ This changes what CI tests. `E2E_TEST_FEATURE_FLAGS=true` force-enables
-everything in `FEATURE_FLAG_KEYS` (except `debug`) and **does not touch**
-`CONFIG_FEATURE_KEYS` -- see `getFeatures()` in `src/utils/features.ts`. A
-feature that E2E tests exercised automatically while it was a flag will only be
-tested afterwards in themes whose config sets it to `true`.
+E2E is unaffected: `E2E_TEST_FEATURE_FLAGS=true` force-enables every key in
+`FEATURE_KEYS` except `debug`, regardless of theme config -- see `getFeatures()`
+in `src/utils/features.ts`.
 
 ### Before you remove
 
@@ -296,14 +277,13 @@ tested afterwards in themes whose config sets it to `true`.
   will catch them, but strings in tests, Storybook stories, E2E specs and CI
   workflow files are not.
 - Old `feature_flags` cookies in users' browsers may still name the removed key.
-  That is harmless: `getFeatureFlags()` ignores any key not in
-  `FEATURE_FLAG_KEYS`.
+  That is harmless: `getFeatureFlags()` ignores any key not in `FEATURE_KEYS`.
 
 ### Tidying up in PostHog
 
 Do this only after the code change has deployed. While the key is still in
-`FEATURE_FLAG_KEYS`, removing the flag in PostHog turns the feature off for
-everyone who had opted in.
+`FEATURE_KEYS`, removing the flag in PostHog turns the feature off for everyone
+who had opted in.
 
 PostHog offers three options, in increasing severity.
 
@@ -324,7 +304,7 @@ per-team limit, so deleting genuinely dead flags frees capacity.
 
 ⚠️ PostHog **blocks deletion** while something still references the flag, and
 tells you what. Most relevant here: a flag linked to an **early access feature**
-cannot be deleted until that link is removed. If you followed step 6 when adding
+cannot be deleted until that link is removed. If you followed step 4 when adding
 the flag, delete or unlink the early access feature first.
 
 Deletion is also blocked by a running experiment (draft, stopped and completed
@@ -334,13 +314,13 @@ active flag that depends on this one.
 Removing the flag in PostHog is safe for our code even if the key lingers:
 globally inactive flags are omitted from PostHog's response entirely, so
 `/_feature-flags` never writes them to the `feature_flags` cookie, and
-`DEFAULT_FEATURE_FLAGS` starts every key at `false`. The feature reads as off
-rather than erroring.
+`DEFAULT_FEATURES` starts every key at `false`. The feature reads as off rather
+than erroring.
 
 ### Removal checklist
 
 - [ ] Confirmed the feature should be on (or gone) for everyone
-- [ ] Key deleted from `FEATURE_FLAG_KEYS`, and `CONFIG_FEATURE_KEYS` if present
+- [ ] Key deleted from `FEATURE_KEYS`
 - [ ] Theme config entries removed
 - [ ] `npm run type-check` passes, with all flagged references resolved
 - [ ] Gating conditionals unwrapped, off-branches deleted

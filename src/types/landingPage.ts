@@ -1,7 +1,7 @@
 import Image from "next/image";
 import { ComponentProps, ReactNode } from "react";
 
-import { TFeature } from "./features";
+import { TFeatureFlag } from "./features";
 
 type TImageProps = ComponentProps<typeof Image> & {
   // Prevents no width/height runtime error
@@ -64,5 +64,5 @@ export type TLandingPageConfig = {
     title: string;
     content: ReactNode;
   }[];
-  requiredFeature?: TFeature;
+  requiredFeature?: TFeatureFlag;
 };

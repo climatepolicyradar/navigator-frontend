@@ -5,11 +5,11 @@ import { GetStaticProps, InferGetStaticPropsType } from "next";
 import dynamic from "next/dynamic";
 import React, { useEffect, useState } from "react";
 
-import { DEFAULT_FEATURE_FLAGS } from "@/constants/features";
+import { DEFAULT_FEATURES } from "@/constants/features";
 import { FeatureFlagsContext } from "@/context/FeatureFlagsContext";
 import { FeaturesContext } from "@/context/FeaturesContext";
 import { useFeatures } from "@/hooks/useFeatures";
-import { TFeatureFlags } from "@/types";
+import { TFeatures } from "@/types";
 import { getAllCookies } from "@/utils/cookies";
 import { getFeatureFlags } from "@/utils/featureFlags";
 
@@ -31,7 +31,7 @@ interface IProps {
 
 export default function Page({ page }: InferGetStaticPropsType<typeof getStaticProps>) {
   // const [configFeatures, setConfigFeatures] = useState<TConfigFeatures>(DEFAULT_CONFIG_FEATURES);
-  const [featureFlags, setFeatureFlags] = useState<TFeatureFlags>(DEFAULT_FEATURE_FLAGS);
+  const [featureFlags, setFeatureFlags] = useState<TFeatures>(DEFAULT_FEATURES);
   const { features } = useFeatures(featureFlags);
 
   const loadFeatureFlags = () => {

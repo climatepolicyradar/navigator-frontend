@@ -75,7 +75,7 @@ export const FamilyPage = ({ canonicalUrl, collections, debug, errors, family, f
 
   /* Blocks */
 
-  const blocksToRender = getFamilyBlocks(themeConfig.pageBlocks.family, features, theme);
+  const blocksToRender = getFamilyBlocks(themeConfig.pageBlocks.family, features);
   const blockDefinitions: TBlockDefinitions<TFamilyPageBlock> = {
     collections: {
       render: () => <CollectionsBlock key="collections" collections={collections} family={family} />,

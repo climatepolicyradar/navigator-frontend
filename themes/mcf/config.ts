@@ -161,6 +161,7 @@ const config: TThemeConfig = {
   },
   tutorials: ["newSearch"],
   features: {
+    debug: false,
     "geography-type-filters": false,
     litigation: false,
     subdivisions: false,

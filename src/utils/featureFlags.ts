@@ -1,10 +1,10 @@
-import { DEFAULT_FEATURE_FLAGS } from "@/constants/features";
-import { TFeatureFlag, TFeatureFlags } from "@/types";
+import { DEFAULT_FEATURES } from "@/constants/features";
+import { TFeatureFlag, TFeatures } from "@/types";
 
 import { deleteCookie, setCookie } from "./cookies";
 import getDomain from "./getDomain";
 
-export const setFeatureFlags = (featureFlags: Partial<TFeatureFlags>) => {
+export const setFeatureFlags = (featureFlags: Partial<TFeatures>) => {
   if (Object.keys(featureFlags).length === 0) {
     deleteCookie(`feature_flags`, getDomain());
     return;
@@ -18,8 +18,8 @@ export const getFeatureFlags = (
   cookies: Partial<{
     [key: string]: string | string[];
   }>
-): TFeatureFlags => {
-  const featureFlags = { ...DEFAULT_FEATURE_FLAGS };
+): TFeatures => {
+  const featureFlags = { ...DEFAULT_FEATURES };
 
   if (cookies.feature_flags) {
     try {

@@ -1,6 +1,6 @@
 import { TThemeConfig } from "@/types";
 
-import { DEFAULT_CONFIG_FEATURES } from "./features";
+import { DEFAULT_FEATURES } from "./features";
 
 const DEFAULT_PAGE_METADATA = { title: "", description: "" };
 
@@ -26,5 +26,5 @@ export const DEFAULT_THEME_CONFIG: TThemeConfig = {
     geography: [],
   },
   tutorials: [],
-  features: DEFAULT_CONFIG_FEATURES,
+  features: DEFAULT_FEATURES,
 };

@@ -1,6 +1,6 @@
 import { TQueryParams } from "@/constants/queryParams";
 
-import { TConfigFeatures } from "./features";
+import { TFeatures } from "./features";
 import { TLabel, TLabelId } from "./label";
 import { TTutorialName } from "./tutorial";
 
@@ -152,5 +152,5 @@ export type TThemeConfig = {
   defaultDocumentCategory: TDocumentCategory;
   pageBlocks: TThemePageBlocks;
   tutorials: TTutorialName[];
-  features: TConfigFeatures;
+  features: TFeatures;
 };
