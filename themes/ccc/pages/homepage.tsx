@@ -10,7 +10,7 @@ import { PoweredBy } from "@/ccc/components/PoweredBy";
 import Layout from "@/components/layouts/LandingPage";
 import { FullWidth } from "@/components/panels/FullWidth";
 import { SiteWidth } from "@/components/panels/SiteWidth";
-import { TTheme, TThemeConfig } from "@/types";
+import { TTheme } from "@/types";
 
 const WorldMap = dynamic(() => import("@/components/map/WorldMap"), {
   loading: () => <p>Loading world map...</p>,
@@ -21,14 +21,13 @@ interface IProps {
   handleSearchInput: (term: string, filter?: string, filterValue?: string) => void;
   searchInput: string;
   theme: TTheme;
-  themeConfig: TThemeConfig;
   exactMatch: boolean;
   handleSearchChange: (type: string, value: any) => void;
 }
 
-const LandingPage = ({ handleSearchInput, searchInput, theme, themeConfig, exactMatch }: IProps) => {
+const LandingPage = ({ handleSearchInput, searchInput, theme, exactMatch }: IProps) => {
   return (
-    <Layout theme={theme} themeConfig={themeConfig} metadataKey="homepage">
+    <Layout theme={theme} metadataKey="homepage">
       <Header />
       <main id="main" className="lg:h-[max(100vh,800px)]">
         <SiteWidth extraClasses="md:flex justify-between p-10 pt-0 pb-14 h-full md:gap-10 lg:gap-16 md:h-[calc(100%-220px)] lg:h-[calc(100%-280px)] xl:h-[calc(100%-344px)]">

@@ -1,16 +1,5 @@
 import { http, HttpResponse } from "msw";
 
-import cprConfig from "@/cpr/config";
-import { TThemeConfig } from "@/types";
-
-let themeConfig: TThemeConfig = cprConfig;
-
-export const setUpThemeConfig = (testThemeConfig: TThemeConfig) => {
-  if (testThemeConfig) {
-    themeConfig = testThemeConfig;
-  }
-};
-
 export const configHandlers = [
   http.get("/api/env", () => {
     return HttpResponse.json({
@@ -20,9 +9,6 @@ export const configHandlers = [
         app_token: process.env.BACKEND_API_TOKEN,
       },
     });
-  }),
-  http.get("/api/theme-config", () => {
-    return HttpResponse.json(themeConfig);
   }),
   http.get("*/config", () => {
     return HttpResponse.json({

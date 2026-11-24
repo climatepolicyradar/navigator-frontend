@@ -5,7 +5,7 @@ import { CONFIG_FEATURE_KEYS, FEATURE_FLAG_KEYS, TConfigFeature, TFeatureFlag, T
 import { isFeatureEnabled } from "@/utils/features";
 
 export const useFeatures = (featureFlags: TFeatureFlags) => {
-  const { loaded, themeConfig } = useContext(ThemeContext);
+  const { themeConfig } = useContext(ThemeContext);
 
   // Only keys defined in these two array will be included
   const featureKeys: (TFeatureFlag | TConfigFeature)[] = Array.from(new Set([...FEATURE_FLAG_KEYS, ...CONFIG_FEATURE_KEYS]));
@@ -24,6 +24,5 @@ export const useFeatures = (featureFlags: TFeatureFlags) => {
 
   return {
     features,
-    themeLoaded: loaded,
   };
 };

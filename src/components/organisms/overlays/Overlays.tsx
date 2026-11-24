@@ -19,7 +19,7 @@ interface IProps {
 
 export const Overlays = ({ onConsentChange }: IProps) => {
   const router = useRouter();
-  const { themeConfig, loaded } = useContext(ThemeContext);
+  const { themeConfig } = useContext(ThemeContext);
   const { completedTutorials, displayTutorial, setDisplayTutorial } = useContext(TutorialContext);
 
   let cookies: Record<string, string> = {};
@@ -46,8 +46,8 @@ export const Overlays = ({ onConsentChange }: IProps) => {
 
   // If the current modal is defaultOpen, open it initially
   useEffect(() => {
-    if (loaded && currentModal?.tutorial.modal.defaultOpen) setDisplayTutorial(currentModal.name);
-  }, [currentModal, loaded, setDisplayTutorial]);
+    if (currentModal?.tutorial.modal.defaultOpen) setDisplayTutorial(currentModal.name);
+  }, [currentModal, setDisplayTutorial]);
 
   return (
     <>

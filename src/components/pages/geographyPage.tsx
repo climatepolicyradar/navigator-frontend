@@ -1,5 +1,5 @@
 import sortBy from "lodash/fp/sortBy";
-import { useCallback, useState } from "react";
+import { useCallback, useContext, useState } from "react";
 
 import { fetchSearchPrincipalDocuments } from "@/api/search";
 import { LinkWithQuery } from "@/components/LinkWithQuery";
@@ -16,18 +16,9 @@ import { BlocksLayout, TBlockDefinitions } from "@/components/organisms/blocksLa
 import { PageHeader } from "@/components/organisms/pageHeader/PageHeader";
 import { TPublicEnvConfig } from "@/context/EnvConfig";
 import { FeaturesContext } from "@/context/FeaturesContext";
+import { ThemeContext } from "@/context/ThemeContext";
 import { useText } from "@/hooks/useText";
-import {
-  TGeographyPageBlock,
-  IMetadata,
-  GeographyV2,
-  ISearchDocumentsResponse,
-  TTheme,
-  TThemeConfig,
-  TFeatures,
-  TFilterPathLabel,
-  TSearchLabel,
-} from "@/types";
+import { TGeographyPageBlock, IMetadata, GeographyV2, ISearchDocumentsResponse, TTheme, TFeatures, TFilterPathLabel, TSearchLabel } from "@/types";
 import { TCategoryResults, toCategoryResults } from "@/utils/cards/getFamilySummaries";
 import { getGeographyMetaData } from "@/utils/getGeographyMetadata";
 import { CATEGORY_LABEL_PATH_LOOKUP, createLabel } from "@/utils/links/getGeoSearchLink";
@@ -54,22 +45,13 @@ interface IProps {
   geographyV2: GeographyV2;
   parentGeographyV2?: GeographyV2;
   geographyLabel: TSearchLabel;
-  theme: string;
-  themeConfig: TThemeConfig;
+  theme: TTheme;
   vespaSearchResults: ISearchDocumentsResponse;
   envConfig: TPublicEnvConfig;
 }
 
-export const GeographyPage = ({
-  geographyV2,
-  parentGeographyV2,
-  geographyLabel,
-  theme,
-  themeConfig,
-  features,
-  vespaSearchResults,
-  envConfig,
-}: IProps) => {
+export const GeographyPage = ({ geographyV2, parentGeographyV2, geographyLabel, theme, features, vespaSearchResults, envConfig }: IProps) => {
+  const { themeConfig } = useContext(ThemeContext);
   const { getAppText } = useText();
 
   const isCountry = geographyV2.type === "country";
@@ -215,7 +197,7 @@ export const GeographyPage = ({
 
   return (
     <FeaturesContext.Provider value={features}>
-      <Layout metadataKey="geography" theme={theme as TTheme} themeConfig={themeConfig} title={geographyV2.name} text={geographyV2.name}>
+      <Layout metadataKey="geography" theme={theme} title={geographyV2.name} text={geographyV2.name}>
         <BreadCrumbs
           dark
           geography={{ label: geographyV2.name, href: `/geographies/${geographyV2.slug}` }}

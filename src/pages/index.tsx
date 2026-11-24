@@ -8,19 +8,18 @@ import { withEnvConfig } from "@/context/EnvConfig";
 import { FeaturesContext } from "@/context/FeaturesContext";
 import useConfig from "@/hooks/useConfig";
 import useUpdateCountries from "@/hooks/useUpdateCountries";
-import { TFeatures, TTheme, TThemeConfig } from "@/types";
+import themeConfig from "@/themes/config";
+import { TFeatures, TTheme } from "@/types";
 import { getFeatureFlags } from "@/utils/featureFlags";
 import { getFeatures } from "@/utils/features";
-import { readConfigFile } from "@/utils/readConfigFile";
 import { triggerNewSearch } from "@/utils/triggerNewSearch";
 
 interface IProps {
   features: TFeatures;
   theme: TTheme;
-  themeConfig: TThemeConfig;
 }
 
-const IndexPage = ({ features, theme, themeConfig }: IProps) => {
+const IndexPage = ({ features, theme }: IProps) => {
   const router = useRouter();
   const { mutate: updateCountries } = useUpdateCountries();
 
@@ -61,7 +60,6 @@ const IndexPage = ({ features, theme, themeConfig }: IProps) => {
         searchInput={(router.query[QUERY_PARAMS.query_string] as string) ?? ""}
         exactMatch={router.query[QUERY_PARAMS.exact_match] !== "false"}
         theme={theme}
-        themeConfig={themeConfig}
       />
     </FeaturesContext.Provider>
   );
@@ -72,8 +70,7 @@ export default IndexPage;
 export const getServerSideProps: GetServerSideProps = async (context) => {
   context.res.setHeader("Cache-Control", "public, max-age=3600, immutable");
 
-  const theme = process.env.THEME;
-  const themeConfig = await readConfigFile(theme);
+  const theme = process.env.THEME as TTheme;
   const featureFlags = getFeatureFlags(context.req.cookies);
   const features = getFeatures(themeConfig, featureFlags);
 
@@ -81,7 +78,6 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
     props: withEnvConfig({
       features,
       theme,
-      themeConfig,
     }),
   };
 };

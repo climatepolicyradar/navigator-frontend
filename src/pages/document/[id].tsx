@@ -4,11 +4,11 @@ import { getFamilyData } from "@/bff/methods/getFamilyData";
 import { FamilyPage as FamilyPageUI } from "@/components/pages/familyPage";
 import { ROBOTS_BLOCKED_SLUGS, X_ROBOTS_TAG_NOINDEX_VALUE } from "@/constants/robots";
 import { withEnvConfig } from "@/context/EnvConfig";
+import themeConfig from "@/themes/config";
 import { TTheme } from "@/types";
 import { getFeatureFlags } from "@/utils/featureFlags";
 import { getFeatures } from "@/utils/features";
 import { getSiteDecision } from "@/utils/getDocumentSites";
-import { readConfigFile } from "@/utils/readConfigFile";
 
 /*
   # DEV NOTES
@@ -32,7 +32,6 @@ export const getServerSideProps = (async (context) => {
   }
 
   const theme = process.env.THEME as TTheme;
-  const themeConfig = await readConfigFile(theme);
   const featureFlags = getFeatureFlags(context.req.cookies);
   const features = getFeatures(themeConfig, featureFlags);
 
@@ -60,7 +59,6 @@ export const getServerSideProps = (async (context) => {
       errors: errors.map((error) => JSON.stringify(error, Object.getOwnPropertyNames(error))),
       features,
       theme,
-      themeConfig,
     }),
   };
 }) satisfies GetServerSideProps;

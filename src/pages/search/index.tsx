@@ -19,6 +19,7 @@ import { TutorialContext } from "@/context/TutorialContext";
 import { useFilterLabels } from "@/hooks/useFilterLabels";
 import { useNestedSearchLevel } from "@/hooks/useSearchLevel";
 import { useText } from "@/hooks/useText";
+import themeConfig from "@/themes/config";
 import { ISearchDocument, SORT_VALUES, TPrincipalDrawerTab, TSortValue, TTheme } from "@/types";
 import { getFeatureFlags } from "@/utils/featureFlags";
 import { getFeatures } from "@/utils/features";
@@ -26,7 +27,6 @@ import { parseAsDeflatedFilters } from "@/utils/filters/deflate";
 import { getFilterGroups } from "@/utils/filters/getFilterGroups";
 import { pluralise } from "@/utils/pluralise";
 import { getPersistedPrincipalDrawerTab, persistPrincipalDrawerTab } from "@/utils/principal/principalTabs";
-import { readConfigFile } from "@/utils/readConfigFile";
 import { getSearchSortDefault } from "@/utils/search/getSearchSortDefault";
 import { queryGroupToAPIFilters } from "@/utils/search/queryGroupToAPIFilters";
 import { queryGroupToFilterPaths } from "@/utils/search/queryGroupToFilterPaths";
@@ -39,7 +39,7 @@ const columnLayoutCss = "col-start-1 -col-end-1 cols-5:col-start-2 cols-5:-col-e
 
 type TProps = InferGetServerSidePropsType<typeof getServerSideProps>;
 
-const SearchPage = ({ theme, themeConfig, features }: TProps) => {
+const SearchPage = ({ theme, features }: TProps) => {
   const { removeCompletedTutorial } = useContext(TutorialContext);
   const { getAppText } = useText();
   const { filters: availableFilters, labelNames: filterLabelNames, loaded: filtersLoaded } = useFilterLabels({ features, themeConfig });
@@ -106,7 +106,7 @@ const SearchPage = ({ theme, themeConfig, features }: TProps) => {
 
   return (
     <FeaturesContext.Provider value={features}>
-      <Layout theme={theme as TTheme} themeConfig={themeConfig} metadataKey="search">
+      <Layout theme={theme} metadataKey="search">
         <FiveColumns className="mt-4 gap-y-4 pb-12">
           <div
             className={joinTailwindClasses(
@@ -208,7 +208,6 @@ export const getServerSideProps = (async (context) => {
   context.res.setHeader("Cache-Control", "public, max-age=3600, immutable");
 
   const theme = process.env.THEME as TTheme;
-  const themeConfig = await readConfigFile(theme);
   const featureFlags = getFeatureFlags(context.req.cookies);
   const features = getFeatures(themeConfig, featureFlags);
 
@@ -216,7 +215,6 @@ export const getServerSideProps = (async (context) => {
     props: withEnvConfig({
       features,
       theme,
-      themeConfig,
       posthogPageViewProps: {
         search_version: "v2",
       },

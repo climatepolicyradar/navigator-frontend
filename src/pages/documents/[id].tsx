@@ -13,12 +13,12 @@ import { getDocumentDescription } from "@/constants/metaDescriptions";
 import { ROBOTS_BLOCKED_SLUGS, X_ROBOTS_TAG_NOINDEX_VALUE } from "@/constants/robots";
 import { withEnvConfig } from "@/context/EnvConfig";
 import { FeaturesContext } from "@/context/FeaturesContext";
+import themeConfig from "@/themes/config";
 import { TTheme } from "@/types";
 import { getFeatureFlags } from "@/utils/featureFlags";
 import { getFeatures } from "@/utils/features";
 import { getSiteDecision } from "@/utils/getDocumentSites";
 import { getLitigationDocumentJSONLD } from "@/utils/json-ld/getLitigationDocumentJSONLD";
-import { readConfigFile } from "@/utils/readConfigFile";
 
 /*
   # DEV NOTES
@@ -28,16 +28,7 @@ import { readConfigFile } from "@/utils/readConfigFile";
   - If the document is an HTML, the passages will be displayed in a list on the left side of the page but the document will not be displayed.
 */
 
-const DocumentPage = ({
-  canonicalUrl,
-  debug,
-  document,
-  errors,
-  family,
-  features,
-  theme,
-  themeConfig,
-}: InferGetServerSidePropsType<typeof getServerSideProps>) => {
+const DocumentPage = ({ canonicalUrl, debug, document, errors, family, features, theme }: InferGetServerSidePropsType<typeof getServerSideProps>) => {
   const router = useRouter();
 
   const handleViewSourceClick = (e: React.FormEvent<HTMLButtonElement>) => {
@@ -54,13 +45,7 @@ const DocumentPage = ({
 
   return (
     <FeaturesContext.Provider value={features}>
-      <Layout
-        title={`${document.title}`}
-        description={getDocumentDescription(document.title)}
-        theme={theme as TTheme}
-        themeConfig={themeConfig}
-        canonicalUrl={canonicalUrl}
-      >
+      <Layout title={`${document.title}`} description={getDocumentDescription(document.title)} theme={theme} canonicalUrl={canonicalUrl}>
         <section
           className="pb-8 flex-1 flex flex-col"
           data-analytics-date={family.published_date}
@@ -106,7 +91,6 @@ export const getServerSideProps = (async (context) => {
   }
 
   const theme = process.env.THEME as TTheme;
-  const themeConfig = await readConfigFile(theme);
   const featureFlags = getFeatureFlags(context.req.cookies);
   const features = getFeatures(themeConfig, featureFlags);
 
@@ -133,7 +117,6 @@ export const getServerSideProps = (async (context) => {
       errors: errors.map((error) => JSON.stringify(error, Object.getOwnPropertyNames(error))),
       features,
       theme,
-      themeConfig,
     }),
   };
 }) satisfies GetServerSideProps;

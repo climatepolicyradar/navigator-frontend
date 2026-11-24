@@ -40,7 +40,7 @@ interface IProps {
 }
 
 export const SearchResults = ({ filters, onResultClicked, onSearchingChange, onTotalResultsChange, page_token, query, sort }: IProps) => {
-  const { themeConfig, loaded } = useContext(ThemeContext);
+  const { themeConfig } = useContext(ThemeContext);
   const features = useContext(FeaturesContext);
   const { API_URL } = useEnvConfig();
   const posthog = usePostHog();
@@ -83,7 +83,7 @@ export const SearchResults = ({ filters, onResultClicked, onSearchingChange, onT
 
       return response;
     },
-    enabled: hasSearch && loaded,
+    enabled: hasSearch,
     retry: shouldRetrySearch,
     // A term's results do not change within a session.
     refetchOnWindowFocus: false,

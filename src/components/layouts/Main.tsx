@@ -4,7 +4,7 @@ import { FC, ReactNode, useContext } from "react";
 
 import { Wrapper } from "@/components/Themed";
 import { ThemeContext } from "@/context/ThemeContext";
-import { TTheme, TThemeConfig, TThemePageMetadataKey } from "@/types";
+import { TTheme, TThemePageMetadataKey } from "@/types";
 import { getCanonicalUrl } from "@/utils/getCanonicalUrl";
 import { getPageDescription } from "@/utils/getPageDescription";
 import { getPageTitle } from "@/utils/getPageTitle";
@@ -15,25 +15,23 @@ interface IProps {
   metadataKey?: TThemePageMetadataKey;
   text?: string;
   theme?: TTheme;
-  themeConfig?: TThemeConfig;
   children?: ReactNode;
   canonicalUrl?: string;
 }
 
-const Layout: FC<IProps> = ({ children, title, description, metadataKey, text, canonicalUrl, themeConfig, theme }) => {
+const Layout: FC<IProps> = ({ children, title, description, metadataKey, text, canonicalUrl, theme }) => {
   const router = useRouter();
-  const { themeConfig: contextThemeConfig } = useContext(ThemeContext);
+  const { themeConfig } = useContext(ThemeContext);
 
-  const themeConfigToUse = themeConfig ?? contextThemeConfig;
-  const appTitle = themeConfigToUse.pageMetadata.default.title || "";
+  const appTitle = themeConfig.pageMetadata.default.title || "";
 
   return (
     <div className="h-full min-h-lvh flex flex-col">
       <Head>
-        <title>{`${title ?? getPageTitle(themeConfigToUse, metadataKey, text)} - ${appTitle}`}</title>
-        <meta property="og:title" content={`${title ?? getPageTitle(themeConfigToUse, metadataKey, text)} - ${appTitle}`} />
-        <meta name="description" content={description ?? getPageDescription(themeConfigToUse, metadataKey, text)} key="desc" />
-        <meta property="og:description" content={description ?? getPageDescription(themeConfigToUse, metadataKey, text)} />
+        <title>{`${title ?? getPageTitle(themeConfig, metadataKey, text)} - ${appTitle}`}</title>
+        <meta property="og:title" content={`${title ?? getPageTitle(themeConfig, metadataKey, text)} - ${appTitle}`} />
+        <meta name="description" content={description ?? getPageDescription(themeConfig, metadataKey, text)} key="desc" />
+        <meta property="og:description" content={description ?? getPageDescription(themeConfig, metadataKey, text)} />
         <link rel="canonical" href={canonicalUrl ?? getCanonicalUrl(router, theme)} />
         <meta charSet="utf-8" />
         <meta name="viewport" content="initial-scale=1.0, width=device-width" />

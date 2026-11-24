@@ -8,7 +8,7 @@ import FeatureCards from "@/cpr/components/FeatureCards";
 import { Header } from "@/cpr/components/Header";
 import LandingPageLinks from "@/cpr/components/LandingPageLinks";
 import LandingSearchForm from "@/cpr/components/LandingSearchForm";
-import { TTheme, TThemeConfig } from "@/types";
+import { TTheme } from "@/types";
 
 // TODO temporarily disabled: https://climate-policy-radar.slack.com/archives/C08Q8GD1CUT/p1745941756888349
 // const WorldMap = dynamic(() => import("@/components/map/WorldMap"), {
@@ -22,12 +22,11 @@ interface IProps {
   searchInput: string;
   exactMatch: boolean;
   theme: TTheme;
-  themeConfig: TThemeConfig;
 }
 
-const LandingPage = ({ handleSearchInput, searchInput, theme, themeConfig }: IProps) => {
+const LandingPage = ({ handleSearchInput, searchInput, theme }: IProps) => {
   return (
-    <Layout metadataKey="homepage" theme={theme} themeConfig={themeConfig}>
+    <Layout metadataKey="homepage" theme={theme}>
       <div className="relative">
         <Header />
         <main className="relative h-full">

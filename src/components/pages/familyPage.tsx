@@ -1,6 +1,6 @@
 import { LucideFileText, LucideSearch } from "lucide-react";
 import Head from "next/head";
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useContext, useEffect, useState } from "react";
 
 import { FiveColumns } from "@/components/atoms/columns/FiveColumns";
 import { Debug } from "@/components/atoms/debug/Debug";
@@ -18,6 +18,7 @@ import { BlocksLayout, TBlockDefinitions } from "@/components/organisms/blocksLa
 import { PageHeader } from "@/components/organisms/pageHeader/PageHeader";
 import { PassageSearch } from "@/components/organisms/passageSearch/PassageSearch";
 import { FeaturesContext } from "@/context/FeaturesContext";
+import { ThemeContext } from "@/context/ThemeContext";
 import { useFamilyPageHeaderData } from "@/hooks/useFamilyPageHeaderData";
 import { useText } from "@/hooks/useText";
 import { TDataInDocument } from "@/schemas";
@@ -28,7 +29,6 @@ import {
   TFamilyPublic,
   TPrincipalDrawerTab,
   TTheme,
-  TThemeConfig,
   TFeatures,
 } from "@/types";
 import { getFamilyBlocks } from "@/utils/blocks/getFamilyBlocks";
@@ -48,13 +48,13 @@ interface IProps {
   familyTopics: IFamilyDocumentTopics | null;
   features: TFeatures;
   theme: TTheme;
-  themeConfig: TThemeConfig;
   debug?: {
     dataInDocument: TDataInDocument;
   };
 }
 
-export const FamilyPage = ({ canonicalUrl, collections, debug, errors, family, familyTopics, features, theme, themeConfig }: IProps) => {
+export const FamilyPage = ({ canonicalUrl, collections, debug, errors, family, familyTopics, features, theme }: IProps) => {
+  const { themeConfig } = useContext(ThemeContext);
   const [activeTab, setActiveTab] = useState<TPrincipalDrawerTab>("about");
   const [noOfResults, setNumberOfResults] = useState<number>(0);
   const { getCategoryTextLookup } = useText();
@@ -140,8 +140,7 @@ export const FamilyPage = ({ canonicalUrl, collections, debug, errors, family, f
           family.geographies.map((geo) => geo.value).join(", "),
           family.attribution.taxonomy
         )}
-        theme={theme as TTheme}
-        themeConfig={themeConfig}
+        theme={theme}
         canonicalUrl={canonicalUrl}
       >
         <BreadCrumbs

@@ -27,7 +27,7 @@ const emptyFilters: TSearchQueryGroup = { op: "and", filters: [] };
 const renderDownloadSearch = (overrides: Partial<React.ComponentProps<typeof DownloadSearch>> = {}) =>
   render(
     <EnvConfigContext.Provider value={envConfig}>
-      <ThemeContext.Provider value={{ theme: "cpr", themeConfig, loaded: true }}>
+      <ThemeContext.Provider value={{ theme: "cpr", themeConfig }}>
         <DownloadSearch hasSearch={false} query="" filters={emptyFilters} sort="relevance" totalResults={null} {...overrides} />
       </ThemeContext.Provider>
     </EnvConfigContext.Provider>

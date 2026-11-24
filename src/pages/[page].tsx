@@ -6,15 +6,12 @@ import dynamic from "next/dynamic";
 import React, { useEffect, useState } from "react";
 
 import { DEFAULT_FEATURE_FLAGS } from "@/constants/features";
-import { DEFAULT_THEME_CONFIG } from "@/constants/themeConfig";
 import { FeatureFlagsContext } from "@/context/FeatureFlagsContext";
 import { FeaturesContext } from "@/context/FeaturesContext";
-import { ThemeContext, IProps as IThemeContextProps } from "@/context/ThemeContext";
 import { useFeatures } from "@/hooks/useFeatures";
-import { TFeatureFlags, TTheme } from "@/types";
+import { TFeatureFlags } from "@/types";
 import { getAllCookies } from "@/utils/cookies";
 import { getFeatureFlags } from "@/utils/featureFlags";
-import { readConfigFile } from "@/utils/readConfigFile";
 
 /*
 // This is a dynamic page to generate pages based on the routes.json file
@@ -36,29 +33,17 @@ export default function Page({ page }: InferGetStaticPropsType<typeof getStaticP
   // const [configFeatures, setConfigFeatures] = useState<TConfigFeatures>(DEFAULT_CONFIG_FEATURES);
   const [featureFlags, setFeatureFlags] = useState<TFeatureFlags>(DEFAULT_FEATURE_FLAGS);
   const { features } = useFeatures(featureFlags);
-  const [themeContext, setThemeContext] = useState<IThemeContextProps>({
-    theme: process.env.THEME as TTheme,
-    themeConfig: DEFAULT_THEME_CONFIG,
-    loaded: false,
-  });
 
-  const loadFeatureFlags = async () => {
+  const loadFeatureFlags = () => {
     const allCookies = getAllCookies();
     const retrievedFeatureFlags = getFeatureFlags(allCookies);
     setFeatureFlags(retrievedFeatureFlags);
   };
 
-  const loadThemeConfig = async () => {
-    const theme = process.env.THEME;
-    const themeConfig = await readConfigFile(theme);
-    setThemeContext((current) => ({ ...current, themeConfig, loaded: true }));
-  };
-
-  // TODO: once dynamic imports are no longer needed, both of these are synchronous
+  // Feature flags are read from cookies, so can only be loaded client-side
   useEffect(() => {
     // eslint-disable-next-line react-hooks/set-state-in-effect
     loadFeatureFlags();
-    loadThemeConfig();
   }, []);
 
   const DynamicComponent = dynamic(
@@ -70,15 +55,13 @@ export default function Page({ page }: InferGetStaticPropsType<typeof getStaticP
   );
 
   return (
-    <ThemeContext.Provider value={themeContext}>
-      <FeatureFlagsContext.Provider value={featureFlags}>
-        <FeaturesContext.Provider value={features}>
-          {/* We accept this limitation as our static pages are very limited in their interactivity - i.e. there is very little remounting */}
-          {/* eslint-disable-next-line react-hooks/static-components */}
-          <DynamicComponent />
-        </FeaturesContext.Provider>
-      </FeatureFlagsContext.Provider>
-    </ThemeContext.Provider>
+    <FeatureFlagsContext.Provider value={featureFlags}>
+      <FeaturesContext.Provider value={features}>
+        {/* We accept this limitation as our static pages are very limited in their interactivity - i.e. there is very little remounting */}
+        {/* eslint-disable-next-line react-hooks/static-components */}
+        <DynamicComponent />
+      </FeaturesContext.Provider>
+    </FeatureFlagsContext.Provider>
   );
 }
 

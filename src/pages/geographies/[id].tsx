@@ -9,23 +9,24 @@ import { COUNTRY_LABEL_PATTERN, SUBDIVISION_LABEL_PATTERN } from "@/constants/la
 import { SYSTEM_GEO_NAMES } from "@/constants/systemGeos";
 import { withEnvConfig } from "@/context/EnvConfig";
 import { getCountryCode, getCountryName } from "@/helpers/getCountryFields";
+import themeConfig from "@/themes/config";
 import {
-  TApiItemResponse,
+  GeographyTypeV2,
   GeographyV2,
   ISearchDocumentsResponse,
-  TGeography,
+  TApiItemResponse,
+  TFeatures,
   TFilterPathLabel,
+  TGeography,
+  TNestedSearchLabel,
   TSearchLabel,
   TSearchLabelRelation,
-  TNestedSearchLabel,
+  TTheme,
   TThemeConfig,
-  GeographyTypeV2,
-  TFeatures,
 } from "@/types";
 import { extractNestedData } from "@/utils/extractNestedData";
 import { getFeatureFlags } from "@/utils/featureFlags";
 import { getFeatures } from "@/utils/features";
-import { readConfigFile } from "@/utils/readConfigFile";
 import { filterPathsToQueryGroup } from "@/utils/search/filterPathsToQueryGroup";
 
 // The geography page shows a short, horizontally scrolling list of recent principals.
@@ -80,8 +81,7 @@ export default CountryPage;
 export const getServerSideProps = (async (context) => {
   context.res.setHeader("Cache-Control", "public, max-age=3600, immutable");
 
-  const theme = process.env.THEME;
-  const themeConfig = await readConfigFile(theme);
+  const theme = process.env.THEME as TTheme;
   const featureFlags = getFeatureFlags(context.req.cookies);
   const features = getFeatures(themeConfig, featureFlags);
 
@@ -164,7 +164,6 @@ export const getServerSideProps = (async (context) => {
       parentGeographyV2,
       geographyLabel,
       theme,
-      themeConfig,
       vespaSearchResults,
     }),
   };
