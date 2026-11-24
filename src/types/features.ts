@@ -14,7 +14,6 @@ export const AB_TEST_KEYS = ["ab-family-topic-block"] as const;
 
 // Theme config feature configured at themes/THEME/config.ts features object
 export const CONFIG_FEATURE_KEYS = [
-  "familyConceptsSearch",
   "geography-type-filters",
   "knowledgeGraph",
   "litigation",

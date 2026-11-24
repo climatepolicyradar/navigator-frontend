@@ -202,7 +202,6 @@ const config: TThemeConfig = {
   },
   tutorials: ["newSearch"],
   features: {
-    familyConceptsSearch: false,
     "geography-type-filters": false,
     knowledgeGraph: true,
     litigation: false,

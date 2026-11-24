@@ -191,7 +191,6 @@ feature keys to booleans:
 
 ```ts
 features: {
-  familyConceptsSearch: false,
   knowledgeGraph: true,
   subdivisions: true,
   // ...
