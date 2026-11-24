@@ -16,15 +16,6 @@ type TApiGeography = {
   slug: string;
 };
 
-/* As returned by data-in-api, which identifies geographies by prefixed label id
- * (e.g. "subdivision::MX-TAB") rather than a bare ISO code. */
-export type TApiGeographyLabelCount = {
-  id: string;
-  name: string;
-  type: string;
-  count: number;
-};
-
 type TApiMetadata<Key extends string> = {
   [K in Key]?: string[];
 };
