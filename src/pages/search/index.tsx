@@ -2,7 +2,6 @@ import { GetServerSideProps, InferGetServerSidePropsType } from "next";
 import { useQueryState, parseAsString, parseAsStringLiteral } from "nuqs";
 import { useContext, useEffect, useMemo, useState } from "react";
 
-import { SEARCH_RESULTS_PAGE_SIZE, SearchContainer } from "@/components/_experiment/searchResults/SearchResults";
 import { FiveColumns } from "@/components/atoms/columns/FiveColumns";
 import { PageLink } from "@/components/atoms/pageLink/PageLink";
 import { PrincipalDrawer } from "@/components/drawers/principalDrawer/PrincipalDrawer";
@@ -10,6 +9,7 @@ import Layout from "@/components/layouts/Main";
 import { DownloadSearch } from "@/components/molecules/downloadSearch/DownloadSearch";
 import { Pagination } from "@/components/molecules/pagination/Pagination";
 import { SearchControls } from "@/components/organisms/searchControls/SearchControls";
+import { SEARCH_RESULTS_PAGE_SIZE, SearchResults } from "@/components/organisms/searchResults/SearchResults";
 import { ZeroStateSERPNoResults } from "@/components/organisms/zeroStates/ZeroStateSERPNoResults";
 import { ZeroStateSERPNoSearch } from "@/components/organisms/zeroStates/ZeroStateSERPNoSearch";
 import { SEARCH_SORT_OPTIONS } from "@/constants/sort";
@@ -159,7 +159,7 @@ const SearchPage = ({ theme, themeConfig, features }: TProps) => {
           />
           {/* SEARCH RESULTS */}
           <div className={columnLayoutCss}>
-            <SearchContainer
+            <SearchResults
               query={query}
               filters={searchReadyFilters}
               page_token={currentPage}
