@@ -8,10 +8,10 @@ import { MenuButtons } from "@/cpr/components/MenuButtons";
 import { TLandingPageConfig } from "@/types";
 import { joinTailwindClasses } from "@/utils/tailwind";
 
-type TTheme = "light" | "dark";
+type TColourTheme = "light" | "dark";
 
 type TThemedProps = {
-  theme?: TTheme;
+  theme?: TColourTheme;
 };
 
 const CPR_LOGO: NonNullable<IProps["logo"]> = {
@@ -87,7 +87,7 @@ export const Header = ({ landingPage = false, landingPageWithHero = false, logo 
   const isOverlay = isHomePage || landingPageWithHero;
   const navBarClasses = joinTailwindClasses(isOverlay ? "!absolute top-0" : "bg-white", landingPage && !isOverlay && "!static");
 
-  const theme: TTheme = landingPageWithHero ? "dark" : "light";
+  const theme: TColourTheme = isHomePage || landingPageWithHero ? "dark" : "light";
 
   return (
     <NavBar
