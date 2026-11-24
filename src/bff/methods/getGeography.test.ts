@@ -113,6 +113,6 @@ describe("labelToSubdivisions", () => {
   });
 
   it("leaves out a child that is not a subdivision", () => {
-    expect(labelToSubdivisions(label("country::GBR", "country", "United Kingdom", [label("country::XAB", "country", "International")]))).toEqual([]);
+    expect(labelToSubdivisions(label("country::GBR", "country", "United Kingdom", [label("country::FRA", "country", "France")]))).toEqual([]);
   });
 });
