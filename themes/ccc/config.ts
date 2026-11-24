@@ -76,7 +76,6 @@ const config: TThemeConfig = {
     // geography data resolving (court level vs geography) before this can go live here.
     "geography-type-filters": false,
     litigation: true,
-    searchFamilySummary: true,
     subdivisions: true,
     themes: false,
   },

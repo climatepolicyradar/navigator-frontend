@@ -13,7 +13,7 @@ export const FEATURE_FLAG_KEYS = ["debug", "geography-type-filters", "subdivisio
 export const AB_TEST_KEYS = ["ab-family-topic-block"] as const;
 
 // Theme config feature configured at themes/THEME/config.ts features object
-export const CONFIG_FEATURE_KEYS = ["geography-type-filters", "litigation", "searchFamilySummary", "subdivisions", "themes"] as const;
+export const CONFIG_FEATURE_KEYS = ["geography-type-filters", "litigation", "subdivisions", "themes"] as const;
 
 /* Types */
 

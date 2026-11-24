@@ -497,7 +497,6 @@ const config: TThemeConfig = {
   features: {
     "geography-type-filters": true,
     litigation: false,
-    searchFamilySummary: false,
     subdivisions: true,
     themes: true,
   },
