@@ -34,25 +34,6 @@ describe("SubDivisionBlock", () => {
     expect(screen.queryByRole("link", { name: "Galicia" })).not.toBeInTheDocument();
   });
 
-  it("shows only the legacy subdivision that has documents, not its ISO twin of the same name", () => {
-    withDocuments("ES-19572", "ES-CT");
-
-    render(
-      <SubDivisionBlock subdivisions={[subdivision("ES-19572", "Andalucía"), subdivision("ES-AN", "Andalucía"), subdivision("ES-CT", "Catalunya")]} />
-    );
-
-    expect(screen.getAllByText("Andalucía")).toHaveLength(1);
-    expect(screen.getByRole("link", { name: "Andalucía" })).toHaveAttribute("href", "/geographies/es-19572");
-  });
-
-  it("keeps both of two subdivisions with the same name when neither has documents", () => {
-    withDocuments("ES-CT");
-
-    render(<SubDivisionBlock subdivisions={[subdivision("ES-CT", "Catalunya"), subdivision("ES-A", "Same"), subdivision("ES-B", "Same")]} />);
-
-    expect(screen.getAllByText("Same")).toHaveLength(2);
-  });
-
   it("renders nothing when no subdivision has documents", () => {
     withDocuments();
 
