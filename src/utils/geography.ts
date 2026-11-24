@@ -1,7 +1,7 @@
 import kebabCase from "lodash/kebabCase";
 
 import { ID_SEPARATOR } from "@/constants/chars";
-import { EXCLUDED_ISO_CODES, GEOGRAPHY_SLUG_CONVERSIONS } from "@/constants/geography";
+import { GEOGRAPHY_SLUG_CONVERSIONS, NO_PAGE_ISO_CODES } from "@/constants/geography";
 import { TLabel } from "@/types";
 
 export const getGeographySlug = (geographyLabel: TLabel): string | null => {
@@ -9,7 +9,7 @@ export const getGeographySlug = (geographyLabel: TLabel): string | null => {
   if (!geoCode) return null;
   const slug = kebabCase(geographyLabel.value);
 
-  if (EXCLUDED_ISO_CODES.includes(geoCode.toUpperCase())) return null;
+  if (NO_PAGE_ISO_CODES.includes(geoCode.toUpperCase())) return null;
 
   switch (geographyLabel.type) {
     case "subdivision":

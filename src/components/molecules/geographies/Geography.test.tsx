@@ -33,6 +33,12 @@ describe("Geography", () => {
     expect(screen.getByRole("link", { name: "United States" })).toHaveAttribute("href", "/geographies/united-states-of-america");
   });
 
+  it("renders the European Union as a link to its geography page", () => {
+    renderGeography(geographyLabel("country", ["country", "EUR"].join(ID_SEPARATOR), "European Union"));
+
+    expect(screen.getByRole("link", { name: "European Union" })).toHaveAttribute("href", "/geographies/european-union");
+  });
+
   it("renders international as plain text with no link, even though it's a country", () => {
     renderGeography(geographyLabel("country", ["country", "XAB"].join(ID_SEPARATOR), "International"));
 
