@@ -3,7 +3,7 @@ import { GetServerSideProps, InferGetServerSidePropsType } from "next";
 import { ApiClient } from "@/api/http-common";
 import { fetchSearchPrincipalDocuments } from "@/api/search";
 import { loadTaxonomy } from "@/api/taxonomy";
-import { findGeographyBySlug, labelToGeographyV2 } from "@/bff/methods/getGeography";
+import { findGeographyBySlug, labelToGeographyV2, labelToSubdivisions } from "@/bff/methods/getGeography";
 import { GeographyPage } from "@/components/pages/geographyPage";
 import { COUNTRY_LABEL_PATTERN, SUBDIVISION_LABEL_PATTERN } from "@/constants/labels";
 import { SYSTEM_GEO_NAMES } from "@/constants/systemGeos";
@@ -12,9 +12,7 @@ import { getCountryCode, getCountryName } from "@/helpers/getCountryFields";
 import themeConfig from "@/themes/config";
 import {
   GeographyTypeV2,
-  GeographyV2,
   ISearchDocumentsResponse,
-  TApiItemResponse,
   TFeatures,
   TFilterPathLabel,
   TGeography,
@@ -94,7 +92,6 @@ export const getServerSideProps = (async (context) => {
   }
 
   const backendApiClient = new ApiClient();
-  const apiClient = new ApiClient(process.env.CONCEPTS_API_URL);
 
   let countryNameFromConfig;
   try {
@@ -124,16 +121,9 @@ export const getServerSideProps = (async (context) => {
   const parentGeographyV2 = geographyV2.type === "subdivision" && lookup.parent ? labelToGeographyV2(lookup.parent) : null;
 
   // The country that owns the subdivision list: the page's own geography for a country, its parent for a subdivision.
-  // This is the only remaining geographies-api call. It goes when the subdivision block is revisited.
+  const countryLabel = geographyV2.type === "country" ? lookup.label : lookup.parent;
   const countryGeography = geographyV2.type === "country" ? geographyV2 : parentGeographyV2;
-  if (countryGeography) {
-    try {
-      const countryResponse = await apiClient.get<TApiItemResponse<GeographyV2>>(`/geographies/${countryGeography.slug}`);
-      countryGeography.has_subconcept = countryResponse.data.data.has_subconcept || [];
-    } catch {
-      // Without it the subdivision block does not render
-    }
-  }
+  if (countryLabel && countryGeography) countryGeography.has_subconcept = labelToSubdivisions(countryLabel);
 
   // Prevent rendering geography pages for types we don't support
   const disallowedGeoTypes: GeographyTypeV2[] = ["region"];

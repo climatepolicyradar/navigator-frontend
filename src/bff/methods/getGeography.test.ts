@@ -2,7 +2,7 @@ import { describe, expect, it } from "vitest";
 
 import { TNestedSearchLabel } from "@/types";
 
-import { findGeographyBySlug, labelToGeographyV2 } from "./getGeography";
+import { findGeographyBySlug, labelToGeographyV2, labelToSubdivisions } from "./getGeography";
 import geographySlugs from "../../../tests/fixtures/geographySlugs.json";
 
 const label = (id: string, type: string, value: string, children: TNestedSearchLabel[] = []): TNestedSearchLabel => ({
@@ -95,5 +95,24 @@ describe("labelToGeographyV2", () => {
     const geography = labelToGeographyV2(label("country::GRL", "country", "Greenland"));
 
     expect(JSON.parse(JSON.stringify(geography))).toEqual(geography);
+  });
+});
+
+describe("labelToSubdivisions", () => {
+  it("lists the subdivisions under a country", () => {
+    const wales = label("subdivision::GB-WLS", "subdivision", "Wales");
+
+    expect(labelToSubdivisions(label("country::GBR", "country", "United Kingdom", [ENGLAND, wales]))).toEqual([
+      expect.objectContaining({ id: "GB-ENG", type: "subdivision", slug: "gb-eng", name: "England" }),
+      expect.objectContaining({ id: "GB-WLS", type: "subdivision", slug: "gb-wls", name: "Wales" }),
+    ]);
+  });
+
+  it("is empty for a country with no subdivisions", () => {
+    expect(labelToSubdivisions(AFGHANISTAN)).toEqual([]);
+  });
+
+  it("leaves out a child that is not a subdivision", () => {
+    expect(labelToSubdivisions(label("country::GBR", "country", "United Kingdom", [label("country::XAB", "country", "International")]))).toEqual([]);
   });
 });
