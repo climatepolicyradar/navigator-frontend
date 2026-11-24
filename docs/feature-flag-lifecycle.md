@@ -8,17 +8,15 @@ flag once the work has shipped.
 
 | I want to...                                     | Mechanism                                               | Takes effect                 | Go to                                       |
 | ------------------------------------------------ | ------------------------------------------------------- | ---------------------------- | ------------------------------------------- |
-| Hide new work in production while I build it     | New key in `FEATURE_FLAG_KEYS` + PostHog flag at 0%     | Next deploy                  | [Add](#add-a-feature-flag)                  |
+| Hide new work in production while I build it     | New key in `FEATURE_KEYS` + PostHog flag at 0%          | Next deploy                  | [Add](#add-a-feature-flag)                  |
 | Switch the feature on just for me, to preview it | `/_feature-flags` widget, or the `feature_flags` cookie | Immediately, my browser only | [Enable for yourself](#enable-for-yourself) |
 | Roll the feature out to everyone on one app      | `features` object in that theme's config, set to `true` | Next deploy                  | [Enable for everyone](#enable-for-everyone) |
 | Switch the feature off again for everyone        | Depends on how it was turned on                         | See the section              | [Disable](#disable-a-feature)               |
 | Retire the flag now the work has shipped or died | Remove the key, then tidy up in PostHog                 | Next deploy                  | [Delete](#delete-a-feature-flag)            |
 
-The three mechanisms behind these operations -- A/B test, feature flag and theme
-feature -- are compared in the Features section of [README.md](../README.md).
-This document covers the feature flag and theme feature columns.
-
-The key distinction to hold onto:
+Every feature has one key in `FEATURE_KEYS` (`src/types/features.ts`). That same
+key is used for two mechanisms, compared in the Features section of
+[README.md](../README.md):
 
 - A **feature flag** is a PostHog flag at 0% rollout. It is opt-in, per person,
   and reversible from PostHog without a deploy. Use it while building.
