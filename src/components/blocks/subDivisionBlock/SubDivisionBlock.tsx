@@ -1,4 +1,4 @@
-import { useMemo } from "react";
+import { useEffect, useState } from "react";
 
 import { LinkWithQuery } from "@/components/LinkWithQuery";
 import { Info } from "@/components/molecules/info/Info";
@@ -30,24 +30,40 @@ const get3ColumnClass = (index: number, length: number): string => {
   return "";
 };
 
+// TODO: remove with the legacy subdivision ids in `search` (api/iso_subdivisions.py). A subdivision that documents are
+// still tagged with under a legacy id is listed beside its ISO twin of the same name, which has no documents. Only the
+// one with documents is shown, so the same subdivision does not appear twice.
+const withoutNoDataTwins = (subdivisions: TSubGeoWithData[]): TSubGeoWithData[] => {
+  const namesWithData = new Set(subdivisions.filter((subdivision) => subdivision.has_data).map((subdivision) => subdivision.name));
+  return subdivisions.filter((subdivision) => subdivision.has_data || !namesWithData.has(subdivision.name));
+};
+
 const UK_SUBDIVISION_CODES = new Set(["GB-ENG", "GB-WLS", "GB-SCT", "GB-NIR"]);
 
 export const SubDivisionBlock = ({ subdivisions, title = "Geographic sub-divisions" }: TProps) => {
   const subGeosWithDataQuery = useSubdivisions();
+  const [subGeosWithHasData, setSubGeosWithHasData] = useState<TSubGeoWithData[]>([]);
 
-  const subGeosWithHasData = useMemo<TSubGeoWithData[]>(() => {
-    if (!subGeosWithDataQuery.data || !subdivisions) return [];
-
-    const subGeosWithDataCodes = new Set(subGeosWithDataQuery.data.map((sd) => sd.code));
-    let updatedSubGeos = subdivisions.map((subdivision) => ({
-      ...subdivision,
-      has_data: subGeosWithDataCodes.has(subdivision.id),
-    }));
-    // TODO: remove later. Special case for UK - only show the four countries
-    if (updatedSubGeos[0]?.id.startsWith("GB-")) {
-      updatedSubGeos = updatedSubGeos.filter((sd) => UK_SUBDIVISION_CODES.has(sd.id));
+  useEffect(() => {
+    if (subGeosWithDataQuery.data && subdivisions) {
+      const subGeosWithDataCodes = new Set(subGeosWithDataQuery.data.map((sd) => sd.code));
+      const subdivionsWithData = subdivisions.filter((cs) => subGeosWithDataCodes.has(cs.id));
+      if (subdivionsWithData.length === 0) {
+        setSubGeosWithHasData([]);
+      } else {
+        let updatedSubGeos = withoutNoDataTwins(
+          subdivisions.map((subdivision) => ({
+            ...subdivision,
+            has_data: subGeosWithDataCodes.has(subdivision.id),
+          }))
+        );
+        // TODO: remove later. Special case for UK - only show the four countries
+        if (updatedSubGeos[0].id.startsWith("GB-")) {
+          updatedSubGeos = updatedSubGeos.filter((sd) => UK_SUBDIVISION_CODES.has(sd.id));
+        }
+        setSubGeosWithHasData(updatedSubGeos);
+      }
     }
-    return updatedSubGeos;
   }, [subGeosWithDataQuery.data, subdivisions]);
 
   if (subGeosWithHasData.length === 0) {
