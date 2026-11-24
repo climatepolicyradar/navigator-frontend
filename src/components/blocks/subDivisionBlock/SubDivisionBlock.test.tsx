@@ -34,18 +34,7 @@ describe("SubDivisionBlock", () => {
     expect(screen.queryByRole("link", { name: "Galicia" })).not.toBeInTheDocument();
   });
 
-  it("shows only the legacy subdivision that has documents, not its ISO twin of the same name", () => {
-    withDocuments("ES-19572", "ES-CT");
-
-    render(
-      <SubDivisionBlock subdivisions={[subdivision("ES-19572", "Andalucía"), subdivision("ES-AN", "Andalucía"), subdivision("ES-CT", "Catalunya")]} />
-    );
-
-    expect(screen.getAllByText("Andalucía")).toHaveLength(1);
-    expect(screen.getByRole("link", { name: "Andalucía" })).toHaveAttribute("href", "/geographies/es-19572");
-  });
-
-  it("keeps both of two subdivisions with the same name when neither has documents", () => {
+  it("keeps both of two subdivisions with the same name, as Spain has for La Rioja", () => {
     withDocuments("ES-CT");
 
     render(<SubDivisionBlock subdivisions={[subdivision("ES-CT", "Catalunya"), subdivision("ES-A", "Same"), subdivision("ES-B", "Same")]} />);
@@ -53,10 +42,20 @@ describe("SubDivisionBlock", () => {
     expect(screen.getAllByText("Same")).toHaveLength(2);
   });
 
-  it("renders nothing when no subdivision has documents", () => {
+  it("greys out every subdivision when none has documents", () => {
     withDocuments();
 
-    const { container } = render(<SubDivisionBlock subdivisions={[subdivision("ES-GA", "Galicia")]} />);
+    render(<SubDivisionBlock subdivisions={[subdivision("ES-GA", "Galicia"), subdivision("ES-CT", "Catalunya")]} />);
+
+    expect(screen.getByText("Galicia")).toBeInTheDocument();
+    expect(screen.getByText("Catalunya")).toBeInTheDocument();
+    expect(screen.queryByRole("link")).not.toBeInTheDocument();
+  });
+
+  it("renders nothing when the country has no subdivisions", () => {
+    withDocuments();
+
+    const { container } = render(<SubDivisionBlock subdivisions={[]} />);
 
     expect(container).toBeEmptyDOMElement();
   });
