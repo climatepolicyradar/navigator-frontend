@@ -1,4 +1,6 @@
 export const EXCLUDED_ISO_CODES = ["EUR", "XAA", "XAB"];
+// System geographies with no geography page, so no slug. Unlike EXCLUDED_ISO_CODES this leaves out the European Union, which has a page.
+export const NO_PAGE_ISO_CODES = ["XAA", "XAB"];
 export const INCLUDED_GEO_TYPES = ["ISO-3166", "ISO-3166-2"];
 
 /**

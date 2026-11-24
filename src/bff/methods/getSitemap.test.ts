@@ -77,6 +77,14 @@ describe("getSitemap", () => {
     expect(urls(data)).not.toContain(`${ORIGIN}/geographies/malta`);
   });
 
+  it("lists the European Union, which has a geography page", async () => {
+    givenGeographies([node({ id: "country::EUR", type: "country", value: "European Union", count: 568 })]);
+
+    const { data } = await getSitemap();
+
+    expect(urls(data)).toContain(`${ORIGIN}/geographies/european-union`);
+  });
+
   it("finds subdivisions nested under a country, and ignores the region above both", async () => {
     givenGeographies([
       node({

@@ -17,7 +17,8 @@ const ENGLAND = label("subdivision::GB-ENG", "subdivision", "England");
 const UNITED_KINGDOM = label("country::GBR", "country", "United Kingdom", [ENGLAND]);
 const AFGHANISTAN = label("country::AFG", "country", "Afghanistan");
 const SOUTH_ASIA = label("region::SAS", "region", "South Asia", [AFGHANISTAN]);
-const EUROPE = label("region::ECS", "region", "Europe & Central Asia", [UNITED_KINGDOM]);
+const EUROPEAN_UNION = label("country::EUR", "country", "European Union");
+const EUROPE = label("region::ECS", "region", "Europe & Central Asia", [UNITED_KINGDOM, EUROPEAN_UNION]);
 const TAXONOMY = [SOUTH_ASIA, EUROPE];
 
 describe("findGeographyBySlug", () => {
@@ -35,6 +36,10 @@ describe("findGeographyBySlug", () => {
 
   it("never matches a region, which has no page", () => {
     expect(findGeographyBySlug(TAXONOMY, "south-asia")).toBeNull();
+  });
+
+  it("finds the European Union, which has a page even though other pages do not link to it", () => {
+    expect(findGeographyBySlug(TAXONOMY, "european-union")).toEqual({ label: EUROPEAN_UNION, parent: EUROPE });
   });
 
   it("never matches an excluded system geography", () => {
@@ -71,6 +76,13 @@ describe("labelToGeographyV2", () => {
       has_subconcept: [],
     });
     expect(geography?.statistics).toMatchObject({ name: "United Kingdom", federal: true, visibility_status: "published" });
+  });
+
+  it("builds the European Union as a country with its static statistics", () => {
+    const geography = labelToGeographyV2(EUROPEAN_UNION);
+
+    expect(geography).toMatchObject({ id: "EUR", type: "country", slug: "european-union", name: "European Union" });
+    expect(geography?.statistics).toMatchObject({ name: "European Union", visibility_status: "published" });
   });
 
   it("omits statistics for a country that has none", () => {
