@@ -136,7 +136,7 @@ jobs:
           MESSAGE="⏪ Skipping staging verification and deploying straight to production: hotfixing *${THEME}* to <${COMMIT_URL}|${DOCKER_TAG:0:7}> (<${RUN_URL}|logs>)"
           jq -n --arg msg "$MESSAGE" '{text: $msg, mrkdwn: true}' > slack-payload.json
 
-      - uses: slackapi/slack-github-action@v4.0.0
+      - uses: slackapi/slack-github-action@v4.1.0
         if: steps.target.outputs.environment == 'production'
         with:
           webhook: ${{ secrets.SLACK_WEBHOOK_URL_PRODUCTION_UPDATES_CHANNEL }}
@@ -162,7 +162,7 @@ jobs:
           MESSAGE="❌ Hotfix of production *${THEME}* to ${DOCKER_TAG:0:7} failed (<${RUN_URL}|logs>)"
           jq -n --arg msg "$MESSAGE" '{text: $msg, mrkdwn: true}' > slack-payload.json
 
-      - uses: slackapi/slack-github-action@v4.0.0
+      - uses: slackapi/slack-github-action@v4.1.0
         if: failure() && steps.target.outputs.environment == 'production'
         with:
           webhook: ${{ secrets.SLACK_WEBHOOK_URL_PRODUCTION_UPDATES_CHANNEL }}

@@ -100,7 +100,7 @@ jobs:
           E2E_TEST_FEATURE_FLAGS: true
 
       - name: Upload vitest results to Trunk.io
-        uses: trunk-io/analytics-uploader@v2
+        uses: trunk-io/analytics-uploader@v3
         with:
           junit-paths: "**/vitest.xml"
           token: ${{ secrets.TRUNK_TOKEN }}

@@ -20,7 +20,7 @@ jobs:
     runs-on: ubuntu-latest
     environment: ${{ inputs.environment }}
     steps:
-      - uses: slackapi/slack-github-action@v4.0.0
+      - uses: slackapi/slack-github-action@v4.1.0
         with:
           webhook: ${{ secrets.SLACK_UPDATES_CHANNEL_WEBHOOK_URL }}
           webhook-type: incoming-webhook
