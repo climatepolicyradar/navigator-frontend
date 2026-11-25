@@ -1,16 +1,17 @@
 import { ReactNode, useState } from "react";
 
 import { Popover } from "@/components/atoms/popover/Popover";
-import { TTopic } from "@/types";
+import { ID_SEPARATOR } from "@/constants/chars";
+import { TNestedSearchLabel } from "@/types";
 import { getConceptStoreLink } from "@/utils/getConceptStoreLink";
 import { joinTailwindClasses } from "@/utils/tailwind";
 import { firstCase } from "@/utils/text/firstCase";
 
 interface IProps {
-  concept: TTopic;
+  concept: TNestedSearchLabel;
   label?: ReactNode;
   children?: React.ReactNode;
-  onClick?: (concept: TTopic) => void;
+  onClick?: (concept: TNestedSearchLabel) => void;
   triggerClasses?: string;
 }
 
@@ -24,7 +25,7 @@ export const ConceptLink = ({ concept, label, onClick, triggerClasses = "", chil
     triggerClasses
   );
 
-  const title = firstCase(concept.preferred_label);
+  const title = firstCase(concept.value);
 
   const trigger = (
     <button className={allTriggerClasses} onClick={() => (onClick ? onClick(concept) : null)}>
@@ -44,7 +45,7 @@ export const ConceptLink = ({ concept, label, onClick, triggerClasses = "", chil
       title={title}
       description={concept.description}
       link={{
-        href: getConceptStoreLink(concept.wikibase_id),
+        href: getConceptStoreLink(concept.id.split(ID_SEPARATOR)[1]),
         text: "Source",
         external: true,
       }}

@@ -69,6 +69,7 @@ describe("useCountryOptions", () => {
 
     expect(result.current.data).toEqual([
       { id: "AUS", slug: "australia", display_value: "Australia" },
+      { id: "EUR", slug: "european-union", display_value: "European Union" },
       { id: "FRA", slug: "france", display_value: "France" },
       { id: "PRK", slug: "korea-north", display_value: "North Korea" },
     ]);
@@ -80,7 +81,6 @@ describe("useCountryOptions", () => {
     const { result } = renderUseCountryOptions();
     await waitFor(() => expect(result.current.data.length).toBeGreaterThan(0));
 
-    expect(result.current.data.map((country) => country.id)).not.toContain("EUR");
     expect(result.current.data.map((country) => country.id)).not.toContain("XAB");
   });
 });

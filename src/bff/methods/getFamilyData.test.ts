@@ -8,6 +8,7 @@ import {
   testFamilyImportId,
   testFamilySlug,
 } from "@/tests/mocks/api/familyDataHandlers";
+import { taxonomyHandler } from "@/tests/mocks/api/taxonomyHandlers";
 import { server } from "@/tests/mocks/server";
 
 import { getFamilyData } from "./getFamilyData";
@@ -128,5 +129,45 @@ describe("getFamilyData", () => {
 
     expect(result.data).toBeNull();
     expect(result.errors[0].message).toBe("Failed to fetch collections data");
+  });
+
+  it("keeps only the taxonomy branches the family's documents are tagged with", async () => {
+    server.use(
+      dataInFamilyHandler(),
+      searchDocumentsHandler(),
+      taxonomyHandler({
+        body: [
+          {
+            id: "concept::Q1",
+            type: "concept",
+            value: "root",
+            count: 0,
+            children: [
+              { id: "concept::Q10", type: "concept", value: "tagged", count: 2, children: [] },
+              { id: "concept::Q11", type: "concept", value: "untagged", count: 0, children: [] },
+            ],
+          },
+          { id: "concept::Q2", type: "concept", value: "untagged root", count: 0, children: [] },
+        ],
+      })
+    );
+
+    const result = await getFamilyData(testFamilySlug);
+
+    expect(result.data.familyTopics.topics.map((root) => [root.id, root.children.map((child) => child.id)])).toEqual([
+      ["concept::Q1", ["concept::Q10"]],
+    ]);
+  });
+
+  it("returns no topics when nothing in the taxonomy is tagged", async () => {
+    server.use(
+      dataInFamilyHandler(),
+      searchDocumentsHandler(),
+      taxonomyHandler({ body: [{ id: "concept::Q1", type: "concept", value: "root", count: 0, children: [] }] })
+    );
+
+    const result = await getFamilyData(testFamilySlug);
+
+    expect(result.data.familyTopics.topics).toEqual([]);
   });
 });
