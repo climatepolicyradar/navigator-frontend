@@ -5,20 +5,6 @@ import { TDataInDocument } from "@/schemas";
 export const testFamilyImportId = "family-1";
 export const testFamilySlug = "test-family-slug";
 
-export const vespaFamilyHandler = () =>
-  http.get(`${process.env.BACKEND_API_URL}/families/${testFamilyImportId}`, () => {
-    return HttpResponse.json({
-      hits: 0,
-      total_family_hits: 0,
-      query_time_ms: 1,
-      total_time_ms: 1,
-      continuation_token: null,
-      this_continuation_token: "",
-      prev_continuation_token: null,
-      families: [],
-    });
-  });
-
 export const searchDocumentsHandler = (overrides: Partial<{ status: number; body: unknown }> = {}) =>
   http.get(`${process.env.CONCEPTS_API_URL}/search/documents/${testFamilyImportId}`, () => {
     if (overrides.status && overrides.status !== 200) {

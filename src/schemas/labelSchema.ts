@@ -30,7 +30,7 @@ export const LABEL_TYPES = [
 
 // Allows Valibot to approve any string but type it as a string union for DX
 // This prevents Valibot failing when new label types are introduced to the API and not yet listed above
-export const LabelTypeSchema = v.custom<(typeof LABEL_TYPES)[number]>((value) => typeof value === "string");
+const LabelTypeSchema = v.custom<(typeof LABEL_TYPES)[number]>((value) => typeof value === "string");
 export type TDataInLabelType = v.InferOutput<typeof LabelTypeSchema>;
 
 export const MANDATORY_FAMILY_LABEL_TYPES: TDataInLabelType[] = ["activity_status", "category", "provider"];

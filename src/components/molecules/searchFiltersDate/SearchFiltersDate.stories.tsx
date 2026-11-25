@@ -37,7 +37,6 @@ export const Default: TStory = {
         checkedLabelPaths: [],
         clearFilters: () => {},
         labelValues: {},
-        // eslint-disable-next-line no-console
         setDateRange: (dateRange) => console.info({ dateRange }),
         toggleFilter: () => {},
       }}
@@ -56,7 +55,6 @@ export const PresetApplied: TStory = {
         checkedLabelPaths: [],
         clearFilters: () => {},
         labelValues: {},
-        // eslint-disable-next-line no-console
         setDateRange: (dateRange) => console.info({ dateRange }),
         toggleFilter: () => {},
       }}
@@ -75,7 +73,6 @@ export const CustomRangeApplied: TStory = {
         checkedLabelPaths: [],
         clearFilters: () => {},
         labelValues: {},
-        // eslint-disable-next-line no-console
         setDateRange: (dateRange) => console.info({ dateRange }),
         toggleFilter: () => {},
       }}

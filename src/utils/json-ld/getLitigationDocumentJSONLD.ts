@@ -58,10 +58,13 @@ export const getLitigationDocumentJSONLD = (document: TFamilyDocumentPublic, fam
   if (family.geographies.length > 0) {
     const spatialCoverage: any[] = []; // TODO: improve typing using schema-dts
     family.geographies.forEach((geo) => {
+      const slug = getGeographySlug(geo);
+      if (!slug) return;
+
       spatialCoverage.push({
         "@type": "Place",
         name: geo.value,
-        url: `${appUrl}/geographies/${getGeographySlug(geo)}`,
+        url: `${appUrl}/geographies/${slug}`,
       });
       // TODO add subdivisions once document page references them
     });

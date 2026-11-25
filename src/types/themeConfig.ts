@@ -1,6 +1,6 @@
 import { TQueryParams } from "@/constants/queryParams";
 
-import { TConfigFeatures } from "./features";
+import { TFeatures } from "./features";
 import { TLabel, TLabelId } from "./label";
 import { TTutorialName } from "./tutorial";
 
@@ -24,7 +24,7 @@ type TThemePageBlocks = {
 
 /* Everything else */
 
-export type TDocumentCategory = "All" | "UN Submissions" | "Laws" | "Policies" | "Litigation" | "Climate Finance Projects" | "Offshore Wind Reports";
+type TDocumentCategory = "All" | "UN Submissions" | "Laws" | "Policies" | "Litigation" | "Climate Finance Projects" | "Offshore Wind Reports";
 export type TLabelCategoryValue =
   | "Corporate Disclosure"
   | "Global Stocktake"
@@ -35,7 +35,7 @@ export type TLabelCategoryValue =
   | "Report"
   | "UN submission";
 
-export type TDownloadColumn =
+type TDownloadColumn =
   | "ID"
   | "TITLE"
   | "DESCRIPTION"
@@ -58,13 +58,13 @@ export type TDownloadColumn =
   | "CASE_CATEGORIES"
   | "JURISDICTIONS";
 
-export type TLabelVariationKey = "country" | "date" | "region";
+type TLabelVariationKey = "country" | "date" | "region";
 type TLabelVariation = {
   category: string[];
   label: string;
 };
 
-export type TThemeConfigOption<Value> = {
+type TThemeConfigOption<Value> = {
   additionalInfo?: string;
   alias?: string;
   category?: string[];
@@ -107,7 +107,7 @@ interface IThemeConfigFilterFilterRadio extends IThemeConfigFilterType {
   options?: TThemeConfigOption<string | string[]>[];
 }
 
-export type TThemeConfigFilter = IThemeConfigFilterCheckbox | IThemeConfigFilterFilterRadio;
+type TThemeConfigFilter = IThemeConfigFilterCheckbox | IThemeConfigFilterFilterRadio;
 
 type TThemeLinkKey = "cookiePolicy" | "downloadDatabase" | "emailAlerts" | "privacyPolicy" | "targetDomain" | "leaveFeedback";
 
@@ -127,13 +127,14 @@ export type TLabelPattern = {
   pattern: string;
 };
 
-export type TOnDirectLinkPolicy = { action: "not_found" } | { action: "redirect"; to: string };
-
 export type TSearchExcludeLabel = {
   id: string;
-  onDirectLink: TOnDirectLinkPolicy;
 };
 
+/**
+ * If you're putting anything in here that narrows which documents a theme serves
+ * you almost certainly need to go and update src/utils/getDocumentSites.ts
+ */
 export type TThemeConfig = {
   defaultCorpora?: string[];
   deprecatedCategories?: TThemeConfigCategory;
@@ -151,5 +152,5 @@ export type TThemeConfig = {
   defaultDocumentCategory: TDocumentCategory;
   pageBlocks: TThemePageBlocks;
   tutorials: TTutorialName[];
-  features: TConfigFeatures;
+  features: TFeatures;
 };

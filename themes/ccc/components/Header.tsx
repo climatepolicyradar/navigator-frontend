@@ -1,13 +1,11 @@
 import { LucideMenu } from "lucide-react";
 import Image from "next/image";
 import { useRouter } from "next/router";
-import { useContext } from "react";
 
 import { MENU_LINKS } from "@/ccc/constants/menuLinks";
 import { PageLink } from "@/components/atoms/pageLink/PageLink";
 import MainMenu from "@/components/molecules/mainMenu/MainMenu";
 import { NavBar } from "@/components/organisms/navBar/NavBar";
-import { FeaturesContext } from "@/context/FeaturesContext";
 import { joinTailwindClasses } from "@/utils/tailwind";
 
 const CCCLogo = (
@@ -18,10 +16,8 @@ const CCCLogo = (
 
 export const Header = () => {
   const router = useRouter();
-  const features = useContext(FeaturesContext);
 
   const isHomePage = router.pathname === "/";
-  const showSearch = router.pathname !== "/_search" && !features["new-search"] && !isHomePage;
 
   const headerClasses = joinTailwindClasses("bg-white", !isHomePage && "!bg-[#677787]");
   const menuIconClasses = router.pathname === "/" ? "text-gray-950" : "text-white";
@@ -32,7 +28,6 @@ export const Header = () => {
       logo={CCCLogo}
       menu={<MainMenu icon={<LucideMenu size={24} className={menuIconClasses} />} links={MENU_LINKS} />}
       showLogo={!isHomePage}
-      showSearch={showSearch}
     />
   );
 };

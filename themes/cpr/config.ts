@@ -442,6 +442,7 @@ const config: TThemeConfig = {
     "category::Multilateral Climate Fund project/agent::*",
     "category::Multilateral Climate Fund project/entity_type::*",
     "category::Multilateral Climate Fund project/entity_type::*/activity_status::*",
+    "category::Multilateral Climate Fund project/entity_type::Project/agent::*",
   ],
   downloadColumns: [
     "ID",
@@ -494,12 +495,9 @@ const config: TThemeConfig = {
   },
   tutorials: ["newSearch"],
   features: {
-    familyConceptsSearch: false,
+    debug: false,
     "geography-type-filters": true,
-    knowledgeGraph: true,
     litigation: false,
-    "new-search": true,
-    searchFamilySummary: false,
     subdivisions: true,
     themes: true,
   },

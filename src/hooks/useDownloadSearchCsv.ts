@@ -1,13 +1,14 @@
-import { useState } from "react";
+import { useContext, useState } from "react";
 
 import { configureDocumentsFilters, PRINCIPAL_DOCUMENTS_FILTER, SEARCH_DOCUMENTS_MIN_SHOULD_MATCH } from "@/api/search";
-import { isFilterGroupEmpty } from "@/components/_experiment/advancedFilters/AdvancedFilters";
 import { SORT_PARAMS_LOOKUP } from "@/constants/sort";
 import { useEnvConfig } from "@/context/EnvConfig";
-import { TApiLoadingStatus, TSearchQueryGroup, TSearchQueryRule, TSortValue, TTheme, TThemeConfig } from "@/types";
-import { sanitiseSearchQueryGroup } from "@/utils/filters/advancedFilters";
+import { FeaturesContext } from "@/context/FeaturesContext";
+import { TApiLoadingStatus, TFeatures, TSearchQueryGroup, TSearchQueryRule, TSortValue, TTheme, TThemeConfig } from "@/types";
 import { deflateFilters } from "@/utils/filters/deflate";
+import { sanitiseSearchQueryGroup } from "@/utils/filters/sanitiseSearchQueryGroup";
 import getThemeDomain from "@/utils/getThemeDomain";
+import { isQueryGroupEmpty } from "@/utils/search/searchQuery/isQueryGroupEmpty";
 
 const DOWNLOAD_MAX_RESULTS = 500;
 
@@ -27,7 +28,7 @@ function downloadBaseUrl(theme: TTheme): string {
   return `https://${getThemeDomain(theme)}`;
 }
 
-export function buildDownloadSearchCsvUrl(params: IDownloadSearchCsvParams & { apiUrl: string }): URL {
+export function buildDownloadSearchCsvUrl(params: IDownloadSearchCsvParams & { apiUrl: string; features: TFeatures }): URL {
   const url = new URL(downloadSearchCsvUrl(params.apiUrl));
 
   if (params.query) {
@@ -40,15 +41,11 @@ export function buildDownloadSearchCsvUrl(params: IDownloadSearchCsvParams & { a
   // (e.g. category::Litigation on CCC) and the published-date bounds.
   const filtersToApply: (TSearchQueryGroup | TSearchQueryRule)[] = [PRINCIPAL_DOCUMENTS_FILTER];
   const sanitisedFilters = params.filters ? sanitiseSearchQueryGroup(params.filters) : null;
-  if (sanitisedFilters && !isFilterGroupEmpty(sanitisedFilters)) {
+  if (sanitisedFilters && !isQueryGroupEmpty(sanitisedFilters)) {
     filtersToApply.push(sanitisedFilters);
   }
 
-  const combinedFilters = configureDocumentsFilters(
-    { op: "and", filters: filtersToApply },
-    params.themeConfig.searchCategories,
-    params.themeConfig.searchExcludeLabels
-  );
+  const combinedFilters = configureDocumentsFilters({ op: "and", filters: filtersToApply }, params.themeConfig, params.features);
   url.searchParams.set("filters", deflateFilters(combinedFilters));
   url.searchParams.set("encoding", "deflate");
   url.searchParams.set("order_by", SORT_PARAMS_LOOKUP[params.sort]);
@@ -73,13 +70,14 @@ function triggerBlobDownload(blob: Blob, fileName: string) {
 
 export function useDownloadSearchCsv() {
   const { API_URL } = useEnvConfig();
+  const features = useContext(FeaturesContext);
   const [status, setStatus] = useState<TApiLoadingStatus>("idle");
 
   const download = async (params: IDownloadSearchCsvParams) => {
     setStatus("loading");
 
     try {
-      const url = buildDownloadSearchCsvUrl({ ...params, apiUrl: API_URL });
+      const url = buildDownloadSearchCsvUrl({ ...params, apiUrl: API_URL, features });
       const response = await fetch(url);
       if (!response.ok) {
         setStatus("error");

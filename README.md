@@ -146,27 +146,24 @@ override:
 
 ## 🏴‍☠️ Features
 
-There are three different methods used in the app to control which feature set\
-a given user sees. These work in tandem and are designed to overlap, which is\
-possible by using the same key for multiple types.
+Two methods control which feature set a given user sees. They share one key\
+per feature, defined in `/src/types/features.ts` `FEATURE_KEYS`, and work in\
+tandem: when either is on, the feature is on.
 
-| Method:                   | A/B test                                                               | Feature flag                                                              | Theme feature                                                      |
-| ------------------------- | ---------------------------------------------------------------------- | ------------------------------------------------------------------------- | ------------------------------------------------------------------ |
-| Use:                      | Rolling an experimental feature out to a proportion of users.          | Previewing an upcoming feature or developing a new feature in production. | Making features available on a per-app basis, typically long term. |
-| Configured at:            | PostHog feature flag with % rollout                                    | PostHog feature flag with 0% rollout + PostHog early access feature       | `/themes/<THEME>/config.ts` `features` object                      |
-| Add key to:               | `/src/types/features.ts` `abTestKeys`                                  | `/src/types/features.ts` `featureFlagKeys`                                | `/src/types/features.ts` `configFeatureKeys`                       |
-| Manually enable via:      | `/_feature-flags` only if also added as a PostHog early access feature | `/_feature-flags`                                                         | Theme config file (above)                                          |
-| Can be on by default:     | Yes                                                                    | No                                                                        | Yes                                                                |
-| Client-side only:         | Yes                                                                    | No                                                                        | No                                                                 |
-| Get value via:            | `getFeaturesWithABTests()`                                             | `getFeatures()`                                                           | `getFeatures()`                                                    |
-| Persist client-side with: | `FeaturesContext`                                                      | `FeaturesContext`                                                         | `FeaturesContext`                                                  |
+| Method:              | Feature flag                                                              | Theme feature                                                      |
+| -------------------- | ------------------------------------------------------------------------- | ------------------------------------------------------------------ |
+| Use:                 | Previewing an upcoming feature or developing a new feature in production. | Making features available on a per-app basis, typically long term. |
+| Configured at:       | PostHog feature flag + PostHog early access feature                       | `/themes/<THEME>/config.ts` `features` object                      |
+| Manually enable via: | `/_feature-flags`                                                         | Theme config file (above)                                          |
+| Get value via:       | `getFeatures()`                                                           | `getFeatures()`                                                    |
+| Persist client-side: | `FeaturesContext`                                                         | `FeaturesContext`                                                  |
 
-An example of intentionally overlapping keys:
+For example, a feature can be on for all users of one app via its theme config,\
+while on other apps it stays off unless turned on through the feature flags
+page.
 
-`knowledgeGraph` was a key used both as a feature flag and as a theme feature\
-(added to both key arrays). When one was on, the feature was on, so it could be\
-on for all users on specific apps using the theme feature, and on other apps\
-turned on manually through the feature flags page to preview it.
+See [docs/feature-flag-lifecycle.md](docs/feature-flag-lifecycle.md) for how to\
+add, enable, disable and delete a feature.
 
 ## 📜 License
 

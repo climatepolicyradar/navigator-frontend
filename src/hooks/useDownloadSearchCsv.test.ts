@@ -2,6 +2,7 @@ import { act, renderHook, waitFor } from "@testing-library/react";
 import { createElement, ReactNode } from "react";
 
 import { configureDocumentsFilters } from "@/api/search";
+import { DEFAULT_FEATURES } from "@/constants/features";
 import { DEFAULT_THEME_CONFIG } from "@/constants/themeConfig";
 import { EnvConfigContext, TPublicEnvConfig } from "@/context/EnvConfig";
 import { TLabelCategoryValue, TSearchQueryGroup, TTheme, TThemeConfig } from "@/types";
@@ -23,6 +24,7 @@ describe("buildDownloadSearchCsvUrl", () => {
   it("builds the download endpoint with query, order_by, and max_results", () => {
     const url = buildDownloadSearchCsvUrl({
       apiUrl: TEST_API_URL,
+      features: DEFAULT_FEATURES,
       theme: TEST_THEME,
       query: "flood risk",
       themeConfig: NO_CATEGORIES,
@@ -39,6 +41,7 @@ describe("buildDownloadSearchCsvUrl", () => {
   it("requests the theme's download columns, one param each, in configured order", () => {
     const url = buildDownloadSearchCsvUrl({
       apiUrl: TEST_API_URL,
+      features: DEFAULT_FEATURES,
       theme: TEST_THEME,
       themeConfig: { ...DEFAULT_THEME_CONFIG, downloadColumns: ["ID", "TITLE", "GEOGRAPHIES"] },
       sort: "relevance",
@@ -50,6 +53,7 @@ describe("buildDownloadSearchCsvUrl", () => {
   it("sends the theme's public origin as base_url, which the API builds the URL columns from", () => {
     const url = buildDownloadSearchCsvUrl({
       apiUrl: TEST_API_URL,
+      features: DEFAULT_FEATURES,
       theme: TEST_THEME,
       themeConfig: NO_CATEGORIES,
       sort: "relevance",
@@ -61,6 +65,7 @@ describe("buildDownloadSearchCsvUrl", () => {
   it("omits columns when the theme configures none, leaving the API's default set", () => {
     const url = buildDownloadSearchCsvUrl({
       apiUrl: TEST_API_URL,
+      features: DEFAULT_FEATURES,
       theme: TEST_THEME,
       themeConfig: { ...DEFAULT_THEME_CONFIG, downloadColumns: [] },
       sort: "relevance",
@@ -72,6 +77,7 @@ describe("buildDownloadSearchCsvUrl", () => {
   it("omits columns when the theme config predates the field, rather than failing the download", () => {
     const url = buildDownloadSearchCsvUrl({
       apiUrl: TEST_API_URL,
+      features: DEFAULT_FEATURES,
       theme: TEST_THEME,
       // Themes reach the hook from an API payload, which may be served by a
       // deployment older than `downloadColumns`.
@@ -86,6 +92,7 @@ describe("buildDownloadSearchCsvUrl", () => {
     const forSort = (sort: "recent" | "oldest" | "title_asc" | "title_desc") =>
       buildDownloadSearchCsvUrl({
         apiUrl: TEST_API_URL,
+        features: DEFAULT_FEATURES,
         theme: TEST_THEME,
         themeConfig: NO_CATEGORIES,
         sort,
@@ -100,6 +107,7 @@ describe("buildDownloadSearchCsvUrl", () => {
   it("omits query when not provided", () => {
     const url = buildDownloadSearchCsvUrl({
       apiUrl: TEST_API_URL,
+      features: DEFAULT_FEATURES,
       theme: TEST_THEME,
       themeConfig: NO_CATEGORIES,
       sort: "relevance",
@@ -112,6 +120,7 @@ describe("buildDownloadSearchCsvUrl", () => {
   it("strips a trailing slash from the search API URL", () => {
     const url = buildDownloadSearchCsvUrl({
       apiUrl: "https://api.example.org/",
+      features: DEFAULT_FEATURES,
       theme: TEST_THEME,
       themeConfig: NO_CATEGORIES,
       sort: "relevance",
@@ -123,6 +132,7 @@ describe("buildDownloadSearchCsvUrl", () => {
   it("includes filters, restricted to principal documents, when given a non-empty filter tree", () => {
     const url = buildDownloadSearchCsvUrl({
       apiUrl: TEST_API_URL,
+      features: DEFAULT_FEATURES,
       theme: TEST_THEME,
       themeConfig: NO_CATEGORIES,
       sort: "relevance",
@@ -156,6 +166,7 @@ describe("buildDownloadSearchCsvUrl", () => {
   it("omits the caller's empty filter tree, keeping only the always-on principal filter", () => {
     const url = buildDownloadSearchCsvUrl({
       apiUrl: TEST_API_URL,
+      features: DEFAULT_FEATURES,
       theme: TEST_THEME,
       themeConfig: NO_CATEGORIES,
       sort: "relevance",
@@ -181,6 +192,7 @@ describe("buildDownloadSearchCsvUrl", () => {
   it("restricts the download to the theme's search categories, so CCC only gets litigation", () => {
     const url = buildDownloadSearchCsvUrl({
       apiUrl: TEST_API_URL,
+      features: DEFAULT_FEATURES,
       theme: TEST_THEME,
       query: "bananas",
       themeConfig: themeConfigWithCategories(["Litigation"]),
@@ -203,6 +215,7 @@ describe("buildDownloadSearchCsvUrl", () => {
   it("does not restrict categories when the theme has none", () => {
     const url = buildDownloadSearchCsvUrl({
       apiUrl: TEST_API_URL,
+      features: DEFAULT_FEATURES,
       theme: TEST_THEME,
       themeConfig: NO_CATEGORIES,
       sort: "relevance",
@@ -222,6 +235,7 @@ describe("buildDownloadSearchCsvUrl", () => {
     });
 
     const themeConfig = themeConfigWithCategories(["Litigation"]);
+    const features = { ...DEFAULT_FEATURES, subdivisions: true };
 
     const filters: TSearchQueryGroup = {
       op: "and",
@@ -232,6 +246,7 @@ describe("buildDownloadSearchCsvUrl", () => {
       inflateFilters(
         buildDownloadSearchCsvUrl({
           apiUrl: TEST_API_URL,
+          features,
           theme: TEST_THEME,
           query: "bananas",
           themeConfig,
@@ -252,7 +267,8 @@ describe("buildDownloadSearchCsvUrl", () => {
           filters,
         ],
       },
-      themeConfig.searchCategories
+      themeConfig,
+      features
     );
 
     expect(downloadFilters).toEqual(JSON.parse(JSON.stringify(listFilters)));

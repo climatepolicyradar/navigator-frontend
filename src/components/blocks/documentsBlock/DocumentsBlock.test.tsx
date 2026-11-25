@@ -3,7 +3,6 @@ import { render, screen } from "@testing-library/react";
 import * as nextRouterMock from "next-router-mock";
 import { NuqsTestingAdapter } from "nuqs/adapters/testing";
 
-import { DEFAULT_FEATURES } from "@/constants/features";
 import { EnvConfigContext } from "@/context/EnvConfig";
 import { SearchLevelContext } from "@/context/SearchLevelContext";
 import { envConfig } from "@/mocks/envConfig";
@@ -56,7 +55,7 @@ const renderIn = (search: string) => {
       <QueryClientProvider client={queryClient}>
         <EnvConfigContext.Provider value={envConfig}>
           <SearchLevelContext value="principal">
-            <DocumentsBlock family={family} features={DEFAULT_FEATURES} getCategoryText={() => "law"} languages={{}} />
+            <DocumentsBlock family={family} getCategoryText={() => "law"} />
           </SearchLevelContext>
         </EnvConfigContext.Provider>
       </QueryClientProvider>
@@ -66,7 +65,7 @@ const renderIn = (search: string) => {
 
 describe("DocumentsBlock", () => {
   beforeEach(() => {
-    nextRouterMock.default.setCurrentUrl("/_search");
+    nextRouterMock.default.setCurrentUrl("/search");
   });
 
   it("carries only the topic filters to the document page", () => {

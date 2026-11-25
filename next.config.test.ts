@@ -1,10 +1,12 @@
+import fs from "fs";
+
 import config from "./next.config.js";
 
 const THEMES = ["ccc", "cclw", "cpr", "mcf"];
 
 /**
  * A bare array is read as afterFiles, which Next only reaches after checking the filesystem, so a
- * rule shadowing a real page (/search -> /_search) would silently never fire. Guard the shape.
+ * rule shadowing a real page would silently never fire. Guard the shape.
  */
 const rewritesFor = async (theme: string) => {
   process.env.THEME = theme;
@@ -81,16 +83,24 @@ describe("next.config.js", () => {
       expect(rewrites).toMatchObject({ afterFiles: [], fallback: [] });
     });
 
-    it("serves the v2 search page at /search for cpr", async () => {
-      const { beforeFiles } = await rewritesFor("cpr");
+    it("serves the theme's rewrite rules in beforeFiles", async () => {
+      const rule = { source: "/about-us", destination: "/faq" };
+      const readFileSync = fs.readFileSync;
+      const spy = vi
+        .spyOn(fs, "readFileSync")
+        .mockImplementation(((path: fs.PathOrFileDescriptor, ...args: unknown[]) =>
+          path === "./themes/cpr/rewrites.json"
+            ? JSON.stringify([rule])
+            : (readFileSync as (...a: unknown[]) => unknown)(path, ...args)) as typeof fs.readFileSync);
 
-      expect(beforeFiles).toEqual([{ source: "/search", destination: "/_search" }]);
-    });
+      try {
+        const { beforeFiles } = await rewritesFor("cpr");
 
-    it.each(["ccc", "cclw", "mcf"])("leaves /search on the v1 page for the %s theme", async (theme) => {
-      const { beforeFiles } = await rewritesFor(theme);
-
-      expect(beforeFiles).toEqual([]);
+        expect(spy).toHaveBeenCalledWith("./themes/cpr/rewrites.json", "utf-8");
+        expect(beforeFiles).toEqual([rule]);
+      } finally {
+        spy.mockRestore();
+      }
     });
   });
 });

@@ -8,7 +8,7 @@ import ContextualSearchContent from "@/mcf/components/ContextualSearchContent";
 import Footer from "@/mcf/components/Footer";
 import { Header } from "@/mcf/components/Header";
 import Hero from "@/mcf/components/Hero";
-import { TTheme, TThemeConfig } from "@/types";
+import { TTheme } from "@/types";
 
 interface IProps {
   exactMatch: boolean;
@@ -16,12 +16,11 @@ interface IProps {
   handleSearchChange: (type: string, value: any) => void;
   searchInput: string;
   theme: TTheme;
-  themeConfig: TThemeConfig;
 }
 
-const LandingPage = ({ handleSearchInput, searchInput, theme, themeConfig }: IProps) => {
+const LandingPage = ({ handleSearchInput, searchInput, theme }: IProps) => {
   return (
-    <Layout theme={theme} themeConfig={themeConfig} metadataKey="homepage">
+    <Layout theme={theme} metadataKey="homepage">
       <main id="main" className="flex flex-col flex-1">
         <div>
           <Header />

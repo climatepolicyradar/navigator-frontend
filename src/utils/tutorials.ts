@@ -15,8 +15,11 @@ export const getCompletedTutorialNamesFromCookie = (cookie: string): TTutorialNa
 
 // Returns the names of any tutorials not already completed and enabled
 export const getIncompleteTutorialNames = (completedTutorials: TTutorialName[], themeConfig: TThemeConfig, features: TFeatures): TTutorialName[] =>
-  themeConfig.tutorials.filter(
-    (tutorialName) =>
+  themeConfig.tutorials.filter((tutorialName) => {
+    const { featureKey } = TUTORIALS[tutorialName];
+
+    return (
       !completedTutorials.includes(tutorialName) && // Tutorial not yet completed
-      features[TUTORIALS[tutorialName].featureKey] // Tutorial enabled
-  );
+      (!featureKey || features[featureKey]) // Tutorial has no feature dependency, or its feature is enabled
+    );
+  });

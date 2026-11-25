@@ -1,7 +1,13 @@
 export const EXCLUDED_ISO_CODES = ["EUR", "XAA", "XAB"];
+// System geographies with no geography page, so no slug. Unlike EXCLUDED_ISO_CODES this leaves out the European Union, which has a page.
+export const NO_PAGE_ISO_CODES = ["XAA", "XAB"];
 export const INCLUDED_GEO_TYPES = ["ISO-3166", "ISO-3166-2"];
 
-// Maps the kebab-cased slug computed from a geography's display name to the slug its page actually resolves at
+/**
+ * Maps the kebab-cased slug computed from a geography's display name to the slug its page actually resolves at.
+ * This exists because we don't have label slugs right now and need to preserve the old-search geography slugs as-written,
+ * which are _almost_ a pure function from name -> slug, but not quite:
+ */
 export const GEOGRAPHY_SLUG_CONVERSIONS: Record<string, string> = {
   bahamas: "bahamas-the",
   "bolivia-plurinational-state-of": "bolivia",
@@ -12,6 +18,7 @@ export const GEOGRAPHY_SLUG_CONVERSIONS: Record<string, string> = {
   laos: "lao-people-s-democratic-republic",
   "micronesia-federated-states-of": "micronesia",
   "moldova-republic-of": "moldova",
+  "north-korea": "korea-north",
   "north-macedonia": "north-macedonia-republic-of-north-macedonia",
   "palestine-state-of": "palestine",
   "russian-federation": "russia",

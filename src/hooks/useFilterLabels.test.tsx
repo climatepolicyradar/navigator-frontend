@@ -12,7 +12,7 @@ import { TFeatures, TNestedSearchLabel, TThemeConfig } from "@/types";
 import { useFilterLabels } from "./useFilterLabels";
 
 const mockLoadTaxonomy = vi.hoisted(() => vi.fn());
-vi.mock("@/hooks/useLabelSearch", () => ({ loadTaxonomy: mockLoadTaxonomy }));
+vi.mock("@/api/taxonomy", () => ({ loadTaxonomy: mockLoadTaxonomy }));
 
 const label = (id: string, count = 1, children: TNestedSearchLabel[] = []): TNestedSearchLabel => ({
   id,
@@ -56,12 +56,12 @@ describe("useFilterLabels", () => {
     const themeConfig = {
       ...DEFAULT_THEME_CONFIG,
       searchCategories: ["Law" as const],
-      searchExcludeLabels: [{ id: "author_type::Non-Party", onDirectLink: { action: "not_found" as const } }],
+      searchExcludeLabels: [{ id: "author_type::Non-Party" }],
     };
     renderUseFilterLabels(DEFAULT_FEATURES, themeConfig);
     await waitFor(() => expect(mockLoadTaxonomy).toHaveBeenCalled());
     expect(mockLoadTaxonomy.mock.calls[0][1].filters).toEqual(
-      configureDocumentsFilters({ op: "and", filters: [PRINCIPAL_DOCUMENTS_FILTER] }, themeConfig.searchCategories, themeConfig.searchExcludeLabels)
+      configureDocumentsFilters({ op: "and", filters: [PRINCIPAL_DOCUMENTS_FILTER] }, themeConfig, DEFAULT_FEATURES)
     );
   });
 

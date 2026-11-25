@@ -1,7 +1,6 @@
 import sortBy from "lodash/fp/sortBy";
 import { useCallback, useContext, useState } from "react";
 
-import { ApiClient } from "@/api/http-common";
 import { fetchSearchPrincipalDocuments } from "@/api/search";
 import { LinkWithQuery } from "@/components/LinkWithQuery";
 import { Debug } from "@/components/atoms/debug/Debug";
@@ -17,22 +16,9 @@ import { BlocksLayout, TBlockDefinitions } from "@/components/organisms/blocksLa
 import { PageHeader } from "@/components/organisms/pageHeader/PageHeader";
 import { TPublicEnvConfig } from "@/context/EnvConfig";
 import { FeaturesContext } from "@/context/FeaturesContext";
-import { GeographiesContext } from "@/context/GeographiesContext";
+import { ThemeContext } from "@/context/ThemeContext";
 import { useText } from "@/hooks/useText";
-import {
-  TSearch,
-  TGeographyPageBlock,
-  IMetadata,
-  GeographyV2,
-  ISearchDocumentsResponse,
-  TTheme,
-  TThemeConfig,
-  TFeatures,
-  TApiSearch,
-  TFilterPathLabel,
-  TSearchLabel,
-} from "@/types";
-import buildSearchQuery from "@/utils/buildSearchQuery";
+import { TGeographyPageBlock, IMetadata, GeographyV2, ISearchDocumentsResponse, TTheme, TFeatures, TFilterPathLabel, TSearchLabel } from "@/types";
 import { TCategoryResults, toCategoryResults } from "@/utils/cards/getFamilySummaries";
 import { getGeographyMetaData } from "@/utils/getGeographyMetadata";
 import { CATEGORY_LABEL_PATH_LOOKUP, createLabel } from "@/utils/links/getGeoSearchLink";
@@ -54,34 +40,22 @@ const geographyLabelPaths = (geographyLabel: TSearchLabel, categoryId: string): 
   return labelPaths;
 };
 
-export interface IProps {
+interface IProps {
   features: TFeatures;
   geographyV2: GeographyV2;
   parentGeographyV2?: GeographyV2;
-  geographyLabel: TSearchLabel | null;
-  theme: string;
-  themeConfig: TThemeConfig;
-  vespaSearchResults?: TSearch | ISearchDocumentsResponse;
+  geographyLabel: TSearchLabel;
+  theme: TTheme;
+  vespaSearchResults: ISearchDocumentsResponse;
   envConfig: TPublicEnvConfig;
 }
 
-export const GeographyPage = ({
-  geographyV2,
-  parentGeographyV2,
-  geographyLabel,
-  theme,
-  themeConfig,
-  features,
-  vespaSearchResults,
-  envConfig,
-}: IProps) => {
+export const GeographyPage = ({ geographyV2, parentGeographyV2, geographyLabel, theme, features, vespaSearchResults, envConfig }: IProps) => {
+  const { themeConfig } = useContext(ThemeContext);
   const { getAppText } = useText();
 
   const isCountry = geographyV2.type === "country";
   const subdivisionsTitle = isCountry ? "Geographic sub-divisions" : "Related geographic sub-divisions";
-
-  const allGeographies = [geographyV2, ...(geographyV2.has_subconcept || [])];
-  if (parentGeographyV2) allGeographies.push(parentGeographyV2);
 
   /* Page header */
 
@@ -99,10 +73,8 @@ export const GeographyPage = ({
 
   /* Search requests */
 
-  const isNewSearch = features["new-search"];
-  const geographiesForCards = useContext(GeographiesContext);
   const [summariesByCategory, setSummariesByCategory] = useState<{ [categorySlug: string]: TCategoryResults }>({
-    All: toCategoryResults(vespaSearchResults, geographiesForCards),
+    All: toCategoryResults(vespaSearchResults),
   });
 
   /* Blocks */
@@ -144,36 +116,18 @@ export const GeographyPage = ({
     },
     recents: {
       render: useCallback(() => {
-        const backendApiClient = new ApiClient(envConfig.BACKEND_API_URL, envConfig.BACKEND_API_TOKEN);
-
         const fetchFamiliesByCategory = async (category: string) => {
-          // New search reads the search API, the same store the search page reads. The legacy
-          // `/searches` call holds none of the new Nature data documents.
-          const results = isNewSearch
-            ? toCategoryResults(
-                await fetchSearchPrincipalDocuments({
-                  apiUrl: envConfig.API_URL,
-                  themeConfig,
-                  filters: filterPathsToQueryGroup(geographyLabelPaths(geographyLabel, category), null, "and"),
-                  page_size: String(RECENT_FAMILIES_PAGE_SIZE),
-                }),
-                geographiesForCards
-              )
-            : toCategoryResults(
-                await backendApiClient
-                  .post<TApiSearch>(
-                    "/searches",
-                    buildSearchQuery({ l: geographyV2.slug, c: category, page_size: String(RECENT_FAMILIES_PAGE_SIZE) }, themeConfig),
-                    {
-                      headers: {
-                        accept: "application/json",
-                        "Content-Type": "application/json",
-                      },
-                    }
-                  )
-                  .then((response) => response.data),
-                geographiesForCards
-              );
+          // Reads the search API, the same store the search page reads
+          const results = toCategoryResults(
+            await fetchSearchPrincipalDocuments({
+              apiUrl: envConfig.API_URL,
+              themeConfig,
+              features,
+              filters: filterPathsToQueryGroup(geographyLabelPaths(geographyLabel, category), null, "and"),
+              page_size: String(RECENT_FAMILIES_PAGE_SIZE),
+              sort: "recent",
+            })
+          );
 
           setSummariesByCategory((currentResults) => ({
             ...currentResults,
@@ -210,11 +164,10 @@ export const GeographyPage = ({
               };
             })}
             onAccordionClick={(id) => fetchFamiliesByCategory(id)}
-            geography={geographyV2}
             geographyLabel={geographyLabel}
           />
         );
-      }, [envConfig, geographiesForCards, geographyLabel, geographyV2, getAppText, isNewSearch, summariesByCategory, themeConfig]),
+      }, [envConfig, features, geographyLabel, getAppText, summariesByCategory, themeConfig]),
       sideBarItem: { display: "Recent " + getAppText("familyPlural") },
     },
     statistics: {
@@ -244,17 +197,15 @@ export const GeographyPage = ({
 
   return (
     <FeaturesContext.Provider value={features}>
-      <Layout metadataKey="geography" theme={theme as TTheme} themeConfig={themeConfig} title={geographyV2.name} text={geographyV2.name}>
-        <GeographiesContext.Provider value={allGeographies}>
-          <BreadCrumbs
-            dark
-            geography={{ label: geographyV2.name, href: `/geographies/${geographyV2.slug}` }}
-            parentGeography={parentGeographyV2 ? { label: parentGeographyV2.name, href: `/geographies/${parentGeographyV2.slug}` } : null}
-            isSubdivision={!isCountry}
-          />
-          <PageHeader dark label="Geography" title={geographyV2.name} metadata={pageHeaderMetadata} />
-          <BlocksLayout blockDefinitions={blockDefinitions} blocksToRender={blocksToRender} />
-        </GeographiesContext.Provider>
+      <Layout metadataKey="geography" theme={theme} title={geographyV2.name} text={geographyV2.name}>
+        <BreadCrumbs
+          dark
+          geography={{ label: geographyV2.name, href: `/geographies/${geographyV2.slug}` }}
+          parentGeography={parentGeographyV2 ? { label: parentGeographyV2.name, href: `/geographies/${parentGeographyV2.slug}` } : null}
+          isSubdivision={!isCountry}
+        />
+        <PageHeader dark label="Geography" title={geographyV2.name} metadata={pageHeaderMetadata} />
+        <BlocksLayout blockDefinitions={blockDefinitions} blocksToRender={blocksToRender} />
       </Layout>
     </FeaturesContext.Provider>
   );

@@ -1,7 +1,6 @@
 import { ReactNode, useEffect, useState } from "react";
 
 import { FiveColumns } from "@/components/atoms/columns/FiveColumns";
-import { NavSearch } from "@/components/molecules/navSearch/NavSearch";
 import { joinTailwindClasses } from "@/utils/tailwind";
 
 interface IProps {
@@ -10,11 +9,10 @@ interface IProps {
   logoPartner?: ReactNode;
   menu: ReactNode;
   showLogo?: boolean;
-  showSearch?: boolean;
   topContent?: ReactNode;
 }
 
-export const NavBar = ({ headerClasses = "", logo, logoPartner, menu, showLogo = true, showSearch = true, topContent }: IProps) => {
+export const NavBar = ({ headerClasses = "", logo, logoPartner, menu, showLogo = true, topContent }: IProps) => {
   const [isScrolled, setIsScrolled] = useState(false);
 
   useEffect(() => {
@@ -24,29 +22,19 @@ export const NavBar = ({ headerClasses = "", logo, logoPartner, menu, showLogo =
   }, []);
 
   const allHeaderClasses = joinTailwindClasses(
-    "sticky top-0 z-60 w-full cols-4:min-h-[72px] flex flex-col justify-center",
-    showSearch ? "min-h-[128px]" : "min-h-[72px]",
+    "sticky top-0 z-60 w-full min-h-[72px] flex flex-col justify-center",
     isScrolled && "shadow-md",
     headerClasses
   );
-  const allColumnClasses = joinTailwindClasses("py-2 gap-y-2", showLogo && showSearch && "grid-rows-2 cols-4:grid-rows-[initial]");
 
   return (
     <header data-cy="header" className={allHeaderClasses}>
       {topContent && <>{topContent}</>}
-      <FiveColumns
-        className={allColumnClasses}
-        columnOverrides={["grid-cols-[1fr_auto]", "cols-2:grid-cols-[1fr_auto]", "cols-3:grid-cols-[1fr_auto]"]}
-      >
+      <FiveColumns className="py-2 gap-y-2" columnOverrides={["grid-cols-[1fr_auto]", "cols-2:grid-cols-[1fr_auto]", "cols-3:grid-cols-[1fr_auto]"]}>
         {showLogo && (
-          <div className={`flex flex-col justify-center col-start-1 -col-end-1 cols-4:col-end-3 ${!showSearch ? "col-end-1 cols-2:col-end-2" : ""}`}>
+          <div className="flex flex-col justify-center col-start-1 col-end-1 cols-2:col-end-2 cols-4:col-end-3">
             {logo}
             {logoPartner}
-          </div>
-        )}
-        {showSearch && (
-          <div className="flex items-center cols-4:col-start-3 cols-4:-col-end-2 cols-5:-col-end-3">
-            <NavSearch />
           </div>
         )}
         <div className="flex items-center justify-end -col-end-1">{menu}</div>

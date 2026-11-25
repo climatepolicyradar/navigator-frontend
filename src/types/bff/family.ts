@@ -1,21 +1,20 @@
 import { TDataInDocument } from "@/schemas";
 
-import { IApiFamilyDocumentTopics } from "../api";
 import { IFamilyDocumentTopics } from "../tables/familyDocumentTopics";
-import { TOnDirectLinkPolicy } from "../themeConfig";
+import { TThemeCriteria } from "../theme";
 import { TCollectionPublicWithFamilies, TFamilyPublic } from "../types";
 
 export type TFamilyApiData = {
   collections: TDataInDocument[];
   family: TDataInDocument;
-  familyTopics: IApiFamilyDocumentTopics | null;
+  familyTopics: IFamilyDocumentTopics | null;
 };
 
 export type TFamilyPresentationalData = {
   collections: TCollectionPublicWithFamilies[];
   family: TFamilyPublic;
   familyTopics: IFamilyDocumentTopics | null;
-  directLinkPolicy: TOnDirectLinkPolicy | null;
+  themeCriteria: TThemeCriteria;
   debug?: {
     dataInDocument: TDataInDocument;
   };

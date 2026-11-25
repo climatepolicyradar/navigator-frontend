@@ -21,8 +21,6 @@ You will need a few required files/folders:
   custom fonts, components with classes or IDs that need styling, this is
   required - so that the app actually compiles
 - `themes/{custom_theme}/pages/homepage.tsx`: a bespoke homepage component
-- `themes/{custom_theme}/components/MethodologyLink.tsx`: controls how the
-  behaviour of the methodology link works in the search filters
 - `e2e/cypress/e2e/{custom_theme}` - runs the required e2e tests, adding a test
   file in this directory is required but its contents can be empty
 - `.env` : controls the environment variables for the custom app, for example

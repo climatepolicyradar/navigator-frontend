@@ -20,7 +20,6 @@ const meta = {
         clearFilters: () => {},
         labelValues: {},
         setDateRange: () => {},
-        // eslint-disable-next-line no-console
         toggleFilter: (labelPath, checked) => console.info({ labelPath, checked }),
       }}
     >

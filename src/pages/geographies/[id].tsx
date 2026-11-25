@@ -2,30 +2,29 @@ import { GetServerSideProps, InferGetServerSidePropsType } from "next";
 
 import { ApiClient } from "@/api/http-common";
 import { fetchSearchPrincipalDocuments } from "@/api/search";
+import { loadTaxonomy } from "@/api/taxonomy";
+import { findGeographyBySlug, labelToGeographyV2, labelToSubdivisions } from "@/bff/methods/getGeography";
 import { GeographyPage } from "@/components/pages/geographyPage";
 import { COUNTRY_LABEL_PATTERN, SUBDIVISION_LABEL_PATTERN } from "@/constants/labels";
 import { SYSTEM_GEO_NAMES } from "@/constants/systemGeos";
 import { withEnvConfig } from "@/context/EnvConfig";
 import { getCountryCode, getCountryName } from "@/helpers/getCountryFields";
-import { loadTaxonomy } from "@/hooks/useLabelSearch";
+import themeConfig from "@/themes/config";
 import {
-  TApiItemResponse,
-  GeographyV2,
+  GeographyTypeV2,
   ISearchDocumentsResponse,
-  TSearch,
-  TGeography,
+  TFeatures,
   TFilterPathLabel,
+  TGeography,
+  TNestedSearchLabel,
   TSearchLabel,
   TSearchLabelRelation,
-  TNestedSearchLabel,
+  TTheme,
   TThemeConfig,
-  GeographyTypeV2,
 } from "@/types";
-import buildSearchQuery from "@/utils/buildSearchQuery";
 import { extractNestedData } from "@/utils/extractNestedData";
 import { getFeatureFlags } from "@/utils/featureFlags";
 import { getFeatures } from "@/utils/features";
-import { readConfigFile } from "@/utils/readConfigFile";
 import { filterPathsToQueryGroup } from "@/utils/search/filterPathsToQueryGroup";
 
 // The geography page shows a short, horizontally scrolling list of recent principals.
@@ -39,18 +38,11 @@ const toSearchLabel = ({ id, type, value, alternative_labels }: TNestedSearchLab
   labels,
 });
 
-const findLabelInTaxonomy = (labels: TNestedSearchLabel[], id: string, parent?: TNestedSearchLabel): TSearchLabel | null => {
-  for (const label of labels) {
-    if (label.id === id) {
-      const relations: TSearchLabelRelation[] = parent
-        ? [{ type: "subconcept_of", value: toSearchLabel(parent), timestamp: null, passages_id: null, count: null }]
-        : [];
-      return toSearchLabel(label, relations);
-    }
-    const nested = findLabelInTaxonomy(label.children, id, label);
-    if (nested) return nested;
-  }
-  return null;
+const toGeographySearchLabel = ({ label, parent }: NonNullable<ReturnType<typeof findGeographyBySlug>>): TSearchLabel => {
+  const relations: TSearchLabelRelation[] = parent
+    ? [{ type: "subconcept_of", value: toSearchLabel(parent), timestamp: null, passages_id: null, count: null }]
+    : [];
+  return toSearchLabel(label, relations);
 };
 
 /**
@@ -58,7 +50,12 @@ const findLabelInTaxonomy = (labels: TNestedSearchLabel[], id: string, parent?: 
  *
  * Scoped the same way the search page scopes a geography filter, so both show the same documents.
  */
-const fetchGeographyPrincipals = (apiUrl: string, geographyLabel: TSearchLabel, themeConfig: TThemeConfig): Promise<ISearchDocumentsResponse> => {
+const fetchGeographyPrincipals = (
+  apiUrl: string,
+  geographyLabel: TSearchLabel,
+  themeConfig: TThemeConfig,
+  features: TFeatures
+): Promise<ISearchDocumentsResponse> => {
   const parentType = geographyLabel.type === "subdivision" ? "country" : "region";
   const parentLabel = geographyLabel.labels.find((label) => label.type === "subconcept_of" && label.value.type === parentType);
   const labelPaths: TFilterPathLabel[][] = [parentLabel ? [geographyLabel, parentLabel.value] : [geographyLabel]];
@@ -66,8 +63,10 @@ const fetchGeographyPrincipals = (apiUrl: string, geographyLabel: TSearchLabel, 
   return fetchSearchPrincipalDocuments({
     apiUrl,
     themeConfig,
+    features,
     filters: filterPathsToQueryGroup(labelPaths, null, "and"),
     page_size: String(GEOGRAPHY_PRINCIPALS_PAGE_SIZE),
+    sort: "recent",
   });
 };
 
@@ -80,8 +79,7 @@ export default CountryPage;
 export const getServerSideProps = (async (context) => {
   context.res.setHeader("Cache-Control", "public, max-age=3600, immutable");
 
-  const theme = process.env.THEME;
-  const themeConfig = await readConfigFile(theme);
+  const theme = process.env.THEME as TTheme;
   const featureFlags = getFeatureFlags(context.req.cookies);
   const features = getFeatures(themeConfig, featureFlags);
 
@@ -94,7 +92,6 @@ export const getServerSideProps = (async (context) => {
   }
 
   const backendApiClient = new ApiClient();
-  const apiClient = new ApiClient(process.env.CONCEPTS_API_URL);
 
   let countryNameFromConfig;
   try {
@@ -111,22 +108,22 @@ export const getServerSideProps = (async (context) => {
     // TODO: handle error more elegantly
   }
 
-  let geographyV2: GeographyV2;
-  let parentGeographyV2: GeographyV2 = null;
+  const slug = Array.isArray(id) ? id[0] : id;
+  const taxonomyPatterns = features.subdivisions ? [COUNTRY_LABEL_PATTERN, SUBDIVISION_LABEL_PATTERN] : [COUNTRY_LABEL_PATTERN];
+  const taxonomy = await loadTaxonomy(process.env.API_URL, { patterns: taxonomyPatterns });
 
-  try {
-    const slug = Array.isArray(id) ? id[0] : id;
-    const geographyV2Data = await apiClient.get<TApiItemResponse<GeographyV2>>(`/geographies/${slug}`);
-    geographyV2 = geographyV2Data.data.data;
-    if (geographyV2.subconcept_of[0]) {
-      const parentGeographyV2Data = await apiClient.get<TApiItemResponse<GeographyV2>>(`/geographies/${geographyV2.subconcept_of[0].slug}`);
-      parentGeographyV2 = parentGeographyV2Data.data.data;
-    }
-  } catch {
-    // Do nothing
-  }
+  const lookup = findGeographyBySlug(taxonomy, slug);
+  if (!lookup) return { notFound: true };
 
+  const geographyV2 = labelToGeographyV2(lookup.label);
   if (!geographyV2) return { notFound: true };
+  // Only subdivisions have a parent geography page (a country's parent is a region, which has no page).
+  const parentGeographyV2 = geographyV2.type === "subdivision" && lookup.parent ? labelToGeographyV2(lookup.parent) : null;
+
+  // The country that owns the subdivision list: the page's own geography for a country, its parent for a subdivision.
+  const countryLabel = geographyV2.type === "country" ? lookup.label : lookup.parent;
+  const countryGeography = geographyV2.type === "country" ? geographyV2 : parentGeographyV2;
+  if (countryLabel && countryGeography) countryGeography.has_subconcept = labelToSubdivisions(countryLabel);
 
   // Prevent rendering geography pages for types we don't support
   const disallowedGeoTypes: GeographyTypeV2[] = ["region"];
@@ -137,44 +134,14 @@ export const getServerSideProps = (async (context) => {
     geographyV2.name = countryNameFromConfig;
   }
 
-  let geographyLabel: TSearchLabel = null;
-  if (features["new-search"]) {
-    const isSubdivision = geographyV2.type === "subdivision";
-    const labelType = isSubdivision ? "subdivision" : "country";
-    const pattern = isSubdivision ? SUBDIVISION_LABEL_PATTERN : COUNTRY_LABEL_PATTERN;
-    const taxonomy = await loadTaxonomy(process.env.API_URL, { patterns: [pattern] });
-    const expectedId = `${labelType}::${geographyV2.id}`;
-    geographyLabel = findLabelInTaxonomy(taxonomy, expectedId);
-    if (!geographyLabel) return { notFound: true };
-  }
+  const geographyLabel = toGeographySearchLabel(lookup);
 
-  // New search reads the search API, the same store the search page reads. The legacy `/searches`
-  // call cannot answer for a subdivision. `l` is the country param, and some documents including nature
-  // are missing from the legacy RDS store and only in the new system (@see FUS-815).
-  let vespaSearchResults: TSearch | ISearchDocumentsResponse = null;
-  if (geographyLabel) {
-    vespaSearchResults = await fetchGeographyPrincipals(process.env.API_URL, geographyLabel, themeConfig).catch((err): ISearchDocumentsResponse => {
+  const vespaSearchResults = await fetchGeographyPrincipals(process.env.API_URL, geographyLabel, themeConfig, features).catch(
+    (err): ISearchDocumentsResponse => {
       console.error(`Could not find search results for geography ${geographyV2.slug}:`, err);
       return null;
-    });
-  } else {
-    const searchQuery = buildSearchQuery(
-      {
-        l: geographyV2.slug,
-        page_size: "4",
-      },
-      themeConfig
-    );
-    vespaSearchResults = await backendApiClient
-      .post<TSearch>("/searches", searchQuery, {
-        headers: {
-          accept: "application/json",
-          "Content-Type": "application/json",
-        },
-      })
-      .then((response) => response.data)
-      .catch((err) => console.error(`Could not find search results for geography ${geographyV2.slug}:`, err));
-  }
+    }
+  );
 
   if (!vespaSearchResults) {
     return { notFound: true };
@@ -187,8 +154,7 @@ export const getServerSideProps = (async (context) => {
       parentGeographyV2,
       geographyLabel,
       theme,
-      themeConfig,
-      vespaSearchResults: vespaSearchResults,
+      vespaSearchResults,
     }),
   };
 }) satisfies GetServerSideProps;

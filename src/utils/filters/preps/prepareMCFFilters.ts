@@ -9,5 +9,5 @@ export const prepareMCFFilters: TFiltersGroupPrep = (rootLabels) => {
 
   const mcfLabelsByType = groupBy(mcfCategory.children, "type");
 
-  return [createGroupLabel("entity_type", mcfLabelsByType.entity_type ?? []), createGroupLabel("agent", mcfLabelsByType.agent ?? [])];
+  return Object.entries(mcfLabelsByType).map(([type, labels]) => createGroupLabel(type, labels));
 };

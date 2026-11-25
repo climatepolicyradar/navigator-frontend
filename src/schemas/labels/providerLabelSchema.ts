@@ -2,7 +2,7 @@ import * as v from "valibot";
 
 import { TDataInLabel } from "../labelSchema";
 
-export const ProviderLabelSchema = v.object({
+const ProviderLabelSchema = v.object({
   type: v.literal("provider"),
   value: v.object({
     id: v.string(),
@@ -16,6 +16,6 @@ export const ProviderLabelSchema = v.object({
   }),
 });
 
-export type TDataInProviderLabel = v.InferOutput<typeof ProviderLabelSchema>;
+type TDataInProviderLabel = v.InferOutput<typeof ProviderLabelSchema>;
 
 export const validateProviderLabel = (label: TDataInLabel): TDataInProviderLabel => v.parse(ProviderLabelSchema, label);

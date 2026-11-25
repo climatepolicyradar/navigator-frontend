@@ -1,12 +1,6 @@
 import { describe, expect, it } from "vitest";
 
-import {
-  dataInDocumentHandler,
-  searchDocumentHandler,
-  testDocumentDataIn,
-  testDocumentImportId,
-  testDocumentSlug,
-} from "@/tests/mocks/api/documentDataHandlers";
+import { dataInDocumentHandler, testDocumentDataIn, testDocumentImportId, testDocumentSlug } from "@/tests/mocks/api/documentDataHandlers";
 import { testFamilyDataIn, testFamilyImportId } from "@/tests/mocks/api/familyDataHandlers";
 import { server } from "@/tests/mocks/server";
 
@@ -14,7 +8,7 @@ import { getDocumentData } from "./getDocumentData";
 
 describe("getDocumentData", () => {
   it("returns document data on the happy path", async () => {
-    server.use(dataInDocumentHandler(), searchDocumentHandler());
+    server.use(dataInDocumentHandler());
 
     const result = await getDocumentData(testDocumentSlug);
 
@@ -47,8 +41,7 @@ describe("getDocumentData", () => {
           ...testDocumentDataIn,
           documents: [{ type: "member_of", value: testFamilyDataIn }],
         },
-      }),
-      searchDocumentHandler()
+      })
     );
 
     const result = await getDocumentData(testDocumentSlug);

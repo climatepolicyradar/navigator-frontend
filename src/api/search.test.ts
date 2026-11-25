@@ -1,3 +1,4 @@
+import { DEFAULT_FEATURES } from "@/constants/features";
 import { DEFAULT_THEME_CONFIG } from "@/constants/themeConfig";
 import { TLabelCategoryValue, TThemeConfig } from "@/types";
 import { inflateFilters } from "@/utils/filters/deflate";
@@ -32,6 +33,7 @@ describe("fetchSearchDocuments", () => {
   it("does not restrict categories when the theme has no search categories", async () => {
     await fetchSearchDocuments({
       apiUrl: TEST_API_URL,
+      features: DEFAULT_FEATURES,
       themeConfig: themeConfigWithCategories([]),
     });
 
@@ -41,6 +43,7 @@ describe("fetchSearchDocuments", () => {
   it("restricts results to any of the theme's search categories", async () => {
     await fetchSearchDocuments({
       apiUrl: TEST_API_URL,
+      features: DEFAULT_FEATURES,
       themeConfig: themeConfigWithCategories(["Law", "Policy"]),
     });
 
@@ -56,6 +59,7 @@ describe("fetchSearchDocuments", () => {
   it("requires a minimum fraction of the query's terms to match", async () => {
     await fetchSearchDocuments({
       apiUrl: TEST_API_URL,
+      features: DEFAULT_FEATURES,
       themeConfig: themeConfigWithCategories([]),
       query: "adaptation strategy",
     });
@@ -67,6 +71,7 @@ describe("fetchSearchDocuments", () => {
   it("does not send a minimum match when there is no query", async () => {
     await fetchSearchDocuments({
       apiUrl: TEST_API_URL,
+      features: DEFAULT_FEATURES,
       themeConfig: themeConfigWithCategories([]),
     });
 
@@ -74,12 +79,38 @@ describe("fetchSearchDocuments", () => {
     expect(url.searchParams.has("msm")).toBe(false);
   });
 
+  it("orders by the sort option's clause", async () => {
+    await fetchSearchDocuments({
+      apiUrl: TEST_API_URL,
+      features: DEFAULT_FEATURES,
+      themeConfig: themeConfigWithCategories([]),
+      sort: "recent",
+    });
+
+    const url = vi.mocked(global.fetch).mock.calls[0][0] as URL;
+    expect(url.searchParams.get("order_by")).toBe("attributes.published_date desc");
+  });
+
+  it("orders by an explicit clause in place of the sort option", async () => {
+    await fetchSearchDocuments({
+      apiUrl: TEST_API_URL,
+      features: DEFAULT_FEATURES,
+      themeConfig: themeConfigWithCategories([]),
+      sort: "recent",
+      orderBy: "attributes.created_at desc",
+    });
+
+    const url = vi.mocked(global.fetch).mock.calls[0][0] as URL;
+    expect(url.searchParams.get("order_by")).toBe("attributes.created_at desc");
+  });
+
   it("excludes the theme's excluded labels from results", async () => {
     await fetchSearchDocuments({
       apiUrl: TEST_API_URL,
+      features: DEFAULT_FEATURES,
       themeConfig: {
         ...themeConfigWithCategories([]),
-        searchExcludeLabels: [{ id: "author_type::Non-Party", onDirectLink: { action: "not_found" } }],
+        searchExcludeLabels: [{ id: "author_type::Non-Party" }],
       },
     });
 
@@ -89,6 +120,25 @@ describe("fetchSearchDocuments", () => {
       value: "author_type::Non-Party",
     });
   });
+
+  it("excludes subdivisions only when the subdivisions feature is off", async () => {
+    const subdivisionsRule = { op: "not_contains", field: "labels.value.type", value: "subdivision" };
+
+    await fetchSearchDocuments({
+      apiUrl: TEST_API_URL,
+      features: DEFAULT_FEATURES,
+      themeConfig: themeConfigWithCategories([]),
+    });
+    await fetchSearchDocuments({
+      apiUrl: TEST_API_URL,
+      features: { ...DEFAULT_FEATURES, subdivisions: true },
+      themeConfig: themeConfigWithCategories([]),
+    });
+
+    const [offUrl, onUrl] = vi.mocked(global.fetch).mock.calls.map(([url]) => url as URL);
+    expect(JSON.parse(inflateFilters(offUrl.searchParams.get("filters") ?? "")).filters).toContainEqual(subdivisionsRule);
+    expect(JSON.parse(inflateFilters(onUrl.searchParams.get("filters") ?? "")).filters).not.toContainEqual(subdivisionsRule);
+  });
 });
 
 describe("configureDocumentsFilters", () => {
@@ -97,8 +147,8 @@ describe("configureDocumentsFilters", () => {
   it("bounds published_date to the end of the day so the request can be cached", () => {
     vi.useFakeTimers();
     vi.setSystemTime(new Date("2026-11-12T09:00:00.000Z"));
-    const morning = configureDocumentsFilters(undefined, ["Law"], []);
+    const morning = configureDocumentsFilters(undefined, themeConfigWithCategories(["Law"]));
     vi.setSystemTime(new Date("2026-11-12T17:30:00.000Z"));
-    expect(configureDocumentsFilters(undefined, ["Law"], [])).toEqual(morning);
+    expect(configureDocumentsFilters(undefined, themeConfigWithCategories(["Law"]))).toEqual(morning);
   });
 });

@@ -5,6 +5,7 @@ import { Fragment, ReactNode, useState } from "react";
 import { Drawer, DrawerScrollArea } from "@/components/atoms/drawer/Drawer";
 import { PageLink } from "@/components/atoms/pageLink/PageLink";
 import { Tabs } from "@/components/atoms/tabs/Tabs";
+import { CollectionsBlock } from "@/components/blocks/collectionsBlock/CollectionsBlock";
 import { DocumentsBlock } from "@/components/blocks/documentsBlock/DocumentsBlock";
 import { MetadataBlock } from "@/components/blocks/metadataBlock/MetadataBlock";
 import { NoteBlock } from "@/components/blocks/noteBlock/NoteBlock";
@@ -13,15 +14,14 @@ import { TopicsBlock } from "@/components/blocks/topicsBlock/TopicsBlock";
 import { IconHighlights } from "@/components/fragments/icons/IconHighlights";
 import { PassageSearch } from "@/components/organisms/passageSearch/PassageSearch";
 import { SearchLevelContext } from "@/context/SearchLevelContext";
-import useConfig from "@/hooks/useConfig";
 import { useSearchLevelValues } from "@/hooks/useSearchLevel";
 import { useText } from "@/hooks/useText";
-import { ISearchDocument, TFamilyPresentationalData, TFeatures, TPrincipalDrawerTab } from "@/types";
+import { ISearchDocument, TFamilyPresentationalData, TPrincipalDrawerTab } from "@/types";
 import { getFamilyHeader } from "@/utils/family-header/getFamilyHeader";
 import { getFamilyMetadata } from "@/utils/family-metadata/getFamilyMetadata";
 import { flattenLevelToBaseQuery } from "@/utils/search/searchLevels";
 import { firstCase } from "@/utils/text/firstCase";
-import { familyTopicsHasTopics } from "@/utils/topics/processFamilyTopics";
+import { familyTopicsHasTopics } from "@/utils/topics/familyTopicsHasTopics";
 
 function linkHref(doc: ISearchDocument): string | undefined {
   if (doc.attributes.deprecated_slug)
@@ -37,7 +37,6 @@ const panelScrollClasses = "h-full px-4 pt-4 pb-8 md:px-8 md:pt-8";
 type TDocumentDrawerProps = {
   document: ISearchDocument | null; // The clicked search result, absent when the drawer is opened from a link
   slug: string | null;
-  features: TFeatures;
   onOpenChange: (open: boolean) => void;
   onTabChange: (tab: TPrincipalDrawerTab) => void;
   open: boolean;
@@ -46,12 +45,10 @@ type TDocumentDrawerProps = {
 
 type TDrawerContentProps = {
   familyData: TFamilyPresentationalData;
-  features: TFeatures;
-  languages: Record<string, string>;
 };
 
-const DrawerContent = ({ familyData, features, languages }: TDrawerContentProps) => {
-  const { family, familyTopics } = familyData;
+const DrawerContent = ({ familyData }: TDrawerContentProps) => {
+  const { collections, family, familyTopics } = familyData;
   const { getCategoryTextLookup } = useText();
   const getCategoryText = getCategoryTextLookup(family.attribution.category);
   const pageHeaderMetadata = getFamilyHeader({ family, getCategoryText });
@@ -82,18 +79,20 @@ const DrawerContent = ({ familyData, features, languages }: TDrawerContentProps)
         </div>
       )}
       <div className="grid grid-cols-1">
-        <DocumentsBlock family={family} familyTopics={familyTopics} features={features} getCategoryText={getCategoryText} languages={languages} />
+        <DocumentsBlock family={family} familyTopics={familyTopics} getCategoryText={getCategoryText} />
       </div>
       {familyTopicsHasTopics(familyTopics) && (
-        <TopicsBlock key="topics" family={family} familyTopics={familyTopics} getCategoryText={getCategoryText} features={features} />
+        <TopicsBlock key="topics" family={family} familyTopics={familyTopics} getCategoryText={getCategoryText} />
       )}
+      <div className="grid grid-cols-1">
+        <CollectionsBlock key="collections" collections={collections} family={family} />
+      </div>
       <NoteBlock key="note" attribution={family.attribution} />
     </div>
   );
 };
 
-export function PrincipalDrawer({ document, slug, open, onOpenChange, tab, onTabChange, features }: TDocumentDrawerProps) {
-  const { data: { languages = {} } = {} } = useConfig();
+export function PrincipalDrawer({ document, slug, open, onOpenChange, tab, onTabChange }: TDocumentDrawerProps) {
   const { getCategoryTextLookup } = useText();
   const [noOfResults, setNumberOfResults] = useState<number>(0);
   // The drawer's own search, flattened onto the base params of whatever page a link leads to
@@ -166,7 +165,7 @@ export function PrincipalDrawer({ document, slug, open, onOpenChange, tab, onTab
                 ),
                 panel: (
                   <DrawerScrollArea className={panelScrollClasses}>
-                    <DrawerContent familyData={familyData} features={features} languages={languages} />
+                    <DrawerContent familyData={familyData} />
                   </DrawerScrollArea>
                 ),
               },

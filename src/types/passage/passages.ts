@@ -1,10 +1,10 @@
 import { TSearchQueryGroup, TSortValue } from "@/types";
 
-export interface IPassageBoundingBox {
+interface IPassageBoundingBox {
   coordinates: { x: number; y: number }[];
 }
 
-export interface IPassagePageWithBoundingBoxes {
+interface IPassagePageWithBoundingBoxes {
   number: number;
   bounding_boxes: IPassageBoundingBox[];
 }

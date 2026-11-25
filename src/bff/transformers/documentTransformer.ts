@@ -1,13 +1,15 @@
+import { getParentDocuments } from "@/bff/methods/getRelations";
 import { transformDocument } from "@/bff/transformers/partials/transformDocument";
 import { transformDocumentFamily } from "@/bff/transformers/partials/transformDocumentFamily";
 import { TDocumentApiData, TDocumentPresentationalResponse } from "@/types";
-import { getDirectLinkPolicy } from "@/utils/getDirectLinkPolicy";
+import { toThemeCriteria } from "@/utils/getDocumentSites";
 
 export const documentTransformer = (documentApiData: TDocumentApiData, errors: Error[]): TDocumentPresentationalResponse => {
   try {
-    const { document, topicsData, searchDocument } = documentApiData;
+    const { document } = documentApiData;
 
     const documentPublic = transformDocument(document, []);
+    const parentDocument = getParentDocuments(document.documents || [])[0];
     const family = transformDocumentFamily(document.documents || []);
     // Non-displayable documents and documents without a parent family transform to null; the page treats null data as a 404
     if (documentPublic === null || family === null) return { data: null, errors };
@@ -16,9 +18,7 @@ export const documentTransformer = (documentApiData: TDocumentApiData, errors: E
       data: {
         document: documentPublic,
         family,
-        topicsData,
-        searchDocument,
-        directLinkPolicy: getDirectLinkPolicy(document.labels),
+        themeCriteria: toThemeCriteria(parentDocument.value.labels),
         debug: {
           dataInDocument: document,
         },

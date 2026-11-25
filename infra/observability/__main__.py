@@ -20,12 +20,10 @@ class Theme:
 # We do not create a stack per theme to avoid inhertting that complexity in
 # this stack similar to ../platform
 THEMES: dict[str, Theme] = {
-    "ccc": Theme(sitemap_path="/ccc/sitemap.xml"),
-    "cpr": Theme(sitemap_path="/cpr/sitemap.xml"),
-    # cclw and mcf have no sitemap route yet, so they get static coverage only
-    # until src/pages/{theme}/sitemap.xml.ts lands for them.
-    "cclw": Theme(),
-    "mcf": Theme(),
+    "ccc": Theme(sitemap_path="/sitemap.xml"),
+    "cpr": Theme(sitemap_path="/sitemap.xml"),
+    "cclw": Theme(sitemap_path="/sitemap.xml"),
+    "mcf": Theme(sitemap_path="/sitemap.xml"),
 }
 
 config = pulumi.Config()

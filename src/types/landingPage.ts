@@ -1,8 +1,6 @@
 import Image from "next/image";
 import { ComponentProps, ReactNode } from "react";
 
-import { TQueryParams } from "@/constants/queryParams";
-
 import { TFeature } from "./features";
 
 type TImageProps = ComponentProps<typeof Image> & {
@@ -13,8 +11,7 @@ type TImageProps = ComponentProps<typeof Image> & {
 
 export type TSearchSuggestion = {
   label: string;
-  params: Partial<Record<TQueryParams, string>>;
-  newParams: Record<string, string>;
+  params: Record<string, string>;
 };
 
 export type TLandingPageSearchConfig = {

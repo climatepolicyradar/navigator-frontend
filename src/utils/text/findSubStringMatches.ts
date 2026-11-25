@@ -1,6 +1,6 @@
 import { toSearchableText } from "@/utils/text/toSearchableText";
 
-export type TSubStringMatch = {
+type TSubStringMatch = {
   start: number;
   end: number;
 };

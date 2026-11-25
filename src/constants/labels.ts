@@ -83,6 +83,11 @@ export const LABEL_DISPLAY_REPLACEMENTS: TLabelDisplayReplacement[] = [
     idMatch: `author_type${SEP}`,
     type: "Type",
   },
+  {
+    parentId: ["entity_type", "Project"].join(SEP),
+    idMatch: `agent${SEP}`,
+    type: "Implementing agency",
+  },
 ];
 
 type TLabelSearchReplacement = {

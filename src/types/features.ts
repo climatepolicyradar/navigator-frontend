@@ -1,37 +1,11 @@
 /**
- * When adding or removing a new feature, make sure it is added to the appropriate array
- * Note that regardless of the array added to, feature names are unique
- * More info available in README.md
+ * Features are an amalgam of two intentionally matching strings:
+ * 1. App-specific config feature key for features that are long-term different per app
+ * 2. PostHog feature flags + early access features that can be toggled per-user at /_feature-flags
+ * When adding/removing a feature, make sure both of the above are set up / torn down fully
  */
 
-/* Features */
+export const FEATURE_KEYS = ["debug", "geography-type-filters", "litigation", "subdivisions", "themes"] as const;
 
-// PostHog feature flags with 0% rollout. Must be manually enabled at /_feature-flags to be enabled
-export const FEATURE_FLAG_KEYS = ["debug", "geography-type-filters", "new-search", "subdivisions", "themes"] as const;
-
-// PostHog feature flags with 1-100% rollout. Automatically rolled to each consenting user. Can also be present on /_feature-flags if configured in PostHog as an early access feature
-export const AB_TEST_KEYS = ["ab-family-topic-block"] as const;
-
-// Theme config feature configured at themes/THEME/config.ts features object
-export const CONFIG_FEATURE_KEYS = [
-  "familyConceptsSearch",
-  "geography-type-filters",
-  "knowledgeGraph",
-  "litigation",
-  "new-search",
-  "searchFamilySummary",
-  "subdivisions",
-  "themes",
-] as const;
-
-/* Types */
-
-export type TFeatureFlag = (typeof FEATURE_FLAG_KEYS)[number];
-export type TABTest = (typeof AB_TEST_KEYS)[number];
-export type TFeatureFlags = Record<TFeatureFlag | TABTest, boolean>; // Treat all PostHog feature flags the same as they're sourced at the same time
-
-export type TConfigFeature = (typeof CONFIG_FEATURE_KEYS)[number];
-export type TConfigFeatures = Record<TConfigFeature, boolean>;
-
-export type TFeature = TFeatureFlag | TABTest | TConfigFeature;
+export type TFeature = (typeof FEATURE_KEYS)[number];
 export type TFeatures = Record<TFeature, boolean>;

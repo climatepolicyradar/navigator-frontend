@@ -1,29 +1,50 @@
 import { useQuery } from "@tanstack/react-query";
+import { useContext } from "react";
 
-import { ApiClient, getEnvFromServer } from "@/api/http-common";
+import { fetchSearchPrincipalDocuments } from "@/api/search";
 import { dayInMilliseconds } from "@/constants/dayInMilleseconds";
-import { TLatestItem } from "@/types";
+import { useEnvConfig } from "@/context/EnvConfig";
+import { FeaturesContext } from "@/context/FeaturesContext";
+import { ThemeContext } from "@/context/ThemeContext";
+import { ISearchDocument, TLatestItem } from "@/types";
 
-type TLatestResponse = {
-  import_id: string;
-  title: string;
-  slug: string;
-  created: string;
-};
+// Not a user-facing sort option, so it's not in `SORT_VALUES`.
+const LATEST_ADDED_ORDER_BY = "attributes.created_at desc";
 
-export default function useGetLatest(limit?: number) {
+export const toLatestItems = (documents: ISearchDocument[]): TLatestItem[] =>
+  documents.map((document) => {
+    const slug = String(document.attributes.deprecated_slug ?? "");
+    return {
+      title: document.title,
+      slug,
+      date: String(document.attributes.created ?? ""),
+      url: `/document/${slug}`,
+    };
+  });
+
+/**
+ * The most recently added principal documents from `search-api`, newest first.
+ *
+ * Sorted on when the document was added to the database (`attributes.created_at`),
+ * not its published date.
+ */
+export default function useGetLatest(limit: number) {
+  const { themeConfig } = useContext(ThemeContext);
+  const features = useContext(FeaturesContext);
+  const { API_URL } = useEnvConfig();
+
   return useQuery({
-    queryKey: ["latest"],
-    queryFn: async () => {
-      const { data } = await getEnvFromServer();
-      const client = new ApiClient(data?.env?.api_url, data?.env?.app_token);
-      const query_response = await client.get<TLatestResponse[]>("/latest", { limit: limit });
-      return query_response.data.map((item) => ({
-        title: item.title,
-        slug: item.slug,
-        date: item.created,
-        url: `/document/${item.slug}`,
-      })) as TLatestItem[];
+    queryKey: ["latest", limit, themeConfig.searchCategories, API_URL, features],
+    queryFn: async ({ signal }) => {
+      const response = await fetchSearchPrincipalDocuments({
+        apiUrl: API_URL,
+        themeConfig,
+        features,
+        orderBy: LATEST_ADDED_ORDER_BY,
+        page_size: String(limit),
+        signal,
+      });
+      return toLatestItems(response.results);
     },
     refetchOnWindowFocus: false,
     refetchOnMount: false,

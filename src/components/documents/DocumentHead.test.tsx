@@ -16,7 +16,6 @@ const renderDocumentHead = (family: TFamilyPublic) =>
       family,
       handleViewOtherDocsClick: () => {},
       handleViewSourceClick: () => {},
-      themeConfig: { features: {} },
     },
   });
 

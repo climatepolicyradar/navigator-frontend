@@ -4,11 +4,11 @@ import { getFamilyData } from "@/bff/methods/getFamilyData";
 import { FamilyPage as FamilyPageUI } from "@/components/pages/familyPage";
 import { ROBOTS_BLOCKED_SLUGS, X_ROBOTS_TAG_NOINDEX_VALUE } from "@/constants/robots";
 import { withEnvConfig } from "@/context/EnvConfig";
+import themeConfig from "@/themes/config";
 import { TTheme } from "@/types";
 import { getFeatureFlags } from "@/utils/featureFlags";
 import { getFeatures } from "@/utils/features";
-import { getDirectLinkRedirect } from "@/utils/getDirectLinkRedirect";
-import { readConfigFile } from "@/utils/readConfigFile";
+import { getSiteDecision } from "@/utils/getDocumentSites";
 
 /*
   # DEV NOTES
@@ -32,7 +32,6 @@ export const getServerSideProps = (async (context) => {
   }
 
   const theme = process.env.THEME as TTheme;
-  const themeConfig = await readConfigFile(theme);
   const featureFlags = getFeatureFlags(context.req.cookies);
   const features = getFeatures(themeConfig, featureFlags);
 
@@ -41,18 +40,25 @@ export const getServerSideProps = (async (context) => {
     console.error(`[document.getServerSideProps]: url: ${context.req.url}, params: ${context.params}`);
     console.error(err);
   });
-  const directLinkRedirect = getDirectLinkRedirect(familyData, slug, features);
-  if (directLinkRedirect) return directLinkRedirect;
   if (familyData === null) return { notFound: true };
   if (!features.debug) delete familyData.debug;
+
+  const siteDecision = getSiteDecision(familyData.themeCriteria, theme, `/document/${slug}`);
+
+  if (siteDecision.action === "not_found") {
+    return { notFound: true };
+  }
+  if (siteDecision.action === "redirect") {
+    return { redirect: { destination: siteDecision.destination, permanent: true } };
+  }
 
   return {
     props: withEnvConfig({
       ...familyData,
+      canonicalUrl: siteDecision.canonicalUrl,
       errors: errors.map((error) => JSON.stringify(error, Object.getOwnPropertyNames(error))),
       features,
       theme,
-      themeConfig,
     }),
   };
 }) satisfies GetServerSideProps;

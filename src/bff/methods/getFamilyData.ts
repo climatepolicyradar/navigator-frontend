@@ -1,9 +1,11 @@
 import { ApiClient } from "@/api/http-common";
+import { loadTaxonomy } from "@/api/taxonomy";
 import { getParentDocuments } from "@/bff/methods/getRelations";
 import { familyTransformer } from "@/bff/transformers/familyTransformer";
 import { TDataInDocument, validateDataInDocument } from "@/schemas";
-import { IApiFamilyDocumentTopics, ISearchDocumentResponse, TApiItemResponse, TFamilyPresentationalResponse } from "@/types";
-import { getDirectLinkPolicy } from "@/utils/getDirectLinkPolicy";
+import { IFamilyDocumentTopics, ISearchDocumentResponse, TApiItemResponse, TFamilyPresentationalResponse, TSearchQueryGroup } from "@/types";
+import { pruneTaxonomy } from "@/utils/filters/pruneTaxonomy";
+import { flattenCountedLabels } from "@/utils/labels/flattenCountedLabels";
 import { processSearchDocumentTopics } from "@/utils/topics/processSearchDocumentTopics";
 
 export const getFamilyData = async (slug: string): Promise<TFamilyPresentationalResponse> => {
@@ -36,13 +38,24 @@ export const getFamilyData = async (slug: string): Promise<TFamilyPresentational
     return { data: null, errors };
   }
 
-  let familyTopics: IApiFamilyDocumentTopics;
+  let familyTopics: IFamilyDocumentTopics;
   try {
-    const documentApiResponse = await apiClient.get<ISearchDocumentResponse>(`/search/documents/${family.id}`);
+    const memberDocumentsFilter: TSearchQueryGroup = {
+      op: "and",
+      filters: [
+        { field: "principal_id", op: "contains", value: family.id },
+        { field: "id", op: "not_contains", value: family.id },
+      ],
+    };
+    const [documentApiResponse, taxonomy] = await Promise.all([
+      apiClient.get<ISearchDocumentResponse>(`/search/documents/${family.id}`),
+      loadTaxonomy(process.env.CONCEPTS_API_URL, { patterns: ["**/concept::*"], filters: memberDocumentsFilter }),
+    ]);
     // http-common's get() returns error.response rather than throwing for Axios errors,
     // so we must check the status explicitly rather than relying on catch for non-2xx responses.
     if (documentApiResponse?.status === 200) {
-      familyTopics = await processSearchDocumentTopics(documentApiResponse.data.data);
+      const topics = flattenCountedLabels(taxonomy).length > 0 ? pruneTaxonomy(taxonomy) : [];
+      familyTopics = processSearchDocumentTopics(documentApiResponse.data.data, topics);
     } else if (documentApiResponse?.status === 500) {
       errors.push(new Error("Failed to fetch family topics data"));
     }
@@ -52,7 +65,5 @@ export const getFamilyData = async (slug: string): Promise<TFamilyPresentational
 
   /* Transform API data for presentation */
 
-  const directLinkPolicy = getDirectLinkPolicy(family.labels);
-
-  return familyTransformer({ collections, family, familyTopics: familyTopics || null }, directLinkPolicy, errors);
+  return familyTransformer({ collections, family, familyTopics: familyTopics || null }, errors);
 };
