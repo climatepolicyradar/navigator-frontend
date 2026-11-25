@@ -1,4 +1,4 @@
-import { TTopic } from "@/types";
+import { TNestedSearchLabel } from "@/types";
 
 export interface IFamilyDocumentTopics {
   documents: {
@@ -8,8 +8,5 @@ export interface IFamilyDocumentTopics {
     conceptCounts: Record<string, number>;
   }[];
   conceptCounts: Record<string, number>;
-  rootConcepts: TTopic[];
-  conceptsGrouped: {
-    [rootConceptId: string]: TTopic[];
-  };
+  topics: TNestedSearchLabel[];
 }

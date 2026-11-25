@@ -2,8 +2,10 @@ import orderBy from "lodash/orderBy";
 import { Fragment, ReactNode } from "react";
 
 import { ConceptLink } from "@/components/molecules/conceptLink/ConceptLink";
+import { ID_SEPARATOR } from "@/constants/chars";
 import { IFamilyDocumentTopics, IMetadata } from "@/types";
 import { scrollToBlock } from "@/utils/blocks/scrollToBlock";
+import { flattenCountedLabels } from "@/utils/labels/flattenCountedLabels";
 import { pluralise } from "@/utils/pluralise";
 import { joinNodes } from "@/utils/reactNode";
 import { firstCase } from "@/utils/text/firstCase";
@@ -15,13 +17,13 @@ export const getTopicsMetadataItem = (familyTopics: IFamilyDocumentTopics): IMet
   if (!familyTopicsHasTopics(familyTopics)) return null;
 
   // Prepare data needed to populate topics
-  const topicsData = Object.values(familyTopics.conceptsGrouped).flat();
+  const topicsData = flattenCountedLabels(familyTopics.topics);
 
   // Get the most referenced topics and how many will be hidden
   const sortedTopicCounts = orderBy(Object.entries(familyTopics.conceptCounts), ["1"], ["desc"]);
   const topics = sortedTopicCounts
     .map(([wikibaseId, topicCount]) => {
-      const topic = topicsData.find((concept) => concept.wikibase_id === wikibaseId);
+      const topic = topicsData.find((concept) => concept.id === `concept${ID_SEPARATOR}${wikibaseId}`);
       return topic ? { topic, topicCount } : null;
     })
     .filter((topic) => topic);
@@ -31,7 +33,7 @@ export const getTopicsMetadataItem = (familyTopics: IFamilyDocumentTopics): IMet
   if (visibleTopics.length === 0) return null;
 
   const topicsNode: ReactNode[] = joinNodes(
-    visibleTopics.map(({ topic }) => <ConceptLink key={topic.wikibase_id} concept={topic} label={<>{firstCase(topic.preferred_label)}</>} />),
+    visibleTopics.map(({ topic }) => <ConceptLink key={topic.id} concept={topic} label={<>{firstCase(topic.value)}</>} />),
     ", "
   );
 

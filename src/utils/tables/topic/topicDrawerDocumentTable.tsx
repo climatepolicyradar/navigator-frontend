@@ -3,7 +3,7 @@ import sortBy from "lodash/sortBy";
 import { PageLink } from "@/components/atoms/pageLink/PageLink";
 import { ID_SEPARATOR } from "@/constants/chars";
 import { QUERY_PARAMS } from "@/constants/queryParams";
-import { IFamilyDocumentTopics, TTopic, TFamilyPublic, TTableColumn, TTableRow } from "@/types";
+import { IFamilyDocumentTopics, TFamilyPublic, TNestedSearchLabel, TTableColumn, TTableRow } from "@/types";
 import { deflateFilters } from "@/utils/filters/deflate";
 import { filterPathsToQueryGroup } from "@/utils/search/filterPathsToQueryGroup";
 import { firstCase } from "@/utils/text/firstCase";
@@ -16,12 +16,8 @@ export const TOPIC_DRAWER_DOCUMENTS_TABLE_COLUMNS: TTableColumn<TDocumentMention
   { id: "mentions" },
 ];
 
-const getTopicQuery = (topic: TTopic): Record<string, string> => {
-  const filters = filterPathsToQueryGroup(
-    [[{ id: `concept${ID_SEPARATOR}${topic.wikibase_id}`, type: "concept", value: topic.preferred_label }]],
-    null,
-    "and"
-  );
+const getTopicQuery = (topic: TNestedSearchLabel): Record<string, string> => {
+  const filters = filterPathsToQueryGroup([[{ id: topic.id, type: topic.type, value: topic.value }]], null, "and");
 
   return { [QUERY_PARAMS.filters]: deflateFilters(filters) };
 };
@@ -29,12 +25,12 @@ const getTopicQuery = (topic: TTopic): Record<string, string> => {
 export const getTopicDrawerDocumentTableRows = (
   family: TFamilyPublic,
   familyTopics: IFamilyDocumentTopics,
-  topic: TTopic
+  topic: TNestedSearchLabel
 ): TTableRow<TDocumentMentionsTableColumnId>[] => {
   const topicQuery = getTopicQuery(topic);
 
   return familyTopics.documents.reduce((rows, document) => {
-    const mentions = document.conceptCounts[topic.wikibase_id];
+    const mentions = document.conceptCounts[topic.id.split(ID_SEPARATOR)[1]];
     if (!mentions) return rows;
 
     const contextLines: string[] = [];
