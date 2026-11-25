@@ -86,11 +86,23 @@ describe("flattenLevelToBaseQuery", () => {
       docs: "CCLW.document.1.1,CCLW.document.1.2",
       filters: deflateFilters(mixedFilters),
       q: "flood risk",
+      sort: null,
     });
   });
 
   it("nulls the params it has no value for, so nothing is inherited", () => {
-    expect(flattenLevelToBaseQuery({ documents: [], filters: null, query: "" })).toEqual({ docs: null, filters: null, q: null });
+    expect(flattenLevelToBaseQuery({ documents: [], filters: null, query: "" })).toEqual({
+      docs: null,
+      filters: null,
+      q: null,
+      sort: null,
+    });
+  });
+
+  // The results page and the document page share the `sort` param but not its values, and the
+  // passages endpoint rejects the results page's orderings, so the sort must not travel.
+  it("drops the sort the page behind it was using", () => {
+    expect(flattenLevelToBaseQuery({ documents: [], filters: null, query: "flood risk" }).sort).toBeNull();
   });
 });
 
@@ -98,10 +110,10 @@ describe("searchLevelFromParams", () => {
   const level = (pathname: string, search: string) => searchLevelFromParams(pathname, new URLSearchParams(search));
 
   it("reads the deepest open level from the params", () => {
-    expect(level("/_search", "")).toBe("base");
-    expect(level("/_search", "q=flood+risk")).toBe("base");
-    expect(level("/_search", "principal=CCLW.family.1.0")).toBe("principal");
-    expect(level("/_search", "principal=CCLW.family.1.0&document=CCLW.document.1.2")).toBe("document");
+    expect(level("/search", "")).toBe("base");
+    expect(level("/search", "q=flood+risk")).toBe("base");
+    expect(level("/search", "principal=CCLW.family.1.0")).toBe("principal");
+    expect(level("/search", "principal=CCLW.family.1.0&document=CCLW.document.1.2")).toBe("document");
   });
 
   it("is unset away from the results page, so pages with no levels are not read as the results page", () => {
@@ -120,7 +132,7 @@ describe("searchPropertiesFromParams", () => {
   });
 
   it("reports the query and the filters as values rather than encoded JSON", () => {
-    expect(properties("/_search", `q=flooding&${filtersParam(mixedFilters)}`)).toEqual({
+    expect(properties("/search", `q=flooding&${filtersParam(mixedFilters)}`)).toEqual({
       search_query: "flooding",
       filters_applied: ["concept::Q786", "country::LVA"],
       filters_count: 2,
@@ -137,7 +149,7 @@ describe("searchPropertiesFromParams", () => {
       ],
     };
 
-    expect(properties("/_search", filtersParam(topicWithinCategory))).toEqual({
+    expect(properties("/search", filtersParam(topicWithinCategory))).toEqual({
       filters_applied: ["topic::adaptation", "category::Law"],
       filters_count: 2,
       filter_types: ["topic", "category"],
@@ -145,12 +157,12 @@ describe("searchPropertiesFromParams", () => {
   });
 
   it("counts an unfiltered search as zero, so filtered and unfiltered searches are comparable", () => {
-    expect(properties("/_search", "q=flooding")).toEqual({ search_query: "flooding", filters_count: 0 });
+    expect(properties("/search", "q=flooding")).toEqual({ search_query: "flooding", filters_count: 0 });
   });
 
   it("omits the sort and the page while they are the defaults, so a value means the user chose it", () => {
-    expect(properties("/_search", "q=flooding&page_token=1")).toEqual({ search_query: "flooding", filters_count: 0 });
-    expect(properties("/_search", "q=flooding&sort=recent&page_token=3")).toEqual({
+    expect(properties("/search", "q=flooding&page_token=1")).toEqual({ search_query: "flooding", filters_count: 0 });
+    expect(properties("/search", "q=flooding&sort=recent&page_token=3")).toEqual({
       search_query: "flooding",
       sort: "recent",
       page: 3,
@@ -160,7 +172,7 @@ describe("searchPropertiesFromParams", () => {
 
   it("describes the drawer the user is in rather than the results behind it", () => {
     expect(
-      properties("/_search", `q=flooding&${filtersParam(mixedFilters)}&principal=CCLW.family.1.0&principal_q=defences&principal_sort=recent`)
+      properties("/search", `q=flooding&${filtersParam(mixedFilters)}&principal=CCLW.family.1.0&principal_q=defences&principal_sort=recent`)
     ).toEqual({
       search_query: "defences",
       sort: "recent",
@@ -177,16 +189,16 @@ describe("searchPropertiesFromParams", () => {
       ],
     };
 
-    expect(properties("/_search", filtersParam(dateFilters))).toEqual({ date_range: [2015, 2024], filters_count: 0 });
+    expect(properties("/search", filtersParam(dateFilters))).toEqual({ date_range: [2015, 2024], filters_count: 0 });
   });
 
   it("treats an empty filter group as no filters, which is the state the results page starts in", () => {
-    expect(properties("/_search", `q=flooding&${filtersParam({ op: "and", filters: [] })}`)).toEqual({ search_query: "flooding", filters_count: 0 });
+    expect(properties("/search", `q=flooding&${filtersParam({ op: "and", filters: [] })}`)).toEqual({ search_query: "flooding", filters_count: 0 });
   });
 
   it("treats a filters value it cannot read as no filters, so a hand edited URL does not break the page view", () => {
-    expect(properties("/_search", "q=flooding&filters=not-json")).toEqual({ search_query: "flooding", filters_count: 0 });
-    expect(properties("/_search", `q=flooding&filters=${encodeURIComponent('{"op":"maybe"}')}`)).toEqual({
+    expect(properties("/search", "q=flooding&filters=not-json")).toEqual({ search_query: "flooding", filters_count: 0 });
+    expect(properties("/search", `q=flooding&filters=${encodeURIComponent('{"op":"maybe"}')}`)).toEqual({
       search_query: "flooding",
       filters_count: 0,
     });

@@ -19,6 +19,7 @@ interface IProps<TabId extends string> {
   analytics?: TTabsAnalytics;
   className?: string;
   onValueChange: (value: TabId) => void;
+  headerClassName?: string;
   panelClassName?: string;
   sticky?: boolean;
   tabs: TTabsTab<TabId>[];
@@ -30,13 +31,14 @@ export const Tabs = <TabId extends string>({
   analytics,
   className,
   onValueChange,
+  headerClassName,
   panelClassName,
   sticky,
   tabs,
   tabsContainer,
   value,
 }: IProps<TabId>) => {
-  const allHeaderClasses = joinTailwindClasses(sticky && "sticky z-10 bg-bg-primary", className);
+  const allHeaderClasses = joinTailwindClasses(sticky && "sticky z-10 bg-bg-primary", headerClassName);
 
   const bannerTab = tabs.find((tab) => !!tab.banner && tab.id !== value);
 
@@ -68,7 +70,7 @@ export const Tabs = <TabId extends string>({
   );
 
   return (
-    <BaseTabs.Root value={value} onValueChange={(newValue) => onValueChange(newValue as TabId)}>
+    <BaseTabs.Root className={className} value={value} onValueChange={(newValue) => onValueChange(newValue as TabId)}>
       <div className={allHeaderClasses}>
         <div className="border-b border-border-light">{tabsContainer ? tabsContainer(tabsList) : tabsList}</div>
         {bannerTab && <div className="bg-bg-brand text-text-inverse">{bannerTab.banner}</div>}

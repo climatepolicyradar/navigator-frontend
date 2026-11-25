@@ -1,8 +1,8 @@
 import { render, screen } from "@testing-library/react";
+import mockRouter from "next-router-mock";
 import * as nextRouterMock from "next-router-mock";
 import { vi } from "vitest";
 
-import { DEFAULT_FEATURES } from "@/constants/features";
 import { TFamilyAttribution, TFamilyDocumentPublic, TFamilyPublic } from "@/types";
 
 import { getDocumentLink, getEventTableRows } from "./eventTable";
@@ -44,7 +44,7 @@ describe("getEventTableRows", () => {
       slug: "",
     };
 
-    const eventRows = getEventTableRows({ families: [familyWithoutDocuments], features: DEFAULT_FEATURES, isLitigation: false });
+    const eventRows = getEventTableRows({ families: [familyWithoutDocuments], isLitigation: false });
 
     expect(eventRows).toEqual([]);
   });
@@ -90,7 +90,7 @@ describe("getEventTableRows", () => {
       slug: "",
     };
 
-    const eventRows = getEventTableRows({ families: [familyWithoutEvents], features: DEFAULT_FEATURES, isLitigation: true });
+    const eventRows = getEventTableRows({ families: [familyWithoutEvents], isLitigation: true });
 
     expect(eventRows).toHaveLength(1);
     expect(eventRows[0].id).toBe("Document 1:Event 1");
@@ -151,7 +151,7 @@ describe("getEventTableRows", () => {
       slug: "",
     };
 
-    const eventRows = getEventTableRows({ families: [familyWithoutEvents], features: DEFAULT_FEATURES, isLitigation: true });
+    const eventRows = getEventTableRows({ families: [familyWithoutEvents], isLitigation: true });
 
     expect(eventRows).toHaveLength(2);
     expect(eventRows[0].id).toBe(":Event 2");
@@ -213,7 +213,7 @@ describe("getEventTableRows", () => {
       slug: "",
     };
 
-    const eventRows = getEventTableRows({ families: [familyWithoutEvents], features: DEFAULT_FEATURES, isLitigation: true });
+    const eventRows = getEventTableRows({ families: [familyWithoutEvents], isLitigation: true });
 
     expect(eventRows).toHaveLength(1);
     expect(eventRows[0].id).toBe("Document 1:Event 1");
@@ -229,7 +229,7 @@ describe("getDocumentLink", () => {
       cdn_object: "https://example.com/doc.pdf",
     } as TFamilyDocumentPublic;
 
-    render(<>{getDocumentLink(documentWithoutSlug, false, false, false)}</>);
+    render(<>{getDocumentLink(documentWithoutSlug, false, false)}</>);
 
     expect(screen.queryByRole("link", { name: /document 1/i })).not.toBeInTheDocument();
     expect(screen.getByText(/we do not have this document/i)).toBeInTheDocument();
@@ -243,8 +243,30 @@ describe("getDocumentLink", () => {
       cdn_object: "https://example.com/doc.pdf",
     } as TFamilyDocumentPublic;
 
-    render(<>{getDocumentLink(documentWithSlug, false, false, false)}</>);
+    render(<>{getDocumentLink(documentWithSlug, false, false)}</>);
 
     expect(screen.getByRole("link")).toHaveAttribute("href", expect.stringContaining("/documents/document-1"));
+  });
+
+  /*
+    The destination searches passages, which only filters on topics. Left to inherit the page's
+    query, the link would hand it the results page's whole filter tree, which it draws as chips
+    but never applies.
+  */
+  it("passes on only the search given to it", () => {
+    const documentWithSlug = {
+      import_id: "Document 1",
+      slug: "document-1",
+      title: "Document 1",
+      cdn_object: "https://example.com/doc.pdf",
+    } as TFamilyDocumentPublic;
+    mockRouter.setCurrentUrl("/search?q=electrification&filters=%7B%22op%22%3A%22and%22%7D&sort=date%3Adesc");
+
+    render(<>{getDocumentLink(documentWithSlug, false, false, { q: "electrification", filters: null, sort: null })}</>);
+
+    const href = screen.getByRole("link").getAttribute("href");
+    expect(href).toContain("q=electrification");
+    expect(href).not.toContain("filters=");
+    expect(href).not.toContain("sort=");
   });
 });

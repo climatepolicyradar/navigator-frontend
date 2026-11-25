@@ -7,36 +7,29 @@ import { InteractiveTable } from "@/components/organisms/interactiveTable/Intera
 import { TCategoryDictionaryKey } from "@/constants/text";
 import { SearchLevelContext } from "@/context/SearchLevelContext";
 import { useNestedSearchLevel, useSearchLevelValues } from "@/hooks/useSearchLevel";
-import { IFamilyDocumentTopics, TFamilyPublic, TFeatures, TLanguages, TLoadingStatus, TMatchedFamily } from "@/types";
+import { IFamilyDocumentTopics, TFamilyPublic } from "@/types";
 import { getEventTableColumns, getEventTableRows, TEventTableColumnId, TEventTableRow } from "@/utils/eventTable";
-import { seedPassageLevel } from "@/utils/search/searchLevels";
-import { familyTopicsHasTopics } from "@/utils/topics/processFamilyTopics";
+import { conceptFiltersOnly, flattenLevelToBaseQuery, seedPassageLevel } from "@/utils/search/searchLevels";
+import { familyTopicsHasTopics } from "@/utils/topics/familyTopicsHasTopics";
 
 interface IProps {
   family: TFamilyPublic;
   familyTopics?: IFamilyDocumentTopics | null;
-  features: TFeatures;
   getCategoryText: (textKey: TCategoryDictionaryKey) => string;
-  languages: TLanguages;
-  matchesFamily?: TMatchedFamily; // The relevant search result family
-  matchesStatus?: TLoadingStatus; // The status of the search
-  showMatches?: boolean; // Whether to show matches from the search result
 }
 
-export const DocumentsBlock = ({
-  family,
-  familyTopics,
-  features,
-  getCategoryText,
-  languages,
-  matchesFamily,
-  matchesStatus,
-  showMatches = false,
-}: IProps) => {
+export const DocumentsBlock = ({ family, familyTopics, getCategoryText }: IProps) => {
   const [updatedRowsWithLocalisedDates, setUpdatedRowsWithLocalisedDates] = useState<TEventTableRow[]>(null);
   // Ensure we have the latest search controls when opening the drawer
   const enclosingLevel = useContext(SearchLevelContext);
   const [enclosingSearch] = useSearchLevelValues(enclosingLevel);
+  // The document page searches passages at its own base level, so the table's links carry the
+  // enclosing search flattened onto those params, narrowed to the filters that search can apply.
+  // Inherited whole, the rest of the tree only draws chips there that filter nothing.
+  const outboundSearch = useMemo(
+    () => flattenLevelToBaseQuery({ ...enclosingSearch, filters: conceptFiltersOnly(enclosingSearch.filters) }),
+    [enclosingSearch]
+  );
   const { close: closeDocumentLevel, id: documentLevelId, open: openDocumentLevel } = useNestedSearchLevel("document");
   const [lastDocumentDrawerId, setLastDocumentDrawerId] = useState<string | null>(null); // Keeps the document in the drawer while it closes
 
@@ -65,9 +58,8 @@ export const DocumentsBlock = ({
       getEventTableColumns({
         hasTopics: familyTopicsHasTopics(familyTopics),
         isLitigation,
-        showMatches: showMatches && !features["new-search"],
       }),
-    [familyTopics, features, isLitigation, showMatches]
+    [familyTopics, isLitigation]
   );
   const tableRows = useMemo(
     () =>
@@ -76,13 +68,10 @@ export const DocumentsBlock = ({
         documentRowClick: onRowClick,
         families: [family],
         familyTopics,
-        features,
         isLitigation,
-        languages,
-        matchesFamily,
-        matchesStatus,
+        search: outboundSearch,
       }),
-    [family, familyTopics, features, isLitigation, languages, matchesFamily, matchesStatus, onRowClick]
+    [family, familyTopics, isLitigation, onRowClick, outboundSearch]
   );
 
   // If the case is new, there can be one placeholder document with no events. Handle this interim state
@@ -98,15 +87,12 @@ export const DocumentsBlock = ({
         documentRowClick: onRowClick,
         families: [family],
         familyTopics,
-        features,
         isLitigation,
         language,
-        languages,
-        matchesFamily,
-        matchesStatus,
+        search: outboundSearch,
       })
     );
-  }, [family, familyTopics, features, isLitigation, languages, matchesFamily, matchesStatus, onRowClick]);
+  }, [family, familyTopics, isLitigation, onRowClick, outboundSearch]);
 
   return (
     <Section block="documents" title="Documents" wide>
@@ -131,8 +117,6 @@ export const DocumentsBlock = ({
       <DocumentDrawer
         documentSlug={documentLevelId ?? lastDocumentDrawerId}
         family={family}
-        familyTopics={familyTopics}
-        languages={languages}
         onOpenChange={onDocumentDrawerOpenChange}
         open={!!documentLevelId}
       />

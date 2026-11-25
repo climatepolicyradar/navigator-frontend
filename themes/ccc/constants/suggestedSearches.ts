@@ -8,10 +8,6 @@ export const SUGGESTED_SEARCHES: TSearchSuggestion[] = [
   {
     label: "Brazil + Federal Constitution of 1988",
     params: {
-      [QUERY_PARAMS.concept_preferred_label]: ["principal_law/Brazil", "principal_law/Federal Constitution of 1988"],
-      [QUERY_PARAMS.country]: "Brazil",
-    },
-    newParams: {
       [QUERY_PARAMS.filters]: deflateFilters({
         op: "and",
         filters: [
@@ -39,10 +35,6 @@ export const SUGGESTED_SEARCHES: TSearchSuggestion[] = [
   {
     label: "National Environmental Policy Act (NEPA) + Alaska",
     params: {
-      [QUERY_PARAMS.concept_preferred_label]: ["principal_law/United States", "principal_law/National Environmental Policy Act (NEPA)"],
-      [QUERY_PARAMS.subdivision]: "US-AK",
-    },
-    newParams: {
       [QUERY_PARAMS.filters]: deflateFilters({
         op: "and",
         filters: [
@@ -78,10 +70,6 @@ export const SUGGESTED_SEARCHES: TSearchSuggestion[] = [
   {
     label: "Sub-Saharan Africa + Cases filed in last 5 years",
     params: {
-      [QUERY_PARAMS.region]: "sub-saharan-africa",
-      [QUERY_PARAMS.year_range]: [(year - 5).toString(), year.toString()],
-    },
-    newParams: {
       [QUERY_PARAMS.filters]: deflateFilters({
         op: "and",
         filters: [

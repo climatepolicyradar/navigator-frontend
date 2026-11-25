@@ -27,7 +27,6 @@ export const ROBOTS_BLOCKED_SLUGS = [
  * `cfn` as the first or a subsequent query parameter.
  */
 export const ROBOTS_DISALLOW_ROUTES = [
-  "/_search",
   "/geographies/*?cfn=",
   "/geographies/*&cfn=",
   ...ROBOTS_BLOCKED_SLUGS.flatMap((slug) => [`/document/${slug}`, `/documents/${slug}`]),

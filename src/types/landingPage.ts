@@ -1,8 +1,6 @@
 import Image from "next/image";
 import { ComponentProps, ReactNode } from "react";
 
-import { TQueryParams } from "@/constants/queryParams";
-
 import { TFeature } from "./features";
 
 type TImageProps = ComponentProps<typeof Image> & {
@@ -13,8 +11,7 @@ type TImageProps = ComponentProps<typeof Image> & {
 
 export type TSearchSuggestion = {
   label: string;
-  params: Partial<Record<TQueryParams, string>>;
-  newParams: Record<string, string>;
+  params: Record<string, string>;
 };
 
 export type TLandingPageSearchConfig = {
@@ -34,6 +31,16 @@ export type TLandingPageConfig = {
   };
   heroImage?: {
     src: string;
+  };
+  // Replaces the CPR logo in the header with a co-branded lockup, e.g. CPR
+  // "in partnership with UNFCCC". Needs a light and a dark variant because the
+  // header renders dark over a hero image and light everywhere else.
+  headerLogo?: {
+    alt: string;
+    darkSrc: string;
+    lightSrc: string;
+    width: number;
+    height: number;
   };
   organisation?: {
     name: string;

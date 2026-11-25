@@ -17,7 +17,7 @@ export interface ITutorialButton {
   pageLink?: Omit<IPageLinkProps, "children">;
 }
 
-export type TTutorialCard = {
+type TTutorialCard = {
   title?: string;
   text: string;
   close: boolean;
@@ -31,11 +31,6 @@ export type TTutorialBanner = {
   buttonSecondary?: ITutorialButton;
 };
 
-export interface ITutorialModalButtonProps {
-  action: TTutorialButtonAction;
-  className?: string;
-}
-
 export type TTutorialModal = {
   defaultOpen: boolean;
   pages?: string[];
@@ -47,7 +42,7 @@ export type TTutorialModal = {
 };
 
 type TTutorial = {
-  featureKey: TFeature;
+  featureKey?: TFeature;
   banner?: TTutorialBanner;
   card?: TTutorialCard;
   modal?: TTutorialModal;

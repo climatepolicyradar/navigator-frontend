@@ -8,6 +8,7 @@ import { TTutorials } from "@/types";
 import { EN_DASH } from "./chars";
 
 export const TUTORIALS: TTutorials = {
+  // Only kept at this point as an example for how to build tutorial banners and cards
   knowledgeGraph: {
     featureKey: "knowledgeGraph",
     banner: {
@@ -103,10 +104,9 @@ export const TUTORIALS: TTutorials = {
     },
   },
   newSearch: {
-    featureKey: "new-search",
     modal: {
       defaultOpen: true,
-      pages: ["/search", "/_search"],
+      pages: ["/search"],
       getModalProps: ({ actions, name }) => ({
         cardClasses: "max-w-90! sm:max-w-180! px-10! py-10!",
         children: (

@@ -1,6 +1,8 @@
+import { SHARED_LABEL_PATTERNS } from "@/constants/labels";
 import { TThemeConfig } from "@/types";
 
 const config: TThemeConfig = {
+  documentTypeLabels: [],
   deprecatedCategories: {
     label: "Category",
     options: [
@@ -151,6 +153,21 @@ const config: TThemeConfig = {
     },
   ],
   searchCategories: ["UN submission", "Law", "Policy"],
+  searchExcludeLabels: [{ id: "author_type::Non-Party" }, { id: "un_convention::CBD" }, { id: "author_type::UNCCD" }],
+  searchLabelPatterns: [...SHARED_LABEL_PATTERNS, "category::Law/**", "category::Policy/**", "category::UN submission/un_convention::UNFCCC/**"],
+  downloadColumns: [
+    "ID",
+    "TITLE",
+    "DESCRIPTION",
+    "URL",
+    "GEOGRAPHIES",
+    "PUBLISHED_DATE",
+    "ENTITY_TYPE",
+    "CATEGORY",
+    "PROVIDER",
+    "COLLECTION_TITLE",
+    "COLLECTION_DESCRIPTION",
+  ],
   labelVariations: {},
   links: {
     downloadDatabase: "https://form.jotform.com/233131638610347",
@@ -183,17 +200,15 @@ const config: TThemeConfig = {
     family: ["summary", "documents", "metadata", "topics", "collections", "note"],
     geography: ["recents", "statistics", "legislativeProcess"],
   },
-  tutorials: ["knowledgeGraph"],
+  tutorials: ["newSearch"],
   features: {
-    // Only toggle to true here when you want the COP31 content to go live.
-    // Until then it stays false and the PostHog flag (0% rollout) controls access.
-    "climate-cop31-2026": false,
     familyConceptsSearch: false,
+    "geography-type-filters": false,
     knowledgeGraph: true,
     litigation: false,
-    "new-search": false,
     searchFamilySummary: true,
     subdivisions: false,
+    themes: false,
   },
 };
 

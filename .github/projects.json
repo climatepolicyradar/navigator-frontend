@@ -1,0 +1,86 @@
+[
+  {
+    "project": "staging-frontend-cpr",
+    "work-dir": "infra",
+    "stack-name": "climatepolicyradar/frontend/cpr-staging",
+    "environment": "staging"
+  },
+  {
+    "project": "staging-frontend-mcf",
+    "work-dir": "infra",
+    "stack-name": "climatepolicyradar/frontend/mcf-staging",
+    "environment": "staging"
+  },
+  {
+    "project": "staging-frontend-cclw",
+    "work-dir": "infra",
+    "stack-name": "climatepolicyradar/frontend/cclw-staging",
+    "environment": "staging"
+  },
+  {
+    "project": "staging-frontend-ccc",
+    "work-dir": "infra",
+    "stack-name": "climatepolicyradar/frontend/ccc-staging",
+    "environment": "staging"
+  },
+  {
+    "project": "staging-ecs-cluster",
+    "work-dir": "infra/ecs-cluster",
+    "stack-name": "climatepolicyradar/frontend-ecs-cluster/staging",
+    "environment": "staging"
+  },
+  {
+    "project": "staging-observability",
+    "work-dir": "infra/observability",
+    "stack-name": "climatepolicyradar/frontend-observability/staging",
+    "environment": "staging"
+  },
+  {
+    "project": "production-frontend-cpr",
+    "work-dir": "infra",
+    "stack-name": "climatepolicyradar/frontend/cpr-production",
+    "environment": "production"
+  },
+  {
+    "project": "production-frontend-mcf",
+    "work-dir": "infra",
+    "stack-name": "climatepolicyradar/frontend/mcf-production",
+    "environment": "production"
+  },
+  {
+    "project": "production-frontend-cclw",
+    "work-dir": "infra",
+    "stack-name": "climatepolicyradar/frontend/cclw-production",
+    "environment": "production"
+  },
+  {
+    "project": "production-frontend-ccc",
+    "work-dir": "infra",
+    "stack-name": "climatepolicyradar/frontend/ccc-production",
+    "environment": "production"
+  },
+  {
+    "project": "production-shared-resources",
+    "work-dir": "infra/platform",
+    "stack-name": "climatepolicyradar/frontend-platform/production",
+    "environment": "production"
+  },
+  {
+    "project": "production-ecs-cluster",
+    "work-dir": "infra/ecs-cluster",
+    "stack-name": "climatepolicyradar/frontend-ecs-cluster/production",
+    "environment": "production"
+  },
+  {
+    "project": "production-observability",
+    "work-dir": "infra/observability",
+    "stack-name": "climatepolicyradar/frontend-observability/production",
+    "environment": "production"
+  },
+  {
+    "project": "production-faro",
+    "work-dir": "infra/faro",
+    "stack-name": "climatepolicyradar/frontend-faro/production",
+    "environment": "production"
+  }
+]

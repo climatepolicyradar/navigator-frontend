@@ -12,7 +12,7 @@ export const isLabelRuleOfTypes =
 /**
  * Filter a search group by a rule base upon its type
  * Empty-value rules are always dropped: they carry no filter, and are what an untouched
- * DEFAULT_SEARCH_QUERY_GROUP / createGroup() is made of.
+ * DEFAULT_SEARCH_QUERY_GROUP / createQueryGroup() is made of.
  */
 export const filterQueryGroupRules = (
   group: TSearchQueryGroup | null,

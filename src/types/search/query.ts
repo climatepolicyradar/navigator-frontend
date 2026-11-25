@@ -29,7 +29,7 @@ export type TSearchQueryRule =
     }
   | {
       field: "id";
-      op: "contains";
+      op: "contains" | "not_contains";
       value: string;
     };
 

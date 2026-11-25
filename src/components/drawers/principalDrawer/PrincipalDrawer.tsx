@@ -2,9 +2,10 @@ import { useQuery } from "@tanstack/react-query";
 import { LucideFileText, LucideExternalLink, LucideSearch } from "lucide-react";
 import { Fragment, ReactNode, useState } from "react";
 
-import { Drawer } from "@/components/atoms/drawer/Drawer";
+import { Drawer, DrawerScrollArea } from "@/components/atoms/drawer/Drawer";
 import { PageLink } from "@/components/atoms/pageLink/PageLink";
 import { Tabs } from "@/components/atoms/tabs/Tabs";
+import { CollectionsBlock } from "@/components/blocks/collectionsBlock/CollectionsBlock";
 import { DocumentsBlock } from "@/components/blocks/documentsBlock/DocumentsBlock";
 import { MetadataBlock } from "@/components/blocks/metadataBlock/MetadataBlock";
 import { NoteBlock } from "@/components/blocks/noteBlock/NoteBlock";
@@ -13,16 +14,14 @@ import { TopicsBlock } from "@/components/blocks/topicsBlock/TopicsBlock";
 import { IconHighlights } from "@/components/fragments/icons/IconHighlights";
 import { PassageSearch } from "@/components/organisms/passageSearch/PassageSearch";
 import { SearchLevelContext } from "@/context/SearchLevelContext";
-import useConfig from "@/hooks/useConfig";
-import { useDocumentTopics } from "@/hooks/useDocumentTopics";
 import { useSearchLevelValues } from "@/hooks/useSearchLevel";
 import { useText } from "@/hooks/useText";
-import { ISearchDocument, TFamilyPresentationalData, TFeatures, TPrincipalDrawerTab } from "@/types";
+import { ISearchDocument, TFamilyPresentationalData, TPrincipalDrawerTab } from "@/types";
 import { getFamilyHeader } from "@/utils/family-header/getFamilyHeader";
 import { getFamilyMetadata } from "@/utils/family-metadata/getFamilyMetadata";
 import { flattenLevelToBaseQuery } from "@/utils/search/searchLevels";
 import { firstCase } from "@/utils/text/firstCase";
-import { familyTopicsHasTopics } from "@/utils/topics/processFamilyTopics";
+import { familyTopicsHasTopics } from "@/utils/topics/familyTopicsHasTopics";
 
 function linkHref(doc: ISearchDocument): string | undefined {
   if (doc.attributes.deprecated_slug)
@@ -33,10 +32,11 @@ function linkHref(doc: ISearchDocument): string | undefined {
     }
 }
 
+const panelScrollClasses = "h-full px-4 pt-4 pb-8 md:px-8 md:pt-8";
+
 type TDocumentDrawerProps = {
   document: ISearchDocument | null; // The clicked search result, absent when the drawer is opened from a link
   slug: string | null;
-  features: TFeatures;
   onOpenChange: (open: boolean) => void;
   onTabChange: (tab: TPrincipalDrawerTab) => void;
   open: boolean;
@@ -45,12 +45,10 @@ type TDocumentDrawerProps = {
 
 type TDrawerContentProps = {
   familyData: TFamilyPresentationalData;
-  features: TFeatures;
-  languages: Record<string, string>;
 };
 
-const DrawerContent = ({ familyData, features, languages }: TDrawerContentProps) => {
-  const { family, familyTopics } = familyData;
+const DrawerContent = ({ familyData }: TDrawerContentProps) => {
+  const { collections, family, familyTopics } = familyData;
   const { getCategoryTextLookup } = useText();
   const getCategoryText = getCategoryTextLookup(family.attribution.category);
   const pageHeaderMetadata = getFamilyHeader({ family, getCategoryText });
@@ -81,18 +79,20 @@ const DrawerContent = ({ familyData, features, languages }: TDrawerContentProps)
         </div>
       )}
       <div className="grid grid-cols-1">
-        <DocumentsBlock family={family} familyTopics={familyTopics} features={features} getCategoryText={getCategoryText} languages={languages} />
+        <DocumentsBlock family={family} familyTopics={familyTopics} getCategoryText={getCategoryText} />
       </div>
       {familyTopicsHasTopics(familyTopics) && (
-        <TopicsBlock key="topics" family={family} familyTopics={familyTopics} getCategoryText={getCategoryText} features={features} />
+        <TopicsBlock key="topics" family={family} familyTopics={familyTopics} getCategoryText={getCategoryText} />
       )}
+      <div className="grid grid-cols-1">
+        <CollectionsBlock key="collections" collections={collections} family={family} />
+      </div>
       <NoteBlock key="note" attribution={family.attribution} />
     </div>
   );
 };
 
-export function PrincipalDrawer({ document, slug, open, onOpenChange, tab, onTabChange, features }: TDocumentDrawerProps) {
-  const { data: { languages = {} } = {} } = useConfig();
+export function PrincipalDrawer({ document, slug, open, onOpenChange, tab, onTabChange }: TDocumentDrawerProps) {
   const { getCategoryTextLookup } = useText();
   const [noOfResults, setNumberOfResults] = useState<number>(0);
   // The drawer's own search, flattened onto the base params of whatever page a link leads to
@@ -103,11 +103,6 @@ export function PrincipalDrawer({ document, slug, open, onOpenChange, tab, onTab
     queryFn: () => fetch(`/api/document/${slug}`).then((res) => (res.ok ? res.json() : null)),
     enabled: !!slug,
   });
-
-  // We use the `familyData` here as `document` is not always available, specifically when the page is refreshed.
-  // We should try decouple from this endpoint, but given this method is highly coupled to it currently, this felt
-  // like it would be decoupled when we do it throughout this component.
-  const conceptTopics = useDocumentTopics(familyData?.family.documents.map((doc) => doc.import_id) ?? []);
 
   const getCategoryText = getCategoryTextLookup(familyData?.family.attribution.category);
 
@@ -143,11 +138,12 @@ export function PrincipalDrawer({ document, slug, open, onOpenChange, tab, onTab
           </PageLink>
         ) : undefined
       }
+      selfScrolling
       trackScroll
       wide
     >
       {isLoading && (
-        <div className="flex justify-center py-12">
+        <div className="flex justify-center py-12 px-4 md:px-8">
           <span className="h-8 w-8 animate-spin rounded-full border-4 border-neutral-200 border-t-inky-blue" />
         </div>
       )}
@@ -157,9 +153,8 @@ export function PrincipalDrawer({ document, slug, open, onOpenChange, tab, onTab
             analytics={{ context: "principal-drawer" }}
             onValueChange={onTabChange}
             value={tab}
-            className="-mx-8 top-0"
-            panelClassName="pt-4 md:pt-8"
-            sticky
+            className="flex flex-col flex-1 min-h-0"
+            panelClassName="flex-1 min-h-0"
             tabs={[
               {
                 id: "about",
@@ -168,7 +163,11 @@ export function PrincipalDrawer({ document, slug, open, onOpenChange, tab, onTab
                     <LucideFileText size={20} className="text-text-brand! group-data-active:text-elem-icon!" /> About
                   </>
                 ),
-                panel: <DrawerContent familyData={familyData} features={features} languages={languages} />,
+                panel: (
+                  <DrawerScrollArea className={panelScrollClasses}>
+                    <DrawerContent familyData={familyData} />
+                  </DrawerScrollArea>
+                ),
               },
               {
                 id: "search",
@@ -180,15 +179,16 @@ export function PrincipalDrawer({ document, slug, open, onOpenChange, tab, onTab
                   </>
                 ),
                 panel: (
-                  <PassageSearch
-                    documents={familyData.family.documents}
-                    principalId={familyData.family.import_id}
-                    concepts={conceptTopics}
-                    documentsLabel={`Documents in this ${firstCase(getCategoryText("familySingular"))}`}
-                    subject="these documents"
-                    changeTab={onTabChange}
-                    onSearch={setNumberOfResults}
-                  />
+                  <DrawerScrollArea className={panelScrollClasses}>
+                    <PassageSearch
+                      documents={familyData.family.documents}
+                      principalId={familyData.family.import_id}
+                      documentsLabel={`Documents in this ${firstCase(getCategoryText("familySingular"))}`}
+                      subject="these documents"
+                      changeTab={onTabChange}
+                      onSearch={setNumberOfResults}
+                    />
+                  </DrawerScrollArea>
                 ),
                 banner: (
                   <div className="px-8 py-4 flex gap-2 items-center bg-bg-attention text-base text-text-primary font-normal leading-5">
@@ -198,11 +198,11 @@ export function PrincipalDrawer({ document, slug, open, onOpenChange, tab, onTab
                 ),
               },
             ]}
-            tabsContainer={(tabsList) => <div className="pl-8">{tabsList}</div>}
+            tabsContainer={(tabsList) => <div className="pl-4 md:pl-8">{tabsList}</div>}
           />
         </SearchLevelContext>
       )}
-      {!isLoading && !familyData && <p>Sorry, this document has failed to load.</p>}
+      {!isLoading && !familyData && <p className="px-4 md:px-8">Sorry, this document has failed to load.</p>}
     </Drawer>
   );
 }

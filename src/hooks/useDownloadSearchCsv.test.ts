@@ -1,11 +1,17 @@
 import { act, renderHook, waitFor } from "@testing-library/react";
+import { createElement, ReactNode } from "react";
 
 import { configureDocumentsFilters } from "@/api/search";
+import { DEFAULT_FEATURES } from "@/constants/features";
 import { DEFAULT_THEME_CONFIG } from "@/constants/themeConfig";
-import { TLabelCategoryValue, TSearchQueryGroup, TThemeConfig } from "@/types";
+import { EnvConfigContext, TPublicEnvConfig } from "@/context/EnvConfig";
+import { TLabelCategoryValue, TSearchQueryGroup, TTheme, TThemeConfig } from "@/types";
 import { inflateFilters } from "@/utils/filters/deflate";
 
 import { buildDownloadSearchCsvUrl, useDownloadSearchCsv } from "./useDownloadSearchCsv";
+
+const TEST_API_URL = "https://api.example.org";
+const TEST_THEME: TTheme = "ccc";
 
 const themeConfigWithCategories = (searchCategories: TLabelCategoryValue[]): TThemeConfig => ({
   ...DEFAULT_THEME_CONFIG,
@@ -15,22 +21,11 @@ const themeConfigWithCategories = (searchCategories: TLabelCategoryValue[]): TTh
 const NO_CATEGORIES = themeConfigWithCategories([]);
 
 describe("buildDownloadSearchCsvUrl", () => {
-  const originalEnv = process.env.NEXT_PUBLIC_API_URL;
-
-  afterEach(() => {
-    // Assigning `undefined` to a process.env key coerces it to the string "undefined",
-    // so an originally-unset var must be deleted, not reassigned.
-    if (originalEnv === undefined) {
-      delete process.env.NEXT_PUBLIC_API_URL;
-    } else {
-      process.env.NEXT_PUBLIC_API_URL = originalEnv;
-    }
-  });
-
   it("builds the download endpoint with query, order_by, and max_results", () => {
-    process.env.NEXT_PUBLIC_API_URL = "https://api.example.org";
-
     const url = buildDownloadSearchCsvUrl({
+      apiUrl: TEST_API_URL,
+      features: DEFAULT_FEATURES,
+      theme: TEST_THEME,
       query: "flood risk",
       themeConfig: NO_CATEGORIES,
       sort: "relevance",
@@ -43,39 +38,77 @@ describe("buildDownloadSearchCsvUrl", () => {
     expect(url.searchParams.get("msm")).toBe("0.7");
   });
 
-  it("maps every sort key to its order_by clause", () => {
-    process.env.NEXT_PUBLIC_API_URL = "https://api.example.org";
+  it("requests the theme's download columns, one param each, in configured order", () => {
+    const url = buildDownloadSearchCsvUrl({
+      apiUrl: TEST_API_URL,
+      features: DEFAULT_FEATURES,
+      theme: TEST_THEME,
+      themeConfig: { ...DEFAULT_THEME_CONFIG, downloadColumns: ["ID", "TITLE", "GEOGRAPHIES"] },
+      sort: "relevance",
+    });
 
-    expect(
+    expect(url.searchParams.getAll("columns")).toEqual(["ID", "TITLE", "GEOGRAPHIES"]);
+  });
+
+  it("sends the theme's public origin as base_url, which the API builds the URL columns from", () => {
+    const url = buildDownloadSearchCsvUrl({
+      apiUrl: TEST_API_URL,
+      features: DEFAULT_FEATURES,
+      theme: TEST_THEME,
+      themeConfig: NO_CATEGORIES,
+      sort: "relevance",
+    });
+
+    expect(url.searchParams.get("base_url")).toBe("https://www.climatecasechart.com");
+  });
+
+  it("omits columns when the theme configures none, leaving the API's default set", () => {
+    const url = buildDownloadSearchCsvUrl({
+      apiUrl: TEST_API_URL,
+      features: DEFAULT_FEATURES,
+      theme: TEST_THEME,
+      themeConfig: { ...DEFAULT_THEME_CONFIG, downloadColumns: [] },
+      sort: "relevance",
+    });
+
+    expect(url.searchParams.has("columns")).toBe(false);
+  });
+
+  it("omits columns when the theme config predates the field, rather than failing the download", () => {
+    const url = buildDownloadSearchCsvUrl({
+      apiUrl: TEST_API_URL,
+      features: DEFAULT_FEATURES,
+      theme: TEST_THEME,
+      // Themes reach the hook from an API payload, which may be served by a
+      // deployment older than `downloadColumns`.
+      themeConfig: { ...DEFAULT_THEME_CONFIG, downloadColumns: undefined } as unknown as TThemeConfig,
+      sort: "relevance",
+    });
+
+    expect(url.searchParams.has("columns")).toBe(false);
+  });
+
+  it("maps every sort key to its order_by clause", () => {
+    const forSort = (sort: "recent" | "oldest" | "title_asc" | "title_desc") =>
       buildDownloadSearchCsvUrl({
+        apiUrl: TEST_API_URL,
+        features: DEFAULT_FEATURES,
+        theme: TEST_THEME,
         themeConfig: NO_CATEGORIES,
-        sort: "recent",
-      }).searchParams.get("order_by")
-    ).toBe("attributes.published_date desc");
-    expect(
-      buildDownloadSearchCsvUrl({
-        themeConfig: NO_CATEGORIES,
-        sort: "oldest",
-      }).searchParams.get("order_by")
-    ).toBe("attributes.published_date asc");
-    expect(
-      buildDownloadSearchCsvUrl({
-        themeConfig: NO_CATEGORIES,
-        sort: "title_asc",
-      }).searchParams.get("order_by")
-    ).toBe("title asc");
-    expect(
-      buildDownloadSearchCsvUrl({
-        themeConfig: NO_CATEGORIES,
-        sort: "title_desc",
-      }).searchParams.get("order_by")
-    ).toBe("title desc");
+        sort,
+      }).searchParams.get("order_by");
+
+    expect(forSort("recent")).toBe("attributes.published_date desc");
+    expect(forSort("oldest")).toBe("attributes.published_date asc");
+    expect(forSort("title_asc")).toBe("title asc");
+    expect(forSort("title_desc")).toBe("title desc");
   });
 
   it("omits query when not provided", () => {
-    process.env.NEXT_PUBLIC_API_URL = "https://api.example.org";
-
     const url = buildDownloadSearchCsvUrl({
+      apiUrl: TEST_API_URL,
+      features: DEFAULT_FEATURES,
+      theme: TEST_THEME,
       themeConfig: NO_CATEGORIES,
       sort: "relevance",
     });
@@ -84,10 +117,23 @@ describe("buildDownloadSearchCsvUrl", () => {
     expect(url.searchParams.has("msm")).toBe(false);
   });
 
-  it("includes filters, restricted to principal documents, when given a non-empty filter tree", () => {
-    process.env.NEXT_PUBLIC_API_URL = "https://api.example.org";
-
+  it("strips a trailing slash from the search API URL", () => {
     const url = buildDownloadSearchCsvUrl({
+      apiUrl: "https://api.example.org/",
+      features: DEFAULT_FEATURES,
+      theme: TEST_THEME,
+      themeConfig: NO_CATEGORIES,
+      sort: "relevance",
+    });
+
+    expect(url.origin + url.pathname).toBe("https://api.example.org/search/documents:download");
+  });
+
+  it("includes filters, restricted to principal documents, when given a non-empty filter tree", () => {
+    const url = buildDownloadSearchCsvUrl({
+      apiUrl: TEST_API_URL,
+      features: DEFAULT_FEATURES,
+      theme: TEST_THEME,
       themeConfig: NO_CATEGORIES,
       sort: "relevance",
       filters: {
@@ -118,9 +164,10 @@ describe("buildDownloadSearchCsvUrl", () => {
   });
 
   it("omits the caller's empty filter tree, keeping only the always-on principal filter", () => {
-    process.env.NEXT_PUBLIC_API_URL = "https://api.example.org";
-
     const url = buildDownloadSearchCsvUrl({
+      apiUrl: TEST_API_URL,
+      features: DEFAULT_FEATURES,
+      theme: TEST_THEME,
       themeConfig: NO_CATEGORIES,
       sort: "relevance",
       filters: {
@@ -143,9 +190,10 @@ describe("buildDownloadSearchCsvUrl", () => {
   });
 
   it("restricts the download to the theme's search categories, so CCC only gets litigation", () => {
-    process.env.NEXT_PUBLIC_API_URL = "https://api.example.org";
-
     const url = buildDownloadSearchCsvUrl({
+      apiUrl: TEST_API_URL,
+      features: DEFAULT_FEATURES,
+      theme: TEST_THEME,
       query: "bananas",
       themeConfig: themeConfigWithCategories(["Litigation"]),
       sort: "relevance",
@@ -165,9 +213,10 @@ describe("buildDownloadSearchCsvUrl", () => {
   });
 
   it("does not restrict categories when the theme has none", () => {
-    process.env.NEXT_PUBLIC_API_URL = "https://api.example.org";
-
     const url = buildDownloadSearchCsvUrl({
+      apiUrl: TEST_API_URL,
+      features: DEFAULT_FEATURES,
+      theme: TEST_THEME,
       themeConfig: NO_CATEGORIES,
       sort: "relevance",
     });
@@ -176,14 +225,17 @@ describe("buildDownloadSearchCsvUrl", () => {
   });
 
   it("applies the same default filters as the results list, so the download matches what is on screen", () => {
-    vi.useFakeTimers({ toFake: ["Date"], now: new Date("2026-01-01T00:00:00.000Z") });
+    vi.useFakeTimers({
+      toFake: ["Date"],
+      now: new Date("2026-01-01T00:00:00.000Z"),
+    });
 
     onTestFinished(() => {
       vi.useRealTimers();
     });
 
-    process.env.NEXT_PUBLIC_API_URL = "https://api.example.org";
     const themeConfig = themeConfigWithCategories(["Litigation"]);
+    const features = { ...DEFAULT_FEATURES, subdivisions: true };
 
     const filters: TSearchQueryGroup = {
       op: "and",
@@ -193,6 +245,9 @@ describe("buildDownloadSearchCsvUrl", () => {
     const downloadFilters = JSON.parse(
       inflateFilters(
         buildDownloadSearchCsvUrl({
+          apiUrl: TEST_API_URL,
+          features,
+          theme: TEST_THEME,
           query: "bananas",
           themeConfig,
           filters,
@@ -212,25 +267,19 @@ describe("buildDownloadSearchCsvUrl", () => {
           filters,
         ],
       },
-      themeConfig.searchCategories
+      themeConfig,
+      features
     );
 
     expect(downloadFilters).toEqual(JSON.parse(JSON.stringify(listFilters)));
   });
-
-  it("falls back to the default API origin when NEXT_PUBLIC_API_URL is unset", () => {
-    delete process.env.NEXT_PUBLIC_API_URL;
-
-    const url = buildDownloadSearchCsvUrl({
-      themeConfig: NO_CATEGORIES,
-      sort: "relevance",
-    });
-
-    expect(url.origin).toBe("https://api.climatepolicyradar.org");
-  });
 });
 
 describe("useDownloadSearchCsv", () => {
+  // useEnvConfig throws without a provider, so the hook has to be rendered inside one.
+  const wrapper = ({ children }: { children: ReactNode }) =>
+    createElement(EnvConfigContext.Provider, { value: { API_URL: TEST_API_URL } as TPublicEnvConfig }, children);
+
   const originalCreateObjectURL = window.URL.createObjectURL;
   const originalRevokeObjectURL = window.URL.revokeObjectURL;
 
@@ -246,7 +295,7 @@ describe("useDownloadSearchCsv", () => {
   });
 
   it("starts idle", () => {
-    const { result } = renderHook(() => useDownloadSearchCsv());
+    const { result } = renderHook(() => useDownloadSearchCsv(), { wrapper });
 
     expect(result.current.status).toBe("idle");
   });
@@ -264,11 +313,12 @@ describe("useDownloadSearchCsv", () => {
       return el;
     });
 
-    const { result } = renderHook(() => useDownloadSearchCsv());
+    const { result } = renderHook(() => useDownloadSearchCsv(), { wrapper });
 
     act(() => {
       result.current.download({
         query: "flood",
+        theme: TEST_THEME,
         themeConfig: NO_CATEGORIES,
         sort: "relevance",
       });
@@ -285,11 +335,12 @@ describe("useDownloadSearchCsv", () => {
   it("goes to error status when the response is not ok", async () => {
     vi.spyOn(global, "fetch").mockResolvedValue(new Response("", { status: 500 }));
 
-    const { result } = renderHook(() => useDownloadSearchCsv());
+    const { result } = renderHook(() => useDownloadSearchCsv(), { wrapper });
 
     act(() => {
       result.current.download({
         query: "flood",
+        theme: TEST_THEME,
         themeConfig: NO_CATEGORIES,
         sort: "relevance",
       });
@@ -301,11 +352,12 @@ describe("useDownloadSearchCsv", () => {
   it("goes to error status when fetch rejects", async () => {
     vi.spyOn(global, "fetch").mockRejectedValue(new Error("network down"));
 
-    const { result } = renderHook(() => useDownloadSearchCsv());
+    const { result } = renderHook(() => useDownloadSearchCsv(), { wrapper });
 
     act(() => {
       result.current.download({
         query: "flood",
+        theme: TEST_THEME,
         themeConfig: NO_CATEGORIES,
         sort: "relevance",
       });
@@ -316,11 +368,12 @@ describe("useDownloadSearchCsv", () => {
 
   it("resetStatus returns to idle", async () => {
     vi.spyOn(global, "fetch").mockResolvedValue(new Response("", { status: 500 }));
-    const { result } = renderHook(() => useDownloadSearchCsv());
+    const { result } = renderHook(() => useDownloadSearchCsv(), { wrapper });
 
     act(() => {
       result.current.download({
         query: "flood",
+        theme: TEST_THEME,
         themeConfig: NO_CATEGORIES,
         sort: "relevance",
       });

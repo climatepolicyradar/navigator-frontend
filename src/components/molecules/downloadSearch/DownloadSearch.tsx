@@ -20,7 +20,7 @@ interface IProps {
 }
 
 export const DownloadSearch = ({ hasSearch, query, filters, sort, totalResults }: IProps) => {
-  const { themeConfig } = useContext(ThemeContext);
+  const { theme, themeConfig } = useContext(ThemeContext);
   const posthog = usePostHog();
   const [isModalOpenRequest, setIsModalOpenRequest] = useState(false);
   const { status, download, resetStatus } = useDownloadSearchCsv();
@@ -82,7 +82,7 @@ export const DownloadSearch = ({ hasSearch, query, filters, sort, totalResults }
       <DownloadSearchModal
         isOpen={isModalOpen}
         onClose={closeModal}
-        onDownload={() => download({ query, themeConfig, filters, sort })}
+        onDownload={() => download({ query, theme, themeConfig, filters, sort })}
         status={status}
         totalResults={totalResults}
       />

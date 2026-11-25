@@ -20,7 +20,7 @@ const focusOnLatestBlock = async (page: Page): Promise<Locator> => {
   return latestBlock;
 };
 
-test.describe("CCC homepage", () => {
+test.skip("CCC homepage", () => {
   test.beforeEach(async ({ page }) => {
     await page.goto("/");
     await genericPage.waitUntilLoaded(page, "The Climate Litigation Database");

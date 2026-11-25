@@ -6,6 +6,7 @@ import posthog from "posthog-js";
 import { PostHogProvider as PHProvider, usePostHog } from "posthog-js/react";
 import { Suspense, useEffect } from "react";
 
+import { DRAWER_SCROLL_ROOT_SELECTOR } from "@/components/atoms/drawer/Drawer";
 import { getCookie } from "@/utils/cookies";
 import { levelIdParamKey, searchLevelFromParams, searchPropertiesFromParams, TOPIC_PARAM_KEY } from "@/utils/search/searchLevels";
 
@@ -21,14 +22,7 @@ function PostHogPageView({ consent, pageViewProps }: TPostHogPageViewProps): nul
   const pathname = usePathname();
   const searchParams = useSearchParams();
   const posthog = usePostHog();
-  /**
-   * The page route, as opposed to `pathname` above. usePathname reads router.asPath, so on themes
-   * where /search is rewritten to /_search (themes/THEME/rewrites.json) it reports the URL the user
-   * sees. Search levels belong to the page, so they have to be read off the route.
-   *
-   * pathname above is "/search" but the route below is "/_search" for CPR
-   * searchpath in searchLevelFromParams needs the "/_search" route
-   */
+  // The page route, as opposed to the URL in `pathname` above. Search levels belong to the page, so they're read off the route.
   const { pathname: route } = useRouter();
 
   useEffect(() => {
@@ -107,8 +101,7 @@ export default function PostHogInit({ consent = false, pageViewProps = NO_PAGE_V
       api_host: "https://eu.i.posthog.com",
       capture_pageview: true,
       capture_pageleave: true,
-      // Drawers scroll their own container. `html` keeps page scroll measured when none is open
-      scroll_root_selector: ["[data-drawer-scroll]", "html"],
+      scroll_root_selector: [DRAWER_SCROLL_ROOT_SELECTOR, "html"],
     });
     window.sessionStorage.setItem("posthogLoaded", "true");
   }, []);

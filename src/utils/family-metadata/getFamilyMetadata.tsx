@@ -20,6 +20,7 @@ export const getFamilyMetadata = (family: TFamilyPublic, familyTopics: IFamilyDo
       familyMetadata.push(...getMCFMetadata(family, familyTopics));
       break;
     case "UN submission":
+    case "Global Stocktake":
       familyMetadata.push(...getUNFCCCMetadata(family, familyTopics));
       break;
     case "Report":

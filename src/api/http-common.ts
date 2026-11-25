@@ -17,10 +17,6 @@ export async function getEnvFromServer() {
   return await axios.get("/api/env").then((res: any) => res);
 }
 
-export async function getFilters() {
-  return await axios.get("/api/theme-config").then((res: any) => res);
-}
-
 class ApiClient {
   private baseUrl: string;
   private appToken: string;

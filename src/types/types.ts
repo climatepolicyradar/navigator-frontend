@@ -1,41 +1,9 @@
 import { TSingularAndPlural } from "./display";
 import { TLabel } from "./label";
 
-export type TTheme = "cpr" | "cclw" | "mcf" | "ccc";
+export const THEMES = ["cpr", "cclw", "mcf", "ccc"] as const;
 
-export type TSearchKeywordFilters = {
-  categories?: string[];
-  regions?: string[];
-  countries?: string[];
-  subdivisions?: string[];
-};
-
-export type TSearchCriteriaMeta = {
-  name: string;
-  value: string;
-};
-
-export type TSearchCriteria = {
-  concept_filters: { name: string; value: string }[];
-  continuation_tokens?: string[] | null;
-  corpus_import_ids: string[];
-  document_ids?: string[] | null;
-  exact_match: boolean;
-  family_ids?: string[] | null;
-  keyword_filters?: TSearchKeywordFilters;
-  limit: number;
-  max_passages_per_doc: number;
-  metadata: TSearchCriteriaMeta[];
-  offset: number;
-  page_size: number;
-  query_string: string;
-  sort_field: string | null;
-  sort_order: string;
-  sort_within_page: boolean;
-  year_range: [string, string];
-  // for internal use
-  runSearch?: boolean;
-};
+export type TTheme = (typeof THEMES)[number];
 
 type TPassageBlockCoords = [number, number];
 
@@ -85,12 +53,11 @@ export type TGeography = {
   slug: string;
 };
 
-export type TGeographySubdivision = {
-  code: string;
-  name: string;
-  type: string;
-  country_alpha_2: string;
-  country_alpha_3: string;
+export type TCountryOption = {
+  // The country's ISO 3166-1 alpha-3 code when from the taxonomy (e.g. "AUS"), or its /config id
+  id: string;
+  slug: string;
+  display_value: string;
 };
 
 export type TGeographyWithDocumentCounts = {
@@ -100,87 +67,22 @@ export type TGeographyWithDocumentCounts = {
   count: number;
 };
 
-export type TTarget = {
-  ID: string;
-  "Target type": string;
-  Source: string;
-  Description: string;
-  "GHG target": "TRUE" | "FALSE";
-  Year: string;
-  "Base year period": string;
-  "Single year": "TRUE" | "FALSE";
-  Geography: string;
-  "Geography ISO": string;
-  Sector: string;
-  "CCLW legislation ID": string;
-  Scopes: string;
-  "Visibility status": string;
-  "CPR family ID": string;
-  "Net zero target?": "TRUE" | "FALSE";
-  Comment: string;
-  "family-slug": string;
-  "family-name": string;
-};
-
-// TODO resolve different litigation cases depending on API endpoint used
-export type TCategory =
-  | "Executive"
-  | "EXECUTIVE"
-  | "Law"
-  | "Legislative"
-  | "LEGISLATIVE"
-  | "Litigation"
-  | "LITIGATION"
-  | "MCF"
-  | "Policy"
-  | "Reports"
-  | "REPORTS"
-  | "UNFCCC";
 export type TCorpusTypeSubCategory = "AF" | "CIF" | "GCF" | "GEF" | "Laws and Policies" | "Intl. agreements" | "Litigation" | "Reports";
 
-export type TAttributionCategory = "Law" | "Litigation" | "Multilateral Climate Fund project" | "Policy" | "Report" | "UN submission";
+export type TAttributionCategory =
+  | "Global Stocktake"
+  | "Law"
+  | "Litigation"
+  | "Multilateral Climate Fund project"
+  | "Policy"
+  | "Report"
+  | "UN submission";
 
-export type TEvent = {
+type TEvent = {
   title: string;
   date: string;
   event_type: string;
   status: string;
-};
-
-export type TFamilyDocument = {
-  document_content_type: "application/pdf";
-  document_date: string;
-  document_passage_matches: TPassage[];
-  document_slug: string;
-  document_source_url: string;
-  document_title: string;
-  document_type: string;
-  document_url: string;
-};
-
-/** This is the metadata that is returned via Vespa */
-export type TVespaMetadata = {
-  name: string;
-  value: string;
-}[];
-
-export type TFamily = {
-  continuation_token?: string;
-  corpus_import_id: string;
-  corpus_type_name: TCorpusTypeSubCategory;
-  family_category: TCategory;
-  family_date: string;
-  family_description_match: boolean;
-  family_description: string;
-  family_documents: TFamilyDocument[];
-  family_geographies: string[];
-  family_name: string;
-  family_slug: string;
-  family_source: string;
-  family_title_match: boolean;
-  prev_continuation_token?: string;
-  total_passage_hits: number;
-  metadata: TVespaMetadata;
 };
 
 export type TDocumentContentType = "application/pdf" | "text/html" | "application/octet-stream";
@@ -231,13 +133,6 @@ export type TMCFFamilyMetadata = {
   project_url?: string[];
 };
 
-export type TMatchedFamily = TFamily & {
-  family_description_match: boolean;
-  family_title_match: boolean;
-  total_passage_hits: number;
-  continuation_token?: string; // represents a token for requesting more passage matches
-};
-
 export type TLatestItem = {
   title: string;
   date: string;
@@ -245,18 +140,7 @@ export type TLatestItem = {
   url: string;
 };
 
-export type TSearch = {
-  hits: number;
-  query_time_ms: number;
-  families: TMatchedFamily[];
-  total_family_hits: number;
-};
-
 export type TLoadingStatus = "idle" | "loading" | "success" | "error";
-
-export type TLanguages = {
-  [key: string]: string;
-};
 
 type TCorpusWithStats = {
   corpus_import_id: string;
@@ -300,26 +184,6 @@ export type TFamilyConcept = {
   subconcept_of_labels: string[];
 };
 
-export type TSearchResponse = {
-  total_hits: number;
-  total_family_hits: number;
-  query_time_ms?: number;
-  total_time_ms?: number;
-  families: {
-    id: string;
-    hits: (TFamily & {
-      // Document metadata returned by Vespa
-      concept_counts?: Record<string, number>;
-      document_import_id: string;
-      document_title: string;
-      document_slug: string;
-    })[];
-  }[];
-  continuation_token?: string;
-  this_continuation_token: string;
-  prev_continuation_token: string;
-};
-
 /* /families API response types */
 
 export type TCollectionPublic = {
@@ -334,7 +198,7 @@ export type TCollectionPublicWithFamilies = TCollectionPublic & {
   families: TFamilyPublic[];
 };
 
-export type TCorpusPublic = {
+type TCorpusPublic = {
   corpus_type_name: string;
   import_id: string;
   organisation: {
@@ -410,7 +274,13 @@ export type TFamilyPublic = {
 export type TCategorySummary = {
   id: string;
   count: number;
-  families: TFamily[];
+  families: TFamilySummary[];
   title: string;
   singularAndPlural: TSingularAndPlural;
+};
+
+export type TFamilySummary = {
+  href: string;
+  metadata: string[];
+  title: string;
 };

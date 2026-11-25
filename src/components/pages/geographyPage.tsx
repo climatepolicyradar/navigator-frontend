@@ -1,7 +1,7 @@
 import sortBy from "lodash/fp/sortBy";
-import { useCallback, useState } from "react";
+import { useCallback, useContext, useState } from "react";
 
-import { ApiClient } from "@/api/http-common";
+import { fetchSearchPrincipalDocuments } from "@/api/search";
 import { LinkWithQuery } from "@/components/LinkWithQuery";
 import { Debug } from "@/components/atoms/debug/Debug";
 import { INTRO_BLOCK_TITLE, IntroBlock } from "@/components/blocks/introBlock/IntroBlock";
@@ -16,40 +16,46 @@ import { BlocksLayout, TBlockDefinitions } from "@/components/organisms/blocksLa
 import { PageHeader } from "@/components/organisms/pageHeader/PageHeader";
 import { TPublicEnvConfig } from "@/context/EnvConfig";
 import { FeaturesContext } from "@/context/FeaturesContext";
-import { GeographiesContext } from "@/context/GeographiesContext";
+import { ThemeContext } from "@/context/ThemeContext";
 import { useText } from "@/hooks/useText";
-import { TSearch, TGeographyPageBlock, IMetadata, GeographyV2, TTheme, TThemeConfig, TFeatures, TApiSearch, TSearchLabel } from "@/types";
-import buildSearchQuery from "@/utils/buildSearchQuery";
+import { TGeographyPageBlock, IMetadata, GeographyV2, ISearchDocumentsResponse, TTheme, TFeatures, TFilterPathLabel, TSearchLabel } from "@/types";
+import { TCategoryResults, toCategoryResults } from "@/utils/cards/getFamilySummaries";
 import { getGeographyMetaData } from "@/utils/getGeographyMetadata";
+import { CATEGORY_LABEL_PATH_LOOKUP, createLabel } from "@/utils/links/getGeoSearchLink";
+import { filterPathsToQueryGroup } from "@/utils/search/filterPathsToQueryGroup";
 
-export interface IProps {
+// The recents block shows a single row of cards per category.
+const RECENT_FAMILIES_PAGE_SIZE = 4;
+
+const geographyLabelPaths = (geographyLabel: TSearchLabel, categoryId: string): TFilterPathLabel[][] => {
+  const parentType = geographyLabel.type === "subdivision" ? "country" : "region";
+  const parentLabel = geographyLabel.labels.find((label) => label.type === "subconcept_of" && label.value.type === parentType);
+  const labelPaths: TFilterPathLabel[][] = [parentLabel ? [geographyLabel, parentLabel.value] : [geographyLabel]];
+
+  // The cards and the "All" link beside them need to show the same documents, so this
+  // mirrors @see getGeoSearchLink's scoping (@see FUS-875)
+  const categoryLabelPath = CATEGORY_LABEL_PATH_LOOKUP[categoryId];
+  if (categoryLabelPath) labelPaths.push(categoryLabelPath.map(createLabel));
+
+  return labelPaths;
+};
+
+interface IProps {
   features: TFeatures;
   geographyV2: GeographyV2;
   parentGeographyV2?: GeographyV2;
-  geographyLabel: TSearchLabel | null;
-  theme: string;
-  themeConfig: TThemeConfig;
-  vespaSearchResults?: TSearch;
+  geographyLabel: TSearchLabel;
+  theme: TTheme;
+  vespaSearchResults: ISearchDocumentsResponse;
   envConfig: TPublicEnvConfig;
 }
 
-export const GeographyPage = ({
-  geographyV2,
-  parentGeographyV2,
-  geographyLabel,
-  theme,
-  themeConfig,
-  features,
-  vespaSearchResults,
-  envConfig,
-}: IProps) => {
+export const GeographyPage = ({ geographyV2, parentGeographyV2, geographyLabel, theme, features, vespaSearchResults, envConfig }: IProps) => {
+  const { themeConfig } = useContext(ThemeContext);
   const { getAppText } = useText();
 
   const isCountry = geographyV2.type === "country";
   const subdivisionsTitle = isCountry ? "Geographic sub-divisions" : "Related geographic sub-divisions";
-
-  const allGeographies = [geographyV2, ...(geographyV2.has_subconcept || [])];
-  if (parentGeographyV2) allGeographies.push(parentGeographyV2);
 
   /* Page header */
 
@@ -67,8 +73,8 @@ export const GeographyPage = ({
 
   /* Search requests */
 
-  const [searchResultsByCategory, setSearchResultsByCategory] = useState<{ [categorySlug: string]: TSearch }>({
-    All: vespaSearchResults,
+  const [summariesByCategory, setSummariesByCategory] = useState<{ [categorySlug: string]: TCategoryResults }>({
+    All: toCategoryResults(vespaSearchResults),
   });
 
   /* Blocks */
@@ -110,22 +116,22 @@ export const GeographyPage = ({
     },
     recents: {
       render: useCallback(() => {
-        const backendApiClient = new ApiClient(envConfig.BACKEND_API_URL, envConfig.BACKEND_API_TOKEN);
-
         const fetchFamiliesByCategory = async (category: string) => {
-          const searchQuery = buildSearchQuery({ l: geographyV2.slug, c: category, page_size: "4" }, themeConfig);
-          const search: TApiSearch = await backendApiClient
-            .post("/searches", searchQuery, {
-              headers: {
-                accept: "application/json",
-                "Content-Type": "application/json",
-              },
+          // Reads the search API, the same store the search page reads
+          const results = toCategoryResults(
+            await fetchSearchPrincipalDocuments({
+              apiUrl: envConfig.API_URL,
+              themeConfig,
+              features,
+              filters: filterPathsToQueryGroup(geographyLabelPaths(geographyLabel, category), null, "and"),
+              page_size: String(RECENT_FAMILIES_PAGE_SIZE),
+              sort: "recent",
             })
-            .then((response) => response.data);
+          );
 
-          setSearchResultsByCategory((currentFamilies) => ({
-            ...currentFamilies,
-            [category]: search,
+          setSummariesByCategory((currentResults) => ({
+            ...currentResults,
+            [category]: results,
           }));
         };
 
@@ -152,17 +158,16 @@ export const GeographyPage = ({
               return {
                 id: categorySummary.slug,
                 title: categorySummary.title,
-                families: searchResultsByCategory[categorySummary.slug]?.families || [],
-                count: searchResultsByCategory[categorySummary.slug]?.total_family_hits,
+                families: summariesByCategory[categorySummary.slug]?.families || [],
+                count: summariesByCategory[categorySummary.slug]?.count,
                 singularAndPlural: [getAppText("familySingular"), getAppText("familyPlural")],
               };
             })}
             onAccordionClick={(id) => fetchFamiliesByCategory(id)}
-            geography={geographyV2}
             geographyLabel={geographyLabel}
           />
         );
-      }, [envConfig, geographyLabel, geographyV2, getAppText, searchResultsByCategory, themeConfig]),
+      }, [envConfig, features, geographyLabel, getAppText, summariesByCategory, themeConfig]),
       sideBarItem: { display: "Recent " + getAppText("familyPlural") },
     },
     statistics: {
@@ -192,17 +197,15 @@ export const GeographyPage = ({
 
   return (
     <FeaturesContext.Provider value={features}>
-      <Layout metadataKey="geography" theme={theme as TTheme} themeConfig={themeConfig} title={geographyV2.name} text={geographyV2.name}>
-        <GeographiesContext.Provider value={allGeographies}>
-          <BreadCrumbs
-            dark
-            geography={{ label: geographyV2.name, href: `/geographies/${geographyV2.slug}` }}
-            parentGeography={parentGeographyV2 ? { label: parentGeographyV2.name, href: `/geographies/${parentGeographyV2.slug}` } : null}
-            isSubdivision={!isCountry}
-          />
-          <PageHeader dark label="Geography" title={geographyV2.name} metadata={pageHeaderMetadata} />
-          <BlocksLayout blockDefinitions={blockDefinitions} blocksToRender={blocksToRender} />
-        </GeographiesContext.Provider>
+      <Layout metadataKey="geography" theme={theme} title={geographyV2.name} text={geographyV2.name}>
+        <BreadCrumbs
+          dark
+          geography={{ label: geographyV2.name, href: `/geographies/${geographyV2.slug}` }}
+          parentGeography={parentGeographyV2 ? { label: parentGeographyV2.name, href: `/geographies/${parentGeographyV2.slug}` } : null}
+          isSubdivision={!isCountry}
+        />
+        <PageHeader dark label="Geography" title={geographyV2.name} metadata={pageHeaderMetadata} />
+        <BlocksLayout blockDefinitions={blockDefinitions} blocksToRender={blocksToRender} />
       </Layout>
     </FeaturesContext.Provider>
   );

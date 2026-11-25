@@ -57,6 +57,31 @@ next_public_faro_url = frontend_faro_stack.require_output(
     f"{theme}_faro_collector_endpoint"
 )
 
+stack = pulumi.get_stack()
+is_review_stack = stack.startswith("pr-")
+is_review_template = "review" in stack
+is_review_stack_or_template = is_review_stack or is_review_template
+
+# Base URL of the API gateway the frontend's API calls go through. Named for
+# the gateway rather than any one service behind it, because the gateway fans
+# a single host out to several services by path.
+#
+# Review stacks can be pointed at a search-api review build by overriding it,
+# passed as a deployment environment variable (see use-search-api.yml and
+# deploy-review-stack.yml, which write it to /PULUMI_ENV) rather than through
+# Pulumi per-stack config: review stacks are ephemeral and the inherited
+# `pulumi config cp` pre-run command overwrites their config from the theme's
+# `*-review` template on every deployment.
+#
+# This is a runtime ECS task environment variable, not a Docker build arg, so
+# changing it redeploys the task rather than rebuilding the image. See
+# src/context/EnvConfig.ts for how it reaches the browser.
+api_url = config.require("api_url")
+if is_review_stack:
+    api_url = os.environ.get("API_URL") or api_url
+
+pulumi.info(f"api_url: {api_url}")
+
 FRONTEND_ENV = {
     "BACKEND_API_TOKEN": config.require("backend_api_token"),
     "BACKEND_API_URL": config.require("backend_api_url"),
@@ -68,6 +93,7 @@ FRONTEND_ENV = {
     "TARGETS_URL": config.require("targets_url"),
     "CDN_URL": config.require("cdn_url"),
     "CONCEPTS_API_URL": config.require("concepts_api_url"),
+    "API_URL": api_url,
     "NEXT_PUBLIC_FARO_URL": next_public_faro_url,
     "NEXT_PUBLIC_FARO_APP_NAME": config.require("next_public_faro_app_name"),
     "NEXT_PUBLIC_FARO_APP_NAMESPACE": config.require("next_public_faro_app_namespace"),
@@ -82,31 +108,15 @@ FRONTEND_ENV = {
 # Create App Runner service
 ########################################################################
 
-stack = pulumi.get_stack()
-is_review_stack = stack.startswith("pr-")
-is_review_template = "review" in stack
-is_review_stack_or_template = is_review_stack or is_review_template
 if is_review_stack:
     # Extract PR number from stack name like "pr-climatepolicyradar-navigator-frontend-1139"
     match = re.search(r"(\d+)$", stack)
     pr_number = match.group(1) if match else stack[-8:]  # fallback to last 8 chars
-    review_name = f"review-{theme}-frontend-{pr_number}"
-
-    # Review stacks can be pointed at a search-api review build via
-    # NEXT_PUBLIC_API_URL, passed as a deployment environment variable (see
-    # use-search-api.yml and deploy-review-stack.yml) rather than through
-    # Pulumi per-stack config: `pulumi config set/get/cp` against an
-    # ephemeral PR stack from a preRunCommand proved unreliable in practice
-    # -- a value set moments earlier via the service was not visible to a
-    # freshly-cloned deployment executor's `config get` on the same stack.
-    next_public_api_url = os.environ.get("NEXT_PUBLIC_API_URL") or config.require(
-        "next_public_api_url"
-    )
+    # The pr- prefix is what the ECS status notifier (internal-tools) matches
+    # to route deploy notifications to the ephemeral Slack channel.
+    review_name = f"pr-{theme}-frontend-{pr_number}"
 else:
     review_name = None
-    next_public_api_url = config.require("next_public_api_url")
-
-pulumi.info(f"next_public_api_url: {next_public_api_url}")
 
 # ---------------------------------------------------------------------------
 # Auto-tag all AWS resources on review stacks for cost tracking & cleanup.
@@ -169,9 +179,13 @@ if not is_review_stack_or_template:
     # Export the repository URL for use in CI/CD pipelines
     pulumi.export("ecr_repository_url", repository_url)
 
-# Review stack: use the shared ECR repo from frontend-platform.
+# Different clusters so a review deploy can never touch a cluster serving production
+# traffic.
+shared_resources_project = (
+    "frontend-platform" if is_review_stack_or_template else "frontend-ecs-cluster"
+)
 shared_resources_stack = pulumi.StackReference(
-    f"climatepolicyradar/frontend-platform/{shared_resources_env}"
+    f"climatepolicyradar/{shared_resources_project}/{shared_resources_env}"
 )
 
 review_ecr_url = None
@@ -200,7 +214,6 @@ if is_review_stack and shared_resources_env == "production":
         build_args={
             "THEME": theme,
             "GITHUB_SHA": stack,
-            "NEXT_PUBLIC_API_URL": next_public_api_url,
         },
         push=True,
         registries=[
@@ -215,9 +228,9 @@ if is_review_stack and shared_resources_env == "production":
     )
 
     # Use the digest-based identifier: the tag string is static per PR stack,
-    # so ECS would see no diff on rebuilds (e.g. after changing
-    # next_public_api_url) and never redeploy. The digest changes whenever
-    # the built image content changes, forcing a new task definition.
+    # so ECS would see no diff on rebuilds and never redeploy. The digest
+    # changes whenever the built image content changes, forcing a new task
+    # definition.
     repository_url = review_ecr_url
     image_identifier = pulumi.Output.concat(review_ecr_url, "@", frontend_image.digest)
     pulumi.info(f"Repository URL: {review_ecr_url}")
@@ -247,8 +260,13 @@ if not is_review_template:
         name=name_prefix,
         config=ExpressGatewayConfig(
             health_check_path="/",
-            min_task_count=3 if env == "production" else 1,
-            max_task_count=8 if env == "production" else 4,
+            cpu=config.require("ecs_frontend_cpu"),
+            memory=config.require("ecs_frontend_memory"),
+            min_task_count=config.require_int("ecs_frontend_min_task_count"),
+            max_task_count=config.require_int("ecs_frontend_max_task_count"),
+            scaling_target_value=config.require_int(
+                "ecs_frontend_scaling_target_value"
+            ),
         ),
         image_identifier=cast(str, image_identifier),
         cluster_arn=shared_resources_stack.get_output("frontend_ecs_cluster_arn"),
@@ -845,16 +863,16 @@ if not is_review_stack_or_template:
 
     is_ccc_stack = stack in ["ccc-production"]
     if is_ccc_stack:
-        # This certificate was imported, and the DNS validation was setup by our tech contact at Climate Case Chart
+        # The climatecasechart.com DNS zone is owned by Climate Case Chart (Sabin), not us,
+        # so we can't create the ACM DNS validation records ourselves. The certificate was
+        # requested manually and their tech contact added the validation CNAMEs; ACM renews
+        # it automatically as long as those records stay in place.
+        # We therefore read the certificate rather than manage it.
+        # Covers climatecasechart.com, cpr.climatecasechart.com and *.climatecasechart.com.
         east_provider = aws.Provider("east", region="us-east-1")
-        climatecasechart_com_cert = aws.acm.Certificate(
-            "climatecasechart.com",
-            domain_name="climatecasechart.com",
-            subject_alternative_names=[
-                "cpr.climatecasechart.com",
-                "*.climatecasechart.com",
-            ],
-            validation_method="DNS",
+        climatecasechart_com_cert = aws.acm.Certificate.get(
+            "climatecasechart.com-cert",
+            id=f"arn:aws:acm:us-east-1:{aws_account.account_id}:certificate/2bcf9acb-5ca7-41cd-9e10-3a6007944169",
             opts=pulumi.ResourceOptions(
                 provider=east_provider,
             ),
@@ -985,6 +1003,10 @@ if not is_review_stack_or_template:
             logging_bucket=cast(str, cloudfront_log_bucket.bucket_regional_domain_name),
             logging_prefix="ccc-redirect/",
             # These are used for cache invalidations
-            tags={"CUSTOM_APP_THEME": "ccc", "Environment": "production"},
+            tags={
+                "CUSTOM_APP_THEME": "ccc",
+                "Environment": "production",
+                "Domain_Visibility": DomainVisibility.EXTERNAL.value,
+            },
             opts=pulumi.ResourceOptions(depends_on=[cloudfront_log_bucket_acl]),
         )

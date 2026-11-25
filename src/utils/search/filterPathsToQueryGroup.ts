@@ -3,6 +3,20 @@ import { TFilterPathLabel, TSearchQueryGroup, TSearchQueryRule } from "@/types";
 
 export const DEFAULT_SEARCH_QUERY_GROUP: TSearchQueryGroup = { op: "and", filters: [{ field: "labels.value.id", op: "contains", value: "" }] };
 
+// Types that are logically one group: OR'd together rather than AND'd,
+// and rendered as one flat list in the filter side panel rather than grouped
+export const getTypeCategory = (type: string): string => {
+  switch (type) {
+    case "country":
+    case "region":
+      return "geography";
+    case "document_type":
+      return "entity_type";
+    default:
+      return type;
+  }
+};
+
 const makeRule = (value: string, checked?: true): TSearchQueryRule => ({
   field: "labels.value.id",
   op: "contains",
@@ -43,9 +57,10 @@ const buildGroupFromPaths = (
 
   const labelsByType = new Map<string, (TSearchQueryGroup | TSearchQueryRule)[]>();
   for (const [type, result] of rootResults) {
-    const bucket = labelsByType.get(type) ?? [];
+    const category = getTypeCategory(type);
+    const bucket = labelsByType.get(category) ?? [];
     bucket.push(result);
-    labelsByType.set(type, bucket);
+    labelsByType.set(category, bucket);
   }
 
   const typeGroupResults: (TSearchQueryGroup | TSearchQueryRule)[] = [];
@@ -55,7 +70,15 @@ const buildGroupFromPaths = (
   }
 
   if (typeGroupResults.length === 1) return typeGroupResults[0];
-  return { op: "and", filters: typeGroupResults };
+
+  // A lone checked rule leading this AND would be indistinguishable from a parent followed by its
+  // children, so wrap it to keep each type bucket self-contained (logically identical for the API)
+  const [firstResult, ...otherResults] = typeGroupResults;
+  const leadsAmbiguously =
+    "checked" in firstResult && firstResult.checked && otherResults.some((result) => !("field" in result) && result.op === "or");
+  const disambiguatedResults = leadsAmbiguously ? [wrapInGroup(firstResult), ...otherResults] : typeGroupResults;
+
+  return { op: "and", filters: disambiguatedResults };
 };
 
 const buildDateRangeFilters = ([startYear, endYear]: [number, number]): TSearchQueryRule[] => [

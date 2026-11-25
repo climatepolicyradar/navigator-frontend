@@ -1,9 +1,7 @@
 import { Meta, StoryObj } from "@storybook/nextjs-vite";
 
-import { GeographiesContext } from "@/context/GeographiesContext";
 import { CATEGORY_SUMMARY_STUB } from "@/stubs/categorySummaryStub";
-import { GEOGRAPHY_V2_STUB } from "@/stubs/geographyV2Stub";
-import { GeographyV2 } from "@/types";
+import { TSearchLabel } from "@/types";
 
 import { RecentFamiliesBlock } from "./RecentFamiliesBlock";
 
@@ -16,26 +14,25 @@ type TStory = StoryObj<typeof RecentFamiliesBlock>;
 
 export default meta;
 
-const GEOGRAPHIES: GeographyV2[] = [GEOGRAPHY_V2_STUB, ...GEOGRAPHY_V2_STUB.has_subconcept];
+const REGION_LABEL: TSearchLabel = { id: "region::ECS", type: "region", value: "Europe & Central Asia", labels: [] };
 
-const useGeographiesContext = ({ ...props }: React.ComponentProps<typeof RecentFamiliesBlock>) => (
-  <GeographiesContext.Provider value={GEOGRAPHIES}>
-    <RecentFamiliesBlock {...props} />
-  </GeographiesContext.Provider>
-);
+const GEOGRAPHY_LABEL: TSearchLabel = {
+  id: "country::GBR",
+  type: "country",
+  value: "United Kingdom",
+  labels: [{ type: "subconcept_of", value: REGION_LABEL, timestamp: null, passages_id: null, count: null }],
+};
 
 export const MultipleCategories: TStory = {
   args: {
     categorySummaries: CATEGORY_SUMMARY_STUB,
-    geography: { slug: "united-kingdom" } as GeographyV2,
+    geographyLabel: GEOGRAPHY_LABEL,
   },
-  render: useGeographiesContext,
 };
 
 export const SingleCategory: TStory = {
   args: {
     categorySummaries: [CATEGORY_SUMMARY_STUB[0]],
-    geography: { slug: "united-kingdom" } as GeographyV2,
+    geographyLabel: GEOGRAPHY_LABEL,
   },
-  render: useGeographiesContext,
 };

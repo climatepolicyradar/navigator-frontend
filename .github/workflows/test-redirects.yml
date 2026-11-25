@@ -1,0 +1,122 @@
+# trunk-ignore-all(checkov/CKV2_GHA_1)
+name: Test redirects
+
+# Runs whenever a theme's redirects.json changes and live-checks the redirects
+# this PR added or changed. Uses the PR's review stack if deploy:dev happened to
+# create one, otherwise builds and serves the frontend in the job. Never creates
+# or destroys infrastructure.
+on:
+  pull_request:
+    types: [opened, synchronize, reopened]
+    paths:
+      - themes/*/redirects.json
+
+env:
+  ORG: climatepolicyradar
+  PROJECT: frontend
+
+jobs:
+  changed-theme:
+    runs-on: ubuntu-latest
+    permissions:
+      pull-requests: read
+    outputs:
+      themes: ${{ steps.filter.outputs.changes }}
+    steps:
+      - uses: dorny/paths-filter@v4
+        id: filter
+        with:
+          filters: |
+            cpr:
+              - 'themes/cpr/redirects.json'
+            mcf:
+              - 'themes/mcf/redirects.json'
+            cclw:
+              - 'themes/cclw/redirects.json'
+            ccc:
+              - 'themes/ccc/redirects.json'
+
+  check:
+    needs: changed-theme
+    if: fromJSON(needs.changed-theme.outputs.themes)[0] != null
+    timeout-minutes: 15
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        theme: ${{ fromJSON(needs.changed-theme.outputs.themes) }}
+    env:
+      PULUMI_ACCESS_TOKEN: ${{ secrets.PULUMI_ACCESS_TOKEN }}
+      FILE: themes/${{ matrix.theme }}/redirects.json
+    steps:
+      - uses: actions/checkout@v7
+        with: { fetch-depth: 0 }
+
+      - uses: actions/setup-node@v7
+        with:
+          node-version-file: .nvmrc
+          cache: npm
+
+      - name: Find redirects added or changed in this PR
+        id: changed
+        env:
+          BASE_SHA: ${{ github.event.pull_request.base.sha }}
+        run: |
+          base=$(git merge-base HEAD "$BASE_SHA")
+          git show "$base:$FILE" > base.json
+          jq -s '.[0] - .[1]' "$FILE" base.json > changed.json
+          checkable=$(jq '[.[] | select(has("has") or has("missing") or (.source | contains(":")) | not)] | length' changed.json)
+          echo "Checking ${checkable} of $(jq length changed.json) changed redirects"
+          echo "checkable=${checkable}" >> "$GITHUB_OUTPUT"
+
+      - name: Fail if a source maps to conflicting destinations
+        run: |
+          conflicts=$(jq -r '
+            map(select(has("has") or has("missing") or (.source | contains(":")) | not))
+            | group_by(.source)[]
+            | select(unique_by(.destination) | length > 1)
+            | .[0].source
+          ' "$FILE")
+          [ -z "$conflicts" ] || { echo "A source maps to more than one destination:"; echo "$conflicts"; exit 1; }
+
+      - uses: pulumi/actions@v7
+        if: steps.changed.outputs.checkable != '0'
+
+      - name: Resolve base URL
+        id: base
+        if: steps.changed.outputs.checkable != '0'
+        env:
+          STACK_NAME: pr-${{ matrix.theme }}-navigator-frontend-${{ github.event.pull_request.number }}
+        run: |
+          # Both "no such stack" and "stack has no ecs_service_url" leave stdout
+          # empty, so empty is the single signal to serve the frontend locally.
+          url=$(pulumi stack output ecs_service_url --stack "${ORG}/${PROJECT}/${STACK_NAME}" 2>/dev/null || true)
+          if [ -n "$url" ]; then
+            echo "Using review stack ${url}"
+            echo "serve_locally=false" >> "$GITHUB_OUTPUT"
+          else
+            echo "No review stack for ${STACK_NAME}, serving locally"
+            url=http://localhost:3000
+            echo "serve_locally=true" >> "$GITHUB_OUTPUT"
+          fi
+          echo "url=${url}" >> "$GITHUB_OUTPUT"
+
+      - name: Serve the frontend
+        if: steps.base.outputs.serve_locally == 'true'
+        run: |
+          docker build --build-arg THEME=${{ matrix.theme }} -t frontend .
+          docker run -d -p 3000:8080 --env-file .env.example \
+            -e THEME=${{ matrix.theme }} --name frontend frontend
+          for _ in $(seq 1 60); do
+            curl -sf http://localhost:3000/ > /dev/null && exit 0
+            sleep 1
+          done
+          docker logs frontend
+          echo "frontend did not become ready"
+          exit 1
+
+      - if: steps.changed.outputs.checkable != '0'
+        run: |
+          node scripts/check-redirects.mjs \
+            --base-url "${{ steps.base.outputs.url }}" \
+            --file changed.json

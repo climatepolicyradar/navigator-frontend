@@ -1,10 +1,8 @@
 import { render, screen } from "@testing-library/react";
 
-import { Drawer } from "./Drawer";
+import { Drawer, DRAWER_SCROLL_ROOT_SELECTOR, DrawerScrollArea } from "./Drawer";
 
-// The attribute PostHog's `scroll_root_selector` looks for, so scroll depth is measured against
-// the drawer the user is actually scrolling rather than the page behind it.
-const scrollRoots = () => Array.from(document.querySelectorAll("[data-drawer-scroll]"));
+const scrollRoots = () => Array.from(document.querySelectorAll(DRAWER_SCROLL_ROOT_SELECTOR));
 
 const drawerContent = (name: string) => screen.getByText(name).closest("[data-drawer-scroll]");
 
@@ -55,5 +53,46 @@ describe("Drawer", () => {
 
     rerender(<Drawers nestedOpen={false} />);
     expect(scrollRoots()).toEqual([drawerContent("underneath")]);
+  });
+
+  it("moves the scroll root to its scroll area when self-scrolling", () => {
+    render(
+      <Drawer open trackScroll selfScrolling>
+        <DrawerScrollArea>scrolling panel</DrawerScrollArea>
+      </Drawer>
+    );
+
+    expect(scrollRoots()).toEqual([drawerContent("scrolling panel")]);
+  });
+
+  it("does not mark a self-scrolling drawer's scroll area unless tracked", () => {
+    render(
+      <Drawer open selfScrolling>
+        <DrawerScrollArea>scrolling panel</DrawerScrollArea>
+      </Drawer>
+    );
+
+    expect(scrollRoots()).toHaveLength(0);
+  });
+
+  it("hands the scroll root from a self-scrolling drawer's scroll area to the drawer opened on top", () => {
+    const Drawers = ({ nestedOpen }: { nestedOpen: boolean }) => (
+      <Drawer open trackScroll selfScrolling>
+        <DrawerScrollArea>
+          underneath
+          {nestedOpen && (
+            <Drawer open trackScroll>
+              on top
+            </Drawer>
+          )}
+        </DrawerScrollArea>
+      </Drawer>
+    );
+
+    const { rerender } = render(<Drawers nestedOpen={false} />);
+    expect(scrollRoots()).toEqual([drawerContent("underneath")]);
+
+    rerender(<Drawers nestedOpen={true} />);
+    expect(scrollRoots()).toEqual([drawerContent("on top")]);
   });
 });

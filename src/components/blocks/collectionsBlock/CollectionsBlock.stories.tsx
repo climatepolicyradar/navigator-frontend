@@ -1,7 +1,7 @@
 import { Meta, StoryObj } from "@storybook/nextjs-vite";
 
 import { FiveColumns } from "@/components/atoms/columns/FiveColumns";
-import { TCollectionPublicWithFamilies } from "@/types";
+import { TCollectionPublicWithFamilies, TFamilyPublic } from "@/types";
 
 import { CollectionsBlock } from "./CollectionsBlock";
 
@@ -12,6 +12,7 @@ const meta = {
     layout: "centered",
   },
   argTypes: {
+    family: { control: false },
     collections: { control: false },
   },
   render: ({ ...props }) => (
@@ -24,35 +25,67 @@ type TStory = StoryObj<typeof CollectionsBlock>;
 
 export default meta;
 
-const COLLECTIONS = [
-  {
-    import_id: "UNFCCC.collection.510.0",
-    title: "Ukraine's Nationally Determined Contributions",
-    families: [
-      {
-        import_id: "UNFCCC.family.1509.0",
-        title: "Ukraine Nationally Determined Contribution. NDC1 (Updated submission)",
-      },
-      {
-        import_id: "UNFCCC.family.1508.0",
-        title: "Ukraine Nationally Determined Contribution. NDC1 (Archived)",
-      },
-      {
-        import_id: "UNFCCC.family.i00006599.n0000",
-        title: "Ukraine Nationally Determined Contribution. NDC3.0",
-      },
-    ],
-  },
-] as unknown as TCollectionPublicWithFamilies[];
+const FAMILY = {
+  import_id: "UNFCCC.family.i00006599.n0000",
+  slug: "ukraine-nationally-determined-contribution-ndc3-0",
+  title: "Ukraine Nationally Determined Contribution. NDC3.0",
+} as unknown as TFamilyPublic;
 
-export const Single: TStory = {
+const COLLECTION_NDCS = {
+  import_id: "UNFCCC.collection.510.0",
+  title: "Ukraine's Nationally Determined Contributions",
+  description: "Nationally Determined Contributions submitted by Ukraine to the UNFCCC.",
+  families: [
+    {
+      import_id: "UNFCCC.family.1509.0",
+      slug: "ukraine-nationally-determined-contribution-ndc1-updated-submission",
+      title: "Ukraine Nationally Determined Contribution. NDC1 (Updated submission)",
+    },
+    {
+      import_id: "UNFCCC.family.1508.0",
+      slug: "ukraine-nationally-determined-contribution-ndc1-archived",
+      title: "Ukraine Nationally Determined Contribution. NDC1 (Archived)",
+    },
+    FAMILY,
+  ],
+} as unknown as TCollectionPublicWithFamilies;
+
+const COLLECTION_REPORTS = {
+  import_id: "UNFCCC.collection.511.0",
+  title: "Ukraine's Biennial Transparency Reports",
+  families: [
+    {
+      import_id: "UNFCCC.family.1600.0",
+      slug: "ukraine-biennial-transparency-report-btr1",
+      title: "Ukraine Biennial Transparency Report. BTR1",
+    },
+    FAMILY,
+  ],
+} as unknown as TCollectionPublicWithFamilies;
+
+const COLLECTION_ONE_DOCUMENT = {
+  import_id: "UNFCCC.collection.512.0",
+  title: "Ukraine's Long-Term Strategies",
+  families: [FAMILY],
+} as unknown as TCollectionPublicWithFamilies;
+
+export const Collection: TStory = {
   args: {
-    collections: COLLECTIONS,
+    family: FAMILY,
+    collections: [COLLECTION_NDCS],
   },
 };
 
-export const Multiple: TStory = {
+export const Collections: TStory = {
   args: {
-    collections: [COLLECTIONS, COLLECTIONS].flat(),
+    family: FAMILY,
+    collections: [COLLECTION_NDCS, COLLECTION_REPORTS],
+  },
+};
+
+export const CollectionWithOneDocument: TStory = {
+  args: {
+    family: FAMILY,
+    collections: [COLLECTION_ONE_DOCUMENT],
   },
 };

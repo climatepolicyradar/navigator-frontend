@@ -15,7 +15,7 @@ export const transformFamily = (document: TDataInDocument): TFamilyPublic => {
 
   const { documents, labels } = document;
   const groupedLabels = groupByType<TDataInLabel, TDataInLabelType>(labels, LABEL_TYPES, MANDATORY_FAMILY_LABEL_TYPES);
-  const attribution = transformAttribution(groupedLabels);
+  const attribution = transformAttribution(labels);
   const { familyEvents, documentEvents } = transformFamilyEvents(document, attribution.category);
 
   return {
@@ -28,7 +28,7 @@ export const transformFamily = (document: TDataInDocument): TFamilyPublic => {
     import_id: document.id,
     last_updated_date: familyAttributes.last_updated_date ?? null,
     metadata: transformFamilyMetadata(familyAttributes, groupedLabels, attribution.category),
-    published_date: familyAttributes.published_date,
+    published_date: familyAttributes.published_date ?? null,
     slug: familyAttributes.deprecated_slug,
     summary: document.description,
     title: document.title || DEFAULT_DOCUMENT_TITLE,

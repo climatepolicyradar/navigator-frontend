@@ -15,7 +15,7 @@ import { queryGroupToFilterPaths } from "./queryGroupToFilterPaths";
  * Filters do not transfer back up, i.e. these arrows above are strictly one-way
  */
 
-export const SORT_PARAM_KEY = "sort";
+const SORT_PARAM_KEY = "sort";
 export const PAGE_TOKEN_PARAM_KEY = "page_token";
 export const TOPIC_PARAM_KEY = "topic";
 
@@ -65,7 +65,7 @@ export const levelIdParamKey = (level: TNestedSearchLevel): string => level;
 const groupToOr = (node: TSearchQueryGroup | TSearchQueryRule): TSearchQueryGroup | TSearchQueryRule =>
   isRule(node) ? node : { ...node, op: "or", filters: node.filters.map(groupToOr) };
 
-export const SEARCH_PATH = "_search";
+const SEARCH_PATH = "search";
 
 /**
  * The level a page view is looking at, for analytics. Left undefined away from the results page, so
@@ -153,6 +153,10 @@ export const seedPassageLevel = ({ filters = null, query = null, sort = null }: 
 /**
  * When navigating to a Principal or Document page we want to preserve the filters
  * from the drawer and apply to the page as the base/main query
+ *
+ * The sort is explicitly nulled rather than left out: these links keep the current query, so a
+ * param not overridden here is inherited. The destination searches passages, which only orders by
+ * relevance or page, and the results page's orderings are rejected outright by that endpoint.
  */
 export const flattenLevelToBaseQuery = ({
   documents,
@@ -162,4 +166,5 @@ export const flattenLevelToBaseQuery = ({
   [BASE_PARAM_KEYS.documents]: documents?.length ? documents.join(",") : null,
   [BASE_PARAM_KEYS.filters]: filters ? deflateFilters(filters) : null,
   [BASE_PARAM_KEYS.query]: query || null,
+  [BASE_PARAM_KEYS.sort]: null,
 });

@@ -1,0 +1,148 @@
+import { useQuery } from "@tanstack/react-query";
+import { useQueryState } from "nuqs";
+import { usePostHog } from "posthog-js/react";
+import React, { Fragment, useContext, useEffect, useMemo } from "react";
+
+import { fetchSearchPrincipalDocuments, getSearchApiStatus } from "@/api/search";
+import { Loading } from "@/components/atoms/loading/Loading";
+import { DocumentCard } from "@/components/molecules/documentCard/DocumentCard";
+import { useEnvConfig } from "@/context/EnvConfig";
+import { FeaturesContext } from "@/context/FeaturesContext";
+import { posthogEventName } from "@/context/PostHogProvider";
+import { ThemeContext } from "@/context/ThemeContext";
+import { ISearchDocument, TSearchQueryGroup, TSortValue } from "@/types";
+import { parseAsDeflatedFilters } from "@/utils/filters/deflate";
+import { sanitiseSearchQueryGroup } from "@/utils/filters/sanitiseSearchQueryGroup";
+import { DEFAULT_SEARCH_QUERY_GROUP } from "@/utils/search/filterPathsToQueryGroup";
+import { queryGroupToFilterPaths } from "@/utils/search/queryGroupToFilterPaths";
+import { isQueryGroupEmpty } from "@/utils/search/searchQuery/isQueryGroupEmpty";
+
+export const SEARCH_RESULTS_PAGE_SIZE = 10;
+
+// Principal = Family in old model
+const isPrincipal = (result: ISearchDocument): boolean => {
+  return result.labels.some((label) => label.type === "status" && label.value.value === "Principal");
+};
+
+export const shouldRetrySearch = (failureCount: number, error: unknown): boolean => {
+  return (getSearchApiStatus(error) ?? 500) >= 500 && failureCount < 3;
+};
+
+interface IProps {
+  filters?: TSearchQueryGroup;
+  onResultClicked?: (document: ISearchDocument, event: React.MouseEvent<HTMLAnchorElement>) => void;
+  onSearchingChange?: (isSearching: boolean) => void;
+  onTotalResultsChange?: (total: number | null) => void;
+  page_token?: string;
+  query?: string;
+  selectedLabels?: string[];
+  sort: TSortValue;
+}
+
+export const SearchResults = ({ filters, onResultClicked, onSearchingChange, onTotalResultsChange, page_token, query, sort }: IProps) => {
+  const { themeConfig } = useContext(ThemeContext);
+  const features = useContext(FeaturesContext);
+  const { API_URL } = useEnvConfig();
+  const posthog = usePostHog();
+  const [filterGroups] = useQueryState("filters", parseAsDeflatedFilters.withDefault(DEFAULT_SEARCH_QUERY_GROUP));
+
+  // Drop placeholder rules (e.g. default empty label row) so date-only filters still fetch.
+  const nonEmptyFilters = useMemo(() => {
+    if (!filters) return undefined;
+    const sanitised = sanitiseSearchQueryGroup(filters);
+    return isQueryGroupEmpty(sanitised) ? undefined : sanitised;
+  }, [filters]);
+
+  const hasSearch = !!query || !!nonEmptyFilters;
+
+  const { data, isError, isPending } = useQuery({
+    queryKey: ["searchDocuments", query, nonEmptyFilters, page_token, sort, API_URL, features],
+    queryFn: async ({ signal }) => {
+      const response = await fetchSearchPrincipalDocuments({
+        apiUrl: API_URL,
+        query,
+        page_size: SEARCH_RESULTS_PAGE_SIZE.toString(),
+        page_token,
+        filters: nonEmptyFilters,
+        sort,
+        signal,
+        themeConfig,
+        features,
+      });
+
+      try {
+        posthog.capture(posthogEventName("search", "results", "fetch"), {
+          hits: response.total_size,
+          query,
+          filters: queryGroupToFilterPaths(filterGroups).filterPathLabels.map((filterPath) => filterPath[0].id),
+        });
+      } catch (error) {
+        // An analytics error shouldn't stop the search response from being served
+        console.error(error);
+      }
+
+      return response;
+    },
+    enabled: hasSearch,
+    retry: shouldRetrySearch,
+    // A term's results do not change within a session.
+    refetchOnWindowFocus: false,
+  });
+
+  const isSearching = hasSearch && isPending;
+
+  // callback to parent if needed
+  const totalResults = isError ? null : (data?.total_size ?? null);
+  useEffect(() => {
+    onTotalResultsChange?.(totalResults);
+  }, [totalResults, onTotalResultsChange]);
+
+  useEffect(() => {
+    onSearchingChange?.(isSearching);
+  }, [isSearching, onSearchingChange]);
+
+  if (!hasSearch) return null;
+
+  if (isSearching) {
+    return (
+      <div className="flex justify-center" data-cy="search-loading">
+        <Loading />
+      </div>
+    );
+  }
+
+  if (isError) return <p className="py-10 text-center text-sm text-text-secondary">Something went wrong with your search. Please try again.</p>;
+
+  const positionOffset = (data.page - 1) * data.page_size;
+
+  return (
+    <div data-cy="search-results">
+      <ul className="flex flex-col gap-4 highlights">
+        {data.results.map((result, resultIndex) => (
+          <Fragment key={result.id}>
+            {isPrincipal(result) && (
+              <li>
+                <DocumentCard
+                  document={result}
+                  onClick={onResultClicked}
+                  analytics={{
+                    context: "search-results",
+                    positionInPage: resultIndex + 1,
+                    positionInResults: positionOffset + resultIndex + 1,
+                    resultsTotal: data.total_size ?? undefined,
+                  }}
+                />
+              </li>
+            )}
+            {/* TODO: remove non-principal results */}
+            {!isPrincipal(result) && (
+              <li className={`flex gap-2 border border-transparent rounded-md py-2 pr-6 highlights`}>
+                <p>Shouldn't be showing a non-principle doc here</p>
+              </li>
+            )}
+          </Fragment>
+        ))}
+      </ul>
+    </div>
+  );
+};

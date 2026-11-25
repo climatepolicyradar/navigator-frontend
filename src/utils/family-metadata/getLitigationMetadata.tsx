@@ -7,7 +7,7 @@ import { FILING_DATE_EVENT_TYPES } from "@/constants/events";
 import { IFamilyDocumentTopics, IMetadata, TFamilyPublic } from "@/types";
 import { buildConceptHierarchy } from "@/utils/buildConceptHierarchy";
 import { getTopicsMetadataItem } from "@/utils/family-metadata/getTopicsMetadataItem";
-import { familyTopicsHasTopics } from "@/utils/topics/processFamilyTopics";
+import { familyTopicsHasTopics } from "@/utils/topics/familyTopicsHasTopics";
 
 export function getLitigationMetadata(family: TFamilyPublic, familyTopics: IFamilyDocumentTopics | null): IMetadata[] {
   const metadata = [];

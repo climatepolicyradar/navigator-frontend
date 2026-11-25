@@ -5,20 +5,6 @@ import { TDataInDocument } from "@/schemas";
 export const testFamilyImportId = "family-1";
 export const testFamilySlug = "test-family-slug";
 
-export const vespaFamilyHandler = () =>
-  http.get(`${process.env.BACKEND_API_URL}/families/${testFamilyImportId}`, () => {
-    return HttpResponse.json({
-      hits: 0,
-      total_family_hits: 0,
-      query_time_ms: 1,
-      total_time_ms: 1,
-      continuation_token: null,
-      this_continuation_token: "",
-      prev_continuation_token: null,
-      families: [],
-    });
-  });
-
 export const searchDocumentsHandler = (overrides: Partial<{ status: number; body: unknown }> = {}) =>
   http.get(`${process.env.CONCEPTS_API_URL}/search/documents/${testFamilyImportId}`, () => {
     if (overrides.status && overrides.status !== 200) {
@@ -47,7 +33,7 @@ export const testFamilyDataIn: TDataInDocument = {
   attributes: { deprecated_slug: testFamilySlug, published_date: "2024-01-01" },
   labels: [
     { type: "activity_status", value: { id: "activity_status::published", type: "concept", value: "Published", labels: [] } },
-    { type: "category", value: { id: "category::policy", type: "concept", value: "Policy", labels: [] } },
+    { type: "category", value: { id: "category::policy", type: "category", value: "Policy", labels: [] } },
     {
       type: "provider",
       value: { id: "provider::cpr", type: "agent", value: "CPR", labels: [], attributes: {} },

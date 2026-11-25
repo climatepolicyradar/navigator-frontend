@@ -1,6 +1,6 @@
 import * as v from "valibot";
 
-export const MandatoryItemsSchema = (mandatoryTypes: string[]) =>
+const MandatoryItemsSchema = (mandatoryTypes: string[]) =>
   v.object(
     Object.fromEntries(
       mandatoryTypes.map((type) => [

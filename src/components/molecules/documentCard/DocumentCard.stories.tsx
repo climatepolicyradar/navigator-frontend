@@ -21,7 +21,7 @@ const baseDocument: ISearchDocument = {
   labels: [{ type: "category", value: { id: "cat-1", type: "category", value: "Policy" }, count: null, timestamp: null }],
   documents: [],
   items: [],
-  attributes: { published_date: "2023-06-15" },
+  attributes: { published_date: "2023-06-15", deprecated_slug: "national-climate-change-adaptation-strategy" },
 };
 
 export const Default: TStory = {

@@ -1,6 +1,5 @@
 import { Geographies } from "@/components/molecules/geographies/Geographies";
 import { getLanguage } from "@/helpers/getLanguage";
-import useConfig from "@/hooks/useConfig";
 import { TFamilyDocumentPublic, TFamilyPublic } from "@/types";
 import { getYear } from "@/utils/timedate";
 
@@ -15,8 +14,6 @@ export const DocumentMeta = ({
   document: TFamilyDocumentPublic;
   document_type: string;
 }) => {
-  const configQuery = useConfig();
-  const { data: { languages = {} } = {} } = configQuery;
   const year = getYear(family.published_date);
 
   return (
@@ -37,7 +34,7 @@ export const DocumentMeta = ({
           )}
           {!!document.language && (
             <span>
-              {getLanguage(document.language, languages)}
+              {getLanguage(document.language)}
               {!!document.variant && ` (${document.variant})`}
             </span>
           )}

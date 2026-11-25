@@ -1,36 +1,35 @@
-import { useState } from "react";
+import { useContext, useState } from "react";
 
-import { configureDocumentsFilters, SEARCH_DOCUMENTS_MIN_SHOULD_MATCH } from "@/api/search";
-import { isFilterGroupEmpty } from "@/components/_experiment/advancedFilters/AdvancedFilters";
+import { configureDocumentsFilters, PRINCIPAL_DOCUMENTS_FILTER, SEARCH_DOCUMENTS_MIN_SHOULD_MATCH } from "@/api/search";
 import { SORT_PARAMS_LOOKUP } from "@/constants/sort";
-import { TApiLoadingStatus, TSearchQueryGroup, TSearchQueryRule, TSortValue, TThemeConfig } from "@/types";
-import { sanitiseSearchQueryGroup } from "@/utils/filters/advancedFilters";
+import { useEnvConfig } from "@/context/EnvConfig";
+import { FeaturesContext } from "@/context/FeaturesContext";
+import { TApiLoadingStatus, TFeatures, TSearchQueryGroup, TSearchQueryRule, TSortValue, TTheme, TThemeConfig } from "@/types";
 import { deflateFilters } from "@/utils/filters/deflate";
+import { sanitiseSearchQueryGroup } from "@/utils/filters/sanitiseSearchQueryGroup";
+import getThemeDomain from "@/utils/getThemeDomain";
+import { isQueryGroupEmpty } from "@/utils/search/searchQuery/isQueryGroupEmpty";
 
 const DOWNLOAD_MAX_RESULTS = 500;
 
-// Mirrors fetchSearchPrincipalDocuments's principal-only filter in src/api/search.ts,
-// so the download matches what the user sees on the results list.
-const PRINCIPAL_DOCUMENTS_FILTER: TSearchQueryRule = {
-  field: "labels.value.id",
-  op: "contains",
-  value: "status::Principal",
-};
-
 interface IDownloadSearchCsvParams {
   query?: string;
+  theme: TTheme;
   themeConfig: TThemeConfig;
   filters?: TSearchQueryGroup;
   sort: TSortValue;
 }
 
-function downloadSearchCsvUrl(): string {
-  const origin = (process.env.NEXT_PUBLIC_API_URL || "https://api.climatepolicyradar.org").replace(/\/$/, "");
-  return `${origin}/search/documents:download`;
+function downloadSearchCsvUrl(apiUrl: string): string {
+  return `${apiUrl.replace(/\/$/, "")}/search/documents:download`;
 }
 
-export function buildDownloadSearchCsvUrl(params: IDownloadSearchCsvParams): URL {
-  const url = new URL(downloadSearchCsvUrl());
+function downloadBaseUrl(theme: TTheme): string {
+  return `https://${getThemeDomain(theme)}`;
+}
+
+export function buildDownloadSearchCsvUrl(params: IDownloadSearchCsvParams & { apiUrl: string; features: TFeatures }): URL {
+  const url = new URL(downloadSearchCsvUrl(params.apiUrl));
 
   if (params.query) {
     url.searchParams.set("query", params.query);
@@ -42,16 +41,21 @@ export function buildDownloadSearchCsvUrl(params: IDownloadSearchCsvParams): URL
   // (e.g. category::Litigation on CCC) and the published-date bounds.
   const filtersToApply: (TSearchQueryGroup | TSearchQueryRule)[] = [PRINCIPAL_DOCUMENTS_FILTER];
   const sanitisedFilters = params.filters ? sanitiseSearchQueryGroup(params.filters) : null;
-  if (sanitisedFilters && !isFilterGroupEmpty(sanitisedFilters)) {
+  if (sanitisedFilters && !isQueryGroupEmpty(sanitisedFilters)) {
     filtersToApply.push(sanitisedFilters);
   }
 
-  const combinedFilters = configureDocumentsFilters({ op: "and", filters: filtersToApply }, params.themeConfig.searchCategories);
+  const combinedFilters = configureDocumentsFilters({ op: "and", filters: filtersToApply }, params.themeConfig, params.features);
   url.searchParams.set("filters", deflateFilters(combinedFilters));
   url.searchParams.set("encoding", "deflate");
-
   url.searchParams.set("order_by", SORT_PARAMS_LOOKUP[params.sort]);
   url.searchParams.set("max_results", DOWNLOAD_MAX_RESULTS.toString());
+
+  // A theme with no columns configured appends nothing, leaving
+  // the API to fall back to its own default set rather than failing the download.
+  (params.themeConfig.downloadColumns ?? []).forEach((column) => url.searchParams.append("columns", column));
+
+  url.searchParams.set("base_url", downloadBaseUrl(params.theme));
 
   return url;
 }
@@ -65,13 +69,15 @@ function triggerBlobDownload(blob: Blob, fileName: string) {
 }
 
 export function useDownloadSearchCsv() {
+  const { API_URL } = useEnvConfig();
+  const features = useContext(FeaturesContext);
   const [status, setStatus] = useState<TApiLoadingStatus>("idle");
 
   const download = async (params: IDownloadSearchCsvParams) => {
     setStatus("loading");
 
     try {
-      const url = buildDownloadSearchCsvUrl(params);
+      const url = buildDownloadSearchCsvUrl({ ...params, apiUrl: API_URL, features });
       const response = await fetch(url);
       if (!response.ok) {
         setStatus("error");

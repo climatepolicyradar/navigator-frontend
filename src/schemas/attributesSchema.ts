@@ -13,7 +13,7 @@ export type TDataInAttributes = v.InferOutput<typeof AttributesSchema>;
 
 /* Specific */
 
-export const FamilyAttributesSchema = v.object({
+const FamilyAttributesSchema = v.object({
   action_taken: v.optional(v.string()),
   case_status: v.optional(v.string()),
   deprecated_slug: v.string(),
@@ -24,12 +24,12 @@ export const FamilyAttributesSchema = v.object({
   project_url: v.optional(v.string()),
   project_co_financing_usd: v.optional(v.number()),
   project_fund_spend_usd: v.optional(v.number()),
-  published_date: v.string(),
+  published_date: v.optional(v.string()),
 });
 export type TDataInFamilyAttributes = v.InferOutput<typeof FamilyAttributesSchema>;
 export const validateFamilyAttributes = (attributes: TDataInAttributes): TDataInFamilyAttributes => v.parse(FamilyAttributesSchema, attributes);
 
-export const DocumentAttributesSchema = v.pipe(
+const DocumentAttributesSchema = v.pipe(
   v.object({
     action_taken: v.optional(v.string()),
     deprecated_slug: v.optional(v.string()),
@@ -48,9 +48,9 @@ export const DocumentAttributesSchema = v.pipe(
 export type TDataInDocumentAttributes = v.InferOutput<typeof DocumentAttributesSchema>;
 export const validateDocumentAttributes = (attributes: TDataInAttributes): TDataInDocumentAttributes => v.parse(DocumentAttributesSchema, attributes);
 
-export const CollectionAttributesSchema = v.object({
+const CollectionAttributesSchema = v.object({
   deprecated_slug: v.string(),
 });
-export type TDataInCollectionAttributes = v.InferOutput<typeof CollectionAttributesSchema>;
+type TDataInCollectionAttributes = v.InferOutput<typeof CollectionAttributesSchema>;
 export const validateCollectionAttributes = (attributes: TDataInAttributes): TDataInCollectionAttributes =>
   v.parse(CollectionAttributesSchema, attributes);

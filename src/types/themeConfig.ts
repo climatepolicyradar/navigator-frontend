@@ -1,6 +1,7 @@
 import { TQueryParams } from "@/constants/queryParams";
 
 import { TConfigFeatures } from "./features";
+import { TLabel, TLabelId } from "./label";
 import { TTutorialName } from "./tutorial";
 
 type TPartialRecord<Key extends string, Value> = Partial<Record<Key, Value>>;
@@ -23,7 +24,7 @@ type TThemePageBlocks = {
 
 /* Everything else */
 
-export type TDocumentCategory = "All" | "UN Submissions" | "Laws" | "Policies" | "Litigation" | "Climate Finance Projects" | "Offshore Wind Reports";
+type TDocumentCategory = "All" | "UN Submissions" | "Laws" | "Policies" | "Litigation" | "Climate Finance Projects" | "Offshore Wind Reports";
 export type TLabelCategoryValue =
   | "Corporate Disclosure"
   | "Global Stocktake"
@@ -34,13 +35,36 @@ export type TLabelCategoryValue =
   | "Report"
   | "UN submission";
 
-export type TLabelVariationKey = "country" | "date" | "region";
+type TDownloadColumn =
+  | "ID"
+  | "TITLE"
+  | "DESCRIPTION"
+  | "URL"
+  | "GEOGRAPHIES"
+  | "PUBLISHED_DATE"
+  | "ENTITY_TYPE"
+  | "CATEGORY"
+  | "PROVIDER"
+  | "COLLECTION_TITLE"
+  | "COLLECTION_DESCRIPTION"
+  | "BUNDLE_ID"
+  | "BUNDLE_TITLE"
+  | "BUNDLE_URL"
+  | "CASE_STATUS"
+  | "CASE_NUMBER"
+  | "AT_ISSUE"
+  | "ORIGINAL_CASE_NAME"
+  | "PRINCIPAL_LAWS"
+  | "CASE_CATEGORIES"
+  | "JURISDICTIONS";
+
+type TLabelVariationKey = "country" | "date" | "region";
 type TLabelVariation = {
   category: string[];
   label: string;
 };
 
-export type TThemeConfigOption<Value> = {
+type TThemeConfigOption<Value> = {
   additionalInfo?: string;
   alias?: string;
   category?: string[];
@@ -83,7 +107,7 @@ interface IThemeConfigFilterFilterRadio extends IThemeConfigFilterType {
   options?: TThemeConfigOption<string | string[]>[];
 }
 
-export type TThemeConfigFilter = IThemeConfigFilterCheckbox | IThemeConfigFilterFilterRadio;
+type TThemeConfigFilter = IThemeConfigFilterCheckbox | IThemeConfigFilterFilterRadio;
 
 type TThemeLinkKey = "cookiePolicy" | "downloadDatabase" | "emailAlerts" | "privacyPolicy" | "targetDomain" | "leaveFeedback";
 
@@ -94,11 +118,33 @@ type TThemePageMetadata = {
   description: string;
 };
 
+export type TLabelMatch = Partial<Pick<TLabel, "type" | "value"> & { id: TLabelId }>;
+
+export type TLabelCondition = { and: ReadonlyArray<TLabelCondition> } | { or: ReadonlyArray<TLabelCondition> } | TLabelMatch;
+
+export type TLabelPattern = {
+  match: TLabelCondition;
+  pattern: string;
+};
+
+export type TSearchExcludeLabel = {
+  id: string;
+};
+
+/**
+ * If you're putting anything in here that narrows which documents a theme serves
+ * you almost certainly need to go and update src/utils/getDocumentSites.ts
+ */
 export type TThemeConfig = {
   defaultCorpora?: string[];
   deprecatedCategories?: TThemeConfigCategory;
   deprecatedFilters: TThemeConfigFilter[];
+  documentTypeLabels: TLabelPattern[];
   searchCategories: TLabelCategoryValue[];
+  searchExcludeLabels: TSearchExcludeLabel[];
+  searchLabelPatterns: string[];
+  // Columns to request for "download this search", in the order they appear in the CSV.
+  downloadColumns: TDownloadColumn[];
   labelVariations: TPartialRecord<TLabelVariationKey, TLabelVariation>;
   links: TPartialRecord<TThemeLinkKey, string>;
   pageMetadata: Record<TThemePageMetadataKey, TThemePageMetadata>;

@@ -4,8 +4,7 @@ import mockRouter from "next-router-mock";
 import * as nextRouterMock from "next-router-mock";
 import { withNuqsTestingAdapter } from "nuqs/adapters/testing";
 
-import { DEFAULT_FEATURES } from "@/constants/features";
-import { IFamilyDocumentTopics, TFamilyPublic, TTopic } from "@/types";
+import { IFamilyDocumentTopics, TFamilyPublic, TNestedSearchLabel } from "@/types";
 
 import { TopicsBlock } from "./TopicsBlock";
 
@@ -32,28 +31,23 @@ vi.mock("@/components/drawers/topicDrawer/TopicDrawer", () => ({
   ),
 }));
 
-const topic = (wikibaseId: string, label: string): TTopic => ({
-  alternative_labels: [],
-  description: "",
-  has_subconcept: [],
-  negative_labels: [],
-  preferred_label: label,
-  recursive_subconcept_of: [],
-  related_concepts: [],
-  subconcept_of: [],
-  wikibase_id: wikibaseId,
+const topic = (wikibaseId: string, label: string, children: TNestedSearchLabel[] = [], count = 1): TNestedSearchLabel => ({
+  id: `concept::${wikibaseId}`,
+  type: "concept",
+  value: label,
+  count,
+  children,
 });
 
 const familyTopics: IFamilyDocumentTopics = {
   documents: [],
   conceptCounts: { Q10: 3, Q11: 1 },
-  rootConcepts: [topic("Q1", "extreme weather")],
-  conceptsGrouped: { Q1: [topic("Q10", "flooding"), topic("Q11", "drought")] },
+  topics: [topic("Q975", "risk", [topic("Q10", "flooding"), topic("Q11", "drought")], 0)],
 };
 
 const renderBlock = (searchParams: Record<string, string> = {}) => {
   const onUrlUpdate = vi.fn();
-  render(<TopicsBlock family={{} as TFamilyPublic} familyTopics={familyTopics} features={DEFAULT_FEATURES} getCategoryText={() => "law"} />, {
+  render(<TopicsBlock family={{} as TFamilyPublic} familyTopics={familyTopics} getCategoryText={() => "law"} />, {
     wrapper: withNuqsTestingAdapter({ searchParams, onUrlUpdate, hasMemory: true }),
   });
   return onUrlUpdate;

@@ -1,6 +1,42 @@
+import { SHARED_LABEL_PATTERNS } from "@/constants/labels";
 import { TThemeConfig } from "@/types";
+import { and } from "@/utils/data-in/labelConditions";
 
 const config: TThemeConfig = {
+  documentTypeLabels: [
+    {
+      match: and({ type: "un_convention" }, { id: "process::GST1" }),
+      pattern: "{{un_convention}}, Global Stocktake 1",
+    },
+    {
+      match: and({ type: "un_convention" }, { id: "process::GST2" }),
+      pattern: "{{un_convention}}, Global Stocktake 2",
+    },
+    {
+      match: and({ id: "category::UN submission" }, { id: "process::GST1" }),
+      pattern: "UN submission, Global Stocktake 1",
+    },
+    {
+      match: and({ id: "category::UN submission" }, { id: "process::GST2" }),
+      pattern: "UN submission, Global Stocktake 2",
+    },
+    {
+      match: { id: "process::GST1" },
+      pattern: "Global Stocktake 1",
+    },
+    {
+      match: { id: "process::GST2" },
+      pattern: "Global Stocktake 2",
+    },
+    {
+      match: and({ type: "un_convention" }, { id: "category::Global Stocktake" }),
+      pattern: "{{un_convention}}, Global Stocktake",
+    },
+    {
+      match: and({ id: "category::UN submission" }, { id: "category::Global Stocktake" }),
+      pattern: "UN submission, Global Stocktake",
+    },
+  ],
   deprecatedCategories: {
     label: "Document Type",
     options: [
@@ -76,11 +112,6 @@ const config: TThemeConfig = {
           "MCF.corpus.GEF.Guidance",
           "MCF.corpus.GCF.Guidance",
         ],
-      },
-      {
-        label: "Corporate Disclosures",
-        slug: "corporate-disclosures",
-        value: ["CPR.corpus.i00000002.n0000"],
       },
       {
         label: "Climate Council Reports",
@@ -399,7 +430,33 @@ const config: TThemeConfig = {
       ],
     },
   ],
-  searchCategories: ["Corporate Disclosure", "Global Stocktake", "Law", "Multilateral Climate Fund project", "Policy", "Report", "UN submission"],
+  searchCategories: ["Global Stocktake", "Law", "Multilateral Climate Fund project", "Policy", "Report", "UN submission"],
+  searchExcludeLabels: [],
+  searchLabelPatterns: [
+    ...SHARED_LABEL_PATTERNS,
+    "category::Global Stocktake/**",
+    "category::Law/**",
+    "category::Policy/**",
+    "category::Report/**",
+    "category::UN submission/**",
+    "category::Multilateral Climate Fund project/agent::*",
+    "category::Multilateral Climate Fund project/entity_type::*",
+    "category::Multilateral Climate Fund project/entity_type::*/activity_status::*",
+    "category::Multilateral Climate Fund project/entity_type::Project/agent::*",
+  ],
+  downloadColumns: [
+    "ID",
+    "TITLE",
+    "DESCRIPTION",
+    "URL",
+    "GEOGRAPHIES",
+    "PUBLISHED_DATE",
+    "ENTITY_TYPE",
+    "CATEGORY",
+    "PROVIDER",
+    "COLLECTION_TITLE",
+    "COLLECTION_DESCRIPTION",
+  ],
   labelVariations: {
     date: {
       label: "First published",
@@ -438,15 +495,13 @@ const config: TThemeConfig = {
   },
   tutorials: ["newSearch"],
   features: {
-    // Only toggle to true here when you want the COP31 content to go live.
-    // Until then it stays false and the PostHog flag (0% rollout) controls access.
-    "climate-cop31-2026": false,
     familyConceptsSearch: false,
+    "geography-type-filters": true,
     knowledgeGraph: true,
     litigation: false,
-    "new-search": true,
     searchFamilySummary: false,
-    subdivisions: false,
+    subdivisions: true,
+    themes: true,
   },
 };
 

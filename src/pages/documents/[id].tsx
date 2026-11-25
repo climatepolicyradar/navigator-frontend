@@ -1,38 +1,24 @@
-import { ParsedUrlQuery } from "querystring";
-
 import { GetServerSideProps, InferGetServerSidePropsType } from "next";
 import Head from "next/head";
 import { useRouter } from "next/router";
-import { useMemo } from "react";
 
 import { getDocumentData } from "@/bff/methods/getDocumentData";
 import { FiveColumns } from "@/components/atoms/columns/FiveColumns";
 import { Debug } from "@/components/atoms/debug/Debug";
-import { ConceptsDocumentViewer } from "@/components/documents/ConceptsDocumentViewer";
 import { DocumentHead } from "@/components/documents/DocumentHead";
 import Layout from "@/components/layouts/Main";
 import { Section } from "@/components/molecules/section/Section";
 import { PassageSearch } from "@/components/organisms/passageSearch/PassageSearch";
 import { getDocumentDescription } from "@/constants/metaDescriptions";
-import { MAX_PASSAGES } from "@/constants/paging";
-import { QUERY_PARAMS } from "@/constants/queryParams";
 import { ROBOTS_BLOCKED_SLUGS, X_ROBOTS_TAG_NOINDEX_VALUE } from "@/constants/robots";
 import { withEnvConfig } from "@/context/EnvConfig";
 import { FeaturesContext } from "@/context/FeaturesContext";
-import { TopicsContext } from "@/context/TopicsContext";
-import { useDocumentTopics } from "@/hooks/useDocumentTopics";
-import useSearch from "@/hooks/useSearch";
+import themeConfig from "@/themes/config";
 import { TTheme } from "@/types";
-import { CleanRouterQuery } from "@/utils/cleanRouterQuery";
 import { getFeatureFlags } from "@/utils/featureFlags";
 import { getFeatures } from "@/utils/features";
+import { getSiteDecision } from "@/utils/getDocumentSites";
 import { getLitigationDocumentJSONLD } from "@/utils/json-ld/getLitigationDocumentJSONLD";
-import { readConfigFile } from "@/utils/readConfigFile";
-
-// If we don't have a query string or a concept selected, we do't have a search
-const isEmptySearch = (query: ParsedUrlQuery) => {
-  return !(query[QUERY_PARAMS.query_string] || query[QUERY_PARAMS.concept_id] || query[QUERY_PARAMS.concept_name]);
-};
 
 /*
   # DEV NOTES
@@ -42,27 +28,8 @@ const isEmptySearch = (query: ParsedUrlQuery) => {
   - If the document is an HTML, the passages will be displayed in a list on the left side of the page but the document will not be displayed.
 */
 
-const DocumentPage = ({
-  debug,
-  document,
-  errors,
-  family,
-  features,
-  theme,
-  themeConfig,
-  topicsData,
-  searchDocument,
-}: InferGetServerSidePropsType<typeof getServerSideProps>) => {
+const DocumentPage = ({ canonicalUrl, debug, document, errors, family, features, theme }: InferGetServerSidePropsType<typeof getServerSideProps>) => {
   const router = useRouter();
-  const qsSearchString = router.query[QUERY_PARAMS.query_string];
-  // exact match is default, so only instances where it is explicitly set to false do we check against
-  const exactMatchQuery = router.query[QUERY_PARAMS.exact_match] === undefined || router.query[QUERY_PARAMS.exact_match] !== "false";
-  const startingPageNumber = Number(router.query.page) || 0;
-
-  const isNewSearch = features["new-search"];
-
-  // Note: only runs a fresh start if either a query string or concept data is provided
-  const { status, families } = useSearch(router.query, null, document.import_id, !isNewSearch && !isEmptySearch(router.query), MAX_PASSAGES);
 
   const handleViewSourceClick = (e: React.FormEvent<HTMLButtonElement>) => {
     e.preventDefault();
@@ -76,92 +43,29 @@ const DocumentPage = ({
     router.push({ pathname: `/document/${family.slug}`, query: router.query });
   };
 
-  // Semantic search / exact match handler
-  const handleSemanticSearchChange = (_: string, isExact: string) => {
-    const queryObj = CleanRouterQuery({ ...router.query });
-    if (isExact === "false") {
-      queryObj[QUERY_PARAMS.exact_match] = "false";
-    } else if (isExact === "true") {
-      queryObj[QUERY_PARAMS.exact_match] = "true";
-    }
-    queryObj[QUERY_PARAMS.query_string] = router.query[QUERY_PARAMS.query_string] as string;
-    queryObj["id"] = document.slug;
-    router.push(
-      {
-        query: queryObj,
-      },
-      undefined,
-      { shallow: true }
-    );
-  };
-
-  const handlePassagesOrderChange = (orderValue: string) => {
-    const queryObj = CleanRouterQuery({ ...router.query });
-    queryObj["id"] = document.slug;
-    queryObj[QUERY_PARAMS.passages_by_position] = orderValue;
-    router.push({ query: queryObj }, undefined, { shallow: true });
-  };
-
-  const conceptFiltersQuery = router.query[QUERY_PARAMS.concept_name];
-
-  const conceptFilters = useMemo(
-    () => (conceptFiltersQuery ? (Array.isArray(conceptFiltersQuery) ? conceptFiltersQuery : [conceptFiltersQuery]) : undefined),
-    [conceptFiltersQuery]
-  );
-
-  // The topics offered as passage search filters come from the document's concepts in `search-api`.
-  const passageConcepts = useDocumentTopics([document.import_id], { enabled: isNewSearch });
-
   return (
     <FeaturesContext.Provider value={features}>
-      <Layout
-        title={`${document.title}`}
-        description={getDocumentDescription(document.title)}
-        theme={theme as TTheme}
-        themeConfig={themeConfig}
-        attributionUrl={family.attribution.url}
-      >
-        <TopicsContext.Provider value={topicsData ?? { rootTopics: [], topics: [] }}>
-          <section
-            className="pb-8 flex-1 flex flex-col"
-            data-analytics-date={family.published_date}
-            data-analytics-geography={family.geographies?.map((geo) => geo.value).join(",")}
-            data-analytics-variant={document.variant}
-            data-analytics-type={document.content_type}
-          >
-            <DocumentHead
-              document={document}
-              family={family}
-              handleViewOtherDocsClick={handleViewOtherDocsClick}
-              handleViewSourceClick={handleViewSourceClick}
-            />
-
-            {isNewSearch ? (
-              <PassageSearch documents={[document]} concepts={passageConcepts} enablePreview />
-            ) : (
-              <ConceptsDocumentViewer
-                initialQueryTerm={qsSearchString}
-                initialExactMatch={exactMatchQuery}
-                initialPageNumber={startingPageNumber}
-                initialConceptFilters={conceptFilters}
-                labels={searchDocument?.labels}
-                document={document}
-                searchStatus={status}
-                searchResultFamilies={isEmptySearch(router.query) ? [] : families}
-                handleSemanticSearchChange={handleSemanticSearchChange}
-                handlePassagesOrderChange={handlePassagesOrderChange}
-              />
-            )}
-          </section>
-          {family.attribution.category === "Litigation" && (
-            <Head>
-              <script
-                type="application/ld+json"
-                dangerouslySetInnerHTML={{ __html: JSON.stringify(getLitigationDocumentJSONLD(document, family)) }}
-              />
-            </Head>
-          )}
-        </TopicsContext.Provider>
+      <Layout title={`${document.title}`} description={getDocumentDescription(document.title)} theme={theme} canonicalUrl={canonicalUrl}>
+        <section
+          className="pb-8 flex-1 flex flex-col"
+          data-analytics-date={family.published_date}
+          data-analytics-geography={family.geographies?.map((geo) => geo.value).join(",")}
+          data-analytics-variant={document.variant}
+          data-analytics-type={document.content_type}
+        >
+          <DocumentHead
+            document={document}
+            family={family}
+            handleViewOtherDocsClick={handleViewOtherDocsClick}
+            handleViewSourceClick={handleViewSourceClick}
+          />
+          <PassageSearch documents={[document]} enablePreview />
+        </section>
+        {family.attribution.category === "Litigation" && (
+          <Head>
+            <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(getLitigationDocumentJSONLD(document, family)) }} />
+          </Head>
+        )}
         {features.debug && (
           <FiveColumns>
             <Section key="debug" block="debug" title="Debug">
@@ -187,7 +91,6 @@ export const getServerSideProps = (async (context) => {
   }
 
   const theme = process.env.THEME as TTheme;
-  const themeConfig = await readConfigFile(theme);
   const featureFlags = getFeatureFlags(context.req.cookies);
   const features = getFeatures(themeConfig, featureFlags);
 
@@ -198,13 +101,22 @@ export const getServerSideProps = (async (context) => {
   });
   if (documentData === null) return { notFound: true };
 
+  const siteDecision = getSiteDecision(documentData.themeCriteria, theme, `/documents/${slug}`);
+
+  if (siteDecision.action === "not_found") {
+    return { notFound: true };
+  }
+  if (siteDecision.action === "redirect") {
+    return { redirect: { destination: siteDecision.destination, permanent: true } };
+  }
+
   return {
     props: withEnvConfig({
       ...documentData,
+      canonicalUrl: siteDecision.canonicalUrl,
       errors: errors.map((error) => JSON.stringify(error, Object.getOwnPropertyNames(error))),
       features,
       theme,
-      themeConfig,
     }),
   };
 }) satisfies GetServerSideProps;

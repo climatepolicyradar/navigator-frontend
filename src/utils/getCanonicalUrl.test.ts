@@ -19,9 +19,8 @@ describe("getCanonicalUrl", () => {
       expected: "https://app.climatepolicyradar.org/privacy-policy",
     },
 
-    /** the v2 search page keeps its search params, whether visited directly or served at /search by a rewrite */
-    { route: "/_search?q=flood+risk", theme: "cpr", expected: "https://app.climatepolicyradar.org/_search?q=flood+risk" },
-    { route: "/_search", as: "/search?q=flood+risk", theme: "cpr", expected: "https://app.climatepolicyradar.org/search?q=flood+risk" },
+    /** the search page keeps its search params */
+    { route: "/search?q=flood+risk", theme: "cpr", expected: "https://app.climatepolicyradar.org/search?q=flood+risk" },
 
     /** Themes */
     { route: "/", theme: "cpr", expected: "https://app.climatepolicyradar.org" },
@@ -29,70 +28,18 @@ describe("getCanonicalUrl", () => {
     { route: "/", theme: "mcf", expected: "https://climateprojectexplorer.org" },
     { route: "/", theme: "ccc", expected: "https://www.climatecasechart.com" },
 
-    /** Attribution overrides themes */
-    {
-      route: "/documents/document-123",
-      theme: "cpr",
-      attributionUrl: "www.climate-laws.org",
-      expected: "https://www.climate-laws.org/documents/document-123",
-    },
-    {
-      route: "/documents/document-123",
-      theme: "cclw",
-      attributionUrl: "app.climatepolicyradar.org",
-      expected: "https://app.climatepolicyradar.org/documents/document-123",
-    },
-    {
-      route: "/documents/document-123",
-      theme: "mcf",
-      attributionUrl: "app.climatepolicyradar.org",
-      expected: "https://app.climatepolicyradar.org/documents/document-123",
-    },
-    {
-      route: "/documents/document-123",
-      theme: "ccc",
-      attributionUrl: "app.climatepolicyradar.org",
-      expected: "https://app.climatepolicyradar.org/documents/document-123",
-    },
-    {
-      route: "/documents/document-456",
-      theme: "cpr",
-      attributionUrl: "https://www.climate-laws.org",
-      expected: "https://www.climate-laws.org/documents/document-456",
-    },
-    {
-      route: "/documents/document-456",
-      theme: "cclw",
-      attributionUrl: "https://app.climatepolicyradar.org",
-      expected: "https://app.climatepolicyradar.org/documents/document-456",
-    },
-    {
-      route: "/documents/document-456",
-      theme: "mcf",
-      attributionUrl: "https://app.climatepolicyradar.org",
-      expected: "https://app.climatepolicyradar.org/documents/document-456",
-    },
-    {
-      route: "/documents/document-456",
-      theme: "ccc",
-      attributionUrl: "https://app.climatepolicyradar.org",
-      expected: "https://app.climatepolicyradar.org/documents/document-456",
-    },
-
     /** Pages with next router params in URL */
     { route: "/geographies/us-tn?query=oil", theme: "cpr", expected: "https://app.climatepolicyradar.org/geographies/us-tn" },
     { route: "/geographies/us-tn", theme: "cpr", expected: "https://app.climatepolicyradar.org/geographies/us-tn" },
   ] satisfies {
     route: string;
-    as?: string;
     theme: TTheme;
-    attributionUrl?: string;
     expected: string;
   }[];
 
-  test.each(testCases)("$route => $expected", ({ route, as, theme, attributionUrl, expected }) => {
-    router.push(route, as);
-    const canonicalUrl = getCanonicalUrl(router, theme, attributionUrl);
+  test.each(testCases)("$route => $expected", ({ route, theme, expected }) => {
+    router.push(route);
+    const canonicalUrl = getCanonicalUrl(router, theme);
     expect(canonicalUrl).toBe(expected);
   });
 });

@@ -8,13 +8,6 @@ export const SUGGESTED_SEARCHES: TSearchSuggestion[] = [
   {
     label: "Latest NDCs",
     params: {
-      [QUERY_PARAMS.category]: "UN-submissions",
-      [QUERY_PARAMS["_document.type"]]: "Nationally Determined Contribution",
-      [QUERY_PARAMS.author_type]: "Party",
-      [QUERY_PARAMS.sort_field]: "date",
-      [QUERY_PARAMS.sort_order]: "desc",
-    },
-    newParams: {
       [QUERY_PARAMS.filters]: deflateFilters({
         op: "and",
         filters: [
@@ -33,17 +26,11 @@ export const SUGGESTED_SEARCHES: TSearchSuggestion[] = [
           },
         ],
       }),
-      [QUERY_PARAMS.sort]: "recent",
     },
   },
   {
     label: "Just transition + Türkiye + Laws",
     params: {
-      [QUERY_PARAMS.country]: "turkey",
-      [QUERY_PARAMS.category]: "laws",
-      [QUERY_PARAMS.concept_name]: "just transition",
-    },
-    newParams: {
       [QUERY_PARAMS.filters]: deflateFilters({
         op: "and",
         filters: [
@@ -63,11 +50,6 @@ export const SUGGESTED_SEARCHES: TSearchSuggestion[] = [
   {
     label: "Zoning and spatial planning + marine",
     params: {
-      [QUERY_PARAMS.concept_name]: "zoning and spatial planning",
-      [QUERY_PARAMS.query_string]: "marine",
-      [QUERY_PARAMS.exact_match]: "true",
-    },
-    newParams: {
       [QUERY_PARAMS.query_string]: "marine",
       [QUERY_PARAMS.filters]: deflateFilters({
         op: "or",
@@ -77,8 +59,7 @@ export const SUGGESTED_SEARCHES: TSearchSuggestion[] = [
   },
   {
     label: "Emissions reduction target",
-    params: {},
-    newParams: {
+    params: {
       [QUERY_PARAMS.filters]: deflateFilters({
         op: "and",
         filters: [

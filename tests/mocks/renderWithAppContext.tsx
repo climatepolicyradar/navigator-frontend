@@ -6,17 +6,10 @@ import { render } from "@testing-library/react";
 import { DEFAULT_FEATURES } from "@/constants/features";
 import { EnvConfigContext } from "@/context/EnvConfig";
 import { FeaturesContext } from "@/context/FeaturesContext";
-import { SlideOutContext } from "@/context/SlideOutContext";
 import { ThemeContext } from "@/context/ThemeContext";
+import themeConfig from "@/themes/config";
 
-import { setUpThemeConfig } from "./api/configHandlers";
-
-export const renderWithAppContext = (
-  Component: React.ComponentType<any>,
-  { pageProps, slideOutContext, features }: { pageProps?: any; slideOutContext?: any; features?: any }
-) => {
-  setUpThemeConfig(pageProps?.themeConfig);
-
+export const renderWithAppContext = (Component: React.ComponentType<any>, { pageProps, features }: { pageProps?: any; features?: any }) => {
   const queryClient = new QueryClient({
     defaultOptions: {
       queries: {
@@ -25,16 +18,12 @@ export const renderWithAppContext = (
     },
   });
 
-  const defaultSlideOutContext = { currentSlideOut: "", setCurrentSlideOut: () => {} };
-
   const renderResult = render(
     <QueryClientProvider client={queryClient}>
-      <ThemeContext.Provider value={{ theme: pageProps?.theme, themeConfig: pageProps?.themeConfig, loaded: Boolean(pageProps) }}>
+      <ThemeContext.Provider value={{ theme: pageProps?.theme, themeConfig }}>
         <FeaturesContext.Provider value={features || DEFAULT_FEATURES}>
           <EnvConfigContext.Provider value={pageProps?.envConfig}>
-            <SlideOutContext.Provider value={slideOutContext || defaultSlideOutContext}>
-              <Component {...pageProps} />
-            </SlideOutContext.Provider>
+            <Component {...pageProps} />
           </EnvConfigContext.Provider>
         </FeaturesContext.Provider>
       </ThemeContext.Provider>

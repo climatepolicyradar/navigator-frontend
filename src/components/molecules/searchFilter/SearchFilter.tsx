@@ -16,14 +16,15 @@ import { addSubStringHighlights } from "@/utils/text/addSubStringHighlights";
 
 interface IProps {
   ancestorPath: TFilterPathLabel[];
+  defaultExpanded?: boolean;
   label: TNestedSearchLabel;
   level: number;
 }
 
-export const SearchFilter = ({ ancestorPath, label, level }: IProps) => {
+export const SearchFilter = ({ ancestorPath, defaultExpanded, label, level }: IProps) => {
   const { checkedLabelPaths, toggleFilter } = useContext(FiltersContext);
   const { searchTerm, matchingLabelPathSignatures } = useContext(FiltersLookupContext);
-  const [isExpanded, setIsExpanded] = useState(false);
+  const [isExpanded, setIsExpanded] = useState(Boolean(defaultExpanded));
 
   const pathLabels = useMemo(() => getFilterPathLabels(label, ancestorPath), [ancestorPath, label]);
   const checked = getFilterStatus(pathLabels, checkedLabelPaths);
@@ -52,6 +53,13 @@ export const SearchFilter = ({ ancestorPath, label, level }: IProps) => {
     setIsExpanded((current) => !current);
   };
 
+  const analyticsAttributes = {
+    "data-ph-capture-attribute-button-purpose": "search-filter",
+    "data-ph-capture-attribute-label-type": label.type,
+    "data-ph-capture-attribute-label-value": label.value,
+    "data-ph-capture-attribute-action": checked === true ? "uncheck" : "check",
+  };
+
   const labelClickBehaviour = hasChildren
     ? { onClick: (event: MouseEvent) => event.stopPropagation(), noClickLabel: true }
     : { onClick: undefined, noClickLabel: false };
@@ -69,6 +77,9 @@ export const SearchFilter = ({ ancestorPath, label, level }: IProps) => {
           onClick={labelClickBehaviour.onClick}
           noClickLabel={labelClickBehaviour.noClickLabel}
           className="flex-1"
+          // with children clicking the label opens the accordion, so avoid click tracking
+          analyticsProps={hasChildren ? undefined : analyticsAttributes}
+          {...(hasChildren ? analyticsAttributes : {})}
         >
           <span>{labelValue}</span>
         </Checkbox>

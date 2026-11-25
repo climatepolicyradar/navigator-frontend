@@ -6,20 +6,25 @@ import { ChevronDown } from "lucide-react";
 import { SearchFilterLevel } from "@/components/organisms/searchFilterLevel/SearchFilterLevel";
 import { TFilterPathLabel, TNestedSearchLabel } from "@/types";
 import { getLabelDisplay } from "@/utils/filters/getLabelDisplay";
+import { getTypeCategory } from "@/utils/search/filterPathsToQueryGroup";
+import { joinTailwindClasses } from "@/utils/tailwind";
 
 interface IProps {
   ancestorPath: TFilterPathLabel[];
+  indented?: boolean;
   labels: TNestedSearchLabel[];
   level: number;
 }
 
-export const SearchFilterGroups = ({ ancestorPath, labels, level }: IProps) => {
-  const groups = sortBy(Object.entries(groupBy(labels, "type")), "0");
+export const SearchFilterGroups = ({ ancestorPath, indented, labels, level }: IProps) => {
+  const groups = sortBy(Object.entries(groupBy(labels, (label) => getTypeCategory(label.type))), "0");
 
-  const defaultValue = level === 2 ? groups.map(([type]) => type) : undefined;
+  const defaultValue = level !== 1 ? groups.map(([type]) => type) : undefined;
+
+  const rootClasses = joinTailwindClasses("flex flex-col gap-5", indented && "ml-8 pt-4");
 
   return (
-    <Accordion.Root multiple defaultValue={defaultValue} className="flex flex-col gap-5">
+    <Accordion.Root multiple defaultValue={defaultValue} className={rootClasses}>
       {groups.map(([type, typeLabels]) => {
         const labelType = getLabelDisplay(typeLabels[0], ancestorPath).type;
 

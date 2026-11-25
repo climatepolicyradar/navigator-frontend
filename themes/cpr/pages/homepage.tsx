@@ -8,7 +8,7 @@ import FeatureCards from "@/cpr/components/FeatureCards";
 import { Header } from "@/cpr/components/Header";
 import LandingPageLinks from "@/cpr/components/LandingPageLinks";
 import LandingSearchForm from "@/cpr/components/LandingSearchForm";
-import { TTheme, TThemeConfig } from "@/types";
+import { TTheme } from "@/types";
 
 // TODO temporarily disabled: https://climate-policy-radar.slack.com/archives/C08Q8GD1CUT/p1745941756888349
 // const WorldMap = dynamic(() => import("@/components/map/WorldMap"), {
@@ -16,22 +16,17 @@ import { TTheme, TThemeConfig } from "@/types";
 //   ssr: false,
 // });
 
-/**
- * GOTCHA: we export this to be used in the src/pages/index.tsx file.
- * It's a generic passed to `dynamic` so we can't rely on generic type checking.
- */
-export interface IProps {
+interface IProps {
   handleSearchInput: (term: string, filter?: string, filterValue?: string) => void;
-  handleSearchChange: (type: string, value: any) => void;
+  handleSearchChange: (type: string, value: unknown) => void;
   searchInput: string;
   exactMatch: boolean;
   theme: TTheme;
-  themeConfig: TThemeConfig;
 }
 
-const LandingPage = ({ handleSearchInput, handleSearchChange, searchInput, exactMatch, theme, themeConfig }: IProps) => {
+const LandingPage = ({ handleSearchInput, searchInput, theme }: IProps) => {
   return (
-    <Layout metadataKey="homepage" theme={theme} themeConfig={themeConfig}>
+    <Layout metadataKey="homepage" theme={theme}>
       <div className="relative">
         <Header />
         <main className="relative h-full">

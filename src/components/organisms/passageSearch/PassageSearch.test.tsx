@@ -3,12 +3,16 @@ import { act, render, screen, waitFor, within } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import mockRouter from "next-router-mock";
 import * as nextRouterMock from "next-router-mock";
+import { NuqsTestingAdapter } from "nuqs/adapters/testing";
 
+import { TOPIC_HIGHLIGHT_COLOURS } from "@/constants/highlights";
+import { EnvConfigContext } from "@/context/EnvConfig";
 import { SearchLevelContext } from "@/context/SearchLevelContext";
-import { IPassageLabel, ISearchPassage, TFamilyDocumentPublic, TSearchQueryGroup, TTopic } from "@/types";
+import { envConfig } from "@/mocks/envConfig";
+import { IPassageLabel, ISearchPassage, TFamilyDocumentPublic, TNestedSearchLabel, TSearchQueryGroup } from "@/types";
 import { deflateFilters } from "@/utils/filters/deflate";
 
-import { PassageSearch, TOPIC_HIGHLIGHT_COLOURS as TOPIC_COLOURS } from "./PassageSearch";
+import { PassageSearch } from "./PassageSearch";
 
 vi.mock("next/router", () => nextRouterMock);
 
@@ -25,70 +29,86 @@ vi.mock("posthog-js/react", () => ({ usePostHog: () => ({ capture: mockCapture }
 
 // The label lookup only populates the Topic filter's options, which belong to SearchControls.
 // Stubbed so the suite makes no network calls of its own.
-vi.mock("@/hooks/useLabelSearch", () => ({ loadFilteredLabels: () => Promise.resolve([]) }));
+vi.mock("@/hooks/useTaxonomy", () => ({ useTaxonomy: () => ({ labels: [] as TNestedSearchLabel[], labelNames: {}, loaded: true }) }));
 
-// A stateful stand-in for the URL params. nuqs' own testing adapter is fully controlled and
-// reverts the value after every write, which the component reads as a browser navigation.
-// The real adapter (wired in _app.tsx) keeps the value, so this fake reproduces production
-// semantics: read the initial value, then hold what is written. The store is shared across
-// hook instances and keyed by param, because the viewer and its SearchControls both read
-// `q`, `filters` and `sort`, and a write from one must reach the other.
-const url = vi.hoisted(() => {
-  const values = new Map<string, unknown>();
-  const listeners = new Set<() => void>();
-  const notify = () => listeners.forEach((listener) => listener());
+/*
+  The URL as the tests drive it. nuqs' own testing adapter backs this: `searchParams` is the
+  initial querystring, `hasMemory` keeps what the component writes instead of reverting it, and
+  re-rendering the adapter with a new querystring stands in for a navigation.
+
+  Params are held serialised, as they are in a real URL, so every value goes through the parser
+  the component declares - a `sort` the passage search does not offer lands on its default rather
+  than being passed straight through.
+*/
+const url = (() => {
+  let params = new URLSearchParams();
+  let rerenderAdapter: ((search: string) => void) | null = null;
+  // The url as it stood when the component mounted. Writes are measured against this, so the
+  // params a test seeded up front do not read as changes the component made.
+  let baseline = "";
+  const updates: URLSearchParams[] = [];
+
+  // Serialised as the component would write it, so a seed and a write are the same shape.
+  // Filters are seeded as raw JSON, which their parser accepts alongside the deflated form.
+  const serialise = (value: unknown): string => {
+    if (typeof value === "string") return value;
+    if (Array.isArray(value)) return value.join(",");
+    return JSON.stringify(value);
+  };
+
+  const apply = (next: URLSearchParams) => {
+    params = next;
+    rerenderAdapter?.(params.toString());
+  };
+
   return {
-    // Every write the component made, so URL side effects can be asserted directly.
-    writes: [] as { key: string; value: unknown }[],
+    get search() {
+      return params.toString();
+    },
+    // Every param the component changed, in order, as {key, value} pairs. Derived by diffing
+    // successive URLs rather than recorded at the call site, so it reflects the url, not intent.
+    get writes() {
+      const seen: { key: string; value: string | null }[] = [];
+      let previous = new URLSearchParams(baseline);
+      for (const update of updates) {
+        for (const key of new Set([...previous.keys(), ...update.keys()])) {
+          const before = previous.get(key);
+          const after = update.get(key);
+          if (before === after) continue;
+          seen.push({ key, value: after });
+        }
+        previous = update;
+      }
+      return seen;
+    },
     reset: () => {
-      values.clear();
-      url.writes = [];
+      params = new URLSearchParams();
+      baseline = "";
+      updates.length = 0;
+      rerenderAdapter = null;
     },
-    // Puts a param in place as though the page had been opened with it, without logging a write.
+    // Puts a param in place as though the page carried it, without counting as a write.
     seed: (key: string, value: unknown) => {
-      values.set(key, value);
-      notify();
+      const next = new URLSearchParams(params.toString());
+      next.set(key, serialise(value));
+      apply(next);
     },
-    read: (key: string, fallback: unknown) => (values.has(key) ? values.get(key) : fallback),
-    write: (key: string, value: unknown, fallback?: unknown) => {
-      url.writes.push({ key, value });
-      // Clearing a param removes it from the url, leaving every reader on its own default rather
-      // than on a shared null - two components read `filters` with different defaults.
-      if (value === null || value === undefined) values.delete(key);
-      else values.set(key, value ?? fallback);
-      notify();
-    },
-    // nuqs drops a param from the url once it is set back to its parser default, leaving
-    // each reader on its own default rather than on a shared null.
     clear: (key: string) => {
-      values.delete(key);
-      notify();
+      const next = new URLSearchParams(params.toString());
+      next.delete(key);
+      apply(next);
     },
-    subscribe: (listener: () => void) => {
-      listeners.add(listener);
-      return (): void => {
-        listeners.delete(listener);
-      };
+    // Wired up by the render helpers so a seed after mount reaches the mounted adapter.
+    attach: (rerender: (search: string) => void) => {
+      rerenderAdapter = rerender;
+      baseline = params.toString();
     },
-  };
-});
-vi.mock("nuqs", async (importOriginal) => {
-  const actual = await importOriginal<typeof import("nuqs")>();
-  const { useSyncExternalStore } = await import("react");
-  return {
-    ...actual,
-    useQueryState: (key: string, parser: { defaultValue?: unknown }) => {
-      const read = () => url.read(key, parser?.defaultValue);
-      return [
-        useSyncExternalStore(url.subscribe, read, read),
-        (next: unknown) => {
-          url.write(key, next, parser?.defaultValue);
-          return Promise.resolve(new URLSearchParams());
-        },
-      ];
+    record: (next: URLSearchParams) => {
+      updates.push(next);
+      params = next;
     },
   };
-});
+})();
 
 const buildPassage = (overrides: Partial<ISearchPassage> = {}): ISearchPassage => ({
   boldings: [],
@@ -124,39 +144,39 @@ const principalDocuments = [
   { import_id: "CCLW.document.1.3", slug: "a-decree", title: "Decree on renewable energy sources" },
 ] as TFamilyDocumentPublic[];
 
-const concepts = [
-  { wikibase_id: "Q1", preferred_label: "Extreme weather" },
-  { wikibase_id: "Q2", preferred_label: "Air pollution risk" },
-] as TTopic[];
-
 const renderWith = (ui: React.ReactElement) => {
   const queryClient = new QueryClient({ defaultOptions: { queries: { retry: false } } });
-  return render(<QueryClientProvider client={queryClient}>{ui}</QueryClientProvider>);
+  // The adapter is re-rendered with a new querystring whenever a test drives the url, which is
+  // how nuqs surfaces an external navigation to the hooks beneath it.
+  const tree = (search: string) => (
+    <NuqsTestingAdapter searchParams={search} hasMemory onUrlUpdate={({ searchParams }) => url.record(searchParams)}>
+      <QueryClientProvider client={queryClient}>
+        <EnvConfigContext.Provider value={envConfig}>{ui}</EnvConfigContext.Provider>
+      </QueryClientProvider>
+    </NuqsTestingAdapter>
+  );
+  const result = render(tree(url.search));
+  url.attach((search) => result.rerender(tree(search)));
+  return result;
 };
 
 // The document page: one document, with the PDF preview alongside the results.
 const renderWithPreview = (initialParams: Record<string, unknown> = {}) => {
   Object.entries(initialParams).forEach(([key, value]) => url.seed(key, value));
-  return renderWith(<PassageSearch documents={[mainDocument]} concepts={concepts} enablePreview />);
+  return renderWith(<PassageSearch documents={[mainDocument]} enablePreview />);
 };
 
 // The principal page: several documents, full width, no preview.
 const renderPrincipal = (initialParams: Record<string, unknown> = {}, documents = principalDocuments) => {
   Object.entries(initialParams).forEach(([key, value]) => url.seed(key, value));
-  return renderWith(<PassageSearch documents={documents} concepts={concepts} documentsLabel="Documents in this Law" subject="these documents" />);
+  return renderWith(<PassageSearch documents={documents} documentsLabel="Documents in this Law" subject="these documents" />);
 };
 
 // The principal-scoped panel as it is actually mounted, with the principal id it belongs to.
 const renderWithPrincipalId = (initialParams: Record<string, unknown> = {}, documents = principalDocuments) => {
   Object.entries(initialParams).forEach(([key, value]) => url.seed(key, value));
   return renderWith(
-    <PassageSearch
-      documents={documents}
-      principalId="CCLW.family.1.0"
-      concepts={concepts}
-      documentsLabel="Documents in this Law"
-      subject="these documents"
-    />
+    <PassageSearch documents={documents} principalId="CCLW.family.1.0" documentsLabel="Documents in this Law" subject="these documents" />
   );
 };
 
@@ -183,6 +203,8 @@ const makeLabel = (id: string, startIndex: number, endIndex: number): IPassageLa
 
 // A geography filter, as the results page writes it - not this search's to apply.
 const countryRule = { field: "labels.value.id", op: "contains", value: "country::LVA", checked: true } as const;
+
+const dateRule = { field: "attributes.published_date", key: "published_date", op: "gte", value: "2021-01-01" } as const;
 
 const filterBy = async (filters: TSearchQueryGroup) => {
   await act(async () => url.seed("filters", filters));
@@ -223,7 +245,9 @@ describe("PassageSearch", () => {
       renderWithPreview({ q: "renewable" });
 
       await waitFor(() => expect(mockFetchSearchPassages).toHaveBeenCalledTimes(1));
-      expect(mockFetchSearchPassages).toHaveBeenCalledWith(expect.objectContaining({ query: "renewable", documents: ["CCLW.document.1.1"] }));
+      expect(mockFetchSearchPassages).toHaveBeenCalledWith(
+        expect.objectContaining({ query: "renewable", scope: { kind: "documents", documentIds: ["CCLW.document.1.1"] } })
+      );
     });
 
     it("searches when a term is submitted in the search box", async () => {
@@ -248,6 +272,30 @@ describe("PassageSearch", () => {
       await searchFor("");
 
       expect(await screen.findByText("Search passages")).toBeInTheDocument();
+    });
+  });
+
+  /*
+    The `sort` param is shared with the results page, whose options the passages endpoint rejects.
+    Anything this search does not offer has to read as its own default rather than be passed on.
+  */
+  describe("handling the sort order", () => {
+    it("sorts by one of its own values from the url", async () => {
+      renderWithPreview({ q: "renewable", sort: "page" });
+
+      await waitFor(() => expect(mockFetchSearchPassages).toHaveBeenCalledWith(expect.objectContaining({ sort: "page" })));
+    });
+
+    it.each(["recent", "oldest", "title_asc", "title_desc"])("falls back to relevance for the results page's %s", async (sort) => {
+      renderWithPreview({ q: "renewable", sort });
+
+      await waitFor(() => expect(mockFetchSearchPassages).toHaveBeenCalledWith(expect.objectContaining({ sort: "relevance" })));
+    });
+
+    it("labels the control as Relevance when the url carries a results page sort", async () => {
+      renderWithPreview({ q: "renewable", sort: "recent" });
+
+      expect(await screen.findByRole("combobox")).toHaveTextContent("Relevance");
     });
   });
 
@@ -306,7 +354,7 @@ describe("PassageSearch", () => {
 
         await filterBy(topicFilter);
 
-        expect(await screen.findByText("ecological")).toHaveClass(TOPIC_COLOURS[0]);
+        expect(await screen.findByText("ecological")).toHaveClass(TOPIC_HIGHLIGHT_COLOURS[0]);
         // The other label is on the passage but its topic was not ticked
         expect(screen.queryByText("cultivation")).not.toBeInTheDocument();
       });
@@ -327,7 +375,7 @@ describe("PassageSearch", () => {
 
         const highlighted = await screen.findAllByText("cultivation");
         expect(highlighted).toHaveLength(2);
-        highlighted.forEach((span) => expect(span).toHaveClass(TOPIC_COLOURS[1]));
+        highlighted.forEach((span) => expect(span).toHaveClass(TOPIC_HIGHLIGHT_COLOURS[1]));
       });
 
       it("highlights nothing when there are no filters", async () => {
@@ -352,7 +400,7 @@ describe("PassageSearch", () => {
           ],
         });
 
-        expect(await screen.findByText("ecological")).toHaveClass(TOPIC_COLOURS[0]);
+        expect(await screen.findByText("ecological")).toHaveClass(TOPIC_HIGHLIGHT_COLOURS[0]);
         expect(screen.queryByText("cultivation")).not.toBeInTheDocument();
       });
 
@@ -397,6 +445,13 @@ describe("PassageSearch", () => {
         expect(await screen.findByText("Search passages")).toBeInTheDocument();
         expect(mockFetchSearchPassages).not.toHaveBeenCalled();
       });
+      it("draws no chip for one", async () => {
+        renderWithPreview({ q: "renewable", filters: { op: "and", filters: [...topicFilter.filters, countryRule, dateRule] } });
+
+        const applied = await screen.findByRole("list", { name: "Applied filters" });
+        expect(within(applied).queryByRole("button", { name: "Remove LVA" })).not.toBeInTheDocument();
+        expect(within(applied).queryByRole("button", { name: "Remove date range" })).not.toBeInTheDocument();
+      });
     });
   });
 
@@ -409,7 +464,7 @@ describe("PassageSearch", () => {
       Object.entries(initialParams).forEach(([key, value]) => url.seed(key, value));
       return renderWith(
         <SearchLevelContext value="principal">
-          <PassageSearch documents={principalDocuments} concepts={concepts} subject="these documents" />
+          <PassageSearch documents={principalDocuments} subject="these documents" />
         </SearchLevelContext>
       );
     };
@@ -419,7 +474,12 @@ describe("PassageSearch", () => {
 
       await waitFor(() => expect(mockFetchSearchPassages).toHaveBeenCalledTimes(1));
       expect(mockFetchSearchPassages).toHaveBeenCalledWith(
-        expect.objectContaining({ query: "renewable", filters: topicFilter, sort: "page", documents: ["CCLW.document.1.2"] })
+        expect.objectContaining({
+          query: "renewable",
+          filters: topicFilter,
+          sort: "page",
+          scope: { kind: "documents", documentIds: ["CCLW.document.1.2"] },
+        })
       );
     });
 
@@ -435,15 +495,12 @@ describe("PassageSearch", () => {
 
       await userEvent.type(screen.getByRole("textbox"), " targets{Enter}");
 
-      await waitFor(() =>
-        expect(url.writes).toEqual([
-          { key: "principal_q", value: "renewable targets" },
-          {
-            key: "principal_page_token",
-            value: "1",
-          },
-        ])
-      );
+      /*
+        Only the level's own `q` reaches the url. The page token is reset alongside it, but to the
+        parser's default, and nuqs drops a param at its default - so page one is the absent param.
+      */
+      await waitFor(() => expect(url.writes).toEqual([{ key: "principal_q", value: "renewable targets" }]));
+      expect(url.writes.map(({ key }) => key)).not.toContain("q");
     });
   });
 
@@ -605,9 +662,7 @@ describe("PassageSearch", () => {
     });
 
     it("offers no preview when the document is not a PDF", async () => {
-      renderWith(
-        <PassageSearch documents={[{ ...mainDocument, cdn_object: "https://cdn.example.org/document.html" }]} concepts={concepts} enablePreview />
-      );
+      renderWith(<PassageSearch documents={[{ ...mainDocument, cdn_object: "https://cdn.example.org/document.html" }]} enablePreview />);
 
       await screen.findByText("Search passages");
       expect(screen.queryByText(/^page:/)).not.toBeInTheDocument();
@@ -622,7 +677,7 @@ describe("PassageSearch", () => {
         expect(mockFetchSearchPassages).toHaveBeenCalledWith(
           expect.objectContaining({
             query: "renewable",
-            documents: ["CCLW.document.1.1", "CCLW.document.1.2", "CCLW.document.1.3"],
+            scope: { kind: "documents", documentIds: ["CCLW.document.1.1", "CCLW.document.1.2", "CCLW.document.1.3"] },
           })
         )
       );
@@ -631,7 +686,11 @@ describe("PassageSearch", () => {
     it("searches only the documents named in the url", async () => {
       renderPrincipal({ q: "renewable", docs: ["CCLW.document.1.2"] });
 
-      await waitFor(() => expect(mockFetchSearchPassages).toHaveBeenCalledWith(expect.objectContaining({ documents: ["CCLW.document.1.2"] })));
+      await waitFor(() =>
+        expect(mockFetchSearchPassages).toHaveBeenCalledWith(
+          expect.objectContaining({ scope: { kind: "documents", documentIds: ["CCLW.document.1.2"] } })
+        )
+      );
     });
 
     it("falls back to every document when the url names none it recognises", async () => {
@@ -639,7 +698,7 @@ describe("PassageSearch", () => {
 
       await waitFor(() =>
         expect(mockFetchSearchPassages).toHaveBeenCalledWith(
-          expect.objectContaining({ documents: ["CCLW.document.1.1", "CCLW.document.1.2", "CCLW.document.1.3"] })
+          expect.objectContaining({ scope: { kind: "documents", documentIds: ["CCLW.document.1.1", "CCLW.document.1.2", "CCLW.document.1.3"] } })
         )
       );
     });
@@ -677,7 +736,9 @@ describe("PassageSearch", () => {
       renderWithPrincipalId({ q: "renewable" }, []);
 
       await waitFor(() =>
-        expect(mockFetchSearchPassages).toHaveBeenCalledWith(expect.objectContaining({ documents: [], principalId: "CCLW.family.1.0" }))
+        expect(mockFetchSearchPassages).toHaveBeenCalledWith(
+          expect.objectContaining({ scope: { kind: "principal", principalId: "CCLW.family.1.0" } })
+        )
       );
     });
 
@@ -685,7 +746,9 @@ describe("PassageSearch", () => {
       renderWithPrincipalId({ filters: topicFilter }, []);
 
       await waitFor(() =>
-        expect(mockFetchSearchPassages).toHaveBeenCalledWith(expect.objectContaining({ documents: [], principalId: "CCLW.family.1.0" }))
+        expect(mockFetchSearchPassages).toHaveBeenCalledWith(
+          expect.objectContaining({ scope: { kind: "principal", principalId: "CCLW.family.1.0" } })
+        )
       );
     });
 
@@ -702,14 +765,20 @@ describe("PassageSearch", () => {
       renderWithPrincipalId({ q: "renewable" });
 
       await waitFor(() =>
-        expect(mockFetchSearchPassages).toHaveBeenCalledWith(expect.objectContaining({ documents: [], principalId: "CCLW.family.1.0" }))
+        expect(mockFetchSearchPassages).toHaveBeenCalledWith(
+          expect.objectContaining({ scope: { kind: "principal", principalId: "CCLW.family.1.0" } })
+        )
       );
     });
 
     it("still names the documents when the search is narrowed to a subset", async () => {
       renderWithPrincipalId({ q: "renewable", docs: ["CCLW.document.1.2"] });
 
-      await waitFor(() => expect(mockFetchSearchPassages).toHaveBeenCalledWith(expect.objectContaining({ documents: ["CCLW.document.1.2"] })));
+      await waitFor(() =>
+        expect(mockFetchSearchPassages).toHaveBeenCalledWith(
+          expect.objectContaining({ scope: { kind: "documents", documentIds: ["CCLW.document.1.2"] } })
+        )
+      );
     });
   });
 
@@ -738,7 +807,9 @@ describe("PassageSearch", () => {
       await userEvent.click(within(list).getByRole("checkbox", { name: /Amendment to the renewable energies law/ }));
 
       await waitFor(() =>
-        expect(mockFetchSearchPassages).toHaveBeenLastCalledWith(expect.objectContaining({ documents: ["CCLW.document.1.1", "CCLW.document.1.3"] }))
+        expect(mockFetchSearchPassages).toHaveBeenLastCalledWith(
+          expect.objectContaining({ scope: { kind: "documents", documentIds: ["CCLW.document.1.1", "CCLW.document.1.3"] } })
+        )
       );
     });
 
@@ -748,7 +819,7 @@ describe("PassageSearch", () => {
       const list = await openDocumentsFilter();
       await userEvent.click(within(list).getByRole("checkbox", { name: /Decree on renewable energy sources/ }));
 
-      await waitFor(() => expect(url.writes).toContainEqual({ key: "docs", value: ["CCLW.document.1.1", "CCLW.document.1.2"] }));
+      await waitFor(() => expect(url.writes).toContainEqual({ key: "docs", value: "CCLW.document.1.1,CCLW.document.1.2" }));
     });
 
     it("leaves the url clean when every document is selected again", async () => {
