@@ -66,12 +66,9 @@ const useFiltersContext = (checkedLabelPaths: TFilterPathLabel[][], appliedDateR
       value={{
         appliedDateRange,
         checkedLabelPaths,
-        // eslint-disable-next-line no-console
         clearFilters: () => console.info("clearFilters"),
         labelValues: {},
-        // eslint-disable-next-line no-console
         setDateRange: (dateRange) => console.info({ dateRange }),
-        // eslint-disable-next-line no-console
         toggleFilter: (labelPath, checked) => console.info({ labelPath, checked }),
       }}
     >

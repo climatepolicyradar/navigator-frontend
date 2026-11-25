@@ -71,14 +71,12 @@ const config: TThemeConfig = {
   },
   tutorials: ["climateLitigationDatabase", "newSearch"],
   features: {
-    familyConceptsSearch: true,
     // Deliberately off while subdivisions is on: ~95% of US federal cases also carry a state
     // subdivision tag, so "Type: Country" would hide almost all of them. Needs the litigation
     // geography data resolving (court level vs geography) before this can go live here.
+    debug: false,
     "geography-type-filters": false,
-    knowledgeGraph: true,
     litigation: true,
-    searchFamilySummary: true,
     subdivisions: true,
     themes: false,
   },

@@ -97,7 +97,7 @@ const eslintConfig = [
       "jsx-a11y/alt-text": ["warn", { elements: ["img"], img: ["Image"] }],
       "jsx-a11y/media-has-caption": "warn",
       eqeqeq: "warn",
-      "no-console": ["warn", { allow: ["error"] }],
+      "no-console": ["warn", { allow: ["error", "info"] }],
       "import/order": [
         "error",
         {

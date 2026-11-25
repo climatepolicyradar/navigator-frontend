@@ -1,8 +1,8 @@
 import { Meta, StoryObj } from "@storybook/nextjs-vite";
 
-import { TUTORIALS } from "@/constants/tutorials";
 import { TTutorialContext, TutorialContext } from "@/context/TutorialContext";
-import { TTutorialName } from "@/types";
+import { TUTORIAL_STUB } from "@/stubs/tutorialStub";
+import { TTutorialName, TUTORIAL_NAMES } from "@/types";
 
 import { TutorialBanner } from "./TutorialBanner";
 
@@ -18,10 +18,8 @@ export default meta;
 const useTutorialContext = ({ ...props }: React.ComponentProps<typeof TutorialBanner>) => {
   const value: TTutorialContext = {
     displayTutorial: null,
-    // eslint-disable-next-line no-console
     setDisplayTutorial: (name: TTutorialName) => console.info("setDisplayTutorial", name),
     completedTutorials: [],
-    // eslint-disable-next-line no-console
     addCompletedTutorial: (name: TTutorialName) => console.info("addCompletedTutorial", name),
     removeCompletedTutorial: () => {},
   };
@@ -35,8 +33,8 @@ const useTutorialContext = ({ ...props }: React.ComponentProps<typeof TutorialBa
 
 export const KnowledgeGraph: TStory = {
   args: {
-    name: "knowledgeGraph",
-    banner: TUTORIALS.knowledgeGraph.banner,
+    name: TUTORIAL_NAMES[0],
+    banner: TUTORIAL_STUB.banner,
   },
   render: useTutorialContext,
 };
