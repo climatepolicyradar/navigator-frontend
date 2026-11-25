@@ -1,7 +1,7 @@
+import { Popover } from "@base-ui/react/popover";
 import React, { useRef, useState, useMemo, useEffect } from "react";
 import { ErrorBoundary } from "react-error-boundary";
-import { ComposableMap, Geographies, Geography, Graticule, Marker, Sphere, ZoomableGroup, Point as TPoint } from "react-simple-maps";
-import { Tooltip, TooltipRefProps } from "react-tooltip";
+import { ComposableMap, Geographies, Geography, Graticule, Marker, Sphere, ZoomableGroup } from "react-simple-maps";
 
 import { LinkWithQuery } from "@/components/LinkWithQuery";
 import { EXCLUDED_ISO_CODES } from "@/constants/geography";
@@ -20,14 +20,9 @@ import { Heading } from "../typography/Heading";
 
 const geoUrl = "/data/map/world-countries-50m.json";
 
-type TSvgGeo = {
-  geometry: { type: string; coordinates: TPoint[] };
-  id: string;
-  properties: { name: string };
-  rsmKey: string;
-  svgPath: string;
-  type: string;
-};
+type TPoint = [number, number];
+
+type TGeoPopover = { coords: TPoint; geography: string };
 
 type TGeoFamilyCounts = {
   UNFCCC: number;
@@ -65,42 +60,17 @@ type TMapData = {
 
 // For converting Hex to HSL for use in our calculation
 // https://htmlcolors.com/hex-to-hsl
-const geoStyle = (isActive: boolean, count: number, max: number) => {
+const geoFill = (isActive: boolean, count: number, max: number) => {
   const maxLog = Math.log10(max);
   const countLog = Math.log10(count || 1);
 
   const ratio = countLog / maxLog;
   const fillLightness = count === 0 ? 80 : 60 - ratio * 25;
 
-  return {
-    default: {
-      fill: isActive ? "#002CA3" : `hsl(206, 14%, ${fillLightness}%)`,
-      stroke: "#fff",
-      strokeWidth: 0.25,
-      outline: "none",
-    },
-    hover: {
-      fill: "#002CA3",
-      cursor: "pointer",
-      outline: "none",
-    },
-  };
+  return isActive ? "#002CA3" : `hsl(206, 14%, ${fillLightness}%)`;
 };
 
-const markerStyle = {
-  default: {
-    outline: "none",
-    cursor: "pointer",
-  },
-  hover: {
-    outline: "none",
-    cursor: "pointer",
-  },
-  pressed: {
-    outline: "none",
-    cursor: "pointer",
-  },
-};
+const pointAnchor = ([x, y]: TPoint) => ({ getBoundingClientRect: () => DOMRect.fromRect({ x, y, width: 0, height: 0 }) });
 
 const MAX_ZOOM = 20;
 const MIN_ZOOM = 1;
@@ -164,7 +134,7 @@ export default function WorldMap({ showLitigation = false, showCategorySelect = 
   const geographiesQuery = useGeographies();
   const { data: { countries: configCountries = [] } = {} } = configQuery;
   const { data: mapDataRaw = [], status: mapDataStatus } = geographiesQuery;
-  const geographyInfoTooltipRef = useRef<TooltipRefProps>(null);
+  const [geoPopover, setGeoPopover] = useState<TGeoPopover | null>(null);
   const mapRef = useRef(null);
   const [activeGeography, setActiveGeography] = useState("");
   const [mapCenter, setMapCenter] = useState<TPoint>([0, 0]);
@@ -234,10 +204,10 @@ export default function WorldMap({ showLitigation = false, showCategorySelect = 
     return mapDataConstructor;
   }, [configCountries, mapDataRaw]);
 
-  const handleGeoClick = (e: React.MouseEvent<SVGPathElement>, geo: TSvgGeo) => {
-    setActiveGeography(geo.properties.name);
-    const geography = Object.values(mapData.geographies).find((g) => g.display_value === geo.properties.name);
-    openToolTip([e.clientX, e.clientY], geography?.display_value ?? geo.properties.name);
+  const handleGeoClick = (e: React.MouseEvent<SVGPathElement>, name: string) => {
+    setActiveGeography(name);
+    const geography = Object.values(mapData.geographies).find((g) => g.display_value === name);
+    openToolTip([e.clientX, e.clientY], geography?.display_value ?? name);
   };
 
   const handleMarkerClick = (e: React.MouseEvent<SVGGElement>, countryCode: string) => {
@@ -267,19 +237,12 @@ export default function WorldMap({ showLitigation = false, showCategorySelect = 
     setMapCenter([0, 0]);
     setMapZoom(1);
     setActiveGeography("");
-    geographyInfoTooltipRef.current?.close();
+    setGeoPopover(null);
   };
 
   const openToolTip = (coords: [number, number], selectedGeography: string) => {
     setActiveGeography(selectedGeography);
-    geographyInfoTooltipRef.current?.open({
-      position: {
-        x: coords[0],
-        y: coords[1],
-      },
-      place: "bottom",
-      content: <GeographyDetail geo={selectedGeography} geographies={mapData.geographies} />,
-    });
+    setGeoPopover({ coords, geography: selectedGeography });
   };
 
   if (mapDataStatus === "pending") {
@@ -361,7 +324,7 @@ export default function WorldMap({ showLitigation = false, showCategorySelect = 
               [1000, 600],
             ]}
             onMoveStart={() => {
-              geographyInfoTooltipRef.current?.close();
+              setGeoPopover(null);
               setActiveGeography("");
             }}
             onMoveEnd={(e) => {
@@ -379,11 +342,16 @@ export default function WorldMap({ showLitigation = false, showCategorySelect = 
                     <Geography
                       key={geo.rsmKey}
                       geography={geo}
-                      style={geoStyle(activeGeography === geo.properties.name, geoData?.familyCounts.LITIGATION || 0, mapData.maxLitigation)}
+                      className="fill-(--fill) stroke-white stroke-[0.25] outline-none cursor-pointer hover:fill-[#002CA3]"
+                      style={
+                        {
+                          "--fill": geoFill(activeGeography === geo.properties.name, geoData?.familyCounts.LITIGATION || 0, mapData.maxLitigation),
+                        } as React.CSSProperties
+                      }
                       onClick={(e) => {
                         e.preventDefault();
                         e.stopPropagation();
-                        handleGeoClick(e, geo);
+                        handleGeoClick(e, geo.properties.name);
                       }}
                       onMouseOver={(e) => {
                         handleGeoHover(e, geo.properties.name);
@@ -414,7 +382,7 @@ export default function WorldMap({ showLitigation = false, showCategorySelect = 
                       onMouseOver={(e) => {
                         handleGeoHover(e, geo.display_value);
                       }}
-                      style={markerStyle}
+                      className="outline-none cursor-pointer"
                     >
                       <circle
                         r={geo.markers[selectedFamCategory]}
@@ -429,7 +397,29 @@ export default function WorldMap({ showLitigation = false, showCategorySelect = 
             )}
           </ZoomableGroup>
         </ComposableMap>
-        <Tooltip id="mapToolTip" ref={geographyInfoTooltipRef} afterHide={() => setActiveGeography("")} imperativeModeOnly clickable />
+        <Popover.Root
+          open={geoPopover !== null}
+          onOpenChange={(open) => {
+            if (!open) {
+              setGeoPopover(null);
+              setActiveGeography("");
+            }
+          }}
+        >
+          <Popover.Portal>
+            <Popover.Positioner
+              anchor={geoPopover ? pointAnchor(geoPopover.coords) : null}
+              positionMethod="fixed"
+              side="bottom"
+              sideOffset={8}
+              className="z-50"
+            >
+              <Popover.Popup initialFocus={false} className="p-4 bg-white border border-gray-300 rounded-lg drop-shadow text-[#505050]">
+                {geoPopover && <GeographyDetail geo={geoPopover.geography} geographies={mapData.geographies} />}
+              </Popover.Popup>
+            </Popover.Positioner>
+          </Popover.Portal>
+        </Popover.Root>
         <ZoomControls
           mapZoom={mapZoom}
           maxZoom={MAX_ZOOM}
