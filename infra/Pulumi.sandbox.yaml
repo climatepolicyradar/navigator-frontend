@@ -28,7 +28,7 @@ config:
   frontend:ecs_frontend_memory: "1024"
   frontend:ecs_frontend_min_task_count: "1"
   frontend:ecs_frontend_max_task_count: "4"
-  frontend:ecs_frontend_scaling_target_value: "500"
+  frontend:ecs_frontend_scaling_target_value: "60"
   aws:defaultTags:
     tags:
       Team: fusion
