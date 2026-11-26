@@ -1,6 +1,5 @@
 import { GetServerSideProps, InferGetServerSidePropsType } from "next";
 
-import { ApiClient } from "@/api/http-common";
 import { configureDocumentsFilters, fetchSearchPrincipalDocuments, PRINCIPAL_DOCUMENTS_FILTER } from "@/api/search";
 import { loadTaxonomy } from "@/api/taxonomy";
 import { findGeographyBySlug, getGeographyStatistics } from "@/bff/methods/getGeography";
@@ -8,10 +7,8 @@ import { GeographyPage } from "@/components/pages/geographyPage";
 import { COUNTRY_LABEL_PATTERN, SUBDIVISION_LABEL_PATTERN } from "@/constants/labels";
 import { SYSTEM_GEO_NAMES } from "@/constants/systemGeos";
 import { withEnvConfig } from "@/context/EnvConfig";
-import { getCountryCode, getCountryName } from "@/helpers/getCountryFields";
 import themeConfig from "@/themes/config";
-import { GeographyTypeV2, ISearchDocumentsResponse, TFeatures, TFilterPathLabel, TGeography, TTheme, TThemeConfig } from "@/types";
-import { extractNestedData } from "@/utils/extractNestedData";
+import { GeographyTypeV2, ISearchDocumentsResponse, TFeatures, TFilterPathLabel, TTheme, TThemeConfig } from "@/types";
 import { getFeatureFlags } from "@/utils/featureFlags";
 import { getFeatures } from "@/utils/features";
 import { getGeographyPath } from "@/utils/links/getGeoSearchLink";
@@ -62,23 +59,6 @@ export const getServerSideProps = (async (context) => {
     };
   }
 
-  const backendApiClient = new ApiClient();
-
-  let countryNameFromConfig;
-  try {
-    let geographies: TGeography[] = [];
-    const { config, error: configError } = await backendApiClient.getConfig();
-    if (configError) console.error(configError);
-    const response_geo = extractNestedData<TGeography>(config.geographies || []);
-    geographies = [...response_geo[1], ...response_geo[2]];
-    const geography = getCountryCode(id as string, geographies);
-    if (geography) {
-      countryNameFromConfig = getCountryName(id as string, geographies);
-    }
-  } catch {
-    // TODO: handle error more elegantly
-  }
-
   const slug = Array.isArray(id) ? id[0] : id;
   const taxonomyPatterns = features.subdivisions ? [COUNTRY_LABEL_PATTERN, SUBDIVISION_LABEL_PATTERN] : [COUNTRY_LABEL_PATTERN];
   const taxonomy = await loadTaxonomy(process.env.API_URL, {
@@ -113,7 +93,7 @@ export const getServerSideProps = (async (context) => {
       current,
       parent: current.type === "country" && parent ? { ...parent, children: [] } : parent,
       statistics: getGeographyStatistics(current),
-      name: countryNameFromConfig ?? current.value,
+      name: current.value,
       theme,
       vespaSearchResults,
     }),
