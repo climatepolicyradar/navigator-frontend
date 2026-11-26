@@ -23,7 +23,6 @@ from resources.ecs_express_service import (
     ExpressGatewayConfig,
     ExpressGatewayServiceComponent,
 )
-from resources.github_actions_role import GitHubActionsRole
 from resources.next_static_bucket import NextStaticBucket, NextStaticBucketConfig
 from resources.util import (
     BehaviourOptions,
@@ -41,12 +40,6 @@ validate_stack_and_branch()
 aws_account = aws.get_caller_identity()
 config = pulumi.Config()
 theme = config.require("theme")
-
-# The role the deploy workflows assume (deploy-staging.yml,
-# deploy-production.yml, deploy-all-production.yml). Referenced by name where we
-# attach policies to it, because the role resource below is created by no
-# current stack -- see the guard on GitHubActionsRole.
-DEPLOY_ROLE_NAME = "navigator-new-frontend-github-actions"
 
 ########################################################################
 # Read this theme's Faro collector URL
@@ -302,84 +295,6 @@ if not is_review_template:
     # Consumed by the frontend-observability stack.
     pulumi.export("app_url", config.require("app_url"))
 
-########################################################################
-# Create old GitHub Actions role
-########################################################################
-
-# We only generate this for the CPR stacks as having a role for each app is overkill
-stack = pulumi.get_stack()
-if stack in ("staging", "production"):
-    navigator_frontend_github_actions_role = aws.iam.Role(
-        "navigator-frontend-github-actions",
-        assume_role_policy=json.dumps(
-            {
-                "Statement": [
-                    {
-                        "Action": "sts:AssumeRoleWithWebIdentity",
-                        "Condition": {
-                            "StringEquals": {
-                                "token.actions.githubusercontent.com:aud": "sts.amazonaws.com"
-                            },
-                            "StringLike": {
-                                "token.actions.githubusercontent.com:sub": "repo:climatepolicyradar/*"
-                            },
-                        },
-                        "Effect": "Allow",
-                        "Principal": {
-                            "Federated": f"arn:aws:iam::{aws_account.account_id}:oidc-provider/token.actions.githubusercontent.com"
-                        },
-                    }
-                ],
-                "Version": "2012-10-17",
-            }
-        ),
-        inline_policies=[
-            {
-                "name": "navigator-frontend-github-actions",
-                "policy": json.dumps(
-                    {
-                        "Version": "2012-10-17",
-                        "Statement": [
-                            {
-                                "Action": [
-                                    # Most of these were taken from https://github.com/aws/aws-toolkit-azure-devops/issues/311#issuecomment-623871181
-                                    "ecr:GetAuthorizationToken",
-                                    "ecr:InitiateLayerUpload",
-                                    "ecr:UploadLayerPart",
-                                    "ecr:CompleteLayerUpload",
-                                    "ecr:PutImage",
-                                    "iam:PassRole",
-                                    "ecr:DescribeRepositories",
-                                    "ecr:CreateRepository",
-                                    "ecr:BatchGetImage",
-                                    "ecr:BatchCheckLayerAvailability",
-                                    "ecr:DescribeImages",
-                                    "ecr:GetDownloadUrlForLayer",
-                                    "ecr:ListImages",
-                                    "iam:ListAccountAliases",
-                                ],
-                                "Effect": "Allow",
-                                "Resource": "*",
-                            }
-                        ],
-                    }
-                ),
-            }
-        ],
-        name="navigator-frontend-github-actions",
-        opts=pulumi.ResourceOptions(protect=True),
-    )
-
-########################################################################
-# Create new GitHub Actions role
-########################################################################
-
-# Create GitHub Actions role only for CPR stacks (in current account)
-if stack in ("staging", "production"):
-    github_actions_role = GitHubActionsRole(
-        name=DEPLOY_ROLE_NAME,
-    )
-
 # ########################################################################
 # # Create CloudFront policies & distribution
 # ########################################################################
@@ -481,67 +396,6 @@ if not is_review_stack_or_template:
             # rather than spelled out. CI reconstructs the same name.
             bucket_name=f"{theme}-frontend-{env}-next-static",
             config=NextStaticBucketConfig(),
-        )
-
-        # Let the deploy workflows sync the build's assets up. The role is
-        # created by no current stack -- the GitHubActionsRole guard above needs
-        # a stack named literally "staging" or "production", and every stack is
-        # {theme}-{env} -- and it carries protect=True, so attach a scoped
-        # inline policy to it by name rather than importing it. Named per
-        # theme+env so the four stacks sharing this role in each account don't
-        # fight over one policy name.
-        aws.iam.RolePolicy(
-            f"{theme}-{env}-next-static-s3-write",
-            role=DEPLOY_ROLE_NAME,
-            policy=next_static_bucket.bucket.arn.apply(
-                lambda arn: json.dumps(
-                    {
-                        "Version": "2012-10-17",
-                        "Statement": [
-                            {
-                                "Effect": "Allow",
-                                "Action": ["s3:PutObject", "s3:DeleteObject"],
-                                "Resource": f"{arn}/*",
-                            },
-                            {
-                                "Effect": "Allow",
-                                # aws s3 sync lists the destination to work out
-                                # what to skip, so it needs the bucket itself.
-                                "Action": ["s3:ListBucket"],
-                                "Resource": arn,
-                            },
-                        ],
-                    }
-                )
-            ),
-        )
-
-        # deploy_ecs_express.sh (deploy-production.yml,
-        # deploy-all-production.yml, deploy-staging.yml) runs under this role
-        # and corrects the
-        # ECS-generated RollbackAlarm in place around the deployment.
-        # Attached by name for the same reason as above; scoped to this
-        # service's alarm, whose name ECS derives as
-        # {cluster}/{service}/RollbackAlarm.
-        aws.iam.RolePolicy(
-            f"{theme}-{env}-rollback-alarm-cloudwatch",
-            role=DEPLOY_ROLE_NAME,
-            policy=json.dumps(
-                {
-                    "Version": "2012-10-17",
-                    "Statement": [
-                        {
-                            "Effect": "Allow",
-                            "Action": [
-                                "cloudwatch:DescribeAlarms",
-                                "cloudwatch:PutMetricAlarm",
-                                "cloudwatch:DeleteAlarms",
-                            ],
-                            "Resource": f"arn:aws:cloudwatch:{aws.get_region().region}:{aws_account.account_id}:alarm:frontend-{env}/{theme}-frontend-{env}/RollbackAlarm",
-                        }
-                    ],
-                }
-            ),
         )
 
     ########################################################################

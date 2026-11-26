@@ -281,7 +281,8 @@ jobs:
           CHANGED: ${{ steps.filter.outputs.changes }}
         run: |
           # Each filter name in filters.yml matches the `project` of an entry
-          # in projects.json, which says where the stack lives. Filters with
+          # in projects.json, which says where the stack lives and which CI
+          # role previews it. Filters with
           # no entry (the shared path anchors) are dropped here. Adding a
           # stack is an edit to those two files; nothing in this workflow
           # changes.
@@ -309,11 +310,14 @@ jobs:
     steps:
       - uses: actions/checkout@v7
 
+      # Grafana-only projects (observability, faro) have an empty aws-role and
+      # no AWS credentials.
       - name: configure aws credentials
+        if: matrix.aws-role != ''
         uses: aws-actions/configure-aws-credentials@v6.3.0
         with:
-          role-to-assume: arn:aws:iam::${{ secrets.AWS_ACCOUNT_ID }}:role/navigator-infra-github-actions
-          role-session-name: GitHub_to_AWS_via_FederatedOIDC
+          role-to-assume: arn:aws:iam::${{ secrets.AWS_ACCOUNT_ID }}:role/ci/${{ matrix.aws-role }}
+          role-session-name: navigator-frontend-pull-request
           aws-region: ${{ env.AWS_REGION }}
           # Off by default, so the account id and the assumed ARN would
           # otherwise appear in this step's log.

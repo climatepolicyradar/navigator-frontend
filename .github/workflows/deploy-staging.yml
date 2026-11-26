@@ -73,8 +73,8 @@ jobs:
       - name: configure aws credentials
         uses: aws-actions/configure-aws-credentials@v6.3.0
         with:
-          role-to-assume: arn:aws:iam::${{ secrets.AWS_ACCOUNT_ID }}:role/navigator-infra-github-actions
-          role-session-name: GitHub_to_AWS_via_FederatedOIDC_staging
+          role-to-assume: arn:aws:iam::${{ secrets.AWS_ACCOUNT_ID }}:role/ci/ci-frontend-ecs-cluster-staging
+          role-session-name: navigator-frontend-deploy-staging-ecs-cluster
           aws-region: eu-west-1
       - name: Install dependencies
         working-directory: infra/ecs-cluster
@@ -116,8 +116,8 @@ jobs:
       - name: Configure AWS credentials
         uses: aws-actions/configure-aws-credentials@v6.3.0
         with:
-          role-to-assume: arn:aws:iam::${{ secrets.AWS_ACCOUNT_ID }}:role/navigator-new-frontend-github-actions
-          role-session-name: GitHub_to_AWS_via_FederatedOIDC
+          role-to-assume: arn:aws:iam::${{ secrets.AWS_ACCOUNT_ID }}:role/ci/ci-frontend-staging
+          role-session-name: navigator-frontend-deploy-staging
           aws-region: eu-west-1
 
       - name: Login to Amazon ECR (staging)
@@ -217,12 +217,12 @@ jobs:
       # only safe once the bucket holds the assets going live (uploaded
       # above), and the ECS deploy should land on infra pulumi already
       # finished updating.
-      - name: Configure AWS credentials (infra)
+      - name: Configure AWS credentials (refresh)
         if: contains(fromJSON(needs.changes.outputs.projects), format('staging-frontend-{0}', matrix.theme))
         uses: aws-actions/configure-aws-credentials@v6.3.0
         with:
-          role-to-assume: arn:aws:iam::${{ secrets.AWS_ACCOUNT_ID }}:role/navigator-infra-github-actions
-          role-session-name: GitHub_to_AWS_via_FederatedOIDC_staging
+          role-to-assume: arn:aws:iam::${{ secrets.AWS_ACCOUNT_ID }}:role/ci/ci-frontend-staging
+          role-session-name: navigator-frontend-deploy-staging
           aws-region: eu-west-1
 
       - uses: astral-sh/setup-uv@v7
@@ -246,14 +246,15 @@ jobs:
         env:
           PULUMI_ACCESS_TOKEN: ${{ secrets.PULUMI_ACCESS_TOKEN }}
 
-      # pulumi up above may have re-configured credentials to the infra role;
-      # the ECS deploy needs the frontend deploy role instead.
+      # Re-assume the role so the ECS deploy gets fresh credentials: the
+      # build, push and pulumi up above can take most of the role's one-hour
+      # session.
       - name: Configure AWS credentials
         if: contains(fromJSON(needs.changes.outputs.projects), format('staging-frontend-{0}', matrix.theme))
         uses: aws-actions/configure-aws-credentials@v6.3.0
         with:
-          role-to-assume: arn:aws:iam::${{ secrets.AWS_ACCOUNT_ID }}:role/navigator-new-frontend-github-actions
-          role-session-name: GitHub_to_AWS_via_FederatedOIDC
+          role-to-assume: arn:aws:iam::${{ secrets.AWS_ACCOUNT_ID }}:role/ci/ci-frontend-staging
+          role-session-name: navigator-frontend-deploy-staging
           aws-region: eu-west-1
 
       # Replaces aws-actions/amazon-ecs-deploy-express-service: the RollbackAlarm

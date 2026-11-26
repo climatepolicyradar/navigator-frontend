@@ -44,8 +44,8 @@ jobs:
         uses: aws-actions/configure-aws-credentials@v6.3.0
         with:
           role-to-assume: arn:aws:iam::${{ secrets.AWS_ACCOUNT_ID
-            }}:role/navigator-infra-github-actions
-          role-session-name: GitHub_to_AWS_via_FederatedOIDC
+            }}:role/ci/ci-frontend-${{ github.event.inputs.environment }}
+          role-session-name: navigator-frontend-deploy-hashed-image
           aws-region: ${{ env.AWS_REGION }}
       - name: Install pulumi
         uses: pulumi/actions@v7
@@ -73,14 +73,13 @@ jobs:
         env:
           PULUMI_ACCESS_TOKEN: ${{ secrets.PULUMI_ACCESS_TOKEN }}
 
-      # The ECS deploy needs the frontend deploy role, not the infra role used
-      # for pulumi above.
-      - name: Configure AWS credentials (frontend deploy)
+      # Re-assume the role so the ECS deploy gets fresh credentials.
+      - name: Configure AWS credentials (refresh)
         uses: aws-actions/configure-aws-credentials@v6.3.0
         with:
           role-to-assume: arn:aws:iam::${{ secrets.AWS_ACCOUNT_ID
-            }}:role/navigator-new-frontend-github-actions
-          role-session-name: GitHub_to_AWS_via_FederatedOIDC
+            }}:role/ci/ci-frontend-${{ github.event.inputs.environment }}
+          role-session-name: navigator-frontend-deploy-hashed-image
           aws-region: ${{ env.AWS_REGION }}
 
       # Derive the ECS cluster and service from the stack, matching

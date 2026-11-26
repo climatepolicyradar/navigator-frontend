@@ -67,6 +67,17 @@ def validate_aws_account() -> None:
     )
 
 
+def ci_boundary_arn() -> pulumi.Output[str]:
+    """ARN of the `ci-boundary` policy that cpr-aws-iam creates in each account.
+
+    The CI roles may only create IAM roles that carry it, so every runtime service
+    role this project creates sets it as its permissions boundary. Secret, because the
+    ARN contains the account ID.
+    """
+    account_id = aws.get_caller_identity().account_id
+    return pulumi.Output.secret(f"arn:aws:iam::{account_id}:policy/ci-boundary")
+
+
 def get_active_branch() -> str:
     """Get the active branch of the repository."""
     return (
