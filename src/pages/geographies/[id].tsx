@@ -14,7 +14,7 @@ import { GeographyTypeV2, ISearchDocumentsResponse, TFeatures, TFilterPathLabel,
 import { extractNestedData } from "@/utils/extractNestedData";
 import { getFeatureFlags } from "@/utils/featureFlags";
 import { getFeatures } from "@/utils/features";
-import { createLabel } from "@/utils/links/getGeoSearchLink";
+import { getGeographyPath } from "@/utils/links/getGeoSearchLink";
 import { filterPathsToQueryGroup } from "@/utils/search/filterPathsToQueryGroup";
 
 // The geography page shows a short, horizontally scrolling list of recent principals.
@@ -96,9 +96,7 @@ export const getServerSideProps = (async (context) => {
   if (!features.subdivisions) disallowedGeoTypes.push("subdivision");
   if (disallowedGeoTypes.includes(current.type as GeographyTypeV2)) return { notFound: true };
 
-  const geographyPath = [current.id, parent?.id].filter(Boolean).map(createLabel);
-
-  const vespaSearchResults = await fetchGeographyPrincipals(process.env.API_URL, geographyPath, themeConfig, features).catch(
+  const vespaSearchResults = await fetchGeographyPrincipals(process.env.API_URL, getGeographyPath(current, parent), themeConfig, features).catch(
     (err): ISearchDocumentsResponse => {
       console.error(`Could not find search results for geography ${slug}:`, err);
       return null;

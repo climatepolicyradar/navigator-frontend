@@ -30,7 +30,7 @@ import {
 import { TCategoryResults, toCategoryResults } from "@/utils/cards/getFamilySummaries";
 import { getGeographySlug } from "@/utils/geography";
 import { getGeographyMetaData } from "@/utils/getGeographyMetadata";
-import { CATEGORY_LABEL_PATH_LOOKUP, createLabel } from "@/utils/links/getGeoSearchLink";
+import { CATEGORY_LABEL_PATH_LOOKUP, createLabel, getGeographyPath } from "@/utils/links/getGeoSearchLink";
 import { filterPathsToQueryGroup } from "@/utils/search/filterPathsToQueryGroup";
 
 // The recents block shows a single row of cards per category.
@@ -61,7 +61,7 @@ interface IProps {
 export const GeographyPage = ({ current, parent, statistics, name, theme, features, vespaSearchResults, envConfig }: IProps) => {
   const { themeConfig } = useContext(ThemeContext);
   const { getAppText } = useText();
-  const geographyPath = useMemo(() => [current.id, parent?.id].filter(Boolean).map(createLabel), [current, parent]);
+  const geographyPath = useMemo(() => getGeographyPath(current, parent), [current, parent]);
 
   const isCountry = current.type === "country";
   const slug = getGeographySlug(current);

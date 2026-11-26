@@ -22,6 +22,9 @@ export const createLabel = (id: string): TFilterPathLabel => {
   return { id, type, value };
 };
 
+export const getGeographyPath = (current: TFilterPathLabel, parent: TFilterPathLabel | null): TFilterPathLabel[] =>
+  [current.id, parent?.id].filter(Boolean).map(createLabel);
+
 interface IArgs {
   categoryId: string;
   geographyPath: TFilterPathLabel[];

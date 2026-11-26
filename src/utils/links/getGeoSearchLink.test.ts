@@ -2,10 +2,32 @@ import { QUERY_PARAMS } from "@/constants/queryParams";
 import { deflateFilters } from "@/utils/filters/deflate";
 import { filterPathsToQueryGroup } from "@/utils/search/filterPathsToQueryGroup";
 
-import { createLabel, getGeoSearchLink } from "./getGeoSearchLink";
+import { createLabel, getGeographyPath, getGeoSearchLink } from "./getGeoSearchLink";
 
 const kenyaPath = [createLabel("country::KEN"), createLabel("region::SSF")];
 const newSouthWalesPath = [createLabel("subdivision::AU-NSW"), createLabel("country::AUS")];
+
+describe("getGeographyPath", () => {
+  const label = (id: string, value: string) => ({ id, type: id.split("::")[0], value });
+
+  it("scopes a subdivision under its country", () => {
+    expect(getGeographyPath(label("subdivision::GB-SCT", "Scotland"), label("country::GBR", "United Kingdom"))).toEqual([
+      createLabel("subdivision::GB-SCT"),
+      createLabel("country::GBR"),
+    ]);
+  });
+
+  it("scopes a country under its region", () => {
+    expect(getGeographyPath(label("country::GBR", "United Kingdom"), label("region::ECS", "Europe & Central Asia"))).toEqual([
+      createLabel("country::GBR"),
+      createLabel("region::ECS"),
+    ]);
+  });
+
+  it("is just the geography when it has no parent", () => {
+    expect(getGeographyPath(label("country::GBR", "United Kingdom"), null)).toEqual([createLabel("country::GBR")]);
+  });
+});
 
 describe("getGeoSearchLink", () => {
   it("builds a filters query from a geography path and the mapped category", () => {
