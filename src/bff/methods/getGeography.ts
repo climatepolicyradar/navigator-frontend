@@ -1,10 +1,8 @@
 import { ID_SEPARATOR } from "@/constants/chars";
-import { GeographyTypeV2, GeographyV2, TNestedSearchLabel } from "@/types";
+import { TGeographyStatistics, TNestedSearchLabel, TSearchLabel, TSearchLabelRelation } from "@/types";
 import { getGeographySlug } from "@/utils/geography";
 
 import geographyStatistics from "../../data/geographyStatistics.json";
-
-type TGeographyStatistics = NonNullable<GeographyV2["statistics"]>;
 
 type TGeographyLookup = {
   label: TNestedSearchLabel;
@@ -32,25 +30,20 @@ export const findGeographyBySlug = (
   return null;
 };
 
-/**
- * Build the GeographyV2 the geography page consumes from a taxonomy label.
- *
- * `statistics` is left off, not set to undefined, when there are none: Next.js cannot serialise undefined props.
- */
-export const labelToGeographyV2 = (label: TNestedSearchLabel): GeographyV2 | null => {
-  const slug = getGeographySlug(label);
-  if (!slug) return null;
+export const getGeographyStatistics = (label: TNestedSearchLabel): TGeographyStatistics | null =>
+  label.type === "country" ? (STATISTICS_BY_ALPHA_3[label.id.split(ID_SEPARATOR)[1]] ?? null) : null;
 
-  const id = label.id.split(ID_SEPARATOR)[1];
-  const statistics = label.type === "country" ? STATISTICS_BY_ALPHA_3[id] : undefined;
+const toSearchLabel = ({ id, type, value, alternative_labels }: TNestedSearchLabel, labels: TSearchLabelRelation[] = []): TSearchLabel => ({
+  id,
+  type,
+  value,
+  alternative_labels,
+  labels,
+});
 
-  return {
-    id,
-    type: label.type as GeographyTypeV2,
-    slug,
-    name: label.value,
-    subconcept_of: [],
-    has_subconcept: [],
-    ...(statistics && { statistics }),
-  };
+export const toGeographySearchLabel = ({ label, parent }: TGeographyLookup): TSearchLabel => {
+  const relations: TSearchLabelRelation[] = parent
+    ? [{ type: "subconcept_of", value: toSearchLabel(parent), timestamp: null, passages_id: null, count: null }]
+    : [];
+  return toSearchLabel(label, relations);
 };

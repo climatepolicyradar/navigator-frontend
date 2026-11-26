@@ -1,8 +1,8 @@
 import { ExternalLink } from "@/components/ExternalLink";
 import { Popover } from "@/components/atoms/popover/Popover";
-import { GeographyV2, IMetadata } from "@/types";
+import { IMetadata, TGeographyStatistics } from "@/types";
 
-export const getGeographyMetaData = (stats: NonNullable<GeographyV2["statistics"]>): IMetadata[] => {
+export const getGeographyMetaData = (stats: TGeographyStatistics): IMetadata[] => {
   const metadata = [];
 
   if (stats.federal && stats.federal_details) {

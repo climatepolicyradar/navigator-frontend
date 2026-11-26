@@ -5,7 +5,6 @@ import { useContext } from "react";
 import { PageLink } from "@/components/atoms/pageLink/PageLink";
 import { Section } from "@/components/molecules/section/Section";
 import { ThemeContext } from "@/context/ThemeContext";
-import { GeographyV2 } from "@/types";
 
 export const INTRO_BLOCK_TITLE = "Search our data";
 
@@ -22,25 +21,26 @@ type TCallToAction =
     };
 
 interface IProps {
-  geography: GeographyV2;
+  name: string;
+  slug: string;
 }
 
-export const IntroBlock = ({ geography }: IProps) => {
+export const IntroBlock = ({ name, slug }: IProps) => {
   const { theme } = useContext(ThemeContext);
 
   switch (theme) {
     case "cclw":
       const callToActions: TCallToAction[] = [
         {
-          title: `Find targets in laws from ${geography.name}`,
+          title: `Find targets in laws from ${name}`,
           searchQuery: { c: "laws", cfn: "target" },
         },
         {
-          title: `Find mentions of greenhouse gases in the text of NDCs from ${geography.name}`,
+          title: `Find mentions of greenhouse gases in the text of NDCs from ${name}`,
           searchQuery: { c: "UNFCCC", t: "Nationally Determined Contribution", cfn: "greenhouse gas" },
         },
         {
-          title: `Find mentions of taxation in the text of policies from ${geography.name}`,
+          title: `Find mentions of taxation in the text of policies from ${name}`,
           searchQuery: { c: "policies", cfn: "tax" },
         },
         {
@@ -58,7 +58,7 @@ export const IntroBlock = ({ geography }: IProps) => {
             </p>
             <ul>
               {callToActions.map(({ title, searchQuery, url }) => {
-                const pageLinkProps = url ? { href: url, external: true } : { href: "/search", query: { l: geography.slug, ...searchQuery } };
+                const pageLinkProps = url ? { href: url, external: true } : { href: "/search", query: { l: slug, ...searchQuery } };
 
                 return (
                   <li key={title}>
