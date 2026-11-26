@@ -1,10 +1,24 @@
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 
+import { configureDocumentsFilters, PRINCIPAL_DOCUMENTS_FILTER } from "@/api/search";
 import { INSTRUCTIONS } from "@/cclw/constants/instructions";
-import { calculateTotalFamilies } from "@/helpers/getFamilyCounts";
-import useConfig from "@/hooks/useConfig";
+import { FeaturesContext } from "@/context/FeaturesContext";
+import { useTaxonomy } from "@/hooks/useTaxonomy";
+import { TNestedSearchLabel } from "@/types";
 
 const ANIMATION_DELAY = 3000;
+const CATEGORY_LABEL_PATTERN = "category::*";
+
+const getFamilyTotals = (categories: TNestedSearchLabel[]) => {
+  const countOf = (id: string) => categories.find((category) => category.id === id)?.count ?? 0;
+
+  return {
+    laws: countOf("category::Law"),
+    policies: countOf("category::Policy"),
+    unfccc: countOf("category::UN submission"),
+    reports: countOf("category::Report"),
+  };
+};
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 const scrollToMap = () => {
@@ -15,10 +29,13 @@ const scrollToMap = () => {
 const Instructions = () => {
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const [isAnimated, setIsAnimated] = useState(false);
-  const configQuery = useConfig();
-  const { data: { corpus_types } = {} } = configQuery;
+  const features = useContext(FeaturesContext);
+  const { labels: categories } = useTaxonomy({
+    patterns: [CATEGORY_LABEL_PATTERN],
+    filters: configureDocumentsFilters({ op: "and", filters: [PRINCIPAL_DOCUMENTS_FILTER] }, undefined, features),
+  });
 
-  const totalFamilies = calculateTotalFamilies(corpus_types);
+  const totalFamilies = getFamilyTotals(categories);
 
   useEffect(() => {
     const timer = setTimeout(() => {
