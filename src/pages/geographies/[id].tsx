@@ -3,17 +3,18 @@ import { GetServerSideProps, InferGetServerSidePropsType } from "next";
 import { ApiClient } from "@/api/http-common";
 import { configureDocumentsFilters, fetchSearchPrincipalDocuments, PRINCIPAL_DOCUMENTS_FILTER } from "@/api/search";
 import { loadTaxonomy } from "@/api/taxonomy";
-import { findGeographyBySlug, getGeographyStatistics, toGeographySearchLabel } from "@/bff/methods/getGeography";
+import { findGeographyBySlug, getGeographyStatistics } from "@/bff/methods/getGeography";
 import { GeographyPage } from "@/components/pages/geographyPage";
 import { COUNTRY_LABEL_PATTERN, SUBDIVISION_LABEL_PATTERN } from "@/constants/labels";
 import { SYSTEM_GEO_NAMES } from "@/constants/systemGeos";
 import { withEnvConfig } from "@/context/EnvConfig";
 import { getCountryCode, getCountryName } from "@/helpers/getCountryFields";
 import themeConfig from "@/themes/config";
-import { GeographyTypeV2, ISearchDocumentsResponse, TFeatures, TFilterPathLabel, TGeography, TSearchLabel, TTheme, TThemeConfig } from "@/types";
+import { GeographyTypeV2, ISearchDocumentsResponse, TFeatures, TFilterPathLabel, TGeography, TTheme, TThemeConfig } from "@/types";
 import { extractNestedData } from "@/utils/extractNestedData";
 import { getFeatureFlags } from "@/utils/featureFlags";
 import { getFeatures } from "@/utils/features";
+import { createLabel } from "@/utils/links/getGeoSearchLink";
 import { filterPathsToQueryGroup } from "@/utils/search/filterPathsToQueryGroup";
 
 // The geography page shows a short, horizontally scrolling list of recent principals.
@@ -26,19 +27,15 @@ const GEOGRAPHY_PRINCIPALS_PAGE_SIZE = 4;
  */
 const fetchGeographyPrincipals = (
   apiUrl: string,
-  geographyLabel: TSearchLabel,
+  geographyPath: TFilterPathLabel[],
   themeConfig: TThemeConfig,
   features: TFeatures
 ): Promise<ISearchDocumentsResponse> => {
-  const parentType = geographyLabel.type === "subdivision" ? "country" : "region";
-  const parentLabel = geographyLabel.labels.find((label) => label.type === "subconcept_of" && label.value.type === parentType);
-  const labelPaths: TFilterPathLabel[][] = [parentLabel ? [geographyLabel, parentLabel.value] : [geographyLabel]];
-
   return fetchSearchPrincipalDocuments({
     apiUrl,
     themeConfig,
     features,
-    filters: filterPathsToQueryGroup(labelPaths, null, "and"),
+    filters: filterPathsToQueryGroup([geographyPath], null, "and"),
     page_size: String(GEOGRAPHY_PRINCIPALS_PAGE_SIZE),
     sort: "recent",
   });
@@ -99,7 +96,9 @@ export const getServerSideProps = (async (context) => {
   if (!features.subdivisions) disallowedGeoTypes.push("subdivision");
   if (disallowedGeoTypes.includes(current.type as GeographyTypeV2)) return { notFound: true };
 
-  const vespaSearchResults = await fetchGeographyPrincipals(process.env.API_URL, toGeographySearchLabel(lookup), themeConfig, features).catch(
+  const geographyPath = [current.id, parent?.id].filter(Boolean).map(createLabel);
+
+  const vespaSearchResults = await fetchGeographyPrincipals(process.env.API_URL, geographyPath, themeConfig, features).catch(
     (err): ISearchDocumentsResponse => {
       console.error(`Could not find search results for geography ${slug}:`, err);
       return null;
@@ -114,7 +113,7 @@ export const getServerSideProps = (async (context) => {
     props: withEnvConfig({
       features,
       current,
-      parent,
+      parent: current.type === "country" && parent ? { ...parent, children: [] } : parent,
       statistics: getGeographyStatistics(current),
       name: countryNameFromConfig ?? current.value,
       theme,

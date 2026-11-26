@@ -2,7 +2,7 @@ import { describe, expect, it } from "vitest";
 
 import { TNestedSearchLabel } from "@/types";
 
-import { findGeographyBySlug, getGeographyStatistics, toGeographySearchLabel } from "./getGeography";
+import { findGeographyBySlug, getGeographyStatistics } from "./getGeography";
 import geographySlugs from "../../../tests/fixtures/geographySlugs.json";
 
 const label = (id: string, type: string, value: string, children: TNestedSearchLabel[] = []): TNestedSearchLabel => ({
@@ -78,33 +78,5 @@ describe("getGeographyStatistics", () => {
 
   it("returns null for a subdivision", () => {
     expect(getGeographyStatistics(ENGLAND)).toBeNull();
-  });
-});
-
-describe("toGeographySearchLabel", () => {
-  it("relates a country to its region", () => {
-    expect(toGeographySearchLabel({ label: AFGHANISTAN, parent: SOUTH_ASIA })).toEqual({
-      id: "country::AFG",
-      type: "country",
-      value: "Afghanistan",
-      alternative_labels: [],
-      labels: [
-        {
-          type: "subconcept_of",
-          value: { id: "region::SAS", type: "region", value: "South Asia", alternative_labels: [], labels: [] },
-          timestamp: null,
-          passages_id: null,
-          count: null,
-        },
-      ],
-    });
-  });
-
-  it("relates a subdivision to its country", () => {
-    expect(toGeographySearchLabel({ label: ENGLAND, parent: UNITED_KINGDOM }).labels[0].value).toMatchObject({ id: "country::GBR", type: "country" });
-  });
-
-  it("has no relations without a parent", () => {
-    expect(toGeographySearchLabel({ label: AFGHANISTAN, parent: null }).labels).toEqual([]);
   });
 });

@@ -5,7 +5,7 @@ import { PageLink } from "@/components/atoms/pageLink/PageLink";
 import { EntityCard } from "@/components/molecules/entityCard/EntityCard";
 import { ARROW_RIGHT } from "@/constants/chars";
 import { ThemeContext } from "@/context/ThemeContext";
-import { TCategorySummary, TSearchLabel } from "@/types";
+import { TCategorySummary, TFilterPathLabel } from "@/types";
 import { getGeoSearchLink } from "@/utils/links/getGeoSearchLink";
 import { pluralise } from "@/utils/pluralise";
 import { joinTailwindClasses } from "@/utils/tailwind";
@@ -17,7 +17,7 @@ interface IProps {
   showAccordion?: boolean;
   isExpanded?: boolean;
   onAccordionClick?: () => void;
-  geographyLabel: TSearchLabel;
+  geographyPath: TFilterPathLabel[];
 }
 
 export const RecentFamiliesCategory = ({
@@ -25,7 +25,7 @@ export const RecentFamiliesCategory = ({
   showAccordion = false,
   isExpanded = true,
   onAccordionClick,
-  geographyLabel,
+  geographyPath,
 }: IProps) => {
   const { theme } = useContext(ThemeContext);
 
@@ -35,7 +35,7 @@ export const RecentFamiliesCategory = ({
 
   const accordionIconClasses = joinTailwindClasses("text-[#002ca3]", isExpanded && "rotate-180");
 
-  const viewAllProps = getGeoSearchLink({ categoryId: id, geographyLabel });
+  const viewAllProps = getGeoSearchLink({ categoryId: id, geographyPath });
 
   // Provides a way to set a redirection note to data in one of our other apps
   let placeholder: ReactNode = null;

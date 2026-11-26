@@ -1,5 +1,5 @@
 import { ID_SEPARATOR } from "@/constants/chars";
-import { TGeographyStatistics, TNestedSearchLabel, TSearchLabel, TSearchLabelRelation } from "@/types";
+import { TGeographyStatistics, TNestedSearchLabel } from "@/types";
 import { getGeographySlug } from "@/utils/geography";
 
 import geographyStatistics from "../../data/geographyStatistics.json";
@@ -32,18 +32,3 @@ export const findGeographyBySlug = (
 
 export const getGeographyStatistics = (label: TNestedSearchLabel): TGeographyStatistics | null =>
   label.type === "country" ? (STATISTICS_BY_ALPHA_3[label.id.split(ID_SEPARATOR)[1]] ?? null) : null;
-
-const toSearchLabel = ({ id, type, value, alternative_labels }: TNestedSearchLabel, labels: TSearchLabelRelation[] = []): TSearchLabel => ({
-  id,
-  type,
-  value,
-  alternative_labels,
-  labels,
-});
-
-export const toGeographySearchLabel = ({ label, parent }: TGeographyLookup): TSearchLabel => {
-  const relations: TSearchLabelRelation[] = parent
-    ? [{ type: "subconcept_of", value: toSearchLabel(parent), timestamp: null, passages_id: null, count: null }]
-    : [];
-  return toSearchLabel(label, relations);
-};

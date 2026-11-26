@@ -1,22 +1,11 @@
-export type TSearchLabel = {
+export type TFilterPathLabel = {
   id: string;
   type: string;
   value: string;
-  labels: TSearchLabelRelation[];
   alternative_labels?: string[];
 };
 
-export type TFilterPathLabel = Omit<TSearchLabel, "labels">;
-
-export type TSearchLabelRelation = {
-  type: "subconcept_of";
-  value: TSearchLabel;
-  timestamp: null;
-  passages_id: null;
-  count: null;
-};
-
-export type TNestedSearchLabel = Omit<TSearchLabel, "labels"> & {
+export type TNestedSearchLabel = TFilterPathLabel & {
   children: TNestedSearchLabel[];
   parentPath?: TFilterPathLabel[];
   count?: number;

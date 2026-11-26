@@ -1,7 +1,6 @@
 import { useCallback, useContext, useMemo, useState } from "react";
 
 import { fetchSearchPrincipalDocuments } from "@/api/search";
-import { toGeographySearchLabel } from "@/bff/methods/getGeography";
 import { LinkWithQuery } from "@/components/LinkWithQuery";
 import { Debug } from "@/components/atoms/debug/Debug";
 import { INTRO_BLOCK_TITLE, IntroBlock } from "@/components/blocks/introBlock/IntroBlock";
@@ -27,7 +26,6 @@ import {
   TFilterPathLabel,
   TGeographyStatistics,
   TNestedSearchLabel,
-  TSearchLabel,
 } from "@/types";
 import { TCategoryResults, toCategoryResults } from "@/utils/cards/getFamilySummaries";
 import { getGeographySlug } from "@/utils/geography";
@@ -38,10 +36,8 @@ import { filterPathsToQueryGroup } from "@/utils/search/filterPathsToQueryGroup"
 // The recents block shows a single row of cards per category.
 const RECENT_FAMILIES_PAGE_SIZE = 4;
 
-const geographyLabelPaths = (geographyLabel: TSearchLabel, categoryId: string): TFilterPathLabel[][] => {
-  const parentType = geographyLabel.type === "subdivision" ? "country" : "region";
-  const parentLabel = geographyLabel.labels.find((label) => label.type === "subconcept_of" && label.value.type === parentType);
-  const labelPaths: TFilterPathLabel[][] = [parentLabel ? [geographyLabel, parentLabel.value] : [geographyLabel]];
+const geographyLabelPaths = (geographyPath: TFilterPathLabel[], categoryId: string): TFilterPathLabel[][] => {
+  const labelPaths: TFilterPathLabel[][] = [geographyPath];
 
   // The cards and the "All" link beside them need to show the same documents, so this
   // mirrors @see getGeoSearchLink's scoping (@see FUS-875)
@@ -65,11 +61,12 @@ interface IProps {
 export const GeographyPage = ({ current, parent, statistics, name, theme, features, vespaSearchResults, envConfig }: IProps) => {
   const { themeConfig } = useContext(ThemeContext);
   const { getAppText } = useText();
-  const geographyLabel = useMemo(() => toGeographySearchLabel({ label: current, parent }), [current, parent]);
+  const geographyPath = useMemo(() => [current.id, parent?.id].filter(Boolean).map(createLabel), [current, parent]);
 
   const isCountry = current.type === "country";
   const slug = getGeographySlug(current);
-  const pageParent = !isCountry && parent ? { label: parent.value, href: `/geographies/${getGeographySlug(parent)}` } : null;
+  const parentSlug = !isCountry && parent ? getGeographySlug(parent) : null;
+  const pageParent = parentSlug ? { label: parent.value, href: `/geographies/${parentSlug}` } : null;
   const subdivisionsTitle = isCountry ? "Geographic sub-divisions" : "Related geographic sub-divisions";
 
   /* Page header */
@@ -138,7 +135,7 @@ export const GeographyPage = ({ current, parent, statistics, name, theme, featur
               apiUrl: envConfig.API_URL,
               themeConfig,
               features,
-              filters: filterPathsToQueryGroup(geographyLabelPaths(geographyLabel, category), null, "and"),
+              filters: filterPathsToQueryGroup(geographyLabelPaths(geographyPath, category), null, "and"),
               page_size: String(RECENT_FAMILIES_PAGE_SIZE),
               sort: "recent",
             })
@@ -179,10 +176,10 @@ export const GeographyPage = ({ current, parent, statistics, name, theme, featur
               };
             })}
             onAccordionClick={(id) => fetchFamiliesByCategory(id)}
-            geographyLabel={geographyLabel}
+            geographyPath={geographyPath}
           />
         );
-      }, [envConfig, features, geographyLabel, getAppText, summariesByCategory, themeConfig]),
+      }, [envConfig, features, geographyPath, getAppText, summariesByCategory, themeConfig]),
       sideBarItem: { display: "Recent " + getAppText("familyPlural") },
     },
     statistics: {

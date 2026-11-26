@@ -2,17 +2,17 @@ import { useState } from "react";
 
 import { Section } from "@/components/molecules/section/Section";
 import { useText } from "@/hooks/useText";
-import { TCategorySummary, TSearchLabel } from "@/types";
+import { TCategorySummary, TFilterPathLabel } from "@/types";
 
 import { RecentFamiliesCategory } from "./RecentFamiliesCategory";
 
 interface IProps {
   categorySummaries: TCategorySummary[];
   onAccordionClick?: (id: string) => void;
-  geographyLabel: TSearchLabel;
+  geographyPath: TFilterPathLabel[];
 }
 
-export const RecentFamiliesBlock = ({ categorySummaries, onAccordionClick, geographyLabel }: IProps) => {
+export const RecentFamiliesBlock = ({ categorySummaries, onAccordionClick, geographyPath }: IProps) => {
   const { getAppText } = useText();
   const [expandedCategory, setExpandedCategory] = useState(categorySummaries[0].title);
 
@@ -37,7 +37,7 @@ export const RecentFamiliesBlock = ({ categorySummaries, onAccordionClick, geogr
             showAccordion={!hideAccordion}
             isExpanded={expandedCategory === category.title}
             onAccordionClick={() => onAccordionInteract(category.title, category.id)}
-            geographyLabel={geographyLabel}
+            geographyPath={geographyPath}
           />
         ))}
       </div>
