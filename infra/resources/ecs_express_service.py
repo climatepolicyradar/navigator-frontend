@@ -20,7 +20,7 @@ class ExpressGatewayConfig:
     memory: str = "4096"
     min_task_count: int = 1
     max_task_count: int = 4
-    scaling_target_value: int = 500
+    scaling_target_value: int = 60
 
 
 def prefix_name() -> str:
@@ -93,8 +93,8 @@ class ExpressGatewayServiceComponent(pulumi.ComponentResource):
             memory=config.memory,
             scaling_targets=[
                 ExpressGatewayServiceScalingTargetArgs(
-                    auto_scaling_metric="REQUEST_COUNT_PER_TARGET",  # Average over 60s interval
-                    auto_scaling_target_value=config.scaling_target_value,  # Requests per target per minute
+                    auto_scaling_metric="AVERAGE_CPU",
+                    auto_scaling_target_value=config.scaling_target_value,
                     min_task_count=config.min_task_count,
                     max_task_count=config.max_task_count,
                 ),
