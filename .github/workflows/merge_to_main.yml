@@ -143,7 +143,7 @@ jobs:
       environment: production
       working-directory: ./infra/platform
       stack: climatepolicyradar/frontend-platform/production
-      aws-role: navigator-infra-github-actions
+      aws-role: ci-frontend-platform-production
 
   ecs-cluster-pulumi-up-production:
     uses: ./.github/workflows/pulumi_up.yml
@@ -154,7 +154,7 @@ jobs:
       environment: production
       working-directory: ./infra/ecs-cluster
       stack: climatepolicyradar/frontend-ecs-cluster/production
-      aws-role: navigator-infra-github-actions
+      aws-role: ci-frontend-ecs-cluster-production
 
   storybook:
     runs-on: ubuntu-latest

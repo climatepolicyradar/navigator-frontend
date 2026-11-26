@@ -11,6 +11,8 @@ from pulumi_aws.ecs.express_gateway_service import (
     ExpressGatewayServiceScalingTargetArgs,
 )
 
+from .util import ci_boundary_arn
+
 
 @dataclass
 class ExpressGatewayConfig:
@@ -65,6 +67,7 @@ class ExpressGatewayServiceComponent(pulumi.ComponentResource):
                     ),
                 ]
             ).json,
+            permissions_boundary=ci_boundary_arn(),
         )
 
         primary = ExpressGatewayServicePrimaryContainerArgs(

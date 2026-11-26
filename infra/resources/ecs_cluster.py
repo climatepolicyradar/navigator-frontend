@@ -4,7 +4,7 @@ from typing import Any
 import pulumi
 import pulumi_aws as aws
 
-from .util import tag_name
+from .util import ci_boundary_arn, tag_name
 
 
 @dataclass
@@ -83,6 +83,7 @@ class EcsCluster(pulumi.ComponentResource):
             managed_policy_arns=[
                 "arn:aws:iam::aws:policy/service-role/AmazonECSTaskExecutionRolePolicy",
             ],
+            permissions_boundary=ci_boundary_arn(),
             tags=self.tags,
             opts=self._secret_arn_opts,
         )
@@ -109,6 +110,7 @@ class EcsCluster(pulumi.ComponentResource):
                 "arn:aws:iam::aws:policy/service-role/"
                 "AmazonECSInfrastructureRoleforExpressGatewayServices",
             ],
+            permissions_boundary=ci_boundary_arn(),
             tags=self.tags,
             opts=self._secret_arn_opts,
         )

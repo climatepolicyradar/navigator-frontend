@@ -38,8 +38,8 @@ jobs:
       - name: Configure AWS credentials
         uses: aws-actions/configure-aws-credentials@v6.3.0
         with:
-          role-to-assume: arn:aws:iam::${{ secrets.AWS_ACCOUNT_ID }}:role/navigator-new-frontend-github-actions
-          role-session-name: GitHub_to_AWS_via_FederatedOIDC
+          role-to-assume: arn:aws:iam::${{ secrets.AWS_ACCOUNT_ID }}:role/ci/ci-frontend-production
+          role-session-name: navigator-frontend-deploy-all-production
           aws-region: eu-west-1
 
       - name: Login to Amazon ECR (production)
@@ -139,11 +139,11 @@ jobs:
       # assets for the build about to go live (uploaded above). It also runs
       # before the ECS deploy below, so that deploy lands on infra (target
       # groups, alarms, etc.) pulumi has already finished updating.
-      - name: Configure AWS credentials (infra)
+      - name: Configure AWS credentials (refresh)
         uses: aws-actions/configure-aws-credentials@v6.3.0
         with:
-          role-to-assume: arn:aws:iam::${{ secrets.AWS_ACCOUNT_ID }}:role/navigator-infra-github-actions
-          role-session-name: GitHub_to_AWS_via_FederatedOIDC_production
+          role-to-assume: arn:aws:iam::${{ secrets.AWS_ACCOUNT_ID }}:role/ci/ci-frontend-production
+          role-session-name: navigator-frontend-deploy-all-production
           aws-region: eu-west-1
 
       - uses: astral-sh/setup-uv@v7
@@ -164,13 +164,14 @@ jobs:
           PULUMI_ACCESS_TOKEN: ${{ secrets.PULUMI_ACCESS_TOKEN }}
           DEPLOY_TO_PROD_STACK_ALLOWED: true
 
-      # pulumi up above re-configured credentials to the infra role; the ECS
-      # deploy needs the frontend deploy role instead.
+      # Re-assume the role so the ECS deploy gets fresh credentials: the
+      # build, push and pulumi up above can take most of the role's one-hour
+      # session.
       - name: Configure AWS credentials
         uses: aws-actions/configure-aws-credentials@v6.3.0
         with:
-          role-to-assume: arn:aws:iam::${{ secrets.AWS_ACCOUNT_ID }}:role/navigator-new-frontend-github-actions
-          role-session-name: GitHub_to_AWS_via_FederatedOIDC
+          role-to-assume: arn:aws:iam::${{ secrets.AWS_ACCOUNT_ID }}:role/ci/ci-frontend-production
+          role-session-name: navigator-frontend-deploy-all-production
           aws-region: eu-west-1
 
       # Replaces aws-actions/amazon-ecs-deploy-express-service: the RollbackAlarm

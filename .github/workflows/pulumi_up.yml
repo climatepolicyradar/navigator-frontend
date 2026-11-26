@@ -20,9 +20,10 @@ on:
         type: string
         required: true
       aws-role:
-        description: IAM role name to assume for this project's deploy. Leave
-          empty for a project with no AWS resources - the AWS credentials
-          step is then skipped entirely.
+        description: Name of the CI role under /ci/ to assume for this project's
+          deploy, e.g. ci-frontend-platform-production. Leave empty for a
+          project with no AWS resources - the AWS credentials step is then
+          skipped entirely.
         type: string
         default: ""
         required: false
@@ -41,9 +42,10 @@ on:
         type: string
         required: true
       aws-role:
-        description: IAM role name to assume for this project's deploy. Leave
-          empty for a project with no AWS resources - the AWS credentials
-          step is then skipped entirely.
+        description: Name of the CI role under /ci/ to assume for this project's
+          deploy, e.g. ci-frontend-platform-production. Leave empty for a
+          project with no AWS resources - the AWS credentials step is then
+          skipped entirely.
         type: string
         default: ""
         required: false
@@ -66,8 +68,8 @@ jobs:
         if: inputs.aws-role != ''
         uses: aws-actions/configure-aws-credentials@v6.3.0
         with:
-          role-to-assume: arn:aws:iam::${{ secrets.AWS_ACCOUNT_ID }}:role/${{ inputs.aws-role }}
-          role-session-name: GitHub_Pulumi_up_${{ inputs.environment }}
+          role-to-assume: arn:aws:iam::${{ secrets.AWS_ACCOUNT_ID }}:role/ci/${{ inputs.aws-role }}
+          role-session-name: navigator-frontend-pulumi-up-${{ inputs.environment }}
           aws-region: eu-west-1
           # Off by default, so the account id and the assumed ARN would
           # otherwise appear in this step's log.
