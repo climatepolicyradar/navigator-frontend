@@ -1,7 +1,7 @@
 import { TQueryOverrides } from "@/components/atoms/pageLink/PageLink";
 import { ID_SEPARATOR } from "@/constants/chars";
 import { QUERY_PARAMS } from "@/constants/queryParams";
-import { TFilterPathLabel, TSearchLabel } from "@/types";
+import { TFilterPathLabel } from "@/types";
 import { deflateFilters } from "@/utils/filters/deflate";
 import { filterPathsToQueryGroup } from "@/utils/search/filterPathsToQueryGroup";
 
@@ -22,16 +22,16 @@ export const createLabel = (id: string): TFilterPathLabel => {
   return { id, type, value };
 };
 
+export const getGeographyPath = (current: TFilterPathLabel, parent: TFilterPathLabel | null): TFilterPathLabel[] =>
+  [current.id, parent?.id].filter(Boolean).map(createLabel);
+
 interface IArgs {
   categoryId: string;
-  geographyLabel: TSearchLabel;
+  geographyPath: TFilterPathLabel[];
 }
 
-export const getGeoSearchLink = ({ categoryId, geographyLabel }: IArgs): { href: string; query: TQueryOverrides } => {
-  const checkedLabelPaths: TFilterPathLabel[][] = [];
-  const parentType = geographyLabel.type === "subdivision" ? "country" : "region";
-  const parentLabel = geographyLabel.labels.find((label) => label.type === "subconcept_of" && label.value.type === parentType);
-  checkedLabelPaths.push(parentLabel ? [geographyLabel, parentLabel.value] : [geographyLabel]);
+export const getGeoSearchLink = ({ categoryId, geographyPath }: IArgs): { href: string; query: TQueryOverrides } => {
+  const checkedLabelPaths: TFilterPathLabel[][] = [geographyPath];
 
   if (categoryId !== "All") {
     const categoryLabelPath = CATEGORY_LABEL_PATH_LOOKUP[categoryId];

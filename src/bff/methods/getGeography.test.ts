@@ -2,7 +2,7 @@ import { describe, expect, it } from "vitest";
 
 import { TNestedSearchLabel } from "@/types";
 
-import { findGeographyBySlug, labelToGeographyV2, labelToSubdivisions } from "./getGeography";
+import { findGeographyBySlug, getGeographyStatistics } from "./getGeography";
 import geographySlugs from "../../../tests/fixtures/geographySlugs.json";
 
 const label = (id: string, type: string, value: string, children: TNestedSearchLabel[] = []): TNestedSearchLabel => ({
@@ -63,68 +63,20 @@ describe("findGeographyBySlug", () => {
   });
 });
 
-describe("labelToGeographyV2", () => {
-  it("builds a country with its static statistics", () => {
-    const geography = labelToGeographyV2(UNITED_KINGDOM);
-
-    expect(geography).toMatchObject({
-      id: "GBR",
-      type: "country",
-      slug: "united-kingdom",
-      name: "United Kingdom",
-      subconcept_of: [],
-      has_subconcept: [],
-    });
-    expect(geography?.statistics).toMatchObject({ name: "United Kingdom", federal: true, visibility_status: "published" });
+describe("getGeographyStatistics", () => {
+  it("returns a country's static statistics", () => {
+    expect(getGeographyStatistics(UNITED_KINGDOM)).toMatchObject({ name: "United Kingdom", federal: true, visibility_status: "published" });
   });
 
-  it("builds the European Union as a country with its static statistics", () => {
-    const geography = labelToGeographyV2(EUROPEAN_UNION);
-
-    expect(geography).toMatchObject({ id: "EUR", type: "country", slug: "european-union", name: "European Union" });
-    expect(geography?.statistics).toMatchObject({ name: "European Union", visibility_status: "published" });
+  it("returns the European Union's static statistics", () => {
+    expect(getGeographyStatistics(EUROPEAN_UNION)).toMatchObject({ name: "European Union", visibility_status: "published" });
   });
 
-  it("omits statistics for a country that has none", () => {
-    const geography = labelToGeographyV2(label("country::GRL", "country", "Greenland"));
-
-    expect(geography).not.toBeNull();
-    expect(geography).not.toHaveProperty("statistics");
+  it("returns null for a country that has none", () => {
+    expect(getGeographyStatistics(label("country::GRL", "country", "Greenland"))).toBeNull();
   });
 
-  it("builds a subdivision with its ISO code as the id and no statistics", () => {
-    const geography = labelToGeographyV2(ENGLAND);
-
-    expect(geography).toMatchObject({ id: "GB-ENG", type: "subdivision", slug: "gb-eng", name: "England" });
-    expect(geography).not.toHaveProperty("statistics");
-  });
-
-  it("returns null when the label has no page", () => {
-    expect(labelToGeographyV2(label("country::XAB", "country", "International"))).toBeNull();
-  });
-
-  it("produces JSON-serialisable output, as getServerSideProps requires", () => {
-    const geography = labelToGeographyV2(label("country::GRL", "country", "Greenland"));
-
-    expect(JSON.parse(JSON.stringify(geography))).toEqual(geography);
-  });
-});
-
-describe("labelToSubdivisions", () => {
-  it("lists the subdivisions under a country", () => {
-    const wales = label("subdivision::GB-WLS", "subdivision", "Wales");
-
-    expect(labelToSubdivisions(label("country::GBR", "country", "United Kingdom", [ENGLAND, wales]))).toEqual([
-      expect.objectContaining({ id: "GB-ENG", type: "subdivision", slug: "gb-eng", name: "England" }),
-      expect.objectContaining({ id: "GB-WLS", type: "subdivision", slug: "gb-wls", name: "Wales" }),
-    ]);
-  });
-
-  it("is empty for a country with no subdivisions", () => {
-    expect(labelToSubdivisions(AFGHANISTAN)).toEqual([]);
-  });
-
-  it("leaves out a child that is not a subdivision", () => {
-    expect(labelToSubdivisions(label("country::GBR", "country", "United Kingdom", [label("country::FRA", "country", "France")]))).toEqual([]);
+  it("returns null for a subdivision", () => {
+    expect(getGeographyStatistics(ENGLAND)).toBeNull();
   });
 });

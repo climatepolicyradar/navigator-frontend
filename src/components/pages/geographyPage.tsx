@@ -1,5 +1,4 @@
-import sortBy from "lodash/fp/sortBy";
-import { useCallback, useContext, useState } from "react";
+import { useCallback, useContext, useMemo, useState } from "react";
 
 import { fetchSearchPrincipalDocuments } from "@/api/search";
 import { LinkWithQuery } from "@/components/LinkWithQuery";
@@ -18,19 +17,27 @@ import { TPublicEnvConfig } from "@/context/EnvConfig";
 import { FeaturesContext } from "@/context/FeaturesContext";
 import { ThemeContext } from "@/context/ThemeContext";
 import { useText } from "@/hooks/useText";
-import { TGeographyPageBlock, IMetadata, GeographyV2, ISearchDocumentsResponse, TTheme, TFeatures, TFilterPathLabel, TSearchLabel } from "@/types";
+import {
+  TGeographyPageBlock,
+  IMetadata,
+  ISearchDocumentsResponse,
+  TTheme,
+  TFeatures,
+  TFilterPathLabel,
+  TGeographyStatistics,
+  TNestedSearchLabel,
+} from "@/types";
 import { TCategoryResults, toCategoryResults } from "@/utils/cards/getFamilySummaries";
+import { getGeographySlug } from "@/utils/geography";
 import { getGeographyMetaData } from "@/utils/getGeographyMetadata";
-import { CATEGORY_LABEL_PATH_LOOKUP, createLabel } from "@/utils/links/getGeoSearchLink";
+import { CATEGORY_LABEL_PATH_LOOKUP, createLabel, getGeographyPath } from "@/utils/links/getGeoSearchLink";
 import { filterPathsToQueryGroup } from "@/utils/search/filterPathsToQueryGroup";
 
 // The recents block shows a single row of cards per category.
 const RECENT_FAMILIES_PAGE_SIZE = 4;
 
-const geographyLabelPaths = (geographyLabel: TSearchLabel, categoryId: string): TFilterPathLabel[][] => {
-  const parentType = geographyLabel.type === "subdivision" ? "country" : "region";
-  const parentLabel = geographyLabel.labels.find((label) => label.type === "subconcept_of" && label.value.type === parentType);
-  const labelPaths: TFilterPathLabel[][] = [parentLabel ? [geographyLabel, parentLabel.value] : [geographyLabel]];
+const geographyLabelPaths = (geographyPath: TFilterPathLabel[], categoryId: string): TFilterPathLabel[][] => {
+  const labelPaths: TFilterPathLabel[][] = [geographyPath];
 
   // The cards and the "All" link beside them need to show the same documents, so this
   // mirrors @see getGeoSearchLink's scoping (@see FUS-875)
@@ -42,30 +49,35 @@ const geographyLabelPaths = (geographyLabel: TSearchLabel, categoryId: string): 
 
 interface IProps {
   features: TFeatures;
-  geographyV2: GeographyV2;
-  parentGeographyV2?: GeographyV2;
-  geographyLabel: TSearchLabel;
+  current: TNestedSearchLabel;
+  parent: TNestedSearchLabel | null;
+  statistics: TGeographyStatistics | null;
+  name: string;
   theme: TTheme;
   vespaSearchResults: ISearchDocumentsResponse;
   envConfig: TPublicEnvConfig;
 }
 
-export const GeographyPage = ({ geographyV2, parentGeographyV2, geographyLabel, theme, features, vespaSearchResults, envConfig }: IProps) => {
+export const GeographyPage = ({ current, parent, statistics, name, theme, features, vespaSearchResults, envConfig }: IProps) => {
   const { themeConfig } = useContext(ThemeContext);
   const { getAppText } = useText();
+  const geographyPath = useMemo(() => getGeographyPath(current, parent), [current, parent]);
 
-  const isCountry = geographyV2.type === "country";
+  const isCountry = current.type === "country";
+  const slug = getGeographySlug(current);
+  const parentSlug = !isCountry && parent ? getGeographySlug(parent) : null;
+  const pageParent = parentSlug ? { label: parent.value, href: `/geographies/${parentSlug}` } : null;
   const subdivisionsTitle = isCountry ? "Geographic sub-divisions" : "Related geographic sub-divisions";
 
   /* Page header */
 
   const pageHeaderMetadata: IMetadata[] = [];
-  if (!isCountry && parentGeographyV2) {
+  if (pageParent) {
     pageHeaderMetadata.push({
       label: "Part of",
       value: (
-        <LinkWithQuery href={`/geographies/${parentGeographyV2.slug}`} className="underline">
-          {parentGeographyV2.name}
+        <LinkWithQuery href={pageParent.href} className="underline">
+          {pageParent.label}
         </LinkWithQuery>
       ),
     });
@@ -85,19 +97,19 @@ export const GeographyPage = ({ geographyV2, parentGeographyV2, geographyLabel, 
       render: () => (
         <Section key="debug" block="debug" title="Debug">
           <div className="col-start-1 -col-end-1">
-            <Debug data={geographyV2} title="Geography V2" />
-            <Debug data={parentGeographyV2} title="Parent geography V2" />
+            <Debug data={current} title="Geography" />
+            <Debug data={parent} title="Parent geography" />
           </div>
         </Section>
       ),
     },
     intro: {
-      render: () => <IntroBlock key="intro" geography={geographyV2} />,
+      render: () => <IntroBlock key="intro" name={name} slug={slug} />,
       sideBarItem: { display: INTRO_BLOCK_TITLE },
     },
     legislativeProcess: {
       render: useCallback(() => {
-        const legislativeProcess = geographyV2.statistics?.legislative_process || "";
+        const legislativeProcess = statistics?.legislative_process || "";
         if (legislativeProcess.length === 0) return null;
 
         return (
@@ -111,7 +123,7 @@ export const GeographyPage = ({ geographyV2, parentGeographyV2, geographyLabel, 
             <div className="text-content" dangerouslySetInnerHTML={{ __html: legislativeProcess }} />
           </TextBlock>
         );
-      }, [geographyV2]),
+      }, [statistics]),
       sideBarItem: { display: "Legislative process" },
     },
     recents: {
@@ -123,7 +135,7 @@ export const GeographyPage = ({ geographyV2, parentGeographyV2, geographyLabel, 
               apiUrl: envConfig.API_URL,
               themeConfig,
               features,
-              filters: filterPathsToQueryGroup(geographyLabelPaths(geographyLabel, category), null, "and"),
+              filters: filterPathsToQueryGroup(geographyLabelPaths(geographyPath, category), null, "and"),
               page_size: String(RECENT_FAMILIES_PAGE_SIZE),
               sort: "recent",
             })
@@ -164,31 +176,27 @@ export const GeographyPage = ({ geographyV2, parentGeographyV2, geographyLabel, 
               };
             })}
             onAccordionClick={(id) => fetchFamiliesByCategory(id)}
-            geographyLabel={geographyLabel}
+            geographyPath={geographyPath}
           />
         );
-      }, [envConfig, features, geographyLabel, getAppText, summariesByCategory, themeConfig]),
+      }, [envConfig, features, geographyPath, getAppText, summariesByCategory, themeConfig]),
       sideBarItem: { display: "Recent " + getAppText("familyPlural") },
     },
     statistics: {
       render: useCallback(() => {
-        const geographyMetaData = geographyV2.statistics ? getGeographyMetaData(geographyV2.statistics) : [];
+        const geographyMetaData = statistics ? getGeographyMetaData(statistics) : [];
         if (geographyMetaData.length === 0) return null;
 
         return <MetadataBlock key="statistics" block="statistics" title="About this geography" metadata={geographyMetaData} />;
-      }, [geographyV2]),
+      }, [statistics]),
     },
     subdivisions: {
       render: useCallback(() => {
-        const subdivisions = sortBy(
-          "name",
-          isCountry
-            ? geographyV2.has_subconcept
-            : (parentGeographyV2?.has_subconcept || []).filter((subdivision) => subdivision.id !== geographyV2.id)
-        );
+        const country = isCountry ? current : parent;
+        if (!country) return null;
 
-        return <SubDivisionBlock key="subdivisions" subdivisions={subdivisions} title={subdivisionsTitle} />;
-      }, [geographyV2, isCountry, parentGeographyV2, subdivisionsTitle]),
+        return <SubDivisionBlock key="subdivisions" country={country} exclude={isCountry ? undefined : slug} title={subdivisionsTitle} />;
+      }, [current, parent, isCountry, slug, subdivisionsTitle]),
       sideBarItem: { display: subdivisionsTitle },
     },
   };
@@ -197,14 +205,9 @@ export const GeographyPage = ({ geographyV2, parentGeographyV2, geographyLabel, 
 
   return (
     <FeaturesContext.Provider value={features}>
-      <Layout metadataKey="geography" theme={theme} title={geographyV2.name} text={geographyV2.name}>
-        <BreadCrumbs
-          dark
-          geography={{ label: geographyV2.name, href: `/geographies/${geographyV2.slug}` }}
-          parentGeography={parentGeographyV2 ? { label: parentGeographyV2.name, href: `/geographies/${parentGeographyV2.slug}` } : null}
-          isSubdivision={!isCountry}
-        />
-        <PageHeader dark label="Geography" title={geographyV2.name} metadata={pageHeaderMetadata} />
+      <Layout metadataKey="geography" theme={theme} title={name} text={name}>
+        <BreadCrumbs dark geography={{ label: name, href: `/geographies/${slug}` }} parentGeography={pageParent} isSubdivision={!isCountry} />
+        <PageHeader dark label="Geography" title={name} metadata={pageHeaderMetadata} />
         <BlocksLayout blockDefinitions={blockDefinitions} blocksToRender={blocksToRender} />
       </Layout>
     </FeaturesContext.Provider>

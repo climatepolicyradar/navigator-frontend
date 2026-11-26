@@ -23,25 +23,16 @@ export type TDataNode<T> = {
 
 export type GeographyTypeV2 = "region" | "country" | "subdivision";
 
-export type GeographyV2 = {
-  id: string;
-  type: GeographyTypeV2;
-  slug: string;
-  subconcept_of?: GeographyV2[];
-  has_subconcept?: GeographyV2[];
+export type TGeographyStatistics = {
   name: string;
-  alpha_2?: string;
-  statistics?: {
-    name: string;
-    legislative_process: string;
-    federal: boolean;
-    federal_details: string;
-    political_groups: string;
-    global_emissions_percent: string;
-    climate_risk_index: string;
-    worldbank_income_group: string;
-    visibility_status: string;
-  };
+  legislative_process: string;
+  federal: boolean;
+  federal_details: string;
+  political_groups: string;
+  global_emissions_percent: string;
+  climate_risk_index: string;
+  worldbank_income_group: string;
+  visibility_status: string;
 };
 
 export type TGeography = {
@@ -58,13 +49,6 @@ export type TCountryOption = {
   id: string;
   slug: string;
   display_value: string;
-};
-
-export type TGeographyWithDocumentCounts = {
-  code: string;
-  name: string;
-  type: string;
-  count: number;
 };
 
 export type TCorpusTypeSubCategory = "AF" | "CIF" | "GCF" | "GEF" | "Laws and Policies" | "Intl. agreements" | "Litigation" | "Reports";

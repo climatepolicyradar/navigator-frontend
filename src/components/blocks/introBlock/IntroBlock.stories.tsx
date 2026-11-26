@@ -1,7 +1,5 @@
 import { Meta, StoryObj } from "@storybook/nextjs-vite";
 
-import { GeographyV2 } from "@/types";
-
 import { IntroBlock } from "./IntroBlock";
 
 const meta = {
@@ -15,6 +13,7 @@ export default meta;
 
 export const Default: TStory = {
   args: {
-    geography: { name: "United States", slug: "united-states-of-america" } as unknown as GeographyV2,
+    name: "United States",
+    slug: "united-states-of-america",
   },
 };
