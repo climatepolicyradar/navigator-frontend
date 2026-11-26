@@ -54,11 +54,3 @@ export const labelToGeographyV2 = (label: TNestedSearchLabel): GeographyV2 | nul
     ...(statistics && { statistics }),
   };
 };
-
-/**
- * Build the subdivisions listed under a country label, for the page's subdivision block.
- *
- * A child with no page (see `getGeographySlug`) is left out.
- */
-export const labelToSubdivisions = (countryLabel: TNestedSearchLabel): GeographyV2[] =>
-  countryLabel.children.map(labelToGeographyV2).filter((geography): geography is GeographyV2 => geography?.type === "subdivision");

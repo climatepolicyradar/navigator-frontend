@@ -1,9 +1,9 @@
 import { GetServerSideProps, InferGetServerSidePropsType } from "next";
 
 import { ApiClient } from "@/api/http-common";
-import { fetchSearchPrincipalDocuments } from "@/api/search";
+import { configureDocumentsFilters, fetchSearchPrincipalDocuments, PRINCIPAL_DOCUMENTS_FILTER } from "@/api/search";
 import { loadTaxonomy } from "@/api/taxonomy";
-import { findGeographyBySlug, labelToGeographyV2, labelToSubdivisions } from "@/bff/methods/getGeography";
+import { findGeographyBySlug, labelToGeographyV2 } from "@/bff/methods/getGeography";
 import { GeographyPage } from "@/components/pages/geographyPage";
 import { COUNTRY_LABEL_PATTERN, SUBDIVISION_LABEL_PATTERN } from "@/constants/labels";
 import { SYSTEM_GEO_NAMES } from "@/constants/systemGeos";
@@ -110,7 +110,10 @@ export const getServerSideProps = (async (context) => {
 
   const slug = Array.isArray(id) ? id[0] : id;
   const taxonomyPatterns = features.subdivisions ? [COUNTRY_LABEL_PATTERN, SUBDIVISION_LABEL_PATTERN] : [COUNTRY_LABEL_PATTERN];
-  const taxonomy = await loadTaxonomy(process.env.API_URL, { patterns: taxonomyPatterns });
+  const taxonomy = await loadTaxonomy(process.env.API_URL, {
+    patterns: taxonomyPatterns,
+    filters: configureDocumentsFilters({ op: "and", filters: [PRINCIPAL_DOCUMENTS_FILTER] }, themeConfig, features),
+  });
 
   const lookup = findGeographyBySlug(taxonomy, slug);
   if (!lookup) return { notFound: true };
@@ -121,9 +124,7 @@ export const getServerSideProps = (async (context) => {
   const parentGeographyV2 = geographyV2.type === "subdivision" && lookup.parent ? labelToGeographyV2(lookup.parent) : null;
 
   // The country that owns the subdivision list: the page's own geography for a country, its parent for a subdivision.
-  const countryLabel = geographyV2.type === "country" ? lookup.label : lookup.parent;
-  const countryGeography = geographyV2.type === "country" ? geographyV2 : parentGeographyV2;
-  if (countryLabel && countryGeography) countryGeography.has_subconcept = labelToSubdivisions(countryLabel);
+  const country = geographyV2.type === "country" ? lookup.label : lookup.parent;
 
   // Prevent rendering geography pages for types we don't support
   const disallowedGeoTypes: GeographyTypeV2[] = ["region"];
@@ -150,6 +151,7 @@ export const getServerSideProps = (async (context) => {
   return {
     props: withEnvConfig({
       features,
+      country,
       geographyV2,
       parentGeographyV2,
       geographyLabel,

@@ -1,4 +1,3 @@
-import sortBy from "lodash/fp/sortBy";
 import { useCallback, useContext, useState } from "react";
 
 import { fetchSearchPrincipalDocuments } from "@/api/search";
@@ -18,7 +17,17 @@ import { TPublicEnvConfig } from "@/context/EnvConfig";
 import { FeaturesContext } from "@/context/FeaturesContext";
 import { ThemeContext } from "@/context/ThemeContext";
 import { useText } from "@/hooks/useText";
-import { TGeographyPageBlock, IMetadata, GeographyV2, ISearchDocumentsResponse, TTheme, TFeatures, TFilterPathLabel, TSearchLabel } from "@/types";
+import {
+  TGeographyPageBlock,
+  IMetadata,
+  GeographyV2,
+  ISearchDocumentsResponse,
+  TTheme,
+  TFeatures,
+  TFilterPathLabel,
+  TNestedSearchLabel,
+  TSearchLabel,
+} from "@/types";
 import { TCategoryResults, toCategoryResults } from "@/utils/cards/getFamilySummaries";
 import { getGeographyMetaData } from "@/utils/getGeographyMetadata";
 import { CATEGORY_LABEL_PATH_LOOKUP, createLabel } from "@/utils/links/getGeoSearchLink";
@@ -42,6 +51,7 @@ const geographyLabelPaths = (geographyLabel: TSearchLabel, categoryId: string): 
 
 interface IProps {
   features: TFeatures;
+  country: TNestedSearchLabel | null;
   geographyV2: GeographyV2;
   parentGeographyV2?: GeographyV2;
   geographyLabel: TSearchLabel;
@@ -50,7 +60,16 @@ interface IProps {
   envConfig: TPublicEnvConfig;
 }
 
-export const GeographyPage = ({ geographyV2, parentGeographyV2, geographyLabel, theme, features, vespaSearchResults, envConfig }: IProps) => {
+export const GeographyPage = ({
+  country,
+  geographyV2,
+  parentGeographyV2,
+  geographyLabel,
+  theme,
+  features,
+  vespaSearchResults,
+  envConfig,
+}: IProps) => {
   const { themeConfig } = useContext(ThemeContext);
   const { getAppText } = useText();
 
@@ -180,15 +199,10 @@ export const GeographyPage = ({ geographyV2, parentGeographyV2, geographyLabel, 
     },
     subdivisions: {
       render: useCallback(() => {
-        const subdivisions = sortBy(
-          "name",
-          isCountry
-            ? geographyV2.has_subconcept
-            : (parentGeographyV2?.has_subconcept || []).filter((subdivision) => subdivision.id !== geographyV2.id)
-        );
+        if (!country) return null;
 
-        return <SubDivisionBlock key="subdivisions" subdivisions={subdivisions} title={subdivisionsTitle} />;
-      }, [geographyV2, isCountry, parentGeographyV2, subdivisionsTitle]),
+        return <SubDivisionBlock key="subdivisions" country={country} exclude={isCountry ? undefined : geographyV2.slug} title={subdivisionsTitle} />;
+      }, [country, geographyV2, isCountry, subdivisionsTitle]),
       sideBarItem: { display: subdivisionsTitle },
     },
   };

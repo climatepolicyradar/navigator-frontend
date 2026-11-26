@@ -1,6 +1,6 @@
 import { Meta, StoryObj } from "@storybook/nextjs-vite";
 
-import { GeographyV2 } from "@/types";
+import { TNestedSearchLabel } from "@/types";
 
 import { SubDivisionBlock } from "./SubDivisionBlock";
 
@@ -14,42 +14,28 @@ type TStory = StoryObj<typeof SubDivisionBlock>;
 
 export default meta;
 
-const unitedStates: GeographyV2 = {
-  id: "1",
-  name: "United States",
-  type: "country" as const,
-  slug: "united-states",
-  has_subconcept: [],
-  subconcept_of: [],
-};
+const subdivision = (id: string, value: string, count: number): TNestedSearchLabel => ({
+  id,
+  type: "subdivision",
+  value,
+  alternative_labels: [],
+  count,
+  children: [],
+});
 
 export const Default: TStory = {
   args: {
-    subdivisions: [
-      {
-        id: "1",
-        name: "Alaska",
-        type: "subdivision",
-        slug: "alaska",
-        subconcept_of: [unitedStates],
-        has_subconcept: [],
-      },
-      {
-        id: "2",
-        name: "Alabama",
-        type: "subdivision",
-        slug: "alabama",
-        subconcept_of: [unitedStates],
-        has_subconcept: [],
-      },
-      {
-        id: "3",
-        name: "Arkansas",
-        type: "subdivision",
-        slug: "arkansas",
-        subconcept_of: [unitedStates],
-        has_subconcept: [],
-      },
-    ],
+    country: {
+      id: "country::USA",
+      type: "country",
+      value: "United States",
+      alternative_labels: [],
+      count: 3,
+      children: [
+        subdivision("subdivision::US-AK", "Alaska", 2),
+        subdivision("subdivision::US-AL", "Alabama", 1),
+        subdivision("subdivision::US-AR", "Arkansas", 0),
+      ],
+    },
   },
 };

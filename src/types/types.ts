@@ -60,13 +60,6 @@ export type TCountryOption = {
   display_value: string;
 };
 
-export type TGeographyWithDocumentCounts = {
-  code: string;
-  name: string;
-  type: string;
-  count: number;
-};
-
 export type TCorpusTypeSubCategory = "AF" | "CIF" | "GCF" | "GEF" | "Laws and Policies" | "Intl. agreements" | "Litigation" | "Reports";
 
 export type TAttributionCategory =
